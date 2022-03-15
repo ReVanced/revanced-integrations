@@ -3,6 +3,8 @@ package fi.razerman.youtube.videosettings;
 import android.util.Log;
 import fi.razerman.youtube.XGlobals;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -10,17 +12,98 @@ import java.util.Iterator;
 public class VideoSpeed {
     static final float[] videoSpeeds = {0.25f, 0.5f, 0.75f, 1.0f, 1.25f, 1.5f, 1.75f, 2.0f};
 
-    /* JADX WARN: Removed duplicated region for block: B:78:0x01ba  */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    public static int DefaultSpeed(java.lang.Object[] r16, int r17, java.lang.Object r18) {
-        /*
-            Method dump skipped, instructions count: 465
-            To view this dump change 'Code comments level' option to 'DEBUG'
-        */
-        throw new UnsupportedOperationException("Method not decompiled: fi.razerman.youtube.videosettings.VideoSpeed.DefaultSpeed(java.lang.Object[], int, java.lang.Object):int");
+    public static int DefaultSpeed(Object[] speeds, int speed, Object qInterface) {
+        int speed2;
+        Exception e;
+        if (!XGlobals.newVideoSpeed.booleanValue()) {
+            return speed;
+        }
+        XGlobals.newVideoSpeed = false;
+        if (XGlobals.debug.booleanValue()) {
+            Log.d("XGlobals - speeds", "Speed: " + speed);
+        }
+        float preferredSpeed = XGlobals.prefVideoSpeed.floatValue();
+        if (XGlobals.debug.booleanValue()) {
+            Log.d("XGlobals", "Preferred speed: " + preferredSpeed);
+        }
+        if (preferredSpeed == -2.0f) {
+            return speed;
+        }
+        Class<?> floatType = Float.TYPE;
+        ArrayList<Float> iStreamSpeeds = new ArrayList<>();
+        try {
+            for (Object streamSpeed : speeds) {
+                Field[] fields = streamSpeed.getClass().getFields();
+                for (Field field : fields) {
+                    if (field.getType().isAssignableFrom(floatType)) {
+                        float value = field.getFloat(streamSpeed);
+                        if (field.getName().length() <= 2) {
+                            iStreamSpeeds.add(Float.valueOf(value));
+                        }
+                    }
+                }
+            }
+        } catch (Exception e2) {
+        }
+        Iterator<Float> it = iStreamSpeeds.iterator();
+        int index = 0;
+        while (it.hasNext()) {
+            float streamSpeed2 = it.next().floatValue();
+            if (XGlobals.debug.booleanValue()) {
+                Log.d("XGlobals - speeds", "Speed at index " + index + ": " + streamSpeed2);
+            }
+            index++;
+        }
+        int speed3 = -1;
+        Iterator<Float> it2 = iStreamSpeeds.iterator();
+        while (it2.hasNext()) {
+            float streamSpeed3 = it2.next().floatValue();
+            if (streamSpeed3 <= preferredSpeed) {
+                speed3++;
+                if (XGlobals.debug.booleanValue()) {
+                    Log.d("XGlobals - speeds", "Speed loop at index " + speed3 + ": " + streamSpeed3);
+                }
+            }
+        }
+        if (speed3 == -1) {
+            if (XGlobals.debug.booleanValue()) {
+                Log.d("XGlobals - speeds", "Speed was not found");
+            }
+            speed2 = 3;
+        } else {
+            speed2 = speed3;
+        }
+        try {
+            Method[] declaredMethods = qInterface.getClass().getDeclaredMethods();
+            for (Method method : declaredMethods) {
+                if (method.getName().length() <= 2) {
+                    if (XGlobals.debug.booleanValue()) {
+                        Log.d("SPEED - Method", "Method name: " + method.getName());
+                    }
+                    try {
+                        try {
+                            method.invoke(qInterface, Float.valueOf(videoSpeeds[speed2]));
+                        } catch (IllegalAccessException e3) {
+                        } catch (IllegalArgumentException e4) {
+                        } catch (InvocationTargetException e5) {
+                        } catch (Exception e6) {
+                            e = e6;
+                            Log.e("XDebug", e.getMessage());
+                            if (XGlobals.debug.booleanValue()) {
+                            }
+                            return speed2;
+                        }
+                    } catch (Exception e8) {
+                    }
+                }
+            }
+        } catch (Exception e10) {
+            e = e10;
+        }
+        if (XGlobals.debug.booleanValue()) {
+            Log.d("XGlobals", "Speed changed to: " + speed2);
+        }
+        return speed2;
     }
 
     public static void userChangedSpeed() {
