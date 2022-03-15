@@ -1,2 +1,2 @@
-# Integrations-Plus-Plus
-Full pack of Vanced integrations
+# REVanced Integrations++
+Full modded version of Vanced integrations for compiling
