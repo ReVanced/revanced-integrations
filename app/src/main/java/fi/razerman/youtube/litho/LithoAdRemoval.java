@@ -182,46 +182,22 @@ public class LithoAdRemoval {
         }
     }
 
-    /* JADX WARN: Code restructure failed: missing block: B:13:0x0019, code lost:
-        r0 = r0 + 1;
-     */
-    /*
-        Code decompiled incorrectly, please refer to instructions dump.
-        To view partially-correct code enable 'Show inconsistent code' option in preferences
-    */
-    public static int indexOf(byte[] r4, byte[] r5) {
-        /*
-            int r2 = r5.length
-            if (r2 != 0) goto L_0x0005
-            r0 = 0
-        L_0x0004:
-            return r0
-        L_0x0005:
-            r0 = 0
-        L_0x0006:
-            int r2 = r4.length
-            int r3 = r5.length
-            int r2 = r2 - r3
-            int r2 = r2 + 1
-            if (r0 >= r2) goto L_0x001f
-            r1 = 0
-        L_0x000e:
-            int r2 = r5.length
-            if (r1 >= r2) goto L_0x0004
-            int r2 = r0 + r1
-            byte r2 = r4[r2]
-            byte r3 = r5[r1]
-            if (r2 == r3) goto L_0x001c
-            int r0 = r0 + 1
-            goto L_0x0006
-        L_0x001c:
-            int r1 = r1 + 1
-            goto L_0x000e
-        L_0x001f:
-            r0 = -1
-            goto L_0x0004
-        */
-        throw new UnsupportedOperationException("Method not decompiled: fi.razerman.youtube.litho.LithoAdRemoval.indexOf(byte[], byte[]):int");
+
+    public static int indexOf(byte[] array, byte[] target) {
+        if (target.length == 0) {
+            return 0;
+        }
+
+        int i = 0;
+        while (i < array.length - target.length + 1 ){
+            for (int j = 0; j < target.length; j++) {
+                if (array[i+j] != target[j]) {
+                    break;
+                }
+            }
+            return i;
+        }
+        return -1;
     }
 
     private static String bytesToHex(byte[] bytes) {
