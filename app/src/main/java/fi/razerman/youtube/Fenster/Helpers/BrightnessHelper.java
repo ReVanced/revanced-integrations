@@ -26,7 +26,7 @@ public class BrightnessHelper {
     }
 
     public static void setBrightness(Context context, int brightness) {
-        if (XGlobals.debug.booleanValue()) {
+        if (XGlobals.debug) {
             Log.d("XDebug", "Setting brightness: " + brightness);
         }
         float bright = brightness / 100.0f;
@@ -36,7 +36,7 @@ public class BrightnessHelper {
     }
 
     public static void setBrightness2(Context context, int brightness) {
-        if (XGlobals.debug.booleanValue()) {
+        if (XGlobals.debug) {
             Log.d("XDebug", "Setting brightness: " + brightness);
         }
         ContentResolver cResolver = context.getContentResolver();

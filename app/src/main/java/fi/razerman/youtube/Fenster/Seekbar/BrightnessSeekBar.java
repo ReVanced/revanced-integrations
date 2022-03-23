@@ -58,7 +58,7 @@ public class BrightnessSeekBar {
                 this.mTextView.setVisibility(View.VISIBLE);
             }
         }
-        if (XGlobals.debug.booleanValue()) {
+        if (XGlobals.debug) {
             Log.d("XDebug", "updateBrightnessProgress: " + this.Progress);
         }
     }

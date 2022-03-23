@@ -28,24 +28,23 @@ public class Copy {
 
     public static void initializeCopyButton(Object obj) {
         try {
-            if (XGlobals.debug.booleanValue()) {
+            if (XGlobals.debug) {
                 Log.d(TAG, "initializing");
             }
             _constraintLayout = (ConstraintLayout) obj;
             isCopyButtonEnabled = shouldBeShown();
-            ImageView imageView = (ImageView) _constraintLayout.findViewById(getIdentifier("copy_button", "id"));
-            if (XGlobals.debug.booleanValue() && imageView == null) {
+            ImageView imageView = _constraintLayout.findViewById(getIdentifier("copy_button", "id"));
+            if (XGlobals.debug && imageView == null) {
                 Log.d(TAG, "Couldn't find imageView with id \"copy_button\"");
             }
             if (imageView != null) {
-                imageView.setOnClickListener(new View.OnClickListener() { // from class: fi.razerman.youtube.VideoUrl.Copy.1
-                    @Override // android.view.View.OnClickListener
-                    public void onClick(View view) {
-                        if (XGlobals.debug.booleanValue()) {
-                            Log.d(Copy.TAG, "Button clicked");
-                        }
-                        VideoHelpers.copyVideoUrlToClipboard();
+                // from class: fi.razerman.youtube.VideoUrl.Copy.1
+// android.view.View.OnClickListener
+                imageView.setOnClickListener(view -> {
+                    if (XGlobals.debug) {
+                        Log.d(Copy.TAG, "Button clicked");
                     }
+                    VideoHelpers.copyVideoUrlToClipboard();
                 });
                 _button = new WeakReference<>(imageView);
                 fadeDurationFast = getInteger("fade_duration_fast");
@@ -70,13 +69,13 @@ public class Copy {
             ImageView imageView = _button.get();
             if (_constraintLayout != null && imageView != null) {
                 if (z && isCopyButtonEnabled) {
-                    if (XGlobals.debug.booleanValue()) {
+                    if (XGlobals.debug) {
                         Log.d(TAG, "Fading in");
                     }
                     imageView.setVisibility(View.VISIBLE);
                     imageView.startAnimation(fadeIn);
                 } else if (imageView.getVisibility() == View.VISIBLE) {
-                    if (XGlobals.debug.booleanValue()) {
+                    if (XGlobals.debug) {
                         Log.d(TAG, "Fading out");
                     }
                     imageView.startAnimation(fadeOut);

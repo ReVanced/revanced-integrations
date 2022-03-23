@@ -78,7 +78,7 @@ public class XSettingActivity extends Activity {
         }
     }
 
-    public static final ImageButton getImageButton(ViewGroup viewGroup) {
+    public static ImageButton getImageButton(ViewGroup viewGroup) {
         if (viewGroup == null) {
             return null;
         }
@@ -92,7 +92,7 @@ public class XSettingActivity extends Activity {
         return null;
     }
 
-    public static final TextView getTextView(ViewGroup viewGroup) {
+    public static TextView getTextView(ViewGroup viewGroup) {
         if (viewGroup == null) {
             return null;
         }

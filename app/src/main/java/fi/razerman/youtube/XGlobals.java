@@ -131,7 +131,7 @@ public class XGlobals {
     public static Boolean userChangedSpeed = false;
     public static Integer prefResolutionWIFI = -2;
     public static Integer prefResolutionMobile = -2;
-    public static Float prefVideoSpeed = Float.valueOf(-2.0f);
+    public static Float prefVideoSpeed = -2.0f;
     public static Boolean prefAutoCaptions = false;
     public static Boolean homeAdsShown = false;
     public static Boolean videoAdsShown = false;

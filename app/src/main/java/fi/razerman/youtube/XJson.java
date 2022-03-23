@@ -21,7 +21,7 @@ public class XJson {
                         now.setToNow();
                         String time = "" + now.hour + now.minute + now.second;
                         int time_int = Integer.parseInt(time);
-                        URL url = new URL("https://github.com/YTVanced/VancedBackend/releases/download/changelogs/" + vName + "?searchTime=" + time_int);
+                        URL url = new URL("https://github.com/YTVanced/VancedBackend/releases/download/changelogs/" + vName + "?searchTime=" + time_int); // TODO change to ReVanced changelog URL.
                         url.openConnection().setReadTimeout(2000);
                         url.openConnection().setConnectTimeout(2000);
                         BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream()));
@@ -29,7 +29,7 @@ public class XJson {
                         while (true) {
                             String line = reader.readLine();
                             if (line != null) {
-                                sb.append(line + "\n");
+                                sb.append(line).append("\n");
                             } else {
                                 String json = sb.toString();
                                 reader.close();

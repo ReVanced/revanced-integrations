@@ -26,61 +26,48 @@ public class XDebug {
 
     public static void printBooleanWithMethod(boolean bool) {
         StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
-        if (stackTraceElements == null || stackTraceElements.length <= 3) {
+        if (stackTraceElements.length <= 3) {
             Log.d("XBoolean", "Couldn't locate the method called from.");
             Log.d("XBoolean", "" + bool);
             return;
         }
-        StringBuilder sb = new StringBuilder();
-        sb.append(stackTraceElements[3].toString()).append("\n");
-        Log.d("XBoolean", "Called from method: " + sb.toString());
+        Log.d("XBoolean", "Called from method: " + stackTraceElements[3].toString() + "\n");
         Log.d("XBoolean", "" + bool);
     }
 
     public static void printColorStateListWithMethod(ColorStateList colorStateList) {
         StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
-        if (stackTraceElements == null || stackTraceElements.length <= 3) {
+        if (stackTraceElements.length <= 3) {
             Log.d("XColorStateList", "Couldn't locate the method called from.");
-            if (colorStateList == null) {
-                Log.d("XColorStateList", "<Null>");
-            } else {
-                Log.d("XColorStateList", "" + colorStateList.toString());
-            }
         } else {
-            StringBuilder sb = new StringBuilder();
-            sb.append(stackTraceElements[3].toString()).append("\n");
-            Log.d("XColorStateList", "Called from method: " + sb.toString());
-            if (colorStateList == null) {
-                Log.d("XColorStateList", "<Null>");
-            } else {
-                Log.d("XColorStateList", "" + colorStateList.toString());
-            }
+            Log.d("XColorStateList", "Called from method: " + stackTraceElements[3].toString() + "\n");
+        }
+        if (colorStateList == null) {
+            Log.d("XColorStateList", "<Null>");
+        } else {
+            Log.d("XColorStateList", "" + colorStateList);
         }
     }
 
     public static void printIntIntWithMethod(int integer, int integer2) {
         StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
-        if (stackTraceElements == null || stackTraceElements.length <= 3) {
+        if (stackTraceElements.length <= 3) {
             Log.d("XIntInt", "Couldn't locate the method called from.");
             Log.d("XIntInt", "" + integer + " | " + integer2);
             return;
         }
-        StringBuilder sb = new StringBuilder();
-        sb.append(stackTraceElements[3].toString()).append("\n");
-        Log.d("XIntInt", "Called from method: " + sb.toString());
+        Log.d("XIntInt", "Called from method: " + stackTraceElements[3].toString() + "\n");
         Log.d("XIntInt", "" + integer + " | " + integer2);
     }
 
     public static void printIntWithMethod(int integer) {
         StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
-        if (stackTraceElements == null || stackTraceElements.length <= 3) {
+        if (stackTraceElements.length <= 3) {
             Log.d("XInt", "Couldn't locate the method called from.");
             Log.d("XInt", "" + integer);
             return;
         }
-        StringBuilder sb = new StringBuilder();
-        sb.append(stackTraceElements[3].toString()).append("\n");
-        Log.d("XInt", "Called from method: " + sb.toString());
+        Log.d("XInt", "Called from method: " + stackTraceElements[3].toString() + "\n");
         Log.d("XInt", "" + integer);
     }
 
@@ -89,62 +76,46 @@ public class XDebug {
             string = "-- null --";
         }
         StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
-        if (stackTraceElements == null || stackTraceElements.length <= 3) {
+        if (stackTraceElements.length <= 3) {
             Log.d("XString", "Couldn't locate the method called from.");
             Log.d("XString", string);
             return;
         }
-        StringBuilder sb = new StringBuilder();
-        sb.append(stackTraceElements[3].toString()).append("\n");
-        Log.d("XString", "Called from method: " + sb.toString());
+        Log.d("XString", "Called from method: " + stackTraceElements[3].toString() + "\n");
         Log.d("XString", string);
     }
 
     public static void printCharSequenceBooleanWithMethod(CharSequence charSequence, boolean bool) {
         StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
-        if (stackTraceElements == null || stackTraceElements.length <= 3) {
+        if (stackTraceElements.length <= 3) {
             Log.d("XCharSequenceB", "Couldn't locate the method called from.");
-            if (charSequence == null) {
-                Log.d("XCharSequenceB", "<Null>");
-            } else {
-                Log.d("XCharSequenceB", charSequence.toString() + " | " + (bool ? "true" : "false"));
-            }
         } else {
-            StringBuilder sb = new StringBuilder();
-            sb.append(stackTraceElements[3].toString()).append("\n");
-            Log.d("XCharSequenceB", "Called from method: " + sb.toString());
-            if (charSequence == null) {
-                Log.d("XCharSequenceB", "<Null>");
-            } else {
-                Log.d("XCharSequenceB", charSequence.toString() + " | " + (bool ? "true" : "false"));
-            }
+            Log.d("XCharSequenceB", "Called from method: " + stackTraceElements[3].toString() + "\n");
+        }
+        if (charSequence == null) {
+            Log.d("XCharSequenceB", "<Null>");
+        } else {
+            Log.d("XCharSequenceB", charSequence + " | " + (bool ? "true" : "false"));
         }
     }
 
     public static void printCharSequenceWithMethod(CharSequence charSequence) {
         StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
-        if (stackTraceElements == null || stackTraceElements.length <= 3) {
+        if (stackTraceElements.length <= 3) {
             Log.d("XCharSequence", "Couldn't locate the method called from.");
-            if (charSequence == null) {
-                Log.d("XCharSequence", "<Null>");
-            } else {
-                Log.d("XCharSequence", charSequence.toString());
-            }
         } else {
-            StringBuilder sb = new StringBuilder();
-            sb.append(stackTraceElements[3].toString()).append("\n");
-            Log.d("XCharSequence", "Called from method: " + sb.toString());
-            if (charSequence == null) {
-                Log.d("XCharSequence", "<Null>");
-            } else {
-                Log.d("XCharSequence", charSequence.toString());
-            }
+            Log.d("XCharSequence", "Called from method: " + stackTraceElements[3].toString() + "\n");
+        }
+        if (charSequence == null) {
+            Log.d("XCharSequence", "<Null>");
+        } else {
+            Log.d("XCharSequence", charSequence.toString());
         }
     }
 
     public static void printCharSequenceAndBufferTypeWithMethod(CharSequence charSequence, TextView.BufferType bufferType) {
         StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
-        if (stackTraceElements == null || stackTraceElements.length <= 3) {
+        if (stackTraceElements.length <= 3) {
             Log.d("XCharSequenceBT", "Couldn't locate the method called from.");
             if (charSequence == null) {
                 if (bufferType == null) {
@@ -158,9 +129,7 @@ public class XDebug {
                 Log.d("XCharSequenceBT", charSequence.toString() + " | " + bufferType);
             }
         } else {
-            StringBuilder sb = new StringBuilder();
-            sb.append(stackTraceElements[3].toString()).append("\n");
-            Log.d("XCharSequenceBT", "Called from method: " + sb.toString());
+            Log.d("XCharSequenceBT", "Called from method: " + stackTraceElements[3].toString() + "\n");
             if (charSequence == null) {
                 Log.d("XCharSequenceBT", "<Null>");
             } else {
@@ -171,14 +140,12 @@ public class XDebug {
 
     public static void printStringBuilder(StringBuilder stringBuilder) {
         StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
-        if (stackTraceElements == null || stackTraceElements.length <= 3) {
+        if (stackTraceElements.length <= 3) {
             Log.d("XStringBuilder", "Couldn't locate the method called from.");
             Log.d("XStringBuilder", stringBuilder.toString());
             return;
         }
-        StringBuilder sb = new StringBuilder();
-        sb.append(stackTraceElements[3].toString()).append("\n");
-        Log.d("XStringBuilder", "Called from method: " + sb.toString());
+        Log.d("XStringBuilder", "Called from method: " + stackTraceElements[3].toString() + "\n");
         Log.d("XStringBuilder", stringBuilder.toString());
         Log.d("StackWithMethod", stringBuilder.toString());
         printStackTrace("StackWithMethod");
@@ -186,10 +153,8 @@ public class XDebug {
 
     public static void printMethod() {
         StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
-        if (stackTraceElements != null && stackTraceElements.length > 3) {
-            StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.append(stackTraceElements[3].toString()).append("\n");
-            Log.d("XStack", stringBuilder.toString());
+        if (stackTraceElements.length > 3) {
+            Log.d("XStack", stackTraceElements[3].toString() + "\n");
         }
     }
 
@@ -202,24 +167,20 @@ public class XDebug {
 
     public static void printStackTrace() {
         StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
-        if (stackTraceElements != null) {
-            StringBuilder stringBuilder = new StringBuilder();
-            for (StackTraceElement element : stackTraceElements) {
-                stringBuilder.append(element.toString()).append("\n");
-            }
-            Log.d("xfileSTACK", stringBuilder.toString());
+        StringBuilder stringBuilder = new StringBuilder();
+        for (StackTraceElement element : stackTraceElements) {
+            stringBuilder.append(element.toString()).append("\n");
         }
+        Log.d("xfileSTACK", stringBuilder.toString());
     }
 
     public static void printStackTrace(String tag) {
         StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
-        if (stackTraceElements != null) {
-            StringBuilder stringBuilder = new StringBuilder();
-            for (StackTraceElement element : stackTraceElements) {
-                stringBuilder.append(element.toString()).append("\n");
-            }
-            Log.d(tag, stringBuilder.toString());
+        StringBuilder stringBuilder = new StringBuilder();
+        for (StackTraceElement element : stackTraceElements) {
+            stringBuilder.append(element.toString()).append("\n");
         }
+        Log.d(tag, stringBuilder.toString());
     }
 
     public static void printDebugBoolean(boolean val) {
@@ -247,9 +208,7 @@ public class XDebug {
     public static void printDebugStringWithMethodName(String value) {
         StackTraceElement[] stackTraceElements;
         if (value != null && (stackTraceElements = Thread.currentThread().getStackTrace()) != null && stackTraceElements.length > 3) {
-            StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.append(stackTraceElements[3].toString()).append("\n");
-            Log.d("XDebug", value + " | " + stringBuilder.toString());
+            Log.d("XDebug", value + " | " + stackTraceElements[3].toString() + "\n");
         }
     }
 
@@ -274,19 +233,17 @@ public class XDebug {
             string = "-- null --";
         } else {
             string = new String(buf.array(), StandardCharsets.UTF_8);
-            if (string == null || string.isEmpty()) {
+            if (string.isEmpty()) {
                 string = "-- null --";
             }
         }
         StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
-        if (stackTraceElements == null || stackTraceElements.length <= 3) {
+        if (stackTraceElements.length <= 3) {
             Log.d("XByteBuffer", "Couldn't locate the method called from.");
             Log.d("XByteBuffer", string);
             return;
         }
-        StringBuilder sb = new StringBuilder();
-        sb.append(stackTraceElements[3].toString()).append("\n");
-        Log.d("XByteBuffer", "Called from method: " + sb.toString());
+        Log.d("XByteBuffer", "Called from method: " + stackTraceElements[3].toString() + "\n");
         Log.d("XByteBuffer", string);
     }
 
@@ -341,8 +298,7 @@ public class XDebug {
                     return;
                 }
             }
-        } catch (Exception e3) {
-            e = e3;
+        } catch (Exception ignored) {
         }
     }
 
@@ -402,7 +358,7 @@ public class XDebug {
 
     public static String DecodeColdConfig() {
         Context context = YouTubeTikTokRoot_Application.getAppContext();
-        if (XGlobals.XFILEDEBUG.booleanValue() && context == null) {
+        if (XGlobals.XFILEDEBUG && context == null) {
             context = XSettingActivity.getAppContext();
         }
         if (context == null) {
@@ -442,10 +398,6 @@ public class XDebug {
     }
 
     public static void getViewHierarchy(@NonNull View v) {
-        if (v == null) {
-            Log.d("XDebug", "View was null");
-            return;
-        }
         StringBuilder desc = new StringBuilder();
         getViewHierarchy(v, desc, 0);
         Log.d("XDebug", desc.toString());

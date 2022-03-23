@@ -29,15 +29,15 @@ public class AutoRepeat {
 
     public static void initializeAutoRepeat(Object constraintLayout) {
         try {
-            if (XGlobals.debug.booleanValue()) {
+            if (XGlobals.debug) {
                 Log.d("AutoRepeat", "initializing auto repeat");
             }
             CopyWithTimeStamp.initializeCopyButtonWithTimeStamp(constraintLayout);
             Copy.initializeCopyButton(constraintLayout);
             _constraintLayout = (ConstraintLayout) constraintLayout;
             isAutoRepeatBtnEnabled = shouldBeShown();
-            ImageView imageView = (ImageView) _constraintLayout.findViewById(getIdentifier("autoreplay_button", "id"));
-            if (XGlobals.debug.booleanValue() && imageView == null) {
+            ImageView imageView = _constraintLayout.findViewById(getIdentifier("autoreplay_button", "id"));
+            if (XGlobals.debug && imageView == null) {
                 Log.d("AutoRepeat", "Couldn't find imageView with tag \"autoreplay_button\"");
             }
             if (imageView != null) {
@@ -45,7 +45,7 @@ public class AutoRepeat {
                 imageView.setOnClickListener(new View.OnClickListener() { // from class: fi.razerman.youtube.Autorepeat.AutoRepeat.1
                     @Override // android.view.View.OnClickListener
                     public void onClick(View v) {
-                        if (XGlobals.debug.booleanValue()) {
+                        if (XGlobals.debug) {
                             Log.d("AutoRepeat", "Auto repeat button clicked");
                         }
                         AutoRepeat.changeSelected(!v.isSelected());
@@ -74,13 +74,13 @@ public class AutoRepeat {
             ImageView iView = _autoRepeatBtn.get();
             if (_constraintLayout != null && iView != null) {
                 if (visible && isAutoRepeatBtnEnabled) {
-                    if (XGlobals.debug.booleanValue()) {
+                    if (XGlobals.debug) {
                         Log.d("AutoRepeat", "Fading in");
                     }
                     iView.setVisibility(View.VISIBLE);
                     iView.startAnimation(fadeIn);
                 } else if (iView.getVisibility() == View.VISIBLE) {
-                    if (XGlobals.debug.booleanValue()) {
+                    if (XGlobals.debug) {
                         Log.d("AutoRepeat", "Fading out");
                     }
                     iView.startAnimation(fadeOut);
@@ -97,7 +97,7 @@ public class AutoRepeat {
     public static void changeSelected(boolean selected, boolean onlyView) {
         ImageView iView = _autoRepeatBtn.get();
         if (_constraintLayout != null && iView != null) {
-            if (XGlobals.debug.booleanValue()) {
+            if (XGlobals.debug) {
                 StringBuilder sb = new StringBuilder();
                 sb.append("Changing selected state to: ");
                 sb.append(selected ? "SELECTED" : "NONE");
@@ -129,7 +129,7 @@ public class AutoRepeat {
             }
             SharedPreferences sharedPreferences = context.getSharedPreferences("youtube", 0);
             sharedPreferences.edit().putBoolean("pref_auto_repeat", selected).apply();
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
     }
 

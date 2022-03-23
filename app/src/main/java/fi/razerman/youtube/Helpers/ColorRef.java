@@ -12,7 +12,7 @@ import java.util.HashMap;
 public class ColorRef {
     public static final String CREDITS = "Converted from jakubweg's StringRef https://github.com/YTVanced/SponsorBlock/blob/master/app/src/main/java/pl/jakubweg/StringRef.java";
     public static final String TAG = "ColorRef";
-    private static HashMap<String, ColorRef> colors = new HashMap<>();
+    private static final HashMap<String, ColorRef> colors = new HashMap<>();
     private static String packageName;
     private static Resources resources;
     @NonNull

@@ -28,20 +28,20 @@ public class CopyWithTimeStamp {
 
     public static void initializeCopyButtonWithTimeStamp(Object obj) {
         try {
-            if (XGlobals.debug.booleanValue()) {
+            if (XGlobals.debug) {
                 Log.d(TAG, "initializing");
             }
             _constraintLayout = (ConstraintLayout) obj;
             isCopyButtonWithTimeStampEnabled = shouldBeShown();
             ImageView imageView = (ImageView) _constraintLayout.findViewById(getIdentifier("copy_with_timestamp_button", "id"));
-            if (XGlobals.debug.booleanValue() && imageView == null) {
+            if (XGlobals.debug && imageView == null) {
                 Log.d(TAG, "Couldn't find imageView with id \"copy_with_timestamp_button\"");
             }
             if (imageView != null) {
                 imageView.setOnClickListener(new View.OnClickListener() { // from class: fi.razerman.youtube.VideoUrl.CopyWithTimeStamp.1
                     @Override // android.view.View.OnClickListener
                     public void onClick(View view) {
-                        if (XGlobals.debug.booleanValue()) {
+                        if (XGlobals.debug) {
                             Log.d(CopyWithTimeStamp.TAG, "Button clicked");
                         }
                         VideoHelpers.copyVideoUrlWithTimeStampToClipboard();
@@ -70,13 +70,13 @@ public class CopyWithTimeStamp {
             ImageView imageView = _button.get();
             if (_constraintLayout != null && imageView != null) {
                 if (z && isCopyButtonWithTimeStampEnabled) {
-                    if (XGlobals.debug.booleanValue()) {
+                    if (XGlobals.debug) {
                         Log.d(TAG, "Fading in");
                     }
                     imageView.setVisibility(View.VISIBLE);
                     imageView.startAnimation(fadeIn);
                 } else if (imageView.getVisibility() == View.VISIBLE) {
-                    if (XGlobals.debug.booleanValue()) {
+                    if (XGlobals.debug) {
                         Log.d(TAG, "Fading out");
                     }
                     imageView.startAnimation(fadeOut);

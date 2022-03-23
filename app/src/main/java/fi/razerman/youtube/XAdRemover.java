@@ -13,15 +13,13 @@ import fi.razerman.youtube.preferences.BooleanPreferences;
 public class XAdRemover {
     public static Object RemoveInfoCardSuggestions(Object InfoCardOverlayPresenter) {
         XGlobals.ReadSettings();
-        if (!XGlobals.suggestionsShown.booleanValue()) {
+        if (!XGlobals.suggestionsShown) {
             InfoCardOverlayPresenter = null;
         }
-        if (XGlobals.debug.booleanValue()) {
+        if (XGlobals.debug) {
             if (InfoCardOverlayPresenter == null) {
-                if (XGlobals.debug.booleanValue()) {
-                    Log.d("XAdRemover", "RemoveInfoCardSuggestions: true");
-                }
-            } else if (XGlobals.debug.booleanValue()) {
+                Log.d("XAdRemover", "RemoveInfoCardSuggestions: true");
+            } else {
                 Log.d("XAdRemover", "RemoveInfoCardSuggestions: false");
             }
         }
@@ -30,26 +28,26 @@ public class XAdRemover {
 
     public static Boolean RemoveSuggestions(Boolean showSuggestions) {
         XGlobals.ReadSettings();
-        if (showSuggestions.booleanValue() && !XGlobals.suggestionsShown.booleanValue()) {
-            if (XGlobals.debug.booleanValue()) {
+        if (showSuggestions && !XGlobals.suggestionsShown) {
+            if (XGlobals.debug) {
                 Log.d("XAdRemover", "RemoveSuggestions: Removed");
             }
             return false;
-        } else if (XGlobals.debug.booleanValue() && showSuggestions.booleanValue()) {
+        } else if (XGlobals.debug && showSuggestions) {
             Log.d("XAdRemover", "RemoveSuggestions: Not removed");
-            return showSuggestions;
-        } else if (!XGlobals.debug.booleanValue()) {
+            return true;
+        } else if (!XGlobals.debug) {
             return showSuggestions;
         } else {
             Log.d("XAdRemover", "RemoveSuggestions: Already not shown");
-            return showSuggestions;
+            return false;
         }
     }
 
     public static FrameLayout CheckInfoCardsStatus(FrameLayout frameLayout) {
         XGlobals.ReadSettings();
-        frameLayout.setVisibility(XGlobals.infoCardsShown.booleanValue() ? View.VISIBLE : View.GONE);
-        if (XGlobals.debug.booleanValue()) {
+        frameLayout.setVisibility(XGlobals.infoCardsShown ? View.VISIBLE : View.GONE);
+        if (XGlobals.debug) {
             Log.d("XAdRemover", "CheckInfoCardsStatus - Set visibility to: " + XGlobals.infoCardsShown);
         }
         return frameLayout;
@@ -57,33 +55,33 @@ public class XAdRemover {
 
     public static boolean isBrandingWatermarkShown(boolean defaultValue) {
         XGlobals.ReadSettings();
-        if (defaultValue && !XGlobals.brandingShown.booleanValue()) {
-            if (XGlobals.debug.booleanValue()) {
+        if (defaultValue && !XGlobals.brandingShown) {
+            if (XGlobals.debug) {
                 Log.d("XAdRemover", "BrandingWatermark: Removed");
             }
             return false;
-        } else if (XGlobals.debug.booleanValue() && defaultValue) {
+        } else if (XGlobals.debug && defaultValue) {
             Log.d("XAdRemover", "BrandingWatermark: Not removed");
-            return defaultValue;
-        } else if (!XGlobals.debug.booleanValue()) {
+            return true;
+        } else if (!XGlobals.debug) {
             return defaultValue;
         } else {
             Log.d("XAdRemover", "BrandingWatermark: Already not shown");
-            return defaultValue;
+            return false;
         }
     }
 
     public static int BrandingWatermark(int defaultValue) {
         XGlobals.ReadSettings();
-        if (defaultValue == 0 && !XGlobals.brandingShown.booleanValue()) {
-            if (XGlobals.debug.booleanValue()) {
+        if (defaultValue == 0 && !XGlobals.brandingShown) {
+            if (XGlobals.debug) {
                 Log.d("XAdRemover", "BrandingWatermark: Removed");
             }
             return 8;
-        } else if (XGlobals.debug.booleanValue() && defaultValue == 0) {
+        } else if (XGlobals.debug && defaultValue == 0) {
             Log.d("XAdRemover", "BrandingWatermark: Not removed");
             return defaultValue;
-        } else if (!XGlobals.debug.booleanValue()) {
+        } else if (!XGlobals.debug) {
             return defaultValue;
         } else {
             Log.d("XAdRemover", "BrandingWatermark: Already not shown");
@@ -105,7 +103,7 @@ public class XAdRemover {
 
     public static void HideViewV2(View view) {
         XGlobals.ReadSettings();
-        if (!XGlobals.homeAdsShown.booleanValue()) {
+        if (!XGlobals.homeAdsShown) {
             recursiveLoopChildren((ViewGroup) view);
             RelativeLayout relativeLayout = new RelativeLayout(XGlobals.getContext());
             RelativeLayout.LayoutParams rlp = new RelativeLayout.LayoutParams(1, 1);
@@ -115,8 +113,8 @@ public class XAdRemover {
 
     public static void HideReel(View view) {
         XGlobals.ReadSettings();
-        if (!XGlobals.reelShown.booleanValue()) {
-            if (XGlobals.debug.booleanValue()) {
+        if (!XGlobals.reelShown) {
+            if (XGlobals.debug) {
                 Log.d("XAdRemover", "HideReel: " + view.getId());
             }
             HideViewWithLayout1dp(view);
@@ -125,8 +123,8 @@ public class XAdRemover {
 
     public static void HideView(View view) {
         XGlobals.ReadSettings();
-        if (!XGlobals.homeAdsShown.booleanValue()) {
-            if (XGlobals.debug.booleanValue()) {
+        if (!XGlobals.homeAdsShown) {
+            if (XGlobals.debug) {
                 Log.d("XAdRemover", "HideView: " + view.getId());
             }
             HideViewWithLayout1dp(view);
@@ -149,19 +147,19 @@ public class XAdRemover {
         } else if (view instanceof ViewGroup) {
             ViewGroup.LayoutParams layoutParams5 = new ViewGroup.LayoutParams(1, 1);
             view.setLayoutParams(layoutParams5);
-        } else if (XGlobals.debug.booleanValue()) {
+        } else if (XGlobals.debug) {
             Log.d("XAdRemover", "HideViewWithLayout1dp - Id: " + view.getId() + " Type: " + view.getClass().getName());
         }
     }
 
     public static boolean VideoAdsEnabled(boolean input) {
         XGlobals.ReadSettings();
-        if (XGlobals.videoAdsShown.booleanValue()) {
-            if (XGlobals.debug.booleanValue()) {
+        if (XGlobals.videoAdsShown) {
+            if (XGlobals.debug) {
                 Log.d("XAdRemover", "Videoads: shown - " + input);
             }
             return input;
-        } else if (!XGlobals.debug.booleanValue()) {
+        } else if (!XGlobals.debug) {
             return false;
         } else {
             Log.d("XAdRemover", "Videoads: hidden");
@@ -171,24 +169,23 @@ public class XAdRemover {
 
     public static void hideCreateButton(View view) {
         if (BooleanPreferences.isCreateButtonHidden()) {
-            if (XGlobals.debug.booleanValue()) {
+            if (XGlobals.debug) {
                 Log.d("XAdRemover", "Create button: shown");
             }
             view.setVisibility(View.GONE);
-        } else if (XGlobals.debug.booleanValue()) {
+        } else if (XGlobals.debug) {
             Log.d("XAdRemover", "Create button: hidden");
         }
     }
 
     public static void inspectComponentHost(Object item) {
         StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
-        if (stackTraceElements == null || stackTraceElements.length <= 3) {
+        if (stackTraceElements.length <= 3) {
             Log.d("Litho", "Couldn't locate the method called from.");
         } else {
-            StringBuilder sb = new StringBuilder();
-            sb.append("Called from method: ");
-            sb.append(stackTraceElements[3].toString() + "\n");
-            Log.d("Litho", sb.toString());
+            String sb = "Called from method: " +
+                    stackTraceElements[3].toString() + "\n";
+            Log.d("Litho", sb);
         }
         if (item == null) {
             Log.d("Litho", "Item is null.");
@@ -213,7 +210,7 @@ public class XAdRemover {
         buf.append(v.getClass().getName());
         buf.append(" children:");
         buf.append(childCount);
-        buf.append("  id:" + v.getId());
+        buf.append("  id:").append(v.getId());
         buf.append("\n");
         for (int i = 0; i < childCount; i++) {
             View child = v.getChildAt(i);
@@ -222,7 +219,7 @@ public class XAdRemover {
             } else {
                 indent(buf, level + 1);
                 buf.append(child.getClass().getName());
-                buf.append("  id:" + child.getId());
+                buf.append("  id:").append(child.getId());
                 buf.append("\n");
             }
         }

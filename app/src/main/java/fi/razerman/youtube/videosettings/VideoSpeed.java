@@ -15,15 +15,15 @@ public class VideoSpeed {
     public static int DefaultSpeed(Object[] speeds, int speed, Object qInterface) {
         int speed2;
         Exception e;
-        if (!XGlobals.newVideoSpeed.booleanValue()) {
+        if (!XGlobals.newVideoSpeed) {
             return speed;
         }
         XGlobals.newVideoSpeed = false;
-        if (XGlobals.debug.booleanValue()) {
+        if (XGlobals.debug) {
             Log.d("XGlobals - speeds", "Speed: " + speed);
         }
-        float preferredSpeed = XGlobals.prefVideoSpeed.floatValue();
-        if (XGlobals.debug.booleanValue()) {
+        float preferredSpeed = XGlobals.prefVideoSpeed;
+        if (XGlobals.debug) {
             Log.d("XGlobals", "Preferred speed: " + preferredSpeed);
         }
         if (preferredSpeed == -2.0f) {
@@ -38,35 +38,33 @@ public class VideoSpeed {
                     if (field.getType().isAssignableFrom(floatType)) {
                         float value = field.getFloat(streamSpeed);
                         if (field.getName().length() <= 2) {
-                            iStreamSpeeds.add(Float.valueOf(value));
+                            iStreamSpeeds.add(value);
                         }
                     }
                 }
             }
-        } catch (Exception e2) {
+        } catch (Exception ignored) {
         }
         Iterator<Float> it = iStreamSpeeds.iterator();
         int index = 0;
         while (it.hasNext()) {
-            float streamSpeed2 = it.next().floatValue();
-            if (XGlobals.debug.booleanValue()) {
+            float streamSpeed2 = it.next();
+            if (XGlobals.debug) {
                 Log.d("XGlobals - speeds", "Speed at index " + index + ": " + streamSpeed2);
             }
             index++;
         }
         int speed3 = -1;
-        Iterator<Float> it2 = iStreamSpeeds.iterator();
-        while (it2.hasNext()) {
-            float streamSpeed3 = it2.next().floatValue();
+        for (float streamSpeed3 : iStreamSpeeds) {
             if (streamSpeed3 <= preferredSpeed) {
                 speed3++;
-                if (XGlobals.debug.booleanValue()) {
+                if (XGlobals.debug) {
                     Log.d("XGlobals - speeds", "Speed loop at index " + speed3 + ": " + streamSpeed3);
                 }
             }
         }
         if (speed3 == -1) {
-            if (XGlobals.debug.booleanValue()) {
+            if (XGlobals.debug) {
                 Log.d("XGlobals - speeds", "Speed was not found");
             }
             speed2 = 3;
@@ -77,30 +75,26 @@ public class VideoSpeed {
             Method[] declaredMethods = qInterface.getClass().getDeclaredMethods();
             for (Method method : declaredMethods) {
                 if (method.getName().length() <= 2) {
-                    if (XGlobals.debug.booleanValue()) {
+                    if (XGlobals.debug) {
                         Log.d("SPEED - Method", "Method name: " + method.getName());
                     }
                     try {
                         try {
-                            method.invoke(qInterface, Float.valueOf(videoSpeeds[speed2]));
-                        } catch (IllegalAccessException e3) {
-                        } catch (IllegalArgumentException e4) {
-                        } catch (InvocationTargetException e5) {
+                            method.invoke(qInterface, videoSpeeds[speed2]);
+                        } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ignored) {
                         } catch (Exception e6) {
                             e = e6;
                             Log.e("XDebug", e.getMessage());
-                            if (XGlobals.debug.booleanValue()) {
-                            }
                             return speed2;
                         }
-                    } catch (Exception e8) {
+                    } catch (Exception ignored) {
                     }
                 }
             }
         } catch (Exception e10) {
             e = e10;
         }
-        if (XGlobals.debug.booleanValue()) {
+        if (XGlobals.debug) {
             Log.d("XGlobals", "Speed changed to: " + speed2);
         }
         return speed2;
@@ -124,19 +118,19 @@ public class VideoSpeed {
 
     public static float getSpeedValue(Object[] speeds, int speed) {
         int i = 0;
-        if (!XGlobals.newVideoSpeed.booleanValue() || XGlobals.userChangedSpeed.booleanValue()) {
-            if (XGlobals.debug.booleanValue() && XGlobals.userChangedSpeed.booleanValue()) {
+        if (!XGlobals.newVideoSpeed || XGlobals.userChangedSpeed) {
+            if (XGlobals.debug && XGlobals.userChangedSpeed) {
                 Log.d("XGlobals - speeds", "Skipping speed change because user changed it: " + speed);
             }
             XGlobals.userChangedSpeed = false;
             return -1.0f;
         }
         XGlobals.newVideoSpeed = false;
-        if (XGlobals.debug.booleanValue()) {
+        if (XGlobals.debug) {
             Log.d("XGlobals - speeds", "Speed: " + speed);
         }
-        float preferredSpeed = XGlobals.prefVideoSpeed.floatValue();
-        if (XGlobals.debug.booleanValue()) {
+        float preferredSpeed = XGlobals.prefVideoSpeed;
+        if (XGlobals.debug) {
             Log.d("XGlobals", "Preferred speed: " + preferredSpeed);
         }
         if (preferredSpeed == -2.0f) {
@@ -156,7 +150,7 @@ public class VideoSpeed {
                     if (field.getType().isAssignableFrom(floatType)) {
                         float value = field.getFloat(streamSpeed);
                         if (field.getName().length() <= 2) {
-                            iStreamSpeeds.add(Float.valueOf(value));
+                            iStreamSpeeds.add(value);
                         }
                     }
                     i++;
@@ -164,41 +158,39 @@ public class VideoSpeed {
                 i2++;
                 i = 0;
             }
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
         int index = 0;
-        Iterator<Float> it = iStreamSpeeds.iterator();
-        while (it.hasNext()) {
-            float streamSpeed2 = it.next().floatValue();
-            if (XGlobals.debug.booleanValue()) {
+        for (Float iStreamSpeed : iStreamSpeeds) {
+            float streamSpeed2 = iStreamSpeed;
+            if (XGlobals.debug) {
                 Log.d("XGlobals - speeds", "Speed at index " + index + ": " + streamSpeed2);
             }
             index++;
         }
         int newSpeedIndex = -1;
-        Iterator<Float> it2 = iStreamSpeeds.iterator();
-        while (it2.hasNext()) {
-            float streamSpeed3 = it2.next().floatValue();
+        for (Float iStreamSpeed : iStreamSpeeds) {
+            float streamSpeed3 = iStreamSpeed;
             if (streamSpeed3 <= preferredSpeed) {
                 newSpeedIndex++;
-                if (XGlobals.debug.booleanValue()) {
+                if (XGlobals.debug) {
                     Log.d("XGlobals - speeds", "Speed loop at index " + newSpeedIndex + ": " + streamSpeed3);
                 }
             }
         }
         if (newSpeedIndex == -1) {
-            if (XGlobals.debug.booleanValue()) {
+            if (XGlobals.debug) {
                 Log.d("XGlobals - speeds", "Speed was not found");
             }
             newSpeedIndex = 3;
         }
         if (newSpeedIndex == speed) {
-            if (XGlobals.debug.booleanValue()) {
+            if (XGlobals.debug) {
                 Log.d("XGlobals", "Trying to set speed to what it already is, skipping...: " + newSpeedIndex);
             }
             return -1.0f;
         }
-        if (XGlobals.debug.booleanValue()) {
+        if (XGlobals.debug) {
             Log.d("XGlobals", "Speed changed to: " + newSpeedIndex);
         }
         return getSpeedByIndex(newSpeedIndex);
