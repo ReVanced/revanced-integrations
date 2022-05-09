@@ -1,41 +1,46 @@
-name: Release
+name: Android CI
 
 on:
   push:
-    branches: 
-      - main
+    branches: [ main ]
   pull_request:
-    branches:
-      - main
+    branches: [ main ]
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
-    - name: Cancel Previous Runs
-      uses: styfle/cancel-workflow-action@0.9.0
-      with:
-        access_token: ${{ secrets.GITHUB_TOKEN }}
-
-    - name: Checkout Repo
     - uses: actions/checkout@v3
-
-    - name: Set up JDK 11
+    - name: set up JDK 11
       uses: actions/setup-java@v3
       with:
         java-version: '11'
-        distribution: 'zulu'
+        distribution: 'temurin'
         cache: gradle
-
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew.sh
-
     - name: Build with Gradle
-      run: ./gradlew.sh --no-daemon build
-
-    - name: Upload APKs to Release
-      uses: svenstaro/upload-release-action@v2
+      run: ./gradlew.sh build
+    - name: Rename APK
+      run: mv app/build/outputs/apk/debug/app-debug.apk integrations.apk
+    - name: Upload APK
+      uses: actions/upload-artifact@v3
       with:
-        repo_token: ${{ secrets.GITHUB_TOKEN }}
-        file: ./app/build/outputs/apk/release/*.apk
-        tag: release.${{ steps.date.outputs.date }}
+        name: integrations.apk
+        path: integrations.apk
+    - name: Generate release tag
+      id: tag
+      shell: bash
+      run: |
+        echo "::set-output name=hash::$(git rev-parse HEAD)"
+        echo "::set-output name=short_hash::$(git rev-parse --short HEAD)"
+    - name: Create release
+      uses: ncipollo/release-action@v1.10.0
+      with:
+        artifacts: integrations.apk
+        commit: ${{ steps.tag.outputs.hash }}
+        tag: ${{ steps.tag.outputs.short_hash }}
+        draft: true
+        token: ${{ secrets.GITHUB_TOKEN }}
