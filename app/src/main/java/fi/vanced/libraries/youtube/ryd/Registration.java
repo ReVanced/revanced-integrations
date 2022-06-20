@@ -1,6 +1,6 @@
 package fi.vanced.libraries.youtube.ryd;
 
-import static fi.razerman.youtube.XGlobals.debug;
+import static app.revanced.integrations.settings.XGlobals.debug;
 import static fi.vanced.libraries.youtube.ryd.RYDSettings.PREFERENCES_KEY_USERID;
 import static fi.vanced.libraries.youtube.ryd.RYDSettings.PREFERENCES_NAME;
 import static fi.vanced.utils.VancedUtils.getPreferences;

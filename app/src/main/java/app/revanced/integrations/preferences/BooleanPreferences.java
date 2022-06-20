@@ -1,4 +1,4 @@
-package fi.razerman.youtube.preferences;
+package app.revanced.integrations.preferences;
 
 import com.google.android.apps.youtube.app.YouTubeTikTokRoot_Application;
 

@@ -1,7 +1,7 @@
 package fi.razerman.youtube.videosettings;
 
 import android.util.Log;
-import fi.razerman.youtube.XGlobals;
+import app.revanced.integrations.settings.XGlobals;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;

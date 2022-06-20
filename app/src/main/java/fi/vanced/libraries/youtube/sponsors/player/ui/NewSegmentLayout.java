@@ -18,7 +18,7 @@ import app.revanced.integrations.sponsorblock.PlayerController;
 import app.revanced.integrations.sponsorblock.SponsorBlockSettings;
 import app.revanced.integrations.sponsorblock.SponsorBlockUtils;
 
-import static fi.razerman.youtube.XGlobals.debug;
+import static app.revanced.integrations.settings.XGlobals.debug;
 
 public class NewSegmentLayout extends FrameLayout {
     static String TAG = "NewSegmentLayout";

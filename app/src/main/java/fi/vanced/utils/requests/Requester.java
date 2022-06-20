@@ -10,7 +10,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-import fi.vanced.libraries.youtube.whitelisting.requests.WhitelistRoutes;
+import app.revanced.integrations.adremover.whitelist.requests.WhitelistRoutes;
 
 public class Requester {
     private Requester() {}

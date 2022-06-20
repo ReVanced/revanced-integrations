@@ -17,7 +17,7 @@ import android.widget.TextView;
 
 import app.revanced.integrations.sponsorblock.PlayerController;
 
-import static fi.razerman.youtube.XGlobals.debug;
+import static app.revanced.integrations.settings.XGlobals.debug;
 
 public class SkipSponsorButton extends FrameLayout {
     String TAG = "SkipSponsorButton";

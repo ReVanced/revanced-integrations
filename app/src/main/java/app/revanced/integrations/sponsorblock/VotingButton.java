@@ -12,7 +12,7 @@ import com.google.android.apps.youtube.app.YouTubeTikTokRoot_Application;
 
 import java.lang.ref.WeakReference;
 
-import static fi.razerman.youtube.XGlobals.debug;
+import static app.revanced.integrations.settings.XGlobals.debug;
 import static app.revanced.integrations.sponsorblock.PlayerController.getCurrentVideoLength;
 import static app.revanced.integrations.sponsorblock.PlayerController.getLastKnownVideoTime;
 

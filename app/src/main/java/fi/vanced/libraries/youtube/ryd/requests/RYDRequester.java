@@ -1,6 +1,6 @@
 package fi.vanced.libraries.youtube.ryd.requests;
 
-import static fi.razerman.youtube.XGlobals.debug;
+import static app.revanced.integrations.settings.XGlobals.debug;
 import static fi.vanced.libraries.youtube.player.VideoInformation.dislikeCount;
 import static fi.vanced.libraries.youtube.ryd.ReturnYouTubeDislikes.TAG;
 import static fi.vanced.utils.requests.Requester.parseJson;

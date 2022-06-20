@@ -1,6 +1,6 @@
 package fi.vanced.libraries.youtube.ui;
 
-import static fi.razerman.youtube.XGlobals.debug;
+import static app.revanced.integrations.settings.XGlobals.debug;
 import static fi.vanced.libraries.youtube.player.VideoInformation.currentVideoId;
 import static app.revanced.integrations.sponsorblock.StringRef.str;
 
@@ -11,9 +11,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import fi.vanced.libraries.youtube.player.VideoInformation;
-import fi.vanced.libraries.youtube.whitelisting.Whitelist;
-import fi.vanced.libraries.youtube.whitelisting.WhitelistType;
-import fi.vanced.libraries.youtube.whitelisting.requests.WhitelistRequester;
+import app.revanced.integrations.adremover.whitelist.Whitelist;
+import app.revanced.integrations.adremover.whitelist.WhitelistType;
+import app.revanced.integrations.adremover.whitelist.requests.WhitelistRequester;
 import fi.vanced.utils.SharedPrefUtils;
 import fi.vanced.utils.VancedUtils;
 

@@ -6,7 +6,7 @@ import android.widget.Toast;
 
 import com.google.android.apps.youtube.app.YouTubeTikTokRoot_Application;
 
-import static fi.razerman.youtube.XGlobals.debug;
+import static app.revanced.integrations.settings.XGlobals.debug;
 import static app.revanced.integrations.sponsorblock.StringRef.str;
 
 public class VideoHelpers {

@@ -1,6 +1,6 @@
 package fi.vanced.libraries.youtube.ryd;
 
-import static fi.razerman.youtube.XGlobals.debug;
+import static app.revanced.integrations.settings.XGlobals.debug;
 import static fi.vanced.libraries.youtube.player.VideoInformation.currentVideoId;
 import static fi.vanced.libraries.youtube.player.VideoInformation.dislikeCount;
 import static fi.vanced.libraries.youtube.ryd.RYDSettings.PREFERENCES_KEY_RYD_ENABLED;

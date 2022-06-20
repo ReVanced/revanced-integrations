@@ -1,6 +1,6 @@
 package app.revanced.integrations.sponsorblock;
 
-import static fi.razerman.youtube.XGlobals.debug;
+import static app.revanced.integrations.settings.XGlobals.debug;
 import static app.revanced.integrations.sponsorblock.SponsorBlockSettings.DEFAULT_API_URL;
 import static app.revanced.integrations.sponsorblock.SponsorBlockSettings.PREFERENCES_KEY_ADJUST_NEW_SEGMENT_STEP;
 import static app.revanced.integrations.sponsorblock.SponsorBlockSettings.PREFERENCES_KEY_API_URL;
@@ -49,7 +49,7 @@ import java.lang.ref.WeakReference;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
-import fi.vanced.libraries.youtube.whitelisting.WhitelistType;
+import app.revanced.integrations.adremover.whitelist.WhitelistType;
 import fi.vanced.utils.SharedPrefUtils;
 import app.revanced.integrations.sponsorblock.objects.EditTextListPreference;
 import app.revanced.integrations.sponsorblock.requests.SBRequester;

@@ -1,6 +1,6 @@
 package fi.vanced.libraries.youtube.ryd;
 
-import static fi.razerman.youtube.XGlobals.debug;
+import static app.revanced.integrations.settings.XGlobals.debug;
 
 import android.content.Context;
 import android.util.Log;

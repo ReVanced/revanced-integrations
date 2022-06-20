@@ -3,7 +3,7 @@ package app.revanced.integrations.sponsorblock;
 import static android.text.Html.fromHtml;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
-import static fi.razerman.youtube.XGlobals.debug;
+import static app.revanced.integrations.settings.XGlobals.debug;
 import static app.revanced.integrations.sponsorblock.PlayerController.getCurrentVideoId;
 import static app.revanced.integrations.sponsorblock.PlayerController.getCurrentVideoLength;
 import static app.revanced.integrations.sponsorblock.PlayerController.getLastKnownVideoTime;

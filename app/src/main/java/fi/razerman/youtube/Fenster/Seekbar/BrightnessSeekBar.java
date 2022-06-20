@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import fi.razerman.youtube.Fenster.Helpers.BrightnessHelper;
 import fi.razerman.youtube.Helpers.SharedPrefs;
-import fi.razerman.youtube.XGlobals;
+import app.revanced.integrations.settings.XGlobals;
 
 /* loaded from: classes6.dex */
 public class BrightnessSeekBar {

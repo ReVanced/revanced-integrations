@@ -27,7 +27,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import fi.vanced.libraries.youtube.player.VideoInformation;
-import fi.vanced.libraries.youtube.whitelisting.Whitelist;
+import app.revanced.integrations.adremover.whitelist.Whitelist;
 import app.revanced.integrations.sponsorblock.objects.SponsorSegment;
 import app.revanced.integrations.sponsorblock.requests.SBRequester;
 

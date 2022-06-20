@@ -1,6 +1,6 @@
-package fi.vanced.libraries.youtube.whitelisting;
+package app.revanced.integrations.adremover.whitelist;
 
-import static fi.razerman.youtube.XGlobals.debug;
+import static app.revanced.integrations.settings.XGlobals.debug;
 import static fi.vanced.libraries.youtube.player.VideoInformation.channelName;
 import static fi.vanced.libraries.youtube.ui.SlimButtonContainer.adBlockButton;
 import static fi.vanced.libraries.youtube.ui.SlimButtonContainer.sbWhitelistButton;

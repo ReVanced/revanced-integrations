@@ -20,6 +20,8 @@ import com.google.android.apps.youtube.app.YouTubeTikTokRoot_Application;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 
+import app.revanced.integrations.settings.XGlobals;
+
 /* loaded from: classes6.dex */
 public class XDebug {
     private static final char[] hexArray = "0123456789ABCDEF".toCharArray();

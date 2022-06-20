@@ -10,7 +10,7 @@ import com.google.android.apps.youtube.app.YouTubeTikTokRoot_Application;
 import fi.razerman.youtube.Fenster.Seekbar.BrightnessSeekBar;
 import fi.razerman.youtube.Fenster.Seekbar.VolumeSeekBar;
 import fi.razerman.youtube.Helpers.XSwipeHelper;
-import fi.razerman.youtube.XGlobals;
+import app.revanced.integrations.settings.XGlobals;
 import fi.razerman.youtube.XSettingsFragment;
 
 /* loaded from: classes6.dex */

@@ -1,4 +1,4 @@
-package fi.vanced.libraries.youtube.whitelisting;
+package app.revanced.integrations.adremover.whitelist;
 
 import static app.revanced.integrations.sponsorblock.StringRef.str;
 

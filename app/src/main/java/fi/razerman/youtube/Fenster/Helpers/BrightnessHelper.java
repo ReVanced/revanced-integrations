@@ -6,7 +6,7 @@ import android.content.Context;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.WindowManager;
-import fi.razerman.youtube.XGlobals;
+import app.revanced.integrations.settings.XGlobals;
 
 /* loaded from: classes6.dex */
 public class BrightnessHelper {

@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Objects;
 
 import fi.razerman.youtube.Helpers.SharedPrefs;
-import fi.razerman.youtube.XGlobals;
+import app.revanced.integrations.settings.XGlobals;
 
 public class LithoAdRemoval {
     private static boolean getBoolean(String key, boolean _default) {

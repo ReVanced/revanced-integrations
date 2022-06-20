@@ -8,6 +8,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Process;
 
+import app.revanced.integrations.settings.XGlobals;
+
 /* loaded from: classes6.dex */
 public class XReboot {
 

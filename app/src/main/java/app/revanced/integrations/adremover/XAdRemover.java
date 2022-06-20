@@ -8,8 +8,8 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toolbar;
 
-import fi.razerman.youtube.XGlobals;
-import fi.razerman.youtube.preferences.BooleanPreferences;
+import app.revanced.integrations.settings.XGlobals;
+import app.revanced.integrations.preferences.BooleanPreferences;
 
 /* loaded from: classes6.dex */
 public class XAdRemover {
@@ -166,30 +166,6 @@ public class XAdRemover {
         } else {
             Log.d("XAdRemover", "Videoads: hidden");
             return false;
-        }
-    }
-
-    public static void hideCreateButton(View view) {
-        if (BooleanPreferences.isCreateButtonHidden()) {
-            if (XGlobals.debug) {
-                Log.d("XAdRemover", "Create button: shown");
-            }
-            view.setVisibility(View.GONE);
-        } else if (XGlobals.debug) {
-            Log.d("XAdRemover", "Create button: hidden");
-        }
-    }
-
-    public static void hideShortsButton(View view) {
-        if (XGlobals.lastPivotTab != null && XGlobals.lastPivotTab.name() == "TAB_SHORTS") {
-            if (BooleanPreferences.isShortsButtonHidden()) {
-                if (XGlobals.debug) {
-                    Log.d("XAdRemover", "Shorts button: shown");
-                }
-                view.setVisibility(View.GONE);
-            } else if (XGlobals.debug) {
-                Log.d("XAdRemover", "Shorts button: hidden");
-            }
         }
     }
 

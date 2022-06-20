@@ -1,4 +1,4 @@
-package fi.vanced.libraries.youtube.whitelisting.requests;
+package app.revanced.integrations.adremover.whitelist.requests;
 
 import static fi.vanced.utils.requests.Route.Method.POST;
 

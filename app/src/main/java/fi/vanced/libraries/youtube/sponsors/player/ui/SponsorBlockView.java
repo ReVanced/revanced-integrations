@@ -13,7 +13,7 @@ import java.lang.ref.WeakReference;
 
 import fi.razerman.youtube.Helpers.XSwipeHelper;
 
-import static fi.razerman.youtube.XGlobals.debug;
+import static app.revanced.integrations.settings.XGlobals.debug;
 
 public class SponsorBlockView {
     static String TAG = "SponsorBlockView";

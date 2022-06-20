@@ -1,4 +1,4 @@
-package fi.razerman.youtube;
+package app.revanced.integrations.settings;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -30,6 +30,8 @@ import fi.razerman.youtube.Fenster.XFenster;
 import fi.razerman.youtube.Helpers.ColorRef;
 import fi.razerman.youtube.Helpers.XSwipeHelper;
 import app.revanced.integrations.sponsorblock.NewSegmentHelperLayout;
+import fi.razerman.youtube.XJson;
+import fi.razerman.youtube.XSettingActivity;
 
 /* compiled from: PG */
 /* renamed from: env */
@@ -632,7 +634,7 @@ public class XGlobals {
             } else {
                 builder = new AlertDialog.Builder(activity);
             }
-            builder.setTitle("Someone is not reading...").setMessage("You didn't install the MicroG as instructed, you can't login without it.\n\nInstall it and try again.").setPositiveButton("Close", new DialogInterface.OnClickListener() { // from class: fi.razerman.youtube.XGlobals.1
+            builder.setTitle("Someone is not reading...").setMessage("You didn't install the MicroG as instructed, you can't login without it.\n\nInstall it and try again.").setPositiveButton("Close", new DialogInterface.OnClickListener() { // from class: app.revanced.integrations.settings.XGlobals.1
                 @Override // android.content.DialogInterface.OnClickListener
                 public void onClick(DialogInterface dialog, int id) {
                 }
@@ -707,13 +709,13 @@ public class XGlobals {
             } else {
                 builder = new AlertDialog.Builder(activity);
             }
-            builder.setTitle(title).setMessage(message).setPositiveButton(buttonPositive, new DialogInterface.OnClickListener() { // from class: fi.razerman.youtube.XGlobals.3
+            builder.setTitle(title).setMessage(message).setPositiveButton(buttonPositive, new DialogInterface.OnClickListener() { // from class: app.revanced.integrations.settings.XGlobals.3
                 @Override // android.content.DialogInterface.OnClickListener
                 public void onClick(DialogInterface dialog, int id) {
                     SharedPreferences appPreferences = XGlobals.getContext().getSharedPreferences("youtube_vanced", 0);
                     appPreferences.edit().putString("app_first_time", versionName).apply();
                 }
-            }).setNegativeButton(buttonNegative, new DialogInterface.OnClickListener() { // from class: fi.razerman.youtube.XGlobals.2
+            }).setNegativeButton(buttonNegative, new DialogInterface.OnClickListener() { // from class: app.revanced.integrations.settings.XGlobals.2
                 @Override // android.content.DialogInterface.OnClickListener
                 public void onClick(DialogInterface dialog, int id) {
                 }
@@ -729,7 +731,7 @@ public class XGlobals {
             } else {
                 builder = new AlertDialog.Builder(activity);
             }
-            builder.setTitle("Unofficial Version").setMessage("This is an unofficial Magisk module.\nNo support is provided for this and it's adviced to download the official one from the following url.\nUrl: goo.gl/xW9u4U").setPositiveButton("Close", new DialogInterface.OnClickListener() { // from class: fi.razerman.youtube.XGlobals.4
+            builder.setTitle("Unofficial Version").setMessage("This is an unofficial Magisk module.\nNo support is provided for this and it's adviced to download the official one from the following url.\nUrl: goo.gl/xW9u4U").setPositiveButton("Close", new DialogInterface.OnClickListener() { // from class: app.revanced.integrations.settings.XGlobals.4
                 @Override // android.content.DialogInterface.OnClickListener
                 public void onClick(DialogInterface dialog, int id) {
                 }

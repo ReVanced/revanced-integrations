@@ -1,6 +1,6 @@
 package fi.vanced.libraries.youtube.player;
 
-import static fi.razerman.youtube.XGlobals.debug;
+import static app.revanced.integrations.settings.XGlobals.debug;
 
 import android.util.Log;
 

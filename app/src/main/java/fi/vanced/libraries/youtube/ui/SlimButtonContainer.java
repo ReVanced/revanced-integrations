@@ -1,6 +1,6 @@
 package fi.vanced.libraries.youtube.ui;
 
-import static fi.razerman.youtube.XGlobals.debug;
+import static app.revanced.integrations.settings.XGlobals.debug;
 import static app.revanced.integrations.sponsorblock.SponsorBlockSettings.PREFERENCES_KEY_BROWSER_BUTTON;
 import static app.revanced.integrations.sponsorblock.SponsorBlockSettings.PREFERENCES_KEY_SPONSOR_BLOCK_ENABLED;
 
@@ -12,8 +12,8 @@ import android.view.ViewGroup;
 
 import com.google.android.apps.youtube.app.ui.SlimMetadataScrollableButtonContainerLayout;
 
-import fi.vanced.libraries.youtube.whitelisting.Whitelist;
-import fi.vanced.libraries.youtube.whitelisting.WhitelistType;
+import app.revanced.integrations.adremover.whitelist.Whitelist;
+import app.revanced.integrations.adremover.whitelist.WhitelistType;
 import fi.vanced.utils.SharedPrefUtils;
 import fi.vanced.utils.VancedUtils;
 import app.revanced.integrations.sponsorblock.SponsorBlockSettings;

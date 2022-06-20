@@ -14,6 +14,8 @@ import android.preference.SwitchPreference;
 import android.util.Log;
 import android.widget.Toast;
 import com.google.android.apps.youtube.app.YouTubeTikTokRoot_Application;
+
+import app.revanced.integrations.settings.XGlobals;
 import fi.razerman.youtube.Autorepeat.AutoRepeat;
 import fi.razerman.youtube.Fenster.FensterGestureListener;
 import fi.razerman.youtube.Helpers.XScreenSizeHelpers;

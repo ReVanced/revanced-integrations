@@ -1,6 +1,6 @@
-package fi.vanced.libraries.youtube.whitelisting.requests;
+package app.revanced.integrations.adremover.whitelist.requests;
 
-import static fi.razerman.youtube.XGlobals.debug;
+import static app.revanced.integrations.settings.XGlobals.debug;
 import static fi.vanced.libraries.youtube.player.VideoInformation.currentVideoId;
 import static fi.vanced.libraries.youtube.ui.AdButton.TAG;
 import static fi.vanced.utils.VancedUtils.runOnMainThread;
@@ -20,8 +20,8 @@ import java.net.HttpURLConnection;
 import java.nio.charset.StandardCharsets;
 
 import fi.vanced.libraries.youtube.player.ChannelModel;
-import fi.vanced.libraries.youtube.whitelisting.Whitelist;
-import fi.vanced.libraries.youtube.whitelisting.WhitelistType;
+import app.revanced.integrations.adremover.whitelist.Whitelist;
+import app.revanced.integrations.adremover.whitelist.WhitelistType;
 import fi.vanced.utils.VancedUtils;
 import fi.vanced.utils.requests.Requester;
 import fi.vanced.utils.requests.Route;
