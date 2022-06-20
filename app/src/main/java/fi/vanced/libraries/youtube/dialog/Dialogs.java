@@ -3,9 +3,9 @@ package fi.vanced.libraries.youtube.dialog;
 import static fi.vanced.libraries.youtube.ryd.RYDSettings.PREFERENCES_KEY_RYD_ENABLED;
 import static fi.vanced.libraries.youtube.ryd.RYDSettings.PREFERENCES_KEY_RYD_HINT_SHOWN;
 import static fi.vanced.libraries.youtube.ryd.RYDSettings.PREFERENCES_NAME;
-import static pl.jakubweg.SponsorBlockSettings.PREFERENCES_KEY_SPONSOR_BLOCK_ENABLED;
-import static pl.jakubweg.SponsorBlockSettings.PREFERENCES_KEY_SPONSOR_BLOCK_HINT_SHOWN;
-import static pl.jakubweg.StringRef.str;
+import static app.revanced.integrations.sponsorblock.SponsorBlockSettings.PREFERENCES_KEY_SPONSOR_BLOCK_ENABLED;
+import static app.revanced.integrations.sponsorblock.SponsorBlockSettings.PREFERENCES_KEY_SPONSOR_BLOCK_HINT_SHOWN;
+import static app.revanced.integrations.sponsorblock.StringRef.str;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -20,7 +20,7 @@ import com.google.android.apps.youtube.app.YouTubeTikTokRoot_Application;
 
 import fi.vanced.utils.SharedPrefUtils;
 import fi.vanced.utils.VancedUtils;
-import pl.jakubweg.SponsorBlockSettings;
+import app.revanced.integrations.sponsorblock.SponsorBlockSettings;
 
 public class Dialogs {
     // Inject call from YT to this

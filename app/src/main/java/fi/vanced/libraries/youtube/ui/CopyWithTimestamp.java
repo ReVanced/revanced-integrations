@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import fi.vanced.libraries.youtube.player.VideoHelpers;
 import fi.vanced.utils.VancedUtils;
 
-import static pl.jakubweg.StringRef.str;
+import static app.revanced.integrations.sponsorblock.StringRef.str;
 
 public class CopyWithTimestamp extends SlimButton {
     public CopyWithTimestamp(Context context, ViewGroup container) {

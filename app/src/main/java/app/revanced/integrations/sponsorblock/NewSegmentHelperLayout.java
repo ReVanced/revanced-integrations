@@ -1,4 +1,4 @@
-package pl.jakubweg;
+package app.revanced.integrations.sponsorblock;
 
 import android.content.Context;
 

@@ -7,7 +7,7 @@ import android.widget.Toast;
 import com.google.android.apps.youtube.app.YouTubeTikTokRoot_Application;
 
 import static fi.razerman.youtube.XGlobals.debug;
-import static pl.jakubweg.StringRef.str;
+import static app.revanced.integrations.sponsorblock.StringRef.str;
 
 public class VideoHelpers {
     public static final String TAG = "VideoHelpers";

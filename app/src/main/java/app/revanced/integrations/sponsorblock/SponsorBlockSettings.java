@@ -1,6 +1,6 @@
-package pl.jakubweg;
+package app.revanced.integrations.sponsorblock;
 
-import static pl.jakubweg.StringRef.sf;
+import static app.revanced.integrations.sponsorblock.StringRef.sf;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -61,7 +61,7 @@ public class SponsorBlockSettings {
     @SuppressWarnings("unused")
     @Deprecated
     public SponsorBlockSettings(Context ignored) {
-        Log.e("jakubweg.Settings", "Do not call SponsorBlockSettings constructor!");
+        Log.e("revanced.Settings", "Do not call SponsorBlockSettings constructor!");
     }
 
     public static SharedPreferences getPreferences(Context context) {

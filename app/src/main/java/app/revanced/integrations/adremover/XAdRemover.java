@@ -1,4 +1,4 @@
-package fi.razerman.youtube;
+package app.revanced.integrations.adremover;
 
 import android.util.Log;
 import android.view.View;
@@ -7,6 +7,8 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toolbar;
+
+import fi.razerman.youtube.XGlobals;
 import fi.razerman.youtube.preferences.BooleanPreferences;
 
 /* loaded from: classes6.dex */

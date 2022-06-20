@@ -4,7 +4,7 @@ import static fi.razerman.youtube.XGlobals.debug;
 import static fi.vanced.libraries.youtube.ryd.RYDSettings.PREFERENCES_KEY_RYD_ENABLED;
 import static fi.vanced.libraries.youtube.ryd.RYDSettings.PREFERENCES_KEY_RYD_HINT_SHOWN;
 import static fi.vanced.libraries.youtube.ryd.RYDSettings.PREFERENCES_NAME;
-import static pl.jakubweg.StringRef.str;
+import static app.revanced.integrations.sponsorblock.StringRef.str;
 
 import android.app.Activity;
 import android.content.Context;

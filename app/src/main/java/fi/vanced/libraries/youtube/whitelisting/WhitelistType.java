@@ -1,8 +1,8 @@
 package fi.vanced.libraries.youtube.whitelisting;
 
-import static pl.jakubweg.StringRef.str;
+import static app.revanced.integrations.sponsorblock.StringRef.str;
 
-import pl.jakubweg.SponsorBlockSettings;
+import app.revanced.integrations.sponsorblock.SponsorBlockSettings;
 
 public enum WhitelistType {
     ADS("youtube", "vanced_whitelist_ads_enabled"),

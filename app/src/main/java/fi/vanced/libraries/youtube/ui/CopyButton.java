@@ -1,6 +1,6 @@
 package fi.vanced.libraries.youtube.ui;
 
-import static pl.jakubweg.StringRef.str;
+import static app.revanced.integrations.sponsorblock.StringRef.str;
 
 import android.content.Context;
 import android.view.View;

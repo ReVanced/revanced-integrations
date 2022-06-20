@@ -54,7 +54,7 @@ public class VancedUtils {
             e.printStackTrace();
         }
 
-        return ("17.03.35");
+        return ("17.23.35");
     }
 
     public static void runOnMainThread(Runnable runnable) {

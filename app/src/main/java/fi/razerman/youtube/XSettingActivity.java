@@ -11,7 +11,7 @@ import android.widget.TextView;
 import com.google.android.apps.youtube.app.YouTubeTikTokRoot_Application;
 import fi.razerman.youtube.Helpers.XThemeHelpers;
 import fi.vanced.libraries.youtube.ryd.RYDFragment;
-import pl.jakubweg.SponsorBlockPreferenceFragment;
+import app.revanced.integrations.sponsorblock.SponsorBlockPreferenceFragment;
 
 /* loaded from: classes6.dex */
 public class XSettingActivity extends Activity {

@@ -1,4 +1,4 @@
-package pl.jakubweg;
+package app.revanced.integrations.sponsorblock;
 
 import android.util.Log;
 import android.view.View;
@@ -11,7 +11,7 @@ import java.lang.reflect.Field;
 // InlineTimeBar
 public class InjectedPlugin {
 
-    private static final String TAG = "jakubweg.InjectedPlugin";
+    private static final String TAG = "revanced.InjectedPlugin";
 
     public static void printSomething() {
         Log.d(TAG, "printSomething called");

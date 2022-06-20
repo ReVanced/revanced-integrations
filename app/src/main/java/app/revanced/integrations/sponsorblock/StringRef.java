@@ -1,4 +1,4 @@
-package pl.jakubweg;
+package app.revanced.integrations.sponsorblock;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -9,7 +9,7 @@ import androidx.annotation.NonNull;
 import java.util.HashMap;
 
 public class StringRef {
-    public static final String TAG = "jakubweg.StringRef";
+    public static final String TAG = "revanced.StringRef";
 
     private static Resources resources;
     private static String packageName;

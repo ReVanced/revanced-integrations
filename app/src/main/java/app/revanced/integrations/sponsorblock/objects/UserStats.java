@@ -1,4 +1,4 @@
-package pl.jakubweg.objects;
+package app.revanced.integrations.sponsorblock.objects;
 
 public class UserStats {
     private final String userName;

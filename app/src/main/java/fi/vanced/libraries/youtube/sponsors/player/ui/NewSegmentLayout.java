@@ -13,10 +13,10 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
-import pl.jakubweg.NewSegmentHelperLayout;
-import pl.jakubweg.PlayerController;
-import pl.jakubweg.SponsorBlockSettings;
-import pl.jakubweg.SponsorBlockUtils;
+import app.revanced.integrations.sponsorblock.NewSegmentHelperLayout;
+import app.revanced.integrations.sponsorblock.PlayerController;
+import app.revanced.integrations.sponsorblock.SponsorBlockSettings;
+import app.revanced.integrations.sponsorblock.SponsorBlockUtils;
 
 import static fi.razerman.youtube.XGlobals.debug;
 

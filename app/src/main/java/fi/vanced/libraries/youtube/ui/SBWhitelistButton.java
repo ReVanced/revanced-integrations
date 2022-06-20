@@ -2,7 +2,7 @@ package fi.vanced.libraries.youtube.ui;
 
 import static fi.razerman.youtube.XGlobals.debug;
 import static fi.vanced.libraries.youtube.player.VideoInformation.currentVideoId;
-import static pl.jakubweg.StringRef.str;
+import static app.revanced.integrations.sponsorblock.StringRef.str;
 
 import android.content.Context;
 import android.util.Log;
@@ -15,7 +15,7 @@ import fi.vanced.libraries.youtube.whitelisting.Whitelist;
 import fi.vanced.libraries.youtube.whitelisting.WhitelistType;
 import fi.vanced.libraries.youtube.whitelisting.requests.WhitelistRequester;
 import fi.vanced.utils.VancedUtils;
-import pl.jakubweg.SponsorBlockUtils;
+import app.revanced.integrations.sponsorblock.SponsorBlockUtils;
 
 public class SBWhitelistButton extends SlimButton {
     public static final String TAG = "VI - SBWhitelistButton";

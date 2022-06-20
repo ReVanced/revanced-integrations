@@ -1,7 +1,7 @@
-package pl.jakubweg.objects;
+package app.revanced.integrations.sponsorblock.objects;
 
-import static pl.jakubweg.SponsorBlockUtils.formatColorString;
-import static pl.jakubweg.StringRef.str;
+import static app.revanced.integrations.sponsorblock.SponsorBlockUtils.formatColorString;
+import static app.revanced.integrations.sponsorblock.StringRef.str;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -16,7 +16,7 @@ import android.util.AttributeSet;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import pl.jakubweg.SponsorBlockSettings;
+import app.revanced.integrations.sponsorblock.SponsorBlockSettings;
 
 @SuppressWarnings("deprecation")
 public class EditTextListPreference extends ListPreference {

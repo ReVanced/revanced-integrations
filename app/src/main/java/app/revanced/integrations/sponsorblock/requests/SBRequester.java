@@ -1,10 +1,10 @@
-package pl.jakubweg.requests;
+package app.revanced.integrations.sponsorblock.requests;
 
 import static android.text.Html.fromHtml;
 import static fi.vanced.utils.VancedUtils.runOnMainThread;
-import static pl.jakubweg.SponsorBlockUtils.timeWithoutSegments;
-import static pl.jakubweg.SponsorBlockUtils.videoHasSegments;
-import static pl.jakubweg.StringRef.str;
+import static app.revanced.integrations.sponsorblock.SponsorBlockUtils.timeWithoutSegments;
+import static app.revanced.integrations.sponsorblock.SponsorBlockUtils.videoHasSegments;
+import static app.revanced.integrations.sponsorblock.StringRef.str;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -27,12 +27,12 @@ import java.util.concurrent.TimeUnit;
 
 import fi.vanced.utils.requests.Requester;
 import fi.vanced.utils.requests.Route;
-import pl.jakubweg.PlayerController;
-import pl.jakubweg.SponsorBlockSettings;
-import pl.jakubweg.SponsorBlockUtils;
-import pl.jakubweg.SponsorBlockUtils.VoteOption;
-import pl.jakubweg.objects.SponsorSegment;
-import pl.jakubweg.objects.UserStats;
+import app.revanced.integrations.sponsorblock.PlayerController;
+import app.revanced.integrations.sponsorblock.SponsorBlockSettings;
+import app.revanced.integrations.sponsorblock.SponsorBlockUtils;
+import app.revanced.integrations.sponsorblock.SponsorBlockUtils.VoteOption;
+import app.revanced.integrations.sponsorblock.objects.SponsorSegment;
+import app.revanced.integrations.sponsorblock.objects.UserStats;
 
 public class SBRequester {
     private static final String TIME_TEMPLATE = "%.3f";

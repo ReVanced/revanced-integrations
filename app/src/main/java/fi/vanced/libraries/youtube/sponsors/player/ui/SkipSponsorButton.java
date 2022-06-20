@@ -15,7 +15,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import pl.jakubweg.PlayerController;
+import app.revanced.integrations.sponsorblock.PlayerController;
 
 import static fi.razerman.youtube.XGlobals.debug;
 

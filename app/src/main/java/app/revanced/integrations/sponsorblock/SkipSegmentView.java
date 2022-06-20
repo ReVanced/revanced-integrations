@@ -1,4 +1,4 @@
-package pl.jakubweg;
+package app.revanced.integrations.sponsorblock;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -8,15 +8,15 @@ import android.widget.Toast;
 
 import com.google.android.apps.youtube.app.YouTubeTikTokRoot_Application;
 
-import pl.jakubweg.objects.SponsorSegment;
+import app.revanced.integrations.sponsorblock.objects.SponsorSegment;
 
 import static fi.vanced.libraries.youtube.sponsors.player.ui.SponsorBlockView.hideSkipButton;
 import static fi.vanced.libraries.youtube.sponsors.player.ui.SponsorBlockView.showSkipButton;
-import static pl.jakubweg.PlayerController.VERBOSE;
+import static app.revanced.integrations.sponsorblock.PlayerController.VERBOSE;
 
 @SuppressLint({"RtlHardcoded", "SetTextI18n", "LongLogTag", "AppCompatCustomView"})
 public class SkipSegmentView {
-    public static final String TAG = "jakubweg.SkipSegmentView";
+    public static final String TAG = "revanced.SkipSegmentView";
     private static SponsorSegment lastNotifiedSegment;
 
     public static void show() {

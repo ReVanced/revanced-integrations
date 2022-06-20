@@ -1,4 +1,4 @@
-package pl.jakubweg.requests;
+package app.revanced.integrations.sponsorblock.requests;
 
 import static fi.vanced.utils.requests.Route.Method.GET;
 import static fi.vanced.utils.requests.Route.Method.POST;

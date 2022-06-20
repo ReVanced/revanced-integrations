@@ -5,7 +5,7 @@ import static fi.vanced.libraries.youtube.player.VideoInformation.channelName;
 import static fi.vanced.libraries.youtube.ui.SlimButtonContainer.adBlockButton;
 import static fi.vanced.libraries.youtube.ui.SlimButtonContainer.sbWhitelistButton;
 import static fi.vanced.utils.VancedUtils.getPreferences;
-import static pl.jakubweg.StringRef.str;
+import static app.revanced.integrations.sponsorblock.StringRef.str;
 
 import android.content.Context;
 import android.content.SharedPreferences;

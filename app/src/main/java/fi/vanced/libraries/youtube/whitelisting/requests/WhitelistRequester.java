@@ -4,7 +4,7 @@ import static fi.razerman.youtube.XGlobals.debug;
 import static fi.vanced.libraries.youtube.player.VideoInformation.currentVideoId;
 import static fi.vanced.libraries.youtube.ui.AdButton.TAG;
 import static fi.vanced.utils.VancedUtils.runOnMainThread;
-import static pl.jakubweg.StringRef.str;
+import static app.revanced.integrations.sponsorblock.StringRef.str;
 
 import android.content.Context;
 import android.util.Log;

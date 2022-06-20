@@ -1,4 +1,4 @@
-package fi.razerman.youtube.litho;
+package app.revanced.integrations.adremover;
 
 import android.os.Build;
 import android.util.Log;

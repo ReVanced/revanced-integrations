@@ -29,7 +29,7 @@ import fi.razerman.youtube.Fenster.Helpers.BrightnessHelper;
 import fi.razerman.youtube.Fenster.XFenster;
 import fi.razerman.youtube.Helpers.ColorRef;
 import fi.razerman.youtube.Helpers.XSwipeHelper;
-import pl.jakubweg.NewSegmentHelperLayout;
+import app.revanced.integrations.sponsorblock.NewSegmentHelperLayout;
 
 /* compiled from: PG */
 /* renamed from: env */

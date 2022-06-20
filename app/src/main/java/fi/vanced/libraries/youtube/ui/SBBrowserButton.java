@@ -1,6 +1,6 @@
 package fi.vanced.libraries.youtube.ui;
 
-import static pl.jakubweg.StringRef.str;
+import static app.revanced.integrations.sponsorblock.StringRef.str;
 
 import android.content.Context;
 import android.content.Intent;
@@ -10,8 +10,8 @@ import android.view.ViewGroup;
 
 import fi.vanced.libraries.youtube.player.VideoInformation;
 import fi.vanced.utils.VancedUtils;
-import pl.jakubweg.SponsorBlockSettings;
-import pl.jakubweg.SponsorBlockUtils;
+import app.revanced.integrations.sponsorblock.SponsorBlockSettings;
+import app.revanced.integrations.sponsorblock.SponsorBlockUtils;
 
 public class SBBrowserButton extends SlimButton {
     private static final String BROWSER_URL = "https://sb.ltn.fi/video/";

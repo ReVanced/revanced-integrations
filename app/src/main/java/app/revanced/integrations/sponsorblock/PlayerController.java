@@ -1,9 +1,9 @@
-package pl.jakubweg;
+package app.revanced.integrations.sponsorblock;
 
-import static pl.jakubweg.SponsorBlockSettings.skippedSegments;
-import static pl.jakubweg.SponsorBlockSettings.skippedTime;
-import static pl.jakubweg.SponsorBlockUtils.timeWithoutSegments;
-import static pl.jakubweg.SponsorBlockUtils.videoHasSegments;
+import static app.revanced.integrations.sponsorblock.SponsorBlockSettings.skippedSegments;
+import static app.revanced.integrations.sponsorblock.SponsorBlockSettings.skippedTime;
+import static app.revanced.integrations.sponsorblock.SponsorBlockUtils.timeWithoutSegments;
+import static app.revanced.integrations.sponsorblock.SponsorBlockUtils.videoHasSegments;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -28,12 +28,12 @@ import java.util.TimerTask;
 
 import fi.vanced.libraries.youtube.player.VideoInformation;
 import fi.vanced.libraries.youtube.whitelisting.Whitelist;
-import pl.jakubweg.objects.SponsorSegment;
-import pl.jakubweg.requests.SBRequester;
+import app.revanced.integrations.sponsorblock.objects.SponsorSegment;
+import app.revanced.integrations.sponsorblock.requests.SBRequester;
 
 @SuppressLint({"LongLogTag"})
 public class PlayerController {
-    public static final String TAG = "jakubweg.PlayerController";
+    public static final String TAG = "revanced.PlayerController";
     public static final boolean VERBOSE = false;
     @SuppressWarnings("PointlessBooleanExpression")
     public static final boolean VERBOSE_DRAW_OPTIONS = false && VERBOSE;

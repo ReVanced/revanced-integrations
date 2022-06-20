@@ -1,28 +1,28 @@
-package pl.jakubweg;
+package app.revanced.integrations.sponsorblock;
 
 import static fi.razerman.youtube.XGlobals.debug;
-import static pl.jakubweg.SponsorBlockSettings.DEFAULT_API_URL;
-import static pl.jakubweg.SponsorBlockSettings.PREFERENCES_KEY_ADJUST_NEW_SEGMENT_STEP;
-import static pl.jakubweg.SponsorBlockSettings.PREFERENCES_KEY_API_URL;
-import static pl.jakubweg.SponsorBlockSettings.PREFERENCES_KEY_BROWSER_BUTTON;
-import static pl.jakubweg.SponsorBlockSettings.PREFERENCES_KEY_COUNT_SKIPS;
-import static pl.jakubweg.SponsorBlockSettings.PREFERENCES_KEY_MIN_DURATION;
-import static pl.jakubweg.SponsorBlockSettings.PREFERENCES_KEY_NEW_SEGMENT_ENABLED;
-import static pl.jakubweg.SponsorBlockSettings.PREFERENCES_KEY_SHOW_TIME_WITHOUT_SEGMENTS;
-import static pl.jakubweg.SponsorBlockSettings.PREFERENCES_KEY_SHOW_TOAST_WHEN_SKIP;
-import static pl.jakubweg.SponsorBlockSettings.PREFERENCES_KEY_SPONSOR_BLOCK_ENABLED;
-import static pl.jakubweg.SponsorBlockSettings.PREFERENCES_KEY_SPONSOR_BLOCK_HINT_SHOWN;
-import static pl.jakubweg.SponsorBlockSettings.PREFERENCES_KEY_UUID;
-import static pl.jakubweg.SponsorBlockSettings.PREFERENCES_KEY_VOTING_ENABLED;
-import static pl.jakubweg.SponsorBlockSettings.PREFERENCES_NAME;
-import static pl.jakubweg.SponsorBlockSettings.adjustNewSegmentMillis;
-import static pl.jakubweg.SponsorBlockSettings.countSkips;
-import static pl.jakubweg.SponsorBlockSettings.minDuration;
-import static pl.jakubweg.SponsorBlockSettings.setSeenGuidelines;
-import static pl.jakubweg.SponsorBlockSettings.showTimeWithoutSegments;
-import static pl.jakubweg.SponsorBlockSettings.showToastWhenSkippedAutomatically;
-import static pl.jakubweg.SponsorBlockSettings.uuid;
-import static pl.jakubweg.StringRef.str;
+import static app.revanced.integrations.sponsorblock.SponsorBlockSettings.DEFAULT_API_URL;
+import static app.revanced.integrations.sponsorblock.SponsorBlockSettings.PREFERENCES_KEY_ADJUST_NEW_SEGMENT_STEP;
+import static app.revanced.integrations.sponsorblock.SponsorBlockSettings.PREFERENCES_KEY_API_URL;
+import static app.revanced.integrations.sponsorblock.SponsorBlockSettings.PREFERENCES_KEY_BROWSER_BUTTON;
+import static app.revanced.integrations.sponsorblock.SponsorBlockSettings.PREFERENCES_KEY_COUNT_SKIPS;
+import static app.revanced.integrations.sponsorblock.SponsorBlockSettings.PREFERENCES_KEY_MIN_DURATION;
+import static app.revanced.integrations.sponsorblock.SponsorBlockSettings.PREFERENCES_KEY_NEW_SEGMENT_ENABLED;
+import static app.revanced.integrations.sponsorblock.SponsorBlockSettings.PREFERENCES_KEY_SHOW_TIME_WITHOUT_SEGMENTS;
+import static app.revanced.integrations.sponsorblock.SponsorBlockSettings.PREFERENCES_KEY_SHOW_TOAST_WHEN_SKIP;
+import static app.revanced.integrations.sponsorblock.SponsorBlockSettings.PREFERENCES_KEY_SPONSOR_BLOCK_ENABLED;
+import static app.revanced.integrations.sponsorblock.SponsorBlockSettings.PREFERENCES_KEY_SPONSOR_BLOCK_HINT_SHOWN;
+import static app.revanced.integrations.sponsorblock.SponsorBlockSettings.PREFERENCES_KEY_UUID;
+import static app.revanced.integrations.sponsorblock.SponsorBlockSettings.PREFERENCES_KEY_VOTING_ENABLED;
+import static app.revanced.integrations.sponsorblock.SponsorBlockSettings.PREFERENCES_NAME;
+import static app.revanced.integrations.sponsorblock.SponsorBlockSettings.adjustNewSegmentMillis;
+import static app.revanced.integrations.sponsorblock.SponsorBlockSettings.countSkips;
+import static app.revanced.integrations.sponsorblock.SponsorBlockSettings.minDuration;
+import static app.revanced.integrations.sponsorblock.SponsorBlockSettings.setSeenGuidelines;
+import static app.revanced.integrations.sponsorblock.SponsorBlockSettings.showTimeWithoutSegments;
+import static app.revanced.integrations.sponsorblock.SponsorBlockSettings.showToastWhenSkippedAutomatically;
+import static app.revanced.integrations.sponsorblock.SponsorBlockSettings.uuid;
+import static app.revanced.integrations.sponsorblock.StringRef.str;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -51,8 +51,8 @@ import java.util.ArrayList;
 
 import fi.vanced.libraries.youtube.whitelisting.WhitelistType;
 import fi.vanced.utils.SharedPrefUtils;
-import pl.jakubweg.objects.EditTextListPreference;
-import pl.jakubweg.requests.SBRequester;
+import app.revanced.integrations.sponsorblock.objects.EditTextListPreference;
+import app.revanced.integrations.sponsorblock.requests.SBRequester;
 
 @SuppressWarnings({"unused", "deprecation"}) // injected
 public class SponsorBlockPreferenceFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {

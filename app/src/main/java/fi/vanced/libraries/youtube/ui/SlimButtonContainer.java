@@ -1,8 +1,8 @@
 package fi.vanced.libraries.youtube.ui;
 
 import static fi.razerman.youtube.XGlobals.debug;
-import static pl.jakubweg.SponsorBlockSettings.PREFERENCES_KEY_BROWSER_BUTTON;
-import static pl.jakubweg.SponsorBlockSettings.PREFERENCES_KEY_SPONSOR_BLOCK_ENABLED;
+import static app.revanced.integrations.sponsorblock.SponsorBlockSettings.PREFERENCES_KEY_BROWSER_BUTTON;
+import static app.revanced.integrations.sponsorblock.SponsorBlockSettings.PREFERENCES_KEY_SPONSOR_BLOCK_ENABLED;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -16,7 +16,7 @@ import fi.vanced.libraries.youtube.whitelisting.Whitelist;
 import fi.vanced.libraries.youtube.whitelisting.WhitelistType;
 import fi.vanced.utils.SharedPrefUtils;
 import fi.vanced.utils.VancedUtils;
-import pl.jakubweg.SponsorBlockSettings;
+import app.revanced.integrations.sponsorblock.SponsorBlockSettings;
 
 public class SlimButtonContainer extends SlimMetadataScrollableButtonContainerLayout {
     private static final String TAG = "VI - Slim - Container";
