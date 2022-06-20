@@ -20,10 +20,10 @@ public class Utils {
             int maxCount = (int) (Math.pow(2, difficulty + 1) * 5);
             MessageDigest md = MessageDigest.getInstance("SHA-512");
             for (int i = 0; i < maxCount; i++) {
-                buffer[0] = (byte)i;
-                buffer[1] = (byte)(i >> 8);
-                buffer[2] = (byte)(i >> 16);
-                buffer[3] = (byte)(i >> 24);
+                buffer[0] = (byte) i;
+                buffer[1] = (byte) (i >> 8);
+                buffer[2] = (byte) (i >> 16);
+                buffer[3] = (byte) (i >> 24);
                 byte[] messageDigest = md.digest(buffer);
 
                 if (countLeadingZeroes(messageDigest) >= difficulty) {
@@ -31,8 +31,7 @@ public class Utils {
                     return encode;
                 }
             }
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             Log.e(TAG, "Failed to solve puzzle", ex);
         }
 

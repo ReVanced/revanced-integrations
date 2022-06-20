@@ -49,18 +49,20 @@ public class EditTextListPreference extends ListPreference {
         mEditText.setText(formatColorString(category.color));
         mEditText.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
 
             @Override
             public void afterTextChanged(Editable s) {
                 try {
                     Color.parseColor(s.toString()); // validation
                     getDialog().setTitle(Html.fromHtml(String.format("<font color=\"%s\">⬤</font> %s", s, category.title)));
+                } catch (Exception ex) {
                 }
-                catch (Exception ex) {}
             }
         });
         builder.setView(mEditText);
@@ -102,8 +104,7 @@ public class EditTextListPreference extends ListPreference {
                 Toast.makeText(applicationContext, str("color_changed"), Toast.LENGTH_SHORT).show();
                 getSharedPreferences().edit().putString(getColorPreferenceKey(), formatColorString(color)).apply();
                 reformatTitle();
-            }
-            catch (Exception ex) {
+            } catch (Exception ex) {
                 Toast.makeText(applicationContext, str("color_invalid"), Toast.LENGTH_SHORT).show();
             }
         }

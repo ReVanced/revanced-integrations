@@ -6,6 +6,7 @@ import android.content.Context;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.WindowManager;
+
 import app.revanced.integrations.settings.XGlobals;
 
 /* loaded from: classes6.dex */

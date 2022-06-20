@@ -33,7 +33,8 @@ public class Whitelist {
     private static final Map<WhitelistType, ArrayList<ChannelModel>> whitelistMap = parseWhitelist(YouTubeTikTokRoot_Application.getAppContext());
     private static final Map<WhitelistType, Boolean> enabledMap = parseEnabledMap(YouTubeTikTokRoot_Application.getAppContext());
 
-    private Whitelist() {}
+    private Whitelist() {
+    }
 
     // injected calls
 
@@ -87,8 +88,7 @@ public class Whitelist {
                     }
                 }
                 whitelistMap.put(whitelistType, deserializedChannels);
-            }
-            catch (Exception ex) {
+            } catch (Exception ex) {
                 ex.printStackTrace();
             }
         }
@@ -159,8 +159,7 @@ public class Whitelist {
         String friendlyName = whitelistType.getFriendlyName();
         if (success) {
             Toast.makeText(context, str("vanced_whitelisting_removed", channelName, friendlyName), Toast.LENGTH_SHORT).show();
-        }
-        else {
+        } else {
             Toast.makeText(context, str("vanced_whitelisting_remove_failed", channelName, friendlyName), Toast.LENGTH_SHORT).show();
         }
     }

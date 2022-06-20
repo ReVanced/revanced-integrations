@@ -56,8 +56,7 @@ public class AdButton extends SlimButton {
         try {
             Whitelist.removeFromWhitelist(WhitelistType.ADS, this.context, VideoInformation.channelName);
             changeEnabled(false);
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             Log.e(TAG, "Failed to remove from whitelist", ex);
             return;
         }

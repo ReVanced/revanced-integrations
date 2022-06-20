@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ViewConfiguration;
+
 import app.revanced.integrations.settings.XGlobals;
 
 /* loaded from: classes6.dex */

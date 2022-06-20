@@ -230,8 +230,7 @@ public abstract class SponsorBlockUtils {
             String title = voteOption.title;
             if (vip && segment.isLocked && voteOption.shouldHighlight) {
                 items[i] = Html.fromHtml(String.format("<font color=\"%s\">%s</font>", LOCKED_COLOR, title));
-            }
-            else {
+            } else {
                 items[i] = title;
             }
         }
@@ -420,7 +419,8 @@ public abstract class SponsorBlockUtils {
     }
 
     public static void notifyShareBtnVisibilityChanged(View v) {
-        if (v.getId() != shareBtnId || !/*SponsorBlockSettings.isAddNewSegmentEnabled*/false) return;
+        if (v.getId() != shareBtnId || !/*SponsorBlockSettings.isAddNewSegmentEnabled*/false)
+            return;
 //        if (VERBOSE)
 //            Log.d(TAG, "VISIBILITY CHANGED of view " + v);
         ImageView sponsorBtn = ShieldButton._shieldBtn.get();
@@ -462,8 +462,7 @@ public abstract class SponsorBlockUtils {
             if (videoHasSegments && (playerType.equalsIgnoreCase("NONE"))) {
                 PlayerController.setCurrentVideoId(null);
             }
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             Log.e(TAG, "Player type changed caused a crash.", ex);
         }
     }
@@ -585,8 +584,7 @@ public abstract class SponsorBlockUtils {
             editor.apply();
 
             Toast.makeText(context, str("settings_import_successful"), Toast.LENGTH_SHORT).show();
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             Toast.makeText(context, str("settings_import_failed"), Toast.LENGTH_SHORT).show();
             ex.printStackTrace();
         }
@@ -631,8 +629,7 @@ public abstract class SponsorBlockUtils {
             json.put("serverAddress", apiAddress);
 
             return json.toString();
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             Toast.makeText(context, str("settings_export_failed"), Toast.LENGTH_SHORT).show();
             ex.printStackTrace();
             return "";

@@ -28,7 +28,8 @@ public class Registration {
 
     private String fetchUserId() {
         try {
-            if (this.context == null) throw new Exception("Unable to fetch userId because context was null");
+            if (this.context == null)
+                throw new Exception("Unable to fetch userId because context was null");
 
             SharedPreferences preferences = getPreferences(context, PREFERENCES_NAME);
             this.userId = preferences.getString(PREFERENCES_KEY_USERID, null);
@@ -36,8 +37,7 @@ public class Registration {
             if (this.userId == null) {
                 this.userId = register();
             }
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             Log.e(TAG, "Unable to fetch the userId from shared preferences", ex);
         }
 
@@ -46,13 +46,13 @@ public class Registration {
 
     public void saveUserId(String userId) {
         try {
-            if (this.context == null) throw new Exception("Unable to save userId because context was null");
+            if (this.context == null)
+                throw new Exception("Unable to save userId because context was null");
 
             SharedPreferences preferences = getPreferences(context, PREFERENCES_NAME);
             SharedPreferences.Editor editor = preferences.edit();
             editor.putString(PREFERENCES_KEY_USERID, userId).apply();
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             Log.e(TAG, "Unable to save the userId in shared preferences", ex);
         }
     }

@@ -2,9 +2,12 @@ package fi.razerman.youtube.videosettings;
 
 import android.content.Context;
 import android.util.Log;
+
 import com.google.android.apps.youtube.app.YouTubeTikTokRoot_Application;
+
 import fi.razerman.youtube.Connectivity;
 import app.revanced.integrations.settings.XGlobals;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -70,7 +73,8 @@ public class VideoQuality {
                     }
                 }
             }
-        } catch (Exception ignored) {}
+        } catch (Exception ignored) {
+        }
         Collections.sort(iStreamQualities);
         int index = 0;
         for (int streamQuality2 : iStreamQualities) {

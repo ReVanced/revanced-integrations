@@ -62,70 +62,82 @@ public class NewSegmentLayout extends FrameLayout {
         getContext().getTheme().resolveAttribute(android.R.attr.selectableItemBackground, rippleEffect, true);
         rippleEffectId = rippleEffect.resourceId;
 
-        this.newSegmentContainer = (LinearLayout)this.findViewById(getIdentifier(context, "new_segment_container", "id"));
+        this.newSegmentContainer = (LinearLayout) this.findViewById(getIdentifier(context, "new_segment_container", "id"));
 
-        this.rewindButton = (ImageButton)this.findViewById(getIdentifier(context, "new_segment_rewind", "id"));
+        this.rewindButton = (ImageButton) this.findViewById(getIdentifier(context, "new_segment_rewind", "id"));
         if (this.rewindButton != null) {
             setClickEffect(this.rewindButton);
             this.rewindButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (debug) { Log.d(TAG, "Rewind button clicked"); }
+                    if (debug) {
+                        Log.d(TAG, "Rewind button clicked");
+                    }
                     PlayerController.skipRelativeMilliseconds(-SponsorBlockSettings.adjustNewSegmentMillis);
                 }
             });
         }
-        this.forwardButton = (ImageButton)this.findViewById(getIdentifier(context, "new_segment_forward", "id"));
+        this.forwardButton = (ImageButton) this.findViewById(getIdentifier(context, "new_segment_forward", "id"));
         if (this.forwardButton != null) {
             setClickEffect(this.forwardButton);
             this.forwardButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (debug) { Log.d(TAG, "Forward button clicked"); }
+                    if (debug) {
+                        Log.d(TAG, "Forward button clicked");
+                    }
                     PlayerController.skipRelativeMilliseconds(SponsorBlockSettings.adjustNewSegmentMillis);
                 }
             });
         }
-        this.adjustButton = (ImageButton)this.findViewById(getIdentifier(context, "new_segment_adjust", "id"));
+        this.adjustButton = (ImageButton) this.findViewById(getIdentifier(context, "new_segment_adjust", "id"));
         if (this.adjustButton != null) {
             setClickEffect(this.adjustButton);
             this.adjustButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (debug) { Log.d(TAG, "Adjust button clicked"); }
+                    if (debug) {
+                        Log.d(TAG, "Adjust button clicked");
+                    }
                     SponsorBlockUtils.onMarkLocationClicked(NewSegmentHelperLayout.context);
                 }
             });
         }
-        this.compareButton = (ImageButton)this.findViewById(getIdentifier(context, "new_segment_compare", "id"));
+        this.compareButton = (ImageButton) this.findViewById(getIdentifier(context, "new_segment_compare", "id"));
         if (this.compareButton != null) {
             setClickEffect(this.compareButton);
             this.compareButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (debug) { Log.d(TAG, "Compare button clicked"); }
+                    if (debug) {
+                        Log.d(TAG, "Compare button clicked");
+                    }
                     SponsorBlockUtils.onPreviewClicked(NewSegmentHelperLayout.context);
                 }
             });
         }
-        this.editButton = (ImageButton)this.findViewById(getIdentifier(context, "new_segment_edit", "id"));
+        this.editButton = (ImageButton) this.findViewById(getIdentifier(context, "new_segment_edit", "id"));
         if (this.editButton != null) {
             setClickEffect(this.editButton);
             this.editButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (debug) { Log.d(TAG, "Edit button clicked"); }
+                    if (debug) {
+                        Log.d(TAG, "Edit button clicked");
+                    }
                     SponsorBlockUtils.onEditByHandClicked(NewSegmentHelperLayout.context);
                 }
             });
         }
-        this.publishButton = (ImageButton)this.findViewById(getIdentifier(context, "new_segment_publish", "id"));
+        this.publishButton = (ImageButton) this.findViewById(getIdentifier(context, "new_segment_publish", "id"));
         if (this.publishButton != null) {
             setClickEffect(this.publishButton);
             this.publishButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (debug) { Log.d(TAG, "Publish button clicked"); }
+                    if (debug) {
+                        Log.d(TAG, "Publish button clicked");
+                    }
                     SponsorBlockUtils.onPublishClicked(NewSegmentHelperLayout.context);
                 }
             });
@@ -138,10 +150,10 @@ public class NewSegmentLayout extends FrameLayout {
     private void setClickEffect(ImageButton btn) {
         btn.setBackgroundResource(rippleEffectId);
 
-        RippleDrawable rippleDrawable = (RippleDrawable)btn.getBackground();
+        RippleDrawable rippleDrawable = (RippleDrawable) btn.getBackground();
 
-        int[][] states = new int[][] { new int[] { android.R.attr.state_enabled } };
-        int[] colors = new int[] { 0x33ffffff }; // sets the ripple color to white
+        int[][] states = new int[][]{new int[]{android.R.attr.state_enabled}};
+        int[] colors = new int[]{0x33ffffff}; // sets the ripple color to white
 
         ColorStateList colorStateList = new ColorStateList(states, colors);
         rippleDrawable.setColor(colorStateList);

@@ -13,7 +13,8 @@ import java.net.URL;
 import app.revanced.integrations.adremover.whitelist.requests.WhitelistRoutes;
 
 public class Requester {
-    private Requester() {}
+    private Requester() {
+    }
 
     public static HttpURLConnection getConnectionFromRoute(String apiUrl, Route route, String... params) throws IOException {
         String url = apiUrl + route.compile(params).getCompiledRoute();

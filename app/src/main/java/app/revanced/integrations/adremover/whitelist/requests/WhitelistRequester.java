@@ -30,7 +30,8 @@ import vanced.integrations.BuildConfig;
 public class WhitelistRequester {
     private static final String YT_API_URL = "https://www.youtube.com/youtubei/v1/";
 
-    private WhitelistRequester() {}
+    private WhitelistRequester() {
+    }
 
     public static void addChannelToWhitelist(WhitelistType whitelistType, View view, ImageView buttonIcon, Context context) {
         try {
@@ -42,7 +43,7 @@ public class WhitelistRequester {
 
             String versionName = VancedUtils.getVersionName(context);
             String jsonInputString = "{\"context\": {\"client\": { \"clientName\": \"Android\", \"clientVersion\": \"" + versionName + "\" } }, \"videoId\": \"" + currentVideoId + "\"}";
-            try(OutputStream os = connection.getOutputStream()) {
+            try (OutputStream os = connection.getOutputStream()) {
                 byte[] input = jsonInputString.getBytes(StandardCharsets.UTF_8);
                 os.write(input, 0, input.length);
             }
@@ -62,15 +63,13 @@ public class WhitelistRequester {
                     if (success) {
                         buttonIcon.setEnabled(whitelistType != WhitelistType.SPONSORBLOCK);
                         Toast.makeText(context, str("vanced_whitelisting_added", author, whitelistTypeName), Toast.LENGTH_SHORT).show();
-                    }
-                    else {
+                    } else {
                         buttonIcon.setEnabled(whitelistType == WhitelistType.SPONSORBLOCK);
                         Toast.makeText(context, str("vanced_whitelisting_add_failed", author, whitelistTypeName), Toast.LENGTH_SHORT).show();
                     }
                     view.setEnabled(true);
                 });
-            }
-            else {
+            } else {
                 if (debug) {
                     Log.d(TAG, "player fetch response was " + responseCode);
                 }
@@ -81,8 +80,7 @@ public class WhitelistRequester {
                 });
             }
             connection.disconnect();
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             Log.e(TAG, "Failed to fetch channelId", ex);
             runOnMainThread(() -> view.setEnabled(true));
         }

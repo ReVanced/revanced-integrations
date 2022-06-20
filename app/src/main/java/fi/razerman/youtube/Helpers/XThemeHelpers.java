@@ -2,6 +2,7 @@ package fi.razerman.youtube.Helpers;
 
 import android.os.Build;
 import android.util.Log;
+
 import com.google.android.apps.youtube.app.YouTubeTikTokRoot_Application;
 
 import java.util.Objects;

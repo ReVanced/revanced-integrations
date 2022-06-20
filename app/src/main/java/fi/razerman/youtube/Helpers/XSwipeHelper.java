@@ -6,7 +6,9 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+
 import com.google.android.apps.youtube.app.YouTubeTikTokRoot_Application;
+
 import app.revanced.integrations.settings.XGlobals;
 
 /* loaded from: classes6.dex */

@@ -6,7 +6,9 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+
 import com.google.android.apps.youtube.app.YouTubeTikTokRoot_Application;
+
 import fi.razerman.youtube.Fenster.Seekbar.BrightnessSeekBar;
 import fi.razerman.youtube.Fenster.Seekbar.VolumeSeekBar;
 import fi.razerman.youtube.Helpers.XSwipeHelper;

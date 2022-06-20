@@ -7,5 +7,6 @@ import fi.vanced.utils.requests.Route;
 public class WhitelistRoutes {
     public static final Route GET_CHANNEL_DETAILS = new Route(POST, "player?key={api_key}");
 
-    private WhitelistRoutes() {}
+    private WhitelistRoutes() {
+    }
 }

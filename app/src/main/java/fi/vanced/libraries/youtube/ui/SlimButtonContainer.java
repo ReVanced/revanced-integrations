@@ -50,7 +50,8 @@ public class SlimButtonContainer extends SlimMetadataScrollableButtonContainerLa
     public void initialize(Context context) {
         try {
             container = this.findViewById(VancedUtils.getIdentifier("button_container_vanced", "id"));
-            if (container == null) throw new Exception("Unable to initialize the button container because the button_container_vanced couldn't be found");
+            if (container == null)
+                throw new Exception("Unable to initialize the button container because the button_container_vanced couldn't be found");
 
             copyButton = new CopyButton(context, this);
             copyWithTimestampButton = new CopyWithTimestamp(context, this);
@@ -60,8 +61,7 @@ public class SlimButtonContainer extends SlimMetadataScrollableButtonContainerLa
             new SponsorBlockVoting(context, this);
 
             addSharedPrefsChangeListener();
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             Log.e(TAG, "Unable to initialize the button container", ex);
         }
     }
@@ -84,8 +84,7 @@ public class SlimButtonContainer extends SlimMetadataScrollableButtonContainerLa
                     if (sbWhitelistButton != null) {
                         if (SponsorBlockSettings.isSponsorBlockEnabled) {
                             toggleWhitelistButton();
-                        }
-                        else {
+                        } else {
                             Whitelist.setEnabled(WhitelistType.SPONSORBLOCK, false);
                             sbWhitelistButton.setVisible(false);
                         }
@@ -93,8 +92,7 @@ public class SlimButtonContainer extends SlimMetadataScrollableButtonContainerLa
                     if (sbBrowserButton != null) {
                         if (SponsorBlockSettings.isSponsorBlockEnabled) {
                             toggleBrowserButton();
-                        }
-                        else {
+                        } else {
                             sbBrowserButton.setVisible(false);
                         }
                     }
@@ -115,8 +113,7 @@ public class SlimButtonContainer extends SlimMetadataScrollableButtonContainerLa
                     toggleWhitelistButton();
                     return;
                 }
-            }
-            catch (Exception ex) {
+            } catch (Exception ex) {
                 Log.e(TAG, "Error handling shared preference change", ex);
             }
         };

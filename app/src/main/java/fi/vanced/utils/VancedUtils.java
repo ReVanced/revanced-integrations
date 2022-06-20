@@ -13,7 +13,8 @@ import java.security.SecureRandom;
 
 public class VancedUtils {
 
-    private VancedUtils() {}
+    private VancedUtils() {
+    }
 
     public static SharedPreferences getPreferences(Context context, String preferencesName) {
         if (context == null) return null;
@@ -29,9 +30,9 @@ public class VancedUtils {
     static final String AB = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     static SecureRandom rnd = new SecureRandom();
 
-    public static String randomString(int len){
+    public static String randomString(int len) {
         StringBuilder sb = new StringBuilder(len);
-        for(int i = 0; i < len; i++)
+        for (int i = 0; i < len; i++)
             sb.append(AB.charAt(rnd.nextInt(AB.length())));
         return sb.toString();
     }

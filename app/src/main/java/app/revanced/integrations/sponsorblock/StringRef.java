@@ -16,6 +16,7 @@ public class StringRef {
 
     /**
      * Called in Application onCreate, should be called as soon as possible when after application startup
+     *
      * @param context Any context, it will be used to obtain string resources
      */
     public static void setContext(Context context) {
@@ -28,7 +29,8 @@ public class StringRef {
 
     /**
      * Gets strings reference from shared collection or creates if not exists yet,
-     *  this method should be called if you want to get StringRef
+     * this method should be called if you want to get StringRef
+     *
      * @param id string resource name/id
      * @return String reference that'll resolve to excepted string, may be from cache
      */
@@ -44,6 +46,7 @@ public class StringRef {
 
     /**
      * Gets string value by string id, shorthand for <code>sf(id).toString()</code>
+     *
      * @param id string resource name/id
      * @return String value from string.xml
      */
@@ -55,6 +58,7 @@ public class StringRef {
     /**
      * Gets string value by string id, shorthand for <code>sf(id).toString()</code> and formats the string
      * with given args.
+     *
      * @param id   string resource name/id
      * @param args the args to format the string with
      * @return String value from string.xml formatted with given args
@@ -67,6 +71,7 @@ public class StringRef {
 
     /**
      * Creates a StringRef object that'll not change it's value
+     *
      * @param value value which toString() method returns when invoked on returned object
      * @return Unique StringRef instance, its value will never change
      */

@@ -405,13 +405,11 @@ public class SponsorBlockPreferenceFragment extends PreferenceFragment implement
                     Toast invalidToast = Toast.makeText(applicationContext, str("api_url_invalid"), Toast.LENGTH_SHORT);
                     if (text == null) {
                         invalidToast.show();
-                    }
-                    else {
+                    } else {
                         String textAsString = text.toString();
                         if (textAsString.isEmpty() || !Patterns.WEB_URL.matcher(textAsString).matches()) {
                             invalidToast.show();
-                        }
-                        else {
+                        } else {
                             preferences.edit().putString(PREFERENCES_KEY_API_URL, textAsString).apply();
                             Toast.makeText(applicationContext, str("api_url_changed"), Toast.LENGTH_SHORT).show();
                         }

@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
 import app.revanced.integrations.settings.XGlobals;
 
 /* loaded from: classes6.dex */

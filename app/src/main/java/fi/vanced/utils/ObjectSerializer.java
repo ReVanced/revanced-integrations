@@ -32,7 +32,7 @@ import java.io.Serializable;
 public class ObjectSerializer {
     private static final String TAG = "VI - ObjectSerializer";
 
-    public static String serialize(Serializable obj) throws IOException  {
+    public static String serialize(Serializable obj) throws IOException {
         if (obj == null) return "";
         try {
             ByteArrayOutputStream serialObj = new ByteArrayOutputStream();
@@ -71,11 +71,11 @@ public class ObjectSerializer {
 
     public static byte[] decodeBytes(String str) {
         byte[] bytes = new byte[str.length() / 2];
-        for (int i = 0; i < str.length(); i+=2) {
+        for (int i = 0; i < str.length(); i += 2) {
             char c = str.charAt(i);
-            bytes[i/2] = (byte) ((c - 'a') << 4);
-            c = str.charAt(i+1);
-            bytes[i/2] += (c - 'a');
+            bytes[i / 2] = (byte) ((c - 'a') << 4);
+            c = str.charAt(i + 1);
+            bytes[i / 2] += (c - 'a');
         }
         return bytes;
     }

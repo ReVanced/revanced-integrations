@@ -43,14 +43,13 @@ public class VideoHelpers {
             setClipboard(YouTubeTikTokRoot_Application.getAppContext(), videoUrl);
 
             Toast.makeText(YouTubeTikTokRoot_Application.getAppContext(), str("share_copy_url_success"), Toast.LENGTH_SHORT).show();
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             Log.e(TAG, "Couldn't generate video url", ex);
         }
     }
 
     private static void setClipboard(Context context, String text) {
-        if(android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.HONEYCOMB) {
+        if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.HONEYCOMB) {
             android.text.ClipboardManager clipboard = (android.text.ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
             clipboard.setText(text);
         } else {

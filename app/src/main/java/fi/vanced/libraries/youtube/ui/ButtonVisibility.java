@@ -15,10 +15,14 @@ public class ButtonVisibility {
         if (value == null || value.isEmpty()) return Visibility.NONE;
 
         switch (value.toUpperCase()) {
-            case "PLAYER": return Visibility.PLAYER;
-            case "BUTTON_CONTAINER": return Visibility.BUTTON_CONTAINER;
-            case "BOTH": return Visibility.BOTH;
-            default: return Visibility.NONE;
+            case "PLAYER":
+                return Visibility.PLAYER;
+            case "BUTTON_CONTAINER":
+                return Visibility.BUTTON_CONTAINER;
+            case "BOTH":
+                return Visibility.BOTH;
+            default:
+                return Visibility.NONE;
         }
     }
 

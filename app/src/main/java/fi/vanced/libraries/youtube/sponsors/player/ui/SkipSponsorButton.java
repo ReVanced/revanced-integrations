@@ -68,8 +68,8 @@ public class SkipSponsorButton extends FrameLayout {
     private final void initialize(Context context) {
         LayoutInflater.from(context).inflate(getIdentifier(context, "skip_sponsor_button", "layout"), this, true);  // layout:skip_ad_button
         this.setMinimumHeight(this.getResources().getDimensionPixelSize(getIdentifier(context, "ad_skip_ad_button_min_height", "dimen")));  // dimen:ad_skip_ad_button_min_height
-        this.skipSponsorBtnContainer = (LinearLayout)this.findViewById(getIdentifier(context, "skip_sponsor_button_container", "id"));  // id:skip_ad_button_container
-        this.skipSponsorButtonIcon = (ImageView)this.findViewById(getIdentifier(context, "skip_sponsor_button_icon", "id"));  // id:skip_ad_button_icon
+        this.skipSponsorBtnContainer = (LinearLayout) this.findViewById(getIdentifier(context, "skip_sponsor_button_container", "id"));  // id:skip_ad_button_container
+        this.skipSponsorButtonIcon = (ImageView) this.findViewById(getIdentifier(context, "skip_sponsor_button_icon", "id"));  // id:skip_ad_button_icon
         this.backgroundColor = getColor(context, getIdentifier(context, "skip_ad_button_background_color", "color"));  // color:skip_ad_button_background_color
         this.invertedBackgroundColor = getColor(context, getIdentifier(context, "skip_ad_button_inverted_background_color", "color"));  // color:skip_ad_button_inverted_background_color
         this.background.setColor(this.backgroundColor);
@@ -79,7 +79,7 @@ public class SkipSponsorButton extends FrameLayout {
         float borderWidth = this.getResources().getDimension(getIdentifier(context, "ad_skip_ad_button_border_width", "dimen"));  // dimen:ad_skip_ad_button_border_width
         this.border.setStrokeWidth(borderWidth);
         this.border.setStyle(Paint.Style.STROKE);
-        TextView skipSponsorText = (TextView)this.findViewById(getIdentifier(context, "skip_sponsor_button_text", "id"));  // id:skip_ad_button_text
+        TextView skipSponsorText = (TextView) this.findViewById(getIdentifier(context, "skip_sponsor_button_text", "id"));  // id:skip_ad_button_text
         this.skipSponsorTextView = skipSponsorText;
         this.skipSponsorTextViewText = skipSponsorText.getText();
         this.currentTextColor = this.skipSponsorTextView.getCurrentTextColor();
@@ -107,13 +107,13 @@ public class SkipSponsorButton extends FrameLayout {
         int height = this.skipSponsorBtnContainer.getHeight();
         int top = this.skipSponsorBtnContainer.getTop();
         int left = this.skipSponsorBtnContainer.getLeft();
-        float floatLeft = (float)left;
-        float floatTop = (float)top;
-        float floatWidth = (float)(left + width);
-        float floatHeight = (float)(top + height);
+        float floatLeft = (float) left;
+        float floatTop = (float) top;
+        float floatWidth = (float) (left + width);
+        float floatHeight = (float) (top + height);
         canvas.drawRect(floatLeft, floatTop, floatWidth, floatHeight, this.background);
         if (!this.highContrast) {
-            canvas.drawLines(new float[] { floatWidth, floatTop, floatLeft, floatTop, floatLeft, floatTop, floatLeft, floatHeight, floatLeft, floatHeight, floatWidth, floatHeight }, this.border);
+            canvas.drawLines(new float[]{floatWidth, floatTop, floatLeft, floatTop, floatLeft, floatTop, floatLeft, floatHeight, floatLeft, floatHeight, floatWidth, floatHeight}, this.border);
         }
 
         super.dispatchDraw(canvas);

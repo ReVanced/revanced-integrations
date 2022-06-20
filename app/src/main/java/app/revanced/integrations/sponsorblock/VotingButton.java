@@ -28,16 +28,16 @@ public class VotingButton {
 
     public static void initialize(Object viewStub) {
         try {
-            if(debug){
+            if (debug) {
                 Log.d(TAG, "initializing voting button");
             }
 
             _youtubeControlsLayout = (RelativeLayout) viewStub;
 
-            ImageView imageView = (ImageView)_youtubeControlsLayout
+            ImageView imageView = (ImageView) _youtubeControlsLayout
                     .findViewById(getIdentifier("voting_button", "id"));
 
-            if (debug && imageView == null){
+            if (debug && imageView == null) {
                 Log.d(TAG, "Couldn't find imageView with tag \"voting_button\"");
             }
             if (imageView == null) return;
@@ -53,8 +53,7 @@ public class VotingButton {
             fadeOut.setDuration(fadeDurationScheduled);
             isShowing = true;
             changeVisibilityImmediate(false);
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             Log.e(TAG, "Unable to set RelativeLayout", ex);
         }
     }

@@ -122,8 +122,7 @@ public class SponsorBlockSettings {
             }
             if (behaviour != null) {
                 segment.behaviour = behaviour;
-            }
-            else {
+            } else {
                 behaviour = segment.behaviour;
             }
 

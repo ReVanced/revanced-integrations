@@ -80,8 +80,7 @@ public class ReturnYouTubeDislikes {
                 }
                 _dislikeFetchThread.interrupt();
             }
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             Log.e(TAG, "Error in the dislike fetch thread", ex);
         }
 
@@ -156,12 +155,10 @@ public class ReturnYouTubeDislikes {
 
             if (tag == "like") {
                 return originalText;
-            }
-            else if (tag == "dislike") {
+            } else if (tag == "dislike") {
                 return dislikeCount != null ? formatDislikes(dislikeCount) : originalText;
             }
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             Log.e(TAG, "Error while handling the setText", ex);
         }
 
@@ -174,13 +171,17 @@ public class ReturnYouTubeDislikes {
         try {
             // Try to set normal video dislike count
             if (_dislikeView == null) {
-                if (debug) { Log.d(TAG, "_dislikeView was null"); }
+                if (debug) {
+                    Log.d(TAG, "_dislikeView was null");
+                }
                 return;
             }
 
             View buttonView = _dislikeView.findViewById(getIdentifier("button_text", "id"));
             if (buttonView == null) {
-                if (debug) { Log.d(TAG, "buttonView was null"); }
+                if (debug) {
+                    Log.d(TAG, "buttonView was null");
+                }
                 return;
             }
             TextView button = (TextView) buttonView;
@@ -188,8 +189,7 @@ public class ReturnYouTubeDislikes {
             if (debug) {
                 Log.d(TAG, "trySetDislikes - " + dislikeCount);
             }
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             if (debug) {
                 Log.e(TAG, "Error while trying to set dislikes text", ex);
             }
@@ -198,7 +198,8 @@ public class ReturnYouTubeDislikes {
 
     private static void handleOnClick(View view, boolean previousState) {
         Context context = YouTubeTikTokRoot_Application.getAppContext();
-        if (!isEnabled || SharedPrefUtils.getBoolean(Objects.requireNonNull(context),"youtube","user_signed_out",true)) return;
+        if (!isEnabled || SharedPrefUtils.getBoolean(Objects.requireNonNull(context), "youtube", "user_signed_out", true))
+            return;
 
         try {
             String tag = (String) view.getTag();
@@ -208,27 +209,41 @@ public class ReturnYouTubeDislikes {
             if (tag == null) return;
 
             // If active status was removed, vote should be none
-            if (previousState) { votingValue = 0; }
+            if (previousState) {
+                votingValue = 0;
+            }
             if (tag.equals("like")) {
 
                 // Like was activated
-                if (!previousState) { votingValue = 1; likeActive = true; }
-                else { likeActive = false; }
+                if (!previousState) {
+                    votingValue = 1;
+                    likeActive = true;
+                } else {
+                    likeActive = false;
+                }
 
                 // Like was activated and dislike was previously activated
-                if (!previousState && dislikeActive) { dislikeCount--; trySetDislikes(formatDislikes(dislikeCount)); }
+                if (!previousState && dislikeActive) {
+                    dislikeCount--;
+                    trySetDislikes(formatDislikes(dislikeCount));
+                }
                 dislikeActive = false;
-            }
-            else if (tag.equals("dislike")) {
+            } else if (tag.equals("dislike")) {
                 likeActive = false;
 
                 // Dislike was activated
-                if (!previousState) { votingValue = -1; dislikeActive = true; dislikeCount++; }
+                if (!previousState) {
+                    votingValue = -1;
+                    dislikeActive = true;
+                    dislikeCount++;
+                }
                 // Dislike was removed
-                else { dislikeActive = false; dislikeCount--; }
+                else {
+                    dislikeActive = false;
+                    dislikeCount--;
+                }
                 trySetDislikes(formatDislikes(dislikeCount));
-            }
-            else {
+            } else {
                 // Unknown tag
                 return;
             }
@@ -239,8 +254,7 @@ public class ReturnYouTubeDislikes {
             }
 
             sendVote(votingValue);
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             Log.e(TAG, "Error while handling the onClick", ex);
         }
     }
@@ -259,8 +273,7 @@ public class ReturnYouTubeDislikes {
                 }
                 _votingThread.interrupt();
             }
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             Log.e(TAG, "Error in the voting thread", ex);
         }
 
@@ -270,8 +283,7 @@ public class ReturnYouTubeDislikes {
                 if (debug) {
                     Log.d(TAG, "sendVote status " + result);
                 }
-            }
-            catch (Exception ex) {
+            } catch (Exception ex) {
                 Log.e(TAG, "Failed to send vote", ex);
             }
         });
@@ -294,8 +306,7 @@ public class ReturnYouTubeDislikes {
             }
 
             view.setTag(tag);
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             Log.e(TAG, "Error while trying to set tag to view", ex);
         }
     }

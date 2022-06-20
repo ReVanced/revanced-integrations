@@ -37,7 +37,8 @@ import app.revanced.integrations.sponsorblock.objects.UserStats;
 public class SBRequester {
     private static final String TIME_TEMPLATE = "%.3f";
 
-    private SBRequester() {}
+    private SBRequester() {
+    }
 
     public static synchronized SponsorSegment[] getSegments(String videoId) {
         List<SponsorSegment> segments = new ArrayList<>();
@@ -75,8 +76,7 @@ public class SBRequester {
                 }
             }
             connection.disconnect();
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
         return segments.toArray(new SponsorSegment[0]);
@@ -109,8 +109,7 @@ public class SBRequester {
             }
             runOnMainThread(toastRunnable);
             connection.disconnect();
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
@@ -119,8 +118,7 @@ public class SBRequester {
         try {
             HttpURLConnection connection = getConnectionFromRoute(SBRoutes.VIEWED_SEGMENT, segment.UUID);
             connection.disconnect();
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
@@ -152,8 +150,7 @@ public class SBRequester {
                 }
                 runOnMainThread(() -> Toast.makeText(context, SponsorBlockUtils.messageToToast, Toast.LENGTH_LONG).show());
                 connection.disconnect();
-            }
-            catch (Exception ex) {
+            } catch (Exception ex) {
                 ex.printStackTrace();
             }
         }).start();
@@ -171,8 +168,7 @@ public class SBRequester {
                 UserStats stats = new UserStats(json.getString("userName"), json.getDouble("minutesSaved"), json.getInt("segmentCount"),
                         json.getInt("viewCount"));
                 SponsorBlockUtils.addUserStats(category, loadingPreference, stats);
-            }
-            catch (Exception ex) {
+            } catch (Exception ex) {
                 ex.printStackTrace();
             }
         }).start();
@@ -190,14 +186,12 @@ public class SBRequester {
                         preference.setTitle(fromHtml(str("stats_username", username)));
                         preference.setText(username);
                     });
-                }
-                else {
+                } else {
                     SponsorBlockUtils.messageToToast = str("stats_username_change_unknown_error", responseCode, connection.getResponseMessage());
                 }
                 runOnMainThread(toastRunnable);
                 connection.disconnect();
-            }
-            catch (Exception ex) {
+            } catch (Exception ex) {
                 ex.printStackTrace();
             }
         }).start();
@@ -218,8 +212,7 @@ public class SBRequester {
             edit.putString(SponsorBlockSettings.PREFERENCES_KEY_LAST_VIP_CHECK, String.valueOf(now));
             edit.putBoolean(SponsorBlockSettings.PREFERENCES_KEY_IS_VIP, vip);
             edit.apply();
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
     }

@@ -68,7 +68,7 @@ public class PlayerController {
         }
 
         Context context = YouTubeTikTokRoot_Application.getAppContext();
-        if(context == null){
+        if (context == null) {
             Log.e(TAG, "context is null");
             return;
         }
@@ -304,8 +304,7 @@ public class PlayerController {
         if (lastKnownVideoTime > 0) {
             lastKnownVideoTime = millis;
             VideoInformation.lastKnownVideoTime = lastKnownVideoTime;
-        }
-        else
+        } else
             setCurrentVideoTime(millis);
     }
 

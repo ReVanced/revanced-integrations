@@ -25,15 +25,14 @@ public class SponsorBlockView {
 
     public static void initialize(Object viewGroup) {
         try {
-            if(debug){
+            if (debug) {
                 Log.d(TAG, "initializing");
             }
 
             _youtubeOverlaysLayout = (ViewGroup) viewGroup;
 
             addView();
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             Log.e(TAG, "Unable to set ViewGroup", ex);
         }
     }
@@ -41,6 +40,7 @@ public class SponsorBlockView {
     public static void showSkipButton() {
         skipSponsorButtonVisibility(true);
     }
+
     public static void hideSkipButton() {
         skipSponsorButtonVisibility(false);
     }
@@ -48,6 +48,7 @@ public class SponsorBlockView {
     public static void showNewSegmentLayout() {
         newSegmentLayoutVisibility(true);
     }
+
     public static void hideNewSegmentLayout() {
         newSegmentLayoutVisibility(false);
     }
@@ -64,8 +65,7 @@ public class SponsorBlockView {
 
             setSkipBtnMargins(false);
             setNewSegmentLayoutMargins(false);
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             Log.e(TAG, "Player type changed caused a crash.", ex);
         }
     }
@@ -160,11 +160,10 @@ public class SponsorBlockView {
 
                 initialize(layout);
 
-                if (debug){
+                if (debug) {
                     Log.d("XGlobals", "player_overlays refreshed for SB");
                 }
-            }
-            else if (debug){
+            } else if (debug) {
                 Log.d("XGlobals", "player_overlays was not found for SB");
             }
         }

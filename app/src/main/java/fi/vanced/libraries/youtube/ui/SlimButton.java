@@ -33,8 +33,8 @@ public abstract class SlimButton implements View.OnClickListener {
         this.context = context;
         this.container = container;
         view = LayoutInflater.from(context).inflate(id, container, false);
-        button_icon = (ImageView)view.findViewById(VancedUtils.getIdentifier("button_icon", "id"));
-        button_text = (TextView)view.findViewById(VancedUtils.getIdentifier("button_text", "id"));
+        button_icon = (ImageView) view.findViewById(VancedUtils.getIdentifier("button_icon", "id"));
+        button_text = (TextView) view.findViewById(VancedUtils.getIdentifier("button_text", "id"));
 
         view.setOnClickListener(this);
 
@@ -46,14 +46,12 @@ public abstract class SlimButton implements View.OnClickListener {
             if (!viewAdded && visible) {
                 container.addView(view);
                 viewAdded = true;
-            }
-            else if (viewAdded && !visible) {
+            } else if (viewAdded && !visible) {
                 container.removeView(view);
                 viewAdded = false;
             }
             setContainerVisibility();
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             Log.e(TAG, "Error while changing button visibility", ex);
         }
     }

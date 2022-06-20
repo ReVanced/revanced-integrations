@@ -10,8 +10,10 @@ import android.widget.ImageView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.google.android.apps.youtube.app.YouTubeTikTokRoot_Application;
+
 import app.revanced.integrations.settings.XGlobals;
 import fi.vanced.libraries.youtube.player.VideoHelpers;
+
 import java.lang.ref.WeakReference;
 
 /* loaded from: classes6.dex */

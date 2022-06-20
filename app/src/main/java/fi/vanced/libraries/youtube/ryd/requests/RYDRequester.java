@@ -25,7 +25,8 @@ import fi.vanced.utils.requests.Route;
 public class RYDRequester {
     private static final String RYD_API_URL = "https://returnyoutubedislikeapi.com/";
 
-    private RYDRequester() {}
+    private RYDRequester() {
+    }
 
     public static void fetchDislikes(String videoId) {
         try {
@@ -44,13 +45,11 @@ public class RYDRequester {
 
                 // Set the dislikes
                 new Handler(Looper.getMainLooper()).post(() -> ReturnYouTubeDislikes.trySetDislikes(ReturnYouTubeDislikes.formatDislikes(dislikes)));
-            }
-            else if (debug) {
+            } else if (debug) {
                 Log.d(TAG, "dislikes fetch response was " + connection.getResponseCode());
             }
             connection.disconnect();
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             dislikeCount = null;
             Log.e(TAG, "Failed to fetch dislikes", ex);
         }
@@ -75,13 +74,11 @@ public class RYDRequester {
                 }
 
                 return confirmRegistration(userId, solution, registration);
-            }
-            else if (debug) {
+            } else if (debug) {
                 Log.d(TAG, "Registration response was " + connection.getResponseCode());
             }
             connection.disconnect();
-        }
-        catch (Exception ex){
+        } catch (Exception ex) {
             Log.e(TAG, "Failed to register userId", ex);
         }
         return null;
@@ -97,7 +94,7 @@ public class RYDRequester {
             applyCommonRequestSettings(connection);
 
             String jsonInputString = "{\"solution\": \"" + solution + "\"}";
-            try(OutputStream os = connection.getOutputStream()) {
+            try (OutputStream os = connection.getOutputStream()) {
                 byte[] input = jsonInputString.getBytes(StandardCharsets.UTF_8);
                 os.write(input, 0, input.length);
             }
@@ -115,13 +112,11 @@ public class RYDRequester {
 
                     return userId;
                 }
-            }
-            else if (debug) {
+            } else if (debug) {
                 Log.d(TAG, "Registration confirmation response was " + connection.getResponseCode());
             }
             connection.disconnect();
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             Log.e(TAG, "Failed to confirm registration", ex);
         }
 
@@ -134,7 +129,7 @@ public class RYDRequester {
             applyCommonRequestSettings(connection);
 
             String voteJsonString = "{\"userId\": \"" + userId + "\", \"videoId\": \"" + videoId + "\", \"value\": \"" + vote + "\"}";
-            try(OutputStream os = connection.getOutputStream()) {
+            try (OutputStream os = connection.getOutputStream()) {
                 byte[] input = voteJsonString.getBytes(StandardCharsets.UTF_8);
                 os.write(input, 0, input.length);
             }
@@ -155,13 +150,11 @@ public class RYDRequester {
 
                 // Confirm vote
                 return confirmVote(videoId, userId, solution);
-            }
-            else if (debug) {
+            } else if (debug) {
                 Log.d(TAG, "Vote response was " + connection.getResponseCode());
             }
             connection.disconnect();
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             Log.e(TAG, "Failed to send vote", ex);
         }
         return false;
@@ -173,7 +166,7 @@ public class RYDRequester {
             applyCommonRequestSettings(connection);
 
             String jsonInputString = "{\"userId\": \"" + userId + "\", \"videoId\": \"" + videoId + "\", \"solution\": \"" + solution + "\"}";
-            try(OutputStream os = connection.getOutputStream()) {
+            try (OutputStream os = connection.getOutputStream()) {
                 byte[] input = jsonInputString.getBytes(StandardCharsets.UTF_8);
                 os.write(input, 0, input.length);
             }
@@ -190,13 +183,11 @@ public class RYDRequester {
 
                     return true;
                 }
-            }
-            else if (debug) {
+            } else if (debug) {
                 Log.d(TAG, "Vote confirmation response was " + connection.getResponseCode());
             }
             connection.disconnect();
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             Log.e(TAG, "Failed to confirm vote", ex);
         }
         return false;
