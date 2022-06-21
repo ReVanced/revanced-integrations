@@ -1,6 +1,5 @@
 package fi.vanced.libraries.youtube.ryd;
 
-import static app.revanced.integrations.settings.XGlobals.debug;
 import static fi.vanced.libraries.youtube.ryd.RYDSettings.PREFERENCES_KEY_USERID;
 import static fi.vanced.libraries.youtube.ryd.RYDSettings.PREFERENCES_NAME;
 import static fi.vanced.utils.VancedUtils.getPreferences;
@@ -8,8 +7,8 @@ import static fi.vanced.utils.VancedUtils.randomString;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
 
+import app.revanced.integrations.log.LogHelper;
 import fi.vanced.libraries.youtube.ryd.requests.RYDRequester;
 
 public class Registration {
@@ -38,7 +37,7 @@ public class Registration {
                 this.userId = register();
             }
         } catch (Exception ex) {
-            Log.e(TAG, "Unable to fetch the userId from shared preferences", ex);
+            LogHelper.printException(TAG, "Unable to fetch the userId from shared preferences", ex);
         }
 
         return this.userId;
@@ -53,15 +52,13 @@ public class Registration {
             SharedPreferences.Editor editor = preferences.edit();
             editor.putString(PREFERENCES_KEY_USERID, userId).apply();
         } catch (Exception ex) {
-            Log.e(TAG, "Unable to save the userId in shared preferences", ex);
+            LogHelper.printException(TAG, "Unable to save the userId in shared preferences", ex);
         }
     }
 
     private String register() {
         String userId = randomString(36);
-        if (debug) {
-            Log.d(TAG, "Trying to register the following userId: " + userId);
-        }
+        LogHelper.debug(TAG, "Trying to register the following userId: " + userId);
         return RYDRequester.register(userId, this);
     }
 }

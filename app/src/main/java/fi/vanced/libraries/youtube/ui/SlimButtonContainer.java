@@ -1,13 +1,13 @@
 package fi.vanced.libraries.youtube.ui;
 
-import static app.revanced.integrations.settings.XGlobals.debug;
+import static app.revanced.integrations.settings.Settings.debug;
 import static app.revanced.integrations.sponsorblock.SponsorBlockSettings.PREFERENCES_KEY_BROWSER_BUTTON;
 import static app.revanced.integrations.sponsorblock.SponsorBlockSettings.PREFERENCES_KEY_SPONSOR_BLOCK_ENABLED;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.AttributeSet;
-import android.util.Log;
+
 import android.view.ViewGroup;
 
 import com.google.android.apps.youtube.app.ui.SlimMetadataScrollableButtonContainerLayout;
@@ -62,7 +62,7 @@ public class SlimButtonContainer extends SlimMetadataScrollableButtonContainerLa
 
             addSharedPrefsChangeListener();
         } catch (Exception ex) {
-            Log.e(TAG, "Unable to initialize the button container", ex);
+            LogHelper.printException(TAG, "Unable to initialize the button container", ex);
         }
     }
 
@@ -70,7 +70,7 @@ public class SlimButtonContainer extends SlimMetadataScrollableButtonContainerLa
         listener = (sharedPreferences, key) -> {
             try {
                 if (debug) {
-                    Log.d(TAG, String.format("SharedPreference changed with key %s", key));
+                    LogH(TAG, String.format("SharedPreference changed with key %s", key));
                 }
                 if ("pref_copy_video_url_button_list".equals(key) && copyButton != null) {
                     copyButton.setVisible(ButtonVisibility.isVisibleInContainer(context, "pref_copy_video_url_button_list"));
@@ -114,7 +114,7 @@ public class SlimButtonContainer extends SlimMetadataScrollableButtonContainerLa
                     return;
                 }
             } catch (Exception ex) {
-                Log.e(TAG, "Error handling shared preference change", ex);
+                LogHelper.printException(TAG, "Error handling shared preference change", ex);
             }
         };
 

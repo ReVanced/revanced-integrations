@@ -1,13 +1,13 @@
 package fi.vanced.libraries.youtube.player;
 
 import android.content.Context;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.google.android.apps.youtube.app.YouTubeTikTokRoot_Application;
 
-import static app.revanced.integrations.settings.XGlobals.debug;
 import static app.revanced.integrations.sponsorblock.StringRef.str;
+
+import app.revanced.integrations.log.LogHelper;
 
 public class VideoHelpers {
     public static final String TAG = "VideoHelpers";
@@ -24,9 +24,7 @@ public class VideoHelpers {
         try {
             String videoId = VideoInformation.currentVideoId;
             if (videoId == null || videoId.isEmpty()) {
-                if (debug) {
-                    Log.d(TAG, "VideoId was empty");
-                }
+                LogHelper.debug(TAG, "VideoId was empty");
                 return;
             }
 
@@ -36,15 +34,13 @@ public class VideoHelpers {
                 videoUrl += String.format("?t=%s", (videoTime / 1000));
             }
 
-            if (debug) {
-                Log.d(TAG, "Video URL: " + videoUrl);
-            }
+            LogHelper.debug(TAG, "Video URL: " + videoUrl);
 
             setClipboard(YouTubeTikTokRoot_Application.getAppContext(), videoUrl);
 
             Toast.makeText(YouTubeTikTokRoot_Application.getAppContext(), str("share_copy_url_success"), Toast.LENGTH_SHORT).show();
         } catch (Exception ex) {
-            Log.e(TAG, "Couldn't generate video url", ex);
+            LogHelper.printException(TAG, "Couldn't generate video url", ex);
         }
     }
 

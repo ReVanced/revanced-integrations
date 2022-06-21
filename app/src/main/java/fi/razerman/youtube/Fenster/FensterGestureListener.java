@@ -1,11 +1,10 @@
 package fi.razerman.youtube.Fenster;
 
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ViewConfiguration;
 
-import app.revanced.integrations.settings.XGlobals;
+import app.revanced.integrations.log.LogHelper;
 
 /* loaded from: classes6.dex */
 public class FensterGestureListener implements GestureDetector.OnGestureListener {
@@ -29,28 +28,22 @@ public class FensterGestureListener implements GestureDetector.OnGestureListener
 
     @Override // android.view.GestureDetector.OnGestureListener
     public void onLongPress(MotionEvent e) {
-        if (XGlobals.debug) {
-            Log.i(TAG, "Long Press");
-        }
+        LogHelper.debug(TAG, "Long Press");
     }
 
     @Override // android.view.GestureDetector.OnGestureListener
     public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-        if (XGlobals.debug) {
-            Log.i(TAG, "Scroll");
-        }
+        LogHelper.debug(TAG, "Scroll");
         if (e1 == null || e2 == null) {
-            if (e1 == null && XGlobals.debug) {
-                Log.d("XDebug", "e1 is null");
+            if (e1 == null) {
+                LogHelper.debug("XDebug", "e1 is null");
             }
-            if (e2 == null && XGlobals.debug) {
-                Log.d("XDebug", "e2 is null");
+            if (e2 == null) {
+                LogHelper.debug("XDebug", "e2 is null");
             }
             return false;
         } else if (this.ignoreScroll) {
-            if (XGlobals.debug) {
-                Log.i(TAG, "Scroll ignored");
-            }
+            LogHelper.debug(TAG, "Scroll ignored");
             return false;
         } else {
             float deltaY = e2.getY() - e1.getY();
@@ -58,23 +51,13 @@ public class FensterGestureListener implements GestureDetector.OnGestureListener
             if (Math.abs(deltaX) > Math.abs(deltaY)) {
                 if (Math.abs(deltaX) > SWIPE_THRESHOLD) {
                     this.listener.onHorizontalScroll(e2, deltaX);
-                    if (deltaX > 0.0f) {
-                        if (XGlobals.debug) {
-                            Log.i(TAG, "Slide right");
-                        }
-                    } else if (XGlobals.debug) {
-                        Log.i(TAG, "Slide left");
-                    }
+                    String message = deltaX > 0.0f ? "Slide right" : "Slide left";
+                    LogHelper.debug(TAG, message);
                 }
             } else if (Math.abs(deltaY) > SWIPE_THRESHOLD) {
                 this.listener.onVerticalScroll(e2, deltaY);
-                if (deltaY > 0.0f) {
-                    if (XGlobals.debug) {
-                        Log.i(TAG, "Slide down");
-                    }
-                } else if (XGlobals.debug) {
-                    Log.i(TAG, "Slide up");
-                }
+                String message = deltaY > 0.0f ? "Slide down" : "Slide up";
+                LogHelper.debug(TAG, message);
             }
             return false;
         }
@@ -82,9 +65,7 @@ public class FensterGestureListener implements GestureDetector.OnGestureListener
 
     @Override // android.view.GestureDetector.OnGestureListener
     public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-        if (XGlobals.debug) {
-            Log.i(TAG, "Fling");
-        }
+        LogHelper.debug(TAG, "Fling");
         try {
             float diffY = e2.getY() - e1.getY();
             float diffX = e2.getX() - e1.getX();
@@ -112,16 +93,12 @@ public class FensterGestureListener implements GestureDetector.OnGestureListener
 
     @Override // android.view.GestureDetector.OnGestureListener
     public void onShowPress(MotionEvent e) {
-        if (XGlobals.debug) {
-            Log.i(TAG, "Show Press");
-        }
+        LogHelper.debug(TAG, "Show Press");
     }
 
     @Override // android.view.GestureDetector.OnGestureListener
     public boolean onDown(MotionEvent e) {
-        if (XGlobals.debug) {
-            Log.i(TAG, "Down - x: " + e.getX() + " y: " + e.getY());
-        }
+        LogHelper.debug(TAG, "Down - x: " + e.getX() + " y: " + e.getY());
         this.ignoreScroll = e.getY() <= TOP_PADDING;
         this.listener.onDown(e);
         return false;

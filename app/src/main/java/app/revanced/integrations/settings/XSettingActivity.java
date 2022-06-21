@@ -1,9 +1,9 @@
-package fi.razerman.youtube;
+package app.revanced.integrations.settings;
 
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
+
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.google.android.apps.youtube.app.YouTubeTikTokRoot_Application;
 
+import app.revanced.integrations.log.LogHelper;
 import fi.razerman.youtube.Helpers.XThemeHelpers;
 import fi.vanced.libraries.youtube.ryd.RYDFragment;
 import app.revanced.integrations.sponsorblock.SponsorBlockPreferenceFragment;
@@ -26,10 +27,10 @@ public class XSettingActivity extends Activity {
         boolean isDarkTheme = XThemeHelpers.isDarkTheme();
         this.currentTheme = isDarkTheme;
         if (isDarkTheme) {
-            Log.d("XSettingsActivity", "set Theme.YouTube.Settings.Dark");
+            LogHelper.debug("XSettingsActivity", "set Theme.YouTube.Settings.Dark");
             setTheme(getIdentifier("Theme.YouTube.Settings.Dark", "style"));
         } else {
-            Log.d("XSettingsActivity", "set Theme.YouTube.Settings");
+            LogHelper.debug("XSettingsActivity", "set Theme.YouTube.Settings");
             setTheme(getIdentifier("Theme.YouTube.Settings", "style"));
         }
         super.onCreate(bundle);
@@ -53,7 +54,7 @@ public class XSettingActivity extends Activity {
         try {
             getTextView((ViewGroup) findViewById(getIdentifier("toolbar", "id"))).setText(i);
         } catch (Exception e) {
-            Log.e(TAG, "Couldn't set Toolbar title", e);
+            LogHelper.printException(TAG, "Couldn't set Toolbar title", e);
         }
     }
 
@@ -61,14 +62,14 @@ public class XSettingActivity extends Activity {
         try {
             getTextView((ViewGroup) findViewById(getIdentifier("toolbar", "id"))).setText(str);
         } catch (Exception e) {
-            Log.e(TAG, "Couldn't set Toolbar title", e);
+            LogHelper.printException(TAG, "Couldn't set Toolbar title", e);
         }
     }
 
     private void initImageButton(boolean z) {
         try {
             ImageButton imageButton = getImageButton((ViewGroup) findViewById(getIdentifier("toolbar", "id")));
-            imageButton.setOnClickListener(new View.OnClickListener() { // from class: fi.razerman.youtube.XSettingActivity.1
+            imageButton.setOnClickListener(new View.OnClickListener() { // from class: app.revanced.integrations.settings.XSettingActivity.1
                 @Override // android.view.View.OnClickListener
                 public void onClick(View view) {
                     XSettingActivity.this.onBackPressed();
@@ -76,7 +77,7 @@ public class XSettingActivity extends Activity {
             });
             imageButton.setImageDrawable(getResources().getDrawable(getIdentifier(z ? "quantum_ic_arrow_back_white_24" : "quantum_ic_arrow_back_grey600_24", "drawable")));
         } catch (Exception e) {
-            Log.e(TAG, "Couldn't set Toolbar click handler", e);
+            LogHelper.printException(TAG, "Couldn't set Toolbar click handler", e);
         }
     }
 
@@ -118,7 +119,7 @@ public class XSettingActivity extends Activity {
         if (context2 != null) {
             return context2;
         }
-        Log.e("WatchWhileActivity", "Context is null!");
+        LogHelper.printException("WatchWhileActivity", "Context is null!");
         return null;
     }
 }

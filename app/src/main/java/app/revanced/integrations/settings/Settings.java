@@ -10,11 +10,12 @@ import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.os.Build;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
+
+import androidx.annotation.RequiresPermission;
 
 import com.google.android.apps.youtube.app.YouTubeTikTokRoot_Application;
 
@@ -23,6 +24,7 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 
+import app.revanced.integrations.log.LogHelper;
 import fi.razerman.youtube.Fenster.FensterGestureController;
 import fi.razerman.youtube.Fenster.FensterGestureListener;
 import fi.razerman.youtube.Fenster.Helpers.BrightnessHelper;
@@ -31,132 +33,48 @@ import fi.razerman.youtube.Helpers.ColorRef;
 import fi.razerman.youtube.Helpers.XSwipeHelper;
 import app.revanced.integrations.sponsorblock.NewSegmentHelperLayout;
 import fi.razerman.youtube.XJson;
-import fi.razerman.youtube.XSettingActivity;
-
-/* compiled from: PG */
-/* renamed from: env */
-/* loaded from: classes3.dex */
-enum env {
-    NONE,
-    HIDDEN,
-    WATCH_WHILE_MINIMIZED,
-    WATCH_WHILE_MAXIMIZED,
-    WATCH_WHILE_FULLSCREEN,
-    WATCH_WHILE_SLIDING_MAXIMIZED_FULLSCREEN,
-    WATCH_WHILE_SLIDING_MINIMIZED_MAXIMIZED,
-    WATCH_WHILE_SLIDING_MINIMIZED_DISMISSED,
-    WATCH_WHILE_SLIDING_FULLSCREEN_DISMISSED,
-    INLINE_MINIMAL,
-    VIRTUAL_REALITY_FULLSCREEN,
-    WATCH_WHILE_PICTURE_IN_PICTURE;
-
-    /* renamed from: a */
-    public final boolean m33524a() {
-        return !m33520e() && m33523b() && m33517h();
-    }
-
-    /* renamed from: b */
-    public final boolean m33523b() {
-        return this == WATCH_WHILE_FULLSCREEN || this == VIRTUAL_REALITY_FULLSCREEN || this == WATCH_WHILE_PICTURE_IN_PICTURE;
-    }
-
-    /* renamed from: c */
-    public final boolean m33522c() {
-        return this == NONE || m33521d();
-    }
-
-    /* renamed from: d */
-    public final boolean m33521d() {
-        return this == INLINE_MINIMAL;
-    }
-
-    /* renamed from: e */
-    public final boolean m33520e() {
-        return this == WATCH_WHILE_PICTURE_IN_PICTURE;
-    }
-
-    /* renamed from: f */
-    public final boolean m33519f() {
-        return (this == NONE || this == HIDDEN) ? false : true;
-    }
-
-    /* renamed from: g */
-    public final boolean m33518g() {
-        return this == VIRTUAL_REALITY_FULLSCREEN;
-    }
-
-    /* renamed from: h */
-    public final boolean m33517h() {
-        return this == WATCH_WHILE_MINIMIZED || this == WATCH_WHILE_MAXIMIZED || this == WATCH_WHILE_FULLSCREEN || this == WATCH_WHILE_SLIDING_MAXIMIZED_FULLSCREEN || this == WATCH_WHILE_SLIDING_MINIMIZED_MAXIMIZED || this == WATCH_WHILE_SLIDING_MINIMIZED_DISMISSED || this == WATCH_WHILE_SLIDING_FULLSCREEN_DISMISSED || this == WATCH_WHILE_PICTURE_IN_PICTURE;
-    }
-
-    /* renamed from: i */
-    public final boolean m33516i() {
-        return this == WATCH_WHILE_MAXIMIZED || this == WATCH_WHILE_FULLSCREEN;
-    }
-
-    /* renamed from: j */
-    public final boolean m33515j() {
-        return m33516i() || this == WATCH_WHILE_SLIDING_MAXIMIZED_FULLSCREEN;
-    }
-
-    /* renamed from: k */
-    public final boolean m33514k() {
-        return this == WATCH_WHILE_MINIMIZED || this == WATCH_WHILE_SLIDING_MINIMIZED_DISMISSED;
-    }
-
-    /* renamed from: l */
-    public final boolean m33513l() {
-        return m33514k() || m33512m();
-    }
-
-    /* renamed from: m */
-    public final boolean m33512m() {
-        return this == WATCH_WHILE_SLIDING_MINIMIZED_MAXIMIZED || this == WATCH_WHILE_SLIDING_MINIMIZED_DISMISSED || this == WATCH_WHILE_SLIDING_MAXIMIZED_FULLSCREEN || this == WATCH_WHILE_SLIDING_FULLSCREEN_DISMISSED;
-    }
-}
 
 /* loaded from: classes6.dex */
-public class XGlobals {
+public class Settings {
     private static Object AutoRepeatClass;
-    private static env PlayerType;
-    public static FensterGestureController fensterGestureController;
-    public static Boolean XFILEDEBUG = false;
-    public static Boolean newVideo = false;
-    public static Boolean newVideoSpeed = false;
-    public static Boolean debug = false;
-    private static Boolean settingsInitialized = false;
-    public static String manufacturerOverride = null;
-    public static String modelOverride = null;
-    public static Boolean overrideCodec = false;
+    private static PlayerType env;
+    private static FensterGestureController fensterGestureController;
+    protected static Boolean XFILEDEBUG = false;
+    protected static Boolean debug = false;
+    protected static Boolean settingsInitialized = false;
+    protected static String manufacturerOverride = null;
+    protected static String modelOverride = null;
+    protected static Boolean overrideCodec = false;
+    protected static Integer prefResolutionWIFI = -2;
+    protected static Integer prefResolutionMobile = -2;
+    protected static Float prefVideoSpeed = -2.0f;
+    protected static Boolean prefAutoCaptions = false;
+    protected static Boolean homeAdsShown = false;
+    protected static Boolean videoAdsShown = false;
+    protected static Boolean reelShown = false;
+    protected static Boolean suggestionsShown = true;
+    protected static Boolean infoCardsShown = true;
+    protected static Boolean brandingShown = true;
+    protected static Boolean castButtonShown = false;
+    protected static Boolean tabletMiniplayer = false;
+    protected static Boolean commentsLocation = false;
+    protected static Boolean newActionBar = false;
+    protected static Boolean verticalZoomToFit = false;
+    protected static Boolean isDarkApp = false;
+    protected static Boolean accessibilitySeek = false;
+    protected static Boolean HDRBrightness = true;
+    protected static Boolean EnableXFensterBrightness = false;
+    protected static Boolean EnableXFensterVolume = false;
+    protected static Integer maxBuffer = 120000;
+    protected static Integer playbackMS = 2500;
+    protected static Integer reBuffer = 5000;
+
     public static Boolean userChangedQuality = false;
     public static Boolean userChangedSpeed = false;
-    public static Integer prefResolutionWIFI = -2;
-    public static Integer prefResolutionMobile = -2;
-    public static Float prefVideoSpeed = -2.0f;
-    public static Boolean prefAutoCaptions = false;
-    public static Boolean homeAdsShown = false;
-    public static Boolean videoAdsShown = false;
-    public static Boolean reelShown = false;
-    public static Boolean suggestionsShown = true;
-    public static Boolean infoCardsShown = true;
-    public static Boolean brandingShown = true;
-    public static Boolean castButtonShown = false;
-    public static Boolean tabletMiniplayer = false;
-    public static Boolean commentsLocation = false;
-    public static Boolean newActionBar = false;
-    public static Boolean verticalZoomToFit = false;
-    public static Boolean isDarkApp = false;
-    public static Boolean accessibilitySeek = false;
-    public static Boolean HDRBrightness = true;
-    public static Boolean EnableXFensterBrightness = false;
-    public static Boolean EnableXFensterVolume = false;
-    public static Integer maxBuffer = 120000;
-    public static Integer playbackMS = 2500;
-    public static Integer reBuffer = 5000;
-    public static Enum lastPivotTab;
+    public static Boolean newVideo = false;
+    public static Boolean newVideoSpeed = false;
 
-    public static void ReadSettings() {
+    private static void ReadSettings() {
         Context context;
         if (!settingsInitialized.booleanValue() && (context = YouTubeTikTokRoot_Application.getAppContext()) != null) {
             ColorRef.setContext(context);
@@ -219,82 +137,150 @@ public class XGlobals {
         }
     }
 
+    /**
+     *  Checks if debug log has been enabled in the Settings
+     * @return false as default value
+     */
+    public static boolean isDebug() {
+        ReadSettings();
+        if (!settingsInitialized.booleanValue()) {
+            LogHelper.printException("Settings", "Context is null, returning false for debug!");
+            return false;
+        }
+        return debug;
+    }
+
+    /**
+     * Getter for prefResolutionMobile
+     * @return Integer
+     */
+    public static Integer getPreferredMobileResolution() {
+        return prefResolutionMobile;
+    }
+
+    public static Integer getPreferredWifiResolution() {
+        return prefResolutionWIFI;
+    }
+
+    public static Float getPreferredVideoSpeed() {
+        return prefVideoSpeed;
+    }
+
+    public static boolean isSuggestionsShown() {
+        ReadSettings();
+        String message = suggestionsShown ? "Suggestions: Shown" : "Suggestions: Hidden";
+        LogHelper.debug("Settings", message);
+        return suggestionsShown;
+    }
+
+    public static boolean isInfoCardsShown()  {
+        ReadSettings();
+        String message = infoCardsShown ? "InfoCards: Shown" : "InfoCards: Hidden";
+        LogHelper.debug("Settings", message);
+        return infoCardsShown;
+    }
+
+    public static boolean isBrandingShown() {
+        ReadSettings();
+        String message = brandingShown ? "Branding: Shown" : "Branding: Hidden";
+        LogHelper.debug("Settings", message);
+        return brandingShown;
+    }
+
+    public static boolean isHomeAdsShown() {
+        ReadSettings();
+        String message = homeAdsShown ? "Homeads: Shown" : "Homeads: Hidden";
+        LogHelper.debug("Settings", message);
+        return homeAdsShown;
+    }
+
+    public static boolean isVideoAdsShown() {
+        ReadSettings();
+        String message = videoAdsShown ? "Videoads: Shown" : "Videoads: Hidden";
+        LogHelper.debug("Settings", message);
+        return videoAdsShown;
+    }
+
+    public static boolean isReelsShown() {
+        ReadSettings();
+        String message = reelShown ? "Reels: Shown" : "Reels: Hidden";
+        LogHelper.debug("Settings", message);
+        return reelShown;
+    }
+
+    public static boolean isCastButtonShown() {
+        ReadSettings();
+        String message = castButtonShown ? "Castbutton: Shown" : "Castbutton: Hidden";
+        LogHelper.debug("Settings", message);
+        return castButtonShown;
+    }
+
     public static String getManufacturer() {
         ReadSettings();
         if (!settingsInitialized.booleanValue()) {
-            Log.e("XGlobals", "Context is null, returning Build.MANUFACTURER!");
+            LogHelper.printException("Settings", "Context is null, returning Build.MANUFACTURER!");
             return Build.MANUFACTURER;
         }
         String manufacturer = manufacturerOverride;
         if (manufacturer == null || manufacturer.isEmpty()) {
             manufacturer = Build.MANUFACTURER;
         }
-        if (debug.booleanValue()) {
-            Log.d("XGlobals", "getManufacturer: " + manufacturer);
-        }
+        LogHelper.debug("Settings", "getManufacturer: " + manufacturer);
         return manufacturer;
     }
 
     public static String getModel() {
         ReadSettings();
         if (!settingsInitialized.booleanValue()) {
-            Log.e("XGlobals", "Context is null, returning Build.MODEL!");
+            LogHelper.printException("Settings", "Context is null, returning Build.MODEL!");
             return Build.MODEL;
         }
         String model = modelOverride;
         if (model == null || model.isEmpty()) {
             model = Build.MODEL;
         }
-        if (debug.booleanValue()) {
-            Log.d("XGlobals", "getModel: " + model);
-        }
+        LogHelper.debug("Settings", "getModel: " + model);
         return model;
     }
 
     public static boolean autoCaptions(boolean original) {
         ReadSettings();
         if (!settingsInitialized.booleanValue()) {
-            Log.e("XGlobals", "Context is null, returning " + original + "!");
+            LogHelper.printException("Settings", "Context is null, returning " + original + "!");
             return original;
         }
         Boolean captions = Boolean.valueOf(original);
         if (prefAutoCaptions.booleanValue()) {
             captions = true;
         }
-        if (debug.booleanValue()) {
-            Log.d("XGlobals", "autoCaptions: " + captions);
-        }
+        LogHelper.debug("Settings", "autoCaptions: " + captions);
         return captions.booleanValue();
     }
 
     public static boolean getOverride(boolean original) {
         ReadSettings();
         if (!settingsInitialized.booleanValue()) {
-            Log.e("XGlobals", "Context is null, returning " + original + "!");
+            LogHelper.printException("Settings", "Context is null, returning " + original + "!");
             return original;
         }
         Boolean compatibility = Boolean.valueOf(original);
         if (overrideCodec.booleanValue()) {
             compatibility = true;
         }
-        if (debug.booleanValue()) {
-            Log.d("XGlobals", "getOverride: " + compatibility);
-        }
+        LogHelper.debug("Settings", "getOverride: " + compatibility);
+
         return compatibility.booleanValue();
     }
 
     public static int getCommentsLocation(int original) {
         ReadSettings();
         if (!settingsInitialized.booleanValue()) {
-            Log.e("XGlobals", "Context is null, returning " + original + "!");
+            LogHelper.printException("Settings", "Context is null, returning " + original + "!");
             return original;
         } else if (!commentsLocation.booleanValue()) {
             return original;
         } else {
-            if (!debug.booleanValue()) {
-                return 3;
-            }
-            Log.d("XGlobals", "getCommentsLocation: Moving comments back down");
+            LogHelper.debug("Settings", "getCommentsLocation: Moving comments back down");
             return 3;
         }
     }
@@ -302,31 +288,12 @@ public class XGlobals {
     public static boolean getTabletMiniplayerOverride(boolean original) {
         ReadSettings();
         if (!settingsInitialized.booleanValue()) {
-            Log.e("XGlobals", "Context is null, returning " + original + "!");
+            LogHelper.printException("Settings", "Context is null, returning " + original + "!");
             return original;
         } else if (!tabletMiniplayer.booleanValue()) {
             return original;
         } else {
-            if (!debug.booleanValue()) {
-                return true;
-            }
-            Log.d("XGlobals", "getTabletMiniplayerOverride: Using tablet miniplayer");
-            return true;
-        }
-    }
-
-    public static boolean getCastButtonOverride(boolean original) {
-        ReadSettings();
-        if (!settingsInitialized.booleanValue()) {
-            Log.e("XGlobals", "Context is null, returning " + original + "!");
-            return original;
-        } else if (castButtonShown.booleanValue()) {
-            return original;
-        } else {
-            if (!debug.booleanValue()) {
-                return true;
-            }
-            Log.d("XGlobals", "getCastButtonOverride: Hidden by override");
+            LogHelper.debug("Settings", "getTabletMiniplayerOverride: Using tablet miniplayer");
             return true;
         }
     }
@@ -334,15 +301,12 @@ public class XGlobals {
     public static boolean getNewActionBar(boolean original) {
         ReadSettings();
         if (!settingsInitialized.booleanValue()) {
-            Log.e("XGlobals", "Context is null, returning " + original + "!");
+            LogHelper.printException("Settings", "Context is null, returning " + original + "!");
             return original;
         } else if (!newActionBar.booleanValue()) {
             return original;
         } else {
-            if (!debug.booleanValue()) {
-                return true;
-            }
-            Log.d("XGlobals", "getNewActionBar: Enabled");
+            LogHelper.debug("Settings", "getNewActionBar: Enabled");
             return true;
         }
     }
@@ -350,14 +314,12 @@ public class XGlobals {
     public static int getCastButtonOverrideV2(int original) {
         ReadSettings();
         if (!settingsInitialized.booleanValue()) {
-            Log.e("XGlobals", "Context is null, returning " + original + "!");
+            LogHelper.printException("Settings", "Context is null, returning " + original + "!");
             return original;
         } else if (castButtonShown.booleanValue()) {
             return original;
         } else {
-            if (debug.booleanValue()) {
-                Log.d("XGlobals", "getCastButtonOverrideV2: Hidden by override");
-            }
+            LogHelper.debug("Settings", "getCastButtonOverrideV2: Hidden by override");
             return 8;
         }
     }
@@ -365,15 +327,12 @@ public class XGlobals {
     public static boolean getNewActionBarNegated(boolean original) {
         ReadSettings();
         if (!settingsInitialized.booleanValue()) {
-            Log.e("XGlobals", "Context is null, returning " + original + "!");
+            LogHelper.printException("Settings", "Context is null, returning " + original + "!");
             return original;
         } else if (!newActionBar.booleanValue()) {
             return original;
         } else {
-            if (!debug.booleanValue()) {
-                return false;
-            }
-            Log.d("XGlobals", "getNewActionBar: Enabled");
+            LogHelper.debug("Settings", "getNewActionBar: Enabled");
             return false;
         }
     }
@@ -381,15 +340,12 @@ public class XGlobals {
     public static boolean getVerticalZoomToFit(boolean original) {
         ReadSettings();
         if (!settingsInitialized.booleanValue()) {
-            Log.e("XGlobals", "Context is null, returning " + original + "!");
+            LogHelper.printException("Settings", "Context is null, returning " + original + "!");
             return original;
         } else if (!verticalZoomToFit.booleanValue()) {
             return original;
         } else {
-            if (!debug.booleanValue()) {
-                return true;
-            }
-            Log.d("XGlobals", "getVerticalZoomToFit: Enabled");
+            LogHelper.debug("Settings", "getVerticalZoomToFit: Enabled");
             return true;
         }
     }
@@ -398,7 +354,7 @@ public class XGlobals {
         ReadSettings();
         Context context = YouTubeTikTokRoot_Application.getAppContext();
         if (context == null) {
-            Log.e("XGlobals", "Context is null, returning " + original + "!");
+            LogHelper.printException("Settings", "Context is null, returning " + original + "!");
             return original;
         }
         SharedPreferences sharedPreferences = context.getSharedPreferences("youtube", 0);
@@ -415,15 +371,12 @@ public class XGlobals {
     public static boolean getThemeStatus() {
         ReadSettings();
         if (!settingsInitialized.booleanValue()) {
-            Log.e("XGlobals", "Context is null, returning false!");
+            LogHelper.printException("Settings", "Context is null, returning false!");
             return false;
         } else if (!isDarkApp.booleanValue()) {
             return false;
         } else {
-            if (!debug.booleanValue()) {
-                return true;
-            }
-            Log.d("XGlobals", "getThemeStatus: Is themed");
+            LogHelper.debug("Settings", "getThemeStatus: Is themed");
             return true;
         }
     }
@@ -431,16 +384,14 @@ public class XGlobals {
     public static boolean accessibilitySeek(boolean original) {
         ReadSettings();
         if (!settingsInitialized.booleanValue()) {
-            Log.e("XGlobals", "Context is null, returning " + original + "!");
+            LogHelper.printException("Settings", "Context is null, returning " + original + "!");
             return original;
         }
         Boolean seek = Boolean.valueOf(original);
         if (accessibilitySeek.booleanValue()) {
             seek = true;
         }
-        if (debug.booleanValue()) {
-            Log.d("XGlobals", "accessibilitySeek: " + seek);
-        }
+        LogHelper.debug("Settings", "accessibilitySeek: " + seek);
         return seek.booleanValue();
     }
 
@@ -449,18 +400,16 @@ public class XGlobals {
         try {
             Context context = YouTubeTikTokRoot_Application.getAppContext();
             if (context == null) {
-                Log.e("XGlobals", "useOldStyleQualitySettings - Context is null, returning false!");
+                LogHelper.printException("Settings", "useOldStyleQualitySettings - Context is null, returning false!");
                 value = true;
             } else {
                 SharedPreferences sharedPreferences = context.getSharedPreferences("youtube", 0);
                 value = sharedPreferences.getBoolean("old_style_quality_settings", true);
-                if (debug.booleanValue()) {
-                    Log.d("XGlobals", "old_style_quality_settings set to: " + value);
-                }
+                LogHelper.debug("Settings", "old_style_quality_settings set to: " + value);
             }
             return value;
         } catch (Exception ex) {
-            Log.e("XGlobals", "Unable to get old style quality settings", ex);
+            LogHelper.printException("Settings", "Unable to get old style quality settings", ex);
             return true;
         }
     }
@@ -469,14 +418,12 @@ public class XGlobals {
         ReadSettings();
         Context context = YouTubeTikTokRoot_Application.getAppContext();
         if (context == null) {
-            Log.e("XGlobals", "shouldAutoRepeat - Context is null, returning false!");
+            LogHelper.printException("Settings", "shouldAutoRepeat - Context is null, returning false!");
             return false;
         }
         SharedPreferences sharedPreferences = context.getSharedPreferences("youtube", 0);
         boolean repeat = sharedPreferences.getBoolean("pref_auto_repeat", false);
-        if (debug.booleanValue()) {
-            Log.d("XGlobals", "shouldAutoRepeat: " + repeat);
-        }
+        LogHelper.debug("Settings", "shouldAutoRepeat: " + repeat);
         return repeat;
     }
 
@@ -486,14 +433,12 @@ public class XGlobals {
             ReadSettings();
             Context context = YouTubeTikTokRoot_Application.getAppContext();
             if (context == null) {
-                Log.e("XGlobals", "shouldAutoRepeat - Context is null, returning false!");
+                LogHelper.printException("Settings", "shouldAutoRepeat - Context is null, returning false!");
                 return;
             }
             SharedPreferences sharedPreferences = context.getSharedPreferences("youtube", 0);
             sharedPreferences.edit().putBoolean("autonav_settings_activity_key", autoNav).apply();
-            if (debug.booleanValue()) {
-                Log.d("XGlobals", "autonav_settings_activity_key set to: " + autoNav);
-            }
+            LogHelper.debug("Settings", "autonav_settings_activity_key set to: " + autoNav);
         } catch (Exception e) {
         }
     }
@@ -501,7 +446,7 @@ public class XGlobals {
     public static float getHDRBrightness(float original) {
         ReadSettings();
         if (!settingsInitialized.booleanValue()) {
-            Log.e("XGlobals", "Context is null, getHDRBrightness returning " + original + "!");
+            LogHelper.printException("Settings", "Context is null, getHDRBrightness returning " + original + "!");
             return original;
         }
         float finalValue = original;
@@ -511,20 +456,18 @@ public class XGlobals {
             } else {
                 finalValue = -1.0f;
             }
-            if (debug.booleanValue()) {
-                Log.d("XGlobals", "getHDRBrightness switched to: " + finalValue);
-            }
+            LogHelper.debug("Settings", "getHDRBrightness switched to: " + finalValue);
+
         }
-        if (debug.booleanValue()) {
-            Log.d("XGlobals", "getHDRBrightness: " + finalValue);
-        }
+        LogHelper.debug("Settings", "getHDRBrightness: " + finalValue);
+
         return finalValue;
     }
 
     public static int getMaxBuffer(int original) {
         ReadSettings();
         if (!settingsInitialized.booleanValue()) {
-            Log.e("XGlobals", "Context is null, getMaxBuffer returning " + original + "!");
+            LogHelper.printException("Settings", "Context is null, getMaxBuffer returning " + original + "!");
             return original;
         }
         int retrievedValue = maxBuffer.intValue();
@@ -534,63 +477,51 @@ public class XGlobals {
     public static int getPlaybackBuffer(int original) {
         ReadSettings();
         if (!settingsInitialized.booleanValue()) {
-            Log.e("XGlobals", "Context is null, getMaxBuffer returning " + original + "!");
+            LogHelper.printException("Settings", "Context is null, getMaxBuffer returning " + original + "!");
             return original;
         }
         int retrievedValue = playbackMS.intValue();
-        if (debug.booleanValue()) {
-            Log.d("XGlobals", "getPlaybackBuffer switched to: " + retrievedValue);
-        }
+        LogHelper.debug("Settings", "getPlaybackBuffer switched to: " + retrievedValue);
+
         return retrievedValue;
     }
 
     public static int getReBuffer(int original) {
         ReadSettings();
         if (!settingsInitialized.booleanValue()) {
-            Log.e("XGlobals", "Context is null, getMaxBuffer returning " + original + "!");
+            LogHelper.printException("Settings", "Context is null, getMaxBuffer returning " + original + "!");
             return original;
         }
         int retrievedValue = reBuffer.intValue();
-        if (debug.booleanValue()) {
-            Log.d("XGlobals", "getReBuffer switched to: " + retrievedValue);
-        }
+        LogHelper.debug("Settings", "getReBuffer switched to: " + retrievedValue);
+
         return retrievedValue;
     }
 
     public static void InitializeFensterController(Context context, ViewGroup viewGroup, ViewConfiguration viewConfiguration) {
         fensterGestureController = new FensterGestureController();
         fensterGestureController.setFensterEventsListener(new XFenster(context, viewGroup), context, viewConfiguration);
-        if (debug.booleanValue()) {
-            Log.d("XGlobals", "XFenster initialized");
-        }
+        LogHelper.debug("Settings", "XFenster initialized");
     }
 
     public static boolean FensterTouchEvent(MotionEvent motionEvent) {
         if (fensterGestureController == null) {
-            if (debug.booleanValue()) {
-                Log.d("XGlobals", "fensterGestureController is null");
-            }
+            LogHelper.debug("Settings", "fensterGestureController is null");
             return false;
         } else if (motionEvent == null) {
-            if (debug.booleanValue()) {
-                Log.d("XGlobals", "motionEvent is null");
-            }
+            LogHelper.debug("Settings", "motionEvent is null");
             return false;
         } else if (!XSwipeHelper.IsControlsShown()) {
             return fensterGestureController.onTouchEvent(motionEvent);
         } else {
-            if (debug.booleanValue()) {
-                Log.d("XGlobals", "skipping onTouchEvent dispatching because controls are shown.");
-            }
+            LogHelper.debug("Settings", "skipping onTouchEvent dispatching because controls are shown.");
             return false;
         }
     }
 
-    public static void PlayerTypeChanged(env playerType) {
-        if (debug.booleanValue()) {
-            Log.d("XDebug", playerType.toString());
-        }
-        if (PlayerType != playerType) {
+    public static void PlayerTypeChanged(PlayerType playerType) {
+        LogHelper.debug("XDebug", playerType.toString());
+        if (env != playerType) {
             String playerTypeString = playerType.toString();
             if (playerTypeString.equals("WATCH_WHILE_FULLSCREEN")) {
                 EnableXFenster();
@@ -602,7 +533,7 @@ public class XGlobals {
             }
             fi.vanced.libraries.youtube.player.PlayerType.playerTypeChanged(playerTypeString);
         }
-        PlayerType = playerType;
+        env = playerType;
     }
 
     public static void EnableXFenster() {
@@ -626,36 +557,34 @@ public class XGlobals {
     public static void CheckForMicroG(Activity activity) {
         AlertDialog.Builder builder;
         if (!appInstalledOrNot("com.mgoogle.android.gms")) {
-            if (debug.booleanValue()) {
-                Log.d("XDebug", "Custom MicroG installation undetected");
-            }
+            LogHelper.debug("XDebug", "Custom MicroG installation undetected");
             if (Build.VERSION.SDK_INT >= 21) {
                 builder = new AlertDialog.Builder(activity, 16974374);
             } else {
                 builder = new AlertDialog.Builder(activity);
             }
-            builder.setTitle("Someone is not reading...").setMessage("You didn't install the MicroG as instructed, you can't login without it.\n\nInstall it and try again.").setPositiveButton("Close", new DialogInterface.OnClickListener() { // from class: app.revanced.integrations.settings.XGlobals.1
+            builder.setTitle("Someone is not reading...").setMessage("You didn't install the MicroG as instructed, you can't login without it.\n\nInstall it and try again.").setPositiveButton("Close", new DialogInterface.OnClickListener() { // from class: app.revanced.integrations.settings.Settings.1
                 @Override // android.content.DialogInterface.OnClickListener
                 public void onClick(DialogInterface dialog, int id) {
                 }
             }).show();
-        } else if (debug.booleanValue()) {
-            Log.i("XDebug", "Custom MicroG installation detected");
+        } else {
+            LogHelper.debug("XDebug", "Custom MicroG installation detected");
         }
     }
 
     public static boolean isFensterEnabled() {
-        if (PlayerType != null && PlayerType.toString().equals("WATCH_WHILE_FULLSCREEN") && !XSwipeHelper.IsControlsShown()) {
+        if (env != null && env.toString().equals("WATCH_WHILE_FULLSCREEN") && !XSwipeHelper.IsControlsShown()) {
             return EnableXFensterBrightness.booleanValue() || EnableXFensterVolume.booleanValue();
         }
         return false;
     }
 
     public static boolean isWatchWhileFullScreen() {
-        if (PlayerType == null) {
+        if (env == null) {
             return false;
         }
-        return PlayerType.toString().equals("WATCH_WHILE_FULLSCREEN");
+        return env.toString().equals("WATCH_WHILE_FULLSCREEN");
     }
 
     private static boolean appInstalledOrNot(String uri) {
@@ -680,63 +609,13 @@ public class XGlobals {
     }
 
     private static int appGetFirstTimeRun() {
-        SharedPreferences appPreferences = getContext().getSharedPreferences("youtube_vanced", 0);
+        SharedPreferences appPreferences = getContext().getSharedPreferences("youtube_revanced", 0);
         String appCurrentBuildVersion = getVersionName();
         String appLastBuildVersion = appPreferences.getString("app_first_time", null);
         if (appLastBuildVersion == null || !appLastBuildVersion.equalsIgnoreCase(appCurrentBuildVersion)) {
             return appLastBuildVersion == null ? 0 : 2;
         }
         return 1;
-    }
-
-    public static void ChangeLogAndOfficialChecker(Activity activity) {
-        AlertDialog.Builder builder;
-        if (appGetFirstTimeRun() != 1) {
-            final String versionName = getVersionName();
-            String[] results = XJson.getVersion(versionName);
-            String title = "Vanced Team";
-            String message = "\n - xfileFIN\n - Laura Almeida \n - ZaneZam\n - KevinX8";
-            String buttonPositive = "Close";
-            String buttonNegative = "Remind later";
-            if (results != null && results.length >= 3 && results[0] != null && !results[0].isEmpty() && results[1] != null && !results[1].isEmpty() && results[2] != null && !results[2].isEmpty()) {
-                title = results[0];
-                message = results[1];
-                buttonPositive = results[2];
-                buttonNegative = (results.length < 4 || results[3] == null || results[3].isEmpty()) ? null : results[3];
-            }
-            if (Build.VERSION.SDK_INT >= 21) {
-                builder = new AlertDialog.Builder(activity, 16974374);
-            } else {
-                builder = new AlertDialog.Builder(activity);
-            }
-            builder.setTitle(title).setMessage(message).setPositiveButton(buttonPositive, new DialogInterface.OnClickListener() { // from class: app.revanced.integrations.settings.XGlobals.3
-                @Override // android.content.DialogInterface.OnClickListener
-                public void onClick(DialogInterface dialog, int id) {
-                    SharedPreferences appPreferences = XGlobals.getContext().getSharedPreferences("youtube_vanced", 0);
-                    appPreferences.edit().putString("app_first_time", versionName).apply();
-                }
-            }).setNegativeButton(buttonNegative, new DialogInterface.OnClickListener() { // from class: app.revanced.integrations.settings.XGlobals.2
-                @Override // android.content.DialogInterface.OnClickListener
-                public void onClick(DialogInterface dialog, int id) {
-                }
-            }).show();
-        }
-    }
-
-    private static void UnofficialChecker(Activity activity) {
-        AlertDialog.Builder builder;
-        if (ExecuteShellCommand("grep -r m0yP /magisk/iYTBPforMagisk")) {
-            if (Build.VERSION.SDK_INT >= 21) {
-                builder = new AlertDialog.Builder(activity, 16974374);
-            } else {
-                builder = new AlertDialog.Builder(activity);
-            }
-            builder.setTitle("Unofficial Version").setMessage("This is an unofficial Magisk module.\nNo support is provided for this and it's adviced to download the official one from the following url.\nUrl: goo.gl/xW9u4U").setPositiveButton("Close", new DialogInterface.OnClickListener() { // from class: app.revanced.integrations.settings.XGlobals.4
-                @Override // android.content.DialogInterface.OnClickListener
-                public void onClick(DialogInterface dialog, int id) {
-                }
-            }).show();
-        }
     }
 
     public static String getPackageName() {
@@ -746,13 +625,12 @@ public class XGlobals {
             context = XSettingActivity.getAppContext();
         }
         if (context == null) {
-            Log.e("XGlobals", "Context is null, returning com.google.android.youtube!");
+            LogHelper.printException("Settings", "Context is null, returning com.google.android.youtube!");
             return "com.google.android.youtube";
         }
         String PACKAGE_NAME = context.getPackageName();
-        if (debug.booleanValue()) {
-            Log.d("XGlobals", "getPackageName: " + PACKAGE_NAME);
-        }
+        LogHelper.debug("Settings", "getPackageName: " + PACKAGE_NAME);
+
         return PACKAGE_NAME;
     }
 
@@ -761,7 +639,7 @@ public class XGlobals {
             Resources res = context.getResources();
             return res.getString(res.getIdentifier(name, "string", context.getPackageName()));
         } catch (Throwable exception) {
-            Log.e("XGlobals", "Resource not found.", exception);
+            LogHelper.printException("Settings", "Resource not found.", exception);
             return "";
         }
     }
@@ -770,7 +648,7 @@ public class XGlobals {
         ReadSettings();
         Context context = YouTubeTikTokRoot_Application.getAppContext();
         if (context == null) {
-            Log.e("XGlobals", "Context is null, returning " + original + "!");
+            LogHelper.printException("Settings", "Context is null, returning " + original + "!");
             return original;
         }
         SharedPreferences sharedPreferences = context.getSharedPreferences("youtube", 0);
@@ -778,9 +656,7 @@ public class XGlobals {
         if (sharedPreferences.getBoolean("override_resolution_xfile_enabled", false)) {
             compatibility = 2160;
         }
-        if (debug.booleanValue()) {
-            Log.d("XGlobals", "getOverrideWidth: " + compatibility);
-        }
+        LogHelper.debug("Settings", "getOverrideWidth: " + compatibility);
         return compatibility;
     }
 
@@ -788,7 +664,7 @@ public class XGlobals {
         ReadSettings();
         Context context = YouTubeTikTokRoot_Application.getAppContext();
         if (context == null) {
-            Log.e("XGlobals", "Context is null, returning " + original + "!");
+            LogHelper.printException("Settings", "Context is null, returning " + original + "!");
             return original;
         }
         SharedPreferences sharedPreferences = context.getSharedPreferences("youtube", 0);
@@ -796,9 +672,8 @@ public class XGlobals {
         if (sharedPreferences.getBoolean("override_resolution_xfile_enabled", false)) {
             compatibility = 3840;
         }
-        if (debug.booleanValue()) {
-            Log.d("XGlobals", "getOverrideHeight: " + compatibility);
-        }
+        LogHelper.debug("Settings", "getOverrideHeight: " + compatibility);
+
         return compatibility;
     }
 
@@ -806,14 +681,12 @@ public class XGlobals {
         ReadSettings();
         Context context = YouTubeTikTokRoot_Application.getAppContext();
         if (context != null) {
-            if (debug.booleanValue()) {
-                Log.d("XGlobals", "getContext");
-            }
+            LogHelper.debug("Settings", "getContext");
             return context;
         } else if (XFILEDEBUG.booleanValue()) {
             return XSettingActivity.getAppContext();
         } else {
-            Log.e("XGlobals", "Context is null, returning null!");
+            LogHelper.printException("Settings", "Context is null, returning null!");
             return null;
         }
     }
@@ -822,27 +695,20 @@ public class XGlobals {
         ReadSettings();
         if (!sharedPreferences.getBoolean("old_layout_xfile_enabled", false)) {
             sharedPreferences.edit().putString("com.google.android.libraries.youtube.innertube.cold_config_group", config).putLong("com.google.android.libraries.youtube.innertube.cold_stored_timestamp", timeStamp).apply();
-            if (debug.booleanValue()) {
-                Log.d("XGlobals", "setOldLayout: true");
-                return;
-            }
+            LogHelper.debug("Settings", "setOldLayout: true");
             return;
         }
         if (sharedPreferences.contains("com.google.android.libraries.youtube.innertube.cold_config_group")) {
             sharedPreferences.edit().putString("com.google.android.libraries.youtube.innertube.cold_config_group_backup", sharedPreferences.getString("com.google.android.libraries.youtube.innertube.cold_config_group", null)).remove("com.google.android.libraries.youtube.innertube.cold_config_group").apply();
         }
-        if (debug.booleanValue()) {
-            Log.d("XGlobals", "setOldLayout: false");
-        }
+        LogHelper.debug("Settings", "setOldLayout: false");
     }
 
     public static void NewVideoStarted() {
         ReadSettings();
         newVideo = true;
         newVideoSpeed = true;
-        if (debug.booleanValue()) {
-            Log.d("XGlobals", "New video started!");
-        }
+        LogHelper.debug("Settings", "New video started!");
     }
 
     public static boolean ExecuteShellCommand(String command) {
@@ -852,9 +718,7 @@ public class XGlobals {
             BufferedReader in = new BufferedReader(new InputStreamReader(process.getInputStream()));
             String line = in.readLine();
             in.close();
-            if (debug.booleanValue()) {
-                Log.d("XDebug", "Command Output: " + line);
-            }
+            LogHelper.debug("XDebug", "Command Output: " + line);
             if (line.contains("m0yP")) {
                 if (process != null) {
                     try {
@@ -896,22 +760,12 @@ public class XGlobals {
         Class<?> stringType;
         ReadSettings();
         Class<?> stringType2 = String.class;
-        if (debug.booleanValue()) {
-            Log.d("Protobuf", "new settings array");
-        }
+        LogHelper.debug("Protobuf", "new settings array");
         Object[] newArray = new Object[settings.length + 1];
         boolean found = false;
         int index = 0;
         try {
-            if (debug.booleanValue()) {
-                try {
-                    Log.d("Protobuf", "Printing array");
-                } catch (Exception e3) {
-                    e = e3;
-                    Log.e("Protobuf", "Error: " + e.getMessage());
-                    return settings;
-                }
-            }
+            LogHelper.debug("Protobuf", "Printing array");
             try {
                 try {
                     int i = 0;
@@ -942,14 +796,12 @@ public class XGlobals {
                             }
                         } catch (Exception e4) {
                             e2 = e4;
-                            Log.e("Protobuf", "Error: " + e2.getMessage());
+                            LogHelper.printException("Protobuf", "Error: " + e2.getMessage());
                             return settings;
                         }
                     }
                     if (found) {
-                        if (debug.booleanValue()) {
-                            Log.d("Protobuf", "Modifying array");
-                        }
+                        LogHelper.debug("Protobuf", "Modifying array");
                         System.arraycopy(settings, 0, newArray, 0, index - 1);
                         Class<?> clazz = Class.forName(className);
                         Object object = clazz.newInstance();
@@ -976,13 +828,13 @@ public class XGlobals {
                                 if (loop != index - 1 || !found) {
                                     stringType = stringType2;
                                 } else {
-                                    if (debug.booleanValue()) {
+                                    if (isDebug()) {
                                         StringBuilder sb = new StringBuilder();
                                         stringType = stringType2;
                                         sb.append("String a field: ");
                                         sb.append(field2.get(settingObject2).toString());
                                         sb.append(" set: country-type");
-                                        Log.d("Protobuf", sb.toString());
+                                        LogHelper.debug("Protobuf", sb.toString());
                                     } else {
                                         stringType = stringType2;
                                     }
@@ -992,12 +844,12 @@ public class XGlobals {
                                 if (value2.equals("e")) {
                                     hitE2 = true;
                                 }
-                                if (debug.booleanValue()) {
+                                if (isDebug()) {
                                     StringBuilder sb2 = new StringBuilder();
                                     length2 = length2;
                                     sb2.append("String a field: ");
                                     sb2.append(value2);
-                                    Log.d("Protobuf", sb2.toString());
+                                    LogHelper.debug("Protobuf", sb2.toString());
                                 } else {
                                     length2 = length2;
                                 }
@@ -1006,9 +858,7 @@ public class XGlobals {
                                 length2 = length2;
                                 if (field2.getName().equals("b")) {
                                     if (loop == index - 1 && found) {
-                                        if (debug.booleanValue()) {
-                                            Log.d("Protobuf", "String b field: " + field2.get(settingObject2).toString() + " set: B");
-                                        }
+                                        LogHelper.debug("Protobuf", "String b field: " + field2.get(settingObject2).toString() + " set: B");
                                         field2.set(settingObject2, "B");
                                     }
                                     String value3 = field2.get(settingObject2).toString();
@@ -1016,14 +866,10 @@ public class XGlobals {
                                         field2.set(settingObject2, "11202606,9415293,9422596,9429003,9431755,9435797,9442923,9444108,9444635,9449243,9453077,9456940,9463829,9464088,9467503,9476327,9477614,9478523,9480475,9480495,9482942,9483422,9483531,9484706,9485998,9487653,9487664,9488038,9488230,9489113");
                                         hitE2 = false;
                                     }
-                                    if (debug.booleanValue()) {
-                                        Log.d("Protobuf", "String b field: " + value3);
-                                    }
+                                    LogHelper.debug("Protobuf", "String b field: " + value3);
                                 } else {
                                     String value4 = field2.get(settingObject2).toString();
-                                    if (debug.booleanValue()) {
-                                        Log.d("Protobuf", "String field: " + field2.getName() + " = " + value4);
-                                    }
+                                    LogHelper.debug("Protobuf", "String field: " + field2.getName() + " = " + value4);
                                 }
                             }
                             i++;
@@ -1037,7 +883,7 @@ public class XGlobals {
                     return newArray;
                 } catch (Exception e5) {
                     e = e5;
-                    Log.e("Protobuf", "Error: " + e.getMessage());
+                    LogHelper.printException("Protobuf", "Error: " + e.getMessage());
                     return settings;
                 }
             } catch (Exception e6) {
@@ -1057,9 +903,7 @@ public class XGlobals {
         ReadSettings();
         boolean modifyArray = type == 2;
         Class<?> stringType2 = String.class;
-        if (debug.booleanValue()) {
-            Log.d("Protobuf", "new settings array");
-        }
+        LogHelper.debug("Protobuf", "new settings array");
         Object[] newArray = new Object[settings.length + 1];
         if (!modifyArray) {
             newArray = settings;
@@ -1068,9 +912,7 @@ public class XGlobals {
         int index = 0;
         if (modifyArray) {
             try {
-                if (debug.booleanValue()) {
-                    Log.d("Protobuf", "Modifying array");
-                }
+                LogHelper.debug("Protobuf", "Modifying array");
                 try {
                     int length = settings.length;
                     int index2 = 0;
@@ -1110,7 +952,7 @@ public class XGlobals {
                             i2++;
                         } catch (Exception e2) {
                             e = e2;
-                            Log.e("Protobuf", "Error: " + e.getMessage());
+                            LogHelper.printException("Protobuf", "Error: " + e.getMessage());
                             return settings;
                         }
                     }
@@ -1122,7 +964,7 @@ public class XGlobals {
                 }
             } catch (Exception e4) {
                 e = e4;
-                Log.e("Protobuf", "Error: " + e.getMessage());
+                LogHelper.printException("Protobuf", "Error: " + e.getMessage());
                 return settings;
             }
         } else {
@@ -1147,17 +989,17 @@ public class XGlobals {
                             field2.set(settingObject2, "country-type");
                         }
                         String value2 = field2.get(settingObject2).toString();
-                        if (debug.booleanValue()) {
+                        if (isDebug()) {
                             stringType = stringType2;
                             try {
                                 StringBuilder sb = new StringBuilder();
                                 found = found2;
                                 sb.append("String a field: ");
                                 sb.append(value2);
-                                Log.d("Protobuf", sb.toString());
+                                LogHelper.debug("Protobuf", sb.toString());
                             } catch (Exception e5) {
                                 e = e5;
-                                Log.e("Protobuf", "Error: " + e.getMessage());
+                                LogHelper.printException("Protobuf", "Error: " + e.getMessage());
                                 return settings;
                             }
                         } else {
@@ -1172,14 +1014,10 @@ public class XGlobals {
                                 field2.set(settingObject2, "B");
                             }
                             String value3 = field2.get(settingObject2).toString();
-                            if (debug.booleanValue()) {
-                                Log.d("Protobuf", "String b field: " + value3);
-                            }
+                            LogHelper.debug("Protobuf", "String b field: " + value3);
                         } else {
                             String value4 = field2.get(settingObject2).toString();
-                            if (debug.booleanValue()) {
-                                Log.d("Protobuf", "String field: " + field2.getName() + " = " + value4);
-                            }
+                            LogHelper.debug("Protobuf", "String field: " + field2.getName() + " = " + value4);
                         }
                     }
                     i++;
@@ -1202,9 +1040,7 @@ public class XGlobals {
         Class<?> stringType;
         Field fieldArray;
         ReadSettings();
-        if (debug.booleanValue()) {
-            Log.d("VideoQualities", "Quality parameter: " + mode);
-        }
+        LogHelper.debug("VideoQualities", "Quality parameter: " + mode);
         if (mode == 0) {
             Class<?> intType2 = Integer.TYPE;
             Class<?> stringType2 = String.class;
@@ -1235,9 +1071,7 @@ public class XGlobals {
                                     if (length3 <= 2) {
                                         iStreamQualities.add(Integer.valueOf(value));
                                     }
-                                    if (debug.booleanValue()) {
-                                        Log.d("VideoQualities", "Integer field: " + field.getName() + " = " + value);
-                                    }
+                                    LogHelper.debug("VideoQualities", "Integer field: " + field.getName() + " = " + value);
                                     stringType = stringType2;
                                 } catch (Exception e) {
                                     return;
@@ -1252,7 +1086,7 @@ public class XGlobals {
                                 if (field.getType().isAssignableFrom(stringType2)) {
                                     String value2 = field.get(streamQuality).toString();
                                     sStreamQualities.add(value2);
-                                    if (debug.booleanValue()) {
+                                    if (isDebug()) {
                                         StringBuilder sb = new StringBuilder();
                                         stringType = stringType2;
                                         try {
@@ -1260,7 +1094,7 @@ public class XGlobals {
                                             sb.append(field.getName());
                                             sb.append(" = ");
                                             sb.append(value2);
-                                            Log.d("VideoQualities", sb.toString());
+                                            LogHelper.debug("VideoQualities", sb.toString());
                                         } catch (Exception e3) {
                                             return;
                                         }
@@ -1272,9 +1106,7 @@ public class XGlobals {
                                     if (field.getType().isAssignableFrom(boolType)) {
                                         boolean value3 = field.getBoolean(streamQuality);
                                         bStreamQualities.add(Boolean.valueOf(value3));
-                                        if (debug.booleanValue()) {
-                                            Log.d("VideoQualities", "Boolean field: " + field.getName() + " = " + value3);
-                                        }
+                                        LogHelper.debug("VideoQualities", "Boolean field: " + field.getName() + " = " + value3);
                                     }
                                 }
                             } catch (Exception e4) {
@@ -1301,9 +1133,7 @@ public class XGlobals {
         ReadSettings();
         Class<?> intType2 = Integer.TYPE;
         Class<?> boolType = Boolean.TYPE;
-        if (debug.booleanValue()) {
-            Log.d("QUALITY", "Quality parameter: " + quality);
-        }
+        LogHelper.debug("QUALITY", "Quality parameter: " + quality);
         try {
             ArrayList<Integer> iStreamQualities2 = new ArrayList<>();
             ArrayList<String> sStreamQualities = new ArrayList<>();
@@ -1327,14 +1157,14 @@ public class XGlobals {
                                 return;
                             }
                         }
-                        if (debug.booleanValue()) {
+                        if (isDebug()) {
                             StringBuilder sb = new StringBuilder();
                             iStreamQualities = iStreamQualities2;
                             sb.append("Integer field: ");
                             sb.append(field.getName());
                             sb.append(" = ");
                             sb.append(value);
-                            Log.d("QUALITY", sb.toString());
+                            LogHelper.debug("QUALITY", sb.toString());
                         } else {
                             iStreamQualities = iStreamQualities2;
                         }
@@ -1344,15 +1174,11 @@ public class XGlobals {
                         if (field.getType().isAssignableFrom(String.class)) {
                             String value2 = field.get(streamQuality).toString();
                             sStreamQualities.add(value2);
-                            if (debug.booleanValue()) {
-                                Log.d("QUALITY", "String field: " + field.getName() + " = " + value2);
-                            }
+                            LogHelper.debug("QUALITY", "String field: " + field.getName() + " = " + value2);
                         } else if (field.getType().isAssignableFrom(boolType)) {
                             boolean value3 = field.getBoolean(streamQuality);
                             bStreamQualities.add(Boolean.valueOf(value3));
-                            if (debug.booleanValue()) {
-                                Log.d("QUALITY", "Boolean field: " + field.getName() + " = " + value3);
-                            }
+                            LogHelper.debug("QUALITY", "Boolean field: " + field.getName() + " = " + value3);
                         }
                     }
                     i2++;
@@ -1374,7 +1200,7 @@ public class XGlobals {
         try {
             color = context.getResources().getColor(colorRes);
         } catch (Resources.NotFoundException e) {
-            Log.w("XGlobals", "Not found color resource by id: " + colorRes);
+            LogHelper.printException("Settings", "Not found color resource by id: " + colorRes);
         }
         int[][] states = {new int[]{16842910}, new int[]{-16842910}, new int[]{-16842912}, new int[]{16842919}};
         int[] colors = {color, color, color, color};

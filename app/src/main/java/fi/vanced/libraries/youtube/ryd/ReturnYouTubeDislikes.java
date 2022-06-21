@@ -1,6 +1,5 @@
 package fi.vanced.libraries.youtube.ryd;
 
-import static app.revanced.integrations.settings.XGlobals.debug;
 import static fi.vanced.libraries.youtube.player.VideoInformation.currentVideoId;
 import static fi.vanced.libraries.youtube.player.VideoInformation.dislikeCount;
 import static fi.vanced.libraries.youtube.ryd.RYDSettings.PREFERENCES_KEY_RYD_ENABLED;
@@ -10,7 +9,7 @@ import static fi.vanced.utils.VancedUtils.getIdentifier;
 import android.content.Context;
 import android.icu.text.CompactDecimalFormat;
 import android.os.Build;
-import android.util.Log;
+
 import android.view.View;
 import android.widget.TextView;
 
@@ -19,6 +18,7 @@ import com.google.android.apps.youtube.app.YouTubeTikTokRoot_Application;
 import java.util.Locale;
 import java.util.Objects;
 
+import app.revanced.integrations.log.LogHelper;
 import fi.vanced.libraries.youtube.ryd.requests.RYDRequester;
 import fi.vanced.utils.SharedPrefUtils;
 
@@ -44,9 +44,7 @@ public class ReturnYouTubeDislikes {
         }
 
         Locale locale = context.getResources().getConfiguration().locale;
-        if (debug) {
-            Log.d(TAG, "locale - " + locale);
-        }
+        LogHelper.debug(TAG, "locale - " + locale);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             compactNumberFormatter = CompactDecimalFormat.getInstance(
                     locale,
@@ -66,22 +64,18 @@ public class ReturnYouTubeDislikes {
     }
 
     public static void newVideoLoaded(String videoId) {
-        if (debug) {
-            Log.d(TAG, "newVideoLoaded - " + videoId);
-        }
+        LogHelper.debug(TAG, "newVideoLoaded - " + videoId);
 
         dislikeCount = null;
         if (!isEnabled) return;
 
         try {
             if (_dislikeFetchThread != null && _dislikeFetchThread.getState() != Thread.State.TERMINATED) {
-                if (debug) {
-                    Log.d(TAG, "Interrupting the thread. Current state " + _dislikeFetchThread.getState());
-                }
+                LogHelper.debug(TAG, "Interrupting the thread. Current state " + _dislikeFetchThread.getState());
                 _dislikeFetchThread.interrupt();
             }
         } catch (Exception ex) {
-            Log.e(TAG, "Error in the dislike fetch thread", ex);
+            LogHelper.printException(TAG, "Error in the dislike fetch thread", ex);
         }
 
         _dislikeFetchThread = new Thread(() -> RYDRequester.fetchDislikes(videoId));
@@ -102,9 +96,8 @@ public class ReturnYouTubeDislikes {
         if (likeActive) {
             votingValue = 1;
         }
-        if (debug) {
-            Log.d(TAG, "Like tag active " + likeActive);
-        }
+
+        LogHelper.debug(TAG, "Like tag active " + likeActive);
         setTag(view, "like");
     }
 
@@ -124,9 +117,7 @@ public class ReturnYouTubeDislikes {
             votingValue = -1;
         }
         _dislikeView = view;
-        if (debug) {
-            Log.d(TAG, "Dislike tag active " + dislikeActive);
-        }
+        LogHelper.debug(TAG, "Dislike tag active " + dislikeActive);
         setTag(view, "dislike");
     }
 
@@ -148,9 +139,7 @@ public class ReturnYouTubeDislikes {
 
         try {
             CharSequence tag = (CharSequence) view.getTag();
-            if (debug) {
-                Log.d(TAG, "handleOnSetText - " + tag + " - original text - " + originalText);
-            }
+            LogHelper.debug(TAG, "handleOnSetText - " + tag + " - original text - " + originalText);
             if (tag == null) return originalText;
 
             if (tag == "like") {
@@ -159,7 +148,7 @@ public class ReturnYouTubeDislikes {
                 return dislikeCount != null ? formatDislikes(dislikeCount) : originalText;
             }
         } catch (Exception ex) {
-            Log.e(TAG, "Error while handling the setText", ex);
+            LogHelper.printException(TAG, "Error while handling the setText", ex);
         }
 
         return originalText;
@@ -171,28 +160,20 @@ public class ReturnYouTubeDislikes {
         try {
             // Try to set normal video dislike count
             if (_dislikeView == null) {
-                if (debug) {
-                    Log.d(TAG, "_dislikeView was null");
-                }
+                LogHelper.debug(TAG, "_dislikeView was null");
                 return;
             }
 
             View buttonView = _dislikeView.findViewById(getIdentifier("button_text", "id"));
             if (buttonView == null) {
-                if (debug) {
-                    Log.d(TAG, "buttonView was null");
-                }
+                LogHelper.debug(TAG, "buttonView was null");
                 return;
             }
             TextView button = (TextView) buttonView;
             button.setText(dislikeCount);
-            if (debug) {
-                Log.d(TAG, "trySetDislikes - " + dislikeCount);
-            }
+            LogHelper.debug(TAG, "trySetDislikes - " + dislikeCount);
         } catch (Exception ex) {
-            if (debug) {
-                Log.e(TAG, "Error while trying to set dislikes text", ex);
-            }
+            LogHelper.printException(TAG, "Error while trying to set dislikes text", ex);
         }
     }
 
@@ -203,9 +184,7 @@ public class ReturnYouTubeDislikes {
 
         try {
             String tag = (String) view.getTag();
-            if (debug) {
-                Log.d(TAG, "handleOnClick - " + tag + " - previousState - " + previousState);
-            }
+            LogHelper.debug(TAG, "handleOnClick - " + tag + " - previousState - " + previousState);
             if (tag == null) return;
 
             // If active status was removed, vote should be none
@@ -248,43 +227,33 @@ public class ReturnYouTubeDislikes {
                 return;
             }
 
-            if (debug) {
-                Log.d(TAG, "New vote status - " + votingValue);
-                Log.d(TAG, "Like button " + likeActive + " | Dislike button " + dislikeActive);
-            }
-
+            LogHelper.debug(TAG, "New vote status - " + votingValue);
+            LogHelper.debug(TAG, "Like button " + likeActive + " | Dislike button " + dislikeActive);
             sendVote(votingValue);
         } catch (Exception ex) {
-            Log.e(TAG, "Error while handling the onClick", ex);
+            LogHelper.printException(TAG, "Error while handling the onClick", ex);
         }
     }
 
     private static void sendVote(int vote) {
         if (!isEnabled) return;
 
-        if (debug) {
-            Log.d(TAG, "sending vote - " + vote + " for video " + currentVideoId);
-        }
-
+        LogHelper.debug(TAG, "sending vote - " + vote + " for video " + currentVideoId);
         try {
             if (_votingThread != null && _votingThread.getState() != Thread.State.TERMINATED) {
-                if (debug) {
-                    Log.d(TAG, "Interrupting the thread. Current state " + _votingThread.getState());
-                }
+                LogHelper.debug(TAG, "Interrupting the thread. Current state " + _votingThread.getState());
                 _votingThread.interrupt();
             }
         } catch (Exception ex) {
-            Log.e(TAG, "Error in the voting thread", ex);
+            LogHelper.printException(TAG, "Error in the voting thread", ex);
         }
 
         _votingThread = new Thread(() -> {
             try {
                 boolean result = voting.sendVote(currentVideoId, vote);
-                if (debug) {
-                    Log.d(TAG, "sendVote status " + result);
-                }
+                LogHelper.debug(TAG, "sendVote status " + result);
             } catch (Exception ex) {
-                Log.e(TAG, "Failed to send vote", ex);
+                LogHelper.printException(TAG, "Failed to send vote", ex);
             }
         });
         _votingThread.start();
@@ -295,35 +264,23 @@ public class ReturnYouTubeDislikes {
 
         try {
             if (view == null) {
-                if (debug) {
-                    Log.d(TAG, "View was empty");
-                }
+                LogHelper.debug(TAG, "View was empty");
                 return;
             }
-
-            if (debug) {
-                Log.d(TAG, "setTag - " + tag);
-            }
-
+            LogHelper.debug(TAG, "setTag - " + tag);
             view.setTag(tag);
         } catch (Exception ex) {
-            Log.e(TAG, "Error while trying to set tag to view", ex);
+            LogHelper.printException(TAG, "Error while trying to set tag to view", ex);
         }
     }
 
     public static String formatDislikes(int dislikes) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && compactNumberFormatter != null) {
             final String formatted = compactNumberFormatter.format(dislikes);
-            if (debug) {
-                Log.d(TAG, "Formatting dislikes - " + dislikes + " - " + formatted);
-            }
-
+            LogHelper.debug(TAG, "Formatting dislikes - " + dislikes + " - " + formatted);
             return formatted;
         }
-
-        if (debug) {
-            Log.d(TAG, "Couldn't format dislikes, using the unformatted count - " + dislikes);
-        }
+        LogHelper.debug(TAG, "Couldn't format dislikes, using the unformatted count - " + dislikes);
         return String.valueOf(dislikes);
     }
 }

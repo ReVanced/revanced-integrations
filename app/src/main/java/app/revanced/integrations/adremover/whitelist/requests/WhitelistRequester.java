@@ -1,13 +1,12 @@
 package app.revanced.integrations.adremover.whitelist.requests;
 
-import static app.revanced.integrations.settings.XGlobals.debug;
 import static fi.vanced.libraries.youtube.player.VideoInformation.currentVideoId;
 import static fi.vanced.libraries.youtube.ui.AdButton.TAG;
 import static fi.vanced.utils.VancedUtils.runOnMainThread;
 import static app.revanced.integrations.sponsorblock.StringRef.str;
 
 import android.content.Context;
-import android.util.Log;
+
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -19,6 +18,7 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.nio.charset.StandardCharsets;
 
+import app.revanced.integrations.log.LogHelper;
 import fi.vanced.libraries.youtube.player.ChannelModel;
 import app.revanced.integrations.adremover.whitelist.Whitelist;
 import app.revanced.integrations.adremover.whitelist.WhitelistType;
@@ -53,9 +53,7 @@ public class WhitelistRequester {
                 JSONObject videoInfo = json.getJSONObject("videoDetails");
                 ChannelModel channelModel = new ChannelModel(videoInfo.getString("author"), videoInfo.getString("channelId"));
                 String author = channelModel.getAuthor();
-                if (debug) {
-                    Log.d(TAG, "channelId " + channelModel.getChannelId() + " fetched for author " + author);
-                }
+                LogHelper.debug(TAG, "channelId " + channelModel.getChannelId() + " fetched for author " + author);
 
                 boolean success = Whitelist.addToWhitelist(whitelistType, context, channelModel);
                 String whitelistTypeName = whitelistType.getFriendlyName();
@@ -70,9 +68,7 @@ public class WhitelistRequester {
                     view.setEnabled(true);
                 });
             } else {
-                if (debug) {
-                    Log.d(TAG, "player fetch response was " + responseCode);
-                }
+                LogHelper.debug(TAG, "player fetch response was " + responseCode);
                 runOnMainThread(() -> {
                     Toast.makeText(context, str("vanced_whitelisting_fetch_failed", responseCode), Toast.LENGTH_SHORT).show();
                     buttonIcon.setEnabled(true);
@@ -81,7 +77,7 @@ public class WhitelistRequester {
             }
             connection.disconnect();
         } catch (Exception ex) {
-            Log.e(TAG, "Failed to fetch channelId", ex);
+            LogHelper.printException(TAG, "Failed to fetch channelId", ex);
             runOnMainThread(() -> view.setEnabled(true));
         }
     }

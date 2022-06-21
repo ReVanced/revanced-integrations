@@ -1,12 +1,11 @@
 package fi.razerman.youtube.Fenster;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ViewConfiguration;
 
-import app.revanced.integrations.settings.XGlobals;
+import app.revanced.integrations.log.LogHelper;
 
 /* loaded from: classes6.dex */
 public class FensterGestureController {
@@ -20,9 +19,7 @@ public class FensterGestureController {
         }
         if (event.getAction() == 1) {
             this.listener.onUp();
-            if (XGlobals.debug) {
-                Log.i("TouchTest", "Touch up");
-            }
+            LogHelper.debug("TouchTest", "Touch up");
         }
         return this.gestureDetector.onTouchEvent(event);
     }

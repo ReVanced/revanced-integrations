@@ -5,7 +5,7 @@ import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.graphics.drawable.RippleDrawable;
 import android.util.AttributeSet;
-import android.util.Log;
+
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,7 +18,7 @@ import app.revanced.integrations.sponsorblock.PlayerController;
 import app.revanced.integrations.sponsorblock.SponsorBlockSettings;
 import app.revanced.integrations.sponsorblock.SponsorBlockUtils;
 
-import static app.revanced.integrations.settings.XGlobals.debug;
+import static app.revanced.integrations.settings.Settings.debug;
 
 public class NewSegmentLayout extends FrameLayout {
     static String TAG = "NewSegmentLayout";
@@ -71,7 +71,7 @@ public class NewSegmentLayout extends FrameLayout {
                 @Override
                 public void onClick(View v) {
                     if (debug) {
-                        Log.d(TAG, "Rewind button clicked");
+                        LogH(TAG, "Rewind button clicked");
                     }
                     PlayerController.skipRelativeMilliseconds(-SponsorBlockSettings.adjustNewSegmentMillis);
                 }
@@ -84,7 +84,7 @@ public class NewSegmentLayout extends FrameLayout {
                 @Override
                 public void onClick(View v) {
                     if (debug) {
-                        Log.d(TAG, "Forward button clicked");
+                        LogH(TAG, "Forward button clicked");
                     }
                     PlayerController.skipRelativeMilliseconds(SponsorBlockSettings.adjustNewSegmentMillis);
                 }
@@ -97,7 +97,7 @@ public class NewSegmentLayout extends FrameLayout {
                 @Override
                 public void onClick(View v) {
                     if (debug) {
-                        Log.d(TAG, "Adjust button clicked");
+                        LogH(TAG, "Adjust button clicked");
                     }
                     SponsorBlockUtils.onMarkLocationClicked(NewSegmentHelperLayout.context);
                 }
@@ -110,7 +110,7 @@ public class NewSegmentLayout extends FrameLayout {
                 @Override
                 public void onClick(View v) {
                     if (debug) {
-                        Log.d(TAG, "Compare button clicked");
+                        LogH(TAG, "Compare button clicked");
                     }
                     SponsorBlockUtils.onPreviewClicked(NewSegmentHelperLayout.context);
                 }
@@ -123,7 +123,7 @@ public class NewSegmentLayout extends FrameLayout {
                 @Override
                 public void onClick(View v) {
                     if (debug) {
-                        Log.d(TAG, "Edit button clicked");
+                        LogH(TAG, "Edit button clicked");
                     }
                     SponsorBlockUtils.onEditByHandClicked(NewSegmentHelperLayout.context);
                 }
@@ -136,7 +136,7 @@ public class NewSegmentLayout extends FrameLayout {
                 @Override
                 public void onClick(View v) {
                     if (debug) {
-                        Log.d(TAG, "Publish button clicked");
+                        LogH(TAG, "Publish button clicked");
                     }
                     SponsorBlockUtils.onPublishClicked(NewSegmentHelperLayout.context);
                 }

@@ -1,7 +1,6 @@
 package fi.razerman.youtube.VideoUrl;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -11,7 +10,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.google.android.apps.youtube.app.YouTubeTikTokRoot_Application;
 
-import app.revanced.integrations.settings.XGlobals;
+import app.revanced.integrations.log.LogHelper;
 import fi.vanced.libraries.youtube.player.VideoHelpers;
 
 import java.lang.ref.WeakReference;
@@ -30,38 +29,33 @@ public class Copy {
 
     public static void initializeCopyButton(Object obj) {
         try {
-            if (XGlobals.debug) {
-                Log.d(TAG, "initializing");
-            }
+            LogHelper.debug(TAG, "initializing");
             _constraintLayout = (ConstraintLayout) obj;
             isCopyButtonEnabled = shouldBeShown();
             ImageView imageView = _constraintLayout.findViewById(getIdentifier("copy_button", "id"));
-            if (XGlobals.debug && imageView == null) {
-                Log.d(TAG, "Couldn't find imageView with id \"copy_button\"");
+            if (imageView == null) {
+                LogHelper.debug(TAG, "Couldn't find imageView with id \"copy_button\"");
+                return;
             }
-            if (imageView != null) {
-                // from class: fi.razerman.youtube.VideoUrl.Copy.1
-// android.view.View.OnClickListener
-                imageView.setOnClickListener(view -> {
-                    if (XGlobals.debug) {
-                        Log.d(Copy.TAG, "Button clicked");
-                    }
-                    VideoHelpers.copyVideoUrlToClipboard();
-                });
-                _button = new WeakReference<>(imageView);
-                fadeDurationFast = getInteger("fade_duration_fast");
-                fadeDurationScheduled = getInteger("fade_duration_scheduled");
-                Animation animation = getAnimation("fade_in");
-                fadeIn = animation;
-                animation.setDuration(fadeDurationFast);
-                Animation animation2 = getAnimation("fade_out");
-                fadeOut = animation2;
-                animation2.setDuration(fadeDurationScheduled);
-                isShowing = true;
-                changeVisibility(false);
-            }
+
+            imageView.setOnClickListener(view -> {
+                LogHelper.debug(Copy.TAG, "Button clicked");
+                VideoHelpers.copyVideoUrlToClipboard();
+            });
+            _button = new WeakReference<>(imageView);
+            fadeDurationFast = getInteger("fade_duration_fast");
+            fadeDurationScheduled = getInteger("fade_duration_scheduled");
+            Animation animation = getAnimation("fade_in");
+            fadeIn = animation;
+            animation.setDuration(fadeDurationFast);
+            Animation animation2 = getAnimation("fade_out");
+            fadeOut = animation2;
+            animation2.setDuration(fadeDurationScheduled);
+            isShowing = true;
+            changeVisibility(false);
+
         } catch (Exception e) {
-            Log.e(TAG, "Unable to set FrameLayout", e);
+            LogHelper.printException(TAG, "Unable to set FrameLayout", e);
         }
     }
 
@@ -71,15 +65,11 @@ public class Copy {
             ImageView imageView = _button.get();
             if (_constraintLayout != null && imageView != null) {
                 if (z && isCopyButtonEnabled) {
-                    if (XGlobals.debug) {
-                        Log.d(TAG, "Fading in");
-                    }
+                    LogHelper.debug(TAG, "Fading in");
                     imageView.setVisibility(View.VISIBLE);
                     imageView.startAnimation(fadeIn);
                 } else if (imageView.getVisibility() == View.VISIBLE) {
-                    if (XGlobals.debug) {
-                        Log.d(TAG, "Fading out");
-                    }
+                    LogHelper.debug(TAG, "Fading out");
                     imageView.startAnimation(fadeOut);
                     imageView.setVisibility(View.GONE);
                 }
@@ -94,7 +84,7 @@ public class Copy {
     private static boolean shouldBeShown() {
         Context appContext = YouTubeTikTokRoot_Application.getAppContext();
         if (appContext == null) {
-            Log.e(TAG, "shouldBeShown - context is null!");
+            LogHelper.printException(TAG, "shouldBeShown - context is null!");
             return false;
         }
         String string = appContext.getSharedPreferences("youtube", 0).getString("pref_copy_video_url_button_list", null);

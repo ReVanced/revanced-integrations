@@ -3,11 +3,10 @@ package fi.razerman.youtube.Fenster.Helpers;
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Context;
-import android.provider.Settings;
-import android.util.Log;
+
 import android.view.WindowManager;
 
-import app.revanced.integrations.settings.XGlobals;
+import app.revanced.integrations.settings.Settings;
 
 /* loaded from: classes6.dex */
 public class BrightnessHelper {
@@ -27,8 +26,8 @@ public class BrightnessHelper {
     }
 
     public static void setBrightness(Context context, int brightness) {
-        if (XGlobals.debug) {
-            Log.d("XDebug", "Setting brightness: " + brightness);
+        if (Settings.debug) {
+            LogH("XDebug", "Setting brightness: " + brightness);
         }
         float bright = brightness / 100.0f;
         WindowManager.LayoutParams lp = ((Activity) context).getWindow().getAttributes();
@@ -37,18 +36,18 @@ public class BrightnessHelper {
     }
 
     public static void setBrightness2(Context context, int brightness) {
-        if (XGlobals.debug) {
-            Log.d("XDebug", "Setting brightness: " + brightness);
+        if (Settings.debug) {
+            LogH("XDebug", "Setting brightness: " + brightness);
         }
         ContentResolver cResolver = context.getContentResolver();
-        Settings.System.putInt(cResolver, "screen_brightness", brightness);
+        android.provider.Settings.System.putInt(cResolver, "screen_brightness", brightness);
     }
 
     public static int getBrightness2(Context context) {
         ContentResolver cResolver = context.getContentResolver();
         try {
-            return Settings.System.getInt(cResolver, "screen_brightness");
-        } catch (Settings.SettingNotFoundException e) {
+            return android.provider.Settings.System.getInt(cResolver, "screen_brightness");
+        } catch (android.provider.Settings.SettingNotFoundException e) {
             return 0;
         }
     }

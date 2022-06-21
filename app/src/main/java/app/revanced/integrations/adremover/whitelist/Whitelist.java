@@ -1,6 +1,6 @@
 package app.revanced.integrations.adremover.whitelist;
 
-import static app.revanced.integrations.settings.XGlobals.debug;
+import static app.revanced.integrations.settings.Settings.debug;
 import static fi.vanced.libraries.youtube.player.VideoInformation.channelName;
 import static fi.vanced.libraries.youtube.ui.SlimButtonContainer.adBlockButton;
 import static fi.vanced.libraries.youtube.ui.SlimButtonContainer.sbWhitelistButton;
@@ -9,7 +9,7 @@ import static app.revanced.integrations.sponsorblock.StringRef.str;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
+
 import android.widget.Toast;
 
 import com.google.android.apps.youtube.app.YouTubeTikTokRoot_Application;
@@ -44,7 +44,7 @@ public class Whitelist {
 
     public static void setChannelName(String channelName) {
         if (debug) {
-            Log.d(TAG, "channel name set to " + channelName);
+            LogH(TAG, "channel name set to " + channelName);
         }
         VideoInformation.channelName = channelName;
 
@@ -74,7 +74,7 @@ public class Whitelist {
             String serializedChannels = preferences.getString("channels", null);
             if (serializedChannels == null) {
                 if (debug) {
-                    Log.d(TAG, String.format("channels string was null for %s whitelisting", whitelistType));
+                    LogH(TAG, String.format("channels string was null for %s whitelisting", whitelistType));
                 }
                 whitelistMap.put(whitelistType, new ArrayList<>());
                 continue;
@@ -82,9 +82,9 @@ public class Whitelist {
             try {
                 ArrayList<ChannelModel> deserializedChannels = (ArrayList<ChannelModel>) ObjectSerializer.deserialize(serializedChannels);
                 if (debug) {
-                    Log.d(TAG, serializedChannels);
+                    LogH(TAG, serializedChannels);
                     for (ChannelModel channel : deserializedChannels) {
-                        Log.d(TAG, String.format("Whitelisted channel %s (%s) for type %s", channel.getAuthor(), channel.getChannelId(), whitelistType));
+                        LogH(TAG, String.format("Whitelisted channel %s (%s) for type %s", channel.getAuthor(), channel.getChannelId(), whitelistType));
                     }
                 }
                 whitelistMap.put(whitelistType, deserializedChannels);
@@ -113,7 +113,7 @@ public class Whitelist {
         }
         if (channelName == null || channelName.trim().isEmpty()) {
             if (debug) {
-                Log.d(TAG, String.format("Can't check whitelist status for %s because channel name was missing", whitelistType));
+                LogH(TAG, String.format("Can't check whitelist status for %s because channel name was missing", whitelistType));
             }
             return false;
         }
@@ -121,7 +121,7 @@ public class Whitelist {
         for (ChannelModel channel : whitelistedChannels) {
             if (channel.getAuthor().equals(channelName)) {
                 if (debug) {
-                    Log.d(TAG, String.format("Whitelist for channel %s for type %s", channelName, whitelistType));
+                    LogH(TAG, String.format("Whitelist for channel %s for type %s", channelName, whitelistType));
                 }
                 return true;
             }
@@ -135,7 +135,7 @@ public class Whitelist {
             String channelId = channel.getChannelId();
             if (whitelistedChannel.getChannelId().equals(channelId)) {
                 if (debug) {
-                    Log.d(TAG, String.format("Tried whitelisting an existing channel again. Old info (%1$s | %2$s) - New info (%3$s | %4$s)",
+                    LogH(TAG, String.format("Tried whitelisting an existing channel again. Old info (%1$s | %2$s) - New info (%3$s | %4$s)",
                             whitelistedChannel.getAuthor(), channelId, channelName, channelId));
                 }
                 return true;

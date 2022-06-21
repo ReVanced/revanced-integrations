@@ -8,7 +8,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.text.Html;
 import android.text.TextUtils;
-import android.util.Log;
+
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -61,7 +61,7 @@ public class SponsorBlockSettings {
     @SuppressWarnings("unused")
     @Deprecated
     public SponsorBlockSettings(Context ignored) {
-        Log.e("revanced.Settings", "Do not call SponsorBlockSettings constructor!");
+        LogHelper.printException("revanced.Settings", "Do not call SponsorBlockSettings constructor!");
     }
 
     public static SharedPreferences getPreferences(Context context) {

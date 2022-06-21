@@ -1,9 +1,11 @@
 package fi.vanced.libraries.youtube.ryd;
 
 import android.util.Base64;
-import android.util.Log;
+
 
 import java.security.MessageDigest;
+
+import app.revanced.integrations.log.LogHelper;
 
 public class Utils {
     private static final String TAG = "VI - RYD - Utils";
@@ -32,7 +34,7 @@ public class Utils {
                 }
             }
         } catch (Exception ex) {
-            Log.e(TAG, "Failed to solve puzzle", ex);
+            LogHelper.printException(TAG, "Failed to solve puzzle", ex);
         }
 
         return null;

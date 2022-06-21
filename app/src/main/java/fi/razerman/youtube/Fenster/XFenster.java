@@ -2,7 +2,7 @@ package fi.razerman.youtube.Fenster;
 
 import android.content.Context;
 import android.os.Handler;
-import android.util.Log;
+
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,8 +12,8 @@ import com.google.android.apps.youtube.app.YouTubeTikTokRoot_Application;
 import fi.razerman.youtube.Fenster.Seekbar.BrightnessSeekBar;
 import fi.razerman.youtube.Fenster.Seekbar.VolumeSeekBar;
 import fi.razerman.youtube.Helpers.XSwipeHelper;
-import app.revanced.integrations.settings.XGlobals;
-import fi.razerman.youtube.XSettingsFragment;
+import app.revanced.integrations.settings.Settings;
+import app.revanced.integrations.settings.XSettingsFragment;
 
 /* loaded from: classes6.dex */
 public class XFenster implements FensterEventsListener {
@@ -45,15 +45,15 @@ public class XFenster implements FensterEventsListener {
 
     @Override // fi.razerman.youtube.Fenster.FensterEventsListener
     public void onTap() {
-        if (XGlobals.debug) {
-            Log.d("XDebug", "onTap");
+        if (Settings.debug) {
+            LogH("XDebug", "onTap");
         }
     }
 
     @Override // fi.razerman.youtube.Fenster.FensterEventsListener
     public void onHorizontalScroll(MotionEvent event, float delta) {
-        if (XGlobals.debug) {
-            Log.d("XDebug", "onHorizontalScroll - y: " + ((int) event.getY()) + " x: " + ((int) event.getX()));
+        if (Settings.debug) {
+            LogH("XDebug", "onHorizontalScroll - y: " + ((int) event.getY()) + " x: " + ((int) event.getX()));
         }
         if (event.getPointerCount() == 1) {
             if (this.brightnessOrientation == Orientation.HORIZONTAL && (this.brightnessCoverage == Coverage.FULL || getCoverageHorizontal(event) == this.brightnessCoverage)) {
@@ -70,8 +70,8 @@ public class XFenster implements FensterEventsListener {
 
     @Override // fi.razerman.youtube.Fenster.FensterEventsListener
     public void onVerticalScroll(MotionEvent event, float delta) {
-        if (XGlobals.debug) {
-            Log.d("XDebug", "onVerticalScroll - y: " + ((int) event.getY()) + " x: " + ((int) event.getX()));
+        if (Settings.debug) {
+            LogH("XDebug", "onVerticalScroll - y: " + ((int) event.getY()) + " x: " + ((int) event.getX()));
         }
         if (event.getPointerCount() == 1) {
             if (this.brightnessOrientation == Orientation.VERTICAL && (this.brightnessCoverage == Coverage.FULL || getCoverageVertical(event) == this.brightnessCoverage)) {
@@ -88,36 +88,36 @@ public class XFenster implements FensterEventsListener {
 
     @Override // fi.razerman.youtube.Fenster.FensterEventsListener
     public void onSwipeRight() {
-        if (XGlobals.debug) {
-            Log.d("XDebug", "onSwipeRight");
+        if (Settings.debug) {
+            LogH("XDebug", "onSwipeRight");
         }
     }
 
     @Override // fi.razerman.youtube.Fenster.FensterEventsListener
     public void onSwipeLeft() {
-        if (XGlobals.debug) {
-            Log.d("XDebug", "onSwipeLeft");
+        if (Settings.debug) {
+            LogH("XDebug", "onSwipeLeft");
         }
     }
 
     @Override // fi.razerman.youtube.Fenster.FensterEventsListener
     public void onSwipeBottom() {
-        if (XGlobals.debug) {
-            Log.d("XDebug", "onSwipeBottom");
+        if (Settings.debug) {
+            LogH("XDebug", "onSwipeBottom");
         }
     }
 
     @Override // fi.razerman.youtube.Fenster.FensterEventsListener
     public void onSwipeTop() {
-        if (XGlobals.debug) {
-            Log.d("XDebug", "onSwipeTop");
+        if (Settings.debug) {
+            LogH("XDebug", "onSwipeTop");
         }
     }
 
     @Override // fi.razerman.youtube.Fenster.FensterEventsListener
     public void onDown(MotionEvent event) {
-        if (XGlobals.debug) {
-            Log.d("XDebug", "onDown");
+        if (Settings.debug) {
+            LogH("XDebug", "onDown");
         }
         if (event.getPointerCount() == 1) {
             if (this.brightnessOrientation == Orientation.VERTICAL && (this.brightnessCoverage == Coverage.FULL || getCoverageVertical(event) == this.brightnessCoverage)) {
@@ -139,7 +139,7 @@ public class XFenster implements FensterEventsListener {
 
     @Override // fi.razerman.youtube.Fenster.FensterEventsListener
     public void onUp() {
-        Log.d("XDebug", "onUp");
+        LogH("XDebug", "onUp");
         hideNotifications();
     }
 
@@ -219,16 +219,16 @@ public class XFenster implements FensterEventsListener {
 
     private float getProgressVertical(MotionEvent event, int maxSteps) {
         float progress = calculateProgressVertical(event, maxSteps);
-        if (XGlobals.debug) {
-            Log.d("XDebug", "Progress vertical: " + progress);
+        if (Settings.debug) {
+            LogH("XDebug", "Progress vertical: " + progress);
         }
         return progress;
     }
 
     private float getProgressHorizontal(MotionEvent event, int maxSteps) {
         float progress = calculateProgressHorizontal(event, maxSteps);
-        if (XGlobals.debug) {
-            Log.d("XDebug", "Progress horizontal: " + progress);
+        if (Settings.debug) {
+            LogH("XDebug", "Progress horizontal: " + progress);
         }
         return progress;
     }
@@ -236,8 +236,8 @@ public class XFenster implements FensterEventsListener {
     private float calculateProgressVertical(MotionEvent event, int maxSteps) {
         float scale;
         int height = this.mViewGroup.getHeight();
-        if (XGlobals.debug) {
-            Log.d("XDebug", "calculateProgressVertical - height: " + height);
+        if (Settings.debug) {
+            LogH("XDebug", "calculateProgressVertical - height: " + height);
         }
         int available = (height - this.mPaddingTop) - this.mPaddingBottom;
         int y = height - ((int) event.getY());
@@ -290,15 +290,15 @@ public class XFenster implements FensterEventsListener {
                     this.mViewGroup = (ViewGroup) layout;
                     this.mBrightness.refreshViewGroup(this.mViewGroup, XSettingsFragment.overlayContext);
                     this.mVolume.refreshViewGroup(this.mViewGroup);
-                    if (XGlobals.debug) {
-                        Log.d("XGlobals", "player_overlays refreshed");
+                    if (Settings.debug) {
+                        LogH("Settings", "player_overlays refreshed");
                     }
-                } else if (XGlobals.debug) {
-                    Log.d("XGlobals", "player_overlays was not found");
+                } else if (Settings.debug) {
+                    LogH("Settings", "player_overlays was not found");
                 }
             }
         } catch (Exception ex) {
-            Log.e("XError", "Unable to refresh player_overlays layout", ex);
+            LogHelper.printException("XError", "Unable to refresh player_overlays layout", ex);
         }
     }
 

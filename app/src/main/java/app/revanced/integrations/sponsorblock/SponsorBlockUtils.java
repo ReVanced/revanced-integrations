@@ -3,7 +3,6 @@ package app.revanced.integrations.sponsorblock;
 import static android.text.Html.fromHtml;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
-import static app.revanced.integrations.settings.XGlobals.debug;
 import static app.revanced.integrations.sponsorblock.PlayerController.getCurrentVideoId;
 import static app.revanced.integrations.sponsorblock.PlayerController.getCurrentVideoLength;
 import static app.revanced.integrations.sponsorblock.PlayerController.getLastKnownVideoTime;
@@ -49,7 +48,7 @@ import android.preference.Preference;
 import android.preference.PreferenceCategory;
 import android.text.Html;
 import android.text.TextUtils;
-import android.util.Log;
+
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -68,6 +67,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.TimeZone;
 
+import app.revanced.integrations.log.LogHelper;
 import fi.vanced.utils.SharedPrefUtils;
 import app.revanced.integrations.sponsorblock.objects.SponsorSegment;
 import app.revanced.integrations.sponsorblock.objects.UserStats;
@@ -84,15 +84,11 @@ public abstract class SponsorBlockUtils {
     private static final int sponsorBtnId = 1234;
     private static final String LOCKED_COLOR = "#FFC83D";
     public static final View.OnClickListener sponsorBlockBtnListener = v -> {
-        if (debug) {
-            Log.d(TAG, "Shield button clicked");
-        }
+        LogHelper.debug(TAG, "Shield button clicked");
         NewSegmentHelperLayout.toggle();
     };
     public static final View.OnClickListener voteButtonListener = v -> {
-        if (debug) {
-            Log.d(TAG, "Vote button clicked");
-        }
+        LogHelper.debug(TAG, "Vote button clicked");
         SponsorBlockUtils.onVotingClicked(v.getContext());
     };
     private static int shareBtnId = -1;
@@ -116,7 +112,7 @@ public abstract class SponsorBlockUtils {
                     Toast.makeText(context.getApplicationContext(), str("new_segment_time_end_set"), Toast.LENGTH_SHORT).show();
                     break;
             }
-            dialog.dismiss();
+            diaLogHismiss();
         }
     };
     private static SponsorBlockSettings.SegmentInfo newSponsorBlockSegmentType;
@@ -151,7 +147,7 @@ public abstract class SponsorBlockUtils {
         public void onClick(DialogInterface dialog, int which) {
             NewSegmentHelperLayout.hide();
             Context context = ((AlertDialog) dialog).getContext();
-            dialog.dismiss();
+            diaLogHismiss();
 
             SponsorBlockSettings.SegmentInfo[] values = SponsorBlockSettings.SegmentInfo.valuesWithoutUnsubmitted();
             CharSequence[] titles = new CharSequence[values.length];
@@ -176,7 +172,7 @@ public abstract class SponsorBlockUtils {
         @SuppressLint("DefaultLocale")
         @Override
         public void onClick(DialogInterface dialog, int which) {
-            dialog.dismiss();
+            diaLogHismiss();
             Context context = ((AlertDialog) dialog).getContext().getApplicationContext();
             Toast.makeText(context, str("submit_started"), Toast.LENGTH_SHORT).show();
 
@@ -211,7 +207,7 @@ public abstract class SponsorBlockUtils {
                 .setPositiveButton(android.R.string.ok, editByHandSaveDialogListener)
                 .show();
 
-        dialog.dismiss();
+        diaLogHismiss();
     };
     private static final Runnable toastRunnable = () -> {
         Context context = appContext.get();
@@ -260,13 +256,13 @@ public abstract class SponsorBlockUtils {
         final SponsorBlockSettings.SegmentInfo segmentType = SponsorBlockUtils.newSponsorBlockSegmentType;
         try {
             if (start < 0 || end < 0 || start >= end || segmentType == null || videoId == null || uuid == null) {
-                Log.e(TAG, "Unable to submit times, invalid parameters");
+                LogHelper.printException(TAG, "Unable to submit times, invalid parameters");
                 return;
             }
             SBRequester.submitSegments(videoId, uuid, ((float) start) / 1000f, ((float) end) / 1000f, segmentType.key, toastRunnable);
             newSponsorSegmentEndMillis = newSponsorSegmentStartMillis = -1;
         } catch (Exception e) {
-            Log.e(TAG, "Unable to submit segment", e);
+            LogHelper.printException(TAG, "Unable to submit segment", e);
         }
 
         if (videoId != null)
@@ -422,7 +418,7 @@ public abstract class SponsorBlockUtils {
         if (v.getId() != shareBtnId || !/*SponsorBlockSettings.isAddNewSegmentEnabled*/false)
             return;
 //        if (VERBOSE)
-//            Log.d(TAG, "VISIBILITY CHANGED of view " + v);
+//            LogH(TAG, "VISIBILITY CHANGED of view " + v);
         ImageView sponsorBtn = ShieldButton._shieldBtn.get();
         if (sponsorBtn != null) {
             sponsorBtn.setVisibility(v.getVisibility());
@@ -463,7 +459,7 @@ public abstract class SponsorBlockUtils {
                 PlayerController.setCurrentVideoId(null);
             }
         } catch (Exception ex) {
-            Log.e(TAG, "Player type changed caused a crash.", ex);
+            LogHelper.printException(TAG, "Player type changed caused a crash.", ex);
         }
     }
 

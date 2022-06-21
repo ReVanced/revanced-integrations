@@ -2,15 +2,14 @@ package fi.razerman.youtube.Fenster.Seekbar;
 
 import android.content.Context;
 import android.os.Handler;
-import android.provider.Settings;
-import android.util.Log;
+
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import fi.razerman.youtube.Fenster.Helpers.BrightnessHelper;
 import fi.razerman.youtube.Helpers.SharedPrefs;
-import app.revanced.integrations.settings.XGlobals;
+import app.revanced.integrations.settings.Settings;
 
 /* loaded from: classes6.dex */
 public class BrightnessSeekBar {
@@ -30,7 +29,7 @@ public class BrightnessSeekBar {
         this.enabled = false;
         this.mViewGroup = viewGroup;
         this.mContext = context;
-        float systemBrightness = Settings.System.getFloat(this.mContext.getContentResolver(), "screen_brightness", -1.0f);
+        float systemBrightness = android.provider.Settings.System.getFloat(this.mContext.getContentResolver(), "screen_brightness", -1.0f);
         int _systemBrightness = (int) ((systemBrightness / 255.0f) * 100.0f);
         this.Progress = SharedPrefs.getInt(this.mContext, "xfile_brightness_value", Integer.valueOf(_systemBrightness)).intValue();
         this.Max = 100;
@@ -61,8 +60,8 @@ public class BrightnessSeekBar {
                 this.mTextView.setVisibility(View.VISIBLE);
             }
         }
-        if (XGlobals.debug) {
-            Log.d("XDebug", "updateBrightnessProgress: " + this.Progress);
+        if (Settings.debug) {
+            LogH("XDebug", "updateBrightnessProgress: " + this.Progress);
         }
     }
 
@@ -117,12 +116,12 @@ public class BrightnessSeekBar {
         this.enabled = false;
         SharedPrefs.saveInt(this.mContext, "xfile_brightness_value", Integer.valueOf(this.Progress));
         disableBrightness();
-        Log.d("XDebug", "Brightness swipe disabled");
+        LogH("XDebug", "Brightness swipe disabled");
     }
 
     public void enable() {
         this.enabled = true;
-        float systemBrightness = Settings.System.getFloat(this.mContext.getContentResolver(), "screen_brightness", -1.0f);
+        float systemBrightness = android.provider.Settings.System.getFloat(this.mContext.getContentResolver(), "screen_brightness", -1.0f);
         int _systemBrightness = (int) ((systemBrightness / 255.0f) * 100.0f);
         int brightness = SharedPrefs.getInt(this.mContext, "xfile_brightness_value", Integer.valueOf(_systemBrightness)).intValue();
         if (brightness < 0) {
@@ -131,6 +130,6 @@ public class BrightnessSeekBar {
             brightness = 100;
         }
         BrightnessHelper.setBrightness(this.mContext, brightness);
-        Log.d("XDebug", "Brightness swipe enabled");
+        LogH("XDebug", "Brightness swipe enabled");
     }
 }

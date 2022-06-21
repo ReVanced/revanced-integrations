@@ -5,6 +5,8 @@ import android.os.Handler;
 import android.os.Looper;
 import android.preference.Preference;
 
+import app.revanced.integrations.settings.XSettingsFragment;
+
 /* loaded from: classes6.dex */
 public final class XRefresher implements Preference.OnPreferenceClickListener {
     private final XSettingsFragment fragment;

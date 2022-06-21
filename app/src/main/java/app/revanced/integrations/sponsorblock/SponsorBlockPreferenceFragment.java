@@ -1,6 +1,6 @@
 package app.revanced.integrations.sponsorblock;
 
-import static app.revanced.integrations.settings.XGlobals.debug;
+import static app.revanced.integrations.settings.Settings.debug;
 import static app.revanced.integrations.sponsorblock.SponsorBlockSettings.DEFAULT_API_URL;
 import static app.revanced.integrations.sponsorblock.SponsorBlockSettings.PREFERENCES_KEY_ADJUST_NEW_SEGMENT_STEP;
 import static app.revanced.integrations.sponsorblock.SponsorBlockSettings.PREFERENCES_KEY_API_URL;

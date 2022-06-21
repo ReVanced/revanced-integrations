@@ -2,7 +2,7 @@ package fi.razerman.youtube.Helpers;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.util.Log;
+
 
 import androidx.annotation.NonNull;
 
@@ -58,7 +58,7 @@ public class ColorRef {
                 try {
                     this.value = resources2.getColor(resources2.getIdentifier(this.colorName, "color", packageName));
                 } catch (Resources.NotFoundException e) {
-                    Log.e(TAG, "Resource not found: " + this.value);
+                    LogHelper.printException(TAG, "Resource not found: " + this.value);
                 }
             }
         }

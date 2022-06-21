@@ -20,7 +20,7 @@ package fi.vanced.utils;
  * Modifications copyright (C) 2022 Vanced
  */
 
-import android.util.Log;
+
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -41,7 +41,7 @@ public class ObjectSerializer {
             objStream.close();
             return encodeBytes(serialObj.toByteArray());
         } catch (Exception e) {
-            Log.e(TAG, "Serialization error: " + e.getMessage(), e);
+            LogHelper.printException(TAG, "Serialization error: " + e.getMessage(), e);
             throw new IOException(e);
         }
     }
@@ -53,7 +53,7 @@ public class ObjectSerializer {
             ObjectInputStream objStream = new ObjectInputStream(serialObj);
             return objStream.readObject();
         } catch (Exception e) {
-            Log.e(TAG, "Deserialization error: " + e.getMessage(), e);
+            LogHelper.printException(TAG, "Deserialization error: " + e.getMessage(), e);
             throw new IOException(e);
         }
     }

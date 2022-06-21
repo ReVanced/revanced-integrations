@@ -2,7 +2,7 @@ package fi.razerman.youtube.Autorepeat;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
+
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -14,7 +14,7 @@ import com.google.android.apps.youtube.app.YouTubeTikTokRoot_Application;
 
 import fi.razerman.youtube.VideoUrl.Copy;
 import fi.razerman.youtube.VideoUrl.CopyWithTimeStamp;
-import app.revanced.integrations.settings.XGlobals;
+import app.revanced.integrations.settings.Settings;
 
 import java.lang.ref.WeakReference;
 
@@ -31,24 +31,24 @@ public class AutoRepeat {
 
     public static void initializeAutoRepeat(Object constraintLayout) {
         try {
-            if (XGlobals.debug) {
-                Log.d("AutoRepeat", "initializing auto repeat");
+            if (Settings.debug) {
+                LogH("AutoRepeat", "initializing auto repeat");
             }
             CopyWithTimeStamp.initializeCopyButtonWithTimeStamp(constraintLayout);
             Copy.initializeCopyButton(constraintLayout);
             _constraintLayout = (ConstraintLayout) constraintLayout;
             isAutoRepeatBtnEnabled = shouldBeShown();
             ImageView imageView = _constraintLayout.findViewById(getIdentifier("autoreplay_button", "id"));
-            if (XGlobals.debug && imageView == null) {
-                Log.d("AutoRepeat", "Couldn't find imageView with tag \"autoreplay_button\"");
+            if (Settings.debug && imageView == null) {
+                LogH("AutoRepeat", "Couldn't find imageView with tag \"autoreplay_button\"");
             }
             if (imageView != null) {
                 imageView.setSelected(shouldBeSelected());
                 imageView.setOnClickListener(new View.OnClickListener() { // from class: fi.razerman.youtube.Autorepeat.AutoRepeat.1
                     @Override // android.view.View.OnClickListener
                     public void onClick(View v) {
-                        if (XGlobals.debug) {
-                            Log.d("AutoRepeat", "Auto repeat button clicked");
+                        if (Settings.debug) {
+                            LogH("AutoRepeat", "Auto repeat button clicked");
                         }
                         AutoRepeat.changeSelected(!v.isSelected());
                     }
@@ -64,7 +64,7 @@ public class AutoRepeat {
                 changeVisibility(false);
             }
         } catch (Exception ex) {
-            Log.e("XError", "Unable to set FrameLayout", ex);
+            LogHelper.printException("XError", "Unable to set FrameLayout", ex);
         }
     }
 
@@ -76,14 +76,14 @@ public class AutoRepeat {
             ImageView iView = _autoRepeatBtn.get();
             if (_constraintLayout != null && iView != null) {
                 if (visible && isAutoRepeatBtnEnabled) {
-                    if (XGlobals.debug) {
-                        Log.d("AutoRepeat", "Fading in");
+                    if (Settings.debug) {
+                        LogH("AutoRepeat", "Fading in");
                     }
                     iView.setVisibility(View.VISIBLE);
                     iView.startAnimation(fadeIn);
                 } else if (iView.getVisibility() == View.VISIBLE) {
-                    if (XGlobals.debug) {
-                        Log.d("AutoRepeat", "Fading out");
+                    if (Settings.debug) {
+                        LogH("AutoRepeat", "Fading out");
                     }
                     iView.startAnimation(fadeOut);
                     iView.setVisibility(View.GONE);
@@ -99,11 +99,11 @@ public class AutoRepeat {
     public static void changeSelected(boolean selected, boolean onlyView) {
         ImageView iView = _autoRepeatBtn.get();
         if (_constraintLayout != null && iView != null) {
-            if (XGlobals.debug) {
+            if (Settings.debug) {
                 StringBuilder sb = new StringBuilder();
                 sb.append("Changing selected state to: ");
                 sb.append(selected ? "SELECTED" : "NONE");
-                Log.d("AutoRepeat", sb.toString());
+                LogH("AutoRepeat", sb.toString());
             }
             iView.setSelected(selected);
             if (!onlyView) {
@@ -115,7 +115,7 @@ public class AutoRepeat {
     private static boolean shouldBeSelected() {
         Context context = YouTubeTikTokRoot_Application.getAppContext();
         if (context == null) {
-            Log.e("AutoRepeat", "ChangeSelected - context is null!");
+            LogHelper.printException("AutoRepeat", "ChangeSelected - context is null!");
             return false;
         }
         SharedPreferences sharedPreferences = context.getSharedPreferences("youtube", 0);
@@ -126,7 +126,7 @@ public class AutoRepeat {
         try {
             Context context = YouTubeTikTokRoot_Application.getAppContext();
             if (context == null) {
-                Log.e("AutoRepeat", "ChangeSelected - context is null!");
+                LogHelper.printException("AutoRepeat", "ChangeSelected - context is null!");
                 return;
             }
             SharedPreferences sharedPreferences = context.getSharedPreferences("youtube", 0);
@@ -138,7 +138,7 @@ public class AutoRepeat {
     private static boolean shouldBeShown() {
         Context context = YouTubeTikTokRoot_Application.getAppContext();
         if (context == null) {
-            Log.e("AutoRepeat", "ChangeSelected - context is null!");
+            LogHelper.printException("AutoRepeat", "ChangeSelected - context is null!");
             return false;
         }
         SharedPreferences sharedPreferences = context.getSharedPreferences("youtube", 0);

@@ -2,14 +2,14 @@ package fi.razerman.youtube.Helpers;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.util.Log;
+
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import com.google.android.apps.youtube.app.YouTubeTikTokRoot_Application;
 
-import app.revanced.integrations.settings.XGlobals;
+import app.revanced.integrations.settings.Settings;
 
 /* loaded from: classes6.dex */
 public class XSwipeHelper {
@@ -25,7 +25,7 @@ public class XSwipeHelper {
                 isTabletMode = true;
             }
         } catch (Exception e) {
-            Log.e("XError", "Unable to set FrameLayout", e);
+            LogHelper.printException("XError", "Unable to set FrameLayout", e);
         }
     }
 
@@ -33,7 +33,7 @@ public class XSwipeHelper {
         try {
             nextGenWatchLayout = (ViewGroup) obj;
         } catch (Exception e) {
-            Log.e("XError", "Unable to set _nextGenWatchLayout", e);
+            LogHelper.printException("XError", "Unable to set _nextGenWatchLayout", e);
         }
     }
 
@@ -44,7 +44,7 @@ public class XSwipeHelper {
         }
         try {
         } catch (Exception e) {
-            Log.e("XError", "Unable to get related_endscreen_results visibility", e);
+            LogHelper.printException("XError", "Unable to get related_endscreen_results visibility", e);
         }
         if (_frameLayout.getChildCount() > 0) {
             return _frameLayout.getChildAt(0).getVisibility() == View.VISIBLE;
@@ -56,14 +56,14 @@ public class XSwipeHelper {
     private static void refreshLayout() {
         View findViewById;
         try {
-            if (XGlobals.isWatchWhileFullScreen() && (findViewById = nextGenWatchLayout.findViewById(getIdentifier())) != null) {
+            if (Settings.isWatchWhileFullScreen() && (findViewById = nextGenWatchLayout.findViewById(getIdentifier())) != null) {
                 _frameLayout = (FrameLayout) findViewById.getParent();
-                if (XGlobals.debug) {
-                    Log.d("XGlobals", "related_endscreen_results refreshed");
+                if (Settings.debug) {
+                    LogH("Settings", "related_endscreen_results refreshed");
                 }
             }
         } catch (Exception e) {
-            Log.e("XError", "Unable to refresh related_endscreen_results layout", e);
+            LogHelper.printException("XError", "Unable to refresh related_endscreen_results layout", e);
         }
     }
 

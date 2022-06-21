@@ -1,9 +1,9 @@
 package fi.vanced.libraries.youtube.ui;
 
-import static app.revanced.integrations.settings.XGlobals.debug;
+import static app.revanced.integrations.settings.Settings.debug;
 
 import android.content.Context;
-import android.util.Log;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,7 +28,7 @@ public abstract class SlimButton implements View.OnClickListener {
 
     public SlimButton(Context context, ViewGroup container, int id, boolean visible) {
         if (debug) {
-            Log.d(TAG, "Adding button with id " + id + " and visibility of " + visible);
+            LogH(TAG, "Adding button with id " + id + " and visibility of " + visible);
         }
         this.context = context;
         this.container = container;
@@ -52,7 +52,7 @@ public abstract class SlimButton implements View.OnClickListener {
             }
             setContainerVisibility();
         } catch (Exception ex) {
-            Log.e(TAG, "Error while changing button visibility", ex);
+            LogHelper.printException(TAG, "Error while changing button visibility", ex);
         }
     }
 

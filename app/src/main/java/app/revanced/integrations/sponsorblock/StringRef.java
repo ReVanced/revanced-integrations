@@ -2,7 +2,7 @@ package app.revanced.integrations.sponsorblock;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.util.Log;
+
 
 import androidx.annotation.NonNull;
 
@@ -105,7 +105,7 @@ public class StringRef {
             if (resources != null) {
                 final int identifier = resources.getIdentifier(value, "string", packageName);
                 if (identifier == 0)
-                    Log.e(TAG, "Resource not found: " + value);
+                    LogHelper.printException(TAG, "Resource not found: " + value);
                 else
                     value = resources.getString(identifier);
             }

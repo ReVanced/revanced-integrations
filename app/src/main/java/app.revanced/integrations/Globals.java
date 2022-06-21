@@ -1,7 +1,9 @@
 package app.revanced.integrations;
 
 import android.content.Context;
-import android.util.Log;
+
+import app.revanced.integrations.log.LogHelper;
+
 
 public class Globals {
     public static Context context;
@@ -10,7 +12,7 @@ public class Globals {
         if (context != null) {
             return context;
         }
-        Log.e("Globals", "Context is null!");
+        LogHelper.printException("Globals", "Context is null!");
         return null;
     }
 }

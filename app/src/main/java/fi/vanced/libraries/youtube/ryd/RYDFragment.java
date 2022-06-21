@@ -1,6 +1,6 @@
 package fi.vanced.libraries.youtube.ryd;
 
-import static app.revanced.integrations.settings.XGlobals.debug;
+import static app.revanced.integrations.settings.Settings.debug;
 import static fi.vanced.libraries.youtube.ryd.RYDSettings.PREFERENCES_KEY_RYD_ENABLED;
 import static fi.vanced.libraries.youtube.ryd.RYDSettings.PREFERENCES_KEY_RYD_HINT_SHOWN;
 import static fi.vanced.libraries.youtube.ryd.RYDSettings.PREFERENCES_NAME;

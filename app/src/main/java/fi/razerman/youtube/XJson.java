@@ -1,7 +1,7 @@
 package fi.razerman.youtube;
 
 import android.text.format.Time;
-import android.util.Log;
+
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -52,7 +52,7 @@ public class XJson {
                             }
                         }
                     } catch (Exception e2) {
-                        Log.e("XError", "exception", e2);
+                        LogHelper.printException("XError", "exception", e2);
                     }
                 }
             };
@@ -60,7 +60,7 @@ public class XJson {
             t.join();
             return results;
         } catch (Exception e) {
-            Log.e("XError", "exception", e);
+            LogHelper.printException("XError", "exception", e);
             return null;
         }
     }

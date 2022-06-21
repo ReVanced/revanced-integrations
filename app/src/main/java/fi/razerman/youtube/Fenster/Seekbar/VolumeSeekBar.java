@@ -6,12 +6,12 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.media.AudioManager;
 import android.os.Handler;
-import android.util.Log;
+
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import app.revanced.integrations.settings.XGlobals;
+import app.revanced.integrations.settings.Settings;
 
 /* loaded from: classes6.dex */
 public class VolumeSeekBar {
@@ -63,8 +63,8 @@ public class VolumeSeekBar {
                 this.mTextView.setVisibility(View.VISIBLE);
             }
         }
-        if (XGlobals.debug) {
-            Log.d("XDebug", "updateVolumeProgress: " + this.Progress);
+        if (Settings.debug) {
+            LogH("XDebug", "updateVolumeProgress: " + this.Progress);
         }
     }
 

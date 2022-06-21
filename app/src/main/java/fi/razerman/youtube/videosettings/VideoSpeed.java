@@ -1,8 +1,8 @@
 package fi.razerman.youtube.videosettings;
 
-import android.util.Log;
 
-import app.revanced.integrations.settings.XGlobals;
+import app.revanced.integrations.log.LogHelper;
+import app.revanced.integrations.settings.Settings;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -17,17 +17,13 @@ public class VideoSpeed {
     public static int DefaultSpeed(Object[] speeds, int speed, Object qInterface) {
         int speed2;
         Exception e;
-        if (!XGlobals.newVideoSpeed) {
+        if (!Settings.newVideoSpeed) {
             return speed;
         }
-        XGlobals.newVideoSpeed = false;
-        if (XGlobals.debug) {
-            Log.d("XGlobals - speeds", "Speed: " + speed);
-        }
-        float preferredSpeed = XGlobals.prefVideoSpeed;
-        if (XGlobals.debug) {
-            Log.d("XGlobals", "Preferred speed: " + preferredSpeed);
-        }
+        Settings.newVideoSpeed = false;
+        LogHelper.debug("Settings - speeds", "Speed: " + speed);
+        float preferredSpeed = Settings.getPreferredVideoSpeed();
+        LogHelper.debug("Settings", "Preferred speed: " + preferredSpeed);
         if (preferredSpeed == -2.0f) {
             return speed;
         }
@@ -51,24 +47,18 @@ public class VideoSpeed {
         int index = 0;
         while (it.hasNext()) {
             float streamSpeed2 = it.next();
-            if (XGlobals.debug) {
-                Log.d("XGlobals - speeds", "Speed at index " + index + ": " + streamSpeed2);
-            }
+            LogHelper.debug("Settings - speeds", "Speed at index " + index + ": " + streamSpeed2);
             index++;
         }
         int speed3 = -1;
         for (float streamSpeed3 : iStreamSpeeds) {
             if (streamSpeed3 <= preferredSpeed) {
                 speed3++;
-                if (XGlobals.debug) {
-                    Log.d("XGlobals - speeds", "Speed loop at index " + speed3 + ": " + streamSpeed3);
-                }
+                LogHelper.debug("Settings - speeds", "Speed loop at index " + speed3 + ": " + streamSpeed3);
             }
         }
         if (speed3 == -1) {
-            if (XGlobals.debug) {
-                Log.d("XGlobals - speeds", "Speed was not found");
-            }
+            LogHelper.debug("Settings - speeds", "Speed was not found");
             speed2 = 3;
         } else {
             speed2 = speed3;
@@ -77,16 +67,14 @@ public class VideoSpeed {
             Method[] declaredMethods = qInterface.getClass().getDeclaredMethods();
             for (Method method : declaredMethods) {
                 if (method.getName().length() <= 2) {
-                    if (XGlobals.debug) {
-                        Log.d("SPEED - Method", "Method name: " + method.getName());
-                    }
+                    LogHelper.debug("SPEED - Method", "Method name: " + method.getName());
                     try {
                         try {
                             method.invoke(qInterface, videoSpeeds[speed2]);
                         } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ignored) {
                         } catch (Exception e6) {
                             e = e6;
-                            Log.e("XDebug", e.getMessage());
+                            LogHelper.printException("XDebug", e.getMessage());
                             return speed2;
                         }
                     } catch (Exception ignored) {
@@ -96,15 +84,13 @@ public class VideoSpeed {
         } catch (Exception e10) {
             e = e10;
         }
-        if (XGlobals.debug) {
-            Log.d("XGlobals", "Speed changed to: " + speed2);
-        }
+        LogHelper.debug("Settings", "Speed changed to: " + speed2);
         return speed2;
     }
 
     public static void userChangedSpeed() {
-        XGlobals.userChangedSpeed = true;
-        XGlobals.newVideoSpeed = false;
+        Settings.userChangedSpeed = true;
+        Settings.newVideoSpeed = false;
     }
 
     private static float getSpeedByIndex(int index) {
@@ -120,21 +106,17 @@ public class VideoSpeed {
 
     public static float getSpeedValue(Object[] speeds, int speed) {
         int i = 0;
-        if (!XGlobals.newVideoSpeed || XGlobals.userChangedSpeed) {
-            if (XGlobals.debug && XGlobals.userChangedSpeed) {
-                Log.d("XGlobals - speeds", "Skipping speed change because user changed it: " + speed);
+        if (!Settings.newVideoSpeed || Settings.userChangedSpeed) {
+            if (Settings.isDebug() && Settings.userChangedSpeed) {
+                LogHelper.debug("Settings - speeds", "Skipping speed change because user changed it: " + speed);
             }
-            XGlobals.userChangedSpeed = false;
+            Settings.userChangedSpeed = false;
             return -1.0f;
         }
-        XGlobals.newVideoSpeed = false;
-        if (XGlobals.debug) {
-            Log.d("XGlobals - speeds", "Speed: " + speed);
-        }
-        float preferredSpeed = XGlobals.prefVideoSpeed;
-        if (XGlobals.debug) {
-            Log.d("XGlobals", "Preferred speed: " + preferredSpeed);
-        }
+        Settings.newVideoSpeed = false;
+        LogHelper.debug("Settings - speeds", "Speed: " + speed);
+        float preferredSpeed = Settings.getPreferredVideoSpeed();
+        LogHelper.debug("Settings", "Preferred speed: " + preferredSpeed);
         if (preferredSpeed == -2.0f) {
             return -1.0f;
         }
@@ -165,9 +147,7 @@ public class VideoSpeed {
         int index = 0;
         for (Float iStreamSpeed : iStreamSpeeds) {
             float streamSpeed2 = iStreamSpeed;
-            if (XGlobals.debug) {
-                Log.d("XGlobals - speeds", "Speed at index " + index + ": " + streamSpeed2);
-            }
+            LogHelper.debug("Settings - speeds", "Speed at index " + index + ": " + streamSpeed2);
             index++;
         }
         int newSpeedIndex = -1;
@@ -175,26 +155,18 @@ public class VideoSpeed {
             float streamSpeed3 = iStreamSpeed;
             if (streamSpeed3 <= preferredSpeed) {
                 newSpeedIndex++;
-                if (XGlobals.debug) {
-                    Log.d("XGlobals - speeds", "Speed loop at index " + newSpeedIndex + ": " + streamSpeed3);
-                }
+                LogHelper.debug("Settings - speeds", "Speed loop at index " + newSpeedIndex + ": " + streamSpeed3);
             }
         }
         if (newSpeedIndex == -1) {
-            if (XGlobals.debug) {
-                Log.d("XGlobals - speeds", "Speed was not found");
-            }
+            LogHelper.debug("Settings - speeds", "Speed was not found");
             newSpeedIndex = 3;
         }
         if (newSpeedIndex == speed) {
-            if (XGlobals.debug) {
-                Log.d("XGlobals", "Trying to set speed to what it already is, skipping...: " + newSpeedIndex);
-            }
+            LogHelper.debug("Settings", "Trying to set speed to what it already is, skipping...: " + newSpeedIndex);
             return -1.0f;
         }
-        if (XGlobals.debug) {
-            Log.d("XGlobals", "Speed changed to: " + newSpeedIndex);
-        }
+        LogHelper.debug("Settings", "Speed changed to: " + newSpeedIndex);
         return getSpeedByIndex(newSpeedIndex);
     }
 }

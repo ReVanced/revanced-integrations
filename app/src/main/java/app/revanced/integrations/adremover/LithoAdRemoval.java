@@ -1,7 +1,7 @@
 package app.revanced.integrations.adremover;
 
 import android.os.Build;
-import android.util.Log;
+
 
 import androidx.annotation.RequiresApi;
 
@@ -13,8 +13,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import app.revanced.integrations.log.LogHelper;
 import fi.razerman.youtube.Helpers.SharedPrefs;
-import app.revanced.integrations.settings.XGlobals;
+import app.revanced.integrations.settings.Settings;
 
 public class LithoAdRemoval {
     private static boolean getBoolean(String key, boolean _default) {
@@ -168,20 +169,20 @@ public class LithoAdRemoval {
             )) return false;
 
             if (blockList.stream().anyMatch(value::contains)) {
-                if (XGlobals.debug) Log.d("TemplateBlocked", value);
+                LogHelper.debug("TemplateBlocked", value);
                 return true;
             }
 
-            if (!XGlobals.debug) return false;
+            if (!Settings.isDebug()) return false;
             if (value.contains("related_video_with_context")) {
-                Log.d("Template", value + " | " + bytesToHex(buffer.array()));
+                LogHelper.debug("Template", value + " | " + bytesToHex(buffer.array()));
                 return false;
             }
-            Log.d("Template", value);
+            LogHelper.debug("Template", value);
             return false;
         } catch (
                 Exception ex) {
-            Log.e("Template", ex.getMessage(), ex);
+            LogHelper.printException("Template", ex.getMessage(), ex);
             return false;
         }
 

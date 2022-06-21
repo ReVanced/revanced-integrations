@@ -7,7 +7,6 @@ import android.graphics.Paint;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -15,9 +14,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import app.revanced.integrations.log.LogHelper;
 import app.revanced.integrations.sponsorblock.PlayerController;
-
-import static app.revanced.integrations.settings.XGlobals.debug;
 
 public class SkipSponsorButton extends FrameLayout {
     String TAG = "SkipSponsorButton";
@@ -93,9 +91,7 @@ public class SkipSponsorButton extends FrameLayout {
         this.skipSponsorBtnContainer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (debug) {
-                    Log.d(TAG, "Skip button clicked");
-                }
+                LogHelper.debug(TAG, "Skip button clicked");
                 PlayerController.onSkipSponsorClicked();
             }
         });

@@ -1,7 +1,7 @@
 package app.revanced.integrations.sponsorblock;
 
 import android.content.Context;
-import android.util.Log;
+
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -12,7 +12,7 @@ import com.google.android.apps.youtube.app.YouTubeTikTokRoot_Application;
 
 import java.lang.ref.WeakReference;
 
-import static app.revanced.integrations.settings.XGlobals.debug;
+import static app.revanced.integrations.settings.Settings.debug;
 import static app.revanced.integrations.sponsorblock.PlayerController.getCurrentVideoLength;
 import static app.revanced.integrations.sponsorblock.PlayerController.getLastKnownVideoTime;
 
@@ -29,7 +29,7 @@ public class ShieldButton {
     public static void initialize(Object viewStub) {
         try {
             if (debug) {
-                Log.d(TAG, "initializing shield button");
+                LogH(TAG, "initializing shield button");
             }
 
             _youtubeControlsLayout = (RelativeLayout) viewStub;
@@ -38,7 +38,7 @@ public class ShieldButton {
                     .findViewById(getIdentifier("sponsorblock_button", "id"));
 
             if (debug && imageView == null) {
-                Log.d(TAG, "Couldn't find imageView with tag \"sponsorblock_button\"");
+                LogH(TAG, "Couldn't find imageView with tag \"sponsorblock_button\"");
             }
             if (imageView == null) return;
             imageView.setOnClickListener(SponsorBlockUtils.sponsorBlockBtnListener);
@@ -54,7 +54,7 @@ public class ShieldButton {
             isShowing = true;
             changeVisibilityImmediate(false);
         } catch (Exception ex) {
-            Log.e(TAG, "Unable to set RelativeLayout", ex);
+            LogHelper.printException(TAG, "Unable to set RelativeLayout", ex);
         }
     }
 
@@ -82,7 +82,7 @@ public class ShieldButton {
                 return;
             }
             if (debug) {
-                Log.d(TAG, "Fading in");
+                LogH(TAG, "Fading in");
             }
             iView.setVisibility(View.VISIBLE);
             if (!immediate)
@@ -92,7 +92,7 @@ public class ShieldButton {
 
         if (iView.getVisibility() == View.VISIBLE) {
             if (debug) {
-                Log.d(TAG, "Fading out");
+                LogH(TAG, "Fading out");
             }
             if (!immediate)
                 iView.startAnimation(fadeOut);

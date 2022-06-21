@@ -8,7 +8,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Process;
 
-import app.revanced.integrations.settings.XGlobals;
+import app.revanced.integrations.settings.Settings;
+import app.revanced.integrations.settings.XSettingsFragment;
 
 /* loaded from: classes6.dex */
 public class XReboot {
@@ -27,6 +28,6 @@ public class XReboot {
     public static void RebootDialog(final Activity activity) {
         // from class: fi.razerman.youtube.XReboot.1
         // android.content.DialogInterface.OnClickListenerXSettingsFragment.homeActivityClass
-        new AlertDialog.Builder(activity).setMessage(XGlobals.getStringByName(activity, "pref_refresh_config")).setPositiveButton(XGlobals.getStringByName(activity, "in_app_update_restart_button"), (dialog, id) -> XReboot.Reboot(activity, XSettingsFragment.homeActivityClass)).setNegativeButton(XGlobals.getStringByName(activity, "sign_in_cancel"), null).show();
+        new AlertDialog.Builder(activity).setMessage(Settings.getStringByName(activity, "pref_refresh_config")).setPositiveButton(Settings.getStringByName(activity, "in_app_update_restart_button"), (dialog, id) -> XReboot.Reboot(activity, XSettingsFragment.homeActivityClass)).setNegativeButton(Settings.getStringByName(activity, "sign_in_cancel"), null).show();
     }
 }

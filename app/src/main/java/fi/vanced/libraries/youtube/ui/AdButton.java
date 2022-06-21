@@ -1,11 +1,11 @@
 package fi.vanced.libraries.youtube.ui;
 
-import static app.revanced.integrations.settings.XGlobals.debug;
+import static app.revanced.integrations.settings.Settings.debug;
 import static fi.vanced.libraries.youtube.player.VideoInformation.currentVideoId;
 import static app.revanced.integrations.sponsorblock.StringRef.str;
 
 import android.content.Context;
-import android.util.Log;
+
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -35,7 +35,7 @@ public class AdButton extends SlimButton {
 
     public void changeEnabled(boolean enabled) {
         if (debug) {
-            Log.d(TAG, "changeEnabled " + enabled);
+            LogH(TAG, "changeEnabled " + enabled);
         }
         this.button_icon.setEnabled(enabled);
     }
@@ -57,7 +57,7 @@ public class AdButton extends SlimButton {
             Whitelist.removeFromWhitelist(WhitelistType.ADS, this.context, VideoInformation.channelName);
             changeEnabled(false);
         } catch (Exception ex) {
-            Log.e(TAG, "Failed to remove from whitelist", ex);
+            LogHelper.printException(TAG, "Failed to remove from whitelist", ex);
             return;
         }
 
@@ -67,7 +67,7 @@ public class AdButton extends SlimButton {
     private void addToWhiteList(View view, ImageView buttonIcon) {
         new Thread(() -> {
             if (debug) {
-                Log.d(TAG, "Fetching channelId for " + currentVideoId);
+                LogH(TAG, "Fetching channelId for " + currentVideoId);
             }
             WhitelistRequester.addChannelToWhitelist(WhitelistType.ADS, view, buttonIcon, this.context);
         }).start();

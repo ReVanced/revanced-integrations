@@ -1,9 +1,6 @@
 package fi.vanced.libraries.youtube.player;
 
-import static app.revanced.integrations.settings.XGlobals.debug;
-
-import android.util.Log;
-
+import app.revanced.integrations.log.LogHelper;
 import fi.vanced.libraries.youtube.ryd.ReturnYouTubeDislikes;
 
 public class VideoInformation {
@@ -21,9 +18,7 @@ public class VideoInformation {
     // Call hook in the YT code when the video changes
     public static void setCurrentVideoId(final String videoId) {
         if (videoId == null) {
-            if (debug) {
-                Log.d(TAG, "setCurrentVideoId - new id was null - currentVideoId was" + currentVideoId);
-            }
+            LogHelper.debug(TAG, "setCurrentVideoId - new id was null - currentVideoId was" + currentVideoId);
             clearInformation(true);
             return;
         }
@@ -34,15 +29,11 @@ public class VideoInformation {
         }
 
         if (videoId.equals(currentVideoId)) {
-            if (debug) {
-                Log.d(TAG, "setCurrentVideoId - new and current video were equal - " + videoId);
-            }
+            LogHelper.debug(TAG, "setCurrentVideoId - new and current video were equal - " + videoId);
             return;
         }
 
-        if (debug) {
-            Log.d(TAG, "setCurrentVideoId - video id updated from " + currentVideoId + " to " + videoId);
-        }
+        LogHelper.debug(TAG, "setCurrentVideoId - video id updated from " + currentVideoId + " to " + videoId);
 
         currentVideoId = videoId;
 

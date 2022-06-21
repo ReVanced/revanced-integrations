@@ -1,6 +1,6 @@
 package app.revanced.integrations.sponsorblock;
 
-import android.util.Log;
+
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -14,14 +14,14 @@ public class InjectedPlugin {
     private static final String TAG = "revanced.InjectedPlugin";
 
     public static void printSomething() {
-        Log.d(TAG, "printSomething called");
+        LogH(TAG, "printSomething called");
     }
 
     public static void printObject(Object o, int recursive) {
         if (o == null)
-            Log.d(TAG, "Printed object is null");
+            LogH(TAG, "Printed object is null");
         else {
-            Log.d(TAG, "Printed object ("
+            LogH(TAG, "Printed object ("
                     + o.getClass().getName()
                     + ") = " + o.toString());
             for (Field field : o.getClass().getDeclaredFields()) {
@@ -32,9 +32,9 @@ public class InjectedPlugin {
                     Object value = field.get(o);
                     try {
 //                        if ("java.lang.String".equals(field.getType().getName()))
-                        Log.d(TAG, "Field: " + field.toString() + " has value " + value);
+                        LogH(TAG, "Field: " + field.toString() + " has value " + value);
                     } catch (Exception e) {
-                        Log.d(TAG, "Field: " + field.toString() + " has value that thrown an exception in toString method");
+                        LogH(TAG, "Field: " + field.toString() + " has value that thrown an exception in toString method");
                     }
                     if (recursive > 0 && value != null && !value.getClass().isPrimitive())
                         printObject(value, recursive - 1);
@@ -63,9 +63,9 @@ public class InjectedPlugin {
 
     public static void printStackTrace() {
         StackTraceElement[] stackTrace = (new Throwable()).getStackTrace();
-        Log.d(TAG, "Printing stack trace:");
+        LogH(TAG, "Printing stack trace:");
         for (StackTraceElement element : stackTrace) {
-            Log.d(TAG, element.toString());
+            LogH(TAG, element.toString());
         }
     }
 

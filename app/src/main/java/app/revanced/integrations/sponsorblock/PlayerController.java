@@ -13,7 +13,7 @@ import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
+
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -48,7 +48,7 @@ public class PlayerController {
     private static long currentVideoLength = 1L;
     private static long lastKnownVideoTime = -1L;
     private static final Runnable findAndSkipSegmentRunnable = () -> {
-//            Log.d(TAG, "findAndSkipSegmentRunnable");
+//            LogH(TAG, "findAndSkipSegmentRunnable");
         findAndSkipSegment(false);
     };
     private static float sponsorBarLeft = 1f;
@@ -69,7 +69,7 @@ public class PlayerController {
 
         Context context = YouTubeTikTokRoot_Application.getAppContext();
         if (context == null) {
-            Log.e(TAG, "context is null");
+            LogHelper.printException(TAG, "context is null");
             return;
         }
         SponsorBlockSettings.update(context);
@@ -85,7 +85,7 @@ public class PlayerController {
         currentVideoId = videoId;
         sponsorSegmentsOfCurrentVideo = null;
         if (VERBOSE)
-            Log.d(TAG, "setCurrentVideoId: videoId=" + videoId);
+            LogH(TAG, "setCurrentVideoId: videoId=" + videoId);
 
         sponsorTimer.schedule(new TimerTask() {
             @Override
@@ -102,7 +102,7 @@ public class PlayerController {
 //        "Plugin.printStackTrace();
 
         if (o == null) {
-            Log.e(TAG, "onCreate called with null object");
+            LogHelper.printException(TAG, "onCreate called with null object");
             return;
         }
 
@@ -121,7 +121,7 @@ public class PlayerController {
             SkipSegmentView.hide();
             NewSegmentHelperLayout.hide();
         } catch (Exception e) {
-            Log.e(TAG, "Exception while initializing skip method", e);
+            LogHelper.printException(TAG, "Exception while initializing skip method", e);
         }
     }
 
@@ -169,7 +169,7 @@ public class PlayerController {
 //                        Object objLink = b.get(o);
 //                        if (objLink == null) {
 //                            if (VERBOSE)
-//                                Log.e(TAG, "asyncGetVideoLinkFromObject: objLink is null");
+//                                LogHelper.printException(TAG, "asyncGetVideoLinkFromObject: objLink is null");
 //                        } else {
 //                            videoUrl = objLink.toString();
 //                            if (videoUrl.isEmpty())
@@ -189,13 +189,13 @@ public class PlayerController {
 //                    if (currentVideoLink == null) {
 //                        currentVideoLink = videoUrl;
 //                        if (VERBOSE)
-//                            Log.d(TAG, "asyncGetVideoLinkFromObject: link set to " + videoUrl);
+//                            LogH(TAG, "asyncGetVideoLinkFromObject: link set to " + videoUrl);
 //
 //                        executeDownloadSegments(substringVideoIdFromLink(videoUrl), false);
 //                    }
 //
 //                } catch (Exception e) {
-//                    Log.e(TAG, "Cannot get link from object", e);
+//                    LogHelper.printException(TAG, "Cannot get link from object", e);
 //                }
 //            }
 //        }).start();
@@ -238,7 +238,7 @@ public class PlayerController {
 
                 if (skipSponsorTask == null) {
                     if (VERBOSE)
-                        Log.d(TAG, "Scheduling skipSponsorTask");
+                        LogH(TAG, "Scheduling skipSponsorTask");
                     skipSponsorTask = new TimerTask() {
                         @Override
                         public void run() {
@@ -251,7 +251,7 @@ public class PlayerController {
                     sponsorTimer.schedule(skipSponsorTask, segment.start - millis);
                 } else {
                     if (VERBOSE)
-                        Log.d(TAG, "skipSponsorTask is already scheduled...");
+                        LogH(TAG, "skipSponsorTask is already scheduled...");
                 }
 
                 break;
@@ -321,7 +321,7 @@ public class PlayerController {
      */
     public static void setVideoLength(final long length) {
         if (VERBOSE_DRAW_OPTIONS)
-            Log.d(TAG, "setVideoLength: length=" + length);
+            LogH(TAG, "setVideoLength: length=" + length);
         currentVideoLength = length;
     }
 
@@ -332,7 +332,7 @@ public class PlayerController {
 
     public static void setSponsorBarAbsoluteLeft(final float left) {
         if (VERBOSE_DRAW_OPTIONS)
-            Log.d(TAG, String.format("setSponsorBarLeft: left=%.2f", left));
+            LogH(TAG, String.format("setSponsorBarLeft: left=%.2f", left));
 
         sponsorBarLeft = left;
     }
@@ -357,7 +357,7 @@ public class PlayerController {
 
     public static void setSponsorBarAbsoluteRight(final float right) {
         if (VERBOSE_DRAW_OPTIONS)
-            Log.d(TAG, String.format("setSponsorBarRight: right=%.2f", right));
+            LogH(TAG, String.format("setSponsorBarRight: right=%.2f", right));
 
         sponsorBarRight = right;
     }
@@ -368,14 +368,14 @@ public class PlayerController {
 
     public static void setSponsorBarThickness(final float thickness) {
 //        if (VERBOSE_DRAW_OPTIONS)
-//            Log.d(TAG, String.format("setSponsorBarThickness: thickness=%.2f", thickness));
+//            LogH(TAG, String.format("setSponsorBarThickness: thickness=%.2f", thickness));
 
         sponsorBarThickness = thickness;
     }
 
     public static void onSkipSponsorClicked() {
         if (VERBOSE)
-            Log.d(TAG, "Skip segment clicked");
+            LogH(TAG, "Skip segment clicked");
         findAndSkipSegment(true);
     }
 
@@ -383,7 +383,7 @@ public class PlayerController {
     public static void addSkipSponsorView15(final View view) {
         playerActivity = new WeakReference<>((Activity) view.getContext());
         if (VERBOSE)
-            Log.d(TAG, "addSkipSponsorView15: view=" + view.toString());
+            LogH(TAG, "addSkipSponsorView15: view=" + view.toString());
 
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
             final ViewGroup viewGroup = (ViewGroup) ((ViewGroup) view).getChildAt(2);
@@ -395,7 +395,7 @@ public class PlayerController {
     public static void addSkipSponsorView14(final View view) {
         playerActivity = new WeakReference<>((Activity) view.getContext());
         if (VERBOSE)
-            Log.d(TAG, "addSkipSponsorView14: view=" + view.toString());
+            LogH(TAG, "addSkipSponsorView14: view=" + view.toString());
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
             final ViewGroup viewGroup = (ViewGroup) view.getParent();
             Activity activity = (Activity) viewGroup.getContext();
@@ -447,20 +447,20 @@ public class PlayerController {
         allowNextSkipRequestTime = now + 100;
 
         if (setMillisecondMethod == null) {
-            Log.e(TAG, "setMillisecondMethod is null");
+            LogHelper.printException(TAG, "setMillisecondMethod is null");
             return;
         }
 
 
         final Object currentObj = currentPlayerController.get();
         if (currentObj == null) {
-            Log.e(TAG, "currentObj is null (might have been collected by GC)");
+            LogHelper.printException(TAG, "currentObj is null (might have been collected by GC)");
             return;
         }
 
 
         if (VERBOSE)
-            Log.d(TAG, String.format("Requesting skip to millis=%d on thread %s", millisecond, Thread.currentThread().toString()));
+            LogH(TAG, String.format("Requesting skip to millis=%d on thread %s", millisecond, Thread.currentThread().toString()));
 
         final long finalMillisecond = millisecond;
         new Handler(Looper.getMainLooper()).post(() -> {
@@ -471,7 +471,7 @@ public class PlayerController {
                 VideoInformation.lastKnownVideoTime = lastKnownVideoTime;
                 setMillisecondMethod.invoke(currentObj, finalMillisecond);
             } catch (Exception e) {
-                Log.e(TAG, "Cannot skip to millisecond", e);
+                LogHelper.printException(TAG, "Cannot skip to millisecond", e);
             }
         });
     }
@@ -506,7 +506,7 @@ public class PlayerController {
 //        if (lastSkippedSegment == segment) return;
 //        lastSkippedSegment = segment;
         if (VERBOSE)
-            Log.d(TAG, "Skipping segment: " + segment.toString());
+            LogH(TAG, "Skipping segment: " + segment.toString());
 
         if (SponsorBlockSettings.showToastWhenSkippedAutomatically && !wasClicked)
             SkipSegmentView.notifySkipped(segment);

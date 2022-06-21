@@ -1,12 +1,13 @@
 package fi.razerman.youtube.videosettings;
 
 import android.content.Context;
-import android.util.Log;
+
 
 import com.google.android.apps.youtube.app.YouTubeTikTokRoot_Application;
 
+import app.revanced.integrations.log.LogHelper;
 import fi.razerman.youtube.Connectivity;
-import app.revanced.integrations.settings.XGlobals;
+import app.revanced.integrations.settings.Settings;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -18,43 +19,35 @@ public class VideoQuality {
     static final int[] videoResolutions = {0, 144, 240, 360, 480, 720, 1080, 1440, 2160};
 
     public static void userChangedQuality() {
-        XGlobals.userChangedQuality = true;
-        XGlobals.newVideo = false;
+        Settings.userChangedQuality = true;
+        Settings.newVideo = false;
     }
 
     public static int setVideoQuality(Object[] qualities, int quality, Object qInterface) {
         int preferredQuality;
         Field[] fields;
-        if (!XGlobals.newVideo || XGlobals.userChangedQuality || qInterface == null) {
-            if (XGlobals.debug && XGlobals.userChangedQuality) {
-                Log.d("XGlobals - quality", "Skipping quality change because user changed it: " + quality);
+        if (!Settings.newVideo || Settings.userChangedQuality || qInterface == null) {
+            if (Settings.isDebug() && Settings.userChangedQuality) {
+                LogHelper.debug("Settings - quality", "Skipping quality change because user changed it: " + quality);
             }
-            XGlobals.userChangedQuality = false;
+            Settings.userChangedQuality = false;
             return quality;
         }
-        XGlobals.newVideo = false;
-        if (XGlobals.debug) {
-            Log.d("XGlobals - quality", "Quality: " + quality);
-        }
+        Settings.newVideo = false;
+        LogHelper.debug("Settings - quality", "Quality: " + quality);
         Context context = YouTubeTikTokRoot_Application.getAppContext();
         if (context == null) {
-            Log.e("XGlobals", "Context is null or settings not initialized, returning quality: " + quality);
+            LogHelper.printException("Settings", "Context is null or settings not initialized, returning quality: " + quality);
             return quality;
         }
         if (Connectivity.isConnectedWifi(context)) {
-            preferredQuality = XGlobals.prefResolutionWIFI;
-            if (XGlobals.debug) {
-                Log.d("XGlobals", "Wi-Fi connection detected, preferred quality: " + preferredQuality);
-            }
+            preferredQuality = Settings.getPreferredWifiResolution();
+            LogHelper.debug("Settings", "Wi-Fi connection detected, preferred quality: " + preferredQuality);
         } else if (Connectivity.isConnectedMobile(context)) {
-            preferredQuality = XGlobals.prefResolutionMobile;
-            if (XGlobals.debug) {
-                Log.d("XGlobals", "Mobile data connection detected, preferred quality: " + preferredQuality);
-            }
+            preferredQuality = Settings.getPreferredMobileResolution();
+            LogHelper.debug("Settings", "Mobile data connection detected, preferred quality: " + preferredQuality);
         } else {
-            if (XGlobals.debug) {
-                Log.d("XGlobals", "No Internet connection!");
-            }
+            LogHelper.debug("Settings", "No Internet connection!");
             return quality;
         }
         if (preferredQuality == -2) {
@@ -78,9 +71,7 @@ public class VideoQuality {
         Collections.sort(iStreamQualities);
         int index = 0;
         for (int streamQuality2 : iStreamQualities) {
-            if (XGlobals.debug) {
-                Log.d("XGlobals - qualities", "Quality at index " + index + ": " + streamQuality2);
-            }
+            LogHelper.debug("Settings - qualities", "Quality at index " + index + ": " + streamQuality2);
             index++;
         }
         for (Integer iStreamQuality : iStreamQualities) {
@@ -93,19 +84,15 @@ public class VideoQuality {
             return quality;
         }
         int qualityIndex = iStreamQualities.indexOf(quality);
-        if (XGlobals.debug) {
-            Log.d("XGlobals", "Index of quality " + quality + " is " + qualityIndex);
-        }
+        LogHelper.debug("Settings", "Index of quality " + quality + " is " + qualityIndex);
         try {
             Class<?> cl = qInterface.getClass();
             Method m = cl.getMethod("x", Integer.TYPE);
             m.invoke(qInterface, iStreamQualities.get(qualityIndex));
-            if (XGlobals.debug) {
-                Log.d("XGlobals", "Quality changed to: " + qualityIndex);
-            }
+            LogHelper.debug("Settings", "Quality changed to: " + qualityIndex);
             return qualityIndex;
         } catch (Exception ex) {
-            Log.e("XGlobals", "Failed to set quality", ex);
+            LogHelper.printException("Settings", "Failed to set quality", ex);
             return qualityIndex;
         }
     }
