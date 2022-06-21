@@ -7,7 +7,6 @@ import java.security.MessageDigest;
 import java.security.SecureRandom;
 
 import app.revanced.integrations.utils.LogHelper;
-import app.revanced.integrations.utils.VancedUtils;
 
 public class Utils {
     private static final String TAG = "VI - RYD - Utils";

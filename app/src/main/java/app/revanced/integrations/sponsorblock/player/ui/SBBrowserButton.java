@@ -9,7 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import app.revanced.integrations.sponsorblock.player.VideoInformation;
-import app.revanced.integrations.utils.VancedUtils;
+import app.revanced.integrations.utils.ReVancedUtils;
 import app.revanced.integrations.sponsorblock.SponsorBlockSettings;
 import app.revanced.integrations.sponsorblock.SponsorBlockUtils;
 
@@ -24,7 +24,7 @@ public class SBBrowserButton extends SlimButton {
     }
 
     private void initialize() {
-        this.button_icon.setImageResource(VancedUtils.getIdentifier("vanced_sb_browser", "drawable"));
+        this.button_icon.setImageResource(ReVancedUtils.getIdentifier("vanced_sb_browser", "drawable"));
         this.button_text.setText(str("action_browser"));
     }
 

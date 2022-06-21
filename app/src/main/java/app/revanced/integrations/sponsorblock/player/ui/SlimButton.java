@@ -9,7 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import app.revanced.integrations.utils.LogHelper;
-import app.revanced.integrations.utils.VancedUtils;
+import app.revanced.integrations.utils.ReVancedUtils;
 
 public abstract class SlimButton implements View.OnClickListener {
     private static final String TAG = "VI - Slim - Button";
@@ -22,7 +22,7 @@ public abstract class SlimButton implements View.OnClickListener {
     private boolean viewAdded = false;
 
     static {
-        SLIM_METADATA_BUTTON_ID = VancedUtils.getIdentifier("slim_metadata_button", "layout");
+        SLIM_METADATA_BUTTON_ID = ReVancedUtils.getIdentifier("slim_metadata_button", "layout");
     }
 
     public SlimButton(Context context, ViewGroup container, int id, boolean visible) {
@@ -30,8 +30,8 @@ public abstract class SlimButton implements View.OnClickListener {
         this.context = context;
         this.container = container;
         view = LayoutInflater.from(context).inflate(id, container, false);
-        button_icon = (ImageView) view.findViewById(VancedUtils.getIdentifier("button_icon", "id"));
-        button_text = (TextView) view.findViewById(VancedUtils.getIdentifier("button_text", "id"));
+        button_icon = (ImageView) view.findViewById(ReVancedUtils.getIdentifier("button_icon", "id"));
+        button_text = (TextView) view.findViewById(ReVancedUtils.getIdentifier("button_text", "id"));
 
         view.setOnClickListener(this);
 

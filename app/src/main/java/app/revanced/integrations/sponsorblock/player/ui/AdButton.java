@@ -15,7 +15,7 @@ import app.revanced.integrations.adremover.whitelist.Whitelist;
 import app.revanced.integrations.adremover.whitelist.WhitelistType;
 import app.revanced.integrations.adremover.whitelist.requests.WhitelistRequester;
 import app.revanced.integrations.utils.SharedPrefHelper;
-import app.revanced.integrations.utils.VancedUtils;
+import app.revanced.integrations.utils.ReVancedUtils;
 
 public class AdButton extends SlimButton {
     public static final String TAG = "VI - AdButton - Button";
@@ -28,7 +28,7 @@ public class AdButton extends SlimButton {
     }
 
     private void initialize() {
-        this.button_icon.setImageResource(VancedUtils.getIdentifier("vanced_yt_ad_button", "drawable"));
+        this.button_icon.setImageResource(ReVancedUtils.getIdentifier("vanced_yt_ad_button", "drawable"));
         this.button_text.setText(str("action_ads"));
         changeEnabled(Whitelist.shouldShowAds());
     }

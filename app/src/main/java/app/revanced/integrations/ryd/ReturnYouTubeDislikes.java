@@ -3,7 +3,7 @@ package app.revanced.integrations.ryd;
 import static app.revanced.integrations.sponsorblock.player.VideoInformation.currentVideoId;
 import static app.revanced.integrations.sponsorblock.player.VideoInformation.dislikeCount;
 import static app.revanced.integrations.ryd.RYDSettings.PREFERENCES_KEY_RYD_ENABLED;
-import static app.revanced.integrations.utils.VancedUtils.getIdentifier;
+import static app.revanced.integrations.utils.ReVancedUtils.getIdentifier;
 
 import android.content.Context;
 import android.icu.text.CompactDecimalFormat;

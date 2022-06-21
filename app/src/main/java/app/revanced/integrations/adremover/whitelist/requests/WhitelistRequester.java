@@ -2,7 +2,7 @@ package app.revanced.integrations.adremover.whitelist.requests;
 
 import static app.revanced.integrations.sponsorblock.player.VideoInformation.currentVideoId;
 import static app.revanced.integrations.sponsorblock.player.ui.AdButton.TAG;
-import static app.revanced.integrations.utils.VancedUtils.runOnMainThread;
+import static app.revanced.integrations.utils.ReVancedUtils.runOnMainThread;
 import static app.revanced.integrations.sponsorblock.StringRef.str;
 
 import android.content.Context;
@@ -18,11 +18,11 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.nio.charset.StandardCharsets;
 
+import app.revanced.integrations.settings.Settings;
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.sponsorblock.player.ChannelModel;
 import app.revanced.integrations.adremover.whitelist.Whitelist;
 import app.revanced.integrations.adremover.whitelist.WhitelistType;
-import app.revanced.integrations.utils.VancedUtils;
 import vanced.integrations.BuildConfig;
 
 public class WhitelistRequester {
@@ -39,7 +39,7 @@ public class WhitelistRequester {
             connection.setDoOutput(true);
             connection.setConnectTimeout(2 * 1000);
 
-            String versionName = VancedUtils.getVersionName(context);
+            String versionName = Settings.getVersionName(context);
             String jsonInputString = "{\"context\": {\"client\": { \"clientName\": \"Android\", \"clientVersion\": \"" + versionName + "\" } }, \"videoId\": \"" + currentVideoId + "\"}";
             try (OutputStream os = connection.getOutputStream()) {
                 byte[] input = jsonInputString.getBytes(StandardCharsets.UTF_8);

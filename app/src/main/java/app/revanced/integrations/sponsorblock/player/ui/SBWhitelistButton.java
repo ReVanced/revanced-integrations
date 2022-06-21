@@ -14,7 +14,7 @@ import app.revanced.integrations.sponsorblock.player.VideoInformation;
 import app.revanced.integrations.adremover.whitelist.Whitelist;
 import app.revanced.integrations.adremover.whitelist.WhitelistType;
 import app.revanced.integrations.adremover.whitelist.requests.WhitelistRequester;
-import app.revanced.integrations.utils.VancedUtils;
+import app.revanced.integrations.utils.ReVancedUtils;
 import app.revanced.integrations.sponsorblock.SponsorBlockUtils;
 
 public class SBWhitelistButton extends SlimButton {
@@ -28,7 +28,7 @@ public class SBWhitelistButton extends SlimButton {
     }
 
     private void initialize() {
-        this.button_icon.setImageResource(VancedUtils.getIdentifier("vanced_yt_sb_button", "drawable"));
+        this.button_icon.setImageResource(ReVancedUtils.getIdentifier("vanced_yt_sb_button", "drawable"));
         this.button_text.setText(str("action_segments"));
         changeEnabled(Whitelist.isChannelSBWhitelisted());
     }

@@ -37,6 +37,8 @@ public class Settings {
     private static Object AutoRepeatClass;
     private static PlayerType env;
     private static FensterGestureController fensterGestureController;
+    private static Boolean XFILEDEBUG = false;
+
     protected static Boolean debug = false;
     protected static Boolean settingsInitialized = false;
     protected static String manufacturerOverride = null;
@@ -70,7 +72,6 @@ public class Settings {
     public static Boolean userChangedSpeed = false;
     public static Boolean newVideo = false;
     public static Boolean newVideoSpeed = false;
-    public static Boolean XFILEDEBUG = false;
 
     private static void ReadSettings() {
         Context context;
@@ -146,6 +147,10 @@ public class Settings {
             return false;
         }
         return debug;
+    }
+
+    public static boolean isXFileDebug() {
+        return XFILEDEBUG;
     }
 
     /**
@@ -596,15 +601,16 @@ public class Settings {
         }
     }
 
-    private static String getVersionName() {
+    public static String getVersionName(Context context) {
         try {
-            PackageInfo pInfo = getContext().getPackageManager().getPackageInfo(getPackageName(), 0);
+            PackageInfo pInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
             String version = pInfo.versionName;
-            return version;
+            return (version);
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
-            return "Unknown";
         }
+
+        return ("17.23.35");
     }
 
     public static String getPackageName() {

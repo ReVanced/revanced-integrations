@@ -1,7 +1,5 @@
 package app.revanced.integrations.adremover.whitelist.requests;
 
-import app.revanced.integrations.utils.VancedUtils;
-
 public class Route {
     private final String route;
     private final Route.Method method;
@@ -10,9 +8,9 @@ public class Route {
     public Route(Route.Method method, String route) {
         this.method = method;
         this.route = route;
-        this.paramCount = VancedUtils.countMatches(route, '{');
+        this.paramCount = countMatches(route, '{');
 
-        if (paramCount != VancedUtils.countMatches(route, '}'))
+        if (paramCount != countMatches(route, '}'))
             throw new IllegalArgumentException("Not enough parameters");
     }
 
@@ -50,6 +48,15 @@ public class Route {
         public Route.Method getMethod() {
             return baseRoute.method;
         }
+    }
+
+    private int countMatches(CharSequence seq, char c) {
+        int count = 0;
+        for (int i = 0; i < seq.length(); i++) {
+            if (seq.charAt(i) == c)
+                count++;
+        }
+        return count;
     }
 
     public enum Method {

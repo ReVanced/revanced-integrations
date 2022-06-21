@@ -5,7 +5,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import app.revanced.integrations.sponsorblock.player.VideoHelpers;
-import app.revanced.integrations.utils.VancedUtils;
+import app.revanced.integrations.utils.ReVancedUtils;
 
 import static app.revanced.integrations.sponsorblock.StringRef.str;
 
@@ -17,7 +17,7 @@ public class CopyWithTimestamp extends SlimButton {
     }
 
     private void initialize() {
-        this.button_icon.setImageResource(VancedUtils.getIdentifier("vanced_yt_copy_icon_with_time", "drawable"));
+        this.button_icon.setImageResource(ReVancedUtils.getIdentifier("vanced_yt_copy_icon_with_time", "drawable"));
         this.button_text.setText(str("action_tcopy"));
     }
 

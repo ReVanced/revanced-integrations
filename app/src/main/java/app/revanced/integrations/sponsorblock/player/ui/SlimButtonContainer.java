@@ -15,7 +15,7 @@ import app.revanced.integrations.adremover.whitelist.Whitelist;
 import app.revanced.integrations.adremover.whitelist.WhitelistType;
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.SharedPrefHelper;
-import app.revanced.integrations.utils.VancedUtils;
+import app.revanced.integrations.utils.ReVancedUtils;
 import app.revanced.integrations.sponsorblock.SponsorBlockSettings;
 
 public class SlimButtonContainer extends SlimMetadataScrollableButtonContainerLayout {
@@ -49,7 +49,7 @@ public class SlimButtonContainer extends SlimMetadataScrollableButtonContainerLa
 
     public void initialize(Context context) {
         try {
-            container = this.findViewById(VancedUtils.getIdentifier("button_container_vanced", "id"));
+            container = this.findViewById(ReVancedUtils.getIdentifier("button_container_vanced", "id"));
             if (container == null)
                 throw new Exception("Unable to initialize the button container because the button_container_vanced couldn't be found");
 

@@ -7,7 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import app.revanced.integrations.sponsorblock.player.VideoHelpers;
-import app.revanced.integrations.utils.VancedUtils;
+import app.revanced.integrations.utils.ReVancedUtils;
 
 public class CopyButton extends SlimButton {
     public CopyButton(Context context, ViewGroup container) {
@@ -17,7 +17,7 @@ public class CopyButton extends SlimButton {
     }
 
     private void initialize() {
-        this.button_icon.setImageResource(VancedUtils.getIdentifier("vanced_yt_copy_icon", "drawable"));
+        this.button_icon.setImageResource(ReVancedUtils.getIdentifier("vanced_yt_copy_icon", "drawable"));
         this.button_text.setText(str("action_copy"));
     }
 

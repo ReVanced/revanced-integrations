@@ -253,12 +253,12 @@ public class XSettingsFragment extends PreferenceFragment {
         getPreferenceManager().setSharedPreferencesName("youtube");
         try {
             int identifier = getResources().getIdentifier("xfile_prefs", "xml", Settings.getPackageName());
-            if (Settings.XFILEDEBUG) {
+            if (Settings.isXFileDebug()) {
                 addPreferencesFromResource(2131689473);
             } else {
                 addPreferencesFromResource(identifier);
             }
-            if (!Settings.XFILEDEBUG) {
+            if (!Settings.isXFileDebug()) {
                 String stringByName = Settings.getStringByName(getActivity(), "quality_auto");
                 this.videoQualityEntries[0] = stringByName;
                 this.minimizedVideoEntries[0] = stringByName;

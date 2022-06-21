@@ -7,7 +7,7 @@ import android.widget.Toast;
 
 import com.google.android.apps.youtube.app.YouTubeTikTokRoot_Application;
 
-import app.revanced.integrations.utils.VancedUtils;
+import app.revanced.integrations.utils.ReVancedUtils;
 
 public class SponsorBlockVoting extends SlimButton {
     public SponsorBlockVoting(Context context, ViewGroup container) {
@@ -17,7 +17,7 @@ public class SponsorBlockVoting extends SlimButton {
     }
 
     private void initialize() {
-        this.button_icon.setImageResource(VancedUtils.getIdentifier("vanced_sb_voting", "drawable"));
+        this.button_icon.setImageResource(ReVancedUtils.getIdentifier("vanced_sb_voting", "drawable"));
         this.button_text.setText("SB Voting");
     }
 

@@ -18,7 +18,7 @@ import android.os.Build;
 import com.google.android.apps.youtube.app.YouTubeTikTokRoot_Application;
 
 import app.revanced.integrations.utils.SharedPrefHelper;
-import app.revanced.integrations.utils.VancedUtils;
+import app.revanced.integrations.utils.ReVancedUtils;
 
 public class Dialogs {
     // Inject call from YT to this
@@ -48,7 +48,7 @@ public class Dialogs {
             builder = new AlertDialog.Builder(activity);
         }
         builder.setTitle(str("vanced_ryd"));
-        builder.setIcon(VancedUtils.getIdentifier("reel_dislike_icon", "drawable"));
+        builder.setIcon(ReVancedUtils.getIdentifier("reel_dislike_icon", "drawable"));
         builder.setCancelable(false);
         builder.setMessage(str("vanced_ryd_firstrun"));
         builder.setPositiveButton(str("vanced_enable"),
@@ -71,7 +71,7 @@ public class Dialogs {
         dialog.show();
 
         // Set black background
-        dialog.getWindow().getDecorView().getBackground().setColorFilter(new LightingColorFilter(0xFF000000, VancedUtils.getIdentifier("ytBrandBackgroundSolid", "color")));
+        dialog.getWindow().getDecorView().getBackground().setColorFilter(new LightingColorFilter(0xFF000000, ReVancedUtils.getIdentifier("ytBrandBackgroundSolid", "color")));
 
         // Set learn more action (set here so clicking it doesn't dismiss the dialog)
         dialog.getButton(DialogInterface.BUTTON_NEUTRAL).setOnClickListener(v -> {
@@ -102,7 +102,7 @@ public class Dialogs {
             builder = new AlertDialog.Builder(activity);
         }
         builder.setTitle(str("vanced_sb"));
-        builder.setIcon(VancedUtils.getIdentifier("ic_sb_logo", "drawable"));
+        builder.setIcon(ReVancedUtils.getIdentifier("ic_sb_logo", "drawable"));
         builder.setCancelable(false);
         builder.setMessage(str("vanced_sb_firstrun"));
         builder.setPositiveButton(str("vanced_enable"),
@@ -125,7 +125,7 @@ public class Dialogs {
         dialog.show();
 
         // Set black background
-        dialog.getWindow().getDecorView().getBackground().setColorFilter(new LightingColorFilter(0xFF000000, VancedUtils.getIdentifier("ytBrandBackgroundSolid", "color")));
+        dialog.getWindow().getDecorView().getBackground().setColorFilter(new LightingColorFilter(0xFF000000, ReVancedUtils.getIdentifier("ytBrandBackgroundSolid", "color")));
 
         // Set learn more action (set here so clicking it doesn't dismiss the dialog)
         dialog.getButton(DialogInterface.BUTTON_NEUTRAL).setOnClickListener(v -> {

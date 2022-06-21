@@ -1,7 +1,7 @@
 package app.revanced.integrations.sponsorblock.requests;
 
 import static android.text.Html.fromHtml;
-import static app.revanced.integrations.utils.VancedUtils.runOnMainThread;
+import static app.revanced.integrations.utils.ReVancedUtils.runOnMainThread;
 import static app.revanced.integrations.sponsorblock.SponsorBlockUtils.timeWithoutSegments;
 import static app.revanced.integrations.sponsorblock.SponsorBlockUtils.videoHasSegments;
 import static app.revanced.integrations.sponsorblock.StringRef.str;
