@@ -1,6 +1,5 @@
 package fi.vanced.libraries.youtube.ui;
 
-import static app.revanced.integrations.settings.Settings.debug;
 import static app.revanced.integrations.sponsorblock.SponsorBlockSettings.PREFERENCES_KEY_BROWSER_BUTTON;
 import static app.revanced.integrations.sponsorblock.SponsorBlockSettings.PREFERENCES_KEY_SPONSOR_BLOCK_ENABLED;
 
@@ -14,6 +13,7 @@ import com.google.android.apps.youtube.app.ui.SlimMetadataScrollableButtonContai
 
 import app.revanced.integrations.adremover.whitelist.Whitelist;
 import app.revanced.integrations.adremover.whitelist.WhitelistType;
+import app.revanced.integrations.log.LogHelper;
 import fi.vanced.utils.SharedPrefUtils;
 import fi.vanced.utils.VancedUtils;
 import app.revanced.integrations.sponsorblock.SponsorBlockSettings;
@@ -69,9 +69,7 @@ public class SlimButtonContainer extends SlimMetadataScrollableButtonContainerLa
     private void addSharedPrefsChangeListener() {
         listener = (sharedPreferences, key) -> {
             try {
-                if (debug) {
-                    LogH(TAG, String.format("SharedPreference changed with key %s", key));
-                }
+                LogHelper.debug(TAG, String.format("SharedPreference changed with key %s", key));
                 if ("pref_copy_video_url_button_list".equals(key) && copyButton != null) {
                     copyButton.setVisible(ButtonVisibility.isVisibleInContainer(context, "pref_copy_video_url_button_list"));
                     return;

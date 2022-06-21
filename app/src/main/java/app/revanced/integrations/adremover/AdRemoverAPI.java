@@ -8,6 +8,8 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toolbar;
 
+import java.nio.ByteBuffer;
+
 import app.revanced.integrations.log.LogHelper;
 import app.revanced.integrations.preferences.BooleanPreferences;
 import app.revanced.integrations.settings.Settings;
@@ -16,72 +18,6 @@ import app.revanced.integrations.settings.Settings;
  * API Class that provides the logic to the Patch classes. All methods in here should be protected/private and only be accessed from a Patch class.
  */
 public class AdRemoverAPI {
-
-    private static void inspectComponentHost(Object item) {
-        StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
-        if (stackTraceElements.length <= 3) {
-            LogHelper.debug("Litho", "Couldn't locate the method called from.");
-        } else {
-            String sb = "Called from method: " +
-                    stackTraceElements[3].toString() + "\n";
-            LogHelper.debug("Litho", sb);
-        }
-        if (item == null) {
-            LogHelper.debug("Litho", "Item is null.");
-        } else if (item.getClass().getSimpleName().contains("cwl")) {
-            LogHelper.debug("Litho", "Item is a cwl item.");
-            LogHelper.debug("Litho", getViewHierarchy((ViewGroup) item));
-        } else {
-            LogHelper.debug("Litho", "Item is not a cwl item.");
-        }
-    }
-
-    private static String getViewHierarchy(ViewGroup v) {
-        StringBuffer buf = new StringBuffer();
-        printViews(v, buf, 0);
-        return buf.toString();
-    }
-
-    private static String printViews(ViewGroup v, StringBuffer buf, int level) {
-        int childCount = v.getChildCount();
-        v.getId();
-        indent(buf, level);
-        buf.append(v.getClass().getName());
-        buf.append(" children:");
-        buf.append(childCount);
-        buf.append("  id:").append(v.getId());
-        buf.append("\n");
-        for (int i = 0; i < childCount; i++) {
-            View child = v.getChildAt(i);
-            if (child instanceof ViewGroup) {
-                printViews((ViewGroup) child, buf, level + 1);
-            } else {
-                indent(buf, level + 1);
-                buf.append(child.getClass().getName());
-                buf.append("  id:").append(child.getId());
-                buf.append("\n");
-            }
-        }
-        return buf.toString();
-    }
-
-    private static void indent(StringBuffer buf, int level) {
-        for (int i = 0; i < level; i++) {
-            buf.append("  ");
-        }
-    }
-
-    private static void recursiveLoopChildren(ViewGroup parent) {
-        for (int i = 0; i < parent.getChildCount(); i++) {
-            View child = parent.getChildAt(i);
-            if (child instanceof ViewGroup) {
-                recursiveLoopChildren((ViewGroup) child);
-                child.setVisibility(View.GONE);
-            } else if (child != null) {
-                child.setVisibility(View.GONE);
-            }
-        }
-    }
 
     /**
      * Removes Reels and Home ads
@@ -180,5 +116,72 @@ public class AdRemoverAPI {
         LogHelper.debug("AdRemoverAPI", message);
         return defaultValue;
     }
+
+    /*
+    private static void inspectComponentHost(Object item) {
+        StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
+        if (stackTraceElements.length <= 3) {
+            LogHelper.debug("Litho", "Couldn't locate the method called from.");
+        } else {
+            String sb = "Called from method: " +
+                    stackTraceElements[3].toString() + "\n";
+            LogHelper.debug("Litho", sb);
+        }
+        if (item == null) {
+            LogHelper.debug("Litho", "Item is null.");
+        } else if (item.getClass().getSimpleName().contains("cwl")) {
+            LogHelper.debug("Litho", "Item is a cwl item.");
+            LogHelper.debug("Litho", getViewHierarchy((ViewGroup) item));
+        } else {
+            LogHelper.debug("Litho", "Item is not a cwl item.");
+        }
+    }
+
+    private static String getViewHierarchy(ViewGroup v) {
+        StringBuffer buf = new StringBuffer();
+        printViews(v, buf, 0);
+        return buf.toString();
+    }
+
+    private static String printViews(ViewGroup v, StringBuffer buf, int level) {
+        int childCount = v.getChildCount();
+        v.getId();
+        indent(buf, level);
+        buf.append(v.getClass().getName());
+        buf.append(" children:");
+        buf.append(childCount);
+        buf.append("  id:").append(v.getId());
+        buf.append("\n");
+        for (int i = 0; i < childCount; i++) {
+            View child = v.getChildAt(i);
+            if (child instanceof ViewGroup) {
+                printViews((ViewGroup) child, buf, level + 1);
+            } else {
+                indent(buf, level + 1);
+                buf.append(child.getClass().getName());
+                buf.append("  id:").append(child.getId());
+                buf.append("\n");
+            }
+        }
+        return buf.toString();
+    }
+
+    private static void indent(StringBuffer buf, int level) {
+        for (int i = 0; i < level; i++) {
+            buf.append("  ");
+        }
+    }
+
+    private static void recursiveLoopChildren(ViewGroup parent) {
+        for (int i = 0; i < parent.getChildCount(); i++) {
+            View child = parent.getChildAt(i);
+            if (child instanceof ViewGroup) {
+                recursiveLoopChildren((ViewGroup) child);
+                child.setVisibility(View.GONE);
+            } else if (child != null) {
+                child.setVisibility(View.GONE);
+            }
+        }
+    }*/
 
 }

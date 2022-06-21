@@ -12,9 +12,10 @@ import com.google.android.apps.youtube.app.YouTubeTikTokRoot_Application;
 
 import java.lang.ref.WeakReference;
 
-import static app.revanced.integrations.settings.Settings.debug;
 import static app.revanced.integrations.sponsorblock.PlayerController.getCurrentVideoLength;
 import static app.revanced.integrations.sponsorblock.PlayerController.getLastKnownVideoTime;
+
+import app.revanced.integrations.log.LogHelper;
 
 public class ShieldButton {
     static String TAG = "SHIELD";
@@ -28,17 +29,15 @@ public class ShieldButton {
 
     public static void initialize(Object viewStub) {
         try {
-            if (debug) {
-                LogH(TAG, "initializing shield button");
-            }
+            LogHelper.debug(TAG, "initializing shield button");
 
             _youtubeControlsLayout = (RelativeLayout) viewStub;
 
             ImageView imageView = (ImageView) _youtubeControlsLayout
                     .findViewById(getIdentifier("sponsorblock_button", "id"));
 
-            if (debug && imageView == null) {
-                LogH(TAG, "Couldn't find imageView with tag \"sponsorblock_button\"");
+            if (imageView == null) {
+                LogHelper.debug(TAG, "Couldn't find imageView with tag \"sponsorblock_button\"");
             }
             if (imageView == null) return;
             imageView.setOnClickListener(SponsorBlockUtils.sponsorBlockBtnListener);
@@ -81,9 +80,8 @@ public class ShieldButton {
             if (getLastKnownVideoTime() >= getCurrentVideoLength()) {
                 return;
             }
-            if (debug) {
-                LogH(TAG, "Fading in");
-            }
+            LogHelper.debug(TAG, "Fading in");
+
             iView.setVisibility(View.VISIBLE);
             if (!immediate)
                 iView.startAnimation(fadeIn);
@@ -91,9 +89,7 @@ public class ShieldButton {
         }
 
         if (iView.getVisibility() == View.VISIBLE) {
-            if (debug) {
-                LogH(TAG, "Fading out");
-            }
+            LogHelper.debug(TAG, "Fading out");
             if (!immediate)
                 iView.startAnimation(fadeOut);
             iView.setVisibility(shouldBeShown() ? View.INVISIBLE : View.GONE);

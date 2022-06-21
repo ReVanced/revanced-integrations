@@ -1,6 +1,5 @@
 package fi.vanced.libraries.youtube.ryd;
 
-import static app.revanced.integrations.settings.Settings.debug;
 import static fi.vanced.libraries.youtube.ryd.RYDSettings.PREFERENCES_KEY_RYD_ENABLED;
 import static fi.vanced.libraries.youtube.ryd.RYDSettings.PREFERENCES_KEY_RYD_HINT_SHOWN;
 import static fi.vanced.libraries.youtube.ryd.RYDSettings.PREFERENCES_NAME;
@@ -17,6 +16,7 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceScreen;
 import android.preference.SwitchPreference;
 
+import app.revanced.integrations.settings.Settings;
 import fi.vanced.utils.SharedPrefUtils;
 
 public class RYDFragment extends PreferenceFragment {
@@ -47,7 +47,7 @@ public class RYDFragment extends PreferenceFragment {
         }
 
         // Clear hint
-        if (debug) {
+        if (Settings.isDebug()) {
             SwitchPreference preference = new SwitchPreference(context);
             preferenceScreen.addPreference(preference);
             preference.setKey(PREFERENCES_KEY_RYD_HINT_SHOWN);

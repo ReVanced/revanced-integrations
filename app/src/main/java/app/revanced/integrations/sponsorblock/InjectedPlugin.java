@@ -6,6 +6,8 @@ import android.view.ViewGroup;
 
 import java.lang.reflect.Field;
 
+import app.revanced.integrations.log.LogHelper;
+
 // invoke-static {p0}, Lpl/jakubweg/InjectedPlugin;->inject(Landroid/content/Context;)V
 // invoke-static {}, Lpl/jakubweg/InjectedPlugin;->printSomething()V
 // InlineTimeBar
@@ -14,14 +16,14 @@ public class InjectedPlugin {
     private static final String TAG = "revanced.InjectedPlugin";
 
     public static void printSomething() {
-        LogH(TAG, "printSomething called");
+        LogHelper.debug(TAG, "printSomething called");
     }
 
     public static void printObject(Object o, int recursive) {
         if (o == null)
-            LogH(TAG, "Printed object is null");
+            LogHelper.debug(TAG, "Printed object is null");
         else {
-            LogH(TAG, "Printed object ("
+            LogHelper.debug(TAG, "Printed object ("
                     + o.getClass().getName()
                     + ") = " + o.toString());
             for (Field field : o.getClass().getDeclaredFields()) {
@@ -32,9 +34,9 @@ public class InjectedPlugin {
                     Object value = field.get(o);
                     try {
 //                        if ("java.lang.String".equals(field.getType().getName()))
-                        LogH(TAG, "Field: " + field.toString() + " has value " + value);
+                        LogHelper.debug(TAG, "Field: " + field.toString() + " has value " + value);
                     } catch (Exception e) {
-                        LogH(TAG, "Field: " + field.toString() + " has value that thrown an exception in toString method");
+                        LogHelper.debug(TAG, "Field: " + field.toString() + " has value that thrown an exception in toString method");
                     }
                     if (recursive > 0 && value != null && !value.getClass().isPrimitive())
                         printObject(value, recursive - 1);
@@ -63,9 +65,9 @@ public class InjectedPlugin {
 
     public static void printStackTrace() {
         StackTraceElement[] stackTrace = (new Throwable()).getStackTrace();
-        LogH(TAG, "Printing stack trace:");
+        LogHelper.debug(TAG, "Printing stack trace:");
         for (StackTraceElement element : stackTrace) {
-            LogH(TAG, element.toString());
+            LogHelper.debug(TAG, element.toString());
         }
     }
 
@@ -77,19 +79,19 @@ public class InjectedPlugin {
         String spacesStr = builder.toString();
 
         if (view == null) {
-            Log.i(TAG, spacesStr + "Null view");
+            LogHelper.debug(TAG, spacesStr + "Null view");
             return;
         }
         if (view instanceof ViewGroup) {
             ViewGroup group = (ViewGroup) view;
-            Log.i(TAG, spacesStr + "View group: " + view);
+            LogHelper.debug(TAG, spacesStr + "View group: " + view);
             int childCount = group.getChildCount();
-            Log.i(TAG, spacesStr + "Children count: " + childCount);
+            LogHelper.debug(TAG, spacesStr + "Children count: " + childCount);
             for (int i = 0; i < childCount; i++) {
                 printViewStack(group.getChildAt(i), spaces + 1);
             }
         } else {
-            Log.i(TAG, spacesStr + "Normal view: " + view);
+            LogHelper.debug(TAG, spacesStr + "Normal view: " + view);
         }
     }
 }

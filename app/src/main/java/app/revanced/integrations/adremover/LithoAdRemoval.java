@@ -34,43 +34,43 @@ public class LithoAdRemoval {
         return getBoolean("experimental_emergency_box", true);
     }
 
-    public static boolean isExperimentalAdRemoval() {
+    private static boolean isExperimentalAdRemoval() {
         return getBoolean("experimental_ad_removal", true);
     }
 
-    public static boolean isExperimentalMerchandiseRemoval() {
+    private static boolean isExperimentalMerchandiseRemoval() {
         return getBoolean("experimental_merchandise", true);
     }
 
-    public static boolean isExperimentalCommunityPostRemoval() {
+    private static boolean isExperimentalCommunityPostRemoval() {
         return getBoolean("experimental_community_posts", false);
     }
 
-    public static boolean isExperimentalMovieRemoval() {
+    private static boolean isExperimentalMovieRemoval() {
         return getBoolean("experimental_movie", true);
     }
 
-    public static boolean isExperimentalCompactBannerRemoval() {
+    private static boolean isExperimentalCompactBannerRemoval() {
         return getBoolean("experimental_compact_banner", false);
     }
 
-    public static boolean isExperimentalPaidContentRemoval() {
+    private static boolean isExperimentalPaidContentRemoval() {
         return getBoolean("experimental_paid_content", true);
     }
 
-    public static boolean isExperimentalCommentsRemoval() {
+    private static boolean isExperimentalCommentsRemoval() {
         return getBoolean("experimental_comments", false);
     }
 
-    public static boolean isInFeedSurvey() {
+    private static boolean isInFeedSurvey() {
         return getBoolean("experimental_in_feed_survey", false);
     }
 
-    public static boolean isShortsShelf() {
+    private static boolean isShortsShelf() {
         return getBoolean("experimental_shorts_shelf", true);
     }
 
-    public static boolean isCommunityGuidelines() {
+    private static boolean isCommunityGuidelines() {
         return getBoolean("experimental_community_guidelines", true);
     }
 

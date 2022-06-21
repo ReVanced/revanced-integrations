@@ -8,6 +8,7 @@ import android.widget.Toast;
 
 import com.google.android.apps.youtube.app.YouTubeTikTokRoot_Application;
 
+import app.revanced.integrations.log.LogHelper;
 import app.revanced.integrations.sponsorblock.objects.SponsorSegment;
 
 import static fi.vanced.libraries.youtube.sponsors.player.ui.SponsorBlockView.hideSkipButton;
@@ -30,14 +31,14 @@ public class SkipSegmentView {
     public static void notifySkipped(SponsorSegment segment) {
         if (segment == lastNotifiedSegment) {
             if (VERBOSE)
-                LogH(TAG, "notifySkipped; segment == lastNotifiedSegment");
+                LogHelper.debug(TAG, "notifySkipped; segment == lastNotifiedSegment");
             return;
         }
         lastNotifiedSegment = segment;
         String skipMessage = segment.category.skipMessage.toString();
         Context context = YouTubeTikTokRoot_Application.getAppContext();
         if (VERBOSE)
-            LogH(TAG, String.format("notifySkipped; message=%s", skipMessage));
+            LogHelper.debug(TAG, String.format("notifySkipped; message=%s", skipMessage));
 
         if (context != null)
             Toast.makeText(context, skipMessage, Toast.LENGTH_SHORT).show();

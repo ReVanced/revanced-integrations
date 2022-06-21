@@ -12,6 +12,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.google.android.apps.youtube.app.YouTubeTikTokRoot_Application;
 
+import app.revanced.integrations.log.LogHelper;
 import fi.razerman.youtube.VideoUrl.Copy;
 import fi.razerman.youtube.VideoUrl.CopyWithTimeStamp;
 import app.revanced.integrations.settings.Settings;
@@ -31,25 +32,21 @@ public class AutoRepeat {
 
     public static void initializeAutoRepeat(Object constraintLayout) {
         try {
-            if (Settings.debug) {
-                LogH("AutoRepeat", "initializing auto repeat");
-            }
+            LogHelper.debug("AutoRepeat", "initializing auto repeat");
             CopyWithTimeStamp.initializeCopyButtonWithTimeStamp(constraintLayout);
             Copy.initializeCopyButton(constraintLayout);
             _constraintLayout = (ConstraintLayout) constraintLayout;
             isAutoRepeatBtnEnabled = shouldBeShown();
             ImageView imageView = _constraintLayout.findViewById(getIdentifier("autoreplay_button", "id"));
-            if (Settings.debug && imageView == null) {
-                LogH("AutoRepeat", "Couldn't find imageView with tag \"autoreplay_button\"");
+            if (imageView == null) {
+                LogHelper.debug("AutoRepeat", "Couldn't find imageView with tag \"autoreplay_button\"");
             }
             if (imageView != null) {
                 imageView.setSelected(shouldBeSelected());
                 imageView.setOnClickListener(new View.OnClickListener() { // from class: fi.razerman.youtube.Autorepeat.AutoRepeat.1
                     @Override // android.view.View.OnClickListener
                     public void onClick(View v) {
-                        if (Settings.debug) {
-                            LogH("AutoRepeat", "Auto repeat button clicked");
-                        }
+                        LogHelper.debug("AutoRepeat", "Auto repeat button clicked");
                         AutoRepeat.changeSelected(!v.isSelected());
                     }
                 });
@@ -76,15 +73,11 @@ public class AutoRepeat {
             ImageView iView = _autoRepeatBtn.get();
             if (_constraintLayout != null && iView != null) {
                 if (visible && isAutoRepeatBtnEnabled) {
-                    if (Settings.debug) {
-                        LogH("AutoRepeat", "Fading in");
-                    }
+                    LogHelper.debug("AutoRepeat", "Fading in");
                     iView.setVisibility(View.VISIBLE);
                     iView.startAnimation(fadeIn);
                 } else if (iView.getVisibility() == View.VISIBLE) {
-                    if (Settings.debug) {
-                        LogH("AutoRepeat", "Fading out");
-                    }
+                    LogHelper.debug("AutoRepeat", "Fading out");
                     iView.startAnimation(fadeOut);
                     iView.setVisibility(View.GONE);
                 }
@@ -99,11 +92,11 @@ public class AutoRepeat {
     public static void changeSelected(boolean selected, boolean onlyView) {
         ImageView iView = _autoRepeatBtn.get();
         if (_constraintLayout != null && iView != null) {
-            if (Settings.debug) {
+            if (Settings.isDebug()) {
                 StringBuilder sb = new StringBuilder();
                 sb.append("Changing selected state to: ");
                 sb.append(selected ? "SELECTED" : "NONE");
-                LogH("AutoRepeat", sb.toString());
+                LogHelper.debug("AutoRepeat", sb.toString());
             }
             iView.setSelected(selected);
             if (!onlyView) {

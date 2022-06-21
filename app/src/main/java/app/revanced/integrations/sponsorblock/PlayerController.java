@@ -26,6 +26,7 @@ import java.util.Arrays;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import app.revanced.integrations.log.LogHelper;
 import fi.vanced.libraries.youtube.player.VideoInformation;
 import app.revanced.integrations.adremover.whitelist.Whitelist;
 import app.revanced.integrations.sponsorblock.objects.SponsorSegment;
@@ -85,7 +86,7 @@ public class PlayerController {
         currentVideoId = videoId;
         sponsorSegmentsOfCurrentVideo = null;
         if (VERBOSE)
-            LogH(TAG, "setCurrentVideoId: videoId=" + videoId);
+            LogHelper.debug(TAG, "setCurrentVideoId: videoId=" + videoId);
 
         sponsorTimer.schedule(new TimerTask() {
             @Override
@@ -107,7 +108,7 @@ public class PlayerController {
         }
 
         if (VERBOSE)
-            Log.i(TAG, String.format("onCreate called with object %s on thread %s", o.toString(), Thread.currentThread().toString()));
+            LogHelper.debug(TAG, String.format("onCreate called with object %s on thread %s", o.toString(), Thread.currentThread().toString()));
 
         try {
             setMillisecondMethod = o.getClass().getMethod("replaceMeWithsetMillisecondMethod", Long.TYPE);
@@ -135,7 +136,7 @@ public class PlayerController {
 
         if (VERBOSE)
             for (SponsorSegment segment : segments) {
-                Log.v(TAG, "Detected segment: " + segment.toString());
+                LogHelper.debug(TAG, "Detected segment: " + segment.toString());
             }
 
         sponsorSegmentsOfCurrentVideo = segments;
@@ -210,7 +211,7 @@ public class PlayerController {
      */
     public static void setCurrentVideoTime(long millis) {
         if (VERBOSE)
-            Log.v(TAG, "setCurrentVideoTime: current video time: " + millis);
+            LogHelper.debug(TAG, "setCurrentVideoTime: current video time: " + millis);
         VideoInformation.lastKnownVideoTime = millis;
         if (!SponsorBlockSettings.isSponsorBlockEnabled) return;
         lastKnownVideoTime = millis;
@@ -238,7 +239,7 @@ public class PlayerController {
 
                 if (skipSponsorTask == null) {
                     if (VERBOSE)
-                        LogH(TAG, "Scheduling skipSponsorTask");
+                        LogHelper.debug(TAG, "Scheduling skipSponsorTask");
                     skipSponsorTask = new TimerTask() {
                         @Override
                         public void run() {
@@ -251,7 +252,7 @@ public class PlayerController {
                     sponsorTimer.schedule(skipSponsorTask, segment.start - millis);
                 } else {
                     if (VERBOSE)
-                        LogH(TAG, "skipSponsorTask is already scheduled...");
+                        LogHelper.debug(TAG, "skipSponsorTask is already scheduled...");
                 }
 
                 break;
@@ -321,7 +322,7 @@ public class PlayerController {
      */
     public static void setVideoLength(final long length) {
         if (VERBOSE_DRAW_OPTIONS)
-            LogH(TAG, "setVideoLength: length=" + length);
+            LogHelper.debug(TAG, "setVideoLength: length=" + length);
         currentVideoLength = length;
     }
 
@@ -332,7 +333,7 @@ public class PlayerController {
 
     public static void setSponsorBarAbsoluteLeft(final float left) {
         if (VERBOSE_DRAW_OPTIONS)
-            LogH(TAG, String.format("setSponsorBarLeft: left=%.2f", left));
+            LogHelper.debug(TAG, String.format("setSponsorBarLeft: left=%.2f", left));
 
         sponsorBarLeft = left;
     }
@@ -357,7 +358,7 @@ public class PlayerController {
 
     public static void setSponsorBarAbsoluteRight(final float right) {
         if (VERBOSE_DRAW_OPTIONS)
-            LogH(TAG, String.format("setSponsorBarRight: right=%.2f", right));
+            LogHelper.debug(TAG, String.format("setSponsorBarRight: right=%.2f", right));
 
         sponsorBarRight = right;
     }
@@ -375,7 +376,7 @@ public class PlayerController {
 
     public static void onSkipSponsorClicked() {
         if (VERBOSE)
-            LogH(TAG, "Skip segment clicked");
+            LogHelper.debug(TAG, "Skip segment clicked");
         findAndSkipSegment(true);
     }
 
@@ -383,7 +384,7 @@ public class PlayerController {
     public static void addSkipSponsorView15(final View view) {
         playerActivity = new WeakReference<>((Activity) view.getContext());
         if (VERBOSE)
-            LogH(TAG, "addSkipSponsorView15: view=" + view.toString());
+            LogHelper.debug(TAG, "addSkipSponsorView15: view=" + view.toString());
 
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
             final ViewGroup viewGroup = (ViewGroup) ((ViewGroup) view).getChildAt(2);
@@ -395,7 +396,7 @@ public class PlayerController {
     public static void addSkipSponsorView14(final View view) {
         playerActivity = new WeakReference<>((Activity) view.getContext());
         if (VERBOSE)
-            LogH(TAG, "addSkipSponsorView14: view=" + view.toString());
+            LogHelper.debug(TAG, "addSkipSponsorView14: view=" + view.toString());
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
             final ViewGroup viewGroup = (ViewGroup) view.getParent();
             Activity activity = (Activity) viewGroup.getContext();
@@ -441,7 +442,7 @@ public class PlayerController {
         long now = System.currentTimeMillis();
         if (now < allowNextSkipRequestTime) {
             if (VERBOSE)
-                Log.w(TAG, "skipToMillisecond: to fast, slow down, because you'll fail");
+                LogHelper.debug(TAG, "skipToMillisecond: to fast, slow down, because you'll fail");
             return;
         }
         allowNextSkipRequestTime = now + 100;
@@ -460,13 +461,13 @@ public class PlayerController {
 
 
         if (VERBOSE)
-            LogH(TAG, String.format("Requesting skip to millis=%d on thread %s", millisecond, Thread.currentThread().toString()));
+            LogHelper.debug(TAG, String.format("Requesting skip to millis=%d on thread %s", millisecond, Thread.currentThread().toString()));
 
         final long finalMillisecond = millisecond;
         new Handler(Looper.getMainLooper()).post(() -> {
             try {
                 if (VERBOSE)
-                    Log.i(TAG, "Skipping to millis=" + finalMillisecond);
+                    LogHelper.debug(TAG, "Skipping to millis=" + finalMillisecond);
                 lastKnownVideoTime = finalMillisecond;
                 VideoInformation.lastKnownVideoTime = lastKnownVideoTime;
                 setMillisecondMethod.invoke(currentObj, finalMillisecond);
@@ -506,7 +507,7 @@ public class PlayerController {
 //        if (lastSkippedSegment == segment) return;
 //        lastSkippedSegment = segment;
         if (VERBOSE)
-            LogH(TAG, "Skipping segment: " + segment.toString());
+            LogHelper.debug(TAG, "Skipping segment: " + segment.toString());
 
         if (SponsorBlockSettings.showToastWhenSkippedAutomatically && !wasClicked)
             SkipSegmentView.notifySkipped(segment);

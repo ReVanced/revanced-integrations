@@ -1,6 +1,5 @@
 package app.revanced.integrations.sponsorblock;
 
-import static app.revanced.integrations.settings.Settings.debug;
 import static app.revanced.integrations.sponsorblock.SponsorBlockSettings.DEFAULT_API_URL;
 import static app.revanced.integrations.sponsorblock.SponsorBlockSettings.PREFERENCES_KEY_ADJUST_NEW_SEGMENT_STEP;
 import static app.revanced.integrations.sponsorblock.SponsorBlockSettings.PREFERENCES_KEY_API_URL;
@@ -50,6 +49,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 import app.revanced.integrations.adremover.whitelist.WhitelistType;
+import app.revanced.integrations.settings.Settings;
 import fi.vanced.utils.SharedPrefUtils;
 import app.revanced.integrations.sponsorblock.objects.EditTextListPreference;
 import app.revanced.integrations.sponsorblock.requests.SBRequester;
@@ -91,7 +91,7 @@ public class SponsorBlockPreferenceFragment extends PreferenceFragment implement
         }
 
         // Clear hint
-        if (debug) {
+        if (Settings.isDebug()) {
             SwitchPreference preference = new SwitchPreference(context);
             preferenceScreen.addPreference(preference);
             preference.setKey(PREFERENCES_KEY_SPONSOR_BLOCK_HINT_SHOWN);

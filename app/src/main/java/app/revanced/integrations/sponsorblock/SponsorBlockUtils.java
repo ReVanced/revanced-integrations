@@ -112,7 +112,7 @@ public abstract class SponsorBlockUtils {
                     Toast.makeText(context.getApplicationContext(), str("new_segment_time_end_set"), Toast.LENGTH_SHORT).show();
                     break;
             }
-            diaLogHismiss();
+            dialog.dismiss();
         }
     };
     private static SponsorBlockSettings.SegmentInfo newSponsorBlockSegmentType;
@@ -147,7 +147,7 @@ public abstract class SponsorBlockUtils {
         public void onClick(DialogInterface dialog, int which) {
             NewSegmentHelperLayout.hide();
             Context context = ((AlertDialog) dialog).getContext();
-            diaLogHismiss();
+            dialog.dismiss();
 
             SponsorBlockSettings.SegmentInfo[] values = SponsorBlockSettings.SegmentInfo.valuesWithoutUnsubmitted();
             CharSequence[] titles = new CharSequence[values.length];
@@ -172,7 +172,7 @@ public abstract class SponsorBlockUtils {
         @SuppressLint("DefaultLocale")
         @Override
         public void onClick(DialogInterface dialog, int which) {
-            diaLogHismiss();
+            dialog.dismiss();
             Context context = ((AlertDialog) dialog).getContext().getApplicationContext();
             Toast.makeText(context, str("submit_started"), Toast.LENGTH_SHORT).show();
 
@@ -207,7 +207,7 @@ public abstract class SponsorBlockUtils {
                 .setPositiveButton(android.R.string.ok, editByHandSaveDialogListener)
                 .show();
 
-        diaLogHismiss();
+        dialog.dismiss();
     };
     private static final Runnable toastRunnable = () -> {
         Context context = appContext.get();

@@ -1,7 +1,5 @@
 package fi.vanced.libraries.youtube.ui;
 
-import static app.revanced.integrations.settings.Settings.debug;
-
 import android.content.Context;
 
 import android.view.LayoutInflater;
@@ -10,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import app.revanced.integrations.log.LogHelper;
 import fi.vanced.utils.VancedUtils;
 
 public abstract class SlimButton implements View.OnClickListener {
@@ -27,9 +26,7 @@ public abstract class SlimButton implements View.OnClickListener {
     }
 
     public SlimButton(Context context, ViewGroup container, int id, boolean visible) {
-        if (debug) {
-            LogH(TAG, "Adding button with id " + id + " and visibility of " + visible);
-        }
+        LogHelper.debug(TAG, "Adding button with id " + id + " and visibility of " + visible);
         this.context = context;
         this.container = container;
         view = LayoutInflater.from(context).inflate(id, container, false);

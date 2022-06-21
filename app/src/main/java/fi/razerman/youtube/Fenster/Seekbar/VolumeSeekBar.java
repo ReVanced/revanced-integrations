@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import app.revanced.integrations.log.LogHelper;
 import app.revanced.integrations.settings.Settings;
 
 /* loaded from: classes6.dex */
@@ -63,9 +64,7 @@ public class VolumeSeekBar {
                 this.mTextView.setVisibility(View.VISIBLE);
             }
         }
-        if (Settings.debug) {
-            LogH("XDebug", "updateVolumeProgress: " + this.Progress);
-        }
+        LogHelper.debug("XDebug", "updateVolumeProgress: " + this.Progress);
     }
 
     private void setVolume(int volume) {

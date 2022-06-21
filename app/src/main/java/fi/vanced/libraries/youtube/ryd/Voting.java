@@ -1,10 +1,9 @@
 package fi.vanced.libraries.youtube.ryd;
 
-import static app.revanced.integrations.settings.Settings.debug;
-
 import android.content.Context;
 
 
+import app.revanced.integrations.log.LogHelper;
 import fi.vanced.libraries.youtube.ryd.requests.RYDRequester;
 
 public class Voting {
@@ -20,9 +19,7 @@ public class Voting {
 
     public boolean sendVote(String videoId, int vote) {
         String userId = registration.getUserId();
-        if (debug) {
-            LogH(TAG, "Trying to vote the following video: " + videoId + " with vote " + vote + " and userId: " + userId);
-        }
+        LogHelper.debug(TAG, "Trying to vote the following video: " + videoId + " with vote " + vote + " and userId: " + userId);
         return RYDRequester.sendVote(videoId, userId, vote);
     }
 }

@@ -29,6 +29,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
+import app.revanced.integrations.log.LogHelper;
+
 public class ObjectSerializer {
     private static final String TAG = "VI - ObjectSerializer";
 

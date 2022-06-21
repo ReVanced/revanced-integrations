@@ -9,6 +9,8 @@ import java.net.URL;
 
 import org.json.JSONObject;
 
+import app.revanced.integrations.log.LogHelper;
+
 /* loaded from: classes6.dex */
 public class XJson {
     public static String[] getVersion(String versionName) {

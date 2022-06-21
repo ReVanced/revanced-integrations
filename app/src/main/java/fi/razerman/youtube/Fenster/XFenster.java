@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 
 import com.google.android.apps.youtube.app.YouTubeTikTokRoot_Application;
 
+import app.revanced.integrations.log.LogHelper;
 import fi.razerman.youtube.Fenster.Seekbar.BrightnessSeekBar;
 import fi.razerman.youtube.Fenster.Seekbar.VolumeSeekBar;
 import fi.razerman.youtube.Helpers.XSwipeHelper;
@@ -45,16 +46,12 @@ public class XFenster implements FensterEventsListener {
 
     @Override // fi.razerman.youtube.Fenster.FensterEventsListener
     public void onTap() {
-        if (Settings.debug) {
-            LogH("XDebug", "onTap");
-        }
+        LogHelper.debug("XDebug", "onTap");
     }
 
     @Override // fi.razerman.youtube.Fenster.FensterEventsListener
     public void onHorizontalScroll(MotionEvent event, float delta) {
-        if (Settings.debug) {
-            LogH("XDebug", "onHorizontalScroll - y: " + ((int) event.getY()) + " x: " + ((int) event.getX()));
-        }
+        LogHelper.debug("XDebug", "onHorizontalScroll - y: " + ((int) event.getY()) + " x: " + ((int) event.getX()));
         if (event.getPointerCount() == 1) {
             if (this.brightnessOrientation == Orientation.HORIZONTAL && (this.brightnessCoverage == Coverage.FULL || getCoverageHorizontal(event) == this.brightnessCoverage)) {
                 updateBrightnessProgressBarHorizontal(event);
@@ -70,9 +67,7 @@ public class XFenster implements FensterEventsListener {
 
     @Override // fi.razerman.youtube.Fenster.FensterEventsListener
     public void onVerticalScroll(MotionEvent event, float delta) {
-        if (Settings.debug) {
-            LogH("XDebug", "onVerticalScroll - y: " + ((int) event.getY()) + " x: " + ((int) event.getX()));
-        }
+        LogHelper.debug("XDebug", "onVerticalScroll - y: " + ((int) event.getY()) + " x: " + ((int) event.getX()));
         if (event.getPointerCount() == 1) {
             if (this.brightnessOrientation == Orientation.VERTICAL && (this.brightnessCoverage == Coverage.FULL || getCoverageVertical(event) == this.brightnessCoverage)) {
                 updateBrightnessProgressBarVertical(event);
@@ -88,37 +83,27 @@ public class XFenster implements FensterEventsListener {
 
     @Override // fi.razerman.youtube.Fenster.FensterEventsListener
     public void onSwipeRight() {
-        if (Settings.debug) {
-            LogH("XDebug", "onSwipeRight");
-        }
+        LogHelper.debug("XDebug", "onSwipeRight");
     }
 
     @Override // fi.razerman.youtube.Fenster.FensterEventsListener
     public void onSwipeLeft() {
-        if (Settings.debug) {
-            LogH("XDebug", "onSwipeLeft");
-        }
+        LogHelper.debug("XDebug", "onSwipeLeft");
     }
 
     @Override // fi.razerman.youtube.Fenster.FensterEventsListener
     public void onSwipeBottom() {
-        if (Settings.debug) {
-            LogH("XDebug", "onSwipeBottom");
-        }
+        LogHelper.debug("XDebug", "onSwipeBottom");
     }
 
     @Override // fi.razerman.youtube.Fenster.FensterEventsListener
     public void onSwipeTop() {
-        if (Settings.debug) {
-            LogH("XDebug", "onSwipeTop");
-        }
+        LogHelper.debug("XDebug", "onSwipeTop");
     }
 
     @Override // fi.razerman.youtube.Fenster.FensterEventsListener
     public void onDown(MotionEvent event) {
-        if (Settings.debug) {
-            LogH("XDebug", "onDown");
-        }
+        LogHelper.debug("XDebug", "onDown");
         if (event.getPointerCount() == 1) {
             if (this.brightnessOrientation == Orientation.VERTICAL && (this.brightnessCoverage == Coverage.FULL || getCoverageVertical(event) == this.brightnessCoverage)) {
                 this.mBrightnessDownPos = getProgressVertical(event, this.mBrightness.Max);
@@ -139,7 +124,7 @@ public class XFenster implements FensterEventsListener {
 
     @Override // fi.razerman.youtube.Fenster.FensterEventsListener
     public void onUp() {
-        LogH("XDebug", "onUp");
+        LogHelper.debug("XDebug", "onUp");
         hideNotifications();
     }
 
@@ -219,26 +204,20 @@ public class XFenster implements FensterEventsListener {
 
     private float getProgressVertical(MotionEvent event, int maxSteps) {
         float progress = calculateProgressVertical(event, maxSteps);
-        if (Settings.debug) {
-            LogH("XDebug", "Progress vertical: " + progress);
-        }
+        LogHelper.debug("XDebug", "Progress vertical: " + progress);
         return progress;
     }
 
     private float getProgressHorizontal(MotionEvent event, int maxSteps) {
         float progress = calculateProgressHorizontal(event, maxSteps);
-        if (Settings.debug) {
-            LogH("XDebug", "Progress horizontal: " + progress);
-        }
+        LogHelper.debug("XDebug", "Progress horizontal: " + progress);
         return progress;
     }
 
     private float calculateProgressVertical(MotionEvent event, int maxSteps) {
         float scale;
         int height = this.mViewGroup.getHeight();
-        if (Settings.debug) {
-            LogH("XDebug", "calculateProgressVertical - height: " + height);
-        }
+        LogHelper.debug("XDebug", "calculateProgressVertical - height: " + height);
         int available = (height - this.mPaddingTop) - this.mPaddingBottom;
         int y = height - ((int) event.getY());
         float progress = 0.0f;
@@ -290,11 +269,9 @@ public class XFenster implements FensterEventsListener {
                     this.mViewGroup = (ViewGroup) layout;
                     this.mBrightness.refreshViewGroup(this.mViewGroup, XSettingsFragment.overlayContext);
                     this.mVolume.refreshViewGroup(this.mViewGroup);
-                    if (Settings.debug) {
-                        LogH("Settings", "player_overlays refreshed");
-                    }
-                } else if (Settings.debug) {
-                    LogH("Settings", "player_overlays was not found");
+                    LogHelper.debug("Settings", "player_overlays refreshed");
+                } else {
+                    LogHelper.debug("Settings", "player_overlays was not found");
                 }
             }
         } catch (Exception ex) {

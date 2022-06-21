@@ -3,6 +3,8 @@ package fi.razerman.youtube.Helpers;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import app.revanced.integrations.log.LogHelper;
+
 
 /* loaded from: classes6.dex */
 public class XSharedPrefs {

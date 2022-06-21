@@ -15,6 +15,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import app.revanced.integrations.log.LogHelper;
+
 public class SponsorBlockSettings {
 
     public static final String PREFERENCES_NAME = "sponsor-block";

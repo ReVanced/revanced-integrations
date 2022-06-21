@@ -1,6 +1,5 @@
 package fi.vanced.libraries.youtube.ryd.requests;
 
-import static app.revanced.integrations.settings.Settings.debug;
 import static fi.vanced.libraries.youtube.player.VideoInformation.dislikeCount;
 import static fi.vanced.libraries.youtube.ryd.ReturnYouTubeDislikes.TAG;
 import static fi.vanced.utils.requests.Requester.parseJson;
@@ -16,6 +15,7 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.nio.charset.StandardCharsets;
 
+import app.revanced.integrations.log.LogHelper;
 import fi.vanced.libraries.youtube.ryd.Registration;
 import fi.vanced.libraries.youtube.ryd.ReturnYouTubeDislikes;
 import fi.vanced.libraries.youtube.ryd.Utils;
@@ -30,23 +30,20 @@ public class RYDRequester {
 
     public static void fetchDislikes(String videoId) {
         try {
-            if (debug) {
-                LogH(TAG, "Fetching dislikes for " + videoId);
-            }
+            LogHelper.debug(TAG, "Fetching dislikes for " + videoId);
             HttpURLConnection connection = getConnectionFromRoute(RYDRoutes.GET_DISLIKES, videoId);
             connection.setConnectTimeout(5 * 1000);
             if (connection.getResponseCode() == 200) {
                 JSONObject json = getJSONObject(connection);
                 int dislikes = json.getInt("dislikes");
                 dislikeCount = dislikes;
-                if (debug) {
-                    LogH(TAG, "dislikes fetched - " + dislikeCount);
-                }
+                LogHelper.debug(TAG, "dislikes fetched - " + dislikeCount);
+
 
                 // Set the dislikes
                 new Handler(Looper.getMainLooper()).post(() -> ReturnYouTubeDislikes.trySetDislikes(ReturnYouTubeDislikes.formatDislikes(dislikes)));
-            } else if (debug) {
-                LogH(TAG, "dislikes fetch response was " + connection.getResponseCode());
+            } else {
+                LogHelper.debug(TAG, "dislikes fetch response was " + connection.getResponseCode());
             }
             connection.disconnect();
         } catch (Exception ex) {
@@ -63,19 +60,15 @@ public class RYDRequester {
                 JSONObject json = getJSONObject(connection);
                 String challenge = json.getString("challenge");
                 int difficulty = json.getInt("difficulty");
-                if (debug) {
-                    LogH(TAG, "Registration challenge - " + challenge + " with difficulty of " + difficulty);
-                }
+                LogHelper.debug(TAG, "Registration challenge - " + challenge + " with difficulty of " + difficulty);
 
                 // Solve the puzzle
                 String solution = Utils.solvePuzzle(challenge, difficulty);
-                if (debug) {
-                    LogH(TAG, "Registration confirmation solution is " + solution);
-                }
+                LogHelper.debug(TAG, "Registration confirmation solution is " + solution);
 
                 return confirmRegistration(userId, solution, registration);
-            } else if (debug) {
-                LogH(TAG, "Registration response was " + connection.getResponseCode());
+            } else {
+                LogHelper.debug(TAG, "Registration response was " + connection.getResponseCode());
             }
             connection.disconnect();
         } catch (Exception ex) {
@@ -86,9 +79,7 @@ public class RYDRequester {
 
     private static String confirmRegistration(String userId, String solution, Registration registration) {
         try {
-            if (debug) {
-                LogH(TAG, "Trying to confirm registration for the following userId: " + userId + " with solution: " + solution);
-            }
+            LogHelper.debug(TAG, "Trying to confirm registration for the following userId: " + userId + " with solution: " + solution);
 
             HttpURLConnection connection = getConnectionFromRoute(RYDRoutes.CONFIRM_REGISTRATION, userId);
             applyCommonRequestSettings(connection);
@@ -100,20 +91,16 @@ public class RYDRequester {
             }
             if (connection.getResponseCode() == 200) {
                 String result = parseJson(connection);
-                if (debug) {
-                    LogH(TAG, "Registration confirmation result was " + result);
-                }
+                LogHelper.debug(TAG, "Registration confirmation result was " + result);
 
                 if (result.equalsIgnoreCase("true")) {
                     registration.saveUserId(userId);
-                    if (debug) {
-                        LogH(TAG, "Registration was successful for user " + userId);
-                    }
+                    LogHelper.debug(TAG, "Registration was successful for user " + userId);
 
                     return userId;
                 }
-            } else if (debug) {
-                LogH(TAG, "Registration confirmation response was " + connection.getResponseCode());
+            } else {
+                LogHelper.debug(TAG, "Registration confirmation response was " + connection.getResponseCode());
             }
             connection.disconnect();
         } catch (Exception ex) {
@@ -138,20 +125,16 @@ public class RYDRequester {
                 JSONObject json = getJSONObject(connection);
                 String challenge = json.getString("challenge");
                 int difficulty = json.getInt("difficulty");
-                if (debug) {
-                    LogH(TAG, "Vote challenge - " + challenge + " with difficulty of " + difficulty);
-                }
+                LogHelper.debug(TAG, "Vote challenge - " + challenge + " with difficulty of " + difficulty);
 
                 // Solve the puzzle
                 String solution = Utils.solvePuzzle(challenge, difficulty);
-                if (debug) {
-                    LogH(TAG, "Vote confirmation solution is " + solution);
-                }
+                LogHelper.debug(TAG, "Vote confirmation solution is " + solution);
 
                 // Confirm vote
                 return confirmVote(videoId, userId, solution);
-            } else if (debug) {
-                LogH(TAG, "Vote response was " + connection.getResponseCode());
+            } else {
+                LogHelper.debug(TAG, "Vote response was " + connection.getResponseCode());
             }
             connection.disconnect();
         } catch (Exception ex) {
@@ -172,19 +155,16 @@ public class RYDRequester {
             }
             if (connection.getResponseCode() == 200) {
                 String result = parseJson(connection);
-                if (debug) {
-                    LogH(TAG, "Vote confirmation result was " + result);
-                }
+                LogHelper.debug(TAG, "Vote confirmation result was " + result);
+
 
                 if (result.equalsIgnoreCase("true")) {
-                    if (debug) {
-                        LogH(TAG, "Vote was successful for user " + userId);
-                    }
+                    LogHelper.debug(TAG, "Vote was successful for user " + userId);
 
                     return true;
                 }
-            } else if (debug) {
-                LogH(TAG, "Vote confirmation response was " + connection.getResponseCode());
+            } else {
+                LogHelper.debug(TAG, "Vote confirmation response was " + connection.getResponseCode());
             }
             connection.disconnect();
         } catch (Exception ex) {

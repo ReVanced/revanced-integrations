@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import app.revanced.integrations.log.LogHelper;
 import fi.razerman.youtube.Fenster.Helpers.BrightnessHelper;
 import fi.razerman.youtube.Helpers.SharedPrefs;
 import app.revanced.integrations.settings.Settings;
@@ -60,9 +61,7 @@ public class BrightnessSeekBar {
                 this.mTextView.setVisibility(View.VISIBLE);
             }
         }
-        if (Settings.debug) {
-            LogH("XDebug", "updateBrightnessProgress: " + this.Progress);
-        }
+        LogHelper.debug("XDebug", "updateBrightnessProgress: " + this.Progress);
     }
 
     private void disableBrightness() {
@@ -116,7 +115,7 @@ public class BrightnessSeekBar {
         this.enabled = false;
         SharedPrefs.saveInt(this.mContext, "xfile_brightness_value", Integer.valueOf(this.Progress));
         disableBrightness();
-        LogH("XDebug", "Brightness swipe disabled");
+        LogHelper.debug("XDebug", "Brightness swipe disabled");
     }
 
     public void enable() {
@@ -130,6 +129,6 @@ public class BrightnessSeekBar {
             brightness = 100;
         }
         BrightnessHelper.setBrightness(this.mContext, brightness);
-        LogH("XDebug", "Brightness swipe enabled");
+        LogHelper.debug("XDebug", "Brightness swipe enabled");
     }
 }

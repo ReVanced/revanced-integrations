@@ -1,6 +1,5 @@
 package fi.vanced.libraries.youtube.ui;
 
-import static app.revanced.integrations.settings.Settings.debug;
 import static fi.vanced.libraries.youtube.player.VideoInformation.currentVideoId;
 import static app.revanced.integrations.sponsorblock.StringRef.str;
 
@@ -10,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import app.revanced.integrations.log.LogHelper;
 import fi.vanced.libraries.youtube.player.VideoInformation;
 import app.revanced.integrations.adremover.whitelist.Whitelist;
 import app.revanced.integrations.adremover.whitelist.WhitelistType;
@@ -34,9 +34,7 @@ public class AdButton extends SlimButton {
     }
 
     public void changeEnabled(boolean enabled) {
-        if (debug) {
-            LogH(TAG, "changeEnabled " + enabled);
-        }
+        LogHelper.debug(TAG, "changeEnabled " + enabled);
         this.button_icon.setEnabled(enabled);
     }
 
@@ -66,9 +64,7 @@ public class AdButton extends SlimButton {
 
     private void addToWhiteList(View view, ImageView buttonIcon) {
         new Thread(() -> {
-            if (debug) {
-                LogH(TAG, "Fetching channelId for " + currentVideoId);
-            }
+            LogHelper.debug(TAG, "Fetching channelId for " + currentVideoId);
             WhitelistRequester.addChannelToWhitelist(WhitelistType.ADS, view, buttonIcon, this.context);
         }).start();
     }

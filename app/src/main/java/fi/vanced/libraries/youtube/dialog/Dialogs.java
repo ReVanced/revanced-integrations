@@ -57,14 +57,14 @@ public class Dialogs {
                 (dialog, id) -> {
                     SharedPrefUtils.saveBoolean(context, PREFERENCES_NAME, PREFERENCES_KEY_RYD_HINT_SHOWN, true);
                     SharedPrefUtils.saveBoolean(context, PREFERENCES_NAME, PREFERENCES_KEY_RYD_ENABLED, true);
-                    diaLogHismiss();
+                    dialog.dismiss();
                 });
 
         builder.setNegativeButton(str("vanced_disable"),
                 (dialog, id) -> {
                     SharedPrefUtils.saveBoolean(context, PREFERENCES_NAME, PREFERENCES_KEY_RYD_HINT_SHOWN, true);
                     SharedPrefUtils.saveBoolean(context, PREFERENCES_NAME, PREFERENCES_KEY_RYD_ENABLED, false);
-                    diaLogHismiss();
+                    dialog.dismiss();
                 });
 
         builder.setNeutralButton(str("vanced_learnmore"), null);
@@ -111,14 +111,14 @@ public class Dialogs {
                 (dialog, id) -> {
                     SharedPrefUtils.saveBoolean(context, SponsorBlockSettings.PREFERENCES_NAME, PREFERENCES_KEY_SPONSOR_BLOCK_HINT_SHOWN, true);
                     SharedPrefUtils.saveBoolean(context, SponsorBlockSettings.PREFERENCES_NAME, PREFERENCES_KEY_SPONSOR_BLOCK_ENABLED, true);
-                    diaLogHismiss();
+                    dialog.dismiss();
                 });
 
         builder.setNegativeButton(str("vanced_disable"),
                 (dialog, id) -> {
                     SharedPrefUtils.saveBoolean(context, SponsorBlockSettings.PREFERENCES_NAME, PREFERENCES_KEY_SPONSOR_BLOCK_HINT_SHOWN, true);
                     SharedPrefUtils.saveBoolean(context, SponsorBlockSettings.PREFERENCES_NAME, PREFERENCES_KEY_SPONSOR_BLOCK_ENABLED, false);
-                    diaLogHismiss();
+                    dialog.dismiss();
                 });
 
         builder.setNeutralButton(str("vanced_learnmore"), null);

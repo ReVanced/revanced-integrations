@@ -9,6 +9,7 @@ import android.widget.FrameLayout;
 
 import com.google.android.apps.youtube.app.YouTubeTikTokRoot_Application;
 
+import app.revanced.integrations.log.LogHelper;
 import app.revanced.integrations.settings.Settings;
 
 /* loaded from: classes6.dex */
@@ -58,9 +59,7 @@ public class XSwipeHelper {
         try {
             if (Settings.isWatchWhileFullScreen() && (findViewById = nextGenWatchLayout.findViewById(getIdentifier())) != null) {
                 _frameLayout = (FrameLayout) findViewById.getParent();
-                if (Settings.debug) {
-                    LogH("Settings", "related_endscreen_results refreshed");
-                }
+                LogHelper.debug("Settings", "related_endscreen_results refreshed");
             }
         } catch (Exception e) {
             LogHelper.printException("XError", "Unable to refresh related_endscreen_results layout", e);

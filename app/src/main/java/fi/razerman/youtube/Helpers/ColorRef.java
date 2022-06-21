@@ -8,6 +8,8 @@ import androidx.annotation.NonNull;
 
 import java.util.HashMap;
 
+import app.revanced.integrations.log.LogHelper;
+
 /* loaded from: classes6.dex */
 public class ColorRef {
     public static final String CREDITS = "Converted from jakubweg's StringRef https://github.com/YTVanced/SponsorBlock/blob/master/app/src/main/java/pl/jakubweg/StringRef.java";

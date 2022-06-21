@@ -55,7 +55,7 @@ public class XTheme {
             int color = context.getResources().getColor(colorRes);
             return color;
         } catch (Resources.NotFoundException e) {
-            Log.w("Settings", "Not found color resource by id: " + colorRes);
+            LogHelper.debug("Settings", "Not found color resource by id: " + colorRes);
             return -328966;
         }
     }
@@ -67,7 +67,7 @@ public class XTheme {
         try {
             return context.getResources().getColor(colorRes);
         } catch (Resources.NotFoundException e) {
-            Log.w("Settings", "Not found color resource by id: " + colorRes);
+            LogHelper.debug("Settings", "Not found color resource by id: " + colorRes);
             return -328966;
         }
     }

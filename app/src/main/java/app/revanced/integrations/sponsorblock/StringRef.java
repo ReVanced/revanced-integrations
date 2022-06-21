@@ -8,6 +8,8 @@ import androidx.annotation.NonNull;
 
 import java.util.HashMap;
 
+import app.revanced.integrations.log.LogHelper;
+
 public class StringRef {
     public static final String TAG = "revanced.StringRef";
 

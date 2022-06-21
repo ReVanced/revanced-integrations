@@ -39,7 +39,6 @@ public class Settings {
     private static Object AutoRepeatClass;
     private static PlayerType env;
     private static FensterGestureController fensterGestureController;
-    protected static Boolean XFILEDEBUG = false;
     protected static Boolean debug = false;
     protected static Boolean settingsInitialized = false;
     protected static String manufacturerOverride = null;
@@ -73,6 +72,7 @@ public class Settings {
     public static Boolean userChangedSpeed = false;
     public static Boolean newVideo = false;
     public static Boolean newVideoSpeed = false;
+    public static Boolean XFILEDEBUG = false;
 
     private static void ReadSettings() {
         Context context;
