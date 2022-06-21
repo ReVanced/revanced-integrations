@@ -2,19 +2,18 @@ package app.revanced.integrations.adremover.whitelist;
 
 import static app.revanced.integrations.sponsorblock.StringRef.str;
 
-import app.revanced.integrations.sponsorblock.SponsorBlockSettings;
-import app.revanced.integrations.utils.SharedPrefNames;
+import app.revanced.integrations.utils.SharedPrefHelper;
 
 public enum WhitelistType {
-    ADS(SharedPrefNames.YOUTUBE, "vanced_whitelist_ads_enabled"),
-    SPONSORBLOCK(SharedPrefNames.SPONSOR_BLOCK, "vanced_whitelist_sb_enabled");
+    ADS(SharedPrefHelper.SharedPrefNames.YOUTUBE, "vanced_whitelist_ads_enabled"),
+    SPONSORBLOCK(SharedPrefHelper.SharedPrefNames.SPONSOR_BLOCK, "vanced_whitelist_sb_enabled");
 
     private final String friendlyName;
     private final String preferencesName;
     private final String preferenceEnabledName;
-    private final SharedPrefNames name;
+    private final SharedPrefHelper.SharedPrefNames name;
 
-    WhitelistType(SharedPrefNames name, String preferenceEnabledName) {
+    WhitelistType(SharedPrefHelper.SharedPrefNames name, String preferenceEnabledName) {
         this.friendlyName = str("vanced_whitelisting_" + name().toLowerCase());
         this.name = name;
         this.preferencesName = "whitelist_" + name();
@@ -25,7 +24,7 @@ public enum WhitelistType {
         return friendlyName;
     }
 
-    public SharedPrefNames getSharedPreferencesName() {
+    public SharedPrefHelper.SharedPrefNames getSharedPreferencesName() {
         return name;
     }
 

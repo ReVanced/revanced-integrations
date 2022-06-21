@@ -4,11 +4,16 @@ import android.util.Base64;
 
 
 import java.security.MessageDigest;
+import java.security.SecureRandom;
 
 import app.revanced.integrations.utils.LogHelper;
+import app.revanced.integrations.utils.VancedUtils;
 
 public class Utils {
     private static final String TAG = "VI - RYD - Utils";
+    // https://stackoverflow.com/a/157202
+    private static final String AB = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    private static SecureRandom rnd = new SecureRandom();
 
     public static String solvePuzzle(String challenge, int difficulty) {
         byte[] decodedChallenge = Base64.decode(challenge, Base64.NO_WRAP);
@@ -62,5 +67,12 @@ public class Utils {
             }
         }
         return zeroes;
+    }
+
+    public static String randomString(int len) {
+        StringBuilder sb = new StringBuilder(len);
+        for (int i = 0; i < len; i++)
+            sb.append(AB.charAt(rnd.nextInt(AB.length())));
+        return sb.toString();
     }
 }

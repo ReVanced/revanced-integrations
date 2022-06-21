@@ -15,7 +15,6 @@ import app.revanced.integrations.adremover.whitelist.Whitelist;
 import app.revanced.integrations.adremover.whitelist.WhitelistType;
 import app.revanced.integrations.adremover.whitelist.requests.WhitelistRequester;
 import app.revanced.integrations.utils.SharedPrefHelper;
-import app.revanced.integrations.utils.SharedPrefNames;
 import app.revanced.integrations.utils.VancedUtils;
 
 public class AdButton extends SlimButton {
@@ -23,7 +22,7 @@ public class AdButton extends SlimButton {
 
     public AdButton(Context context, ViewGroup container) {
         super(context, container, SlimButton.SLIM_METADATA_BUTTON_ID,
-                SharedPrefHelper.getBoolean(context, SharedPrefNames.YOUTUBE, WhitelistType.ADS.getPreferenceEnabledName(), false));
+                SharedPrefHelper.getBoolean(context, SharedPrefHelper.SharedPrefNames.YOUTUBE, WhitelistType.ADS.getPreferenceEnabledName(), false));
 
         initialize();
     }

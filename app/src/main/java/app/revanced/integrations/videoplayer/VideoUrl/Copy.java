@@ -13,7 +13,6 @@ import com.google.android.apps.youtube.app.YouTubeTikTokRoot_Application;
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.sponsorblock.player.VideoHelpers;
 import app.revanced.integrations.utils.SharedPrefHelper;
-import app.revanced.integrations.utils.SharedPrefNames;
 
 import java.lang.ref.WeakReference;
 
@@ -89,7 +88,7 @@ public class Copy {
             LogHelper.printException(TAG, "shouldBeShown - context is null!");
             return false;
         }
-        String string = SharedPrefHelper.getString(appContext, SharedPrefNames.YOUTUBE, "pref_copy_video_url_button_list", null);
+        String string = SharedPrefHelper.getString(appContext, SharedPrefHelper.SharedPrefNames.YOUTUBE, "pref_copy_video_url_button_list", null);
         if (string == null || string.isEmpty()) {
             return false;
         }

@@ -17,7 +17,6 @@ import java.util.UUID;
 
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.SharedPrefHelper;
-import app.revanced.integrations.utils.SharedPrefNames;
 
 public class SponsorBlockSettings {
 
@@ -69,13 +68,13 @@ public class SponsorBlockSettings {
 
     public static void setSeenGuidelines(Context context) {
         SponsorBlockSettings.seenGuidelinesPopup = true;
-        SharedPrefHelper.getPreferences(context, SharedPrefNames.SPONSOR_BLOCK).edit().putBoolean(PREFERENCES_KEY_SEEN_GUIDELINES, true).apply();
+        SharedPrefHelper.getPreferences(context, SharedPrefHelper.SharedPrefNames.SPONSOR_BLOCK).edit().putBoolean(PREFERENCES_KEY_SEEN_GUIDELINES, true).apply();
     }
 
     public static void update(Context context) {
         if (context == null) return;
 
-        SharedPreferences preferences = SharedPrefHelper.getPreferences(context, SharedPrefNames.SPONSOR_BLOCK);
+        SharedPreferences preferences = SharedPrefHelper.getPreferences(context, SharedPrefHelper.SharedPrefNames.SPONSOR_BLOCK);
 
         isSponsorBlockEnabled = preferences.getBoolean(PREFERENCES_KEY_SPONSOR_BLOCK_ENABLED, isSponsorBlockEnabled);
         seenGuidelinesPopup = preferences.getBoolean(PREFERENCES_KEY_SEEN_GUIDELINES, seenGuidelinesPopup);

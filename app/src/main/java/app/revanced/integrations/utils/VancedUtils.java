@@ -21,17 +21,6 @@ public class VancedUtils {
         return context.getResources().getIdentifier(name, defType, context.getPackageName());
     }
 
-    // https://stackoverflow.com/a/157202
-    static final String AB = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-    static SecureRandom rnd = new SecureRandom();
-
-    public static String randomString(int len) {
-        StringBuilder sb = new StringBuilder(len);
-        for (int i = 0; i < len; i++)
-            sb.append(AB.charAt(rnd.nextInt(AB.length())));
-        return sb.toString();
-    }
-
     public static int countMatches(CharSequence seq, char c) {
         int count = 0;
         for (int i = 0; i < seq.length(); i++) {

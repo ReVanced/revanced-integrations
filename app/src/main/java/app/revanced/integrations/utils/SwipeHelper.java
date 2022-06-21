@@ -21,7 +21,7 @@ public class SwipeHelper {
         try {
             _frameLayout = (FrameLayout) obj;
             Context appContext = YouTubeTikTokRoot_Application.getAppContext();
-            if (ScreenSizeHelper.isTablet(appContext) || SharedPrefHelper.getBoolean(appContext, SharedPrefNames.YOUTUBE,"pref_xfenster_tablet", false)) {
+            if (ScreenSizeHelper.isTablet(appContext) || SharedPrefHelper.getBoolean(appContext, SharedPrefHelper.SharedPrefNames.YOUTUBE,"pref_xfenster_tablet", false)) {
                 isTabletMode = true;
             }
         } catch (Exception e) {

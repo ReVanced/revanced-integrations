@@ -17,7 +17,6 @@ import android.os.Build;
 
 import com.google.android.apps.youtube.app.YouTubeTikTokRoot_Application;
 
-import app.revanced.integrations.utils.SharedPrefNames;
 import app.revanced.integrations.utils.SharedPrefHelper;
 import app.revanced.integrations.utils.VancedUtils;
 
@@ -30,14 +29,14 @@ public class Dialogs {
 
     private static void rydFirstRun(Activity activity) {
         Context context = YouTubeTikTokRoot_Application.getAppContext();
-        boolean enabled = SharedPrefHelper.getBoolean(context, SharedPrefNames.RYD, PREFERENCES_KEY_RYD_ENABLED, false);
-        boolean hintShown = SharedPrefHelper.getBoolean(context, SharedPrefNames.RYD, PREFERENCES_KEY_RYD_HINT_SHOWN, false);
+        boolean enabled = SharedPrefHelper.getBoolean(context, SharedPrefHelper.SharedPrefNames.RYD, PREFERENCES_KEY_RYD_ENABLED, false);
+        boolean hintShown = SharedPrefHelper.getBoolean(context, SharedPrefHelper.SharedPrefNames.RYD, PREFERENCES_KEY_RYD_HINT_SHOWN, false);
 
         // If RYD is enabled or hint has been shown, exit
         if (enabled || hintShown) {
             // If RYD is enabled but hint hasn't been shown, mark it as shown
             if (enabled && !hintShown) {
-                SharedPrefHelper.saveBoolean(context, SharedPrefNames.RYD, PREFERENCES_KEY_RYD_HINT_SHOWN, true);
+                SharedPrefHelper.saveBoolean(context, SharedPrefHelper.SharedPrefNames.RYD, PREFERENCES_KEY_RYD_HINT_SHOWN, true);
             }
             return;
         }
@@ -54,15 +53,15 @@ public class Dialogs {
         builder.setMessage(str("vanced_ryd_firstrun"));
         builder.setPositiveButton(str("vanced_enable"),
                 (dialog, id) -> {
-                    SharedPrefHelper.saveBoolean(context, SharedPrefNames.RYD, PREFERENCES_KEY_RYD_HINT_SHOWN, true);
-                    SharedPrefHelper.saveBoolean(context, SharedPrefNames.RYD, PREFERENCES_KEY_RYD_ENABLED, true);
+                    SharedPrefHelper.saveBoolean(context, SharedPrefHelper.SharedPrefNames.RYD, PREFERENCES_KEY_RYD_HINT_SHOWN, true);
+                    SharedPrefHelper.saveBoolean(context, SharedPrefHelper.SharedPrefNames.RYD, PREFERENCES_KEY_RYD_ENABLED, true);
                     dialog.dismiss();
                 });
 
         builder.setNegativeButton(str("vanced_disable"),
                 (dialog, id) -> {
-                    SharedPrefHelper.saveBoolean(context, SharedPrefNames.RYD, PREFERENCES_KEY_RYD_HINT_SHOWN, true);
-                    SharedPrefHelper.saveBoolean(context, SharedPrefNames.RYD, PREFERENCES_KEY_RYD_ENABLED, false);
+                    SharedPrefHelper.saveBoolean(context, SharedPrefHelper.SharedPrefNames.RYD, PREFERENCES_KEY_RYD_HINT_SHOWN, true);
+                    SharedPrefHelper.saveBoolean(context, SharedPrefHelper.SharedPrefNames.RYD, PREFERENCES_KEY_RYD_ENABLED, false);
                     dialog.dismiss();
                 });
 
@@ -84,14 +83,14 @@ public class Dialogs {
 
     private static void sbFirstRun(Activity activity) {
         Context context = YouTubeTikTokRoot_Application.getAppContext();
-        boolean enabled = SharedPrefHelper.getBoolean(context, SharedPrefNames.RYD, PREFERENCES_KEY_SPONSOR_BLOCK_ENABLED, false);
-        boolean hintShown = SharedPrefHelper.getBoolean(context, SharedPrefNames.RYD, PREFERENCES_KEY_SPONSOR_BLOCK_HINT_SHOWN, false);
+        boolean enabled = SharedPrefHelper.getBoolean(context, SharedPrefHelper.SharedPrefNames.RYD, PREFERENCES_KEY_SPONSOR_BLOCK_ENABLED, false);
+        boolean hintShown = SharedPrefHelper.getBoolean(context, SharedPrefHelper.SharedPrefNames.RYD, PREFERENCES_KEY_SPONSOR_BLOCK_HINT_SHOWN, false);
 
         // If SB is enabled or hint has been shown, exit
         if (enabled || hintShown) {
             // If SB is enabled but hint hasn't been shown, mark it as shown
             if (enabled && !hintShown) {
-                SharedPrefHelper.saveBoolean(context, SharedPrefNames.RYD, PREFERENCES_KEY_SPONSOR_BLOCK_HINT_SHOWN, true);
+                SharedPrefHelper.saveBoolean(context, SharedPrefHelper.SharedPrefNames.RYD, PREFERENCES_KEY_SPONSOR_BLOCK_HINT_SHOWN, true);
             }
             return;
         }
@@ -108,15 +107,15 @@ public class Dialogs {
         builder.setMessage(str("vanced_sb_firstrun"));
         builder.setPositiveButton(str("vanced_enable"),
                 (dialog, id) -> {
-                    SharedPrefHelper.saveBoolean(context, SharedPrefNames.RYD, PREFERENCES_KEY_SPONSOR_BLOCK_HINT_SHOWN, true);
-                    SharedPrefHelper.saveBoolean(context, SharedPrefNames.RYD, PREFERENCES_KEY_SPONSOR_BLOCK_ENABLED, true);
+                    SharedPrefHelper.saveBoolean(context, SharedPrefHelper.SharedPrefNames.RYD, PREFERENCES_KEY_SPONSOR_BLOCK_HINT_SHOWN, true);
+                    SharedPrefHelper.saveBoolean(context, SharedPrefHelper.SharedPrefNames.RYD, PREFERENCES_KEY_SPONSOR_BLOCK_ENABLED, true);
                     dialog.dismiss();
                 });
 
         builder.setNegativeButton(str("vanced_disable"),
                 (dialog, id) -> {
-                    SharedPrefHelper.saveBoolean(context, SharedPrefNames.RYD, PREFERENCES_KEY_SPONSOR_BLOCK_HINT_SHOWN, true);
-                    SharedPrefHelper.saveBoolean(context, SharedPrefNames.RYD, PREFERENCES_KEY_SPONSOR_BLOCK_ENABLED, false);
+                    SharedPrefHelper.saveBoolean(context, SharedPrefHelper.SharedPrefNames.RYD, PREFERENCES_KEY_SPONSOR_BLOCK_HINT_SHOWN, true);
+                    SharedPrefHelper.saveBoolean(context, SharedPrefHelper.SharedPrefNames.RYD, PREFERENCES_KEY_SPONSOR_BLOCK_ENABLED, false);
                     dialog.dismiss();
                 });
 

@@ -52,7 +52,6 @@ import app.revanced.integrations.settings.Settings;
 import app.revanced.integrations.utils.SharedPrefHelper;
 import app.revanced.integrations.sponsorblock.objects.EditTextListPreference;
 import app.revanced.integrations.sponsorblock.requests.SBRequester;
-import app.revanced.integrations.utils.SharedPrefNames;
 
 @SuppressWarnings({"unused", "deprecation"}) // injected
 public class SponsorBlockPreferenceFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
@@ -64,7 +63,7 @@ public class SponsorBlockPreferenceFragment extends PreferenceFragment implement
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getPreferenceManager().setSharedPreferencesName(SharedPrefNames.SPONSOR_BLOCK.getName());
+        getPreferenceManager().setSharedPreferencesName(SharedPrefHelper.SharedPrefNames.SPONSOR_BLOCK.getName());
 
         getPreferenceManager().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
 
@@ -96,7 +95,7 @@ public class SponsorBlockPreferenceFragment extends PreferenceFragment implement
             preferenceScreen.addPreference(preference);
             preference.setKey(PREFERENCES_KEY_SPONSOR_BLOCK_HINT_SHOWN);
             preference.setDefaultValue(false);
-            preference.setChecked(SharedPrefHelper.getBoolean(context, SharedPrefNames.SPONSOR_BLOCK, PREFERENCES_KEY_SPONSOR_BLOCK_HINT_SHOWN));
+            preference.setChecked(SharedPrefHelper.getBoolean(context, SharedPrefHelper.SharedPrefNames.SPONSOR_BLOCK, PREFERENCES_KEY_SPONSOR_BLOCK_HINT_SHOWN));
             preference.setTitle("Hint debug");
             preference.setSummary("Debug toggle for clearing the hint shown preference");
             preference.setOnPreferenceChangeListener((pref, newValue) -> true);
@@ -393,7 +392,7 @@ public class SponsorBlockPreferenceFragment extends PreferenceFragment implement
                 return;
             Context context = ((AlertDialog) dialog).getContext();
             Context applicationContext = context.getApplicationContext();
-            SharedPreferences preferences = SharedPrefHelper.getPreferences(context, SharedPrefNames.SPONSOR_BLOCK);
+            SharedPreferences preferences = SharedPrefHelper.getPreferences(context, SharedPrefHelper.SharedPrefNames.SPONSOR_BLOCK);
 
             switch (which) {
                 case DialogInterface.BUTTON_NEUTRAL:

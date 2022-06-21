@@ -1,7 +1,6 @@
 package app.revanced.integrations.videoplayer.Autorepeat;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 
 import android.view.View;
 import android.view.animation.Animation;
@@ -14,7 +13,6 @@ import com.google.android.apps.youtube.app.YouTubeTikTokRoot_Application;
 
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.SharedPrefHelper;
-import app.revanced.integrations.utils.SharedPrefNames;
 import app.revanced.integrations.videoplayer.VideoUrl.Copy;
 import app.revanced.integrations.videoplayer.VideoUrl.CopyWithTimeStamp;
 import app.revanced.integrations.settings.Settings;
@@ -113,12 +111,12 @@ public class AutoRepeat {
             LogHelper.printException("AutoRepeat", "ChangeSelected - context is null!");
             return false;
         }
-        return SharedPrefHelper.getBoolean(context, SharedPrefNames.YOUTUBE, "pref_auto_repeat", false);
+        return SharedPrefHelper.getBoolean(context, SharedPrefHelper.SharedPrefNames.YOUTUBE, "pref_auto_repeat", false);
     }
 
     private static void setSelected(boolean selected) {
         Context context = YouTubeTikTokRoot_Application.getAppContext();
-        SharedPrefHelper.saveBoolean(context, SharedPrefNames.YOUTUBE, "pref_auto_repeat", selected);
+        SharedPrefHelper.saveBoolean(context, SharedPrefHelper.SharedPrefNames.YOUTUBE, "pref_auto_repeat", selected);
     }
 
     private static boolean shouldBeShown() {
@@ -127,7 +125,7 @@ public class AutoRepeat {
             LogHelper.printException("AutoRepeat", "ChangeSelected - context is null!");
             return false;
         }
-        return SharedPrefHelper.getBoolean(context, SharedPrefNames.YOUTUBE, "pref_auto_repeat_button", false);
+        return SharedPrefHelper.getBoolean(context, SharedPrefHelper.SharedPrefNames.YOUTUBE, "pref_auto_repeat_button", false);
     }
 
     private static int getIdentifier(String name, String defType) {

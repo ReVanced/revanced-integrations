@@ -60,4 +60,26 @@ public class SharedPrefHelper {
         if (context == null) return null;
         return context.getSharedPreferences(name, Context.MODE_PRIVATE);
     }
+
+    public enum SharedPrefNames {
+
+        YOUTUBE("youtube"),
+        RYD("ryd"),
+        SPONSOR_BLOCK("sponsor-block");
+
+        private final String name;
+
+        SharedPrefNames(String name) {
+            this.name = name;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        @Override
+        public String toString() {
+            return name;
+        }
+    }
 }

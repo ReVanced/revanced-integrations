@@ -20,7 +20,6 @@ import java.util.Objects;
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.ryd.requests.RYDRequester;
 import app.revanced.integrations.utils.SharedPrefHelper;
-import app.revanced.integrations.utils.SharedPrefNames;
 
 public class ReturnYouTubeDislikes {
     public static boolean isEnabled;
@@ -37,7 +36,7 @@ public class ReturnYouTubeDislikes {
 
     static {
         Context context = YouTubeTikTokRoot_Application.getAppContext();
-        isEnabled = SharedPrefHelper.getBoolean(Objects.requireNonNull(context), SharedPrefNames.RYD, PREFERENCES_KEY_RYD_ENABLED, false);
+        isEnabled = SharedPrefHelper.getBoolean(Objects.requireNonNull(context), SharedPrefHelper.SharedPrefNames.RYD, PREFERENCES_KEY_RYD_ENABLED, false);
         if (isEnabled) {
             registration = new Registration(context);
             voting = new Voting(context, registration);
@@ -179,7 +178,7 @@ public class ReturnYouTubeDislikes {
 
     private static void handleOnClick(View view, boolean previousState) {
         Context context = YouTubeTikTokRoot_Application.getAppContext();
-        if (!isEnabled || SharedPrefHelper.getBoolean(Objects.requireNonNull(context), SharedPrefNames.YOUTUBE, "user_signed_out", true))
+        if (!isEnabled || SharedPrefHelper.getBoolean(Objects.requireNonNull(context), SharedPrefHelper.SharedPrefNames.YOUTUBE, "user_signed_out", true))
             return;
 
         try {
