@@ -3,7 +3,6 @@ package app.revanced.integrations.adremover.whitelist;
 import static app.revanced.integrations.sponsorblock.player.VideoInformation.channelName;
 import static app.revanced.integrations.sponsorblock.player.ui.SlimButtonContainer.adBlockButton;
 import static app.revanced.integrations.sponsorblock.player.ui.SlimButtonContainer.sbWhitelistButton;
-import static app.revanced.integrations.utils.VancedUtils.getPreferences;
 import static app.revanced.integrations.sponsorblock.StringRef.str;
 
 import android.content.Context;
@@ -27,7 +26,6 @@ import app.revanced.integrations.sponsorblock.player.ChannelModel;
 import app.revanced.integrations.sponsorblock.player.VideoInformation;
 import app.revanced.integrations.utils.ObjectSerializer;
 import app.revanced.integrations.utils.SharedPrefHelper;
-import app.revanced.integrations.utils.VancedUtils;
 
 public class Whitelist {
     private static final String TAG = "VI - Whitelisting";
@@ -69,7 +67,7 @@ public class Whitelist {
         Map<WhitelistType, ArrayList<ChannelModel>> whitelistMap = new EnumMap<>(WhitelistType.class);
 
         for (WhitelistType whitelistType : whitelistTypes) {
-            SharedPreferences preferences = VancedUtils.getPreferences(context, whitelistType.getPreferencesName());
+            SharedPreferences preferences = SharedPrefHelper.getPreferences(context, whitelistType.getPreferencesName());
             String serializedChannels = preferences.getString("channels", null);
             if (serializedChannels == null) {
                 LogHelper.debug(TAG, String.format("channels string was null for %s whitelisting", whitelistType));
@@ -160,7 +158,7 @@ public class Whitelist {
         if (context == null) {
             return false;
         }
-        SharedPreferences preferences = getPreferences(context, whitelistType.getPreferencesName());
+        SharedPreferences preferences = SharedPrefHelper.getPreferences(context, whitelistType.getPreferencesName());
         SharedPreferences.Editor editor = preferences.edit();
 
         try {

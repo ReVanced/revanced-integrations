@@ -13,6 +13,8 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import com.google.android.apps.youtube.app.YouTubeTikTokRoot_Application;
 
 import app.revanced.integrations.utils.LogHelper;
+import app.revanced.integrations.utils.SharedPrefHelper;
+import app.revanced.integrations.utils.SharedPrefNames;
 import app.revanced.integrations.videoplayer.VideoUrl.Copy;
 import app.revanced.integrations.videoplayer.VideoUrl.CopyWithTimeStamp;
 import app.revanced.integrations.settings.Settings;
@@ -111,7 +113,7 @@ public class AutoRepeat {
             LogHelper.printException("AutoRepeat", "ChangeSelected - context is null!");
             return false;
         }
-        SharedPreferences sharedPreferences = context.getSharedPreferences("youtube", 0);
+        SharedPreferences sharedPreferences = SharedPrefHelper.getPreferences(context, SharedPrefNames.YOUTUBE);
         return sharedPreferences.getBoolean("pref_auto_repeat", false);
     }
 
@@ -122,7 +124,7 @@ public class AutoRepeat {
                 LogHelper.printException("AutoRepeat", "ChangeSelected - context is null!");
                 return;
             }
-            SharedPreferences sharedPreferences = context.getSharedPreferences("youtube", 0);
+            SharedPreferences sharedPreferences = SharedPrefHelper.getPreferences(context, SharedPrefNames.YOUTUBE);
             sharedPreferences.edit().putBoolean("pref_auto_repeat", selected).apply();
         } catch (Exception ignored) {
         }
@@ -134,8 +136,7 @@ public class AutoRepeat {
             LogHelper.printException("AutoRepeat", "ChangeSelected - context is null!");
             return false;
         }
-        SharedPreferences sharedPreferences = context.getSharedPreferences("youtube", 0);
-        return sharedPreferences.getBoolean("pref_auto_repeat_button", false);
+        return SharedPrefHelper.getBoolean(context, SharedPrefNames.YOUTUBE, "pref_auto_repeat_button", false);
     }
 
     private static int getIdentifier(String name, String defType) {

@@ -5,17 +5,17 @@ import android.content.SharedPreferences;
 
 public class SharedPrefHelper {
     public static void saveString(Context context, SharedPrefNames prefName, String key, String value) {
-        SharedPreferences sharedPreferences = context.getSharedPreferences(prefName.getName(), Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getPreferences(context, prefName);
         sharedPreferences.edit().putString(key, value).apply();
     }
 
     public static void saveBoolean(Context context, SharedPrefNames prefName, String key, Boolean value) {
-        SharedPreferences sharedPreferences = context.getSharedPreferences(prefName.getName(), Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getPreferences(context, prefName);
         sharedPreferences.edit().putBoolean(key, value).apply();
     }
 
     public static void saveInt(Context context, SharedPrefNames prefName, String key, Integer value) {
-        SharedPreferences sharedPreferences = context.getSharedPreferences(prefName.getName(), Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getPreferences(context, prefName);
         sharedPreferences.edit().putInt(key, value).apply();
     }
 
@@ -24,7 +24,7 @@ public class SharedPrefHelper {
     }
 
     public static String getString(Context context, SharedPrefNames prefName, String key, String _default) {
-        SharedPreferences sharedPreferences = context.getSharedPreferences(prefName.getName(), Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getPreferences(context, prefName);
         return (sharedPreferences.getString(key, _default));
     }
 
@@ -33,8 +33,7 @@ public class SharedPrefHelper {
     }
 
     public static Boolean getBoolean(Context context, SharedPrefNames prefName, String key, Boolean _default) {
-        if (context == null) return false;
-        SharedPreferences sharedPreferences = context.getSharedPreferences(prefName.getName(), Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getPreferences(context, prefName);
         return (sharedPreferences.getBoolean(key, _default));
     }
 
@@ -43,7 +42,17 @@ public class SharedPrefHelper {
     }
 
     public static Integer getInt(Context context, SharedPrefNames prefName, String key, Integer _default) {
-        SharedPreferences sharedPreferences = context.getSharedPreferences(prefName.getName(), Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getPreferences(context, prefName);
         return (sharedPreferences.getInt(key, _default));
+    }
+
+    public static SharedPreferences getPreferences(Context context, SharedPrefNames name) {
+        if (context == null) return null;
+        return context.getSharedPreferences(name.getName(), Context.MODE_PRIVATE);
+    }
+
+    public static SharedPreferences getPreferences(Context context, String name) {
+        if (context == null) return null;
+        return context.getSharedPreferences(name, Context.MODE_PRIVATE);
     }
 }

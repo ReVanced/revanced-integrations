@@ -16,11 +16,6 @@ public class VancedUtils {
     private VancedUtils() {
     }
 
-    public static SharedPreferences getPreferences(Context context, String preferencesName) {
-        if (context == null) return null;
-        return context.getSharedPreferences(preferencesName, Context.MODE_PRIVATE);
-    }
-
     public static int getIdentifier(String name, String defType) {
         Context context = YouTubeTikTokRoot_Application.getAppContext();
         return context.getResources().getIdentifier(name, defType, context.getPackageName());

@@ -393,7 +393,7 @@ public class SponsorBlockPreferenceFragment extends PreferenceFragment implement
                 return;
             Context context = ((AlertDialog) dialog).getContext();
             Context applicationContext = context.getApplicationContext();
-            SharedPreferences preferences = SponsorBlockSettings.getPreferences(context);
+            SharedPreferences preferences = SharedPrefHelper.getPreferences(context, SharedPrefNames.SPONSOR_BLOCK);
 
             switch (which) {
                 case DialogInterface.BUTTON_NEUTRAL:

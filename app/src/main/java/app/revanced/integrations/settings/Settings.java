@@ -23,6 +23,8 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 
 import app.revanced.integrations.utils.LogHelper;
+import app.revanced.integrations.utils.SharedPrefHelper;
+import app.revanced.integrations.utils.SharedPrefNames;
 import app.revanced.integrations.videoplayer.Fenster.FensterGestureController;
 import app.revanced.integrations.videoplayer.Fenster.FensterGestureListener;
 import app.revanced.integrations.videoplayer.Fenster.Helpers.BrightnessHelper;
@@ -74,7 +76,7 @@ public class Settings {
     private static void ReadSettings() {
         Context context;
         if (!settingsInitialized.booleanValue() && (context = YouTubeTikTokRoot_Application.getAppContext()) != null) {
-            SharedPreferences sharedPreferences = context.getSharedPreferences("youtube", 0);
+            SharedPreferences sharedPreferences = SharedPrefHelper.getPreferences(context, SharedPrefNames.YOUTUBE);
             debug = Boolean.valueOf(sharedPreferences.getBoolean("debug_xfile_enabled", false));
             manufacturerOverride = sharedPreferences.getString("override_manufacturer", null);
             modelOverride = sharedPreferences.getString("override_model", null);
@@ -134,7 +136,8 @@ public class Settings {
     }
 
     /**
-     *  Checks if debug log has been enabled in the Settings
+     * Checks if debug log has been enabled in the Settings
+     *
      * @return false as default value
      */
     public static boolean isDebug() {
@@ -148,6 +151,7 @@ public class Settings {
 
     /**
      * Getter for prefResolutionMobile
+     *
      * @return Integer
      */
     public static Integer getPreferredMobileResolution() {
@@ -169,7 +173,7 @@ public class Settings {
         return suggestionsShown;
     }
 
-    public static boolean isInfoCardsShown()  {
+    public static boolean isInfoCardsShown() {
         ReadSettings();
         String message = infoCardsShown ? "InfoCards: Shown" : "InfoCards: Hidden";
         LogHelper.debug("Settings", message);
@@ -353,7 +357,7 @@ public class Settings {
             LogHelper.printException("Settings", "Context is null, returning " + original + "!");
             return original;
         }
-        SharedPreferences sharedPreferences = context.getSharedPreferences("youtube", 0);
+        SharedPreferences sharedPreferences = SharedPrefHelper.getPreferences(context, SharedPrefNames.YOUTUBE);
         int preferredType = Integer.parseInt(sharedPreferences.getString("pref_minimized_video_preview", "-2"));
         if (preferredType == -2) {
             return original;
@@ -399,7 +403,7 @@ public class Settings {
                 LogHelper.printException("Settings", "useOldStyleQualitySettings - Context is null, returning false!");
                 value = true;
             } else {
-                SharedPreferences sharedPreferences = context.getSharedPreferences("youtube", 0);
+                SharedPreferences sharedPreferences = SharedPrefHelper.getPreferences(context, SharedPrefNames.YOUTUBE);
                 value = sharedPreferences.getBoolean("old_style_quality_settings", true);
                 LogHelper.debug("Settings", "old_style_quality_settings set to: " + value);
             }
@@ -417,7 +421,7 @@ public class Settings {
             LogHelper.printException("Settings", "shouldAutoRepeat - Context is null, returning false!");
             return false;
         }
-        SharedPreferences sharedPreferences = context.getSharedPreferences("youtube", 0);
+        SharedPreferences sharedPreferences = SharedPrefHelper.getPreferences(context, SharedPrefNames.YOUTUBE);
         boolean repeat = sharedPreferences.getBoolean("pref_auto_repeat", false);
         LogHelper.debug("Settings", "shouldAutoRepeat: " + repeat);
         return repeat;
@@ -432,7 +436,7 @@ public class Settings {
                 LogHelper.printException("Settings", "shouldAutoRepeat - Context is null, returning false!");
                 return;
             }
-            SharedPreferences sharedPreferences = context.getSharedPreferences("youtube", 0);
+            SharedPreferences sharedPreferences = SharedPrefHelper.getPreferences(context, SharedPrefNames.YOUTUBE);
             sharedPreferences.edit().putBoolean("autonav_settings_activity_key", autoNav).apply();
             LogHelper.debug("Settings", "autonav_settings_activity_key set to: " + autoNav);
         } catch (Exception e) {
@@ -604,16 +608,6 @@ public class Settings {
         }
     }
 
-    private static int appGetFirstTimeRun() {
-        SharedPreferences appPreferences = getContext().getSharedPreferences("youtube_revanced", 0);
-        String appCurrentBuildVersion = getVersionName();
-        String appLastBuildVersion = appPreferences.getString("app_first_time", null);
-        if (appLastBuildVersion == null || !appLastBuildVersion.equalsIgnoreCase(appCurrentBuildVersion)) {
-            return appLastBuildVersion == null ? 0 : 2;
-        }
-        return 1;
-    }
-
     public static String getPackageName() {
         ReadSettings();
         Context context = YouTubeTikTokRoot_Application.getAppContext();
@@ -647,7 +641,7 @@ public class Settings {
             LogHelper.printException("Settings", "Context is null, returning " + original + "!");
             return original;
         }
-        SharedPreferences sharedPreferences = context.getSharedPreferences("youtube", 0);
+        SharedPreferences sharedPreferences = SharedPrefHelper.getPreferences(context, SharedPrefNames.YOUTUBE);
         int compatibility = original;
         if (sharedPreferences.getBoolean("override_resolution_xfile_enabled", false)) {
             compatibility = 2160;
@@ -663,7 +657,7 @@ public class Settings {
             LogHelper.printException("Settings", "Context is null, returning " + original + "!");
             return original;
         }
-        SharedPreferences sharedPreferences = context.getSharedPreferences("youtube", 0);
+        SharedPreferences sharedPreferences = SharedPrefHelper.getPreferences(context, SharedPrefNames.YOUTUBE);
         int compatibility = original;
         if (sharedPreferences.getBoolean("override_resolution_xfile_enabled", false)) {
             compatibility = 3840;

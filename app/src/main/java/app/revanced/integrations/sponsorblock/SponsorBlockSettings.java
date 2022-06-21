@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import app.revanced.integrations.utils.LogHelper;
+import app.revanced.integrations.utils.SharedPrefHelper;
 import app.revanced.integrations.utils.SharedPrefNames;
 
 public class SponsorBlockSettings {
@@ -66,19 +67,16 @@ public class SponsorBlockSettings {
         LogHelper.printException("revanced.Settings", "Do not call SponsorBlockSettings constructor!");
     }
 
-    public static SharedPreferences getPreferences(Context context) {
-        return context.getSharedPreferences(SharedPrefNames.SPONSOR_BLOCK.getName(), Context.MODE_PRIVATE);
-    }
-
     public static void setSeenGuidelines(Context context) {
         SponsorBlockSettings.seenGuidelinesPopup = true;
-        getPreferences(context).edit().putBoolean(PREFERENCES_KEY_SEEN_GUIDELINES, true).apply();
+        SharedPrefHelper.getPreferences(context, SharedPrefNames.SPONSOR_BLOCK).edit().putBoolean(PREFERENCES_KEY_SEEN_GUIDELINES, true).apply();
     }
 
     public static void update(Context context) {
         if (context == null) return;
 
-        SharedPreferences preferences = getPreferences(context);
+        SharedPreferences preferences = SharedPrefHelper.getPreferences(context, SharedPrefNames.SPONSOR_BLOCK);
+
         isSponsorBlockEnabled = preferences.getBoolean(PREFERENCES_KEY_SPONSOR_BLOCK_ENABLED, isSponsorBlockEnabled);
         seenGuidelinesPopup = preferences.getBoolean(PREFERENCES_KEY_SEEN_GUIDELINES, seenGuidelinesPopup);
 

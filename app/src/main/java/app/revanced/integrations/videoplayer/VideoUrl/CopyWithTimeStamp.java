@@ -13,6 +13,8 @@ import com.google.android.apps.youtube.app.YouTubeTikTokRoot_Application;
 
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.sponsorblock.player.VideoHelpers;
+import app.revanced.integrations.utils.SharedPrefHelper;
+import app.revanced.integrations.utils.SharedPrefNames;
 
 import java.lang.ref.WeakReference;
 
@@ -89,7 +91,8 @@ public class CopyWithTimeStamp {
             LogHelper.printException("CopyButtonWithTimeStamp", "shouldBeShown - context is null!");
             return false;
         }
-        String string = appContext.getSharedPreferences("youtube", 0).getString("pref_copy_video_url_timestamp_button_list", null);
+
+        String string = SharedPrefHelper.getString(appContext, SharedPrefNames.YOUTUBE, "pref_copy_video_url_timestamp_button_list", null);
         if (string == null || string.isEmpty()) {
             return false;
         }
