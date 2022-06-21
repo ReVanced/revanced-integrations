@@ -1,6 +1,6 @@
 package app.revanced.integrations.adremover.whitelist.requests;
 
-import fi.vanced.utils.VancedUtils;
+import app.revanced.integrations.utils.VancedUtils;
 
 public class Route {
     private final String route;

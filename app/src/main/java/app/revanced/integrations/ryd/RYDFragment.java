@@ -17,7 +17,7 @@ import android.preference.PreferenceScreen;
 import android.preference.SwitchPreference;
 
 import app.revanced.integrations.settings.Settings;
-import fi.vanced.utils.SharedPrefUtils;
+import app.revanced.integrations.utils.SharedPrefUtils;
 
 public class RYDFragment extends PreferenceFragment {
     @Override

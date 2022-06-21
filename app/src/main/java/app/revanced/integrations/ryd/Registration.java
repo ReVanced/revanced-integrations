@@ -2,8 +2,8 @@ package app.revanced.integrations.ryd;
 
 import static app.revanced.integrations.ryd.RYDSettings.PREFERENCES_KEY_USERID;
 import static app.revanced.integrations.ryd.RYDSettings.PREFERENCES_NAME;
-import static fi.vanced.utils.VancedUtils.getPreferences;
-import static fi.vanced.utils.VancedUtils.randomString;
+import static app.revanced.integrations.utils.VancedUtils.getPreferences;
+import static app.revanced.integrations.utils.VancedUtils.randomString;
 
 import android.content.Context;
 import android.content.SharedPreferences;

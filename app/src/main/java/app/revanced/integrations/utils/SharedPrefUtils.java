@@ -1,4 +1,4 @@
-package fi.vanced.utils;
+package app.revanced.integrations.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;

@@ -14,8 +14,8 @@ import app.revanced.integrations.sponsorblock.player.VideoInformation;
 import app.revanced.integrations.adremover.whitelist.Whitelist;
 import app.revanced.integrations.adremover.whitelist.WhitelistType;
 import app.revanced.integrations.adremover.whitelist.requests.WhitelistRequester;
-import fi.vanced.utils.SharedPrefUtils;
-import fi.vanced.utils.VancedUtils;
+import app.revanced.integrations.utils.SharedPrefUtils;
+import app.revanced.integrations.utils.VancedUtils;
 
 public class AdButton extends SlimButton {
     public static final String TAG = "VI - AdButton - Button";

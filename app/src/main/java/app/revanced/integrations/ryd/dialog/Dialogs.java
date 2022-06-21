@@ -18,8 +18,8 @@ import android.os.Build;
 
 import com.google.android.apps.youtube.app.YouTubeTikTokRoot_Application;
 
-import fi.vanced.utils.SharedPrefUtils;
-import fi.vanced.utils.VancedUtils;
+import app.revanced.integrations.utils.SharedPrefUtils;
+import app.revanced.integrations.utils.VancedUtils;
 import app.revanced.integrations.sponsorblock.SponsorBlockSettings;
 
 public class Dialogs {

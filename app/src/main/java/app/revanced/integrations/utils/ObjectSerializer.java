@@ -1,4 +1,4 @@
-package fi.vanced.utils;
+package app.revanced.integrations.utils;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one

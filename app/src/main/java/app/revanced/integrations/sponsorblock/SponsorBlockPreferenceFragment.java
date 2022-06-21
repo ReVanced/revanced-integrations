@@ -50,7 +50,7 @@ import java.util.ArrayList;
 
 import app.revanced.integrations.adremover.whitelist.WhitelistType;
 import app.revanced.integrations.settings.Settings;
-import fi.vanced.utils.SharedPrefUtils;
+import app.revanced.integrations.utils.SharedPrefUtils;
 import app.revanced.integrations.sponsorblock.objects.EditTextListPreference;
 import app.revanced.integrations.sponsorblock.requests.SBRequester;
 

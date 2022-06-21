@@ -9,7 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import app.revanced.integrations.sponsorblock.player.VideoInformation;
-import fi.vanced.utils.VancedUtils;
+import app.revanced.integrations.utils.VancedUtils;
 import app.revanced.integrations.sponsorblock.SponsorBlockSettings;
 import app.revanced.integrations.sponsorblock.SponsorBlockUtils;
 

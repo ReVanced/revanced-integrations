@@ -14,7 +14,7 @@ import app.revanced.integrations.sponsorblock.player.VideoInformation;
 import app.revanced.integrations.adremover.whitelist.Whitelist;
 import app.revanced.integrations.adremover.whitelist.WhitelistType;
 import app.revanced.integrations.adremover.whitelist.requests.WhitelistRequester;
-import fi.vanced.utils.VancedUtils;
+import app.revanced.integrations.utils.VancedUtils;
 import app.revanced.integrations.sponsorblock.SponsorBlockUtils;
 
 public class SBWhitelistButton extends SlimButton {

@@ -68,7 +68,7 @@ import java.util.Objects;
 import java.util.TimeZone;
 
 import app.revanced.integrations.utils.LogHelper;
-import fi.vanced.utils.SharedPrefUtils;
+import app.revanced.integrations.utils.SharedPrefUtils;
 import app.revanced.integrations.sponsorblock.objects.SponsorSegment;
 import app.revanced.integrations.sponsorblock.objects.UserStats;
 import app.revanced.integrations.sponsorblock.requests.SBRequester;

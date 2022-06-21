@@ -7,7 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import app.revanced.integrations.sponsorblock.player.VideoHelpers;
-import fi.vanced.utils.VancedUtils;
+import app.revanced.integrations.utils.VancedUtils;
 
 public class CopyButton extends SlimButton {
     public CopyButton(Context context, ViewGroup container) {

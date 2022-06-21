@@ -2,7 +2,7 @@ package app.revanced.integrations.adremover.whitelist.requests;
 
 import static app.revanced.integrations.sponsorblock.player.VideoInformation.currentVideoId;
 import static app.revanced.integrations.sponsorblock.player.ui.AdButton.TAG;
-import static fi.vanced.utils.VancedUtils.runOnMainThread;
+import static app.revanced.integrations.utils.VancedUtils.runOnMainThread;
 import static app.revanced.integrations.sponsorblock.StringRef.str;
 
 import android.content.Context;
@@ -22,7 +22,7 @@ import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.sponsorblock.player.ChannelModel;
 import app.revanced.integrations.adremover.whitelist.Whitelist;
 import app.revanced.integrations.adremover.whitelist.WhitelistType;
-import fi.vanced.utils.VancedUtils;
+import app.revanced.integrations.utils.VancedUtils;
 import vanced.integrations.BuildConfig;
 
 public class WhitelistRequester {

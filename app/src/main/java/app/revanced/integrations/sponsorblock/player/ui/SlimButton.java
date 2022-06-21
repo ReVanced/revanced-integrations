@@ -9,7 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import app.revanced.integrations.utils.LogHelper;
-import fi.vanced.utils.VancedUtils;
+import app.revanced.integrations.utils.VancedUtils;
 
 public abstract class SlimButton implements View.OnClickListener {
     private static final String TAG = "VI - Slim - Button";

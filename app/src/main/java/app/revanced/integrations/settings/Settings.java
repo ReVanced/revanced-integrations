@@ -28,7 +28,6 @@ import app.revanced.integrations.videoplayer.Fenster.FensterGestureListener;
 import app.revanced.integrations.videoplayer.Fenster.Helpers.BrightnessHelper;
 import app.revanced.integrations.videoplayer.Fenster.XFenster;
 import app.revanced.integrations.theme.XSettingActivity;
-import fi.razerman.youtube.Helpers.ColorRef;
 import app.revanced.integrations.utils.SwipeHelper;
 import app.revanced.integrations.sponsorblock.NewSegmentHelperLayout;
 
@@ -75,7 +74,6 @@ public class Settings {
     private static void ReadSettings() {
         Context context;
         if (!settingsInitialized.booleanValue() && (context = YouTubeTikTokRoot_Application.getAppContext()) != null) {
-            ColorRef.setContext(context);
             SharedPreferences sharedPreferences = context.getSharedPreferences("youtube", 0);
             debug = Boolean.valueOf(sharedPreferences.getBoolean("debug_xfile_enabled", false));
             manufacturerOverride = sharedPreferences.getString("override_manufacturer", null);

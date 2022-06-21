@@ -4,7 +4,7 @@ import static app.revanced.integrations.sponsorblock.player.VideoInformation.cur
 import static app.revanced.integrations.sponsorblock.player.VideoInformation.dislikeCount;
 import static app.revanced.integrations.ryd.RYDSettings.PREFERENCES_KEY_RYD_ENABLED;
 import static app.revanced.integrations.ryd.RYDSettings.PREFERENCES_NAME;
-import static fi.vanced.utils.VancedUtils.getIdentifier;
+import static app.revanced.integrations.utils.VancedUtils.getIdentifier;
 
 import android.content.Context;
 import android.icu.text.CompactDecimalFormat;
@@ -20,7 +20,7 @@ import java.util.Objects;
 
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.ryd.requests.RYDRequester;
-import fi.vanced.utils.SharedPrefUtils;
+import app.revanced.integrations.utils.SharedPrefUtils;
 
 public class ReturnYouTubeDislikes {
     public static boolean isEnabled;

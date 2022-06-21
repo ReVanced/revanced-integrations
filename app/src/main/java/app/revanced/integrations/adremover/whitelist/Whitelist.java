@@ -3,7 +3,7 @@ package app.revanced.integrations.adremover.whitelist;
 import static app.revanced.integrations.sponsorblock.player.VideoInformation.channelName;
 import static app.revanced.integrations.sponsorblock.player.ui.SlimButtonContainer.adBlockButton;
 import static app.revanced.integrations.sponsorblock.player.ui.SlimButtonContainer.sbWhitelistButton;
-import static fi.vanced.utils.VancedUtils.getPreferences;
+import static app.revanced.integrations.utils.VancedUtils.getPreferences;
 import static app.revanced.integrations.sponsorblock.StringRef.str;
 
 import android.content.Context;
@@ -25,9 +25,9 @@ import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.settings.Settings;
 import app.revanced.integrations.sponsorblock.player.ChannelModel;
 import app.revanced.integrations.sponsorblock.player.VideoInformation;
-import fi.vanced.utils.ObjectSerializer;
-import fi.vanced.utils.SharedPrefUtils;
-import fi.vanced.utils.VancedUtils;
+import app.revanced.integrations.utils.ObjectSerializer;
+import app.revanced.integrations.utils.SharedPrefUtils;
+import app.revanced.integrations.utils.VancedUtils;
 
 public class Whitelist {
     private static final String TAG = "VI - Whitelisting";

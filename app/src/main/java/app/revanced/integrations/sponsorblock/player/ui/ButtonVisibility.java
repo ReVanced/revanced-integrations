@@ -2,7 +2,7 @@ package app.revanced.integrations.sponsorblock.player.ui;
 
 import android.content.Context;
 
-import fi.vanced.utils.SharedPrefUtils;
+import app.revanced.integrations.utils.SharedPrefUtils;
 
 public class ButtonVisibility {
     public static Visibility getButtonVisibility(Context context, String key) {

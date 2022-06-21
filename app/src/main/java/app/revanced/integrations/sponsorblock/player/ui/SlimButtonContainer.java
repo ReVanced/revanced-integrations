@@ -14,8 +14,8 @@ import com.google.android.apps.youtube.app.ui.SlimMetadataScrollableButtonContai
 import app.revanced.integrations.adremover.whitelist.Whitelist;
 import app.revanced.integrations.adremover.whitelist.WhitelistType;
 import app.revanced.integrations.utils.LogHelper;
-import fi.vanced.utils.SharedPrefUtils;
-import fi.vanced.utils.VancedUtils;
+import app.revanced.integrations.utils.SharedPrefUtils;
+import app.revanced.integrations.utils.VancedUtils;
 import app.revanced.integrations.sponsorblock.SponsorBlockSettings;
 
 public class SlimButtonContainer extends SlimMetadataScrollableButtonContainerLayout {

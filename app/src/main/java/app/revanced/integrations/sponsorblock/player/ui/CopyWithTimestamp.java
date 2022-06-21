@@ -5,7 +5,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import app.revanced.integrations.sponsorblock.player.VideoHelpers;
-import fi.vanced.utils.VancedUtils;
+import app.revanced.integrations.utils.VancedUtils;
 
 import static app.revanced.integrations.sponsorblock.StringRef.str;
 
