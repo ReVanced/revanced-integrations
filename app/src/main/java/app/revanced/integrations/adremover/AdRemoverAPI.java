@@ -8,9 +8,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toolbar;
 
-import java.nio.ByteBuffer;
-
-import app.revanced.integrations.log.LogHelper;
+import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.preferences.BooleanPreferences;
 import app.revanced.integrations.settings.Settings;
 

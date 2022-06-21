@@ -15,7 +15,7 @@ import java.lang.ref.WeakReference;
 import static app.revanced.integrations.sponsorblock.PlayerController.getCurrentVideoLength;
 import static app.revanced.integrations.sponsorblock.PlayerController.getLastKnownVideoTime;
 
-import app.revanced.integrations.log.LogHelper;
+import app.revanced.integrations.utils.LogHelper;
 
 public class ShieldButton {
     static String TAG = "SHIELD";

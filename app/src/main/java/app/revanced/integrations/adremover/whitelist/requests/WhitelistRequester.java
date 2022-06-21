@@ -1,7 +1,7 @@
 package app.revanced.integrations.adremover.whitelist.requests;
 
-import static fi.vanced.libraries.youtube.player.VideoInformation.currentVideoId;
-import static fi.vanced.libraries.youtube.ui.AdButton.TAG;
+import static app.revanced.integrations.sponsorblock.player.VideoInformation.currentVideoId;
+import static app.revanced.integrations.sponsorblock.player.ui.AdButton.TAG;
 import static fi.vanced.utils.VancedUtils.runOnMainThread;
 import static app.revanced.integrations.sponsorblock.StringRef.str;
 
@@ -18,13 +18,11 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.nio.charset.StandardCharsets;
 
-import app.revanced.integrations.log.LogHelper;
-import fi.vanced.libraries.youtube.player.ChannelModel;
+import app.revanced.integrations.utils.LogHelper;
+import app.revanced.integrations.sponsorblock.player.ChannelModel;
 import app.revanced.integrations.adremover.whitelist.Whitelist;
 import app.revanced.integrations.adremover.whitelist.WhitelistType;
 import fi.vanced.utils.VancedUtils;
-import fi.vanced.utils.requests.Requester;
-import fi.vanced.utils.requests.Route;
 import vanced.integrations.BuildConfig;
 
 public class WhitelistRequester {

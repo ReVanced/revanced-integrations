@@ -8,7 +8,7 @@ import androidx.annotation.NonNull;
 
 import java.util.HashMap;
 
-import app.revanced.integrations.log.LogHelper;
+import app.revanced.integrations.utils.LogHelper;
 
 /* loaded from: classes6.dex */
 public class ColorRef {

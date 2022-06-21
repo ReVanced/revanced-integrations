@@ -13,13 +13,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import app.revanced.integrations.log.LogHelper;
-import fi.razerman.youtube.Helpers.SharedPrefs;
+import app.revanced.integrations.utils.LogHelper;
+import app.revanced.integrations.utils.SharedPrefsHelper;
 import app.revanced.integrations.settings.Settings;
 
 public class LithoAdRemoval {
     private static boolean getBoolean(String key, boolean _default) {
-        return SharedPrefs.getBoolean(Objects.requireNonNull(YouTubeTikTokRoot_Application.getAppContext()), key, _default);
+        return SharedPrefsHelper.getBoolean(Objects.requireNonNull(YouTubeTikTokRoot_Application.getAppContext()), key, _default);
     }
 
     private static boolean isExperimentalInfoPanelRemoval() {

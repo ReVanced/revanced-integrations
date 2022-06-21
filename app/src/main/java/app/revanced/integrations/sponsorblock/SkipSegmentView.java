@@ -8,11 +8,11 @@ import android.widget.Toast;
 
 import com.google.android.apps.youtube.app.YouTubeTikTokRoot_Application;
 
-import app.revanced.integrations.log.LogHelper;
+import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.sponsorblock.objects.SponsorSegment;
 
-import static fi.vanced.libraries.youtube.sponsors.player.ui.SponsorBlockView.hideSkipButton;
-import static fi.vanced.libraries.youtube.sponsors.player.ui.SponsorBlockView.showSkipButton;
+import static app.revanced.integrations.sponsorblock.player.ui.SponsorBlockView.hideSkipButton;
+import static app.revanced.integrations.sponsorblock.player.ui.SponsorBlockView.showSkipButton;
 import static app.revanced.integrations.sponsorblock.PlayerController.VERBOSE;
 
 @SuppressLint({"RtlHardcoded", "SetTextI18n", "LongLogTag", "AppCompatCustomView"})

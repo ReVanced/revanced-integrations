@@ -1,8 +1,8 @@
 package app.revanced.integrations.adremover.whitelist;
 
-import static fi.vanced.libraries.youtube.player.VideoInformation.channelName;
-import static fi.vanced.libraries.youtube.ui.SlimButtonContainer.adBlockButton;
-import static fi.vanced.libraries.youtube.ui.SlimButtonContainer.sbWhitelistButton;
+import static app.revanced.integrations.sponsorblock.player.VideoInformation.channelName;
+import static app.revanced.integrations.sponsorblock.player.ui.SlimButtonContainer.adBlockButton;
+import static app.revanced.integrations.sponsorblock.player.ui.SlimButtonContainer.sbWhitelistButton;
 import static fi.vanced.utils.VancedUtils.getPreferences;
 import static app.revanced.integrations.sponsorblock.StringRef.str;
 
@@ -21,10 +21,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import app.revanced.integrations.log.LogHelper;
+import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.settings.Settings;
-import fi.vanced.libraries.youtube.player.ChannelModel;
-import fi.vanced.libraries.youtube.player.VideoInformation;
+import app.revanced.integrations.sponsorblock.player.ChannelModel;
+import app.revanced.integrations.sponsorblock.player.VideoInformation;
 import fi.vanced.utils.ObjectSerializer;
 import fi.vanced.utils.SharedPrefUtils;
 import fi.vanced.utils.VancedUtils;

@@ -26,8 +26,8 @@ import java.util.Arrays;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import app.revanced.integrations.log.LogHelper;
-import fi.vanced.libraries.youtube.player.VideoInformation;
+import app.revanced.integrations.utils.LogHelper;
+import app.revanced.integrations.sponsorblock.player.VideoInformation;
 import app.revanced.integrations.adremover.whitelist.Whitelist;
 import app.revanced.integrations.sponsorblock.objects.SponsorSegment;
 import app.revanced.integrations.sponsorblock.requests.SBRequester;

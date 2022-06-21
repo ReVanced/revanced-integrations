@@ -15,14 +15,14 @@ import android.widget.Toast;
 
 import com.google.android.apps.youtube.app.YouTubeTikTokRoot_Application;
 
-import app.revanced.integrations.log.LogHelper;
-import fi.razerman.youtube.Autorepeat.AutoRepeat;
-import fi.razerman.youtube.Fenster.FensterGestureListener;
-import fi.razerman.youtube.Helpers.XScreenSizeHelpers;
-import fi.razerman.youtube.Helpers.XSwipeHelper;
-import fi.razerman.youtube.VideoUrl.Copy;
-import fi.razerman.youtube.VideoUrl.CopyWithTimeStamp;
-import fi.razerman.youtube.XReboot;
+import app.revanced.integrations.utils.LogHelper;
+import app.revanced.integrations.videoplayer.Autorepeat.AutoRepeat;
+import app.revanced.integrations.videoplayer.Fenster.FensterGestureListener;
+import app.revanced.integrations.videoplayer.settings.XReboot;
+import app.revanced.integrations.utils.ScreenSizeHelper;
+import app.revanced.integrations.utils.SwipeHelper;
+import app.revanced.integrations.videoplayer.VideoUrl.Copy;
+import app.revanced.integrations.videoplayer.VideoUrl.CopyWithTimeStamp;
 import vanced.integrations.BuildConfig;
 
 /* loaded from: classes6.dex */
@@ -125,7 +125,7 @@ public class XSettingsFragment extends PreferenceFragment {
         } else if ("comments_location".equals(str)) {
             SwitchPreference switchPreference = (SwitchPreference) XSettingsFragment.this.layoutSettingsPreferenceScreen.findPreference("comments_location");
             Settings.commentsLocation = switchPreference.isChecked();
-            XSwipeHelper.isTabletMode = switchPreference.isChecked();
+            SwipeHelper.isTabletMode = switchPreference.isChecked();
             if (Settings.getContext() != null && XSettingsFragment.this.settingsInitialized) {
                 XReboot.RebootDialog(XSettingsFragment.this.getActivity());
             }
@@ -214,7 +214,7 @@ public class XSettingsFragment extends PreferenceFragment {
         } else if ("pref_xfenster_volume".equals(str)) {
             Settings.EnableXFensterVolume = ((SwitchPreference) XSettingsFragment.this.xFensterPreferenceScreen.findPreference("pref_xfenster_volume")).isChecked();
         } else if ("pref_xfenster_tablet".equals(str)) {
-            XSwipeHelper.isTabletMode = ((SwitchPreference) XSettingsFragment.this.xFensterPreferenceScreen.findPreference("pref_xfenster_tablet")).isChecked();
+            SwipeHelper.isTabletMode = ((SwitchPreference) XSettingsFragment.this.xFensterPreferenceScreen.findPreference("pref_xfenster_tablet")).isChecked();
         } else if ("pref_xfenster_swipe_threshold".equals(str)) {
             EditTextPreference editTextPreference6 = (EditTextPreference) XSettingsFragment.this.xFensterPreferenceScreen.findPreference("pref_xfenster_swipe_threshold");
             if (editTextPreference6 != null) {
@@ -388,7 +388,7 @@ public class XSettingsFragment extends PreferenceFragment {
                 XSettingsFragment.this.ChangeCodec(preference);
                 return false;
             });
-            if (XScreenSizeHelpers.isTablet(YouTubeTikTokRoot_Application.getAppContext())) {
+            if (ScreenSizeHelper.isTablet(YouTubeTikTokRoot_Application.getAppContext())) {
                 if (this.layoutSettingsPreferenceScreen.findPreference("tablet_miniplayer") != null) {
                     this.layoutSettingsPreferenceScreen.removePreference(this.tabletMiniplayer);
                 }

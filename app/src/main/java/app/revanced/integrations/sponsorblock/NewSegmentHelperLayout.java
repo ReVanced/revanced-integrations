@@ -2,8 +2,8 @@ package app.revanced.integrations.sponsorblock;
 
 import android.content.Context;
 
-import static fi.vanced.libraries.youtube.sponsors.player.ui.SponsorBlockView.hideNewSegmentLayout;
-import static fi.vanced.libraries.youtube.sponsors.player.ui.SponsorBlockView.showNewSegmentLayout;
+import static app.revanced.integrations.sponsorblock.player.ui.SponsorBlockView.hideNewSegmentLayout;
+import static app.revanced.integrations.sponsorblock.player.ui.SponsorBlockView.showNewSegmentLayout;
 
 public class NewSegmentHelperLayout {
     public static Context context;

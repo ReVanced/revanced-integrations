@@ -15,8 +15,6 @@ import android.view.MotionEvent;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 
-import androidx.annotation.RequiresPermission;
-
 import com.google.android.apps.youtube.app.YouTubeTikTokRoot_Application;
 
 import java.io.BufferedReader;
@@ -24,15 +22,15 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 
-import app.revanced.integrations.log.LogHelper;
-import fi.razerman.youtube.Fenster.FensterGestureController;
-import fi.razerman.youtube.Fenster.FensterGestureListener;
-import fi.razerman.youtube.Fenster.Helpers.BrightnessHelper;
-import fi.razerman.youtube.Fenster.XFenster;
+import app.revanced.integrations.utils.LogHelper;
+import app.revanced.integrations.videoplayer.Fenster.FensterGestureController;
+import app.revanced.integrations.videoplayer.Fenster.FensterGestureListener;
+import app.revanced.integrations.videoplayer.Fenster.Helpers.BrightnessHelper;
+import app.revanced.integrations.videoplayer.Fenster.XFenster;
+import app.revanced.integrations.theme.XSettingActivity;
 import fi.razerman.youtube.Helpers.ColorRef;
-import fi.razerman.youtube.Helpers.XSwipeHelper;
+import app.revanced.integrations.utils.SwipeHelper;
 import app.revanced.integrations.sponsorblock.NewSegmentHelperLayout;
-import fi.razerman.youtube.XJson;
 
 /* loaded from: classes6.dex */
 public class Settings {
@@ -511,7 +509,7 @@ public class Settings {
         } else if (motionEvent == null) {
             LogHelper.debug("Settings", "motionEvent is null");
             return false;
-        } else if (!XSwipeHelper.IsControlsShown()) {
+        } else if (!SwipeHelper.IsControlsShown()) {
             return fensterGestureController.onTouchEvent(motionEvent);
         } else {
             LogHelper.debug("Settings", "skipping onTouchEvent dispatching because controls are shown.");
@@ -531,7 +529,7 @@ public class Settings {
             if (playerTypeString.equals("WATCH_WHILE_SLIDING_MINIMIZED_MAXIMIZED") || playerTypeString.equals("WATCH_WHILE_MINIMIZED") || playerTypeString.equals("WATCH_WHILE_PICTURE_IN_PICTURE")) {
                 NewSegmentHelperLayout.hide();
             }
-            fi.vanced.libraries.youtube.player.PlayerType.playerTypeChanged(playerTypeString);
+            app.revanced.integrations.sponsorblock.player.PlayerType.playerTypeChanged(playerTypeString);
         }
         env = playerType;
     }
@@ -574,7 +572,7 @@ public class Settings {
     }
 
     public static boolean isFensterEnabled() {
-        if (env != null && env.toString().equals("WATCH_WHILE_FULLSCREEN") && !XSwipeHelper.IsControlsShown()) {
+        if (env != null && env.toString().equals("WATCH_WHILE_FULLSCREEN") && !SwipeHelper.IsControlsShown()) {
             return EnableXFensterBrightness.booleanValue() || EnableXFensterVolume.booleanValue();
         }
         return false;

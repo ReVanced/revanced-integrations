@@ -6,7 +6,7 @@ import android.view.ViewGroup;
 
 import java.lang.reflect.Field;
 
-import app.revanced.integrations.log.LogHelper;
+import app.revanced.integrations.utils.LogHelper;
 
 // invoke-static {p0}, Lpl/jakubweg/InjectedPlugin;->inject(Landroid/content/Context;)V
 // invoke-static {}, Lpl/jakubweg/InjectedPlugin;->printSomething()V
