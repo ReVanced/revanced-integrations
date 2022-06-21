@@ -18,8 +18,6 @@ import app.revanced.integrations.utils.ReVancedUtils;
 import app.revanced.integrations.sponsorblock.SponsorBlockUtils;
 
 public class SBWhitelistButton extends SlimButton {
-    public static final String TAG = "VI - SBWhitelistButton";
-
     public SBWhitelistButton(Context context, ViewGroup container) {
         super(context, container, SlimButton.SLIM_METADATA_BUTTON_ID,
                 SponsorBlockUtils.isSBButtonEnabled(context, WhitelistType.SPONSORBLOCK.getPreferenceEnabledName()));
@@ -34,7 +32,7 @@ public class SBWhitelistButton extends SlimButton {
     }
 
     public void changeEnabled(boolean enabled) {
-        LogHelper.debug(TAG, "changeEnabled " + enabled);
+        LogHelper.debug("SBWhiteListButton", "changeEnabled " + enabled);
         this.button_icon.setEnabled(!enabled); // enabled == true -> strikethrough (no segments), enabled == false -> clear (segments)
     }
 
@@ -55,7 +53,7 @@ public class SBWhitelistButton extends SlimButton {
             Whitelist.removeFromWhitelist(WhitelistType.SPONSORBLOCK, this.context, VideoInformation.channelName);
             changeEnabled(false);
         } catch (Exception ex) {
-            LogHelper.printException(TAG, "Failed to remove from whitelist", ex);
+            LogHelper.printException("SBWhiteListButton", "Failed to remove from whitelist", ex);
             return;
         }
 
@@ -64,7 +62,7 @@ public class SBWhitelistButton extends SlimButton {
 
     private void addToWhiteList(View view, ImageView buttonIcon) {
         new Thread(() -> {
-            LogHelper.debug(TAG, "Fetching channelId for " + currentVideoId);
+            LogHelper.debug("SBWhiteListButton", "Fetching channelId for " + currentVideoId);
             WhitelistRequester.addChannelToWhitelist(WhitelistType.SPONSORBLOCK, view, buttonIcon, this.context);
         }).start();
     }

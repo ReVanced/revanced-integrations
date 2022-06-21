@@ -8,7 +8,6 @@ import app.revanced.integrations.utils.LogHelper;
 
 /* loaded from: classes6.dex */
 public class FensterGestureListener implements GestureDetector.OnGestureListener {
-    public static final String TAG = "FensterGestureListener";
     private boolean ignoreScroll = false;
     private final FensterEventsListener listener;
     private final int minFlingVelocity;
@@ -28,12 +27,12 @@ public class FensterGestureListener implements GestureDetector.OnGestureListener
 
     @Override // android.view.GestureDetector.OnGestureListener
     public void onLongPress(MotionEvent e) {
-        LogHelper.debug(TAG, "Long Press");
+        LogHelper.debug("FensterGestureListener", "Long Press");
     }
 
     @Override // android.view.GestureDetector.OnGestureListener
     public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-        LogHelper.debug(TAG, "Scroll");
+        LogHelper.debug("FensterGestureListener", "Scroll");
         if (e1 == null || e2 == null) {
             if (e1 == null) {
                 LogHelper.debug("XDebug", "e1 is null");
@@ -43,7 +42,7 @@ public class FensterGestureListener implements GestureDetector.OnGestureListener
             }
             return false;
         } else if (this.ignoreScroll) {
-            LogHelper.debug(TAG, "Scroll ignored");
+            LogHelper.debug("FensterGestureListener", "Scroll ignored");
             return false;
         } else {
             float deltaY = e2.getY() - e1.getY();
@@ -52,12 +51,12 @@ public class FensterGestureListener implements GestureDetector.OnGestureListener
                 if (Math.abs(deltaX) > SWIPE_THRESHOLD) {
                     this.listener.onHorizontalScroll(e2, deltaX);
                     String message = deltaX > 0.0f ? "Slide right" : "Slide left";
-                    LogHelper.debug(TAG, message);
+                    LogHelper.debug("FensterGestureListener", message);
                 }
             } else if (Math.abs(deltaY) > SWIPE_THRESHOLD) {
                 this.listener.onVerticalScroll(e2, deltaY);
                 String message = deltaY > 0.0f ? "Slide down" : "Slide up";
-                LogHelper.debug(TAG, message);
+                LogHelper.debug("FensterGestureListener", message);
             }
             return false;
         }
@@ -65,7 +64,7 @@ public class FensterGestureListener implements GestureDetector.OnGestureListener
 
     @Override // android.view.GestureDetector.OnGestureListener
     public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-        LogHelper.debug(TAG, "Fling");
+        LogHelper.debug("FensterGestureListener", "Fling");
         try {
             float diffY = e2.getY() - e1.getY();
             float diffX = e2.getX() - e1.getX();
@@ -93,12 +92,12 @@ public class FensterGestureListener implements GestureDetector.OnGestureListener
 
     @Override // android.view.GestureDetector.OnGestureListener
     public void onShowPress(MotionEvent e) {
-        LogHelper.debug(TAG, "Show Press");
+        LogHelper.debug("FensterGestureListener", "Show Press");
     }
 
     @Override // android.view.GestureDetector.OnGestureListener
     public boolean onDown(MotionEvent e) {
-        LogHelper.debug(TAG, "Down - x: " + e.getX() + " y: " + e.getY());
+        LogHelper.debug("FensterGestureListener", "Down - x: " + e.getX() + " y: " + e.getY());
         this.ignoreScroll = e.getY() <= TOP_PADDING;
         this.listener.onDown(e);
         return false;

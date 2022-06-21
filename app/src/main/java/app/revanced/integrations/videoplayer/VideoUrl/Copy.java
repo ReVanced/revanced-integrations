@@ -18,7 +18,6 @@ import java.lang.ref.WeakReference;
 
 /* loaded from: classes6.dex */
 public class Copy {
-    static String TAG = "CopyButton";
     static WeakReference<ImageView> _button = new WeakReference<>(null);
     static ConstraintLayout _constraintLayout;
     static int fadeDurationFast;
@@ -30,17 +29,17 @@ public class Copy {
 
     public static void initializeCopyButton(Object obj) {
         try {
-            LogHelper.debug(TAG, "initializing");
+            LogHelper.debug("CopyButton", "initializing");
             _constraintLayout = (ConstraintLayout) obj;
             isCopyButtonEnabled = shouldBeShown();
             ImageView imageView = _constraintLayout.findViewById(getIdentifier("copy_button", "id"));
             if (imageView == null) {
-                LogHelper.debug(TAG, "Couldn't find imageView with id \"copy_button\"");
+                LogHelper.debug("CopyButton", "Couldn't find imageView with id \"copy_button\"");
                 return;
             }
 
             imageView.setOnClickListener(view -> {
-                LogHelper.debug(Copy.TAG, "Button clicked");
+                LogHelper.debug("CopyButton", "Button clicked");
                 VideoHelpers.copyVideoUrlToClipboard();
             });
             _button = new WeakReference<>(imageView);
@@ -56,7 +55,7 @@ public class Copy {
             changeVisibility(false);
 
         } catch (Exception e) {
-            LogHelper.printException(TAG, "Unable to set FrameLayout", e);
+            LogHelper.printException("CopyButton", "Unable to set FrameLayout", e);
         }
     }
 
@@ -66,11 +65,11 @@ public class Copy {
             ImageView imageView = _button.get();
             if (_constraintLayout != null && imageView != null) {
                 if (z && isCopyButtonEnabled) {
-                    LogHelper.debug(TAG, "Fading in");
+                    LogHelper.debug("CopyButton", "Fading in");
                     imageView.setVisibility(View.VISIBLE);
                     imageView.startAnimation(fadeIn);
                 } else if (imageView.getVisibility() == View.VISIBLE) {
-                    LogHelper.debug(TAG, "Fading out");
+                    LogHelper.debug("CopyButton", "Fading out");
                     imageView.startAnimation(fadeOut);
                     imageView.setVisibility(View.GONE);
                 }
@@ -85,7 +84,7 @@ public class Copy {
     private static boolean shouldBeShown() {
         Context appContext = YouTubeTikTokRoot_Application.getAppContext();
         if (appContext == null) {
-            LogHelper.printException(TAG, "shouldBeShown - context is null!");
+            LogHelper.printException("CopyButton", "shouldBeShown - context is null!");
             return false;
         }
         String string = SharedPrefHelper.getString(appContext, SharedPrefHelper.SharedPrefNames.YOUTUBE, "pref_copy_video_url_button_list", null);

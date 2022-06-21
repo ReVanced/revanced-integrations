@@ -1,7 +1,6 @@
 package app.revanced.integrations.adremover.whitelist.requests;
 
 import static app.revanced.integrations.sponsorblock.player.VideoInformation.currentVideoId;
-import static app.revanced.integrations.sponsorblock.player.ui.AdButton.TAG;
 import static app.revanced.integrations.utils.ReVancedUtils.runOnMainThread;
 import static app.revanced.integrations.sponsorblock.StringRef.str;
 
@@ -23,7 +22,7 @@ import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.sponsorblock.player.ChannelModel;
 import app.revanced.integrations.adremover.whitelist.Whitelist;
 import app.revanced.integrations.adremover.whitelist.WhitelistType;
-import vanced.integrations.BuildConfig;
+import app.revanced.integrations.BuildConfig;
 
 public class WhitelistRequester {
     private static final String YT_API_URL = "https://www.youtube.com/youtubei/v1/";
@@ -51,7 +50,7 @@ public class WhitelistRequester {
                 JSONObject videoInfo = json.getJSONObject("videoDetails");
                 ChannelModel channelModel = new ChannelModel(videoInfo.getString("author"), videoInfo.getString("channelId"));
                 String author = channelModel.getAuthor();
-                LogHelper.debug(TAG, "channelId " + channelModel.getChannelId() + " fetched for author " + author);
+                LogHelper.debug("WhitelistRequester", "channelId " + channelModel.getChannelId() + " fetched for author " + author);
 
                 boolean success = Whitelist.addToWhitelist(whitelistType, context, channelModel);
                 String whitelistTypeName = whitelistType.getFriendlyName();
@@ -66,7 +65,7 @@ public class WhitelistRequester {
                     view.setEnabled(true);
                 });
             } else {
-                LogHelper.debug(TAG, "player fetch response was " + responseCode);
+                LogHelper.debug("WhitelistRequester", "player fetch response was " + responseCode);
                 runOnMainThread(() -> {
                     Toast.makeText(context, str("vanced_whitelisting_fetch_failed", responseCode), Toast.LENGTH_SHORT).show();
                     buttonIcon.setEnabled(true);
@@ -75,7 +74,7 @@ public class WhitelistRequester {
             }
             connection.disconnect();
         } catch (Exception ex) {
-            LogHelper.printException(TAG, "Failed to fetch channelId", ex);
+            LogHelper.printException("WhitelistRequester", "Failed to fetch channelId", ex);
             runOnMainThread(() -> view.setEnabled(true));
         }
     }

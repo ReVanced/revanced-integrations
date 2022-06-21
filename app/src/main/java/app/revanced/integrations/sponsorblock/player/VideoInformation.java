@@ -4,8 +4,6 @@ import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.ryd.ReturnYouTubeDislikes;
 
 public class VideoInformation {
-    private static final String TAG = "VI - VideoInfo";
-
     public static String currentVideoId;
     public static Integer dislikeCount;
     public static String channelName;
@@ -18,7 +16,7 @@ public class VideoInformation {
     // Call hook in the YT code when the video changes
     public static void setCurrentVideoId(final String videoId) {
         if (videoId == null) {
-            LogHelper.debug(TAG, "setCurrentVideoId - new id was null - currentVideoId was" + currentVideoId);
+            LogHelper.debug("VideoInformation", "setCurrentVideoId - new id was null - currentVideoId was" + currentVideoId);
             clearInformation(true);
             return;
         }
@@ -29,11 +27,11 @@ public class VideoInformation {
         }
 
         if (videoId.equals(currentVideoId)) {
-            LogHelper.debug(TAG, "setCurrentVideoId - new and current video were equal - " + videoId);
+            LogHelper.debug("VideoInformation", "setCurrentVideoId - new and current video were equal - " + videoId);
             return;
         }
 
-        LogHelper.debug(TAG, "setCurrentVideoId - video id updated from " + currentVideoId + " to " + videoId);
+        LogHelper.debug("VideoInformation", "setCurrentVideoId - video id updated from " + currentVideoId + " to " + videoId);
 
         currentVideoId = videoId;
 

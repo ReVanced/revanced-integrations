@@ -19,7 +19,7 @@ import app.revanced.integrations.utils.ReVancedUtils;
 import app.revanced.integrations.sponsorblock.SponsorBlockSettings;
 
 public class SlimButtonContainer extends SlimMetadataScrollableButtonContainerLayout {
-    private static final String TAG = "VI - Slim - Container";
+
     private ViewGroup container;
     private CopyButton copyButton;
     private CopyWithTimestamp copyWithTimestampButton;
@@ -62,14 +62,14 @@ public class SlimButtonContainer extends SlimMetadataScrollableButtonContainerLa
 
             addSharedPrefsChangeListener();
         } catch (Exception ex) {
-            LogHelper.printException(TAG, "Unable to initialize the button container", ex);
+            LogHelper.printException("SlimButtonContainer", "Unable to initialize the button container", ex);
         }
     }
 
     private void addSharedPrefsChangeListener() {
         listener = (sharedPreferences, key) -> {
             try {
-                LogHelper.debug(TAG, String.format("SharedPreference changed with key %s", key));
+                LogHelper.debug("SlimButtonContainer", String.format("SharedPreference changed with key %s", key));
                 if ("pref_copy_video_url_button_list".equals(key) && copyButton != null) {
                     copyButton.setVisible(ButtonVisibility.isVisibleInContainer(context, "pref_copy_video_url_button_list"));
                     return;
@@ -112,7 +112,7 @@ public class SlimButtonContainer extends SlimMetadataScrollableButtonContainerLa
                     return;
                 }
             } catch (Exception ex) {
-                LogHelper.printException(TAG, "Error handling shared preference change", ex);
+                LogHelper.printException("SlimButtonContainer", "Error handling shared preference change", ex);
             }
         };
 

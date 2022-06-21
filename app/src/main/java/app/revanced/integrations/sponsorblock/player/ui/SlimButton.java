@@ -12,7 +12,6 @@ import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedUtils;
 
 public abstract class SlimButton implements View.OnClickListener {
-    private static final String TAG = "VI - Slim - Button";
     public static int SLIM_METADATA_BUTTON_ID;
     public final View view;
     public final Context context;
@@ -26,7 +25,7 @@ public abstract class SlimButton implements View.OnClickListener {
     }
 
     public SlimButton(Context context, ViewGroup container, int id, boolean visible) {
-        LogHelper.debug(TAG, "Adding button with id " + id + " and visibility of " + visible);
+        LogHelper.debug("SlimButton", "Adding button with id " + id + " and visibility of " + visible);
         this.context = context;
         this.container = container;
         view = LayoutInflater.from(context).inflate(id, container, false);
@@ -49,7 +48,7 @@ public abstract class SlimButton implements View.OnClickListener {
             }
             setContainerVisibility();
         } catch (Exception ex) {
-            LogHelper.printException(TAG, "Error while changing button visibility", ex);
+            LogHelper.printException("SlimButton", "Error while changing button visibility", ex);
         }
     }
 

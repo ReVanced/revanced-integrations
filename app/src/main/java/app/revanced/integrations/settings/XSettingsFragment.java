@@ -23,7 +23,7 @@ import app.revanced.integrations.utils.ScreenSizeHelper;
 import app.revanced.integrations.utils.SwipeHelper;
 import app.revanced.integrations.videoplayer.VideoUrl.Copy;
 import app.revanced.integrations.videoplayer.VideoUrl.CopyWithTimeStamp;
-import vanced.integrations.BuildConfig;
+import app.revanced.integrations.BuildConfig;
 
 /* loaded from: classes6.dex */
 public class XSettingsFragment extends PreferenceFragment {

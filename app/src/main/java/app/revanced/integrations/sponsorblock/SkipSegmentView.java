@@ -17,7 +17,7 @@ import static app.revanced.integrations.sponsorblock.PlayerController.VERBOSE;
 
 @SuppressLint({"RtlHardcoded", "SetTextI18n", "LongLogTag", "AppCompatCustomView"})
 public class SkipSegmentView {
-    public static final String TAG = "revanced.SkipSegmentView";
+
     private static SponsorSegment lastNotifiedSegment;
 
     public static void show() {
@@ -31,14 +31,14 @@ public class SkipSegmentView {
     public static void notifySkipped(SponsorSegment segment) {
         if (segment == lastNotifiedSegment) {
             if (VERBOSE)
-                LogHelper.debug(TAG, "notifySkipped; segment == lastNotifiedSegment");
+                LogHelper.debug("SkipSegmentView", "notifySkipped; segment == lastNotifiedSegment");
             return;
         }
         lastNotifiedSegment = segment;
         String skipMessage = segment.category.skipMessage.toString();
         Context context = YouTubeTikTokRoot_Application.getAppContext();
         if (VERBOSE)
-            LogHelper.debug(TAG, String.format("notifySkipped; message=%s", skipMessage));
+            LogHelper.debug("SkipSegmentView", String.format("notifySkipped; message=%s", skipMessage));
 
         if (context != null)
             Toast.makeText(context, skipMessage, Toast.LENGTH_SHORT).show();

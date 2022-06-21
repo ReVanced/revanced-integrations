@@ -18,7 +18,6 @@ import static app.revanced.integrations.sponsorblock.PlayerController.getLastKno
 import app.revanced.integrations.utils.LogHelper;
 
 public class VotingButton {
-    static String TAG = "VOTING";
     static RelativeLayout _youtubeControlsLayout;
     static WeakReference<ImageView> _votingButton = new WeakReference<>(null);
     static int fadeDurationFast;
@@ -29,14 +28,14 @@ public class VotingButton {
 
     public static void initialize(Object viewStub) {
         try {
-            LogHelper.debug(TAG, "initializing voting button");
+            LogHelper.debug("VotingButton", "initializing voting button");
             _youtubeControlsLayout = (RelativeLayout) viewStub;
 
             ImageView imageView = (ImageView) _youtubeControlsLayout
                     .findViewById(getIdentifier("voting_button", "id"));
 
             if (imageView == null) {
-                LogHelper.debug(TAG, "Couldn't find imageView with tag \"voting_button\"");
+                LogHelper.debug("VotingButton", "Couldn't find imageView with  \"voting_button\"");
             }
             if (imageView == null) return;
             imageView.setOnClickListener(SponsorBlockUtils.voteButtonListener);
@@ -52,7 +51,7 @@ public class VotingButton {
             isShowing = true;
             changeVisibilityImmediate(false);
         } catch (Exception ex) {
-            LogHelper.printException(TAG, "Unable to set RelativeLayout", ex);
+            LogHelper.printException("VotingButton", "Unable to set RelativeLayout", ex);
         }
     }
 
@@ -79,7 +78,7 @@ public class VotingButton {
             if (getLastKnownVideoTime() >= getCurrentVideoLength()) {
                 return;
             }
-            LogHelper.debug(TAG, "Fading in");
+            LogHelper.debug("VotingButton", "Fading in");
             iView.setVisibility(View.VISIBLE);
             if (!immediate)
                 iView.startAnimation(fadeIn);
@@ -87,7 +86,7 @@ public class VotingButton {
         }
 
         if (iView.getVisibility() == View.VISIBLE) {
-            LogHelper.debug(TAG, "Fading out");
+            LogHelper.debug("VotingButton", "Fading out");
             if (!immediate)
                 iView.startAnimation(fadeOut);
             iView.setVisibility(shouldBeShown() ? View.INVISIBLE : View.GONE);

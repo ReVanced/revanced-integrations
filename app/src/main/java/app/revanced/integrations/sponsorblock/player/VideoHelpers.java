@@ -10,7 +10,6 @@ import static app.revanced.integrations.sponsorblock.StringRef.str;
 import app.revanced.integrations.utils.LogHelper;
 
 public class VideoHelpers {
-    public static final String TAG = "VideoHelpers";
 
     public static void copyVideoUrlToClipboard() {
         generateVideoUrl(false);
@@ -24,7 +23,7 @@ public class VideoHelpers {
         try {
             String videoId = VideoInformation.currentVideoId;
             if (videoId == null || videoId.isEmpty()) {
-                LogHelper.debug(TAG, "VideoId was empty");
+                LogHelper.debug("VideoHelpers", "VideoId was empty");
                 return;
             }
 
@@ -34,13 +33,13 @@ public class VideoHelpers {
                 videoUrl += String.format("?t=%s", (videoTime / 1000));
             }
 
-            LogHelper.debug(TAG, "Video URL: " + videoUrl);
+            LogHelper.debug("VideoHelpers", "Video URL: " + videoUrl);
 
             setClipboard(YouTubeTikTokRoot_Application.getAppContext(), videoUrl);
 
             Toast.makeText(YouTubeTikTokRoot_Application.getAppContext(), str("share_copy_url_success"), Toast.LENGTH_SHORT).show();
         } catch (Exception ex) {
-            LogHelper.printException(TAG, "Couldn't generate video url", ex);
+            LogHelper.printException("VideoHelpers", "Couldn't generate video url", ex);
         }
     }
 

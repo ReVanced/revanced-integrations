@@ -15,7 +15,6 @@ import app.revanced.integrations.videoplayer.Fenster.Helpers.BrightnessHelper;
 public class BrightnessSeekBar {
     public static final int MAX_BRIGHTNESS = 100;
     public static final int MIN_BRIGHTNESS = 0;
-    public static final String TAG = "XDebug";
     public int Max;
     public int Progress;
     private boolean enabled;

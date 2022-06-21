@@ -18,7 +18,6 @@ import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.sponsorblock.PlayerController;
 
 public class SkipSponsorButton extends FrameLayout {
-    String TAG = "SkipSponsorButton";
     public CharSequence skipSponsorTextViewText;
     public CharSequence skipSponsorText;
     public ImageView skipSponsorButtonIcon;
@@ -91,7 +90,7 @@ public class SkipSponsorButton extends FrameLayout {
         this.skipSponsorBtnContainer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                LogHelper.debug(TAG, "Skip button clicked");
+                LogHelper.debug("SkipSponsorButton", "Skip button clicked");
                 PlayerController.onSkipSponsorClicked();
             }
         });

@@ -19,7 +19,6 @@ import app.revanced.integrations.utils.ThemeHelper;
 
 /* loaded from: classes6.dex */
 public class XSettingActivity extends Activity {
-    static String TAG = "XSettingsActivity";
     private static Context context;
     boolean currentTheme;
 
@@ -55,7 +54,7 @@ public class XSettingActivity extends Activity {
         try {
             getTextView((ViewGroup) findViewById(getIdentifier("toolbar", "id"))).setText(i);
         } catch (Exception e) {
-            LogHelper.printException(TAG, "Couldn't set Toolbar title", e);
+            LogHelper.printException("XSettingsActivity", "Couldn't set Toolbar title", e);
         }
     }
 
@@ -63,7 +62,7 @@ public class XSettingActivity extends Activity {
         try {
             getTextView((ViewGroup) findViewById(getIdentifier("toolbar", "id"))).setText(str);
         } catch (Exception e) {
-            LogHelper.printException(TAG, "Couldn't set Toolbar title", e);
+            LogHelper.printException("XSettingsActivity", "Couldn't set Toolbar title", e);
         }
     }
 
@@ -78,7 +77,7 @@ public class XSettingActivity extends Activity {
             });
             imageButton.setImageDrawable(getResources().getDrawable(getIdentifier(z ? "quantum_ic_arrow_back_white_24" : "quantum_ic_arrow_back_grey600_24", "drawable")));
         } catch (Exception e) {
-            LogHelper.printException(TAG, "Couldn't set Toolbar click handler", e);
+            LogHelper.printException("XSettingsActivity", "Couldn't set Toolbar click handler", e);
         }
     }
 

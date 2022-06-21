@@ -34,7 +34,6 @@ import app.revanced.integrations.utils.SharedPrefHelper;
 
 @SuppressLint({"LongLogTag"})
 public class PlayerController {
-    public static final String TAG = "revanced.PlayerController";
     public static final boolean VERBOSE = false;
     @SuppressWarnings("PointlessBooleanExpression")
     public static final boolean VERBOSE_DRAW_OPTIONS = false && VERBOSE;
@@ -49,7 +48,6 @@ public class PlayerController {
     private static long currentVideoLength = 1L;
     private static long lastKnownVideoTime = -1L;
     private static final Runnable findAndSkipSegmentRunnable = () -> {
-//            LogH(TAG, "findAndSkipSegmentRunnable");
         findAndSkipSegment(false);
     };
     private static float sponsorBarLeft = 1f;
@@ -70,7 +68,7 @@ public class PlayerController {
 
         Context context = YouTubeTikTokRoot_Application.getAppContext();
         if (context == null) {
-            LogHelper.printException(TAG, "context is null");
+            LogHelper.printException("PlayerController", "context is null");
             return;
         }
         SponsorBlockSettings.update(context);
@@ -86,7 +84,7 @@ public class PlayerController {
         currentVideoId = videoId;
         sponsorSegmentsOfCurrentVideo = null;
         if (VERBOSE)
-            LogHelper.debug(TAG, "setCurrentVideoId: videoId=" + videoId);
+            LogHelper.debug("PlayerController", "setCurrentVideoId: videoId=" + videoId);
 
         sponsorTimer.schedule(new TimerTask() {
             @Override
@@ -103,12 +101,12 @@ public class PlayerController {
 //        "Plugin.printStackTrace();
 
         if (o == null) {
-            LogHelper.printException(TAG, "onCreate called with null object");
+            LogHelper.printException("PlayerController", "onCreate called with null object");
             return;
         }
 
         if (VERBOSE)
-            LogHelper.debug(TAG, String.format("onCreate called with object %s on thread %s", o.toString(), Thread.currentThread().toString()));
+            LogHelper.debug("PlayerController", String.format("onCreate called with object %s on thread %s", o.toString(), Thread.currentThread().toString()));
 
         try {
             setMillisecondMethod = o.getClass().getMethod("replaceMeWithsetMillisecondMethod", Long.TYPE);
@@ -122,7 +120,7 @@ public class PlayerController {
             SkipSegmentView.hide();
             NewSegmentHelperLayout.hide();
         } catch (Exception e) {
-            LogHelper.printException(TAG, "Exception while initializing skip method", e);
+            LogHelper.printException("PlayerController", "Exception while initializing skip method", e);
         }
     }
 
@@ -136,7 +134,7 @@ public class PlayerController {
 
         if (VERBOSE)
             for (SponsorSegment segment : segments) {
-                LogHelper.debug(TAG, "Detected segment: " + segment.toString());
+                LogHelper.debug("PlayerController", "Detected segment: " + segment.toString());
             }
 
         sponsorSegmentsOfCurrentVideo = segments;
@@ -153,7 +151,7 @@ public class PlayerController {
 
         //        if (currentVideoLink != null) {
 //            if (VERBOSE)
-//                Log.w(TAG, "asyncGetVideoLinkFromObject: currentVideoLink != null probably share button was clicked");
+//                Log.w("PlayerController", "asyncGetVideoLinkFromObject: currentVideoLink != null probably share button was clicked");
 //            return;
 //        }
 //
@@ -170,7 +168,7 @@ public class PlayerController {
 //                        Object objLink = b.get(o);
 //                        if (objLink == null) {
 //                            if (VERBOSE)
-//                                LogHelper.printException(TAG, "asyncGetVideoLinkFromObject: objLink is null");
+//                                LogHelper.printException("PlayerController", "asyncGetVideoLinkFromObject: objLink is null");
 //                        } else {
 //                            videoUrl = objLink.toString();
 //                            if (videoUrl.isEmpty())
@@ -181,7 +179,7 @@ public class PlayerController {
 //                            break;
 //
 //                        if (attempts++ > 5) {
-//                            Log.w(TAG, "asyncGetVideoLinkFromObject: attempts++ > 5");
+//                            Log.w("PlayerController", "asyncGetVideoLinkFromObject: attempts++ > 5");
 //                            return;
 //                        }
 //                        Thread.sleep(50);
@@ -190,13 +188,13 @@ public class PlayerController {
 //                    if (currentVideoLink == null) {
 //                        currentVideoLink = videoUrl;
 //                        if (VERBOSE)
-//                            LogH(TAG, "asyncGetVideoLinkFromObject: link set to " + videoUrl);
+//                            LogH("PlayerController", "asyncGetVideoLinkFromObject: link set to " + videoUrl);
 //
 //                        executeDownloadSegments(substringVideoIdFromLink(videoUrl), false);
 //                    }
 //
 //                } catch (Exception e) {
-//                    LogHelper.printException(TAG, "Cannot get link from object", e);
+//                    LogHelper.printException("PlayerController", "Cannot get link from object", e);
 //                }
 //            }
 //        }).start();
@@ -211,7 +209,7 @@ public class PlayerController {
      */
     public static void setCurrentVideoTime(long millis) {
         if (VERBOSE)
-            LogHelper.debug(TAG, "setCurrentVideoTime: current video time: " + millis);
+            LogHelper.debug("PlayerController", "setCurrentVideoTime: current video time: " + millis);
         VideoInformation.lastKnownVideoTime = millis;
         if (!SponsorBlockSettings.isSponsorBlockEnabled) return;
         lastKnownVideoTime = millis;
@@ -239,7 +237,7 @@ public class PlayerController {
 
                 if (skipSponsorTask == null) {
                     if (VERBOSE)
-                        LogHelper.debug(TAG, "Scheduling skipSponsorTask");
+                        LogHelper.debug("PlayerController", "Scheduling skipSponsorTask");
                     skipSponsorTask = new TimerTask() {
                         @Override
                         public void run() {
@@ -252,7 +250,7 @@ public class PlayerController {
                     sponsorTimer.schedule(skipSponsorTask, segment.start - millis);
                 } else {
                     if (VERBOSE)
-                        LogHelper.debug(TAG, "skipSponsorTask is already scheduled...");
+                        LogHelper.debug("PlayerController", "skipSponsorTask is already scheduled...");
                 }
 
                 break;
@@ -321,7 +319,7 @@ public class PlayerController {
      */
     public static void setVideoLength(final long length) {
         if (VERBOSE_DRAW_OPTIONS)
-            LogHelper.debug(TAG, "setVideoLength: length=" + length);
+            LogHelper.debug("PlayerController", "setVideoLength: length=" + length);
         currentVideoLength = length;
     }
 
@@ -332,7 +330,7 @@ public class PlayerController {
 
     public static void setSponsorBarAbsoluteLeft(final float left) {
         if (VERBOSE_DRAW_OPTIONS)
-            LogHelper.debug(TAG, String.format("setSponsorBarLeft: left=%.2f", left));
+            LogHelper.debug("PlayerController", String.format("setSponsorBarLeft: left=%.2f", left));
 
         sponsorBarLeft = left;
     }
@@ -357,7 +355,7 @@ public class PlayerController {
 
     public static void setSponsorBarAbsoluteRight(final float right) {
         if (VERBOSE_DRAW_OPTIONS)
-            LogHelper.debug(TAG, String.format("setSponsorBarRight: right=%.2f", right));
+            LogHelper.debug("PlayerController", String.format("setSponsorBarRight: right=%.2f", right));
 
         sponsorBarRight = right;
     }
@@ -368,14 +366,14 @@ public class PlayerController {
 
     public static void setSponsorBarThickness(final float thickness) {
 //        if (VERBOSE_DRAW_OPTIONS)
-//            LogH(TAG, String.format("setSponsorBarThickness: thickness=%.2f", thickness));
+//            LogH("PlayerController", String.format("setSponsorBarThickness: thickness=%.2f", thickness));
 
         sponsorBarThickness = thickness;
     }
 
     public static void onSkipSponsorClicked() {
         if (VERBOSE)
-            LogHelper.debug(TAG, "Skip segment clicked");
+            LogHelper.debug("PlayerController", "Skip segment clicked");
         findAndSkipSegment(true);
     }
 
@@ -383,7 +381,7 @@ public class PlayerController {
     public static void addSkipSponsorView15(final View view) {
         playerActivity = new WeakReference<>((Activity) view.getContext());
         if (VERBOSE)
-            LogHelper.debug(TAG, "addSkipSponsorView15: view=" + view.toString());
+            LogHelper.debug("PlayerController", "addSkipSponsorView15: view=" + view.toString());
 
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
             final ViewGroup viewGroup = (ViewGroup) ((ViewGroup) view).getChildAt(2);
@@ -395,7 +393,7 @@ public class PlayerController {
     public static void addSkipSponsorView14(final View view) {
         playerActivity = new WeakReference<>((Activity) view.getContext());
         if (VERBOSE)
-            LogHelper.debug(TAG, "addSkipSponsorView14: view=" + view.toString());
+            LogHelper.debug("PlayerController", "addSkipSponsorView14: view=" + view.toString());
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
             final ViewGroup viewGroup = (ViewGroup) view.getParent();
             Activity activity = (Activity) viewGroup.getContext();
@@ -441,37 +439,37 @@ public class PlayerController {
         long now = System.currentTimeMillis();
         if (now < allowNextSkipRequestTime) {
             if (VERBOSE)
-                LogHelper.debug(TAG, "skipToMillisecond: to fast, slow down, because you'll fail");
+                LogHelper.debug("PlayerController", "skipToMillisecond: to fast, slow down, because you'll fail");
             return;
         }
         allowNextSkipRequestTime = now + 100;
 
         if (setMillisecondMethod == null) {
-            LogHelper.printException(TAG, "setMillisecondMethod is null");
+            LogHelper.printException("PlayerController", "setMillisecondMethod is null");
             return;
         }
 
 
         final Object currentObj = currentPlayerController.get();
         if (currentObj == null) {
-            LogHelper.printException(TAG, "currentObj is null (might have been collected by GC)");
+            LogHelper.printException("PlayerController", "currentObj is null (might have been collected by GC)");
             return;
         }
 
 
         if (VERBOSE)
-            LogHelper.debug(TAG, String.format("Requesting skip to millis=%d on thread %s", millisecond, Thread.currentThread().toString()));
+            LogHelper.debug("PlayerController", String.format("Requesting skip to millis=%d on thread %s", millisecond, Thread.currentThread().toString()));
 
         final long finalMillisecond = millisecond;
         new Handler(Looper.getMainLooper()).post(() -> {
             try {
                 if (VERBOSE)
-                    LogHelper.debug(TAG, "Skipping to millis=" + finalMillisecond);
+                    LogHelper.debug("PlayerController", "Skipping to millis=" + finalMillisecond);
                 lastKnownVideoTime = finalMillisecond;
                 VideoInformation.lastKnownVideoTime = lastKnownVideoTime;
                 setMillisecondMethod.invoke(currentObj, finalMillisecond);
             } catch (Exception e) {
-                LogHelper.printException(TAG, "Cannot skip to millisecond", e);
+                LogHelper.printException("PlayerController", "Cannot skip to millisecond", e);
             }
         });
     }
@@ -506,7 +504,7 @@ public class PlayerController {
 //        if (lastSkippedSegment == segment) return;
 //        lastSkippedSegment = segment;
         if (VERBOSE)
-            LogHelper.debug(TAG, "Skipping segment: " + segment.toString());
+            LogHelper.debug("PlayerController", "Skipping segment: " + segment.toString());
 
         if (SponsorBlockSettings.showToastWhenSkippedAutomatically && !wasClicked)
             SkipSegmentView.notifySkipped(segment);

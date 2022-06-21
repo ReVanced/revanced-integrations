@@ -9,7 +9,7 @@ import java.security.SecureRandom;
 import app.revanced.integrations.utils.LogHelper;
 
 public class Utils {
-    private static final String TAG = "VI - RYD - Utils";
+
     // https://stackoverflow.com/a/157202
     private static final String AB = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     private static SecureRandom rnd = new SecureRandom();
@@ -38,7 +38,7 @@ public class Utils {
                 }
             }
         } catch (Exception ex) {
-            LogHelper.printException(TAG, "Failed to solve puzzle", ex);
+            LogHelper.printException("RYD Utils", "Failed to solve puzzle", ex);
         }
 
         return null;

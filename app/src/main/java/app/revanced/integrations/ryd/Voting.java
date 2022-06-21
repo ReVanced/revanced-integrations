@@ -7,8 +7,6 @@ import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.ryd.requests.RYDRequester;
 
 public class Voting {
-    private static final String TAG = "VI - RYD - Voting";
-
     private Registration registration;
     private Context context;
 
@@ -19,7 +17,7 @@ public class Voting {
 
     public boolean sendVote(String videoId, int vote) {
         String userId = registration.getUserId();
-        LogHelper.debug(TAG, "Trying to vote the following video: " + videoId + " with vote " + vote + " and userId: " + userId);
+        LogHelper.debug("Voting", "Trying to vote the following video: " + videoId + " with vote " + vote + " and userId: " + userId);
         return RYDRequester.sendVote(videoId, userId, vote);
     }
 }

@@ -10,8 +10,6 @@ import app.revanced.integrations.ryd.requests.RYDRequester;
 import app.revanced.integrations.utils.SharedPrefHelper;
 
 public class Registration {
-    private static final String TAG = "VI - RYD - Registration";
-
     private String userId;
     private Context context;
 
@@ -34,7 +32,7 @@ public class Registration {
                 this.userId = register();
             }
         } catch (Exception ex) {
-            LogHelper.printException(TAG, "Unable to fetch the userId from shared preferences", ex);
+            LogHelper.printException("Registration", "Unable to fetch the userId from shared preferences", ex);
         }
 
         return this.userId;
@@ -46,13 +44,13 @@ public class Registration {
                 throw new Exception("Unable to save userId because context was null");
             SharedPrefHelper.saveString(context, SharedPrefHelper.SharedPrefNames.RYD, PREFERENCES_KEY_USERID, userId);
         } catch (Exception ex) {
-            LogHelper.printException(TAG, "Unable to save the userId in shared preferences", ex);
+            LogHelper.printException("Registration", "Unable to save the userId in shared preferences", ex);
         }
     }
 
     private String register() {
         String userId = randomString(36);
-        LogHelper.debug(TAG, "Trying to register the following userId: " + userId);
+        LogHelper.debug("Registration", "Trying to register the following userId: " + userId);
         return RYDRequester.register(userId, this);
     }
 }

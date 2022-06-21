@@ -18,7 +18,6 @@ import app.revanced.integrations.settings.XSettingsFragment;
 /* loaded from: classes6.dex */
 public class XFenster implements FensterEventsListener {
     public static final int ONE_FINGER = 1;
-    public static final String TAG = "XDebug";
     Handler handler;
     float mBrightnessDownPos;
     int mBrightnessDownProgress;
