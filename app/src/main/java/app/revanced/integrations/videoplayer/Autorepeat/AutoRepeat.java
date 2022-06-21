@@ -113,21 +113,12 @@ public class AutoRepeat {
             LogHelper.printException("AutoRepeat", "ChangeSelected - context is null!");
             return false;
         }
-        SharedPreferences sharedPreferences = SharedPrefHelper.getPreferences(context, SharedPrefNames.YOUTUBE);
-        return sharedPreferences.getBoolean("pref_auto_repeat", false);
+        return SharedPrefHelper.getBoolean(context, SharedPrefNames.YOUTUBE, "pref_auto_repeat", false);
     }
 
     private static void setSelected(boolean selected) {
-        try {
-            Context context = YouTubeTikTokRoot_Application.getAppContext();
-            if (context == null) {
-                LogHelper.printException("AutoRepeat", "ChangeSelected - context is null!");
-                return;
-            }
-            SharedPreferences sharedPreferences = SharedPrefHelper.getPreferences(context, SharedPrefNames.YOUTUBE);
-            sharedPreferences.edit().putBoolean("pref_auto_repeat", selected).apply();
-        } catch (Exception ignored) {
-        }
+        Context context = YouTubeTikTokRoot_Application.getAppContext();
+        SharedPrefHelper.saveBoolean(context, SharedPrefNames.YOUTUBE, "pref_auto_repeat", selected);
     }
 
     private static boolean shouldBeShown() {

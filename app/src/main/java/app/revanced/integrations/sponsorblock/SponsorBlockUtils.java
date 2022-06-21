@@ -22,7 +22,6 @@ import static app.revanced.integrations.sponsorblock.SponsorBlockSettings.PREFER
 import static app.revanced.integrations.sponsorblock.SponsorBlockSettings.PREFERENCES_KEY_UUID;
 import static app.revanced.integrations.sponsorblock.SponsorBlockSettings.apiUrl;
 import static app.revanced.integrations.sponsorblock.SponsorBlockSettings.countSkips;
-import static app.revanced.integrations.sponsorblock.SponsorBlockSettings.getPreferences;
 import static app.revanced.integrations.sponsorblock.SponsorBlockSettings.isSponsorBlockEnabled;
 import static app.revanced.integrations.sponsorblock.SponsorBlockSettings.lastVipCheck;
 import static app.revanced.integrations.sponsorblock.SponsorBlockSettings.minDuration;
@@ -536,7 +535,8 @@ public abstract class SponsorBlockUtils {
             JSONObject barTypesObject = settingsJson.getJSONObject("barTypes");
             JSONArray categorySelectionsArray = settingsJson.getJSONArray("categorySelections");
 
-            SharedPreferences.Editor editor = getPreferences(context).edit();
+
+            SharedPreferences.Editor editor = SharedPrefHelper.getPreferences(context, SharedPrefNames.SPONSOR_BLOCK).edit();
 
             SponsorBlockSettings.SegmentInfo[] categories = SponsorBlockSettings.SegmentInfo.valuesWithoutUnsubmitted();
             for (SponsorBlockSettings.SegmentInfo category : categories) {

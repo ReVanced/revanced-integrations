@@ -19,6 +19,11 @@ public class SharedPrefHelper {
         sharedPreferences.edit().putInt(key, value).apply();
     }
 
+    public static void saveLong(Context context, SharedPrefNames prefName, String key, Long value) {
+        SharedPreferences sharedPreferences = getPreferences(context, prefName);
+        sharedPreferences.edit().putLong(key, value).apply();
+    }
+
     public static String getString(Context context, SharedPrefNames prefName, String key) {
         return getString(context, prefName, key, null);
     }

@@ -31,6 +31,8 @@ import app.revanced.integrations.sponsorblock.player.VideoInformation;
 import app.revanced.integrations.adremover.whitelist.Whitelist;
 import app.revanced.integrations.sponsorblock.objects.SponsorSegment;
 import app.revanced.integrations.sponsorblock.requests.SBRequester;
+import app.revanced.integrations.utils.SharedPrefHelper;
+import app.revanced.integrations.utils.SharedPrefNames;
 
 @SuppressLint({"LongLogTag"})
 public class PlayerController {
@@ -278,10 +280,9 @@ public class PlayerController {
         if (segment.category != SponsorBlockSettings.SegmentInfo.UNSUBMITTED) {
             Context context = YouTubeTikTokRoot_Application.getAppContext();
             if (context != null) {
-                SharedPreferences preferences = SponsorBlockSettings.getPreferences(context);
                 long newSkippedTime = skippedTime + (segment.end - segment.start);
-                preferences.edit().putInt(SponsorBlockSettings.PREFERENCES_KEY_SKIPPED_SEGMENTS, skippedSegments + 1).apply();
-                preferences.edit().putLong(SponsorBlockSettings.PREFERENCES_KEY_SKIPPED_SEGMENTS_TIME, newSkippedTime).apply();
+                SharedPrefHelper.saveInt(context, SharedPrefNames.SPONSOR_BLOCK, SponsorBlockSettings.PREFERENCES_KEY_SKIPPED_SEGMENTS, skippedSegments + 1);
+                SharedPrefHelper.saveLong(context, SharedPrefNames.SPONSOR_BLOCK, SponsorBlockSettings.PREFERENCES_KEY_SKIPPED_SEGMENTS_TIME, newSkippedTime);
             }
         }
         new Thread(() -> {
