@@ -1,4 +1,4 @@
-package app.revanced.integrations;
+package app.revanced.integrations.utils;
 
 import android.content.Context;
 
