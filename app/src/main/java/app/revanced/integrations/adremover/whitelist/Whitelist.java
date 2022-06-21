@@ -26,7 +26,7 @@ import app.revanced.integrations.settings.Settings;
 import app.revanced.integrations.sponsorblock.player.ChannelModel;
 import app.revanced.integrations.sponsorblock.player.VideoInformation;
 import app.revanced.integrations.utils.ObjectSerializer;
-import app.revanced.integrations.utils.SharedPrefUtils;
+import app.revanced.integrations.utils.SharedPrefHelper;
 import app.revanced.integrations.utils.VancedUtils;
 
 public class Whitelist {
@@ -98,7 +98,7 @@ public class Whitelist {
         }
         Map<WhitelistType, Boolean> enabledMap = new EnumMap<>(WhitelistType.class);
         for (WhitelistType whitelistType : WhitelistType.values()) {
-            enabledMap.put(whitelistType, SharedPrefUtils.getBoolean(context, whitelistType.getSharedPreferencesName(), whitelistType.getPreferenceEnabledName()));
+            enabledMap.put(whitelistType, SharedPrefHelper.getBoolean(context, whitelistType.getSharedPreferencesName(), whitelistType.getPreferenceEnabledName()));
         }
         return enabledMap;
     }

@@ -2,15 +2,16 @@ package app.revanced.integrations.sponsorblock.player.ui;
 
 import android.content.Context;
 
-import app.revanced.integrations.utils.SharedPrefUtils;
+import app.revanced.integrations.utils.SharedPrefHelper;
+import app.revanced.integrations.utils.SharedPrefNames;
 
 public class ButtonVisibility {
     public static Visibility getButtonVisibility(Context context, String key) {
-        return getButtonVisibility(context, key, "youtube");
+        return getButtonVisibility(context, key, SharedPrefNames.YOUTUBE);
     }
 
-    public static Visibility getButtonVisibility(Context context, String key, String preferenceName) {
-        String value = SharedPrefUtils.getString(context, preferenceName, key, null);
+    public static Visibility getButtonVisibility(Context context, String key, SharedPrefNames name) {
+        String value = SharedPrefHelper.getString(context, name, key, null);
 
         if (value == null || value.isEmpty()) return Visibility.NONE;
 
@@ -30,8 +31,8 @@ public class ButtonVisibility {
         return isVisibleInContainer(getButtonVisibility(context, key));
     }
 
-    public static boolean isVisibleInContainer(Context context, String key, String preferenceName) {
-        return isVisibleInContainer(getButtonVisibility(context, key, preferenceName));
+    public static boolean isVisibleInContainer(Context context, String key, SharedPrefNames name) {
+        return isVisibleInContainer(getButtonVisibility(context, key, name));
     }
 
     public static boolean isVisibleInContainer(Visibility visibility) {

@@ -1,7 +1,6 @@
 package app.revanced.integrations.ryd;
 
 import static app.revanced.integrations.ryd.RYDSettings.PREFERENCES_KEY_USERID;
-import static app.revanced.integrations.ryd.RYDSettings.PREFERENCES_NAME;
 import static app.revanced.integrations.utils.VancedUtils.getPreferences;
 import static app.revanced.integrations.utils.VancedUtils.randomString;
 
@@ -10,6 +9,8 @@ import android.content.SharedPreferences;
 
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.ryd.requests.RYDRequester;
+import app.revanced.integrations.utils.SharedPrefHelper;
+import app.revanced.integrations.utils.SharedPrefNames;
 
 public class Registration {
     private static final String TAG = "VI - RYD - Registration";
@@ -30,8 +31,7 @@ public class Registration {
             if (this.context == null)
                 throw new Exception("Unable to fetch userId because context was null");
 
-            SharedPreferences preferences = getPreferences(context, PREFERENCES_NAME);
-            this.userId = preferences.getString(PREFERENCES_KEY_USERID, null);
+            this.userId = SharedPrefHelper.getString(context, SharedPrefNames.RYD, PREFERENCES_KEY_USERID, null);
 
             if (this.userId == null) {
                 this.userId = register();
@@ -47,10 +47,7 @@ public class Registration {
         try {
             if (this.context == null)
                 throw new Exception("Unable to save userId because context was null");
-
-            SharedPreferences preferences = getPreferences(context, PREFERENCES_NAME);
-            SharedPreferences.Editor editor = preferences.edit();
-            editor.putString(PREFERENCES_KEY_USERID, userId).apply();
+            SharedPrefHelper.saveString(context, SharedPrefNames.RYD, PREFERENCES_KEY_USERID, userId);
         } catch (Exception ex) {
             LogHelper.printException(TAG, "Unable to save the userId in shared preferences", ex);
         }

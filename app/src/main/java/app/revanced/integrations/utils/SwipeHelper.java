@@ -9,10 +9,7 @@ import android.widget.FrameLayout;
 
 import com.google.android.apps.youtube.app.YouTubeTikTokRoot_Application;
 
-import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.settings.Settings;
-import app.revanced.integrations.utils.ScreenSizeHelper;
-import app.revanced.integrations.utils.SharedPrefsHelper;
 
 /* loaded from: classes6.dex */
 public class SwipeHelper {
@@ -24,7 +21,7 @@ public class SwipeHelper {
         try {
             _frameLayout = (FrameLayout) obj;
             Context appContext = YouTubeTikTokRoot_Application.getAppContext();
-            if (ScreenSizeHelper.isTablet(appContext) || SharedPrefsHelper.getBoolean(appContext, "pref_xfenster_tablet", false)) {
+            if (ScreenSizeHelper.isTablet(appContext) || SharedPrefHelper.getBoolean(appContext, SharedPrefNames.YOUTUBE,"pref_xfenster_tablet", false)) {
                 isTabletMode = true;
             }
         } catch (Exception e) {

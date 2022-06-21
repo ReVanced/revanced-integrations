@@ -13,7 +13,6 @@ import static app.revanced.integrations.sponsorblock.SponsorBlockSettings.PREFER
 import static app.revanced.integrations.sponsorblock.SponsorBlockSettings.PREFERENCES_KEY_SPONSOR_BLOCK_HINT_SHOWN;
 import static app.revanced.integrations.sponsorblock.SponsorBlockSettings.PREFERENCES_KEY_UUID;
 import static app.revanced.integrations.sponsorblock.SponsorBlockSettings.PREFERENCES_KEY_VOTING_ENABLED;
-import static app.revanced.integrations.sponsorblock.SponsorBlockSettings.PREFERENCES_NAME;
 import static app.revanced.integrations.sponsorblock.SponsorBlockSettings.adjustNewSegmentMillis;
 import static app.revanced.integrations.sponsorblock.SponsorBlockSettings.countSkips;
 import static app.revanced.integrations.sponsorblock.SponsorBlockSettings.minDuration;
@@ -50,9 +49,10 @@ import java.util.ArrayList;
 
 import app.revanced.integrations.adremover.whitelist.WhitelistType;
 import app.revanced.integrations.settings.Settings;
-import app.revanced.integrations.utils.SharedPrefUtils;
+import app.revanced.integrations.utils.SharedPrefHelper;
 import app.revanced.integrations.sponsorblock.objects.EditTextListPreference;
 import app.revanced.integrations.sponsorblock.requests.SBRequester;
+import app.revanced.integrations.utils.SharedPrefNames;
 
 @SuppressWarnings({"unused", "deprecation"}) // injected
 public class SponsorBlockPreferenceFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
@@ -64,7 +64,7 @@ public class SponsorBlockPreferenceFragment extends PreferenceFragment implement
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getPreferenceManager().setSharedPreferencesName(PREFERENCES_NAME);
+        getPreferenceManager().setSharedPreferencesName(SharedPrefNames.SPONSOR_BLOCK.getName());
 
         getPreferenceManager().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
 
@@ -96,7 +96,7 @@ public class SponsorBlockPreferenceFragment extends PreferenceFragment implement
             preferenceScreen.addPreference(preference);
             preference.setKey(PREFERENCES_KEY_SPONSOR_BLOCK_HINT_SHOWN);
             preference.setDefaultValue(false);
-            preference.setChecked(SharedPrefUtils.getBoolean(context, PREFERENCES_NAME, PREFERENCES_KEY_SPONSOR_BLOCK_HINT_SHOWN));
+            preference.setChecked(SharedPrefHelper.getBoolean(context, SharedPrefNames.SPONSOR_BLOCK, PREFERENCES_KEY_SPONSOR_BLOCK_HINT_SHOWN));
             preference.setTitle("Hint debug");
             preference.setSummary("Debug toggle for clearing the hint shown preference");
             preference.setOnPreferenceChangeListener((pref, newValue) -> true);

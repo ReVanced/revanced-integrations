@@ -14,7 +14,8 @@ import com.google.android.apps.youtube.app.ui.SlimMetadataScrollableButtonContai
 import app.revanced.integrations.adremover.whitelist.Whitelist;
 import app.revanced.integrations.adremover.whitelist.WhitelistType;
 import app.revanced.integrations.utils.LogHelper;
-import app.revanced.integrations.utils.SharedPrefUtils;
+import app.revanced.integrations.utils.SharedPrefHelper;
+import app.revanced.integrations.utils.SharedPrefNames;
 import app.revanced.integrations.utils.VancedUtils;
 import app.revanced.integrations.sponsorblock.SponsorBlockSettings;
 
@@ -102,7 +103,7 @@ public class SlimButtonContainer extends SlimMetadataScrollableButtonContainerLa
                 WhitelistType whitelistAds = WhitelistType.ADS;
                 String adsEnabledPreferenceName = whitelistAds.getPreferenceEnabledName();
                 if (adsEnabledPreferenceName.equals(key) && adBlockButton != null) {
-                    boolean enabled = SharedPrefUtils.getBoolean(context, whitelistAds.getSharedPreferencesName(), adsEnabledPreferenceName, false);
+                    boolean enabled = SharedPrefHelper.getBoolean(context, SharedPrefNames.YOUTUBE, adsEnabledPreferenceName, false);
                     Whitelist.setEnabled(whitelistAds, enabled);
                     adBlockButton.setVisible(enabled);
                     return;
@@ -116,21 +117,21 @@ public class SlimButtonContainer extends SlimMetadataScrollableButtonContainerLa
             }
         };
 
-        context.getSharedPreferences(WhitelistType.ADS.getSharedPreferencesName(), Context.MODE_PRIVATE)
+        context.getSharedPreferences(WhitelistType.ADS.getSharedPreferencesName().getName(), Context.MODE_PRIVATE)
                 .registerOnSharedPreferenceChangeListener(listener);
-        context.getSharedPreferences(WhitelistType.SPONSORBLOCK.getSharedPreferencesName(), Context.MODE_PRIVATE)
+        context.getSharedPreferences(WhitelistType.SPONSORBLOCK.getSharedPreferencesName().getName(), Context.MODE_PRIVATE)
                 .registerOnSharedPreferenceChangeListener(listener);
     }
 
     private void toggleWhitelistButton() {
         WhitelistType whitelistSB = WhitelistType.SPONSORBLOCK;
         String sbEnabledPreferenceName = whitelistSB.getPreferenceEnabledName();
-        boolean enabled = SharedPrefUtils.getBoolean(context, whitelistSB.getSharedPreferencesName(), sbEnabledPreferenceName, false);
+        boolean enabled = SharedPrefHelper.getBoolean(context, SharedPrefNames.SPONSOR_BLOCK, sbEnabledPreferenceName, false);
         Whitelist.setEnabled(whitelistSB, enabled);
         sbWhitelistButton.setVisible(enabled);
     }
 
     private void toggleBrowserButton() {
-        sbBrowserButton.setVisible(SharedPrefUtils.getBoolean(context, SponsorBlockSettings.PREFERENCES_NAME, PREFERENCES_KEY_BROWSER_BUTTON, false));
+        sbBrowserButton.setVisible(SharedPrefHelper.getBoolean(context, SharedPrefNames.SPONSOR_BLOCK, PREFERENCES_KEY_BROWSER_BUTTON, false));
     }
 }

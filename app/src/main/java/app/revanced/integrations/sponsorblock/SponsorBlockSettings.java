@@ -16,10 +16,10 @@ import java.util.Map;
 import java.util.UUID;
 
 import app.revanced.integrations.utils.LogHelper;
+import app.revanced.integrations.utils.SharedPrefNames;
 
 public class SponsorBlockSettings {
 
-    public static final String PREFERENCES_NAME = "sponsor-block";
     public static final String PREFERENCES_KEY_SHOW_TOAST_WHEN_SKIP = "show-toast";
     public static final String PREFERENCES_KEY_COUNT_SKIPS = "count-skips";
     public static final String PREFERENCES_KEY_UUID = "uuid";
@@ -67,7 +67,7 @@ public class SponsorBlockSettings {
     }
 
     public static SharedPreferences getPreferences(Context context) {
-        return context.getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE);
+        return context.getSharedPreferences(SharedPrefNames.SPONSOR_BLOCK.getName(), Context.MODE_PRIVATE);
     }
 
     public static void setSeenGuidelines(Context context) {

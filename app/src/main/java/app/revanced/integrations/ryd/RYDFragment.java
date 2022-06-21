@@ -2,7 +2,6 @@ package app.revanced.integrations.ryd;
 
 import static app.revanced.integrations.ryd.RYDSettings.PREFERENCES_KEY_RYD_ENABLED;
 import static app.revanced.integrations.ryd.RYDSettings.PREFERENCES_KEY_RYD_HINT_SHOWN;
-import static app.revanced.integrations.ryd.RYDSettings.PREFERENCES_NAME;
 import static app.revanced.integrations.sponsorblock.StringRef.str;
 
 import android.app.Activity;
@@ -17,13 +16,14 @@ import android.preference.PreferenceScreen;
 import android.preference.SwitchPreference;
 
 import app.revanced.integrations.settings.Settings;
-import app.revanced.integrations.utils.SharedPrefUtils;
+import app.revanced.integrations.utils.SharedPrefHelper;
+import app.revanced.integrations.utils.SharedPrefNames;
 
 public class RYDFragment extends PreferenceFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getPreferenceManager().setSharedPreferencesName(PREFERENCES_NAME);
+        getPreferenceManager().setSharedPreferencesName(SharedPrefNames.RYD.getName());
 
         final Activity context = this.getActivity();
 
@@ -36,7 +36,7 @@ public class RYDFragment extends PreferenceFragment {
             preferenceScreen.addPreference(preference);
             preference.setKey(PREFERENCES_KEY_RYD_ENABLED);
             preference.setDefaultValue(false);
-            preference.setChecked(SharedPrefUtils.getBoolean(context, PREFERENCES_NAME, PREFERENCES_KEY_RYD_ENABLED));
+            preference.setChecked(SharedPrefHelper.getBoolean(context, SharedPrefNames.RYD, PREFERENCES_KEY_RYD_ENABLED));
             preference.setTitle(str("vanced_ryd_title"));
             preference.setSummary(str("vanced_ryd_summary"));
             preference.setOnPreferenceChangeListener((pref, newValue) -> {
@@ -52,7 +52,7 @@ public class RYDFragment extends PreferenceFragment {
             preferenceScreen.addPreference(preference);
             preference.setKey(PREFERENCES_KEY_RYD_HINT_SHOWN);
             preference.setDefaultValue(false);
-            preference.setChecked(SharedPrefUtils.getBoolean(context, PREFERENCES_NAME, PREFERENCES_KEY_RYD_HINT_SHOWN));
+            preference.setChecked(SharedPrefHelper.getBoolean(context, SharedPrefNames.RYD, PREFERENCES_KEY_RYD_HINT_SHOWN));
             preference.setTitle("Hint debug");
             preference.setSummary("Debug toggle for clearing the hint shown preference");
             preference.setOnPreferenceChangeListener((pref, newValue) -> true);

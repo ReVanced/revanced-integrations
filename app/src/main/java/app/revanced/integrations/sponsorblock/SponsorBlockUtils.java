@@ -20,7 +20,6 @@ import static app.revanced.integrations.sponsorblock.SponsorBlockSettings.PREFER
 import static app.revanced.integrations.sponsorblock.SponsorBlockSettings.PREFERENCES_KEY_SHOW_TIME_WITHOUT_SEGMENTS;
 import static app.revanced.integrations.sponsorblock.SponsorBlockSettings.PREFERENCES_KEY_SHOW_TOAST_WHEN_SKIP;
 import static app.revanced.integrations.sponsorblock.SponsorBlockSettings.PREFERENCES_KEY_UUID;
-import static app.revanced.integrations.sponsorblock.SponsorBlockSettings.PREFERENCES_NAME;
 import static app.revanced.integrations.sponsorblock.SponsorBlockSettings.apiUrl;
 import static app.revanced.integrations.sponsorblock.SponsorBlockSettings.countSkips;
 import static app.revanced.integrations.sponsorblock.SponsorBlockSettings.getPreferences;
@@ -68,10 +67,11 @@ import java.util.Objects;
 import java.util.TimeZone;
 
 import app.revanced.integrations.utils.LogHelper;
-import app.revanced.integrations.utils.SharedPrefUtils;
+import app.revanced.integrations.utils.SharedPrefHelper;
 import app.revanced.integrations.sponsorblock.objects.SponsorSegment;
 import app.revanced.integrations.sponsorblock.objects.UserStats;
 import app.revanced.integrations.sponsorblock.requests.SBRequester;
+import app.revanced.integrations.utils.SharedPrefNames;
 
 @SuppressWarnings({"LongLogTag"})
 public abstract class SponsorBlockUtils {
@@ -637,7 +637,7 @@ public abstract class SponsorBlockUtils {
     }
 
     public static boolean isSBButtonEnabled(Context context, String key) {
-        return isSettingEnabled(SharedPrefUtils.getBoolean(context, PREFERENCES_NAME, key, false));
+        return isSettingEnabled(SharedPrefHelper.getBoolean(context, SharedPrefNames.SPONSOR_BLOCK, key, false));
     }
 
     public enum VoteOption {

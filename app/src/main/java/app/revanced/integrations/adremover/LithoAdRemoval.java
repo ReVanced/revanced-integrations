@@ -14,12 +14,13 @@ import java.util.List;
 import java.util.Objects;
 
 import app.revanced.integrations.utils.LogHelper;
-import app.revanced.integrations.utils.SharedPrefsHelper;
+import app.revanced.integrations.utils.SharedPrefNames;
+import app.revanced.integrations.utils.SharedPrefHelper;
 import app.revanced.integrations.settings.Settings;
 
 public class LithoAdRemoval {
     private static boolean getBoolean(String key, boolean _default) {
-        return SharedPrefsHelper.getBoolean(Objects.requireNonNull(YouTubeTikTokRoot_Application.getAppContext()), key, _default);
+        return SharedPrefHelper.getBoolean(Objects.requireNonNull(YouTubeTikTokRoot_Application.getAppContext()), SharedPrefNames.YOUTUBE, key, _default);
     }
 
     private static boolean isExperimentalInfoPanelRemoval() {
