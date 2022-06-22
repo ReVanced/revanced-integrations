@@ -44,6 +44,7 @@ public enum SettingsEnum {
     MAX_PLAYBACK_BUFFER_AFTER_REBUFFER_INTEGER("pref_buffer_for_playback_after_rebuffer_ms", 5000),
     OLD_STYLE_QUALITY_SETTINGS_BOOLEAN("old_style_quality_settings", true),
     OLD_LAYOUT_XFILE_ENABLED_BOOLEAN("old_layout_xfile_enabled", false),
+    TAP_SEEKING_ENABLED("xfile_enable_tap_seeking", true),
     ;
 
     private final String path;

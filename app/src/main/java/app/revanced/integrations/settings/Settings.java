@@ -15,10 +15,13 @@ import android.view.ViewGroup;
 
 import com.google.android.apps.youtube.app.YouTubeTikTokRoot_Application;
 
+import java.util.Objects;
+
 import app.revanced.integrations.sponsorblock.player.PlayerType;
 import app.revanced.integrations.sponsorblock.SponsorBlockUtils;
 import app.revanced.integrations.sponsorblock.player.ui.SponsorBlockView;
 import app.revanced.integrations.utils.LogHelper;
+import app.revanced.integrations.utils.SharedPrefHelper;
 import app.revanced.integrations.videoswipecontrols.FensterGestureController;
 import app.revanced.integrations.videoswipecontrols.XFenster;
 import app.revanced.integrations.utils.SwipeHelper;

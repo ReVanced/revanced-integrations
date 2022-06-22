@@ -11,7 +11,6 @@ import android.widget.Toolbar;
 import app.revanced.integrations.patches.HideShortsButtonPatch;
 import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.utils.LogHelper;
-import app.revanced.integrations.preferences.BooleanPreferences;
 
 /**
  * API Class that provides the logic to the Patch classes. All methods in here should be protected/private and only be accessed from a Patch class.
@@ -50,9 +49,9 @@ public class AdRemoverAPI {
      * @param view
      */
     public static void hideCreateButton(View view) {
-        String message = BooleanPreferences.isCreateButtonHidden() ? "Create button: shown" : "Create button: hidden";
+        String message = SettingsEnum.CREATE_BUTTON_SHOWN_BOOLEAN.getBoolean() ? "Create button: shown" : "Create button: hidden";
         LogHelper.debug("HideCreateButton", message);
-        if (BooleanPreferences.isCreateButtonHidden()) {
+        if (!SettingsEnum.CREATE_BUTTON_SHOWN_BOOLEAN.getBoolean()) {
             view.setVisibility(View.GONE);
         } else {
             view.setVisibility(View.VISIBLE);
@@ -66,9 +65,9 @@ public class AdRemoverAPI {
      */
     public static void hideShortsButton(View view) {
         if (HideShortsButtonPatch.lastPivotTab != null && HideShortsButtonPatch.lastPivotTab.name() == "TAB_SHORTS") {
-            String message = BooleanPreferences.isShortsButtonHidden() ? "Shorts button: shown" : "Shorts button: hidden";
+            String message = SettingsEnum.SHORTS_BUTTON_SHOWN_BOOLEAN.getBoolean() ? "Shorts button: shown" : "Shorts button: hidden";
             LogHelper.debug("HideShortsButton", message);
-            if (BooleanPreferences.isShortsButtonHidden()) {
+            if (!SettingsEnum.SHORTS_BUTTON_SHOWN_BOOLEAN.getBoolean()) {
                 view.setVisibility(View.GONE);
             }
         }
