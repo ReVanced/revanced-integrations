@@ -7,31 +7,20 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.os.Build;
-import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 
 import com.google.android.apps.youtube.app.YouTubeTikTokRoot_Application;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-
 import app.revanced.integrations.sponsorblock.player.PlayerType;
 import app.revanced.integrations.sponsorblock.SponsorBlockUtils;
 import app.revanced.integrations.sponsorblock.player.ui.SponsorBlockView;
 import app.revanced.integrations.utils.LogHelper;
-import app.revanced.integrations.utils.SharedPrefHelper;
 import app.revanced.integrations.videoswipecontrols.FensterGestureController;
-import app.revanced.integrations.videoswipecontrols.FensterGestureListener;
-import app.revanced.integrations.videoswipecontrols.Helpers.BrightnessHelper;
 import app.revanced.integrations.videoswipecontrols.XFenster;
-import app.revanced.integrations.theme.XSettingActivity;
 import app.revanced.integrations.utils.SwipeHelper;
 import app.revanced.integrations.sponsorblock.NewSegmentHelperLayout;
 

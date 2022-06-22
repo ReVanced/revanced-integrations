@@ -16,13 +16,13 @@ import android.widget.Toast;
 import com.google.android.apps.youtube.app.YouTubeTikTokRoot_Application;
 
 import app.revanced.integrations.utils.LogHelper;
-import app.revanced.integrations.videoplayer.Autorepeat.AutoRepeat;
+import app.revanced.integrations.videoplayer.autorepeat.AutoRepeat;
 import app.revanced.integrations.videoswipecontrols.FensterGestureListener;
 import app.revanced.integrations.videoplayer.settings.XReboot;
 import app.revanced.integrations.utils.ScreenSizeHelper;
 import app.revanced.integrations.utils.SwipeHelper;
-import app.revanced.integrations.videoplayer.VideoUrl.Copy;
-import app.revanced.integrations.videoplayer.VideoUrl.CopyWithTimeStamp;
+import app.revanced.integrations.videoplayer.videourl.Copy;
+import app.revanced.integrations.videoplayer.videourl.CopyWithTimeStamp;
 import app.revanced.integrations.BuildConfig;
 
 /* loaded from: classes6.dex */

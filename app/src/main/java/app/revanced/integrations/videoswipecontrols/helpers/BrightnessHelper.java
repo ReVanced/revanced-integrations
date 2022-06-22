@@ -1,4 +1,4 @@
-package app.revanced.integrations.videoswipecontrols.Helpers;
+package app.revanced.integrations.videoswipecontrols.helpers;
 
 import android.app.Activity;
 import android.content.ContentResolver;

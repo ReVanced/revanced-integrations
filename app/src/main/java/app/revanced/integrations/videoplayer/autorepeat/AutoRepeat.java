@@ -1,4 +1,4 @@
-package app.revanced.integrations.videoplayer.Autorepeat;
+package app.revanced.integrations.videoplayer.autorepeat;
 
 import android.content.Context;
 
@@ -14,9 +14,8 @@ import com.google.android.apps.youtube.app.YouTubeTikTokRoot_Application;
 import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.SharedPrefHelper;
-import app.revanced.integrations.videoplayer.VideoUrl.Copy;
-import app.revanced.integrations.videoplayer.VideoUrl.CopyWithTimeStamp;
-import app.revanced.integrations.settings.Settings;
+import app.revanced.integrations.videoplayer.videourl.Copy;
+import app.revanced.integrations.videoplayer.videourl.CopyWithTimeStamp;
 
 import java.lang.ref.WeakReference;
 

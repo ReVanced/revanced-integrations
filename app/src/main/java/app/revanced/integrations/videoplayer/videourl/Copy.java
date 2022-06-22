@@ -1,7 +1,6 @@
-package app.revanced.integrations.videoplayer.VideoUrl;
+package app.revanced.integrations.videoplayer.videourl;
 
 import android.content.Context;
-
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -18,47 +17,45 @@ import app.revanced.integrations.utils.SharedPrefHelper;
 import java.lang.ref.WeakReference;
 
 /* loaded from: classes6.dex */
-public class CopyWithTimeStamp {
+public class Copy {
     static WeakReference<ImageView> _button = new WeakReference<>(null);
     static ConstraintLayout _constraintLayout;
     static int fadeDurationFast;
     static int fadeDurationScheduled;
     static Animation fadeIn;
     static Animation fadeOut;
-    public static boolean isCopyButtonWithTimeStampEnabled;
+    public static boolean isCopyButtonEnabled;
     static boolean isShowing;
 
-    public static void initializeCopyButtonWithTimeStamp(Object obj) {
+    public static void initializeCopyButton(Object obj) {
         try {
-            LogHelper.debug("CopyButtonWithTimeStamp", "initializing");
+            LogHelper.debug("CopyButton", "initializing");
             _constraintLayout = (ConstraintLayout) obj;
-            isCopyButtonWithTimeStampEnabled = shouldBeShown();
-            ImageView imageView = (ImageView) _constraintLayout.findViewById(getIdentifier("copy_with_timestamp_button", "id"));
+            isCopyButtonEnabled = shouldBeShown();
+            ImageView imageView = _constraintLayout.findViewById(getIdentifier("copy_button", "id"));
             if (imageView == null) {
-                LogHelper.debug("CopyButtonWithTimeStamp", "Couldn't find imageView with id \"copy_with_timestamp_button\"");
+                LogHelper.debug("CopyButton", "Couldn't find imageView with id \"copy_button\"");
+                return;
             }
-            if (imageView != null) {
-                imageView.setOnClickListener(new View.OnClickListener() { // from class: app.revanced.integrations.videoplayer.VideoUrl.CopyWithTimeStamp.1
-                    @Override // android.view.View.OnClickListener
-                    public void onClick(View view) {
-                        LogHelper.debug("CopyButtonWithTimeStamp", "Button clicked");
-                        VideoHelpers.copyVideoUrlWithTimeStampToClipboard();
-                    }
-                });
-                _button = new WeakReference<>(imageView);
-                fadeDurationFast = getInteger("fade_duration_fast");
-                fadeDurationScheduled = getInteger("fade_duration_scheduled");
-                Animation animation = getAnimation("fade_in");
-                fadeIn = animation;
-                animation.setDuration(fadeDurationFast);
-                Animation animation2 = getAnimation("fade_out");
-                fadeOut = animation2;
-                animation2.setDuration(fadeDurationScheduled);
-                isShowing = true;
-                changeVisibility(false);
-            }
+
+            imageView.setOnClickListener(view -> {
+                LogHelper.debug("CopyButton", "Button clicked");
+                VideoHelpers.copyVideoUrlToClipboard();
+            });
+            _button = new WeakReference<>(imageView);
+            fadeDurationFast = getInteger("fade_duration_fast");
+            fadeDurationScheduled = getInteger("fade_duration_scheduled");
+            Animation animation = getAnimation("fade_in");
+            fadeIn = animation;
+            animation.setDuration(fadeDurationFast);
+            Animation animation2 = getAnimation("fade_out");
+            fadeOut = animation2;
+            animation2.setDuration(fadeDurationScheduled);
+            isShowing = true;
+            changeVisibility(false);
+
         } catch (Exception e) {
-            LogHelper.printException("CopyButtonWithTimeStamp", "Unable to set FrameLayout", e);
+            LogHelper.printException("CopyButton", "Unable to set FrameLayout", e);
         }
     }
 
@@ -67,12 +64,12 @@ public class CopyWithTimeStamp {
             isShowing = z;
             ImageView imageView = _button.get();
             if (_constraintLayout != null && imageView != null) {
-                if (z && isCopyButtonWithTimeStampEnabled) {
-                    LogHelper.debug("CopyButtonWithTimeStamp", "Fading in");
+                if (z && isCopyButtonEnabled) {
+                    LogHelper.debug("CopyButton", "Fading in");
                     imageView.setVisibility(View.VISIBLE);
                     imageView.startAnimation(fadeIn);
                 } else if (imageView.getVisibility() == View.VISIBLE) {
-                    LogHelper.debug("CopyButtonWithTimeStamp", "Fading out");
+                    LogHelper.debug("CopyButton", "Fading out");
                     imageView.startAnimation(fadeOut);
                     imageView.setVisibility(View.GONE);
                 }
@@ -81,17 +78,16 @@ public class CopyWithTimeStamp {
     }
 
     public static void refreshShouldBeShown() {
-        isCopyButtonWithTimeStampEnabled = shouldBeShown();
+        isCopyButtonEnabled = shouldBeShown();
     }
 
     private static boolean shouldBeShown() {
         Context appContext = YouTubeTikTokRoot_Application.getAppContext();
         if (appContext == null) {
-            LogHelper.printException("CopyButtonWithTimeStamp", "shouldBeShown - context is null!");
+            LogHelper.printException("CopyButton", "shouldBeShown - context is null!");
             return false;
         }
-
-        String string = SharedPrefHelper.getString(appContext, SharedPrefHelper.SharedPrefNames.YOUTUBE, "pref_copy_video_url_timestamp_button_list", null);
+        String string = SharedPrefHelper.getString(appContext, SharedPrefHelper.SharedPrefNames.YOUTUBE, "pref_copy_video_url_button_list", null);
         if (string == null || string.isEmpty()) {
             return false;
         }

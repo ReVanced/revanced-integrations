@@ -10,8 +10,8 @@ import android.view.ViewGroup;
 import com.google.android.apps.youtube.app.YouTubeTikTokRoot_Application;
 
 import app.revanced.integrations.utils.LogHelper;
-import app.revanced.integrations.videoswipecontrols.Seekbar.BrightnessSeekBar;
-import app.revanced.integrations.videoswipecontrols.Seekbar.VolumeSeekBar;
+import app.revanced.integrations.videoswipecontrols.seekbar.BrightnessSeekBar;
+import app.revanced.integrations.videoswipecontrols.seekbar.VolumeSeekBar;
 import app.revanced.integrations.utils.SwipeHelper;
 import app.revanced.integrations.settings.XSettingsFragment;
 
