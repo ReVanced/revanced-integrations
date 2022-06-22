@@ -3,11 +3,12 @@ package app.revanced.integrations.utils;
 import android.util.Log;
 
 import app.revanced.integrations.settings.Settings;
+import app.revanced.integrations.settings.SettingsEnum;
 
 public class LogHelper {
 
     public static void debug(String tag, String message) {
-        if (Settings.isDebug()) {
+        if (SettingsEnum.DEBUG_BOOLEAN.getBoolean()) {
             Log.d(tag, message);
         }
     }

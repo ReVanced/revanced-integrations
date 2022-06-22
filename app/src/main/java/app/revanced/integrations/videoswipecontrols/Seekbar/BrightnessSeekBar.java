@@ -1,4 +1,4 @@
-package app.revanced.integrations.videoplayer.Fenster.Seekbar;
+package app.revanced.integrations.videoswipecontrols.Seekbar;
 
 import android.content.Context;
 import android.os.Handler;
@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.SharedPrefHelper;
-import app.revanced.integrations.videoplayer.Fenster.Helpers.BrightnessHelper;
+import app.revanced.integrations.videoswipecontrols.Helpers.BrightnessHelper;
 
 /* loaded from: classes6.dex */
 public class BrightnessSeekBar {

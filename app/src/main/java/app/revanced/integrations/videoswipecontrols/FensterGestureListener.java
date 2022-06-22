@@ -1,4 +1,4 @@
-package app.revanced.integrations.videoplayer.Fenster;
+package app.revanced.integrations.videoswipecontrols;
 
 import android.view.GestureDetector;
 import android.view.MotionEvent;

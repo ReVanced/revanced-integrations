@@ -24,6 +24,11 @@ public class SharedPrefHelper {
         sharedPreferences.edit().putLong(key, value).apply();
     }
 
+    public static void saveFloat(Context context, SharedPrefNames prefName, String key, Float value) {
+        SharedPreferences sharedPreferences = getPreferences(context, prefName);
+        sharedPreferences.edit().putFloat(key, value).apply();
+    }
+
     public static String getString(Context context, SharedPrefNames prefName, String key) {
         return getString(context, prefName, key, null);
     }
@@ -42,13 +47,31 @@ public class SharedPrefHelper {
         return (sharedPreferences.getBoolean(key, _default));
     }
 
+    public static Long getLong(Context context, SharedPrefNames prefName, String key) {
+        return getLong(context, prefName, key, -1L);
+    }
+
+    public static Long getLong(Context context, SharedPrefNames prefName, String key, Long _default) {
+        SharedPreferences sharedPreferences = getPreferences(context, prefName);
+        return sharedPreferences.getLong(key, _default);
+    }
+
+    public static Float getFloat(Context context, SharedPrefNames prefName, String key) {
+        return getFloat(context, prefName, key, -1.0F);
+    }
+
+    public static Float getFloat(Context context, SharedPrefNames prefName, String key, Float _default) {
+        SharedPreferences sharedPreferences = getPreferences(context, prefName);
+        return sharedPreferences.getFloat(key, _default);
+    }
+
     public static Integer getInt(Context context, SharedPrefNames prefName, String key) {
         return getInt(context, prefName, key, -1);
     }
 
     public static Integer getInt(Context context, SharedPrefNames prefName, String key, Integer _default) {
         SharedPreferences sharedPreferences = getPreferences(context, prefName);
-        return (sharedPreferences.getInt(key, _default));
+        return sharedPreferences.getInt(key, _default);
     }
 
     public static SharedPreferences getPreferences(Context context, SharedPrefNames name) {

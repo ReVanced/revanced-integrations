@@ -9,6 +9,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toolbar;
 
+import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.preferences.BooleanPreferences;
 import app.revanced.integrations.settings.Settings;
@@ -81,10 +82,7 @@ public class AdRemoverAPI {
      * @return
      */
     protected static Object removeInfoCardSuggestions(Object InfoCardOverlayPresenter) {
-        if (!Settings.isSuggestionsShown()) {
-            InfoCardOverlayPresenter = null;
-        }
-
+        if (!SettingsEnum.INFO_CARDS_SHOWN_BOOLEAN.getBoolean()) InfoCardOverlayPresenter = null;
         String message = InfoCardOverlayPresenter == null ? "RemoveInfoCardSuggestions: true" : "RemoveInfoCardSuggestions: false";
         LogHelper.debug("AdRemoverAPI", message);
         return InfoCardOverlayPresenter;
@@ -97,10 +95,7 @@ public class AdRemoverAPI {
      * @return
      */
     protected static Boolean removeSuggestions(Boolean showSuggestions) {
-        if (!Settings.isSuggestionsShown()) {
-            showSuggestions = false;
-        }
-
+        if (!SettingsEnum.SUGGESTIONS_SHOWN_BOOLEAN.getBoolean()) showSuggestions = false;
         String message = showSuggestions ? "RemoveSuggestions: true" : "RemoveSuggestions: false";
         LogHelper.debug("AdRemoverAPI", message);
         return showSuggestions;
@@ -108,7 +103,7 @@ public class AdRemoverAPI {
 
 
     protected static int BrandingWatermark(int defaultValue) {
-        if (defaultValue == 0 && !Settings.isBrandingShown()) {
+        if (defaultValue == 0 && !SettingsEnum.BRANDING_SHOWN_BOOLEAN.getBoolean()) {
             defaultValue = 8;
         }
         String message = defaultValue == 8 ? "BrandingWatermark: Removed" : "BrandingWatermark: Shown";

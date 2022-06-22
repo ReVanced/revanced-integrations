@@ -16,6 +16,7 @@ import android.preference.PreferenceScreen;
 import android.preference.SwitchPreference;
 
 import app.revanced.integrations.settings.Settings;
+import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.utils.SharedPrefHelper;
 
 public class RYDFragment extends PreferenceFragment {
@@ -46,7 +47,7 @@ public class RYDFragment extends PreferenceFragment {
         }
 
         // Clear hint
-        if (Settings.isDebug()) {
+        if (SettingsEnum.DEBUG_BOOLEAN.getBoolean()) {
             SwitchPreference preference = new SwitchPreference(context);
             preferenceScreen.addPreference(preference);
             preference.setKey(PREFERENCES_KEY_RYD_HINT_SHOWN);

@@ -1,6 +1,7 @@
 package app.revanced.integrations.videoplayer.videosettings;
 
 
+import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.settings.Settings;
 
@@ -22,7 +23,7 @@ public class VideoSpeed {
         }
         Settings.newVideoSpeed = false;
         LogHelper.debug("Settings - speeds", "Speed: " + speed);
-        float preferredSpeed = Settings.getPreferredVideoSpeed();
+        float preferredSpeed = SettingsEnum.PREFERRED_VIDEO_SPEED_FLOAT.getFloat();
         LogHelper.debug("Settings", "Preferred speed: " + preferredSpeed);
         if (preferredSpeed == -2.0f) {
             return speed;
@@ -107,7 +108,7 @@ public class VideoSpeed {
     public static float getSpeedValue(Object[] speeds, int speed) {
         int i = 0;
         if (!Settings.newVideoSpeed || Settings.userChangedSpeed) {
-            if (Settings.isDebug() && Settings.userChangedSpeed) {
+            if (SettingsEnum.DEBUG_BOOLEAN.getBoolean() && Settings.userChangedSpeed) {
                 LogHelper.debug("Settings - speeds", "Skipping speed change because user changed it: " + speed);
             }
             Settings.userChangedSpeed = false;
@@ -115,7 +116,7 @@ public class VideoSpeed {
         }
         Settings.newVideoSpeed = false;
         LogHelper.debug("Settings - speeds", "Speed: " + speed);
-        float preferredSpeed = Settings.getPreferredVideoSpeed();
+        float preferredSpeed = SettingsEnum.PREFERRED_VIDEO_SPEED_FLOAT.getFloat();
         LogHelper.debug("Settings", "Preferred speed: " + preferredSpeed);
         if (preferredSpeed == -2.0f) {
             return -1.0f;

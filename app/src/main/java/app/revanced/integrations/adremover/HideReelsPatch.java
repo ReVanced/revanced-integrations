@@ -3,6 +3,7 @@ package app.revanced.integrations.adremover;
 import android.view.View;
 
 import app.revanced.integrations.settings.Settings;
+import app.revanced.integrations.settings.SettingsEnum;
 
 public class HideReelsPatch {
 
@@ -12,7 +13,7 @@ public class HideReelsPatch {
      * @param view
      */
     public static void HideReel(View view) {
-        if (!Settings.isReelsShown()) {
+        if (!SettingsEnum.REEL_BUTTON_SHOWN_BOOLEAN.getBoolean()) {
             AdRemoverAPI.HideViewWithLayout1dp(view);
         }
     }

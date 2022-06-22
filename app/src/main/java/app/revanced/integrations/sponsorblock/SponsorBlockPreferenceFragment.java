@@ -49,6 +49,7 @@ import java.util.ArrayList;
 
 import app.revanced.integrations.adremover.whitelist.WhitelistType;
 import app.revanced.integrations.settings.Settings;
+import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.utils.SharedPrefHelper;
 import app.revanced.integrations.sponsorblock.objects.EditTextListPreference;
 import app.revanced.integrations.sponsorblock.requests.SBRequester;
@@ -90,7 +91,7 @@ public class SponsorBlockPreferenceFragment extends PreferenceFragment implement
         }
 
         // Clear hint
-        if (Settings.isDebug()) {
+        if (SettingsEnum.DEBUG_BOOLEAN.getBoolean()) {
             SwitchPreference preference = new SwitchPreference(context);
             preferenceScreen.addPreference(preference);
             preference.setKey(PREFERENCES_KEY_SPONSOR_BLOCK_HINT_SHOWN);

@@ -20,6 +20,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.settings.Settings;
 import app.revanced.integrations.sponsorblock.player.ChannelModel;
@@ -76,7 +77,7 @@ public class Whitelist {
             }
             try {
                 ArrayList<ChannelModel> deserializedChannels = (ArrayList<ChannelModel>) ObjectSerializer.deserialize(serializedChannels);
-                if (Settings.isDebug()) {
+                if (SettingsEnum.DEBUG_BOOLEAN.getBoolean()) {
                     LogHelper.debug(TAG, serializedChannels);
                     for (ChannelModel channel : deserializedChannels) {
                         LogHelper.debug(TAG, String.format("Whitelisted channel %s (%s) for type %s", channel.getAuthor(), channel.getChannelId(), whitelistType));

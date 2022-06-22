@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.SharedPrefHelper;
 import app.revanced.integrations.settings.Settings;
@@ -173,7 +174,7 @@ public class LithoAdRemoval {
                 return true;
             }
 
-            if (!Settings.isDebug()) return false;
+            if (!SettingsEnum.DEBUG_BOOLEAN.getBoolean()) return false;
             if (value.contains("related_video_with_context")) {
                 LogHelper.debug("Template", value + " | " + bytesToHex(buffer.array()));
                 return false;

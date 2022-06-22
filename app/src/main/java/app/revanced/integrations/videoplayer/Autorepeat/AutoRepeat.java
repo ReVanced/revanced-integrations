@@ -11,6 +11,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.google.android.apps.youtube.app.YouTubeTikTokRoot_Application;
 
+import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.SharedPrefHelper;
 import app.revanced.integrations.videoplayer.VideoUrl.Copy;
@@ -92,7 +93,7 @@ public class AutoRepeat {
     public static void changeSelected(boolean selected, boolean onlyView) {
         ImageView iView = _autoRepeatBtn.get();
         if (_constraintLayout != null && iView != null) {
-            if (Settings.isDebug()) {
+            if (SettingsEnum.DEBUG_BOOLEAN.getBoolean()) {
                 StringBuilder sb = new StringBuilder();
                 sb.append("Changing selected state to: ");
                 sb.append(selected ? "SELECTED" : "NONE");

@@ -5,6 +5,7 @@ import android.content.Context;
 
 import com.google.android.apps.youtube.app.YouTubeTikTokRoot_Application;
 
+import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.settings.Settings;
 
@@ -26,7 +27,7 @@ public class VideoQuality {
         int preferredQuality;
         Field[] fields;
         if (!Settings.newVideo || Settings.userChangedQuality || qInterface == null) {
-            if (Settings.isDebug() && Settings.userChangedQuality) {
+            if (SettingsEnum.DEBUG_BOOLEAN.getBoolean() && Settings.userChangedQuality) {
                 LogHelper.debug("Settings - quality", "Skipping quality change because user changed it: " + quality);
             }
             Settings.userChangedQuality = false;
@@ -40,10 +41,10 @@ public class VideoQuality {
             return quality;
         }
         if (Connectivity.isConnectedWifi(context)) {
-            preferredQuality = Settings.getPreferredWifiResolution();
+            preferredQuality = SettingsEnum.PREFERRED_RESOLUTION_WIFI_INTEGER.getInt();
             LogHelper.debug("Settings", "Wi-Fi connection detected, preferred quality: " + preferredQuality);
         } else if (Connectivity.isConnectedMobile(context)) {
-            preferredQuality = Settings.getPreferredMobileResolution();
+            preferredQuality = SettingsEnum.PREFERRED_RESOLUTION_MOBILE_INTEGER.getInt();
             LogHelper.debug("Settings", "Mobile data connection detected, preferred quality: " + preferredQuality);
         } else {
             LogHelper.debug("Settings", "No Internet connection!");

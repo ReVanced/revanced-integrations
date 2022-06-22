@@ -1,4 +1,4 @@
-package app.revanced.integrations.videoplayer.Fenster.Seekbar;
+package app.revanced.integrations.videoswipecontrols.Seekbar;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
