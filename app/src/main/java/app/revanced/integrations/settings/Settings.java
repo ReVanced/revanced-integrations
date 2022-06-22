@@ -22,6 +22,9 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 
+import app.revanced.integrations.sponsorblock.player.PlayerType;
+import app.revanced.integrations.sponsorblock.SponsorBlockUtils;
+import app.revanced.integrations.sponsorblock.player.ui.SponsorBlockView;
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.SharedPrefHelper;
 import app.revanced.integrations.videoplayer.Fenster.FensterGestureController;
@@ -527,16 +530,16 @@ public class Settings {
     public static void PlayerTypeChanged(PlayerType playerType) {
         LogHelper.debug("XDebug", playerType.toString());
         if (env != playerType) {
-            String playerTypeString = playerType.toString();
-            if (playerTypeString.equals("WATCH_WHILE_FULLSCREEN")) {
+            if (playerType == PlayerType.WATCH_WHILE_FULLSCREEN) {
                 EnableXFenster();
             } else {
                 DisableXFenster();
             }
-            if (playerTypeString.equals("WATCH_WHILE_SLIDING_MINIMIZED_MAXIMIZED") || playerTypeString.equals("WATCH_WHILE_MINIMIZED") || playerTypeString.equals("WATCH_WHILE_PICTURE_IN_PICTURE")) {
+            if (playerType == PlayerType.WATCH_WHILE_SLIDING_MINIMIZED_MAXIMIZED || playerType == PlayerType.WATCH_WHILE_MINIMIZED || playerType == PlayerType.WATCH_WHILE_PICTURE_IN_PICTURE) {
                 NewSegmentHelperLayout.hide();
             }
-            app.revanced.integrations.sponsorblock.player.PlayerType.playerTypeChanged(playerTypeString);
+            SponsorBlockView.playerTypeChanged(playerType);
+            SponsorBlockUtils.playerTypeChanged(playerType);
         }
         env = playerType;
     }

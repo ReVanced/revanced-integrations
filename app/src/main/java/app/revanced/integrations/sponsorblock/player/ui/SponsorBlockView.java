@@ -10,6 +10,7 @@ import com.google.android.apps.youtube.app.YouTubeTikTokRoot_Application;
 
 import java.lang.ref.WeakReference;
 
+import app.revanced.integrations.sponsorblock.player.PlayerType;
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.SwipeHelper;
 
@@ -49,11 +50,11 @@ public class SponsorBlockView {
         newSegmentLayoutVisibility(false);
     }
 
-    public static void playerTypeChanged(String playerType) {
+    public static void playerTypeChanged(PlayerType playerType) {
         try {
-            shouldShowOnPlayerType = playerType.equalsIgnoreCase("WATCH_WHILE_FULLSCREEN") || playerType.equalsIgnoreCase("WATCH_WHILE_MAXIMIZED");
+            shouldShowOnPlayerType = (playerType == PlayerType.WATCH_WHILE_FULLSCREEN || playerType == PlayerType.WATCH_WHILE_MAXIMIZED);
 
-            if (playerType.equalsIgnoreCase("WATCH_WHILE_FULLSCREEN")) {
+            if (playerType == PlayerType.WATCH_WHILE_FULLSCREEN) {
                 setSkipBtnMargins(true);
                 setNewSegmentLayoutMargins(true);
                 return;

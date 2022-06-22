@@ -65,6 +65,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.TimeZone;
 
+import app.revanced.integrations.sponsorblock.player.PlayerType;
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.SharedPrefHelper;
 import app.revanced.integrations.sponsorblock.objects.SponsorSegment;
@@ -451,9 +452,9 @@ public abstract class SponsorBlockUtils {
         return String.format(" (%s)", formatted);
     }
 
-    public static void playerTypeChanged(String playerType) {
+    public static void playerTypeChanged(PlayerType playerType) {
         try {
-            if (videoHasSegments && (playerType.equalsIgnoreCase("NONE"))) {
+            if (videoHasSegments && (playerType == PlayerType.NONE)) {
                 PlayerController.setCurrentVideoId(null);
             }
         } catch (Exception ex) {
