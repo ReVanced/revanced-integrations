@@ -72,6 +72,7 @@ public class Settings {
     public static Boolean userChangedSpeed = false;
     public static Boolean newVideo = false;
     public static Boolean newVideoSpeed = false;
+    public static Enum lastPivotTab;
 
     private static void ReadSettings() {
         Context context;

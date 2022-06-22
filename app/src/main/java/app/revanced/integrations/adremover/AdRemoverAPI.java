@@ -1,6 +1,7 @@
 package app.revanced.integrations.adremover;
 
 
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -64,12 +65,12 @@ public class AdRemoverAPI {
      * @param view
      */
     protected static void hideShortsButton(View view) {
-        String message = BooleanPreferences.isShortsButtonHidden() ? "Shorts button: shown" : "Shorts button: hidden";
-        LogHelper.debug("HideShortsButton", message);
-        if (BooleanPreferences.isShortsButtonHidden()) {
-            view.setVisibility(View.GONE);
-        } else {
-            view.setVisibility(View.VISIBLE);
+        if (Settings.lastPivotTab != null && Settings.lastPivotTab.name() == "TAB_SHORTS") {
+            String message = BooleanPreferences.isShortsButtonHidden() ? "Shorts button: shown" : "Shorts button: hidden";
+            LogHelper.debug("HideShortsButton", message);
+            if (BooleanPreferences.isShortsButtonHidden()) {
+                view.setVisibility(View.GONE);
+            }
         }
     }
 

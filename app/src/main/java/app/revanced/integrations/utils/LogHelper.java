@@ -19,4 +19,12 @@ public class LogHelper {
     public static void printException(String tag, String message) {
         LogHelper.printException(tag, message);
     }
+
+    public static void info(String tag, String message) {
+        Log.i(tag, message);
+    }
+
+    public static void info(String message) {
+        info("ReVanced", message);
+    }
 }
