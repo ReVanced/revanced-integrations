@@ -10,4 +10,7 @@ public class HideShortsButtonPatch {
     public static void hideShortsButton(View view) {
         AdRemoverAPI.hideShortsButton(view);
     }
+
+    //Needed for the ShortsButtonRemoverPatch
+    public static Enum lastPivotTab;
 }

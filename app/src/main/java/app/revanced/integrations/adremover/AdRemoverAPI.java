@@ -65,7 +65,7 @@ public class AdRemoverAPI {
      * @param view
      */
     protected static void hideShortsButton(View view) {
-        if (Settings.lastPivotTab != null && Settings.lastPivotTab.name() == "TAB_SHORTS") {
+        if (HideShortsButtonPatch.lastPivotTab != null && HideShortsButtonPatch.lastPivotTab.name() == "TAB_SHORTS") {
             String message = BooleanPreferences.isShortsButtonHidden() ? "Shorts button: shown" : "Shorts button: hidden";
             LogHelper.debug("HideShortsButton", message);
             if (BooleanPreferences.isShortsButtonHidden()) {
