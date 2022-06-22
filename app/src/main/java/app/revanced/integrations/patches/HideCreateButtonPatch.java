@@ -1,6 +1,8 @@
-package app.revanced.integrations.adremover;
+package app.revanced.integrations.patches;
 
 import android.view.View;
+
+import app.revanced.integrations.adremover.AdRemoverAPI;
 
 public class HideCreateButtonPatch {
 

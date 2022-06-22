@@ -1,4 +1,6 @@
-package app.revanced.integrations.adremover;
+package app.revanced.integrations.patches;
+
+import app.revanced.integrations.adremover.AdRemoverAPI;
 
 public class HideInfoCardSuggestionsPatch {
 

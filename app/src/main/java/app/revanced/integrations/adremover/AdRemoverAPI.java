@@ -1,7 +1,6 @@
 package app.revanced.integrations.adremover;
 
 
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -9,10 +8,10 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toolbar;
 
+import app.revanced.integrations.patches.HideShortsButtonPatch;
 import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.preferences.BooleanPreferences;
-import app.revanced.integrations.settings.Settings;
 
 /**
  * API Class that provides the logic to the Patch classes. All methods in here should be protected/private and only be accessed from a Patch class.
@@ -24,7 +23,7 @@ public class AdRemoverAPI {
      *
      * @param view
      */
-    protected static void HideViewWithLayout1dp(View view) {
+    public static void HideViewWithLayout1dp(View view) {
         if (view instanceof LinearLayout) {
             LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(1, 1);
             view.setLayoutParams(layoutParams);
@@ -50,7 +49,7 @@ public class AdRemoverAPI {
      *
      * @param view
      */
-    protected static void hideCreateButton(View view) {
+    public static void hideCreateButton(View view) {
         String message = BooleanPreferences.isCreateButtonHidden() ? "Create button: shown" : "Create button: hidden";
         LogHelper.debug("HideCreateButton", message);
         if (BooleanPreferences.isCreateButtonHidden()) {
@@ -65,7 +64,7 @@ public class AdRemoverAPI {
      *
      * @param view
      */
-    protected static void hideShortsButton(View view) {
+    public static void hideShortsButton(View view) {
         if (HideShortsButtonPatch.lastPivotTab != null && HideShortsButtonPatch.lastPivotTab.name() == "TAB_SHORTS") {
             String message = BooleanPreferences.isShortsButtonHidden() ? "Shorts button: shown" : "Shorts button: hidden";
             LogHelper.debug("HideShortsButton", message);
@@ -81,7 +80,7 @@ public class AdRemoverAPI {
      * @param InfoCardOverlayPresenter
      * @return
      */
-    protected static Object removeInfoCardSuggestions(Object InfoCardOverlayPresenter) {
+    public static Object removeInfoCardSuggestions(Object InfoCardOverlayPresenter) {
         if (!SettingsEnum.INFO_CARDS_SHOWN_BOOLEAN.getBoolean()) InfoCardOverlayPresenter = null;
         String message = InfoCardOverlayPresenter == null ? "RemoveInfoCardSuggestions: true" : "RemoveInfoCardSuggestions: false";
         LogHelper.debug("AdRemoverAPI", message);
@@ -94,7 +93,7 @@ public class AdRemoverAPI {
      * @param showSuggestions
      * @return
      */
-    protected static Boolean removeSuggestions(Boolean showSuggestions) {
+    public static Boolean removeSuggestions(Boolean showSuggestions) {
         if (!SettingsEnum.SUGGESTIONS_SHOWN_BOOLEAN.getBoolean()) showSuggestions = false;
         String message = showSuggestions ? "RemoveSuggestions: true" : "RemoveSuggestions: false";
         LogHelper.debug("AdRemoverAPI", message);
@@ -102,7 +101,7 @@ public class AdRemoverAPI {
     }
 
 
-    protected static int BrandingWatermark(int defaultValue) {
+    public static int BrandingWatermark(int defaultValue) {
         if (defaultValue == 0 && !SettingsEnum.BRANDING_SHOWN_BOOLEAN.getBoolean()) {
             defaultValue = 8;
         }
