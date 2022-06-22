@@ -1,1 +1,1 @@
-# ReVanced Integrations - Refactored by TheJeterLP
+# ReVanced Integrations
