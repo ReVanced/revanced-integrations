@@ -13,11 +13,11 @@ public class LogHelper {
     }
 
     public static void printException(String tag, String message, Throwable ex) {
-        LogHelper.printException(tag, message, ex);
+        Log.e(tag, message, ex);
     }
 
     public static void printException(String tag, String message) {
-        LogHelper.printException(tag, message);
+        Log.e(tag, message);
     }
 
     public static void info(String tag, String message) {
