@@ -22,7 +22,7 @@ public enum SettingsEnum {
     REEL_BUTTON_SHOWN_BOOLEAN("reel_button_enabled", false),
     SHORTS_BUTTON_SHOWN_BOOLEAN("shorts_button_enabled", false),
     CAST_BUTTON_SHOWN_BOOLEAN("cast_button_enabled", false),
-    CREATE_BUTTON_HIDDEN_BOOLEAN("xfile_create_button_hidden", true),
+    CREATE_BUTTON_SHOWN_BOOLEAN("xfile_create_button_enabled", false),
     SUGGESTIONS_SHOWN_BOOLEAN("info_card_suggestions_enabled", false),
     INFO_CARDS_SHOWN_BOOLEAN("info_cards_enabled", false),
     BRANDING_SHOWN_BOOLEAN("branding_watermark_enabled", true),

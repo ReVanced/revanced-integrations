@@ -123,9 +123,9 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
             if (ReVancedUtils.getContext() != null && ReVancedSettingsFragment.this.settingsInitialized) {
                 XReboot.RebootDialog(ReVancedSettingsFragment.this.getActivity());
             }
-        } else if ("xfile_create_button_hidden".equals(str)) {
-            SwitchPreference switchPreference = (SwitchPreference) ReVancedSettingsFragment.this.layoutSettingsPreferenceScreen.findPreference("xfile_create_button_hidden");
-            SettingsEnum.CREATE_BUTTON_HIDDEN_BOOLEAN.setValue(switchPreference.isChecked());
+        } else if ("xfile_create_button_enabled".equals(str)) {
+            SwitchPreference switchPreference = (SwitchPreference) ReVancedSettingsFragment.this.layoutSettingsPreferenceScreen.findPreference("xfile_create_button_enabled");
+            SettingsEnum.CREATE_BUTTON_SHOWN_BOOLEAN.setValue(switchPreference.isChecked());
             if (ReVancedUtils.getContext() != null && ReVancedSettingsFragment.this.settingsInitialized) {
                 XReboot.RebootDialog(ReVancedSettingsFragment.this.getActivity());
             }
