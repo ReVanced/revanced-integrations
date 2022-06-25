@@ -1,4 +1,4 @@
-package app.revanced.integrations.videoplayer.settings;
+package app.revanced.integrations.videoplayer.utils;
 
 import android.app.Activity;
 import android.app.AlarmManager;
@@ -8,8 +8,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Process;
 
-import app.revanced.integrations.settings.Settings;
-import app.revanced.integrations.settings.XSettingsFragment;
+import app.revanced.integrations.settingsmenu.ReVancedSettingsFragment;
+import app.revanced.integrations.utils.ReVancedUtils;
 
 /* loaded from: classes6.dex */
 public class XReboot {
@@ -26,8 +26,8 @@ public class XReboot {
 
     /* JADX INFO: Access modifiers changed from: package-private */
     public static void RebootDialog(final Activity activity) {
-        // from class: app.revanced.integrations.videoplayer.settings.XReboot.1
+        // from class: app.revanced.integrations.videoplayer.utils.XReboot.1
         // android.content.DialogInterface.OnClickListenerXSettingsFragment.homeActivityClass
-        new AlertDialog.Builder(activity).setMessage(Settings.getStringByName(activity, "pref_refresh_config")).setPositiveButton(Settings.getStringByName(activity, "in_app_update_restart_button"), (dialog, id) -> XReboot.Reboot(activity, XSettingsFragment.homeActivityClass)).setNegativeButton(Settings.getStringByName(activity, "sign_in_cancel"), null).show();
+        new AlertDialog.Builder(activity).setMessage(ReVancedUtils.getStringByName(activity, "pref_refresh_config")).setPositiveButton(ReVancedUtils.getStringByName(activity, "in_app_update_restart_button"), (dialog, id) -> XReboot.Reboot(activity, ReVancedSettingsFragment.homeActivityClass)).setNegativeButton(ReVancedUtils.getStringByName(activity, "sign_in_cancel"), null).show();
     }
 }

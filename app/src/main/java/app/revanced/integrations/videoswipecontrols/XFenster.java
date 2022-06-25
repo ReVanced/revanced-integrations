@@ -7,13 +7,12 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.android.apps.youtube.app.YouTubeTikTokRoot_Application;
-
 import app.revanced.integrations.utils.LogHelper;
+import app.revanced.integrations.utils.ReVancedUtils;
 import app.revanced.integrations.videoswipecontrols.seekbar.BrightnessSeekBar;
 import app.revanced.integrations.videoswipecontrols.seekbar.VolumeSeekBar;
 import app.revanced.integrations.utils.SwipeHelper;
-import app.revanced.integrations.settings.XSettingsFragment;
+import app.revanced.integrations.settingsmenu.ReVancedSettingsFragment;
 
 /* loaded from: classes6.dex */
 public class XFenster implements FensterEventsListener {
@@ -265,7 +264,7 @@ public class XFenster implements FensterEventsListener {
                 View layout = SwipeHelper.nextGenWatchLayout.findViewById(getIdentifier());
                 if (layout != null) {
                     this.mViewGroup = (ViewGroup) layout;
-                    this.mBrightness.refreshViewGroup(this.mViewGroup, XSettingsFragment.overlayContext);
+                    this.mBrightness.refreshViewGroup(this.mViewGroup, ReVancedSettingsFragment.overlayContext);
                     this.mVolume.refreshViewGroup(this.mViewGroup);
                     LogHelper.debug("Settings", "player_overlays refreshed");
                 } else {
@@ -278,7 +277,7 @@ public class XFenster implements FensterEventsListener {
     }
 
     private static int getIdentifier() {
-        Context context = YouTubeTikTokRoot_Application.getAppContext();
+        Context context = ReVancedUtils.getContext();
         assert context != null;
         return context.getResources().getIdentifier("player_overlays", "id", context.getPackageName());
     }
