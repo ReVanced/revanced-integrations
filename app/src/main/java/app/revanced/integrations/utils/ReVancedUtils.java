@@ -88,7 +88,6 @@ public class ReVancedUtils {
     public static Context getContext() {
         Context context = YouTubeTikTokRoot_Application.getAppContext();
         if (context != null) {
-            LogHelper.debug("Settings", "getContext");
             return context;
         } else {
             LogHelper.printException("Settings", "Context is null, returning null!");
