@@ -1,12 +1,12 @@
 package app.revanced.integrations.patches;
 
 import app.revanced.integrations.adremover.AdRemoverAPI;
+import app.revanced.integrations.settings.SettingsEnum;
 
 public class BrandingWaterMarkPatch {
 
-    //ToDo: Write Patch for it.
-    //See https://drive.google.com/file/d/1wpcVsYZh9iegifZthlX0-JY5ExYhq8oc/view?usp=sharing for where it needs to be used.
-    public static int BrandingWatermark(int defaultValue) {
-        return AdRemoverAPI.BrandingWatermark(defaultValue);
+    //Used by: app.revanced.patches.youtube.layout.watermark.patch.HideWatermarkPatch
+    public static boolean isBrandingWatermarkShown() {
+        return SettingsEnum.BRANDING_SHOWN_BOOLEAN.getBoolean();
     }
 }

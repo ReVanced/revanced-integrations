@@ -25,7 +25,7 @@ public enum SettingsEnum {
     CREATE_BUTTON_SHOWN_BOOLEAN("xfile_create_button_enabled", false),
     SUGGESTIONS_SHOWN_BOOLEAN("info_card_suggestions_enabled", false),
     INFO_CARDS_SHOWN_BOOLEAN("info_cards_enabled", false),
-    BRANDING_SHOWN_BOOLEAN("branding_watermark_enabled", true),
+    BRANDING_SHOWN_BOOLEAN("branding_watermark_enabled", false),
     USE_TABLET_MINIPLAYER_BOOLEAN("tablet_miniplayer", false),
     USE_NEW_ACTIONBAR_BOOLEAN("xfile_new_actionbar", false),
     USE_DARK_THEME_BOOLEAN("app_theme_dark", false),
