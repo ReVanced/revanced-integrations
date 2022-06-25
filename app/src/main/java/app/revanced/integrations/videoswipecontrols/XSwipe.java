@@ -15,7 +15,7 @@ import app.revanced.integrations.utils.SwipeHelper;
 import app.revanced.integrations.settingsmenu.ReVancedSettingsFragment;
 
 /* loaded from: classes6.dex */
-public class XFenster implements FensterEventsListener {
+public class XSwipe implements SwipeEventsListener {
     public static final int ONE_FINGER = 1;
     Handler handler;
     float mBrightnessDownPos;
@@ -35,7 +35,7 @@ public class XFenster implements FensterEventsListener {
     BrightnessSeekBar mBrightness = new BrightnessSeekBar();
     VolumeSeekBar mVolume = new VolumeSeekBar();
 
-    public XFenster(Context context, ViewGroup viewGroup) {
+    public XSwipe(Context context, ViewGroup viewGroup) {
         this.mViewGroup = viewGroup;
         this.mBrightness.initialise(context, viewGroup);
         this.mVolume.initialise(context, viewGroup);
@@ -152,8 +152,8 @@ public class XFenster implements FensterEventsListener {
         // from class: app.revanced.integrations.videoplayer.Fenster.XFenster.1
 // java.lang.Runnable
         this.handler.postDelayed(() -> {
-            XFenster.this.mVolume.hide();
-            XFenster.this.mBrightness.hide();
+            XSwipe.this.mVolume.hide();
+            XSwipe.this.mBrightness.hide();
         }, 2000L);
     }
 

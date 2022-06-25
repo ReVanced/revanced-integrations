@@ -16,7 +16,6 @@ import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceScreen;
 import android.preference.SwitchPreference;
-import android.widget.Toast;
 
 import com.google.android.apps.youtube.app.YouTubeTikTokRoot_Application;
 
@@ -24,7 +23,7 @@ import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedUtils;
 import app.revanced.integrations.videoplayer.autorepeat.AutoRepeat;
-import app.revanced.integrations.videoswipecontrols.FensterGestureListener;
+import app.revanced.integrations.videoswipecontrols.SwipeGestureListener;
 import app.revanced.integrations.utils.ScreenSizeHelper;
 import app.revanced.integrations.videoplayer.videourl.Copy;
 import app.revanced.integrations.videoplayer.videourl.CopyWithTimeStamp;
@@ -33,9 +32,8 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
 
     public static Context overlayContext;
     public static Class homeActivityClass;
-    public SharedPreferences sharedPreferences;
 
-    private Toast toast;
+    private SharedPreferences sharedPreferences;
     private PreferenceScreen adsSettingsPreferenceScreen;
     private PreferenceScreen bufferSettingsPreferenceScreen;
     private Preference codecDefault;
@@ -49,18 +47,18 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
     private PreferenceScreen videoAdSettingsPreferenceScreen;
     private PreferenceScreen videoSettingsPreferenceScreen;
     private SwitchPreference vp9Override;
-    private PreferenceScreen xFensterPreferenceScreen;
+    private PreferenceScreen xSwipeControlPreferenceScreen;
     private boolean Registered = false;
     private boolean settingsInitialized = false;
 
-    CharSequence[] videoQualityEntries = {"Auto", "144p", "240p", "360p", "480p", "720p", "1080p", "1440p", "2160p"};
-    CharSequence[] videoQualityentryValues = {"-2", "144", "240", "360", "480", "720", "1080", "1440", "2160"};
-    CharSequence[] minimizedVideoEntries = {"Auto", "Video only", "Video with controls"};
-    CharSequence[] minimizedVideoentryValues = {"-2", "0", "1"};
-    CharSequence[] videoSpeedEntries = {"Auto", "0.25x", "0.5x", "0.75x", "Normal", "1.25x", "1.5x", "1.75x", "2x", "3x", "4x", "5x"};
-    CharSequence[] videoSpeedentryValues = {"-2", "0.25", "0.5", "0.75", "1.0", "1.25", "1.5", "1.75", "2.0", "3.0", "4.0", "5.0"};
-    CharSequence[] buttonLocationEntries = {"None", "In player", "Under player", "Both"};
-    CharSequence[] buttonLocationentryValues = {"NONE", "PLAYER", "BUTTON_BAR", "BOTH"};
+    private final CharSequence[] videoQualityEntries = {"Auto", "144p", "240p", "360p", "480p", "720p", "1080p", "1440p", "2160p"};
+    private final CharSequence[] videoQualityentryValues = {"-2", "144", "240", "360", "480", "720", "1080", "1440", "2160"};
+    private final CharSequence[] minimizedVideoEntries = {"Auto", "Video only", "Video with controls"};
+    private final CharSequence[] minimizedVideoentryValues = {"-2", "0", "1"};
+    private final CharSequence[] videoSpeedEntries = {"Auto", "0.25x", "0.5x", "0.75x", "Normal", "1.25x", "1.5x", "1.75x", "2x", "3x", "4x", "5x"};
+    private final CharSequence[] videoSpeedentryValues = {"-2", "0.25", "0.5", "0.75", "1.0", "1.25", "1.5", "1.75", "2.0", "3.0", "4.0", "5.0"};
+    private final CharSequence[] buttonLocationEntries = {"None", "In player", "Under player", "Both"};
+    private final CharSequence[] buttonLocationentryValues = {"NONE", "PLAYER", "BUTTON_BAR", "BOTH"};
 
     SharedPreferences.OnSharedPreferenceChangeListener listener = (sharedPreferences, str) -> {
         if (str.equals(SettingsEnum.DEBUG_BOOLEAN.getPath())) {
@@ -176,13 +174,13 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
         } else if (str.equals(SettingsEnum.USE_HDR_BRIGHTNESS_BOOLEAN.getPath())) {
             SettingsEnum.USE_HDR_BRIGHTNESS_BOOLEAN.setValue(((SwitchPreference) miscsPreferenceScreen.findPreference(str)).isChecked());
         } else if (str.equals(SettingsEnum.ENABLE_SWIPE_BRIGHTNESS_BOOLEAN.getPath())) {
-            SettingsEnum.ENABLE_SWIPE_BRIGHTNESS_BOOLEAN.setValue(((SwitchPreference) xFensterPreferenceScreen.findPreference(str)).isChecked());
+            SettingsEnum.ENABLE_SWIPE_BRIGHTNESS_BOOLEAN.setValue(((SwitchPreference) xSwipeControlPreferenceScreen.findPreference(str)).isChecked());
         } else if (str.equals(SettingsEnum.ENABLE_SWIPE_VOLUME_BOOLEAN.getPath())) {
-            SettingsEnum.ENABLE_SWIPE_VOLUME_BOOLEAN.setValue(((SwitchPreference) xFensterPreferenceScreen.findPreference(str)).isChecked());
+            SettingsEnum.ENABLE_SWIPE_VOLUME_BOOLEAN.setValue(((SwitchPreference) xSwipeControlPreferenceScreen.findPreference(str)).isChecked());
         } else if (str.equals(SettingsEnum.SWIPE_USE_TABLET_MODE.getPath())) {
-            SettingsEnum.SWIPE_USE_TABLET_MODE.setValue(((SwitchPreference) xFensterPreferenceScreen.findPreference(str)).isChecked());
+            SettingsEnum.SWIPE_USE_TABLET_MODE.setValue(((SwitchPreference) xSwipeControlPreferenceScreen.findPreference(str)).isChecked());
         } else if (str.equals(SettingsEnum.SWIPE_THRESHOLD_INTEGER.getPath())) {
-            EditTextPreference editTextPreference6 = (EditTextPreference) xFensterPreferenceScreen.findPreference(str);
+            EditTextPreference editTextPreference6 = (EditTextPreference) xSwipeControlPreferenceScreen.findPreference(str);
             if (editTextPreference6 != null) {
                 int val = 0;
                 editTextPreference6.setSummary(editTextPreference6.getText());
@@ -191,11 +189,11 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
                 } catch (NumberFormatException unused) {
                     val = 0;
                 }
-                FensterGestureListener.SWIPE_THRESHOLD = val;
+                SwipeGestureListener.SWIPE_THRESHOLD = val;
                 SettingsEnum.SWIPE_THRESHOLD_INTEGER.setValue(val);
             }
         } else if (str.equals(SettingsEnum.SWIPE_PADDING_TOP_INTEGER.getPath())) {
-            EditTextPreference editTextPreference6 = (EditTextPreference) xFensterPreferenceScreen.findPreference(str);
+            EditTextPreference editTextPreference6 = (EditTextPreference) xSwipeControlPreferenceScreen.findPreference(str);
             if (editTextPreference6 != null) {
                 int val = 0;
                 editTextPreference6.setSummary(editTextPreference6.getText());
@@ -204,7 +202,7 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
                 } catch (NumberFormatException unused) {
                     val = 0;
                 }
-                FensterGestureListener.TOP_PADDING = val;
+                SwipeGestureListener.TOP_PADDING = val;
                 SettingsEnum.SWIPE_PADDING_TOP_INTEGER.setValue(val);
             }
         } else if ("vanced_ryd_enabled".equals(str) && ReVancedUtils.getContext() != null && settingsInitialized) {
@@ -253,7 +251,7 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
             this.layoutSettingsPreferenceScreen = (PreferenceScreen) getPreferenceScreen().findPreference("layout_settings");
             this.bufferSettingsPreferenceScreen = (PreferenceScreen) getPreferenceScreen().findPreference("buffer_screen");
             this.miscsPreferenceScreen = (PreferenceScreen) getPreferenceScreen().findPreference("misc_screen");
-            this.xFensterPreferenceScreen = (PreferenceScreen) getPreferenceScreen().findPreference("xfenster_screen");
+            this.xSwipeControlPreferenceScreen = (PreferenceScreen) getPreferenceScreen().findPreference("xfenster_screen");
             this.vp9Override = (SwitchPreference) this.codecPreferenceScreen.findPreference("vp9_xfile_enabled");
             this.manufacturerOverride = (EditTextPreference) this.codecPreferenceScreen.findPreference("override_manufacturer");
             this.modelOverride = (EditTextPreference) this.codecPreferenceScreen.findPreference("override_model");

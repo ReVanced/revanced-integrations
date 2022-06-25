@@ -16,23 +16,23 @@ import app.revanced.integrations.utils.SwipeHelper;
 
 public class SwipeControlAPI {
 
-    private static FensterGestureController fensterGestureController;
+    private static SwipeGestureController swipeGestureController;
 
     public static void InitializeFensterController(Context context, ViewGroup viewGroup, ViewConfiguration viewConfiguration) {
-        fensterGestureController = new FensterGestureController();
-        fensterGestureController.setFensterEventsListener(new XFenster(context, viewGroup), context, viewConfiguration);
+        swipeGestureController = new SwipeGestureController();
+        swipeGestureController.setFensterEventsListener(new XSwipe(context, viewGroup), context, viewConfiguration);
         LogHelper.debug("Settings", "XFenster initialized");
     }
 
     public static boolean FensterTouchEvent(MotionEvent motionEvent) {
-        if (fensterGestureController == null) {
+        if (swipeGestureController == null) {
             LogHelper.debug("Settings", "fensterGestureController is null");
             return false;
         } else if (motionEvent == null) {
             LogHelper.debug("Settings", "motionEvent is null");
             return false;
         } else if (!SwipeHelper.IsControlsShown()) {
-            return fensterGestureController.onTouchEvent(motionEvent);
+            return swipeGestureController.onTouchEvent(motionEvent);
         } else {
             LogHelper.debug("Settings", "skipping onTouchEvent dispatching because controls are shown.");
             return false;
@@ -58,16 +58,16 @@ public class SwipeControlAPI {
 
     private static void EnableSwipeControl() {
         if (SettingsEnum.ENABLE_SWIPE_BRIGHTNESS_BOOLEAN.getBoolean() || SettingsEnum.ENABLE_SWIPE_VOLUME_BOOLEAN.getBoolean()) {
-            FensterGestureController fensterGestureController2 = fensterGestureController;
-            fensterGestureController2.TouchesEnabled = true;
-            ((XFenster) fensterGestureController2.listener).enable(SettingsEnum.ENABLE_SWIPE_BRIGHTNESS_BOOLEAN.getBoolean(), SettingsEnum.ENABLE_SWIPE_VOLUME_BOOLEAN.getBoolean());
+            SwipeGestureController swipeGestureController2 = swipeGestureController;
+            swipeGestureController2.TouchesEnabled = true;
+            ((XSwipe) swipeGestureController2.listener).enable(SettingsEnum.ENABLE_SWIPE_BRIGHTNESS_BOOLEAN.getBoolean(), SettingsEnum.ENABLE_SWIPE_VOLUME_BOOLEAN.getBoolean());
         }
     }
 
     private static void DisableSwipeControl() {
-        FensterGestureController fensterGestureController2 = fensterGestureController;
-        fensterGestureController2.TouchesEnabled = false;
-        ((XFenster) fensterGestureController2.listener).disable();
+        SwipeGestureController swipeGestureController2 = swipeGestureController;
+        swipeGestureController2.TouchesEnabled = false;
+        ((XSwipe) swipeGestureController2.listener).disable();
     }
 
 }
