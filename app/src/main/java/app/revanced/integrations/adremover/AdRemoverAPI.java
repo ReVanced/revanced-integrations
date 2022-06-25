@@ -49,9 +49,9 @@ public class AdRemoverAPI {
      * @param view
      */
     public static void hideCreateButton(View view) {
-        String message = SettingsEnum.CREATE_BUTTON_SHOWN_BOOLEAN.getBoolean() ? "Create button: shown" : "Create button: hidden";
+        String message = SettingsEnum.CREATE_BUTTON_HIDDEN_BOOLEAN.getBoolean() ? "Create button: Hidden" : "Create button: Shown";
         LogHelper.debug("HideCreateButton", message);
-        if (!SettingsEnum.CREATE_BUTTON_SHOWN_BOOLEAN.getBoolean()) {
+        if (SettingsEnum.CREATE_BUTTON_HIDDEN_BOOLEAN.getBoolean()) {
             view.setVisibility(View.GONE);
         } else {
             view.setVisibility(View.VISIBLE);
