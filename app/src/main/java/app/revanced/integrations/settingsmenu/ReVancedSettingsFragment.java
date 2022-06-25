@@ -47,7 +47,6 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
     private PreferenceScreen miscsPreferenceScreen;
     private EditTextPreference modelOverride;
     public SharedPreferences sharedPreferences;
-    private SwitchPreference tabletComments;
     private SwitchPreference tabletMiniplayer;
     private PreferenceScreen videoAdSettingsPreferenceScreen;
     private PreferenceScreen videoSettingsPreferenceScreen;
@@ -58,8 +57,8 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
     CharSequence[] videoQualityentryValues = {"-2", "144", "240", "360", "480", "720", "1080", "1440", "2160"};
     CharSequence[] minimizedVideoEntries = {"Auto", "Video only", "Video with controls"};
     CharSequence[] minimizedVideoentryValues = {"-2", "0", "1"};
-    CharSequence[] videoSpeedEntries = {"Auto", "0.25x", "0.5x", "0.75x", "Normal", "1.25x", "1.5x", "1.75x", "2x"};
-    CharSequence[] videoSpeedentryValues = {"-2", "0.25", "0.5", "0.75", BuildConfig.VERSION_NAME, "1.25", "1.5", "1.75", "2.0"};
+    CharSequence[] videoSpeedEntries = {"Auto", "0.25x", "0.5x", "0.75x", "Normal", "1.25x", "1.5x", "1.75x", "2x", "3x", "4x", "5x"};
+    CharSequence[] videoSpeedentryValues = {"-2", "0.25", "0.5", "0.75", "1.0", "1.25", "1.5", "1.75", "2.0", "3.0", "4.0", "5.0"};
     CharSequence[] buttonLocationEntries = {"None", "In player", "Under player", "Both"};
     CharSequence[] buttonLocationentryValues = {"NONE", "PLAYER", "BUTTON_BAR", "BOTH"};
     private long PreviousClick = 0;
@@ -124,13 +123,6 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
             if (ReVancedUtils.getContext() != null && ReVancedSettingsFragment.this.settingsInitialized) {
                 XReboot.RebootDialog(ReVancedSettingsFragment.this.getActivity());
             }
-        } else if ("comments_location".equals(str)) {
-            SwitchPreference switchPreference = (SwitchPreference) ReVancedSettingsFragment.this.layoutSettingsPreferenceScreen.findPreference("comments_location");
-            SettingsEnum.CHANGE_COMMENT_LOCATION_BOOLEAN.setValue(switchPreference.isChecked());
-            SwipeHelper.isTabletMode = switchPreference.isChecked();
-            if (ReVancedUtils.getContext() != null && ReVancedSettingsFragment.this.settingsInitialized) {
-                XReboot.RebootDialog(ReVancedSettingsFragment.this.getActivity());
-            }
         } else if ("xfile_create_button_hidden".equals(str)) {
             SwitchPreference switchPreference = (SwitchPreference) ReVancedSettingsFragment.this.layoutSettingsPreferenceScreen.findPreference("xfile_create_button_hidden");
             SettingsEnum.CREATE_BUTTON_SHOWN_BOOLEAN.setValue(switchPreference.isChecked());
@@ -142,11 +134,6 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
             if (ReVancedUtils.getContext() != null && ReVancedSettingsFragment.this.settingsInitialized) {
                 XReboot.RebootDialog(ReVancedSettingsFragment.this.getActivity());
             }
-        } else if ("xfile_zoom_to_fit_vertical".equals(str)) {
-            SettingsEnum.USE_VERTICAL_ZOOM_TO_FIT_BOOLEAN.setValue(((SwitchPreference) ReVancedSettingsFragment.this.layoutSettingsPreferenceScreen.findPreference("xfile_zoom_to_fit_vertical")).isChecked());
-            if (ReVancedUtils.getContext() != null && ReVancedSettingsFragment.this.settingsInitialized) {
-                XReboot.RebootDialog(ReVancedSettingsFragment.this.getActivity());
-            }
         } else if ("pref_minimized_video_preview".equals(str)) {
             ListPreference listPreference = (ListPreference) ReVancedSettingsFragment.this.layoutSettingsPreferenceScreen.findPreference("pref_minimized_video_preview");
             String string = sharedPreferences.getString("pref_minimized_video_preview", "-2");
@@ -155,15 +142,8 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
             if (ReVancedUtils.getContext() != null && ReVancedSettingsFragment.this.settingsInitialized) {
                 XReboot.RebootDialog(ReVancedSettingsFragment.this.getActivity());
             }
-        } else if ("xfile_accessibility_seek_buttons".equals(str)) {
-            SettingsEnum.ACCESSIBILITY_SEEK_BOOLEAN.setValue(((SwitchPreference) ReVancedSettingsFragment.this.layoutSettingsPreferenceScreen.findPreference("xfile_accessibility_seek_buttons")).isChecked());
         } else if ("override_resolution_xfile_enabled".equals(str)) {
             SettingsEnum.CODEC_OVERRIDE_BOOLEAN.setValue(((SwitchPreference) ReVancedSettingsFragment.this.findPreference("override_resolution_xfile_enabled")).isChecked());
-            if (ReVancedUtils.getContext() != null && ReVancedSettingsFragment.this.settingsInitialized) {
-                XReboot.RebootDialog(ReVancedSettingsFragment.this.getActivity());
-            }
-        } else if ("pref_auto_captions".equals(str)) {
-            SettingsEnum.PREFERRED_AUTO_CAPTIONS_BOOLEAN.setValue(((SwitchPreference) ReVancedSettingsFragment.this.findPreference("pref_auto_captions")).isChecked());
             if (ReVancedUtils.getContext() != null && ReVancedSettingsFragment.this.settingsInitialized) {
                 XReboot.RebootDialog(ReVancedSettingsFragment.this.getActivity());
             }
@@ -293,7 +273,6 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
             this.codecHDRH = this.codecPreferenceScreen.findPreference("pref_hdrhardware_override");
             this.codecHDRS = this.codecPreferenceScreen.findPreference("pref_hdrsoftware_override");
             this.tabletMiniplayer = (SwitchPreference) this.layoutSettingsPreferenceScreen.findPreference("tablet_miniplayer");
-            this.tabletComments = (SwitchPreference) this.layoutSettingsPreferenceScreen.findPreference("comments_location");
             AutoRepeatLinks();
             EditTextPreference editTextPreference = this.manufacturerOverride;
             editTextPreference.setSummary(editTextPreference.getText());
@@ -391,11 +370,7 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
                 if (this.layoutSettingsPreferenceScreen.findPreference("tablet_miniplayer") != null) {
                     this.layoutSettingsPreferenceScreen.removePreference(this.tabletMiniplayer);
                 }
-                if (this.layoutSettingsPreferenceScreen.findPreference("comments_location") != null) {
-                    this.layoutSettingsPreferenceScreen.removePreference(this.tabletComments);
-                }
             }
-
 
 
             this.sharedPreferences.edit().putBoolean("xfile_initialized", true);
