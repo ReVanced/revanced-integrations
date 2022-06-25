@@ -34,6 +34,7 @@ public enum SettingsEnum {
     ENABLE_SWIPE_VOLUME_BOOLEAN("pref_xfenster_volume", true),
     SWIPE_THRESHOLD_INTEGER("pref_xfenster_swipe_threshold", 30),
     SWIPE_PADDING_TOP_INTEGER("pref_xfenster_swipe_padding_top", 50),
+    SWIPE_USE_TABLET_MODE("pref_xfenster_tablet", false),
     MAX_BUFFER_INTEGER("pref_max_buffer_ms", 120000),
     PLAYBACK_MAX_BUFFER_INTEGER("pref_buffer_for_playback_ms", 2500),
     MAX_PLAYBACK_BUFFER_AFTER_REBUFFER_INTEGER("pref_buffer_for_playback_after_rebuffer_ms", 5000),
@@ -107,6 +108,7 @@ public enum SettingsEnum {
             } else {
                 LogHelper.printException("SettingsEnum", "Setting does not end with a valid Type. Name is: " + name());
             }
+            value = newValue;
         } else {
             LogHelper.printException("SettingsEnum", "Context on SaveValue is null!");
         }
@@ -145,11 +147,11 @@ public enum SettingsEnum {
         return (Float) value;
     }
 
-    private Object getDefaultValue() {
+    public Object getDefaultValue() {
         return defaultValue;
     }
 
-    private String getPath() {
+    public String getPath() {
         return path;
     }
 

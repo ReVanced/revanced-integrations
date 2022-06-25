@@ -1,10 +1,15 @@
 package app.revanced.integrations.settingsmenu;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.AlertDialog;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Process;
 import android.preference.EditTextPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
@@ -20,39 +25,34 @@ import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedUtils;
 import app.revanced.integrations.videoplayer.autorepeat.AutoRepeat;
 import app.revanced.integrations.videoswipecontrols.FensterGestureListener;
-import app.revanced.integrations.videoplayer.utils.XReboot;
 import app.revanced.integrations.utils.ScreenSizeHelper;
-import app.revanced.integrations.utils.SwipeHelper;
 import app.revanced.integrations.videoplayer.videourl.Copy;
 import app.revanced.integrations.videoplayer.videourl.CopyWithTimeStamp;
-import app.revanced.integrations.BuildConfig;
 
-/* loaded from: classes6.dex */
 public class ReVancedSettingsFragment extends PreferenceFragment {
 
-    // YouTubePlayerOverlaysLayout.overlayContext
     public static Context overlayContext;
-    // Shell_HomeActivity.class
     public static Class homeActivityClass;
+    public SharedPreferences sharedPreferences;
+
     private Toast toast;
     private PreferenceScreen adsSettingsPreferenceScreen;
     private PreferenceScreen bufferSettingsPreferenceScreen;
     private Preference codecDefault;
-    private Preference codecHDRH;
-    private Preference codecHDRS;
     private PreferenceScreen codecPreferenceScreen;
     private Preference codecVP9;
     private PreferenceScreen layoutSettingsPreferenceScreen;
     private EditTextPreference manufacturerOverride;
     private PreferenceScreen miscsPreferenceScreen;
     private EditTextPreference modelOverride;
-    public SharedPreferences sharedPreferences;
     private SwitchPreference tabletMiniplayer;
     private PreferenceScreen videoAdSettingsPreferenceScreen;
     private PreferenceScreen videoSettingsPreferenceScreen;
     private SwitchPreference vp9Override;
     private PreferenceScreen xFensterPreferenceScreen;
     private boolean Registered = false;
+    private boolean settingsInitialized = false;
+
     CharSequence[] videoQualityEntries = {"Auto", "144p", "240p", "360p", "480p", "720p", "1080p", "1440p", "2160p"};
     CharSequence[] videoQualityentryValues = {"-2", "144", "240", "360", "480", "720", "1080", "1440", "2160"};
     CharSequence[] minimizedVideoEntries = {"Auto", "Video only", "Video with controls"};
@@ -61,174 +61,164 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
     CharSequence[] videoSpeedentryValues = {"-2", "0.25", "0.5", "0.75", "1.0", "1.25", "1.5", "1.75", "2.0", "3.0", "4.0", "5.0"};
     CharSequence[] buttonLocationEntries = {"None", "In player", "Under player", "Both"};
     CharSequence[] buttonLocationentryValues = {"NONE", "PLAYER", "BUTTON_BAR", "BOTH"};
-    private long PreviousClick = 0;
-    private int clicks = 0;
-    private final int neededClicks = 5;
-    private boolean hiddenMenuOpened = false;
-    private boolean settingsInitialized = false;
-    // from class: app.revanced.integrations.theme.XSettingsFragment.9
-// android.content.SharedPreferences.OnSharedPreferenceChangeListener
+
     SharedPreferences.OnSharedPreferenceChangeListener listener = (sharedPreferences, str) -> {
-        if ("debug_xfile_enabled".equals(str)) {
-            SettingsEnum.DEBUG_BOOLEAN.setValue(((SwitchPreference) ReVancedSettingsFragment.this.findPreference("debug_xfile_enabled")).isChecked());
-        } else if ("vp9_xfile_enabled".equals(str)) {
-            if (((SwitchPreference) ReVancedSettingsFragment.this.codecPreferenceScreen.findPreference("vp9_xfile_enabled")).isChecked()) {
-                sharedPreferences.edit().putString("override_manufacturer", "samsung").apply();
-                sharedPreferences.edit().putString("override_model", "SM-G920F").apply();
-                SettingsEnum.MANUFACTURER_OVERRIDE_STRING.setValue("samsung");
-                SettingsEnum.MODEL_OVERRIDE_STRING.setValue("SM-G920F");
-                return;
+        if (str.equals(SettingsEnum.DEBUG_BOOLEAN.getPath())) {
+            SettingsEnum.DEBUG_BOOLEAN.setValue(((SwitchPreference) findPreference(str)).isChecked());
+        } else if (str.equals(SettingsEnum.CODEC_OVERRIDE_BOOLEAN.getPath())) {
+            if (((SwitchPreference) codecPreferenceScreen.findPreference(str)).isChecked()) {
+                SettingsEnum.MANUFACTURER_OVERRIDE_STRING.saveValue("samsung");
+                SettingsEnum.MODEL_OVERRIDE_STRING.saveValue("SM-G920F");
+            } else {
+                SettingsEnum.MANUFACTURER_OVERRIDE_STRING.saveValue(null);
+                SettingsEnum.MODEL_OVERRIDE_STRING.saveValue(null);
             }
-            sharedPreferences.edit().remove("override_manufacturer").apply();
-            sharedPreferences.edit().remove("override_model").apply();
-            SettingsEnum.MANUFACTURER_OVERRIDE_STRING.setValue(null);
-            SettingsEnum.MODEL_OVERRIDE_STRING.setValue(null);
-        } else if ("override_manufacturer".equals(str)) {
-            EditTextPreference editTextPreference = (EditTextPreference) ReVancedSettingsFragment.this.codecPreferenceScreen.findPreference("override_manufacturer");
+        } else if (str.equals(SettingsEnum.MANUFACTURER_OVERRIDE_STRING.getPath())) {
+            EditTextPreference editTextPreference = (EditTextPreference) codecPreferenceScreen.findPreference(str);
             if (editTextPreference != null) {
                 editTextPreference.setSummary(editTextPreference.getText());
                 SettingsEnum.MANUFACTURER_OVERRIDE_STRING.setValue(editTextPreference.getText());
             }
-        } else if ("override_model".equals(str)) {
-            EditTextPreference editTextPreference2 = (EditTextPreference) ReVancedSettingsFragment.this.codecPreferenceScreen.findPreference("override_model");
+        } else if (str.equals(SettingsEnum.MODEL_OVERRIDE_STRING.getPath())) {
+            EditTextPreference editTextPreference2 = (EditTextPreference) codecPreferenceScreen.findPreference(str);
             if (editTextPreference2 != null) {
                 editTextPreference2.setSummary(editTextPreference2.getText());
                 SettingsEnum.MODEL_OVERRIDE_STRING.setValue(editTextPreference2.getText());
             }
-        } else if ("home_ads_enabled".equals(str)) {
-            SettingsEnum.HOME_ADS_SHOWN_BOOLEAN.setValue(((SwitchPreference) ReVancedSettingsFragment.this.adsSettingsPreferenceScreen.findPreference("home_ads_enabled")).isChecked());
-            if (ReVancedUtils.getContext() != null && ReVancedSettingsFragment.this.settingsInitialized) {
-                XReboot.RebootDialog(ReVancedSettingsFragment.this.getActivity());
+        } else if (str.equals(SettingsEnum.HOME_ADS_SHOWN_BOOLEAN.getPath())) {
+            SettingsEnum.HOME_ADS_SHOWN_BOOLEAN.setValue(((SwitchPreference) adsSettingsPreferenceScreen.findPreference(str)).isChecked());
+            if (ReVancedUtils.getContext() != null && settingsInitialized) {
+                rebootDialog(getActivity());
             }
-        } else if ("video_ads_enabled".equals(str)) {
-            SettingsEnum.VIDEO_ADS_SHOWN_BOOLEAN.setValue(((SwitchPreference) ReVancedSettingsFragment.this.adsSettingsPreferenceScreen.findPreference("video_ads_enabled")).isChecked());
-            if (ReVancedUtils.getContext() != null && ReVancedSettingsFragment.this.settingsInitialized) {
-                XReboot.RebootDialog(ReVancedSettingsFragment.this.getActivity());
+        } else if (str.equals(SettingsEnum.VIDEO_ADS_SHOWN_BOOLEAN.getPath())) {
+            SettingsEnum.VIDEO_ADS_SHOWN_BOOLEAN.setValue(((SwitchPreference) adsSettingsPreferenceScreen.findPreference(str)).isChecked());
+            if (ReVancedUtils.getContext() != null && settingsInitialized) {
+                rebootDialog(getActivity());
             }
-        } else if ("reel_enabled".equals(str)) {
-            SettingsEnum.REEL_BUTTON_SHOWN_BOOLEAN.setValue(((SwitchPreference) ReVancedSettingsFragment.this.layoutSettingsPreferenceScreen.findPreference("reel_enabled")).isChecked());
-            if (ReVancedUtils.getContext() != null && ReVancedSettingsFragment.this.settingsInitialized) {
-                XReboot.RebootDialog(ReVancedSettingsFragment.this.getActivity());
+        } else if (str.equals(SettingsEnum.REEL_BUTTON_SHOWN_BOOLEAN.getPath())) {
+            SettingsEnum.REEL_BUTTON_SHOWN_BOOLEAN.setValue(((SwitchPreference) layoutSettingsPreferenceScreen.findPreference(str)).isChecked());
+            if (ReVancedUtils.getContext() != null && settingsInitialized) {
+                rebootDialog(getActivity());
             }
-        } else if ("info_card_suggestions_enabled".equals(str)) {
-            SettingsEnum.SUGGESTIONS_SHOWN_BOOLEAN.setValue(((SwitchPreference) ReVancedSettingsFragment.this.layoutSettingsPreferenceScreen.findPreference("info_card_suggestions_enabled")).isChecked());
-        } else if ("info_cards_enabled".equals(str)) {
-            SettingsEnum.INFO_CARDS_SHOWN_BOOLEAN.setValue(((SwitchPreference) ReVancedSettingsFragment.this.layoutSettingsPreferenceScreen.findPreference("info_cards_enabled")).isChecked());
-        } else if ("branding_watermark_enabled".equals(str)) {
-            SettingsEnum.BRANDING_SHOWN_BOOLEAN.setValue(((SwitchPreference) ReVancedSettingsFragment.this.layoutSettingsPreferenceScreen.findPreference("branding_watermark_enabled")).isChecked());
-        } else if ("cast_button_enabled".equals(str)) {
-            SettingsEnum.CAST_BUTTON_SHOWN_BOOLEAN.setValue(((SwitchPreference) ReVancedSettingsFragment.this.layoutSettingsPreferenceScreen.findPreference("cast_button_enabled")).isChecked());
-        } else if ("tablet_miniplayer".equals(str)) {
-            SettingsEnum.USE_TABLET_MINIPLAYER_BOOLEAN.setValue(((SwitchPreference) ReVancedSettingsFragment.this.layoutSettingsPreferenceScreen.findPreference("tablet_miniplayer")).isChecked());
-            if (ReVancedUtils.getContext() != null && ReVancedSettingsFragment.this.settingsInitialized) {
-                XReboot.RebootDialog(ReVancedSettingsFragment.this.getActivity());
+        } else if (str.equals(SettingsEnum.SUGGESTIONS_SHOWN_BOOLEAN.getPath())) {
+            SettingsEnum.SUGGESTIONS_SHOWN_BOOLEAN.setValue(((SwitchPreference) layoutSettingsPreferenceScreen.findPreference(str)).isChecked());
+        } else if (str.equals(SettingsEnum.INFO_CARDS_SHOWN_BOOLEAN.getPath())) {
+            SettingsEnum.INFO_CARDS_SHOWN_BOOLEAN.setValue(((SwitchPreference) layoutSettingsPreferenceScreen.findPreference(str)).isChecked());
+        } else if (str.equals(SettingsEnum.BRANDING_SHOWN_BOOLEAN.getPath())) {
+            SettingsEnum.BRANDING_SHOWN_BOOLEAN.setValue(((SwitchPreference) layoutSettingsPreferenceScreen.findPreference(str)).isChecked());
+        } else if (str.equals(SettingsEnum.CAST_BUTTON_SHOWN_BOOLEAN.getPath())) {
+            SettingsEnum.CAST_BUTTON_SHOWN_BOOLEAN.setValue(((SwitchPreference) layoutSettingsPreferenceScreen.findPreference(str)).isChecked());
+        } else if (str.equals(SettingsEnum.USE_TABLET_MINIPLAYER_BOOLEAN.getPath())) {
+            SettingsEnum.USE_TABLET_MINIPLAYER_BOOLEAN.setValue(((SwitchPreference) layoutSettingsPreferenceScreen.findPreference(str)).isChecked());
+            if (ReVancedUtils.getContext() != null && settingsInitialized) {
+                rebootDialog(getActivity());
             }
-        } else if ("xfile_create_button_enabled".equals(str)) {
-            SwitchPreference switchPreference = (SwitchPreference) ReVancedSettingsFragment.this.layoutSettingsPreferenceScreen.findPreference("xfile_create_button_enabled");
+        } else if (str.equals(SettingsEnum.CREATE_BUTTON_SHOWN_BOOLEAN.getPath())) {
+            SwitchPreference switchPreference = (SwitchPreference) layoutSettingsPreferenceScreen.findPreference(str);
             SettingsEnum.CREATE_BUTTON_SHOWN_BOOLEAN.setValue(switchPreference.isChecked());
-            if (ReVancedUtils.getContext() != null && ReVancedSettingsFragment.this.settingsInitialized) {
-                XReboot.RebootDialog(ReVancedSettingsFragment.this.getActivity());
+            if (ReVancedUtils.getContext() != null && settingsInitialized) {
+                rebootDialog(getActivity());
             }
-        } else if ("xfile_new_actionbar".equals(str)) {
-            SettingsEnum.USE_NEW_ACTIONBAR_BOOLEAN.setValue(((SwitchPreference) ReVancedSettingsFragment.this.layoutSettingsPreferenceScreen.findPreference("xfile_new_actionbar")).isChecked());
-            if (ReVancedUtils.getContext() != null && ReVancedSettingsFragment.this.settingsInitialized) {
-                XReboot.RebootDialog(ReVancedSettingsFragment.this.getActivity());
+        } else if (str.equals(SettingsEnum.USE_NEW_ACTIONBAR_BOOLEAN.getPath())) {
+            SettingsEnum.USE_NEW_ACTIONBAR_BOOLEAN.setValue(((SwitchPreference) layoutSettingsPreferenceScreen.findPreference(str)).isChecked());
+            if (ReVancedUtils.getContext() != null && settingsInitialized) {
+                rebootDialog(getActivity());
             }
-        } else if ("pref_minimized_video_preview".equals(str)) {
-            ListPreference listPreference = (ListPreference) ReVancedSettingsFragment.this.layoutSettingsPreferenceScreen.findPreference("pref_minimized_video_preview");
-            String string = sharedPreferences.getString("pref_minimized_video_preview", "-2");
-            listPreference.setDefaultValue(string);
-            listPreference.setSummary(ReVancedSettingsFragment.this.minimizedVideoEntries[listPreference.findIndexOfValue(string)]);
-            if (ReVancedUtils.getContext() != null && ReVancedSettingsFragment.this.settingsInitialized) {
-                XReboot.RebootDialog(ReVancedSettingsFragment.this.getActivity());
+        } else if (str.equals(SettingsEnum.PREFERRED_MINIMIZED_VIDEO_PREVIEW_INTEGER.getPath())) {
+            ListPreference listPreference = (ListPreference) layoutSettingsPreferenceScreen.findPreference(str);
+            int index = SettingsEnum.PREFERRED_MINIMIZED_VIDEO_PREVIEW_INTEGER.getInt();
+            listPreference.setDefaultValue(SettingsEnum.PREFERRED_MINIMIZED_VIDEO_PREVIEW_INTEGER.getDefaultValue());
+            listPreference.setSummary(minimizedVideoEntries[listPreference.findIndexOfValue(String.valueOf(index))]);
+            if (ReVancedUtils.getContext() != null && settingsInitialized) {
+                rebootDialog(getActivity());
             }
-        } else if ("override_resolution_xfile_enabled".equals(str)) {
-            SettingsEnum.CODEC_OVERRIDE_BOOLEAN.setValue(((SwitchPreference) ReVancedSettingsFragment.this.findPreference("override_resolution_xfile_enabled")).isChecked());
-            if (ReVancedUtils.getContext() != null && ReVancedSettingsFragment.this.settingsInitialized) {
-                XReboot.RebootDialog(ReVancedSettingsFragment.this.getActivity());
+        } else if (str.equals(SettingsEnum.CODEC_OVERRIDE_BOOLEAN.getPath())) {
+            SettingsEnum.CODEC_OVERRIDE_BOOLEAN.setValue(((SwitchPreference) findPreference(str)).isChecked());
+            if (ReVancedUtils.getContext() != null && settingsInitialized) {
+                rebootDialog(getActivity());
             }
-        } else if ("pref_preferred_video_quality_wifi".equals(str)) {
-            ListPreference listPreference2 = (ListPreference) ReVancedSettingsFragment.this.videoSettingsPreferenceScreen.findPreference("pref_preferred_video_quality_wifi");
-            String string2 = sharedPreferences.getString("pref_preferred_video_quality_wifi", "-2");
-            listPreference2.setDefaultValue(string2);
-            listPreference2.setSummary(ReVancedSettingsFragment.this.videoQualityEntries[listPreference2.findIndexOfValue(string2)]);
-            SettingsEnum.PREFERRED_RESOLUTION_WIFI_INTEGER.setValue(Integer.parseInt(string2));
-        } else if ("pref_preferred_video_quality_mobile".equals(str)) {
-            ListPreference listPreference3 = (ListPreference) ReVancedSettingsFragment.this.videoSettingsPreferenceScreen.findPreference("pref_preferred_video_quality_mobile");
-            String string3 = sharedPreferences.getString("pref_preferred_video_quality_mobile", "-2");
-            listPreference3.setDefaultValue(string3);
-            listPreference3.setSummary(ReVancedSettingsFragment.this.videoQualityEntries[listPreference3.findIndexOfValue(string3)]);
-            SettingsEnum.PREFERRED_RESOLUTION_MOBILE_INTEGER.setValue(Integer.parseInt(string3));
-        } else if ("pref_preferred_video_speed".equals(str)) {
-            ListPreference listPreference4 = (ListPreference) ReVancedSettingsFragment.this.videoSettingsPreferenceScreen.findPreference("pref_preferred_video_speed");
-            String string4 = sharedPreferences.getString("pref_preferred_video_speed", "-2");
-            listPreference4.setDefaultValue(string4);
-            listPreference4.setSummary(ReVancedSettingsFragment.this.videoSpeedEntries[listPreference4.findIndexOfValue(string4)]);
-            SettingsEnum.PREFERRED_VIDEO_SPEED_FLOAT.setValue(Float.parseFloat(string4));
-        } else if ("pref_max_buffer_ms".equals(str)) {
-            EditTextPreference editTextPreference3 = (EditTextPreference) ReVancedSettingsFragment.this.bufferSettingsPreferenceScreen.findPreference("pref_max_buffer_ms");
+        } else if (str.equals(SettingsEnum.PREFERRED_RESOLUTION_WIFI_INTEGER.getPath())) {
+            ListPreference listPreference2 = (ListPreference) videoSettingsPreferenceScreen.findPreference(str);
+            int index = SettingsEnum.PREFERRED_RESOLUTION_WIFI_INTEGER.getInt();
+            listPreference2.setDefaultValue(index);
+            listPreference2.setSummary(videoQualityEntries[listPreference2.findIndexOfValue(String.valueOf(index))]);
+            SettingsEnum.PREFERRED_RESOLUTION_WIFI_INTEGER.setValue(index);
+        } else if (str.equals(SettingsEnum.PREFERRED_RESOLUTION_MOBILE_INTEGER.getPath())) {
+            ListPreference listPreference2 = (ListPreference) videoSettingsPreferenceScreen.findPreference(str);
+            int index = SettingsEnum.PREFERRED_RESOLUTION_MOBILE_INTEGER.getInt();
+            listPreference2.setDefaultValue(index);
+            listPreference2.setSummary(videoQualityEntries[listPreference2.findIndexOfValue(String.valueOf(index))]);
+            SettingsEnum.PREFERRED_RESOLUTION_MOBILE_INTEGER.setValue(index);
+        } else if (str.equals(SettingsEnum.PREFERRED_VIDEO_SPEED_FLOAT.getPath())) {
+            ListPreference listPreference4 = (ListPreference) videoSettingsPreferenceScreen.findPreference(str);
+            Float value = SettingsEnum.PREFERRED_VIDEO_SPEED_FLOAT.getFloat();
+            listPreference4.setDefaultValue(value);
+            listPreference4.setSummary(videoSpeedEntries[listPreference4.findIndexOfValue(String.valueOf(value))]);
+            SettingsEnum.PREFERRED_VIDEO_SPEED_FLOAT.setValue(value);
+        } else if (str.equals(SettingsEnum.MAX_BUFFER_INTEGER.getPath())) {
+            EditTextPreference editTextPreference3 = (EditTextPreference) bufferSettingsPreferenceScreen.findPreference(str);
             if (editTextPreference3 != null) {
                 editTextPreference3.setSummary(editTextPreference3.getText());
                 SettingsEnum.MAX_BUFFER_INTEGER.setValue(Integer.parseInt(editTextPreference3.getText()));
             }
-        } else if ("pref_buffer_for_playback_ms".equals(str)) {
-            EditTextPreference editTextPreference4 = (EditTextPreference) ReVancedSettingsFragment.this.bufferSettingsPreferenceScreen.findPreference("pref_buffer_for_playback_ms");
+        } else if (str.equals(SettingsEnum.PLAYBACK_MAX_BUFFER_INTEGER.getPath())) {
+            EditTextPreference editTextPreference4 = (EditTextPreference) ReVancedSettingsFragment.this.bufferSettingsPreferenceScreen.findPreference(str);
             if (editTextPreference4 != null) {
                 editTextPreference4.setSummary(editTextPreference4.getText());
                 SettingsEnum.PLAYBACK_MAX_BUFFER_INTEGER.setValue(Integer.parseInt(editTextPreference4.getText()));
             }
-        } else if ("pref_buffer_for_playback_after_rebuffer_ms".equals(str)) {
-            EditTextPreference editTextPreference5 = (EditTextPreference) ReVancedSettingsFragment.this.bufferSettingsPreferenceScreen.findPreference("pref_buffer_for_playback_after_rebuffer_ms");
+        } else if (str.equals(SettingsEnum.MAX_PLAYBACK_BUFFER_AFTER_REBUFFER_INTEGER.getPath())) {
+            EditTextPreference editTextPreference5 = (EditTextPreference) ReVancedSettingsFragment.this.bufferSettingsPreferenceScreen.findPreference(str);
             if (editTextPreference5 != null) {
                 editTextPreference5.setSummary(editTextPreference5.getText());
                 SettingsEnum.MAX_PLAYBACK_BUFFER_AFTER_REBUFFER_INTEGER.setValue(Integer.parseInt(editTextPreference5.getText()));
             }
-        } else if ("pref_auto_repeat_button".equals(str)) {
-            ReVancedSettingsFragment.this.AutoRepeatLinks();
+        } else if (str.equals(SettingsEnum.USE_HDR_BRIGHTNESS_BOOLEAN.getPath())) {
+            SettingsEnum.USE_HDR_BRIGHTNESS_BOOLEAN.setValue(((SwitchPreference) miscsPreferenceScreen.findPreference(str)).isChecked());
+        } else if (str.equals(SettingsEnum.ENABLE_SWIPE_BRIGHTNESS_BOOLEAN.getPath())) {
+            SettingsEnum.ENABLE_SWIPE_BRIGHTNESS_BOOLEAN.setValue(((SwitchPreference) xFensterPreferenceScreen.findPreference(str)).isChecked());
+        } else if (str.equals(SettingsEnum.ENABLE_SWIPE_VOLUME_BOOLEAN.getPath())) {
+            SettingsEnum.ENABLE_SWIPE_VOLUME_BOOLEAN.setValue(((SwitchPreference) xFensterPreferenceScreen.findPreference(str)).isChecked());
+        } else if (str.equals(SettingsEnum.SWIPE_USE_TABLET_MODE.getPath())) {
+            SettingsEnum.SWIPE_USE_TABLET_MODE.setValue(((SwitchPreference) xFensterPreferenceScreen.findPreference(str)).isChecked());
+        } else if (str.equals(SettingsEnum.SWIPE_THRESHOLD_INTEGER.getPath())) {
+            EditTextPreference editTextPreference6 = (EditTextPreference) xFensterPreferenceScreen.findPreference(str);
+            if (editTextPreference6 != null) {
+                int val = 0;
+                editTextPreference6.setSummary(editTextPreference6.getText());
+                try {
+                    val = Integer.parseInt(editTextPreference6.getText());
+                } catch (NumberFormatException unused) {
+                    val = 0;
+                }
+                FensterGestureListener.SWIPE_THRESHOLD = val;
+                SettingsEnum.SWIPE_THRESHOLD_INTEGER.setValue(val);
+            }
+        } else if (str.equals(SettingsEnum.SWIPE_PADDING_TOP_INTEGER.getPath())) {
+            EditTextPreference editTextPreference6 = (EditTextPreference) xFensterPreferenceScreen.findPreference(str);
+            if (editTextPreference6 != null) {
+                int val = 0;
+                editTextPreference6.setSummary(editTextPreference6.getText());
+                try {
+                    val = Integer.parseInt(editTextPreference6.getText());
+                } catch (NumberFormatException unused) {
+                    val = 0;
+                }
+                FensterGestureListener.TOP_PADDING = val;
+                SettingsEnum.SWIPE_PADDING_TOP_INTEGER.setValue(val);
+            }
+        } else if ("vanced_ryd_enabled".equals(str) && ReVancedUtils.getContext() != null && settingsInitialized) {
+            rebootDialog(ReVancedSettingsFragment.this.getActivity());
+        } else if (str.equals("pref_auto_repeat_button")) {
+            AutoRepeatLinks();
         } else if ("pref_auto_repeat".equals(str)) {
             AutoRepeat.changeSelected(sharedPreferences.getBoolean("pref_auto_repeat", false), true);
         } else if ("pref_copy_video_url_timestamp_button_list".equals(str)) {
             CopyWithTimeStamp.refreshShouldBeShown();
         } else if ("pref_copy_video_url_button_list".equals(str)) {
             Copy.refreshShouldBeShown();
-        } else if ("pref_hdr_autobrightness".equals(str)) {
-            SettingsEnum.USE_HDR_BRIGHTNESS_BOOLEAN.setValue(((SwitchPreference) ReVancedSettingsFragment.this.miscsPreferenceScreen.findPreference("pref_hdr_autobrightness")).isChecked());
-        } else if ("pref_xfenster_brightness".equals(str)) {
-            SettingsEnum.ENABLE_SWIPE_BRIGHTNESS_BOOLEAN.setValue(((SwitchPreference) ReVancedSettingsFragment.this.xFensterPreferenceScreen.findPreference("pref_xfenster_brightness")).isChecked());
-        } else if ("pref_xfenster_volume".equals(str)) {
-            SettingsEnum.ENABLE_SWIPE_VOLUME_BOOLEAN.setValue(((SwitchPreference) ReVancedSettingsFragment.this.xFensterPreferenceScreen.findPreference("pref_xfenster_volume")).isChecked());
-        } else if ("pref_xfenster_tablet".equals(str)) {
-            SwipeHelper.isTabletMode = ((SwitchPreference) ReVancedSettingsFragment.this.xFensterPreferenceScreen.findPreference("pref_xfenster_tablet")).isChecked();
-        } else if ("pref_xfenster_swipe_threshold".equals(str)) {
-            EditTextPreference editTextPreference6 = (EditTextPreference) ReVancedSettingsFragment.this.xFensterPreferenceScreen.findPreference("pref_xfenster_swipe_threshold");
-            if (editTextPreference6 != null) {
-                editTextPreference6.setSummary(editTextPreference6.getText());
-                try {
-                    FensterGestureListener.SWIPE_THRESHOLD = Integer.parseInt(editTextPreference6.getText());
-                } catch (NumberFormatException unused) {
-                    FensterGestureListener.SWIPE_THRESHOLD = 0;
-                }
-            }
-        } else if ("pref_xfenster_swipe_padding_top".equals(str)) {
-            EditTextPreference editTextPreference7 = (EditTextPreference) ReVancedSettingsFragment.this.xFensterPreferenceScreen.findPreference("pref_xfenster_swipe_padding_top");
-            if (editTextPreference7 != null) {
-                editTextPreference7.setSummary(editTextPreference7.getText());
-                try {
-                    FensterGestureListener.TOP_PADDING = Integer.parseInt(editTextPreference7.getText());
-                } catch (NumberFormatException unused2) {
-                    FensterGestureListener.TOP_PADDING = 20;
-                }
-            }
-        } else if ("vanced_ryd_enabled".equals(str) && ReVancedUtils.getContext() != null && ReVancedSettingsFragment.this.settingsInitialized) {
-            XReboot.RebootDialog(ReVancedSettingsFragment.this.getActivity());
         }
     };
-
-    static /* synthetic */ int access$308(ReVancedSettingsFragment reVancedSettingsFragment) {
-        int i = reVancedSettingsFragment.clicks;
-        reVancedSettingsFragment.clicks = i + 1;
-        return i;
-    }
 
     @SuppressLint("ResourceType")
     @Override // android.preference.PreferenceFragment, android.app.Fragment
@@ -256,7 +246,6 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
             this.settingsInitialized = sharedPreferences.getBoolean("xfile_initialized", false);
             this.sharedPreferences.registerOnSharedPreferenceChangeListener(this.listener);
             this.Registered = true;
-            this.hiddenMenuOpened = this.sharedPreferences.getBoolean("xfile_hiddenMenu_enabled", false);
             this.codecPreferenceScreen = (PreferenceScreen) getPreferenceScreen().findPreference("codec_override");
             this.videoSettingsPreferenceScreen = (PreferenceScreen) getPreferenceScreen().findPreference("video_settings");
             this.videoAdSettingsPreferenceScreen = (PreferenceScreen) getPreferenceScreen().findPreference("video_ad_settings");
@@ -270,102 +259,45 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
             this.modelOverride = (EditTextPreference) this.codecPreferenceScreen.findPreference("override_model");
             this.codecDefault = this.codecPreferenceScreen.findPreference("pref_default_override");
             this.codecVP9 = this.codecPreferenceScreen.findPreference("pref_vp9_override");
-            this.codecHDRH = this.codecPreferenceScreen.findPreference("pref_hdrhardware_override");
-            this.codecHDRS = this.codecPreferenceScreen.findPreference("pref_hdrsoftware_override");
             this.tabletMiniplayer = (SwitchPreference) this.layoutSettingsPreferenceScreen.findPreference("tablet_miniplayer");
             AutoRepeatLinks();
             EditTextPreference editTextPreference = this.manufacturerOverride;
             editTextPreference.setSummary(editTextPreference.getText());
             EditTextPreference editTextPreference2 = this.modelOverride;
             editTextPreference2.setSummary(editTextPreference2.getText());
-            CheckHiddenMenuStatus();
             final ListPreference listPreference = (ListPreference) this.videoSettingsPreferenceScreen.findPreference("pref_preferred_video_quality_wifi");
             final ListPreference listPreference2 = (ListPreference) this.videoSettingsPreferenceScreen.findPreference("pref_preferred_video_quality_mobile");
             setListPreferenceData(listPreference, true);
             setListPreferenceData(listPreference2, false);
-            // from class: app.revanced.integrations.theme.XSettingsFragment.1
-// android.preference.Preference.OnPreferenceClickListener
+
             listPreference.setOnPreferenceClickListener(preference -> {
                 ReVancedSettingsFragment.this.setListPreferenceData(listPreference, true);
                 return false;
             });
-            // from class: app.revanced.integrations.theme.XSettingsFragment.2
-// android.preference.Preference.OnPreferenceClickListener
+
             listPreference2.setOnPreferenceClickListener(preference -> {
                 ReVancedSettingsFragment.this.setListPreferenceData(listPreference2, false);
                 return false;
             });
             final ListPreference listPreference3 = (ListPreference) this.videoSettingsPreferenceScreen.findPreference("pref_preferred_video_speed");
             setSpeedListPreferenceData(listPreference3);
-            // from class: app.revanced.integrations.theme.XSettingsFragment.3
-// android.preference.Preference.OnPreferenceClickListener
+
             listPreference3.setOnPreferenceClickListener(preference -> {
                 ReVancedSettingsFragment.this.setSpeedListPreferenceData(listPreference3);
                 return false;
             });
             Preference findPreference = findPreference("pref_about_field");
-            final String stringByName3 = ReVancedUtils.getStringByName(getActivity(), "xfile_hiddenmenu_open");
-            final String stringByName4 = ReVancedUtils.getStringByName(getActivity(), "xfile_hiddenmenu_opened");
-            final String str = " " + ReVancedUtils.getStringByName(getActivity(), "xfile_hiddenmenu_needed");
-            // from class: app.revanced.integrations.theme.XSettingsFragment.4
-// android.preference.Preference.OnPreferenceClickListener
-            findPreference.setOnPreferenceClickListener(preference -> {
-                if (ReVancedSettingsFragment.this.hiddenMenuOpened) {
-                    if (ReVancedSettingsFragment.this.toast != null) {
-                        ReVancedSettingsFragment.this.toast.cancel();
-                    }
-                    ReVancedSettingsFragment.this.toast = Toast.makeText(ReVancedUtils.getContext(), stringByName3, Toast.LENGTH_SHORT);
-                    ReVancedSettingsFragment.this.toast.show();
-                    return false;
-                }
-                long currentTimeMillis = System.currentTimeMillis() - ReVancedSettingsFragment.this.PreviousClick;
-                ReVancedSettingsFragment.this.PreviousClick = System.currentTimeMillis();
-                if (currentTimeMillis / 1000 < 2) {
-                    ReVancedSettingsFragment.access$308(ReVancedSettingsFragment.this);
-                    int i = ReVancedSettingsFragment.this.neededClicks - ReVancedSettingsFragment.this.clicks;
-                    if (ReVancedSettingsFragment.this.toast != null) {
-                        ReVancedSettingsFragment.this.toast.cancel();
-                    }
-                    if (i <= 0) {
-                        ReVancedSettingsFragment.this.toast = Toast.makeText(ReVancedUtils.getContext(), stringByName4, Toast.LENGTH_SHORT);
-                        ReVancedSettingsFragment.this.hiddenMenuOpened = true;
-                        ReVancedSettingsFragment.this.sharedPreferences.edit().putBoolean("xfile_hiddenMenu_enabled", true).apply();
-                        ReVancedSettingsFragment.this.CheckHiddenMenuStatus();
-                    } else {
-                        ReVancedSettingsFragment reVancedSettingsFragment = ReVancedSettingsFragment.this;
-                        Context context = ReVancedUtils.getContext();
-                        reVancedSettingsFragment.toast = Toast.makeText(context, i + str, Toast.LENGTH_SHORT);
-                    }
-                    ReVancedSettingsFragment.this.toast.show();
-                } else {
-                    ReVancedSettingsFragment.this.clicks = 0;
-                }
-                return false;
-            });
-            // from class: app.revanced.integrations.theme.XSettingsFragment.5
-// android.preference.Preference.OnPreferenceClickListener
+
             this.codecDefault.setOnPreferenceClickListener(preference -> {
                 ReVancedSettingsFragment.this.ChangeCodec(preference);
                 return false;
             });
-            // from class: app.revanced.integrations.theme.XSettingsFragment.6
-// android.preference.Preference.OnPreferenceClickListener
+
             this.codecVP9.setOnPreferenceClickListener(preference -> {
                 ReVancedSettingsFragment.this.ChangeCodec(preference);
                 return false;
             });
-            // from class: app.revanced.integrations.theme.XSettingsFragment.7
-// android.preference.Preference.OnPreferenceClickListener
-            this.codecHDRH.setOnPreferenceClickListener(preference -> {
-                ReVancedSettingsFragment.this.ChangeCodec(preference);
-                return false;
-            });
-            // from class: app.revanced.integrations.theme.XSettingsFragment.8
-// android.preference.Preference.OnPreferenceClickListener
-            this.codecHDRS.setOnPreferenceClickListener(preference -> {
-                ReVancedSettingsFragment.this.ChangeCodec(preference);
-                return false;
-            });
+
             if (ScreenSizeHelper.isTablet(ReVancedUtils.getContext())) {
                 if (this.layoutSettingsPreferenceScreen.findPreference("tablet_miniplayer") != null) {
                     this.layoutSettingsPreferenceScreen.removePreference(this.tabletMiniplayer);
@@ -380,157 +312,13 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
         }
     }
 
-    /* JADX INFO: Access modifiers changed from: private */
-    public void ChangeCodec(Preference preference) {
-        String key = preference.getKey();
-        char c = 65535;
-        switch (key.hashCode()) {
-            case -1420246871:
-                if (key.equals("pref_hdrhardware_override")) {
-                    c = 0;
-                    break;
-                }
-                break;
-            case -350518296:
-                if (key.equals("pref_vp9_override")) {
-                    c = 1;
-                    break;
-                }
-                break;
-            case 1613958090:
-                if (key.equals("pref_hdrsoftware_override")) {
-                    c = 2;
-                    break;
-                }
-                break;
+    @Override // android.preference.PreferenceFragment, android.app.Fragment
+    public void onDestroy() {
+        if (this.Registered) {
+            this.sharedPreferences.unregisterOnSharedPreferenceChangeListener(this.listener);
+            this.Registered = false;
         }
-        String str = "samsung";
-        String str2 = null;
-        switch (c) {
-            case 0:
-                str2 = "SM-G955W";
-                break;
-            case 1:
-                str2 = "SM-G920F";
-                break;
-            case 2:
-                str = "Google";
-                str2 = "Pixel XL";
-                break;
-            default:
-                str = null;
-                break;
-        }
-        if (str != null) {
-            this.sharedPreferences.edit().putString("override_manufacturer", str).apply();
-        } else {
-            this.sharedPreferences.edit().remove("override_manufacturer").apply();
-        }
-        if (str2 != null) {
-            this.sharedPreferences.edit().putString("override_model", str2).apply();
-        } else {
-            this.sharedPreferences.edit().remove("override_model").apply();
-        }
-        this.manufacturerOverride.setText(str);
-        this.modelOverride.setText(str2);
-        EditTextPreference editTextPreference = this.manufacturerOverride;
-        editTextPreference.setSummary(editTextPreference.getText());
-        EditTextPreference editTextPreference2 = this.modelOverride;
-        editTextPreference2.setSummary(editTextPreference2.getText());
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public void CheckHiddenMenuStatus() {
-        if (this.hiddenMenuOpened) {
-            if (this.codecPreferenceScreen.findPreference("vp9_xfile_enabled") != null) {
-                this.codecPreferenceScreen.removePreference(this.vp9Override);
-            }
-            if (this.codecPreferenceScreen.findPreference("override_manufacturer") == null) {
-                this.codecPreferenceScreen.addPreference(this.manufacturerOverride);
-                EditTextPreference editTextPreference = this.manufacturerOverride;
-                editTextPreference.setSummary(editTextPreference.getText());
-            }
-            if (this.codecPreferenceScreen.findPreference("override_model") == null) {
-                this.codecPreferenceScreen.addPreference(this.modelOverride);
-                EditTextPreference editTextPreference2 = this.modelOverride;
-                editTextPreference2.setSummary(editTextPreference2.getText());
-            }
-            if (this.codecPreferenceScreen.findPreference("pref_default_override") == null) {
-                this.codecPreferenceScreen.addPreference(this.codecDefault);
-                // from class: app.revanced.integrations.theme.XSettingsFragment.10
-// android.preference.Preference.OnPreferenceClickListener
-                this.codecDefault.setOnPreferenceClickListener(preference -> {
-                    ReVancedSettingsFragment.this.ChangeCodec(preference);
-                    return false;
-                });
-            }
-            if (this.codecPreferenceScreen.findPreference("pref_vp9_override") == null) {
-                this.codecPreferenceScreen.addPreference(this.codecVP9);
-                // from class: app.revanced.integrations.theme.XSettingsFragment.11
-// android.preference.Preference.OnPreferenceClickListener
-                this.codecVP9.setOnPreferenceClickListener(preference -> {
-                    ReVancedSettingsFragment.this.ChangeCodec(preference);
-                    return false;
-                });
-            }
-            if (this.codecPreferenceScreen.findPreference("pref_hdrhardware_override") == null) {
-                this.codecPreferenceScreen.addPreference(this.codecHDRH);
-                // from class: app.revanced.integrations.theme.XSettingsFragment.12
-// android.preference.Preference.OnPreferenceClickListener
-                this.codecHDRH.setOnPreferenceClickListener(preference -> {
-                    ReVancedSettingsFragment.this.ChangeCodec(preference);
-                    return false;
-                });
-            }
-            if (this.codecPreferenceScreen.findPreference("pref_hdrsoftware_override") == null) {
-                this.codecPreferenceScreen.addPreference(this.codecHDRS);
-                // from class: app.revanced.integrations.theme.XSettingsFragment.13
-// android.preference.Preference.OnPreferenceClickListener
-                this.codecHDRS.setOnPreferenceClickListener(preference -> {
-                    ReVancedSettingsFragment.this.ChangeCodec(preference);
-                    return false;
-                });
-                return;
-            }
-            return;
-        }
-        if (this.codecPreferenceScreen.findPreference("vp9_xfile_enabled") == null) {
-            this.codecPreferenceScreen.addPreference(this.vp9Override);
-        }
-        if (this.codecPreferenceScreen.findPreference("override_manufacturer") != null) {
-            this.codecPreferenceScreen.removePreference(this.manufacturerOverride);
-        }
-        if (this.codecPreferenceScreen.findPreference("override_model") != null) {
-            this.codecPreferenceScreen.removePreference(this.modelOverride);
-        }
-        if (this.codecPreferenceScreen.findPreference("pref_default_override") != null) {
-            this.codecPreferenceScreen.removePreference(this.codecDefault);
-        }
-        if (this.codecPreferenceScreen.findPreference("pref_vp9_override") != null) {
-            this.codecPreferenceScreen.removePreference(this.codecVP9);
-        }
-        if (this.codecPreferenceScreen.findPreference("pref_hdrhardware_override") != null) {
-            this.codecPreferenceScreen.removePreference(this.codecHDRH);
-        }
-        if (this.codecPreferenceScreen.findPreference("pref_hdrsoftware_override") != null) {
-            this.codecPreferenceScreen.removePreference(this.codecHDRS);
-        }
-    }
-
-    /* JADX INFO: Access modifiers changed from: private */
-    public void AutoRepeatLinks() {
-        boolean z = this.sharedPreferences.getBoolean("pref_auto_repeat_button", false);
-        SwitchPreference switchPreference = (SwitchPreference) this.miscsPreferenceScreen.findPreference("pref_auto_repeat");
-        if (switchPreference == null) {
-            return;
-        }
-        if (z) {
-            switchPreference.setEnabled(false);
-            AutoRepeat.isAutoRepeatBtnEnabled = true;
-            return;
-        }
-        switchPreference.setEnabled(true);
-        AutoRepeat.isAutoRepeatBtnEnabled = false;
+        super.onDestroy();
     }
 
     protected void setListPreferenceData(ListPreference listPreference, boolean z) {
@@ -573,13 +361,6 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
         listPreference.setSummary(this.buttonLocationEntries[listPreference.findIndexOfValue(string)]);
     }
 
-    private void RestartApplication() {
-        Intent launchIntentForPackage = getActivity().getBaseContext().getPackageManager().getLaunchIntentForPackage(getActivity().getBaseContext().getPackageName());
-        launchIntentForPackage.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(launchIntentForPackage);
-        getActivity().finish();
-    }
-
     private String getPackageName() {
         Context context = YouTubeTikTokRoot_Application.getAppContext();
         if (context == null) {
@@ -592,12 +373,51 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
         return PACKAGE_NAME;
     }
 
-    @Override // android.preference.PreferenceFragment, android.app.Fragment
-    public void onDestroy() {
-        if (this.Registered) {
-            this.sharedPreferences.unregisterOnSharedPreferenceChangeListener(this.listener);
-            this.Registered = false;
+    private void ChangeCodec(Preference preference) {
+        String manufacturer = null;
+        String model = null;
+
+        String key = preference.getKey();
+        if (key.equals("pref_vp9_override")) {
+            manufacturer = "samsung";
+            model = "SM-G920F";
         }
-        super.onDestroy();
+
+        SettingsEnum.MANUFACTURER_OVERRIDE_STRING.saveValue(manufacturer);
+        SettingsEnum.MODEL_OVERRIDE_STRING.saveValue(model);
+
+        manufacturerOverride.setText(manufacturer);
+        modelOverride.setText(model);
+        EditTextPreference editTextPreference = this.manufacturerOverride;
+        editTextPreference.setSummary(editTextPreference.getText());
+        EditTextPreference editTextPreference2 = this.modelOverride;
+        editTextPreference2.setSummary(editTextPreference2.getText());
     }
+
+    private void AutoRepeatLinks() {
+        boolean z = this.sharedPreferences.getBoolean("pref_auto_repeat_button", false);
+        SwitchPreference switchPreference = (SwitchPreference) this.miscsPreferenceScreen.findPreference("pref_auto_repeat");
+        if (switchPreference == null) {
+            return;
+        }
+        if (z) {
+            switchPreference.setEnabled(false);
+            AutoRepeat.isAutoRepeatBtnEnabled = true;
+            return;
+        }
+        switchPreference.setEnabled(true);
+        AutoRepeat.isAutoRepeatBtnEnabled = false;
+    }
+
+    private void reboot(Activity activity, Class homeActivityClass) {
+        int intent;
+        intent = PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE;
+        ((AlarmManager) activity.getSystemService(Context.ALARM_SERVICE)).setExact(AlarmManager.ELAPSED_REALTIME, 1500L, PendingIntent.getActivity(activity, 0, new Intent(activity, homeActivityClass), intent));
+        Process.killProcess(Process.myPid());
+    }
+
+    private void rebootDialog(final Activity activity) {
+        new AlertDialog.Builder(activity).setMessage(ReVancedUtils.getStringByName(activity, "pref_refresh_config")).setPositiveButton(ReVancedUtils.getStringByName(activity, "in_app_update_restart_button"), (dialog, id) -> reboot(activity, ReVancedSettingsFragment.homeActivityClass)).setNegativeButton(ReVancedUtils.getStringByName(activity, "sign_in_cancel"), null).show();
+    }
+
 }
