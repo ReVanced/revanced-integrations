@@ -3,6 +3,7 @@
     <string name="revanced_about_summary">"
 - xfileFIN (First creator)
 - oSumAtrIX (Mods, Patcher, Support)
+- TheJeterLP (Integrations)
 - bogadana (Mods, Support)
 - Sculas (Manager, Patcher)
 - baiorett (Manager)"</string>
@@ -351,7 +352,7 @@
     <string name="revanced_videoadwhitelisting_title">Video ad whitelisting</string>
     <string name="revanced_videoadwhitelisting_summary_off">Video ad whitelisting is turned off</string>
     <string name="revanced_videoadwhitelisting_summary_on">Video ad whitelisting is turned on. Use the ADS button under the player to whitelist a channel</string>
-    <string name="revanced_whitelisting_ads">Ads</string>
+    <string name="revanced_whitelisting_ads">ADS</string>
     <string name="revanced_whitelisting_sponsorblock">SponsorBlock</string>
     <string name="revanced_whitelisting_added" formatted="false">Channel %s was added to the %s whitelist</string>
     <string name="revanced_whitelisting_removed" formatted="false">Channel %s was removed from the %s whitelist</string>
