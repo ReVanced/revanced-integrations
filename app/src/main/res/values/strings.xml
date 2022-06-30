@@ -36,9 +36,6 @@
     <string name="revanced_hdr_full_brightness_summary_off">Video brightness will follow your device\'s brightness on HDR landscape videos</string>
     <string name="revanced_hdr_full_brightness_summary_on">Video brightness is set to max on HDR landscape videos</string>
     <string name="revanced_hdr_full_brightness_title">HDR max brightness</string>
-    <string name="revanced_hiddenmenu_needed">Taps needed to enable hidden settings</string>
-    <string name="revanced_hiddenmenu_open">No need, hidden settings are already enabled</string>
-    <string name="revanced_hiddenmenu_opened">Hidden settings have been enabled</string>
     <string name="revanced_info_cards_summary_off">Info cards are hidden</string>
     <string name="revanced_info_cards_summary_on">Info cards are shown</string>
     <string name="revanced_info_cards_title">Info cards</string>
@@ -123,9 +120,6 @@
     <string name="cane_title" translatable="false">cane</string>
     <string name="oizaro_summary">Bug fixing/helping out</string>
     <string name="oizaro_title" translatable="false">Oizaro</string>
-    <string name="revanced_comments_location_summary_off">Comments are shown at the top (new place)</string>
-    <string name="revanced_comments_location_summary_on">Comments are shown at the bottom (old place). This feature can break things. For example swipe features will not work</string>
-    <string name="revanced_comments_location_title">Comments location (Alpha)</string>
     <string name="revanced_tablet_miniplayer_summary_off">Tablet miniplayer is not being used</string>
     <string name="revanced_tablet_miniplayer_summary_on">Tablet miniplayer is being used</string>
     <string name="revanced_tablet_miniplayer_title">Tablet miniplayer</string>
