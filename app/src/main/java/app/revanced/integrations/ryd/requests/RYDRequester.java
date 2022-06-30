@@ -17,7 +17,6 @@ import java.nio.charset.StandardCharsets;
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.ryd.Registration;
 import app.revanced.integrations.ryd.ReturnYouTubeDislikes;
-import app.revanced.integrations.ryd.Utils;
 import app.revanced.integrations.adremover.whitelist.requests.Requester;
 import app.revanced.integrations.adremover.whitelist.requests.Route;
 
@@ -62,7 +61,7 @@ public class RYDRequester {
                 LogHelper.debug("RYDRequester", "Registration challenge - " + challenge + " with difficulty of " + difficulty);
 
                 // Solve the puzzle
-                String solution = Utils.solvePuzzle(challenge, difficulty);
+                String solution = Registration.solvePuzzle(challenge, difficulty);
                 LogHelper.debug("RYDRequester", "Registration confirmation solution is " + solution);
 
                 return confirmRegistration(userId, solution, registration);
@@ -127,7 +126,7 @@ public class RYDRequester {
                 LogHelper.debug("RYDRequester", "Vote challenge - " + challenge + " with difficulty of " + difficulty);
 
                 // Solve the puzzle
-                String solution = Utils.solvePuzzle(challenge, difficulty);
+                String solution = Registration.solvePuzzle(challenge, difficulty);
                 LogHelper.debug("RYDRequester", "Vote confirmation solution is " + solution);
 
                 // Confirm vote
