@@ -8,7 +8,7 @@
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/revanced_settings" />
     <PreferenceScreen android:title="@string/revanced_codec_override_title" android:key="codec_override">
-        <SwitchPreference android:title="@string/revanced_vp9_title" android:key="vp9_revanced_enabled" android:defaultValue="false" android:summaryOn="@string/revanced_vp9_summary_on" android:summaryOff="@string/revanced_vp9_summary_off" />
+        <SwitchPreference android:title="@string/revanced_vp9_title" android:key="revanced_vp9_enabled" android:defaultValue="true" android:summaryOn="@string/revanced_vp9_summary_on" android:summaryOff="@string/revanced_vp9_summary_off" />
         <Preference android:persistent="false" android:title="@string/revanced_default_codec_title" android:selectable="true" android:key="pref_default_override" android:summary="@string/revanced_default_codec_summary" />
         <Preference android:persistent="false" android:title="@string/revanced_vp9_title" android:selectable="true" android:key="pref_vp9_override" android:summary="@string/revanced_vp9_summary" />
         <Preference android:persistent="false" android:title="@string/revanced_hardware_hdr_title" android:selectable="true" android:key="pref_hdrhardware_override" android:summary="@string/revanced_hardware_hdr_summary" />

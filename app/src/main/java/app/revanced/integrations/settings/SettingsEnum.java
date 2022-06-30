@@ -11,7 +11,7 @@ public enum SettingsEnum {
     DEBUG_BOOLEAN("debug_revanced_enabled", false),
     MANUFACTURER_OVERRIDE_STRING("override_manufacturer", null),
     MODEL_OVERRIDE_STRING("override_model", null),
-    CODEC_OVERRIDE_BOOLEAN("override_resolution_revanced_enabled", true),
+    CODEC_OVERRIDE_BOOLEAN("revanced_vp9_enabled", true),
     PREFERRED_RESOLUTION_WIFI_INTEGER("pref_video_quality_wifi", -2),
     PREFERRED_RESOLUTION_MOBILE_INTEGER("pref_video_quality_mobile", -2),
     PREFERRED_VIDEO_SPEED_FLOAT("pref_video_speed", -2.0f),
