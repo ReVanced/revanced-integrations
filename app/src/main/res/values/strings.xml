@@ -47,10 +47,6 @@
 
         Default: 120000"</string>
     <string name="revanced_maximum_buffer_title">Maximum buffer</string>
-    <string name="revanced_minimized_video_style_summary">Select the preferred minimized video style</string>
-    <string name="revanced_minimized_video_style_title">Minimized video style</string>
-    <string name="revanced_miniplayer_style_video">Video only</string>
-    <string name="revanced_miniplayer_style_video_controls">Video with media controls</string>
     <string name="revanced_misc_title">Misc.</string>
     <string name="revanced_override_resolution_summary_off">Video resolution is following your device screen resolution</string>
     <string name="revanced_override_resolution_summary_on">Video resolution is being overridden to max</string>
