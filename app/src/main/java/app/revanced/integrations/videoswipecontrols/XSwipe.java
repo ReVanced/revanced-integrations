@@ -43,12 +43,12 @@ public class XSwipe implements SwipeEventsListener {
 
     @Override // app.revanced.integrations.videoplayer.Fenster.FensterEventsListener
     public void onTap() {
-        LogHelper.debug("XDebug", "onTap");
+        LogHelper.debug(XSwipe.class, "onTap");
     }
 
     @Override // app.revanced.integrations.videoplayer.Fenster.FensterEventsListener
     public void onHorizontalScroll(MotionEvent event, float delta) {
-        LogHelper.debug("XDebug", "onHorizontalScroll - y: " + ((int) event.getY()) + " x: " + ((int) event.getX()));
+        LogHelper.debug(XSwipe.class, "onHorizontalScroll - y: " + ((int) event.getY()) + " x: " + ((int) event.getX()));
         if (event.getPointerCount() == 1) {
             if (this.brightnessOrientation == Orientation.HORIZONTAL && (this.brightnessCoverage == Coverage.FULL || getCoverageHorizontal(event) == this.brightnessCoverage)) {
                 updateBrightnessProgressBarHorizontal(event);
@@ -64,7 +64,7 @@ public class XSwipe implements SwipeEventsListener {
 
     @Override // app.revanced.integrations.videoplayer.Fenster.FensterEventsListener
     public void onVerticalScroll(MotionEvent event, float delta) {
-        LogHelper.debug("XDebug", "onVerticalScroll - y: " + ((int) event.getY()) + " x: " + ((int) event.getX()));
+        LogHelper.debug(XSwipe.class, "onVerticalScroll - y: " + ((int) event.getY()) + " x: " + ((int) event.getX()));
         if (event.getPointerCount() == 1) {
             if (this.brightnessOrientation == Orientation.VERTICAL && (this.brightnessCoverage == Coverage.FULL || getCoverageVertical(event) == this.brightnessCoverage)) {
                 updateBrightnessProgressBarVertical(event);
@@ -80,27 +80,27 @@ public class XSwipe implements SwipeEventsListener {
 
     @Override // app.revanced.integrations.videoplayer.Fenster.FensterEventsListener
     public void onSwipeRight() {
-        LogHelper.debug("XDebug", "onSwipeRight");
+        LogHelper.debug(XSwipe.class, "onSwipeRight");
     }
 
     @Override // app.revanced.integrations.videoplayer.Fenster.FensterEventsListener
     public void onSwipeLeft() {
-        LogHelper.debug("XDebug", "onSwipeLeft");
+        LogHelper.debug(XSwipe.class, "onSwipeLeft");
     }
 
     @Override // app.revanced.integrations.videoplayer.Fenster.FensterEventsListener
     public void onSwipeBottom() {
-        LogHelper.debug("XDebug", "onSwipeBottom");
+        LogHelper.debug(XSwipe.class, "onSwipeBottom");
     }
 
     @Override // app.revanced.integrations.videoplayer.Fenster.FensterEventsListener
     public void onSwipeTop() {
-        LogHelper.debug("XDebug", "onSwipeTop");
+        LogHelper.debug(XSwipe.class, "onSwipeTop");
     }
 
     @Override // app.revanced.integrations.videoplayer.Fenster.FensterEventsListener
     public void onDown(MotionEvent event) {
-        LogHelper.debug("XDebug", "onDown");
+        LogHelper.debug(XSwipe.class, "onDown");
         if (event.getPointerCount() == 1) {
             if (this.brightnessOrientation == Orientation.VERTICAL && (this.brightnessCoverage == Coverage.FULL || getCoverageVertical(event) == this.brightnessCoverage)) {
                 this.mBrightnessDownPos = getProgressVertical(event, this.mBrightness.Max);
@@ -121,7 +121,7 @@ public class XSwipe implements SwipeEventsListener {
 
     @Override // app.revanced.integrations.videoplayer.Fenster.FensterEventsListener
     public void onUp() {
-        LogHelper.debug("XDebug", "onUp");
+        LogHelper.debug(XSwipe.class, "onUp");
         hideNotifications();
     }
 
@@ -201,20 +201,20 @@ public class XSwipe implements SwipeEventsListener {
 
     private float getProgressVertical(MotionEvent event, int maxSteps) {
         float progress = calculateProgressVertical(event, maxSteps);
-        LogHelper.debug("XDebug", "Progress vertical: " + progress);
+        LogHelper.debug(XSwipe.class, "Progress vertical: " + progress);
         return progress;
     }
 
     private float getProgressHorizontal(MotionEvent event, int maxSteps) {
         float progress = calculateProgressHorizontal(event, maxSteps);
-        LogHelper.debug("XDebug", "Progress horizontal: " + progress);
+        LogHelper.debug(XSwipe.class, "Progress horizontal: " + progress);
         return progress;
     }
 
     private float calculateProgressVertical(MotionEvent event, int maxSteps) {
         float scale;
         int height = this.mViewGroup.getHeight();
-        LogHelper.debug("XDebug", "calculateProgressVertical - height: " + height);
+        LogHelper.debug(XSwipe.class, "calculateProgressVertical - height: " + height);
         int available = (height - this.mPaddingTop) - this.mPaddingBottom;
         int y = height - ((int) event.getY());
         float progress = 0.0f;
@@ -266,13 +266,13 @@ public class XSwipe implements SwipeEventsListener {
                     this.mViewGroup = (ViewGroup) layout;
                     this.mBrightness.refreshViewGroup(this.mViewGroup, ReVancedSettingsFragment.overlayContext);
                     this.mVolume.refreshViewGroup(this.mViewGroup);
-                    LogHelper.debug("Settings", "player_overlays refreshed");
+                    LogHelper.debug(XSwipe.class, "player_overlays refreshed");
                 } else {
-                    LogHelper.debug("Settings", "player_overlays was not found");
+                    LogHelper.debug(XSwipe.class, "player_overlays was not found");
                 }
             }
         } catch (Exception ex) {
-            LogHelper.printException("XError", "Unable to refresh player_overlays layout", ex);
+            LogHelper.printException(XSwipe.class, "Unable to refresh player_overlays layout", ex);
         }
     }
 

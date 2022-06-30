@@ -33,7 +33,7 @@ public class Registration {
                 throw new Exception("Unable to save userId because context was null");
             SharedPrefHelper.saveString(context, SharedPrefHelper.SharedPrefNames.RYD, RYDSettings.PREFERENCES_KEY_USERID, userId);
         } catch (Exception ex) {
-            LogHelper.printException("Registration", "Unable to save the userId in shared preferences", ex);
+            LogHelper.printException(Registration.class, "Unable to save the userId in shared preferences", ex);
         }
     }
 
@@ -61,7 +61,7 @@ public class Registration {
                 }
             }
         } catch (Exception ex) {
-            LogHelper.printException("RYD Utils", "Failed to solve puzzle", ex);
+            LogHelper.printException(Registration.class, "Failed to solve puzzle", ex);
         }
 
         return null;
@@ -69,7 +69,7 @@ public class Registration {
 
     private String register() {
         String userId = randomString(36);
-        LogHelper.debug("Registration", "Trying to register the following userId: " + userId);
+        LogHelper.debug(Registration.class, "Trying to register the following userId: " + userId);
         return RYDRequester.register(userId, this);
     }
 
@@ -91,7 +91,7 @@ public class Registration {
                 this.userId = register();
             }
         } catch (Exception ex) {
-            LogHelper.printException("Registration", "Unable to fetch the userId from shared preferences", ex);
+            LogHelper.printException(Registration.class, "Unable to fetch the userId from shared preferences", ex);
         }
 
         return this.userId;
