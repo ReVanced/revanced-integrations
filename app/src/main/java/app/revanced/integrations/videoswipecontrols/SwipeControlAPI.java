@@ -20,7 +20,7 @@ public class SwipeControlAPI {
 
     public static void InitializeFensterController(Context context, ViewGroup viewGroup, ViewConfiguration viewConfiguration) {
         swipeGestureController = new SwipeGestureController();
-        swipeGestureController.setFensterEventsListener(new XSwipe(context, viewGroup), context, viewConfiguration);
+        swipeGestureController.setFensterEventsListener(new SwipeListener(context, viewGroup), context, viewConfiguration);
         LogHelper.debug(SwipeControlAPI.class, "XFenster initialized");
     }
 
@@ -60,14 +60,14 @@ public class SwipeControlAPI {
         if (SettingsEnum.ENABLE_SWIPE_BRIGHTNESS_BOOLEAN.getBoolean() || SettingsEnum.ENABLE_SWIPE_VOLUME_BOOLEAN.getBoolean()) {
             SwipeGestureController swipeGestureController2 = swipeGestureController;
             swipeGestureController2.TouchesEnabled = true;
-            ((XSwipe) swipeGestureController2.listener).enable(SettingsEnum.ENABLE_SWIPE_BRIGHTNESS_BOOLEAN.getBoolean(), SettingsEnum.ENABLE_SWIPE_VOLUME_BOOLEAN.getBoolean());
+            ((SwipeListener) swipeGestureController2.listener).enable(SettingsEnum.ENABLE_SWIPE_BRIGHTNESS_BOOLEAN.getBoolean(), SettingsEnum.ENABLE_SWIPE_VOLUME_BOOLEAN.getBoolean());
         }
     }
 
     private static void DisableSwipeControl() {
         SwipeGestureController swipeGestureController2 = swipeGestureController;
         swipeGestureController2.TouchesEnabled = false;
-        ((XSwipe) swipeGestureController2.listener).disable();
+        ((SwipeListener) swipeGestureController2.listener).disable();
     }
 
 }
