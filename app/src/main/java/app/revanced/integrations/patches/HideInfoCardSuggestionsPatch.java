@@ -1,12 +1,12 @@
 package app.revanced.integrations.patches;
 
-import app.revanced.integrations.adremover.AdRemoverAPI;
+import app.revanced.integrations.settings.SettingsEnum;
 
 public class HideInfoCardSuggestionsPatch {
 
     //TODO: Create Patch
     //Not used yet
-    public static void HideInfoCardSuggestions(Object InfoCardOverlayPresenter) {
-        AdRemoverAPI.removeInfoCardSuggestions(InfoCardOverlayPresenter);
+    public static boolean ShowInfoCardSuggestions() {
+        return SettingsEnum.INFO_CARDS_SHOWN_BOOLEAN.getBoolean();
     }
 }
