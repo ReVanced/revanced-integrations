@@ -74,6 +74,19 @@ public class AdRemoverAPI {
     }
 
     /**
+     * Removes the Suggestions
+     *
+     * @return
+     */
+    public static void hideSuggestions(View view) {
+        String message = SettingsEnum.SUGGESTIONS_SHOWN_BOOLEAN.getBoolean() ? "Suggestions: shown" : "Suggestions: hidden";
+        LogHelper.debug(AdRemoverAPI.class, message);
+        if (!SettingsEnum.SUGGESTIONS_SHOWN_BOOLEAN.getBoolean()) {
+            view.setVisibility(View.GONE);
+        }
+    }
+
+    /**
      * Removes the InfoCardSuggestions
      *
      * @param InfoCardOverlayPresenter
@@ -86,18 +99,6 @@ public class AdRemoverAPI {
         return InfoCardOverlayPresenter;
     }
 
-    /**
-     * Removes the Suggestions
-     *
-     * @param showSuggestions
-     * @return
-     */
-    public static Boolean removeSuggestions(Boolean showSuggestions) {
-        if (!SettingsEnum.SUGGESTIONS_SHOWN_BOOLEAN.getBoolean()) showSuggestions = false;
-        String message = showSuggestions ? "RemoveSuggestions: true" : "RemoveSuggestions: false";
-        LogHelper.debug(AdRemoverAPI.class, message);
-        return showSuggestions;
-    }
 
     /*
     private static void inspectComponentHost(Object item) {
