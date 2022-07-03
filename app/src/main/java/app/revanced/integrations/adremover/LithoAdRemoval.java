@@ -97,60 +97,61 @@ public class LithoAdRemoval {
                 blockList.add("_ad");
                 blockList.add("ad_badge");
                 blockList.add("ads_video_with_context");
-                blockList.add("text_search_ad_with_description_first");
-                blockList.add("shelf_header");
                 blockList.add("cell_divider");
-                blockList.add("watch_metadata_app_promo");
                 blockList.add("reels_player_overlay");
-
+                blockList.add("shelf_header");
+                blockList.add("text_search_ad_with_description_first");
+                blockList.add("watch_metadata_app_promo");
+                
                 bufferBlockList.add("ad_cpn");
+                bufferBlockList.add("watch-vrecH");
             }
             if (isExperimentalMovieRemoval()) {
-                blockList.add("movie_and_show_upsell_card");
                 blockList.add("compact_movie");
                 blockList.add("horizontal_movie_shelf");
-
+                blockList.add("movie_and_show_upsell_card");
+                
                 bufferBlockList.add("YouTube Movies");
             }
             if (containsAny(value, "home_video_with_context", "related_video_with_context") &&
                 bufferBlockList.stream().anyMatch(StandardCharsets.UTF_8.decode(buffer).toString()::contains)
             ) return true;
 
-            if (isExperimentalMerchandiseRemoval()) {
-                blockList.add("product_carousel");
-            }
-            if (isExperimentalCommunityPostRemoval()) {
-                blockList.add("post_base_wrapper");
-            }
-            if (isExperimentalPaidContentRemoval()) {
-                blockList.add("paid_content_overlay");
-            }
-            if (isExperimentalEmergencyBoxRemoval()) {
-                blockList.add("emergency_onebox");
-            }
-            if (isExperimentalMedicalPanelRemoval()) {
-                blockList.add("medical_panel");
-            }
-            if (isExperimentalInfoPanelRemoval()) {
-                blockList.add("single_item_information_panel");
-                blockList.add("publisher_transparency_panel");
-            }
-            if (isExperimentalCompactBannerRemoval()) {
-                blockList.add("compact_banner");
-            }
             if (isExperimentalCommentsRemoval()) {
                 blockList.add("comments_composite_entry_point");
-            }
-            if (isInFeedSurvey()) {
-                blockList.add("in_feed_survey");
-            }
-            if (isShortsShelf()) {
-                blockList.add("shorts_shelf");
             }
             if (isCommunityGuidelines()) {
                 blockList.add("community_guidelines");
             }
-
+            if (isExperimentalCompactBannerRemoval()) {
+                blockList.add("compact_banner");
+            }
+            if (isExperimentalEmergencyBoxRemoval()) {
+                blockList.add("emergency_onebox");
+            }
+            if (isInFeedSurvey()) {
+                blockList.add("in_feed_survey");
+            }
+            if (isExperimentalMedicalPanelRemoval()) {
+                blockList.add("medical_panel");
+            }
+            if (isExperimentalPaidContentRemoval()) {
+                blockList.add("paid_content_overlay");
+            }
+            if (isExperimentalCommunityPostRemoval()) {
+                blockList.add("post_base_wrapper");
+            }
+            if (isExperimentalMerchandiseRemoval()) {
+                blockList.add("product_carousel");
+            }
+            if (isShortsShelf()) {
+                blockList.add("shorts_shelf");
+            }
+            if (isExperimentalInfoPanelRemoval()) {
+                blockList.add("publisher_transparency_panel");
+                blockList.add("single_item_information_panel");
+            }
+            
             if (containsAny(value,
                     "home_video_with_context",
                     "related_video_with_context",
