@@ -71,6 +71,10 @@ public class LithoAdRemoval {
     private static boolean isCommunityGuidelines() {
         return getBoolean("experimental_community_guidelines", true);
     }
+    
+    private static boolean isExperimentalSuggestedForYou() {
+        return getBoolean("experimental_suggested_for_you", true);
+    }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     public static boolean containsAd(String value, ByteBuffer buffer) {
@@ -103,6 +107,8 @@ public class LithoAdRemoval {
                 blockList.add("reels_player_overlay");
 
                 bufferBlockList.add("ad_cpn");
+            }
+            if (isExperimentalSuggestedForYou()) {
                 bufferBlockList.add("watch-vrecH");
             }
             if (isExperimentalMovieRemoval()) {
