@@ -2,9 +2,9 @@
 <resources>
     <string name="revanced_about_summary">"
 - xfileFIN (First creator)
-- oSumAtrIX (Mods, Patcher, Support)
-- TheJeterLP (Integrations)
-- bogadana (Mods, Support)
+- oSumAtrIX (Patches, Patcher, Support)
+- TheJeterLP (Patches, Integrations)
+- bogadana (Patches, Support)
 - Sculas (Manager, Patcher)
 - baiorett (Manager)"</string>
     <string name="revanced_about_title">About</string>
@@ -31,8 +31,6 @@
     <string name="revanced_default_codec_title">Default codec</string>
     <string name="revanced_discord_summary">Tap to join ReVanced on Discord</string>
     <string name="revanced_discord_title">Discord server</string>
-    <string name="revanced_hardware_hdr_summary">Tap to enable hardware HDR</string>
-    <string name="revanced_hardware_hdr_title" translatable="false">Samsung Galaxy S8+</string>
     <string name="revanced_hdr_full_brightness_summary_off">Video brightness will follow your device\'s brightness on HDR landscape videos</string>
     <string name="revanced_hdr_full_brightness_summary_on">Video brightness is set to max on HDR landscape videos</string>
     <string name="revanced_hdr_full_brightness_title">HDR max brightness</string>
@@ -62,8 +60,6 @@
 
         Default: 5000"</string>
     <string name="revanced_rebuffer_title">Rebuffer</string>
-    <string name="revanced_software_hdr_summary">Tap to enable software HDR</string>
-    <string name="revanced_software_hdr_title" translatable="false">Google Pixel XL</string>
     <string name="revanced_suggestion_summary_off">End screens are hidden</string>
     <string name="revanced_suggestion_summary_on">End screens are shown</string>
     <string name="revanced_suggestion_title">End screens</string>
@@ -101,7 +97,7 @@
     <string name="revanced_xfenster_volume_summary_on">Swipe controls for volume are enabled</string>
     <string name="revanced_xfenster_volume_title">Swipe controls for Volume</string>
     <string name="revanced_website_summary">Tap to open our website</string>
-    <string name="revanced_website_title">Vanced website</string>
+    <string name="revanced_website_title">ReVanced website</string>
     <string name="revanced_home_ads_summary_off">Home ADS are hidden</string>
     <string name="revanced_home_ads_summary_on">Home ADS are shown</string>
     <string name="revanced_home_ads_title">Home ADS (Experimental)</string>

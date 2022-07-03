@@ -59,11 +59,16 @@ public enum SettingsEnum {
     ADREMOVER_PAID_CONTECT_REMOVAL_BOOLEAN("revanced_adremover_paid_content", true),
     ADREMOVER_SUGGESTED_FOR_YOU_REMOVAL_BOOLEAN("revanced_adremover_suggested", true),
     ADREMOVER_FEED_SURVEY_REMOVAL_BOOLEAN("revanced_adremover_feed_survey", false),
-    ADREMOVER_SHORTS_SHELF_BOOLEAN("revanced_adremover_shorts_shelf", true);
+    ADREMOVER_SHORTS_SHELF_BOOLEAN("revanced_adremover_shorts_shelf", true),
 
     //RYD Settings
+    RYD_USER_ID_STRING("ryd_userId", null, SharedPrefHelper.SharedPrefNames.RYD),
+    RYD_ENABLED_BOOLEAN("ryd_enabled", true, SharedPrefHelper.SharedPrefNames.RYD),
+    RYD_HINT_SHOWN_BOOLEAN("ryd_hint_shown", false, SharedPrefHelper.SharedPrefNames.RYD)
 
     //SponsorBlock Settings
+
+    ;
 
     private final String path;
     private final Object defaultValue;

@@ -1,7 +1,5 @@
 package app.revanced.integrations.sponsorblock.dialog;
 
-import static app.revanced.integrations.ryd.RYDSettings.PREFERENCES_KEY_RYD_ENABLED;
-import static app.revanced.integrations.ryd.RYDSettings.PREFERENCES_KEY_RYD_HINT_SHOWN;
 import static app.revanced.integrations.sponsorblock.SponsorBlockSettings.PREFERENCES_KEY_SPONSOR_BLOCK_ENABLED;
 import static app.revanced.integrations.sponsorblock.SponsorBlockSettings.PREFERENCES_KEY_SPONSOR_BLOCK_HINT_SHOWN;
 import static app.revanced.integrations.sponsorblock.StringRef.str;

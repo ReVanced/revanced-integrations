@@ -11,8 +11,6 @@
         <SwitchPreference android:title="@string/revanced_vp9_title" android:key="revanced_vp9_enabled" android:defaultValue="true" android:summaryOn="@string/revanced_vp9_summary_on" android:summaryOff="@string/revanced_vp9_summary_off" />
         <Preference android:persistent="false" android:title="@string/revanced_default_codec_title" android:selectable="true" android:key="pref_default_override" android:summary="@string/revanced_default_codec_summary" />
         <Preference android:persistent="false" android:title="@string/revanced_vp9_title" android:selectable="true" android:key="pref_vp9_override" android:summary="@string/revanced_vp9_summary" />
-        <Preference android:persistent="false" android:title="@string/revanced_hardware_hdr_title" android:selectable="true" android:key="pref_hdrhardware_override" android:summary="@string/revanced_hardware_hdr_summary" />
-        <Preference android:persistent="false" android:title="@string/revanced_software_hdr_title" android:selectable="true" android:key="pref_hdrsoftware_override" android:summary="@string/revanced_software_hdr_summary" />
         <EditTextPreference android:singleLine="true" android:title="@string/revanced_current_override_manufacturer" android:key="override_manufacturer" />
         <EditTextPreference android:singleLine="true" android:title="@string/revanced_current_override_model" android:key="override_model" />
     </PreferenceScreen>
@@ -74,7 +72,7 @@
             <intent android:action="android.intent.action.VIEW" android:data="https://discord.gg/rF2YcEjcrT" />
         </Preference>
         <Preference android:title="@string/revanced_website_title" android:summary="@string/revanced_website_summary">
-            <intent android:action="android.intent.action.VIEW" android:data="https://github.com/revanced" />
+            <intent android:action="android.intent.action.VIEW" android:data="https://revanced.app" />
         </Preference>
     </PreferenceScreen>
     <PreferenceScreen android:title="@string/revanced_credit_title" android:key="credits_screen" android:summary="@string/revanced_credit_summary">
