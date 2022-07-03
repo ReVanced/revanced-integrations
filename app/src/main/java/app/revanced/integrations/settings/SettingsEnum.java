@@ -45,6 +45,7 @@ public enum SettingsEnum {
     MAX_PLAYBACK_BUFFER_AFTER_REBUFFER_INTEGER("pref_buffer_for_playback_after_rebuffer_ms", 5000),
     OLD_STYLE_QUALITY_SETTINGS_BOOLEAN("old_style_quality_settings", true),
     TAP_SEEKING_ENABLED_BOOLEAN("revanced_enable_tap_seeking", true),
+
     //Settings for the adremover
     ADREMOVER_COMMUNITY_GUIDELINES_BOOLEAN("revanced_adremover_community_guidelines", true),
     ADREMOVER_AD_REMOVAL_BOOLEAN("revanced_adremover_ad_removal", true),
@@ -64,9 +65,26 @@ public enum SettingsEnum {
     //RYD Settings
     RYD_USER_ID_STRING("ryd_userId", null, SharedPrefHelper.SharedPrefNames.RYD),
     RYD_ENABLED_BOOLEAN("ryd_enabled", true, SharedPrefHelper.SharedPrefNames.RYD),
-    RYD_HINT_SHOWN_BOOLEAN("ryd_hint_shown", false, SharedPrefHelper.SharedPrefNames.RYD)
+    RYD_HINT_SHOWN_BOOLEAN("ryd_hint_shown", false, SharedPrefHelper.SharedPrefNames.RYD),
 
     //SponsorBlock Settings
+    SB_ENABLED_BOOLEAN("sb-enabled", true, SharedPrefHelper.SharedPrefNames.SPONSOR_BLOCK),
+    SB_SHOW_TOAST_WHEN_SKIP_BOOLEAN("show-toast", true, SharedPrefHelper.SharedPrefNames.SPONSOR_BLOCK),
+    SB_COUNT_SKIPS_BOOLEAN("count-skips", true, SharedPrefHelper.SharedPrefNames.SPONSOR_BLOCK),
+    SB_UUID_STRING("uuid", null, SharedPrefHelper.SharedPrefNames.SPONSOR_BLOCK),
+    SB_ADJUST_NEW_SEGMENT_STEP_INTEGER("new-segment-step-accuracy", 150, SharedPrefHelper.SharedPrefNames.SPONSOR_BLOCK),
+    SB_MIN_DURATION_FLOAT("sb-min-duration", 0F, SharedPrefHelper.SharedPrefNames.SPONSOR_BLOCK),
+    SB_SPONSOR_BLOCK_HINT_SHOWN_BOOLEAN("sb_hint_shown", false, SharedPrefHelper.SharedPrefNames.SPONSOR_BLOCK),
+    SB_SEEN_GUIDELINES_BOOLEAN("sb-seen-gl", false, SharedPrefHelper.SharedPrefNames.SPONSOR_BLOCK),
+    SB_NEW_SEGMENT_ENABLED_BOOLEAN("sb-new-segment-enabled", false, SharedPrefHelper.SharedPrefNames.SPONSOR_BLOCK),
+    SB_VOTING_ENABLED_BOOLEAN("sb-voting-enabled", true, SharedPrefHelper.SharedPrefNames.SPONSOR_BLOCK),
+    SB_SKIPPED_SEGMENTS_INTEGER("sb-skipped-segments", 0, SharedPrefHelper.SharedPrefNames.SPONSOR_BLOCK),
+    SB_SKIPPED_SEGMENTS_TIME_LONG("sb-skipped-segments-time", 0L, SharedPrefHelper.SharedPrefNames.SPONSOR_BLOCK),
+    SB_SHOW_TIME_WITHOUT_SEGMENTS_BOOLEAN("sb-length-without-segments", true, SharedPrefHelper.SharedPrefNames.SPONSOR_BLOCK),
+    SB_IS_VIP_BOOLEAN("sb-is-vip", false, SharedPrefHelper.SharedPrefNames.SPONSOR_BLOCK),
+    SB_LAST_VIP_CHECK_LONG("sb-last-vip-check", 0L, SharedPrefHelper.SharedPrefNames.SPONSOR_BLOCK),
+    SB_SHOW_BROWSER_BUTTON_BOOLEAN("sb-browser-button", false, SharedPrefHelper.SharedPrefNames.SPONSOR_BLOCK),
+    SB_API_URL_STRING("sb-api-url", "https://sponsor.ajay.app/api/", SharedPrefHelper.SharedPrefNames.SPONSOR_BLOCK)
 
     ;
 
