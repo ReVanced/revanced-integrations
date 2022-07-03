@@ -2,12 +2,17 @@ package app.revanced.integrations.settings;
 
 import android.content.Context;
 
+import java.sql.Array;
+import java.util.ArrayList;
+import java.util.List;
+
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedUtils;
 import app.revanced.integrations.utils.SharedPrefHelper;
 
 public enum SettingsEnum {
 
+    //ToDo: Sort these
     DEBUG_BOOLEAN("debug_revanced_enabled", false),
     MANUFACTURER_OVERRIDE_STRING("override_manufacturer", null),
     MODEL_OVERRIDE_STRING("override_model", null),
@@ -41,13 +46,20 @@ public enum SettingsEnum {
     TAP_SEEKING_ENABLED_BOOLEAN("revanced_enable_tap_seeking", true),
 
     //Settings for the adremover
-    ADREMOVER_COMMUNITY_GUIDELINES_BOOLEAN("revanced_community_guidelines", true),
-    ADREMOVER_AD_REMOVAL_BOOLEAN("revanced_ad_removal", true),
-    ADREMOVER_COMMENTS_REMOVAL_BOOLEAN("revanced_comments_removal", false),
-    ADREMOVER_COMMUNITY_POSTS_REMOVAL_BOOLEAN("revanced_community_posts_removal", false),
-    ADREMOVER_COMPACT_BANNER_REMOVAL_BOOLEAN("revanced_compact_banner_removal", false),
-    
-    ;
+    ADREMOVER_COMMUNITY_GUIDELINES_BOOLEAN("revanced_adremover_community_guidelines", true),
+    ADREMOVER_AD_REMOVAL_BOOLEAN("revanced_adremover_ad_removal", true),
+    ADREMOVER_COMMENTS_REMOVAL_BOOLEAN("revanced_adremover_comments_removal", false),
+    ADREMOVER_COMMUNITY_POSTS_REMOVAL_BOOLEAN("revanced_adremover_community_posts_removal", false),
+    ADREMOVER_COMPACT_BANNER_REMOVAL_BOOLEAN("revanced_adremover_compact_banner_removal", false),
+    ADREMOVER_EMERGENCY_BOX_REMOVAL_BOOLEAN("revanced_adremover_emergency_box_removal", true),
+    ADREMOVER_INFO_PANEL_REMOVAL_BOOLEAN("revanced_adremover_info_panel", true),
+    ADREMOVER_MEDICAL_PANEL_REMOVAL_BOOLEAN("revanced_adremover_medical_panel", true),
+    ADREMOVER_MERCHANDISE_REMOVAL_BOOLEAN("revanced_adremover_merchandise", true),
+    ADREMOVER_MOVIE_REMOVAL_BOOLEAN("revanced_adremover_movie", true),
+    ADREMOVER_PAID_CONTECT_REMOVAL_BOOLEAN("revanced_adremover_paid_content", true),
+    ADREMOVER_SUGGESTED_FOR_YOU_REMOVAL_BOOLEAN("revanced_adremover_suggested", true),
+    ADREMOVER_FEED_SURVEY_REMOVAL_BOOLEAN("revanced_adremover_feed_survey", false),
+    ADREMOVER_SHORTS_SHELF_BOOLEAN("revanced_adremover_shorts_shelf", true);
 
     private final String path;
     private final Object defaultValue;
@@ -92,6 +104,16 @@ public enum SettingsEnum {
 
     public static boolean isLoaded() {
         return loaded;
+    }
+
+    public static List<SettingsEnum> getAdRemovalSettings() {
+        List<SettingsEnum> list = new ArrayList<>();
+        for (SettingsEnum var : SettingsEnum.values()) {
+            if (var.toString().startsWith("ADREMOVER")) {
+                list.add(var);
+            }
+        }
+        return list;
     }
 
     public void setValue(Object newValue) {
