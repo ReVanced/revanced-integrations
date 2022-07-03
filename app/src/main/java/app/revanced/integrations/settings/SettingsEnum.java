@@ -12,6 +12,8 @@ import app.revanced.integrations.utils.SharedPrefHelper;
 public enum SettingsEnum {
 
     //ToDo: Sort these
+
+    //ReVanced General Settings
     DEBUG_BOOLEAN("debug_revanced_enabled", false),
     MANUFACTURER_OVERRIDE_STRING("override_manufacturer", null),
     MODEL_OVERRIDE_STRING("override_model", null),
@@ -43,7 +45,6 @@ public enum SettingsEnum {
     MAX_PLAYBACK_BUFFER_AFTER_REBUFFER_INTEGER("pref_buffer_for_playback_after_rebuffer_ms", 5000),
     OLD_STYLE_QUALITY_SETTINGS_BOOLEAN("old_style_quality_settings", true),
     TAP_SEEKING_ENABLED_BOOLEAN("revanced_enable_tap_seeking", true),
-
     //Settings for the adremover
     ADREMOVER_COMMUNITY_GUIDELINES_BOOLEAN("revanced_adremover_community_guidelines", true),
     ADREMOVER_AD_REMOVAL_BOOLEAN("revanced_adremover_ad_removal", true),
@@ -60,8 +61,13 @@ public enum SettingsEnum {
     ADREMOVER_FEED_SURVEY_REMOVAL_BOOLEAN("revanced_adremover_feed_survey", false),
     ADREMOVER_SHORTS_SHELF_BOOLEAN("revanced_adremover_shorts_shelf", true);
 
+    //RYD Settings
+
+    //SponsorBlock Settings
+
     private final String path;
     private final Object defaultValue;
+    private final SharedPrefHelper.SharedPrefNames sharedPref;
 
     private Object value = null;
     private static boolean loaded = false;
@@ -69,6 +75,13 @@ public enum SettingsEnum {
     SettingsEnum(String path, Object defaultValue) {
         this.path = path;
         this.defaultValue = defaultValue;
+        this.sharedPref = SharedPrefHelper.SharedPrefNames.YOUTUBE;
+    }
+
+    SettingsEnum(String path, Object defaultValue, SharedPrefHelper.SharedPrefNames prefName) {
+        this.path = path;
+        this.defaultValue = defaultValue;
+        this.sharedPref = prefName;
     }
 
     public static void loadSettings() {
@@ -79,15 +92,15 @@ public enum SettingsEnum {
             for (SettingsEnum setting : values()) {
                 Object value = null;
                 if (setting.name().endsWith("BOOLEAN")) {
-                    value = SharedPrefHelper.getBoolean(context, SharedPrefHelper.SharedPrefNames.YOUTUBE, setting.getPath());
+                    value = SharedPrefHelper.getBoolean(context, setting.sharedPref, setting.getPath());
                 } else if (setting.name().endsWith("INTEGER")) {
-                    value = SharedPrefHelper.getInt(context, SharedPrefHelper.SharedPrefNames.YOUTUBE, setting.getPath());
+                    value = SharedPrefHelper.getInt(context, setting.sharedPref, setting.getPath());
                 } else if (setting.name().endsWith("STRING")) {
-                    value = SharedPrefHelper.getString(context, SharedPrefHelper.SharedPrefNames.YOUTUBE, setting.getPath());
+                    value = SharedPrefHelper.getString(context, setting.sharedPref, setting.getPath());
                 } else if (setting.name().endsWith("LONG")) {
-                    value = SharedPrefHelper.getLong(context, SharedPrefHelper.SharedPrefNames.YOUTUBE, setting.getPath());
+                    value = SharedPrefHelper.getLong(context, setting.sharedPref, setting.getPath());
                 } else if (setting.name().endsWith(("FLOAT"))) {
-                    value = SharedPrefHelper.getFloat(context, SharedPrefHelper.SharedPrefNames.YOUTUBE, setting.getPath());
+                    value = SharedPrefHelper.getFloat(context, setting.sharedPref, setting.getPath());
                 } else {
                     LogHelper.printException(SettingsEnum.class, "Setting does not end with a valid Type. Name is: " + setting.name());
                     continue;
@@ -124,15 +137,15 @@ public enum SettingsEnum {
         Context context = ReVancedUtils.getContext();
         if (context != null) {
             if (name().endsWith("BOOLEAN")) {
-                SharedPrefHelper.saveBoolean(context, SharedPrefHelper.SharedPrefNames.YOUTUBE, getPath(), (Boolean) newValue);
+                SharedPrefHelper.saveBoolean(context, sharedPref, getPath(), (Boolean) newValue);
             } else if (name().endsWith("INTEGER")) {
-                SharedPrefHelper.saveInt(context, SharedPrefHelper.SharedPrefNames.YOUTUBE, getPath(), (int) newValue);
+                SharedPrefHelper.saveInt(context, sharedPref, getPath(), (int) newValue);
             } else if (name().endsWith("STRING")) {
-                SharedPrefHelper.saveString(context, SharedPrefHelper.SharedPrefNames.YOUTUBE, getPath(), (String) newValue);
+                SharedPrefHelper.saveString(context, sharedPref, getPath(), (String) newValue);
             } else if (name().endsWith("LONG")) {
-                SharedPrefHelper.saveLong(context, SharedPrefHelper.SharedPrefNames.YOUTUBE, getPath(), (Long) newValue);
+                SharedPrefHelper.saveLong(context, sharedPref, getPath(), (Long) newValue);
             } else if (name().endsWith(("FLOAT"))) {
-                SharedPrefHelper.saveFloat(context, SharedPrefHelper.SharedPrefNames.YOUTUBE, getPath(), (Float) newValue);
+                SharedPrefHelper.saveFloat(context, sharedPref, getPath(), (Float) newValue);
             } else {
                 LogHelper.printException(SettingsEnum.class, "Setting does not end with a valid Type. Name is: " + name());
             }
