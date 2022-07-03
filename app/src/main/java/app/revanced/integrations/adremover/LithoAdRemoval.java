@@ -2,7 +2,6 @@ package app.revanced.integrations.adremover;
 
 import android.os.Build;
 
-
 import androidx.annotation.RequiresApi;
 
 import java.nio.ByteBuffer;
@@ -104,6 +103,7 @@ public class LithoAdRemoval {
                 blockList.add("reels_player_overlay");
 
                 bufferBlockList.add("ad_cpn");
+                bufferBlockList.add("watch-vrecH");
             }
             if (isExperimentalMovieRemoval()) {
                 blockList.add("movie_and_show_upsell_card");
