@@ -39,6 +39,14 @@ public enum SettingsEnum {
     MAX_PLAYBACK_BUFFER_AFTER_REBUFFER_INTEGER("pref_buffer_for_playback_after_rebuffer_ms", 5000),
     OLD_STYLE_QUALITY_SETTINGS_BOOLEAN("old_style_quality_settings", true),
     TAP_SEEKING_ENABLED_BOOLEAN("revanced_enable_tap_seeking", true),
+
+    //Settings for the adremover
+    ADREMOVER_COMMUNITY_GUIDELINES_BOOLEAN("revanced_community_guidelines", true),
+    ADREMOVER_AD_REMOVAL_BOOLEAN("revanced_ad_removal", true),
+    ADREMOVER_COMMENTS_REMOVAL_BOOLEAN("revanced_comments_removal", false),
+    ADREMOVER_COMMUNITY_POSTS_REMOVAL_BOOLEAN("revanced_community_posts_removal", false),
+    ADREMOVER_COMPACT_BANNER_REMOVAL_BOOLEAN("revanced_compact_banner_removal", false),
+    
     ;
 
     private final String path;

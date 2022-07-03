@@ -174,8 +174,7 @@ public class LithoAdRemoval {
             }
             LogHelper.debug(LithoAdRemoval.class, value);
             return false;
-        } catch (
-                Exception ex) {
+        } catch (Exception ex) {
             LogHelper.printException(LithoAdRemoval.class, ex.getMessage(), ex);
             return false;
         }
