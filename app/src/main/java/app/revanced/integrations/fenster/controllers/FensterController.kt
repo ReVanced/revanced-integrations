@@ -96,6 +96,11 @@ class FensterController {
         // if disabled, we shall not consume any events
         if (!isEnabled) return false
 
+        // if important components are not present, there is no point in processing the event here
+        if (hostActivity == null || gestureDetector == null || gestureListener == null) {
+            return false
+        }
+
         // send event to gesture detector
         if (event.action == MotionEvent.ACTION_UP) {
             gestureListener?.onUp(event)
@@ -103,7 +108,7 @@ class FensterController {
         val consumed = gestureDetector?.onTouchEvent(event) ?: false
 
         // if the event was inside a control zone, we always consume the event
-        val swipeZone = event.getSwipeControlZone()
+        val swipeZone = event.getSwipeControlZone(hostActivity!!)
         var inControlZone = false
         if (audioController != null) {
             inControlZone = inControlZone || swipeZone == SwipeControlZone.VOLUME_CONTROL
@@ -126,7 +131,7 @@ class FensterController {
      * when quickly flinging down, the volume is instantly muted
      */
     inner class FensterGestureListener(
-        context: Context
+        private val context: Context
     ) : GestureDetector.SimpleOnGestureListener() {
 
         /**
@@ -138,7 +143,7 @@ class FensterController {
          * scroller for volume adjustment
          */
         private val volumeScroller = ScrollDistanceHelper(
-            5.applyDimension(
+            10.applyDimension(
                 context,
                 TypedValue.COMPLEX_UNIT_DIP
             )
@@ -206,7 +211,7 @@ class FensterController {
             if (!inSwipeSession) return false
 
             // do the adjustment
-            when (eFrom.getSwipeControlZone()) {
+            when (eFrom.getSwipeControlZone(context)) {
                 SwipeControlZone.VOLUME_CONTROL -> {
                     volumeScroller.add(disY.toDouble())
                 }
@@ -234,7 +239,9 @@ class FensterController {
             if (abs(velY) < abs(velX * 2)) return false
 
             // check if either of the events was in the volume zone
-            if ((eFrom.getSwipeControlZone() == SwipeControlZone.VOLUME_CONTROL) || (eTo.getSwipeControlZone() == SwipeControlZone.VOLUME_CONTROL)) {
+            if ((eFrom.getSwipeControlZone(context) == SwipeControlZone.VOLUME_CONTROL)
+                || (eTo.getSwipeControlZone(context) == SwipeControlZone.VOLUME_CONTROL)
+            ) {
                 // if the fling was very aggressive, trigger instant- mute
                 if (velY > 5000) {
                     audioController?.apply {
