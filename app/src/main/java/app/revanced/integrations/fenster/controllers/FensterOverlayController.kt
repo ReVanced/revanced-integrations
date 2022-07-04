@@ -2,6 +2,7 @@ package app.revanced.integrations.fenster.controllers
 
 import android.content.Context
 import android.graphics.Color
+import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.util.TypedValue
@@ -113,7 +114,7 @@ class FensterOverlayController(
      */
     fun notifyFlingToMutePerformed() {
         overlayRootView.performHapticFeedback(
-            HapticFeedbackConstants.VIRTUAL_KEY,
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) HapticFeedbackConstants.REJECT else HapticFeedbackConstants.LONG_PRESS,
             HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING
         )
     }
