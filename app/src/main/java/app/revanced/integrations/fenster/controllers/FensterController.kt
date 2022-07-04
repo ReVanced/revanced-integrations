@@ -4,6 +4,7 @@ import android.app.Activity
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.ViewGroup
+import app.revanced.integrations.fenster.FensterEnablement
 import app.revanced.integrations.fenster.util.SwipeControlZone
 import app.revanced.integrations.fenster.util.getSwipeControlZone
 import app.revanced.integrations.utils.LogHelper
@@ -20,7 +21,7 @@ class FensterController {
     var isEnabled: Boolean
         get() = _isEnabled
         set(value) {
-            _isEnabled = value
+            _isEnabled = value && FensterEnablement.shouldEnableFenster
             overlayController?.setOverlayVisible(_isEnabled)
             LogHelper.debug(this.javaClass, "FensterController.isEnabled set to $_isEnabled")
         }
@@ -57,8 +58,10 @@ class FensterController {
 
         LogHelper.debug(this.javaClass, "initializing FensterV2 controllers")
         hostActivity = host
-        audioController = AudioVolumeController(host)
-        screenController = ScreenBrightnessController(host)
+        audioController = if (FensterEnablement.shouldEnableFensterVolumeControl)
+            AudioVolumeController(host) else null
+        screenController = if (FensterEnablement.shouldEnableFensterBrightnessControl)
+            ScreenBrightnessController(host) else null
         gestureDetector = GestureDetector(host, gestureListener)
     }
 
@@ -94,7 +97,16 @@ class FensterController {
         val consumed = gestureDetector?.onTouchEvent(event) ?: false
 
         // if the event was inside a control zone, we always consume the event
-        return consumed || (event.getSwipeControlZone() != SwipeControlZone.NONE)
+        val swipeZone = event.getSwipeControlZone()
+        var inControlZone = false
+        if (audioController != null) {
+            inControlZone = inControlZone || swipeZone == SwipeControlZone.VOLUME_CONTROL
+        }
+        if (screenController != null) {
+            inControlZone = inControlZone || swipeZone == SwipeControlZone.BRIGHTNESS_CONTROL
+        }
+
+        return consumed || inControlZone
     }
 
     /**
