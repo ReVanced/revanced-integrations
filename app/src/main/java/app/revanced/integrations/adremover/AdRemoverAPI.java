@@ -73,32 +73,6 @@ public class AdRemoverAPI {
         }
     }
 
-    /**
-     * Removes the InfoCardSuggestions
-     *
-     * @param InfoCardOverlayPresenter
-     * @return
-     */
-    public static Object removeInfoCardSuggestions(Object InfoCardOverlayPresenter) {
-        if (!SettingsEnum.INFO_CARDS_SHOWN_BOOLEAN.getBoolean()) InfoCardOverlayPresenter = null;
-        String message = InfoCardOverlayPresenter == null ? "RemoveInfoCardSuggestions: true" : "RemoveInfoCardSuggestions: false";
-        LogHelper.debug(AdRemoverAPI.class, message);
-        return InfoCardOverlayPresenter;
-    }
-
-    /**
-     * Removes the Suggestions
-     *
-     * @param showSuggestions
-     * @return
-     */
-    public static Boolean removeSuggestions(Boolean showSuggestions) {
-        if (!SettingsEnum.SUGGESTIONS_SHOWN_BOOLEAN.getBoolean()) showSuggestions = false;
-        String message = showSuggestions ? "RemoveSuggestions: true" : "RemoveSuggestions: false";
-        LogHelper.debug(AdRemoverAPI.class, message);
-        return showSuggestions;
-    }
-
     /*
     private static void inspectComponentHost(Object item) {
         StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
