@@ -17,7 +17,14 @@ class FensterController {
     /**
      * are the swipe controls currently enabled?
      */
-    var isEnabled: Boolean = false
+    var isEnabled: Boolean
+        get() = _isEnabled
+        set(value) {
+            _isEnabled = value
+            overlayController?.setOverlayVisible(_isEnabled)
+            LogHelper.debug(this.javaClass, "FensterController.isEnabled set to $_isEnabled")
+        }
+    private var _isEnabled = false
 
     /**
      * the activity that hosts the controller

@@ -70,6 +70,15 @@ class FensterOverlayController(
     }
 
     /**
+     * set the overlay visibility
+     *
+     * @param visible should the overlay be visible?
+     */
+    fun setOverlayVisible(visible: Boolean) {
+        overlayRootView.visibility = if (visible) View.VISIBLE else View.GONE
+    }
+
+    /**
      * show the new volume level on the overlay
      *
      * @param volume the new volume level, in percent (range 0.0 - 100.0)
