@@ -32,9 +32,14 @@ public enum SettingsEnum {
     USE_HDR_BRIGHTNESS_BOOLEAN("pref_hdr_autobrightness", true),
     ENABLE_SWIPE_BRIGHTNESS_BOOLEAN("pref_xfenster_brightness", true),
     ENABLE_SWIPE_VOLUME_BOOLEAN("pref_xfenster_volume", true),
+
+    @Deprecated
     SWIPE_THRESHOLD_INTEGER("pref_xfenster_swipe_threshold", 30),
+    @Deprecated
     SWIPE_PADDING_TOP_INTEGER("pref_xfenster_swipe_padding_top", 50),
+    @Deprecated
     SWIPE_USE_TABLET_MODE("pref_xfenster_tablet", false),
+
     MAX_BUFFER_INTEGER("pref_max_buffer_ms", 120000),
     PLAYBACK_MAX_BUFFER_INTEGER("pref_buffer_for_playback_ms", 2500),
     MAX_PLAYBACK_BUFFER_AFTER_REBUFFER_INTEGER("pref_buffer_for_playback_after_rebuffer_ms", 5000),

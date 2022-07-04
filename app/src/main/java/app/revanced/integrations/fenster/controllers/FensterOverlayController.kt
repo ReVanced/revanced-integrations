@@ -43,7 +43,7 @@ class FensterOverlayController(
         }
 
         // add other views
-        val feedbackTextViewMargin = 2.applyDimension(context, TypedValue.COMPLEX_UNIT_DIP)
+        val feedbackTextViewPadding = 2.applyDimension(context, TypedValue.COMPLEX_UNIT_DIP)
         feedbackTextView = TextView(context).apply {
             layoutParams = RelativeLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT,
@@ -51,10 +51,10 @@ class FensterOverlayController(
             ).apply {
                 addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE)
                 setPadding(
-                    feedbackTextViewMargin,
-                    feedbackTextViewMargin,
-                    feedbackTextViewMargin,
-                    feedbackTextViewMargin
+                    feedbackTextViewPadding,
+                    feedbackTextViewPadding,
+                    feedbackTextViewPadding,
+                    feedbackTextViewPadding
                 )
             }
             setBackgroundColor(Color.BLACK)

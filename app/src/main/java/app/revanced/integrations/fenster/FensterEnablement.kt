@@ -3,7 +3,7 @@ package app.revanced.integrations.fenster
 /**
  * controls fenster feature enablement
  *
- * TODO: currently hardcoded to enable everything. When user preferences are introduced, they can be inserted here
+ * TODO: currently hard- coded settings values as i cannot get SettingsEnum to work...
  */
 object FensterEnablement {
 
@@ -12,7 +12,7 @@ object FensterEnablement {
      */
     val shouldEnableFenster: Boolean
         get() {
-            return true
+            return shouldEnableFensterVolumeControl || shouldEnableFensterBrightnessControl
         }
 
     /**
@@ -20,7 +20,7 @@ object FensterEnablement {
      */
     val shouldEnableFensterVolumeControl: Boolean
         get() {
-            return true
+            return true //SettingsEnum.ENABLE_SWIPE_VOLUME_BOOLEAN.boolean
         }
 
     /**
@@ -28,7 +28,6 @@ object FensterEnablement {
      */
     val shouldEnableFensterBrightnessControl: Boolean
         get() {
-            return true
+            return true //SettingsEnum.ENABLE_SWIPE_BRIGHTNESS_BOOLEAN.boolean
         }
-
 }
