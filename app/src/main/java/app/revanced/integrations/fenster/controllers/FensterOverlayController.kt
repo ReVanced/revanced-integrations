@@ -4,11 +4,13 @@ import android.content.Context
 import android.graphics.Color
 import android.os.Handler
 import android.os.Looper
+import android.util.TypedValue
 import android.view.HapticFeedbackConstants
 import android.view.View
 import android.view.ViewGroup
 import android.widget.RelativeLayout
 import android.widget.TextView
+import app.revanced.integrations.fenster.util.applyDimension
 import kotlin.math.round
 
 /**
@@ -40,15 +42,23 @@ class FensterOverlayController(
         }
 
         // add other views
+        val feedbackTextViewMargin = 2.applyDimension(context, TypedValue.COMPLEX_UNIT_DIP)
         feedbackTextView = TextView(context).apply {
             layoutParams = RelativeLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT
             ).apply {
                 addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE)
+                setPadding(
+                    feedbackTextViewMargin,
+                    feedbackTextViewMargin,
+                    feedbackTextViewMargin,
+                    feedbackTextViewMargin
+                )
             }
             setBackgroundColor(Color.BLACK)
             setTextColor(Color.WHITE)
+            setTextSize(TypedValue.COMPLEX_UNIT_SP, 20f)
             visibility = View.GONE
         }
         overlayRootView.addView(feedbackTextView)
