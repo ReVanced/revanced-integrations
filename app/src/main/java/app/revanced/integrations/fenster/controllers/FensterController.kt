@@ -1,11 +1,15 @@
 package app.revanced.integrations.fenster.controllers
 
 import android.app.Activity
+import android.content.Context
+import android.util.TypedValue
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.ViewGroup
 import app.revanced.integrations.fenster.FensterEnablement
+import app.revanced.integrations.fenster.util.ScrollDistanceHelper
 import app.revanced.integrations.fenster.util.SwipeControlZone
+import app.revanced.integrations.fenster.util.applyDimension
 import app.revanced.integrations.fenster.util.getSwipeControlZone
 import app.revanced.integrations.utils.LogHelper
 import kotlin.math.abs
@@ -35,7 +39,7 @@ class FensterController {
     private var screenController: ScreenBrightnessController? = null
     private var overlayController: FensterOverlayController? = null
 
-    private val gestureListener = FensterGestureListener()
+    private var gestureListener: FensterGestureListener? = null
     private var gestureDetector: GestureDetector? = null
 
     /**
@@ -62,6 +66,8 @@ class FensterController {
             AudioVolumeController(host) else null
         screenController = if (FensterEnablement.shouldEnableFensterBrightnessControl)
             ScreenBrightnessController(host) else null
+
+        gestureListener = FensterGestureListener(host)
         gestureDetector = GestureDetector(host, gestureListener)
     }
 
@@ -92,7 +98,7 @@ class FensterController {
 
         // send event to gesture detector
         if (event.action == MotionEvent.ACTION_UP) {
-            gestureListener.onUp(event)
+            gestureListener?.onUp(event)
         }
         val consumed = gestureDetector?.onTouchEvent(event) ?: false
 
@@ -119,12 +125,44 @@ class FensterController {
      * - Fling- to- mute:
      * when quickly flinging down, the volume is instantly muted
      */
-    inner class FensterGestureListener : GestureDetector.SimpleOnGestureListener() {
+    inner class FensterGestureListener(
+        context: Context
+    ) : GestureDetector.SimpleOnGestureListener() {
 
         /**
          * to enable swipe controls, users must first long- press. this flags monitors that long- press
          */
         private var inSwipeSession = false
+
+        /**
+         * scroller for volume adjustment
+         */
+        private val volumeScroller = ScrollDistanceHelper(
+            5.applyDimension(
+                context,
+                TypedValue.COMPLEX_UNIT_DIP
+            )
+        ) { _, _, direction ->
+            audioController?.apply {
+                volume += direction
+                overlayController?.showNewVolume((volume * 100.0) / maxVolume)
+            }
+        }
+
+        /**
+         * scroller for screen brightness adjustment
+         */
+        private val brightnessScroller = ScrollDistanceHelper(
+            1.applyDimension(
+                context,
+                TypedValue.COMPLEX_UNIT_DIP
+            )
+        ) { _, _, direction ->
+            screenController?.apply {
+                screenBrightness += direction
+                overlayController?.showNewBrightness(screenBrightness)
+            }
+        }
 
         /**
          * custom handler for ACTION_UP event, because GestureDetector doesn't offer that :|
@@ -134,6 +172,8 @@ class FensterController {
         fun onUp(e: MotionEvent) {
             LogHelper.debug(this.javaClass, "onUp(${e.x}, ${e.y}, ${e.action})")
             inSwipeSession = false
+            volumeScroller.reset()
+            brightnessScroller.reset()
         }
 
         override fun onLongPress(e: MotionEvent?) {
@@ -162,23 +202,16 @@ class FensterController {
                 "onScroll(from: [${eFrom.x}, ${eFrom.y}, ${eFrom.action}], to: [${eTo.x}, ${eTo.y}, ${eTo.action}], d: [$disX, $disY])"
             )
 
-            // ignore if scroll is very small OR not in scroll session
-            if (abs(disY) < 1 || !inSwipeSession) return false
+            // ignore if scroll not in scroll session
+            if (!inSwipeSession) return false
 
             // do the adjustment
-            val amount = if (disY > 0) 1 else -1
             when (eFrom.getSwipeControlZone()) {
                 SwipeControlZone.VOLUME_CONTROL -> {
-                    audioController?.apply {
-                        volume += amount
-                        overlayController?.showNewVolume((volume * 100.0) / maxVolume)
-                    }
+                    volumeScroller.add(disY.toDouble())
                 }
                 SwipeControlZone.BRIGHTNESS_CONTROL -> {
-                    screenController?.apply {
-                        screenBrightness += amount
-                        overlayController?.showNewBrightness(screenBrightness)
-                    }
+                    brightnessScroller.add(disY.toDouble())
                 }
                 SwipeControlZone.NONE -> {}
             }
