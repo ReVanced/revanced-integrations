@@ -24,7 +24,7 @@ public enum SettingsEnum {
     PREFERRED_VIDEO_SPEED_FLOAT("revanced_pref_video_speed", -2.0f),
 
     //Whitelist Settings
-    ENABLE_WHITELIST("revanced_whitelist_ads_enabled", false),
+    ENABLE_WHITELIST_BOOLEAN("revanced_whitelist_ads_enabled", false),
 
     //Ad settings
     HOME_ADS_SHOWN_BOOLEAN("revanced_home_ads_enabled", false),
@@ -32,10 +32,10 @@ public enum SettingsEnum {
     ADREMOVER_AD_REMOVAL_BOOLEAN("revanced_adremover_ad_removal", true),
     ADREMOVER_MERCHANDISE_REMOVAL_BOOLEAN("revanced_adremover_merchandise", true),
     ADREMOVER_COMMUNITY_POSTS_REMOVAL_BOOLEAN("revanced_adremover_community_posts_removal", false),
-    ADREMOVER_COMPACT_BANNER_REMOVAL_BOOLEAN("revanced_adremover_compact_banner_removal", false),
+    ADREMOVER_COMPACT_BANNER_REMOVAL_BOOLEAN("revanced_adremover_compact_banner_removal", true),
     ADREMOVER_COMMENTS_REMOVAL_BOOLEAN("revanced_adremover_comments_removal", false),
     ADREMOVER_MOVIE_REMOVAL_BOOLEAN("revanced_adremover_movie", true),
-    ADREMOVER_FEED_SURVEY_REMOVAL_BOOLEAN("revanced_adremover_feed_survey", false),
+    ADREMOVER_FEED_SURVEY_REMOVAL_BOOLEAN("revanced_adremover_feed_survey", true),
     ADREMOVER_SHORTS_SHELF_BOOLEAN("revanced_adremover_shorts_shelf", true),
     ADREMOVER_COMMUNITY_GUIDELINES_BOOLEAN("revanced_adremover_community_guidelines", true),
     //ToDo: These Settings have to be added to revanced_prefs.xml
@@ -66,7 +66,7 @@ public enum SettingsEnum {
     //Swipe controls
     ENABLE_SWIPE_BRIGHTNESS_BOOLEAN("revanced_enable_swipe_brightness", true),
     ENABLE_SWIPE_VOLUME_BOOLEAN("revanced_enable_swipe_volume", true),
-    SWIPE_USE_TABLET_MODE("revanced_swipe_tablet_mode", false),
+    SWIPE_USE_TABLET_MODE_BOOLEAN("revanced_swipe_tablet_mode", false),
     SWIPE_THRESHOLD_INTEGER("revanced_swipe_threshold", 30),
     SWIPE_PADDING_TOP_INTEGER("revanced_swipe_padding_top", 50),
 
@@ -77,7 +77,7 @@ public enum SettingsEnum {
     MAX_PLAYBACK_BUFFER_AFTER_REBUFFER_INTEGER("revanced_pref_buffer_for_playback_after_rebuffer_ms", 5000),
 
     //ReVanced General Settings
-    DEBUG_BOOLEAN("revanced_debug_enabled", false),
+    DEBUG_BOOLEAN("revanced_debug_enabled", true),
     USE_DARK_THEME_BOOLEAN("app_theme_dark", false),
 
     //RYD Settings
@@ -102,9 +102,7 @@ public enum SettingsEnum {
     SB_IS_VIP_BOOLEAN("sb-is-vip", false, SharedPrefHelper.SharedPrefNames.SPONSOR_BLOCK),
     SB_LAST_VIP_CHECK_LONG("sb-last-vip-check", 0L, SharedPrefHelper.SharedPrefNames.SPONSOR_BLOCK),
     SB_SHOW_BROWSER_BUTTON_BOOLEAN("sb-browser-button", false, SharedPrefHelper.SharedPrefNames.SPONSOR_BLOCK),
-    SB_API_URL_STRING("sb-api-url", "https://sponsor.ajay.app/api/", SharedPrefHelper.SharedPrefNames.SPONSOR_BLOCK)
-
-    ;
+    SB_API_URL_STRING("sb-api-url", "https://sponsor.ajay.app/api/", SharedPrefHelper.SharedPrefNames.SPONSOR_BLOCK);
 
     private final String path;
     private final Object defaultValue;
@@ -131,17 +129,17 @@ public enum SettingsEnum {
         Context context = ReVancedUtils.getContext();
         if (context != null) {
             for (SettingsEnum setting : values()) {
-                Object value = null;
+                Object value;
                 if (setting.name().endsWith("BOOLEAN")) {
-                    value = SharedPrefHelper.getBoolean(context, setting.sharedPref, setting.getPath());
+                    value = SharedPrefHelper.getBoolean(context, setting.sharedPref, setting.getPath(), (Boolean) setting.defaultValue);
                 } else if (setting.name().endsWith("INTEGER")) {
-                    value = SharedPrefHelper.getInt(context, setting.sharedPref, setting.getPath());
+                    value = SharedPrefHelper.getInt(context, setting.sharedPref, setting.getPath(), (int) setting.defaultValue);
                 } else if (setting.name().endsWith("STRING")) {
-                    value = SharedPrefHelper.getString(context, setting.sharedPref, setting.getPath());
+                    value = SharedPrefHelper.getString(context, setting.sharedPref, setting.getPath(), (String) setting.defaultValue);
                 } else if (setting.name().endsWith("LONG")) {
-                    value = SharedPrefHelper.getLong(context, setting.sharedPref, setting.getPath());
+                    value = SharedPrefHelper.getLong(context, setting.sharedPref, setting.getPath(), (Long) setting.defaultValue);
                 } else if (setting.name().endsWith(("FLOAT"))) {
-                    value = SharedPrefHelper.getFloat(context, setting.sharedPref, setting.getPath());
+                    value = SharedPrefHelper.getFloat(context, setting.sharedPref, setting.getPath(), (Float) setting.defaultValue);
                 } else {
                     LogHelper.printException(SettingsEnum.class, "Setting does not end with a valid Type. Name is: " + setting.name());
                     continue;
@@ -211,7 +209,8 @@ public enum SettingsEnum {
 
     public boolean getBoolean() {
         SettingsEnum.loadSettings();
-        //LogHelper.debug("SettingsEnum", "Variable " + name() + " is " + value);
+        if (this != DEBUG_BOOLEAN)
+            LogHelper.debug(SettingsEnum.class, "Variable " + name() + " is " + value);
         return (Boolean) value;
     }
 

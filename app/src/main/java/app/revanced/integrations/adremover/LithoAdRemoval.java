@@ -29,7 +29,7 @@ public class LithoAdRemoval {
 
         try {
             if (value == null || value.isEmpty() || !enabled) return false;
-            LogHelper.debug(LithoAdRemoval.class, "Searching for AD: " + value);
+            LogHelper.printException(LithoAdRemoval.class, "Searching for AD: " + value);
 
             List<String> blockList = new ArrayList<>();
             List<String> bufferBlockList = new ArrayList<>();
@@ -43,6 +43,7 @@ public class LithoAdRemoval {
                 blockList.add("shelf_header");
                 blockList.add("text_search_ad_with_description_first");
                 blockList.add("watch_metadata_app_promo");
+                blockList.add("text_display_ad_with_themed_cta_banner_image");
 
                 bufferBlockList.add("ad_cpn");
             }
@@ -114,16 +115,17 @@ public class LithoAdRemoval {
             )) return false;
 
             if (blockList.stream().anyMatch(value::contains)) {
-                LogHelper.debug(LithoAdRemoval.class, value);
+                LogHelper.debug(LithoAdRemoval.class, "Blocking ad: " + value);
                 return true;
             }
 
-            if (!SettingsEnum.DEBUG_BOOLEAN.getBoolean()) return false;
-            if (value.contains("related_video_with_context")) {
-                LogHelper.debug(LithoAdRemoval.class, value + " | " + bytesToHex(buffer.array()));
-                return false;
+            if (SettingsEnum.DEBUG_BOOLEAN.getBoolean()) {
+                if (value.contains("related_video_with_context")) {
+                    LogHelper.debug(LithoAdRemoval.class, value + " | " + bytesToHex(buffer.array()));
+                    return false;
+                }
+                LogHelper.debug(LithoAdRemoval.class, value + " returns false.");
             }
-            LogHelper.debug(LithoAdRemoval.class, value);
             return false;
         } catch (Exception ex) {
             LogHelper.printException(LithoAdRemoval.class, ex.getMessage(), ex);

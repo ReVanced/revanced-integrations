@@ -166,8 +166,8 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
             SettingsEnum.ENABLE_SWIPE_BRIGHTNESS_BOOLEAN.setValue(((SwitchPreference) xSwipeControlPreferenceScreen.findPreference(str)).isChecked());
         } else if (str.equals(SettingsEnum.ENABLE_SWIPE_VOLUME_BOOLEAN.getPath())) {
             SettingsEnum.ENABLE_SWIPE_VOLUME_BOOLEAN.setValue(((SwitchPreference) xSwipeControlPreferenceScreen.findPreference(str)).isChecked());
-        } else if (str.equals(SettingsEnum.SWIPE_USE_TABLET_MODE.getPath())) {
-            SettingsEnum.SWIPE_USE_TABLET_MODE.setValue(((SwitchPreference) xSwipeControlPreferenceScreen.findPreference(str)).isChecked());
+        } else if (str.equals(SettingsEnum.SWIPE_USE_TABLET_MODE_BOOLEAN.getPath())) {
+            SettingsEnum.SWIPE_USE_TABLET_MODE_BOOLEAN.setValue(((SwitchPreference) xSwipeControlPreferenceScreen.findPreference(str)).isChecked());
         } else if (str.equals(SettingsEnum.SWIPE_THRESHOLD_INTEGER.getPath())) {
             EditTextPreference editTextPreference6 = (EditTextPreference) xSwipeControlPreferenceScreen.findPreference(str);
             if (editTextPreference6 != null) {

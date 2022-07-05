@@ -83,6 +83,6 @@
             <intent android:action="android.intent.action.VIEW" android:data="https://crowdin.com/project/vanced" />
         </Preference>
     </PreferenceScreen>
-    <SwitchPreference android:title="@string/revanced_debug_title" android:key="revanced_debug_enabled" android:defaultValue="false" android:summaryOn="@string/revanced_debug_summary_on" android:summaryOff="@string/revanced_debug_summary_off" />
+    <SwitchPreference android:title="@string/revanced_debug_title" android:key="revanced_debug_enabled" android:defaultValue="true" android:summaryOn="@string/revanced_debug_summary_on" android:summaryOff="@string/revanced_debug_summary_off" />
     <Preference android:persistent="false" android:title="@string/revanced_about_title" android:selectable="true" android:key="pref_about_field" android:summary="@string/" />
 </PreferenceScreen>
