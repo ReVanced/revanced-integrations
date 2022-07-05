@@ -43,7 +43,6 @@ public class LithoAdRemoval {
                 blockList.add("shelf_header");
                 blockList.add("text_search_ad_with_description_first");
                 blockList.add("watch_metadata_app_promo");
-                blockList.add("text_display_ad_with_themed_cta_banner_image");
 
                 bufferBlockList.add("ad_cpn");
             }

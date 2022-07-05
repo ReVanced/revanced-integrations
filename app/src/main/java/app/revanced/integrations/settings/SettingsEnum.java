@@ -66,10 +66,6 @@ public enum SettingsEnum {
     //Swipe controls
     ENABLE_SWIPE_BRIGHTNESS_BOOLEAN("revanced_enable_swipe_brightness", true),
     ENABLE_SWIPE_VOLUME_BOOLEAN("revanced_enable_swipe_volume", true),
-    SWIPE_USE_TABLET_MODE_BOOLEAN("revanced_swipe_tablet_mode", false),
-    SWIPE_THRESHOLD_INTEGER("revanced_swipe_threshold", 30),
-    SWIPE_PADDING_TOP_INTEGER("revanced_swipe_padding_top", 50),
-
 
     //Buffer Settings
     MAX_BUFFER_INTEGER("revanced_pref_max_buffer_ms", 120000),
