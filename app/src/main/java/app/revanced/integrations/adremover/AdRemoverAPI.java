@@ -19,6 +19,7 @@ public class AdRemoverAPI {
      *
      * @param view
      */
+    //ToDo: refactor this
     public static void HideViewWithLayout1dp(View view) {
         if (view instanceof LinearLayout) {
             LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(1, 1);
