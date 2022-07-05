@@ -12,6 +12,7 @@ import android.os.Looper;
 
 import com.google.android.apps.youtube.app.YouTubeTikTokRoot_Application;
 
+import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.sponsorblock.player.PlayerType;
 import app.revanced.integrations.videoplayer.videosettings.VideoSpeed;
 
@@ -105,23 +106,4 @@ public class ReVancedUtils {
             return null;
         }
     }
-
-    //Not used atm
-    /*public static String getManufacturer() {
-        String manufacturer = SettingsEnum.MANUFACTURER_OVERRIDE_STRING.getString();
-        if (manufacturer == null || manufacturer.isEmpty()) {
-            manufacturer = Build.MANUFACTURER;
-        }
-        LogHelper.debug("Settings", "getManufacturer: " + manufacturer);
-        return manufacturer;
-    }
-
-    public static String getModel() {
-        String model = SettingsEnum.MODEL_OVERRIDE_STRING.getString();
-        if (model == null || model.isEmpty()) {
-            model = Build.MODEL;
-        }
-        LogHelper.debug("Settings", "getModel: " + model);
-        return model;
-    }*/
 }
