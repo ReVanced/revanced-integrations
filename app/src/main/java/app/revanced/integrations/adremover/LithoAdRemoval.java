@@ -29,6 +29,7 @@ public class LithoAdRemoval {
 
         try {
             if (value == null || value.isEmpty() || !enabled) return false;
+            LogHelper.debug(LithoAdRemoval.class, "Searching for AD: " + value);
 
             List<String> blockList = new ArrayList<>();
             List<String> bufferBlockList = new ArrayList<>();
@@ -93,6 +94,11 @@ public class LithoAdRemoval {
                 blockList.add("publisher_transparency_panel");
                 blockList.add("single_item_information_panel");
             }
+            if (SettingsEnum.ADREMOVER_HIDE_SUGGESTIONS_BOOLEAN.getBoolean()) {
+                blockList.add("horizontal_video_shelf");
+                blockList.add("post_shelf");
+            }
+
 
             if (containsAny(value,
                     "home_video_with_context",
