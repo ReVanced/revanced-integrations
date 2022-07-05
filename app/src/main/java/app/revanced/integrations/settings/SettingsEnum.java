@@ -131,15 +131,15 @@ public enum SettingsEnum {
             for (SettingsEnum setting : values()) {
                 Object value;
                 if (setting.name().endsWith("BOOLEAN")) {
-                    value = SharedPrefHelper.getBoolean(context, setting.sharedPref, setting.getPath(), (Boolean) setting.defaultValue);
+                    value = SharedPrefHelper.getBoolean(context, SharedPrefHelper.SharedPrefNames.YOUTUBE, setting.getPath(), (boolean)setting.getDefaultValue());
                 } else if (setting.name().endsWith("INTEGER")) {
-                    value = SharedPrefHelper.getInt(context, setting.sharedPref, setting.getPath(), (int) setting.defaultValue);
+                    value = SharedPrefHelper.getInt(context, SharedPrefHelper.SharedPrefNames.YOUTUBE, setting.getPath(), (int)setting.getDefaultValue());
                 } else if (setting.name().endsWith("STRING")) {
-                    value = SharedPrefHelper.getString(context, setting.sharedPref, setting.getPath(), (String) setting.defaultValue);
+                    value = SharedPrefHelper.getString(context, SharedPrefHelper.SharedPrefNames.YOUTUBE, setting.getPath(), (String)setting.getDefaultValue());
                 } else if (setting.name().endsWith("LONG")) {
-                    value = SharedPrefHelper.getLong(context, setting.sharedPref, setting.getPath(), (Long) setting.defaultValue);
+                    value = SharedPrefHelper.getLong(context, SharedPrefHelper.SharedPrefNames.YOUTUBE, setting.getPath(), (long)setting.getDefaultValue());
                 } else if (setting.name().endsWith(("FLOAT"))) {
-                    value = SharedPrefHelper.getFloat(context, setting.sharedPref, setting.getPath(), (Float) setting.defaultValue);
+                    value = SharedPrefHelper.getFloat(context, SharedPrefHelper.SharedPrefNames.YOUTUBE, setting.getPath(), (float)setting.getDefaultValue());
                 } else {
                     LogHelper.printException(SettingsEnum.class, "Setting does not end with a valid Type. Name is: " + setting.name());
                     continue;
