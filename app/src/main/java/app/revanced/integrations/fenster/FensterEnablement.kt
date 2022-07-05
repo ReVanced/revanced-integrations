@@ -1,9 +1,9 @@
 package app.revanced.integrations.fenster
 
+import app.revanced.integrations.settings.SettingsEnum
+
 /**
  * controls fenster feature enablement
- *
- * TODO: currently hard- coded settings values as i cannot get SettingsEnum to work...
  */
 object FensterEnablement {
 
@@ -20,7 +20,7 @@ object FensterEnablement {
      */
     val shouldEnableFensterVolumeControl: Boolean
         get() {
-            return true //SettingsEnum.ENABLE_SWIPE_VOLUME_BOOLEAN.boolean
+            return SettingsEnum.ENABLE_SWIPE_VOLUME_BOOLEAN.boolean
         }
 
     /**
@@ -28,6 +28,6 @@ object FensterEnablement {
      */
     val shouldEnableFensterBrightnessControl: Boolean
         get() {
-            return true //SettingsEnum.ENABLE_SWIPE_BRIGHTNESS_BOOLEAN.boolean
+            return SettingsEnum.ENABLE_SWIPE_BRIGHTNESS_BOOLEAN.boolean
         }
 }
