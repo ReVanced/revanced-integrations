@@ -38,8 +38,7 @@ public enum SettingsEnum {
     ADREMOVER_FEED_SURVEY_REMOVAL_BOOLEAN("revanced_adremover_feed_survey", false),
     ADREMOVER_SHORTS_SHELF_BOOLEAN("revanced_adremover_shorts_shelf", true),
     ADREMOVER_COMMUNITY_GUIDELINES_BOOLEAN("revanced_adremover_community_guidelines", true),
-
-    //Not added to revanced_prefs yet
+    //ToDo: These Settings have to be added to revanced_prefs.xml
     ADREMOVER_EMERGENCY_BOX_REMOVAL_BOOLEAN("revanced_adremover_emergency_box_removal", true),
     ADREMOVER_INFO_PANEL_REMOVAL_BOOLEAN("revanced_adremover_info_panel", true),
     ADREMOVER_MEDICAL_PANEL_REMOVAL_BOOLEAN("revanced_adremover_medical_panel", true),
