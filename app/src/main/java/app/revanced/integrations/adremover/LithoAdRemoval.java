@@ -62,6 +62,7 @@ public class LithoAdRemoval {
 
             if (SettingsEnum.ADREMOVER_COMMENTS_REMOVAL_BOOLEAN.getBoolean()) {
                 blockList.add("comments_composite_entry_point");
+                blockList.add("comments_entry_point_message");
             }
             if (SettingsEnum.ADREMOVER_COMMUNITY_GUIDELINES_BOOLEAN.getBoolean()) {
                 blockList.add("community_guidelines");
