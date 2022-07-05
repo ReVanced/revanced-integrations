@@ -46,6 +46,7 @@ public enum SettingsEnum {
     ADREMOVER_PAID_CONTECT_REMOVAL_BOOLEAN("revanced_adremover_paid_content", true),
     ADREMOVER_SUGGESTED_FOR_YOU_REMOVAL_BOOLEAN("revanced_adremover_suggested", true),
     ADREMOVER_HIDE_SUGGESTIONS_BOOLEAN("revanced_adremover_hide_suggestions", true),
+    ADREMOVER_HIDE_LATEST_POSTS_BOOLEAN("revanced_adremover_hide_latest_posts", true),
 
     //Layout settings
     REEL_BUTTON_SHOWN_BOOLEAN("revanced_reel_button_enabled", false),

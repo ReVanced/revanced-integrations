@@ -96,6 +96,8 @@ public class LithoAdRemoval {
             }
             if (SettingsEnum.ADREMOVER_HIDE_SUGGESTIONS_BOOLEAN.getBoolean()) {
                 blockList.add("horizontal_video_shelf");
+            }
+            if (SettingsEnum.ADREMOVER_HIDE_LATEST_POSTS_BOOLEAN.getBoolean()) {
                 blockList.add("post_shelf");
             }
 
