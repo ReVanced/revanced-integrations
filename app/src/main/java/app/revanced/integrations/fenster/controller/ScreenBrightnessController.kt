@@ -1,7 +1,7 @@
-package app.revanced.integrations.fenster.controllers
+package app.revanced.integrations.fenster.controller
 
 import android.app.Activity
-import app.revanced.integrations.fenster.util.clamp
+import app.revanced.integrations.fenster.misc.clamp
 
 /**
  * controller to adjust the screen brightness level

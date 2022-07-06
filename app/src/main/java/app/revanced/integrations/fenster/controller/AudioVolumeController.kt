@@ -1,9 +1,9 @@
-package app.revanced.integrations.fenster.controllers
+package app.revanced.integrations.fenster.controller
 
 import android.content.Context
 import android.media.AudioManager
 import android.os.Build
-import app.revanced.integrations.fenster.util.clamp
+import app.revanced.integrations.fenster.misc.clamp
 import app.revanced.integrations.utils.LogHelper
 import kotlin.properties.Delegates
 

@@ -1,4 +1,4 @@
-package app.revanced.integrations.fenster.util
+package app.revanced.integrations.fenster.misc
 
 import kotlin.math.abs
 import kotlin.math.sign

@@ -1,19 +1,21 @@
 package app.revanced.integrations.fenster
 
+import android.content.Context
 import app.revanced.integrations.settings.SettingsEnum
 
 /**
- * controls fenster feature enablement
+ * provider for configuration for fenster swipe controls
+ *
+ * @param context the context to create in
  */
-object FensterEnablement {
-
+class FensterConfigurationProvider(
+    private val context: Context
+) {
     /**
-     * should fenster be enabled? (global setting)
+     * should fenster be enabled? (global setting
      */
     val shouldEnableFenster: Boolean
-        get() {
-            return shouldEnableFensterVolumeControl || shouldEnableFensterBrightnessControl
-        }
+        get() = isFullscreenVideo && (shouldEnableFensterVolumeControl || shouldEnableFensterBrightnessControl)
 
     /**
      * should swipe controls for volume be enabled?
@@ -30,4 +32,10 @@ object FensterEnablement {
         get() {
             return SettingsEnum.ENABLE_SWIPE_BRIGHTNESS_BOOLEAN.boolean
         }
+
+    /**
+     * is the video player currently in fullscreen mode?
+     */
+    private val isFullscreenVideo: Boolean
+        get() = WatchWhilePlayerType.current == WatchWhilePlayerType.WATCH_WHILE_FULLSCREEN
 }
