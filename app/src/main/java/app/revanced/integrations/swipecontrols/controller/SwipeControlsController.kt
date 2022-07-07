@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.view.MotionEvent
 import app.revanced.integrations.swipecontrols.SwipeControlsConfigurationProvider
+import app.revanced.integrations.swipecontrols.controller.gesture.NoPtSSwipeGestureController
 import app.revanced.integrations.swipecontrols.controller.gesture.SwipeGestureController
 import app.revanced.integrations.swipecontrols.misc.Rectangle
 import app.revanced.integrations.swipecontrols.misc.SwipeControlsOverlay
@@ -70,7 +71,7 @@ object SwipeControlsController {
         hostActivity = host
 
         config = SwipeControlsConfigurationProvider(host)
-        gesture = SwipeGestureController(host, this)
+        gesture = createGestureController()
         thief = host.injectTouchThief(gesture!!)
         audio = createAudioController()
         screen = createScreenController()
@@ -104,6 +105,14 @@ object SwipeControlsController {
     private fun createScreenController() =
         if (config?.shouldEnableFensterBrightnessControl == true)
             ScreenBrightnessController(hostActivity!!) else null
+
+    /**
+     * create the gesture controller based on settings
+     */
+    private fun createGestureController() =
+        if (config?.shouldEnablePressToSwipe == true)
+            SwipeGestureController(hostActivity!!, this)
+        else NoPtSSwipeGestureController(hostActivity!!, this)
 
     /**
      * the current screen rectangle

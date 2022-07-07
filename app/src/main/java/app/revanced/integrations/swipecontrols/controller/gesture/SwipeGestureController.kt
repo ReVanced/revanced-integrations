@@ -15,12 +15,13 @@ import kotlin.math.abs
 import kotlin.math.pow
 
 /**
- * main gesture controller for fenster swipe controls
+ * base gesture controller for fenster swipe controls, with press-to-swipe enabled
+ * for the controller without press-to-swipe, see [NoPtSSwipeGestureController]
  *
  * @param context the context to create in
  * @param fenster reference to fenster controller instance
  */
-class SwipeGestureController(
+open class SwipeGestureController(
     context: Context,
     private val fenster: SwipeControlsController
 ) :
@@ -30,33 +31,34 @@ class SwipeGestureController(
     /**
      * the main gesture detector that powers everything
      */
-    private val detector = GestureDetector(context, this)
+    protected open val detector = GestureDetector(context, this)
 
     /**
      * to enable swipe controls, users must first long- press. this flags monitors that long- press
+     * NOTE: if you dislike press-to-swipe, and want it disabled, have a look at [NoPtSSwipeGestureController]. it does exactly that
      */
-    private var inSwipeSession = true
+    protected open var inSwipeSession = true
 
     /**
      * currently in- progress swipe
      */
-    private var currentSwipe: SwipeDirection = SwipeDirection.NONE
+    protected open var currentSwipe: SwipeDirection = SwipeDirection.NONE
 
     /**
      * were downstream event cancelled already? used by [onScroll]
      */
-    private var didCancelDownstream = false
+    protected open var didCancelDownstream = false
 
     /**
      * should [onTouchEvent] force- intercept all touch events?
      */
-    private val shouldForceInterceptEvents: Boolean
+    protected open val shouldForceInterceptEvents: Boolean
         get() = currentSwipe == SwipeDirection.VERTICAL && inSwipeSession
 
     /**
      * scroller for volume adjustment
      */
-    private val volumeScroller = ScrollDistanceHelper(
+    protected open val volumeScroller = ScrollDistanceHelper(
         10.applyDimension(
             context,
             TypedValue.COMPLEX_UNIT_DIP
@@ -71,7 +73,7 @@ class SwipeGestureController(
     /**
      * scroller for screen brightness adjustment
      */
-    private val brightnessScroller = ScrollDistanceHelper(
+    protected open val brightnessScroller = ScrollDistanceHelper(
         1.applyDimension(
             context,
             TypedValue.COMPLEX_UNIT_DIP
@@ -100,7 +102,7 @@ class SwipeGestureController(
      *
      * @param e the motion event
      */
-    private fun onUp(e: MotionEvent) {
+    open fun onUp(e: MotionEvent) {
         LogHelper.debug(this.javaClass, "onUp(${e.x}, ${e.y}, ${e.action})")
         inSwipeSession = false
         currentSwipe = SwipeDirection.NONE
@@ -108,7 +110,7 @@ class SwipeGestureController(
         volumeScroller.reset()
         brightnessScroller.reset()
     }
-    
+
     override fun onLongPress(e: MotionEvent?) {
         if (e == null) return
         LogHelper.debug(this.javaClass, "onLongPress(${e.x}, ${e.y}, ${e.action})")

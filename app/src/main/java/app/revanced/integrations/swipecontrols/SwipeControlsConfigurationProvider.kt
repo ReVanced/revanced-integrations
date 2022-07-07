@@ -21,17 +21,20 @@ class SwipeControlsConfigurationProvider(
      * should swipe controls for volume be enabled?
      */
     val shouldEnableFensterVolumeControl: Boolean
-        get() {
-            return SettingsEnum.ENABLE_SWIPE_VOLUME_BOOLEAN.boolean
-        }
+        get() = SettingsEnum.ENABLE_SWIPE_VOLUME_BOOLEAN.boolean
+
 
     /**
      * should swipe controls for volume be enabled?
      */
     val shouldEnableFensterBrightnessControl: Boolean
-        get() {
-            return SettingsEnum.ENABLE_SWIPE_BRIGHTNESS_BOOLEAN.boolean
-        }
+        get() = SettingsEnum.ENABLE_SWIPE_BRIGHTNESS_BOOLEAN.boolean
+
+    /**
+     * should press-to-swipe be enabled?
+     */
+    val shouldEnablePressToSwipe: Boolean
+        get() = false
 
     /**
      * is the video player currently in fullscreen mode?
