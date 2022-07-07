@@ -173,8 +173,10 @@ class FensterController {
          * @param e the motion event
          */
         fun onUp(e: MotionEvent) {
-            LogHelper.debug(this.javaClass, "onUp(${e.x}, ${e.y}, ${e.action})")
             inSwipeSession = true
+		    e.action = MotionEvent.ACTION_UP
+			e.action = MotionEvent.ACTION_DOWN
+            LogHelper.debug(this.javaClass, "onUp(${e.x}, ${e.y}, ${e.action})")
             volumeScroller.reset()
             brightnessScroller.reset()
         }
