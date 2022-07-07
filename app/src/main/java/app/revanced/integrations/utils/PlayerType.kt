@@ -1,12 +1,10 @@
-package app.revanced.integrations.swipecontrols
-
-import app.revanced.integrations.utils.Event
+package app.revanced.integrations.utils
 
 /**
  * WatchWhile player type
  */
 @Suppress("unused")
-enum class WatchWhilePlayerType {
+enum class PlayerType {
     NONE,
     HIDDEN,
     WATCH_WHILE_MINIMIZED,
@@ -28,12 +26,12 @@ enum class WatchWhilePlayerType {
          * @return the enum constant, or null if not found
          */
         @JvmStatic
-        fun safeParseFromString(name: String): WatchWhilePlayerType? {
+        fun safeParseFromString(name: String): PlayerType? {
             return values().firstOrNull { it.name == name }
         }
 
         /**
-         * the current player type, as reported by [app.revanced.integrations.patches.FensterSwipePatch.YouTubePlayerOverlaysLayout_updatePlayerTypeHookEX]
+         * the current player type, as reported by [app.revanced.integrations.patches.PlayerTypeHookPatch.YouTubePlayerOverlaysLayout_updatePlayerTypeHookEX]
          */
         @JvmStatic
         var current
@@ -47,6 +45,6 @@ enum class WatchWhilePlayerType {
         /**
          * player type change listener
          */
-        val onChange = Event<WatchWhilePlayerType>()
+        val onChange = Event<PlayerType>()
     }
 }
