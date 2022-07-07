@@ -4,7 +4,9 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.view.MotionEvent
 import app.revanced.integrations.swipecontrols.SwipeControlsConfigurationProvider
+import app.revanced.integrations.swipecontrols.controller.gesture.SwipeGestureController
 import app.revanced.integrations.swipecontrols.misc.Rectangle
+import app.revanced.integrations.swipecontrols.misc.SwipeControlsOverlay
 import app.revanced.integrations.swipecontrols.misc.SwipeZonesHelper
 import app.revanced.integrations.swipecontrols.views.SwipeControlsOverlayLayout
 import app.revanced.integrations.swipecontrols.views.TouchThiefLayout
@@ -39,11 +41,11 @@ object SwipeControlsController {
     /**
      * current instance of [SwipeControlsOverlayLayout]
      */
-    var overlay: SwipeControlsOverlayLayout? = null
+    var overlay: SwipeControlsOverlay? = null
         private set
 
     private var hostActivity: Activity? = null
-    private var gesture: SwipeControlsGestureController? = null
+    private var gesture: SwipeGestureController? = null
     private var thief: TouchThiefLayout? = null
 
     /**
@@ -68,14 +70,16 @@ object SwipeControlsController {
         hostActivity = host
 
         config = SwipeControlsConfigurationProvider(host)
-        gesture = SwipeControlsGestureController(host, this)
+        gesture = SwipeGestureController(host, this)
         thief = host.injectTouchThief(gesture!!)
         audio = createAudioController()
         screen = createScreenController()
 
         // create overlay
-        overlay = SwipeControlsOverlayLayout(host)
-        thief?.addView(overlay)
+        SwipeControlsOverlayLayout(host).let {
+            overlay = it
+            thief?.addView(it)
+        }
     }
 
     /**
@@ -95,7 +99,7 @@ object SwipeControlsController {
             AudioVolumeController(hostActivity!!) else null
 
     /**
-     * create the screen brithness controller instance
+     * create the screen brightness controller instance
      */
     private fun createScreenController() =
         if (config?.shouldEnableFensterBrightnessControl == true)
