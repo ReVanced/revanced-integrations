@@ -19,6 +19,11 @@ class NoPtSSwipeGestureController(context: Context, fenster: SwipeControlsContro
         set(_) {}
 
     override fun onLongPress(e: MotionEvent?) {
-        // ignore long presses, they are evil
+        if (e == null) return
+
+        // send GestureDetector a ACTION_CANCEL event so it will handle further events
+        // if this is left out, swipe-to-dismiss is triggered when scrolling down
+        e.action = MotionEvent.ACTION_CANCEL
+        detector.onTouchEvent(e)
     }
 }
