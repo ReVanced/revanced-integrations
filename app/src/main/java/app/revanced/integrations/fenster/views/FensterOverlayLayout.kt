@@ -61,7 +61,7 @@ class FensterOverlayLayout(
     private fun showFeedbackView() {
         feedbackTextView.visibility = View.VISIBLE
         feedbackHideHandler.removeCallbacks(feedbackHideCallback)
-        feedbackHideHandler.postDelayed(feedbackHideCallback, 2000)
+        feedbackHideHandler.postDelayed(feedbackHideCallback, 500)
     }
 
     override fun onVolumeChanged(newVolume: Int, maximumVolume: Int) {

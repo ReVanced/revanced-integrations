@@ -33,6 +33,8 @@ class FensterGestureController(
     /**
      * to enable swipe controls, users must first long- press. this flags monitors that long- press
      */
+    //TODO add option to disable press-to-swipe in settings, default it
+    // to false since a lot of people seem to dislike it :(
     private var inSwipeSession = false
 
     /**

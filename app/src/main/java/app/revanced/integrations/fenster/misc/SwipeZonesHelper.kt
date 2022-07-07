@@ -24,7 +24,7 @@ import android.util.TypedValue
  * X- Axis:
  *  0    xBrigStart    xBrigEnd    xVolStart     xVolEnd   screenWidth
  *  |          |            |          |            |          |
- *  |   40dp   |   220dp    |          |   220dp    |   40dp   |
+ *  |   40dp   |   200dp    |          |   200dp    |   40dp   |
  *  | <------> |  <------>  | <------> |  <------>  | <------> |
  *  |   dead   | brightness |   dead   |   volume   |   dead   |
  */
@@ -41,12 +41,12 @@ object SwipeZonesHelper {
     fun getVolumeControlZone(context: Context, screenRect: Rectangle): Rectangle {
         val _40dp = 40.applyDimension(context, TypedValue.COMPLEX_UNIT_DIP)
         val _80dp = 80.applyDimension(context, TypedValue.COMPLEX_UNIT_DIP)
-        val _220dp = 220.applyDimension(context, TypedValue.COMPLEX_UNIT_DIP)
+        val _200dp = 200.applyDimension(context, TypedValue.COMPLEX_UNIT_DIP)
 
         return Rectangle(
-            screenRect.right - _40dp - _220dp,
+            screenRect.right - _40dp - _200dp,
             screenRect.top + _40dp,
-            _220dp,
+            _200dp,
             screenRect.height - _40dp - _80dp
         )
     }
@@ -61,12 +61,12 @@ object SwipeZonesHelper {
     fun getBrightnessControlZone(context: Context, screenRect: Rectangle): Rectangle {
         val _40dp = 40.applyDimension(context, TypedValue.COMPLEX_UNIT_DIP)
         val _80dp = 80.applyDimension(context, TypedValue.COMPLEX_UNIT_DIP)
-        val _220dp = 220.applyDimension(context, TypedValue.COMPLEX_UNIT_DIP)
+        val _200dp = 200.applyDimension(context, TypedValue.COMPLEX_UNIT_DIP)
 
         return Rectangle(
             screenRect.left + _40dp,
             screenRect.top + _40dp,
-            _220dp,
+            _200dp,
             screenRect.height - _40dp - _80dp
         )
     }
