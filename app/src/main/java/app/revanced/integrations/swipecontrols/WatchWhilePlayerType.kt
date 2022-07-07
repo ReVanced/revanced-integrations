@@ -1,7 +1,7 @@
-package app.revanced.integrations.fenster
+package app.revanced.integrations.swipecontrols
 
 /**
- * WatchWhile player types
+ * WatchWhile player type
  */
 @Suppress("unused")
 enum class WatchWhilePlayerType {
@@ -19,9 +19,21 @@ enum class WatchWhilePlayerType {
     WATCH_WHILE_PICTURE_IN_PICTURE;
 
     companion object {
+        /**
+         * safely parse from a string
+         *
+         * @param name the name to find
+         * @return the enum constant, or null if not found
+         */
         @JvmStatic
         fun safeParseFromString(name: String): WatchWhilePlayerType? {
             return values().firstOrNull { it.name == name }
         }
+
+        /**
+         * the current player type, as reported by [app.revanced.integrations.patches.FensterSwipePatch.YouTubePlayerOverlaysLayout_updatePlayerTypeHookEX]
+         */
+        @JvmStatic
+        var current = NONE
     }
 }

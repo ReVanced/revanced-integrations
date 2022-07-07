@@ -1,12 +1,11 @@
 package app.revanced.integrations.patches;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.view.MotionEvent;
-import android.view.ViewGroup;
 
-import app.revanced.integrations.fenster.WatchWhilePlayerType;
-import app.revanced.integrations.fenster.controllers.FensterController;
+import androidx.annotation.Nullable;
+
+import app.revanced.integrations.swipecontrols.WatchWhilePlayerType;
+import app.revanced.integrations.swipecontrols.controller.SwipeControlsController;
 import app.revanced.integrations.utils.LogHelper;
 
 /**
@@ -16,24 +15,18 @@ import app.revanced.integrations.utils.LogHelper;
  * @smali Lapp/revanced/integrations/patches/FensterSwipePatch;
  */
 @SuppressWarnings("unused")
+//TODO rename class to 'SwipeControlsPatch' & adjust patch aswell
 public final class FensterSwipePatch {
-
-    /**
-     * main fenster controller instance
-     */
-    @SuppressLint("StaticFieldLeak")
-    private static final FensterController FENSTER = new FensterController();
-
     /**
      * Hook into the main activity lifecycle
      *
      * @param thisRef reference to the WatchWhileActivity instance
      * @smali Lapp/revanced/integrations/patches/FensterSwipePatch;->WatchWhileActivity_onStartHookEX(Ljava/lang/Object;)V
      */
-    public static void WatchWhileActivity_onStartHookEX(Object thisRef) {
+    public static void WatchWhileActivity_onStartHookEX(@Nullable Object thisRef) {
         if (thisRef == null) return;
         if (thisRef instanceof Activity) {
-            FENSTER.initializeController((Activity) thisRef);
+            SwipeControlsController.INSTANCE.initialize((Activity) thisRef);
         }
     }
 
@@ -43,11 +36,8 @@ public final class FensterSwipePatch {
      * @param thisRef reference to the PlayerOverlays instance
      * @smali Lapp/revanced/integrations/patches/FensterSwipePatch;->YouTubePlayerOverlaysLayout_onFinishInflateHookEX(Ljava/lang/Object;)V
      */
-    public static void YouTubePlayerOverlaysLayout_onFinishInflateHookEX(Object thisRef) {
-        if (thisRef == null) return;
-        if (thisRef instanceof ViewGroup) {
-            FENSTER.initializeOverlay((ViewGroup) thisRef);
-        }
+    public static void YouTubePlayerOverlaysLayout_onFinishInflateHookEX(@Nullable Object thisRef) {
+        //TODO remove
     }
 
     /**
@@ -56,13 +46,17 @@ public final class FensterSwipePatch {
      * @param type the new player type
      * @smali Lapp/revanced/integrations/patches/FensterSwipePatch;->YouTubePlayerOverlaysLayout_updatePlayerTypeHookEX(Ljava/lang/Object;)V
      */
-    public static void YouTubePlayerOverlaysLayout_updatePlayerTypeHookEX(Object type) {
+    public static void YouTubePlayerOverlaysLayout_updatePlayerTypeHookEX(@Nullable Object type) {
         if (type == null) return;
 
-        // disable processing events if not watching fullscreen video
-        WatchWhilePlayerType playerType = WatchWhilePlayerType.safeParseFromString(type.toString());
-        FENSTER.setEnabled(playerType == WatchWhilePlayerType.WATCH_WHILE_FULLSCREEN);
-        LogHelper.debug(FensterSwipePatch.class, "WatchWhile player type was updated to " + playerType);
+        //TODO move to own patch?
+
+        // update current player type
+        final WatchWhilePlayerType newType = WatchWhilePlayerType.safeParseFromString(type.toString());
+        if (newType != null) {
+            WatchWhilePlayerType.setCurrent(newType);
+            LogHelper.debug(FensterSwipePatch.class, "WatchWhile player type was updated to " + newType);
+        }
     }
 
     /**
@@ -73,12 +67,8 @@ public final class FensterSwipePatch {
      * @return was the event consumed by the hook?
      * @smali Lapp/revanced/integrations/patches/FensterSwipePatch;->NextGenWatchLayout_onTouchEventHookEX(Ljava/lang/Object;Ljava/lang/Object;)Z
      */
-    public static boolean NextGenWatchLayout_onTouchEventHookEX(Object thisRef, Object motionEvent) {
-        if (motionEvent == null) return false;
-        if (motionEvent instanceof MotionEvent) {
-            return FENSTER.onTouchEvent((MotionEvent) motionEvent);
-        }
-
+    public static boolean NextGenWatchLayout_onTouchEventHookEX(@Nullable Object thisRef, @Nullable Object motionEvent) {
+        //TODO remove
         return false;
     }
 
@@ -90,12 +80,8 @@ public final class FensterSwipePatch {
      * @return was the event consumed by the hook?
      * @smali Lapp/revanced/integrations/patches/FensterSwipePatch;->NextGenWatchLayout_onInterceptTouchEventHookEX(Ljava/lang/Object;Ljava/lang/Object;)Z
      */
-    public static boolean NextGenWatchLayout_onInterceptTouchEventHookEX(Object thisRef, Object motionEvent) {
-        if (motionEvent == null) return false;
-        if (motionEvent instanceof MotionEvent) {
-            return FENSTER.onTouchEvent((MotionEvent) motionEvent);
-        }
-
+    public static boolean NextGenWatchLayout_onInterceptTouchEventHookEX(@Nullable Object thisRef, @Nullable Object motionEvent) {
+        //TODO remove
         return false;
     }
 }
