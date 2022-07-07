@@ -75,7 +75,8 @@ class SwipeControlsOverlayLayout(
     }
 
     override fun onBrightnessChanged(brightness: Double) {
-        feedbackTextView.text = "Brightness ${round(brightness).toInt()}%"
+        feedbackTextView.text =
+            if (brightness > 0) "Brightness ${round(brightness).toInt()}%" else "Brightness AUTO"
         showFeedbackView()
     }
 

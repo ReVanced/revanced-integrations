@@ -64,9 +64,9 @@ open class SwipeGestureController(
             TypedValue.COMPLEX_UNIT_DIP
         )
     ) { _, _, direction ->
-        SwipeControlsController.audio?.apply {
+        fenster.audio?.apply {
             volume += direction
-            SwipeControlsController.overlay?.onVolumeChanged(volume, maxVolume)
+            fenster.overlay?.onVolumeChanged(volume, maxVolume)
         }
     }
 
@@ -79,14 +79,19 @@ open class SwipeGestureController(
             TypedValue.COMPLEX_UNIT_DIP
         )
     ) { _, _, direction ->
-        SwipeControlsController.screen?.apply {
-            screenBrightness += direction
-            SwipeControlsController.overlay?.onBrightnessChanged(screenBrightness)
+        fenster.screen?.apply {
+            if(screenBrightness > 0 || direction > 0) {
+                screenBrightness += direction
+            } else {
+                restoreDefaultBrightness()
+            }
+
+            fenster.overlay?.onBrightnessChanged(screenBrightness)
         }
     }
 
     override fun onTouchEvent(motionEvent: MotionEvent): Boolean {
-        if (SwipeControlsController.config?.shouldEnableFenster == false) {
+        if (fenster.config?.shouldEnableFenster == false) {
             return false
         }
         if (motionEvent.action == MotionEvent.ACTION_UP) {
@@ -117,7 +122,7 @@ open class SwipeGestureController(
 
         // enter swipe session with feedback
         inSwipeSession = true
-        SwipeControlsController.overlay?.onEnterSwipeSession()
+        fenster.overlay?.onEnterSwipeSession()
 
         // send GestureDetector a ACTION_CANCEL event so it will handle further events
         e.action = MotionEvent.ACTION_CANCEL
@@ -171,15 +176,15 @@ open class SwipeGestureController(
                 if (!didCancelDownstream) {
                     val eCancel = MotionEvent.obtain(eFrom)
                     eCancel.action = MotionEvent.ACTION_CANCEL
-                    SwipeControlsController.dispatchDownstreamTouchEvent(eCancel)
+                    fenster.dispatchDownstreamTouchEvent(eCancel)
                     eCancel.recycle()
                     didCancelDownstream = true
                 }
 
                 // then, process the event
                 when (eFrom.toPoint()) {
-                    in SwipeControlsController.volumeZone -> volumeScroller.add(disY.toDouble())
-                    in SwipeControlsController.brightnessZone -> brightnessScroller.add(disY.toDouble())
+                    in fenster.volumeZone -> volumeScroller.add(disY.toDouble())
+                    in fenster.brightnessZone -> brightnessScroller.add(disY.toDouble())
                 }
                 return true
             }
