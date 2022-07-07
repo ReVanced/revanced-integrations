@@ -70,12 +70,22 @@ class TouchThiefLayout(
 }
 
 /**
- * inject a [TouchThiefLayout] into the activity content
+ * attach a [TouchThiefLayout] to the activity content
  *
  * @param listener the listener to set to the touch thief
  * @return the touch thief instance
  */
-fun Activity.injectTouchThief(listener: TouchThiefLayout.TouchEventListener): TouchThiefLayout {
+fun Activity.attachTouchThief(listener: TouchThiefLayout.TouchEventListener): TouchThiefLayout {
+    // get targets
+    val contentView: ViewGroup = window.decorView.findViewById(android.R.id.content)!!
+    var ytContent = contentView.getChildAt(0)
+
+    // detach previously attached thief first
+    if(ytContent is TouchThiefLayout) {
+        contentView.removeView(ytContent)
+        ytContent = ytContent.getChildAt(0)
+    }
+
     // create thief
     val thief = TouchThiefLayout(this, listener).apply {
         layoutParams = ViewGroup.LayoutParams(
@@ -85,8 +95,6 @@ fun Activity.injectTouchThief(listener: TouchThiefLayout.TouchEventListener): To
     }
 
     // insert the thief as parent to the actual content
-    val contentView: ViewGroup = window.decorView.findViewById(android.R.id.content)!!
-    val ytContent = contentView.getChildAt(0)
     contentView.removeView(ytContent)
     contentView.addView(thief)
     thief.addView(ytContent)

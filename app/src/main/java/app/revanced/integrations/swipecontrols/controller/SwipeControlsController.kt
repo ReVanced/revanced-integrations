@@ -12,7 +12,7 @@ import app.revanced.integrations.swipecontrols.misc.SwipeControlsOverlay
 import app.revanced.integrations.swipecontrols.misc.SwipeZonesHelper
 import app.revanced.integrations.swipecontrols.views.SwipeControlsOverlayLayout
 import app.revanced.integrations.swipecontrols.views.TouchThiefLayout
-import app.revanced.integrations.swipecontrols.views.injectTouchThief
+import app.revanced.integrations.swipecontrols.views.attachTouchThief
 import app.revanced.integrations.utils.LogHelper
 
 /**
@@ -73,7 +73,7 @@ object SwipeControlsController {
 
         config = SwipeControlsConfigurationProvider(host)
         gesture = createGestureController()
-        thief = host.injectTouchThief(gesture!!)
+        thief = host.attachTouchThief(gesture!!)
         audio = createAudioController()
         screen = createScreenController()
 
