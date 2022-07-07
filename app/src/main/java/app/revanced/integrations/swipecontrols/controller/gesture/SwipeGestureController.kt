@@ -141,12 +141,11 @@ open class SwipeGestureController(
             // if the user did not swipe far enough, we cannot detect what direction they swiped
             // so we wait until a greater distance was swiped
             // NOTE: sqrt() can be high- cost, so using squared magnitudes here
-            //TODO load magnitude threshold from config
             SwipeDirection.NONE -> {
                 val deltaX = abs(eTo.x - eFrom.x)
                 val deltaY = abs(eTo.y - eFrom.y)
                 val swipeMagnitudeSquared = deltaX.pow(2) + deltaY.pow(2)
-                if (swipeMagnitudeSquared > 30f.pow(2)) {
+                if (swipeMagnitudeSquared > fenster.config!!.swipeMagnitudeThreshold.pow(2)) {
                     currentSwipe = if (deltaY > deltaX) {
                         SwipeDirection.VERTICAL
                     } else {

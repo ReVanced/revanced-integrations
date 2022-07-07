@@ -5,7 +5,7 @@ package app.revanced.integrations.swipecontrols.misc
  */
 interface SwipeControlsOverlay {
     /**
-     * called when the curently set volume level was changed
+     * called when the currently set volume level was changed
      *
      * @param newVolume the new volume level
      * @param maximumVolume the maximum volume index
@@ -23,9 +23,4 @@ interface SwipeControlsOverlay {
      * called when a new swipe- session has started
      */
     fun onEnterSwipeSession()
-
-    /**
-     * called when fling-to-mute was triggered
-     */
-    fun onFlingToMutePerformed()
 }

@@ -2,7 +2,6 @@ package app.revanced.integrations.swipecontrols.views
 
 import android.content.Context
 import android.graphics.Color
-import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.util.TypedValue
@@ -11,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.RelativeLayout
 import android.widget.TextView
+import app.revanced.integrations.swipecontrols.SwipeControlsConfigurationProvider
 import app.revanced.integrations.swipecontrols.misc.SwipeControlsOverlay
 import app.revanced.integrations.swipecontrols.misc.applyDimension
 import kotlin.math.round
@@ -21,8 +21,13 @@ import kotlin.math.round
  * @param context context to create in
  */
 class SwipeControlsOverlayLayout(
-    context: Context
+    context: Context,
+    private val config: SwipeControlsConfigurationProvider
 ) : RelativeLayout(context), SwipeControlsOverlay {
+    /**
+     * DO NOT use this, for tools only
+     */
+    constructor(context: Context) : this(context, SwipeControlsConfigurationProvider(context))
 
     private val feedbackTextView: TextView
 
@@ -61,7 +66,7 @@ class SwipeControlsOverlayLayout(
     private fun showFeedbackView() {
         feedbackTextView.visibility = View.VISIBLE
         feedbackHideHandler.removeCallbacks(feedbackHideCallback)
-        feedbackHideHandler.postDelayed(feedbackHideCallback, 500)
+        feedbackHideHandler.postDelayed(feedbackHideCallback, config.overlayShowTimeoutMillis)
     }
 
     override fun onVolumeChanged(newVolume: Int, maximumVolume: Int) {
@@ -75,16 +80,11 @@ class SwipeControlsOverlayLayout(
     }
 
     override fun onEnterSwipeSession() {
-        performHapticFeedback(
-            HapticFeedbackConstants.LONG_PRESS,
-            HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING
-        )
-    }
-
-    override fun onFlingToMutePerformed() {
-        performHapticFeedback(
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) HapticFeedbackConstants.REJECT else HapticFeedbackConstants.LONG_PRESS,
-            HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING
-        )
+        if (config.shouldEnableHapticFeedback) {
+            performHapticFeedback(
+                HapticFeedbackConstants.LONG_PRESS,
+                HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING
+            )
+        }
     }
 }
