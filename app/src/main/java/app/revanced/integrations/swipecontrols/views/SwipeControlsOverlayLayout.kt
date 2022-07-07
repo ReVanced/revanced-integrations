@@ -47,7 +47,7 @@ class SwipeControlsOverlayLayout(
                     feedbackTextViewPadding
                 )
             }
-            setBackgroundColor(Color.BLACK)
+            setBackgroundColor(Color.argb(127, 0, 0, 0))
             setTextColor(Color.WHITE)
             setTextSize(TypedValue.COMPLEX_UNIT_SP, 20f)
             visibility = View.GONE
