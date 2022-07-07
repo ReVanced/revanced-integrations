@@ -70,7 +70,7 @@ public enum SettingsEnum {
     //ToDo: These Settings have to be added to revanced_prefs.xml
     ENABLE_PRESS_TO_SWIPE_BOOLEAN("revanced_enable_press_to_swipe", false),
     ENABLE_SWIPE_HAPTIC_FEEDBACK_BOOLEAN("revanced_enable_swipe_haptic_feedback", true),
-    SWIPE_OVERLAY_TIMEOUT_LONG("revanced_swipe_overlay_timeout", 500),
+    SWIPE_OVERLAY_TIMEOUT_LONG("revanced_swipe_overlay_timeout", 500L),
     SWIPE_MAGNITUDE_THRESHOLD_FLOAT("revanced_swipe_magnitude_threshold", 30f),
 
     //Buffer Settings

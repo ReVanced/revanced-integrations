@@ -1,5 +1,7 @@
 package app.revanced.integrations.swipecontrols
 
+import app.revanced.integrations.utils.Event
+
 /**
  * WatchWhile player type
  */
@@ -34,6 +36,17 @@ enum class WatchWhilePlayerType {
          * the current player type, as reported by [app.revanced.integrations.patches.FensterSwipePatch.YouTubePlayerOverlaysLayout_updatePlayerTypeHookEX]
          */
         @JvmStatic
-        var current = NONE
+        var current
+            get() = currentPlayerType
+            set(value) {
+                currentPlayerType = value
+                onChange(currentPlayerType)
+            }
+        private var currentPlayerType = NONE
+
+        /**
+         * player type change listener
+         */
+        val onChange = Event<WatchWhilePlayerType>()
     }
 }

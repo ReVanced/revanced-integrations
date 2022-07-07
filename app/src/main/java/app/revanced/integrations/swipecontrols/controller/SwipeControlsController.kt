@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.view.MotionEvent
 import app.revanced.integrations.swipecontrols.SwipeControlsConfigurationProvider
+import app.revanced.integrations.swipecontrols.WatchWhilePlayerType
 import app.revanced.integrations.swipecontrols.controller.gesture.NoPtSSwipeGestureController
 import app.revanced.integrations.swipecontrols.controller.gesture.SwipeGestureController
 import app.revanced.integrations.swipecontrols.misc.Rectangle
@@ -81,6 +82,24 @@ object SwipeControlsController {
             overlay = it
             thief?.addView(it)
         }
+
+        // listen for changes in the player type
+        WatchWhilePlayerType.onChange += this::onPlayerTypeChanged
+    }
+
+    /**
+     * called when the player type changes
+     *
+     * @param type the new player type
+     */
+    private fun onPlayerTypeChanged(type: WatchWhilePlayerType) {
+        when (type) {
+            WatchWhilePlayerType.WATCH_WHILE_FULLSCREEN -> screen?.restore()
+            else -> {
+                screen?.save()
+                screen?.restoreDefaultBrightness()
+            }
+        }
     }
 
     /**
@@ -131,4 +150,5 @@ object SwipeControlsController {
      */
     val brightnessZone: Rectangle
         get() = SwipeZonesHelper.getBrightnessControlZone(hostActivity!!, screenRect)
+
 }
