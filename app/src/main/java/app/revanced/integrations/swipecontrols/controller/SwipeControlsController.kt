@@ -4,7 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.view.MotionEvent
 import app.revanced.integrations.swipecontrols.SwipeControlsConfigurationProvider
-import app.revanced.integrations.swipecontrols.WatchWhilePlayerType
+import app.revanced.integrations.utils.PlayerType
 import app.revanced.integrations.swipecontrols.controller.gesture.NoPtSSwipeGestureController
 import app.revanced.integrations.swipecontrols.controller.gesture.SwipeGestureController
 import app.revanced.integrations.swipecontrols.misc.Rectangle
@@ -16,7 +16,7 @@ import app.revanced.integrations.swipecontrols.views.attachTouchThief
 import app.revanced.integrations.utils.LogHelper
 
 /**
- * The main controller for 'FensterV2' Swipe controls
+ * The main controller for volume and brightness swipe controls
  */
 //TODO options to remove this supression?
 @SuppressLint("StaticFieldLeak")
@@ -68,7 +68,7 @@ object SwipeControlsController {
         }
 
         // create controllers
-        LogHelper.info(this.javaClass, "initializing FensterV2 controllers")
+        LogHelper.info(this.javaClass, "initializing swipe controls controllers")
         hostActivity = host
 
         config = SwipeControlsConfigurationProvider(host)
@@ -84,7 +84,7 @@ object SwipeControlsController {
         }
 
         // listen for changes in the player type
-        WatchWhilePlayerType.onChange += this::onPlayerTypeChanged
+        PlayerType.onChange += this::onPlayerTypeChanged
     }
 
     /**
@@ -92,9 +92,9 @@ object SwipeControlsController {
      *
      * @param type the new player type
      */
-    private fun onPlayerTypeChanged(type: WatchWhilePlayerType) {
+    private fun onPlayerTypeChanged(type: PlayerType) {
         when (type) {
-            WatchWhilePlayerType.WATCH_WHILE_FULLSCREEN -> screen?.restore()
+            PlayerType.WATCH_WHILE_FULLSCREEN -> screen?.restore()
             else -> {
                 screen?.save()
                 screen?.restoreDefaultBrightness()
@@ -115,14 +115,14 @@ object SwipeControlsController {
      * create the audio volume controller
      */
     private fun createAudioController() =
-        if (config?.shouldEnableFensterVolumeControl == true)
+        if (config?.enableVolumeControls == true)
             AudioVolumeController(hostActivity!!) else null
 
     /**
      * create the screen brightness controller instance
      */
     private fun createScreenController() =
-        if (config?.shouldEnableFensterBrightnessControl == true)
+        if (config?.enableBrightnessControl == true)
             ScreenBrightnessController(hostActivity!!) else null
 
     /**

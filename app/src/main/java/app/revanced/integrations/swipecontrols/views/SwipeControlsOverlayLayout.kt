@@ -16,7 +16,7 @@ import app.revanced.integrations.swipecontrols.misc.applyDimension
 import kotlin.math.round
 
 /**
- * main overlay layout for fenster
+ * main overlay layout for volume and brightness swipe controls
  *
  * @param context context to create in
  */

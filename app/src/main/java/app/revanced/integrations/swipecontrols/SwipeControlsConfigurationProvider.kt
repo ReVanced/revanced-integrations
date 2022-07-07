@@ -2,9 +2,10 @@ package app.revanced.integrations.swipecontrols
 
 import android.content.Context
 import app.revanced.integrations.settings.SettingsEnum
+import app.revanced.integrations.utils.PlayerType
 
 /**
- * provider for configuration for fenster swipe controls
+ * provider for configuration for volume and brightness swipe controls
  *
  * @param context the context to create in
  */
@@ -13,28 +14,28 @@ class SwipeControlsConfigurationProvider(
 ) {
 //region swipe enable
     /**
-     * should fenster be enabled? (global setting
+     * should swipe controls be enabled? (global setting
      */
-    val shouldEnableFenster: Boolean
-        get() = isFullscreenVideo && (shouldEnableFensterVolumeControl || shouldEnableFensterBrightnessControl)
+    val enableSwipeControls: Boolean
+        get() = isFullscreenVideo && (enableVolumeControls || enableBrightnessControl)
 
     /**
      * should swipe controls for volume be enabled?
      */
-    val shouldEnableFensterVolumeControl: Boolean
+    val enableVolumeControls: Boolean
         get() = SettingsEnum.ENABLE_SWIPE_VOLUME_BOOLEAN.boolean
 
     /**
      * should swipe controls for volume be enabled?
      */
-    val shouldEnableFensterBrightnessControl: Boolean
+    val enableBrightnessControl: Boolean
         get() = SettingsEnum.ENABLE_SWIPE_BRIGHTNESS_BOOLEAN.boolean
 
     /**
      * is the video player currently in fullscreen mode?
      */
     private val isFullscreenVideo: Boolean
-        get() = WatchWhilePlayerType.current == WatchWhilePlayerType.WATCH_WHILE_FULLSCREEN
+        get() = PlayerType.current == PlayerType.WATCH_WHILE_FULLSCREEN
 //endregion
 
 //region behaviour adjustments

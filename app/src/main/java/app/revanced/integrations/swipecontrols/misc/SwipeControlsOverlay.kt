@@ -1,7 +1,7 @@
 package app.revanced.integrations.swipecontrols.misc
 
 /**
- * Interface for all overlays for Fenster
+ * Interface for all overlays for swipe controls
  */
 interface SwipeControlsOverlay {
     /**

@@ -15,15 +15,15 @@ import kotlin.math.abs
 import kotlin.math.pow
 
 /**
- * base gesture controller for fenster swipe controls, with press-to-swipe enabled
+ * base gesture controller for volume and brightness swipe controls controls, with press-to-swipe enabled
  * for the controller without press-to-swipe, see [NoPtSSwipeGestureController]
  *
  * @param context the context to create in
- * @param fenster reference to fenster controller instance
+ * @param controller reference to main controller instance
  */
 open class SwipeGestureController(
     context: Context,
-    private val fenster: SwipeControlsController
+    private val controller: SwipeControlsController
 ) :
     GestureDetector.SimpleOnGestureListener(),
     TouchThiefLayout.TouchEventListener {
@@ -64,9 +64,9 @@ open class SwipeGestureController(
             TypedValue.COMPLEX_UNIT_DIP
         )
     ) { _, _, direction ->
-        fenster.audio?.apply {
+        controller.audio?.apply {
             volume += direction
-            fenster.overlay?.onVolumeChanged(volume, maxVolume)
+            controller.overlay?.onVolumeChanged(volume, maxVolume)
         }
     }
 
@@ -79,19 +79,19 @@ open class SwipeGestureController(
             TypedValue.COMPLEX_UNIT_DIP
         )
     ) { _, _, direction ->
-        fenster.screen?.apply {
+        controller.screen?.apply {
             if(screenBrightness > 0 || direction > 0) {
                 screenBrightness += direction
             } else {
                 restoreDefaultBrightness()
             }
 
-            fenster.overlay?.onBrightnessChanged(screenBrightness)
+            controller.overlay?.onBrightnessChanged(screenBrightness)
         }
     }
 
     override fun onTouchEvent(motionEvent: MotionEvent): Boolean {
-        if (fenster.config?.shouldEnableFenster == false) {
+        if (controller.config?.enableSwipeControls == false) {
             return false
         }
         if (motionEvent.action == MotionEvent.ACTION_UP) {
@@ -122,7 +122,7 @@ open class SwipeGestureController(
 
         // enter swipe session with feedback
         inSwipeSession = true
-        fenster.overlay?.onEnterSwipeSession()
+        controller.overlay?.onEnterSwipeSession()
 
         // send GestureDetector a ACTION_CANCEL event so it will handle further events
         e.action = MotionEvent.ACTION_CANCEL
@@ -150,7 +150,7 @@ open class SwipeGestureController(
                 val deltaX = abs(eTo.x - eFrom.x)
                 val deltaY = abs(eTo.y - eFrom.y)
                 val swipeMagnitudeSquared = deltaX.pow(2) + deltaY.pow(2)
-                if (swipeMagnitudeSquared > fenster.config!!.swipeMagnitudeThreshold.pow(2)) {
+                if (swipeMagnitudeSquared > controller.config!!.swipeMagnitudeThreshold.pow(2)) {
                     currentSwipe = if (deltaY > deltaX) {
                         SwipeDirection.VERTICAL
                     } else {
@@ -176,15 +176,15 @@ open class SwipeGestureController(
                 if (!didCancelDownstream) {
                     val eCancel = MotionEvent.obtain(eFrom)
                     eCancel.action = MotionEvent.ACTION_CANCEL
-                    fenster.dispatchDownstreamTouchEvent(eCancel)
+                    controller.dispatchDownstreamTouchEvent(eCancel)
                     eCancel.recycle()
                     didCancelDownstream = true
                 }
 
                 // then, process the event
                 when (eFrom.toPoint()) {
-                    in fenster.volumeZone -> volumeScroller.add(disY.toDouble())
-                    in fenster.brightnessZone -> brightnessScroller.add(disY.toDouble())
+                    in controller.volumeZone -> volumeScroller.add(disY.toDouble())
+                    in controller.brightnessZone -> brightnessScroller.add(disY.toDouble())
                 }
                 return true
             }
