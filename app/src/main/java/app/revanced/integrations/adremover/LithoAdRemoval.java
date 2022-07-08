@@ -50,6 +50,7 @@ public class LithoAdRemoval {
                 bufferBlockList.add("watch-vrecH");
             }
             if (SettingsEnum.ADREMOVER_MOVIE_REMOVAL_BOOLEAN.getBoolean()) {
+                blockList.add("browsy_bar");
                 blockList.add("compact_movie");
                 blockList.add("horizontal_movie_shelf");
                 blockList.add("movie_and_show_upsell_card");
