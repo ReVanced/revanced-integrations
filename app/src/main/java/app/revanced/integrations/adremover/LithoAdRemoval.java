@@ -102,7 +102,6 @@ public class LithoAdRemoval {
                 blockList.add("post_shelf");
             }
 
-
             if (containsAny(value,
                     "home_video_with_context",
                     "related_video_with_context",
