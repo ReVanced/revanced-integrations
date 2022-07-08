@@ -37,7 +37,9 @@ class ScreenBrightnessController(
      * save the current screen brightness, to be brought back using [restore]
      */
     fun save() {
-        savedScreenBrightness = rawScreenBrightness
+        if(savedScreenBrightness == null) {
+            savedScreenBrightness = rawScreenBrightness
+        }
     }
 
     /**
@@ -47,6 +49,7 @@ class ScreenBrightnessController(
         savedScreenBrightness?.let {
             rawScreenBrightness = it
         }
+        savedScreenBrightness = null
     }
 
     /**
