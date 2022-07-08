@@ -4,7 +4,7 @@ import android.app.Activity;
 
 import androidx.annotation.Nullable;
 
-import app.revanced.integrations.swipecontrols.controller.SwipeControlsController;
+import app.revanced.integrations.swipecontrols.views.SwipeControlsHostLayout;
 
 /**
  * Hook receiver class for 'swipe-controls' patch
@@ -24,7 +24,7 @@ public class SwipeControlsPatch {
     public static void WatchWhileActivity_onStartHookEX(@Nullable Object thisRef) {
         if (thisRef == null) return;
         if (thisRef instanceof Activity) {
-            SwipeControlsController.INSTANCE.initialize((Activity) thisRef);
+            SwipeControlsHostLayout.attachTo((Activity) thisRef, false);
         }
     }
 }

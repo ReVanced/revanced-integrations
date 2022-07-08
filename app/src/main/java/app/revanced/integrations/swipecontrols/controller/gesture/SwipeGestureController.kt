@@ -4,12 +4,11 @@ import android.content.Context
 import android.util.TypedValue
 import android.view.GestureDetector
 import android.view.MotionEvent
-import app.revanced.integrations.swipecontrols.controller.SwipeControlsController
+import app.revanced.integrations.swipecontrols.views.SwipeControlsHostLayout
 import app.revanced.integrations.swipecontrols.misc.ScrollDistanceHelper
 import app.revanced.integrations.swipecontrols.misc.applyDimension
 import app.revanced.integrations.swipecontrols.misc.contains
 import app.revanced.integrations.swipecontrols.misc.toPoint
-import app.revanced.integrations.swipecontrols.views.TouchThiefLayout
 import app.revanced.integrations.utils.LogHelper
 import kotlin.math.abs
 import kotlin.math.pow
@@ -21,12 +20,13 @@ import kotlin.math.pow
  * @param context the context to create in
  * @param controller reference to main controller instance
  */
+@Suppress("LeakingThis")
 open class SwipeGestureController(
     context: Context,
-    private val controller: SwipeControlsController
+    private val controller: SwipeControlsHostLayout
 ) :
     GestureDetector.SimpleOnGestureListener(),
-    TouchThiefLayout.TouchEventListener {
+    SwipeControlsHostLayout.TouchEventListener {
 
     /**
      * the main gesture detector that powers everything
@@ -66,7 +66,7 @@ open class SwipeGestureController(
     ) { _, _, direction ->
         controller.audio?.apply {
             volume += direction
-            controller.overlay?.onVolumeChanged(volume, maxVolume)
+            controller.overlay.onVolumeChanged(volume, maxVolume)
         }
     }
 
@@ -80,18 +80,18 @@ open class SwipeGestureController(
         )
     ) { _, _, direction ->
         controller.screen?.apply {
-            if(screenBrightness > 0 || direction > 0) {
+            if (screenBrightness > 0 || direction > 0) {
                 screenBrightness += direction
             } else {
                 restoreDefaultBrightness()
             }
 
-            controller.overlay?.onBrightnessChanged(screenBrightness)
+            controller.overlay.onBrightnessChanged(screenBrightness)
         }
     }
 
     override fun onTouchEvent(motionEvent: MotionEvent): Boolean {
-        if (controller.config?.enableSwipeControls == false) {
+        if (!controller.config.enableSwipeControls) {
             return false
         }
         if (motionEvent.action == MotionEvent.ACTION_UP) {
@@ -122,7 +122,7 @@ open class SwipeGestureController(
 
         // enter swipe session with feedback
         inSwipeSession = true
-        controller.overlay?.onEnterSwipeSession()
+        controller.overlay.onEnterSwipeSession()
 
         // send GestureDetector a ACTION_CANCEL event so it will handle further events
         e.action = MotionEvent.ACTION_CANCEL
@@ -150,7 +150,7 @@ open class SwipeGestureController(
                 val deltaX = abs(eTo.x - eFrom.x)
                 val deltaY = abs(eTo.y - eFrom.y)
                 val swipeMagnitudeSquared = deltaX.pow(2) + deltaY.pow(2)
-                if (swipeMagnitudeSquared > controller.config!!.swipeMagnitudeThreshold.pow(2)) {
+                if (swipeMagnitudeSquared > controller.config.swipeMagnitudeThreshold.pow(2)) {
                     currentSwipe = if (deltaY > deltaX) {
                         SwipeDirection.VERTICAL
                     } else {
