@@ -1,8 +1,8 @@
 package app.revanced.integrations.swipecontrols.views
 
 import android.content.Context
-import android.graphics.Color
 import android.graphics.drawable.Drawable
+import android.graphics.drawable.GradientDrawable
 import android.os.Handler
 import android.os.Looper
 import android.util.TypedValue
@@ -37,22 +37,22 @@ class SwipeControlsOverlayLayout(
     private val mutedVolumeIcon: Drawable
     private val normalVolumeIcon: Drawable
 
-    private fun getDrawable(name: String): Drawable {
+    private fun getDrawable(name: String, width: Int, height: Int): Drawable {
         return resources.getDrawable(
             ReVancedUtils.getResourceIdByName(context, "drawable", name),
             context.theme
         ).apply {
-            setTint(Color.WHITE)
+            setTint(config.overlayForegroundColor)
+            setBounds(
+                0,
+                0,
+                width,
+                height
+            )
         }
     }
 
     init {
-        // get icon ids
-        autoBrightnessIcon = getDrawable("ic_sc_brightness_auto")
-        manualBrightnessIcon = getDrawable("ic_sc_brightness_manual")
-        mutedVolumeIcon = getDrawable("ic_sc_volume_mute")
-        normalVolumeIcon = getDrawable("ic_sc_volume_normal")
-
         // init views
         val feedbackTextViewPadding = 2.applyDimension(context, TypedValue.COMPLEX_UNIT_DIP)
         val compoundIconPadding = 4.applyDimension(context, TypedValue.COMPLEX_UNIT_DIP)
@@ -69,13 +69,23 @@ class SwipeControlsOverlayLayout(
                     feedbackTextViewPadding
                 )
             }
-            setBackgroundColor(Color.argb(127, 0, 0, 0))
-            setTextColor(Color.WHITE)
-            setTextSize(TypedValue.COMPLEX_UNIT_SP, 22f)
+            background = GradientDrawable().apply {
+                cornerRadius = 8f
+                setColor(config.overlayTextBackgroundColor)
+            }
+            setTextColor(config.overlayForegroundColor)
+            setTextSize(TypedValue.COMPLEX_UNIT_SP, config.overlayTextSize)
             compoundDrawablePadding = compoundIconPadding
             visibility = GONE
         }
         addView(feedbackTextView)
+
+        // get icons scaled, assuming square icons
+        val iconHeight = round(feedbackTextView.lineHeight * .8).toInt()
+        autoBrightnessIcon = getDrawable("ic_sc_brightness_auto", iconHeight, iconHeight)
+        manualBrightnessIcon = getDrawable("ic_sc_brightness_manual", iconHeight, iconHeight)
+        mutedVolumeIcon = getDrawable("ic_sc_volume_mute", iconHeight, iconHeight)
+        normalVolumeIcon = getDrawable("ic_sc_volume_normal", iconHeight, iconHeight)
     }
 
     private val feedbackHideHandler = Handler(Looper.getMainLooper())
@@ -94,7 +104,7 @@ class SwipeControlsOverlayLayout(
         feedbackHideHandler.postDelayed(feedbackHideCallback, config.overlayShowTimeoutMillis)
         feedbackTextView.apply {
             text = message
-            setCompoundDrawablesRelativeWithIntrinsicBounds(
+            setCompoundDrawablesRelative(
                 icon,
                 null,
                 null,

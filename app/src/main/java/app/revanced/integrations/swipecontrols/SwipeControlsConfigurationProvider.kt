@@ -1,6 +1,7 @@
 package app.revanced.integrations.swipecontrols
 
 import android.content.Context
+import android.graphics.Color
 import app.revanced.integrations.settings.SettingsEnum
 import app.revanced.integrations.utils.PlayerType
 
@@ -38,12 +39,21 @@ class SwipeControlsConfigurationProvider(
         get() = PlayerType.current == PlayerType.WATCH_WHILE_FULLSCREEN
 //endregion
 
-//region behaviour adjustments
+//region gesture adjustments
     /**
      * should press-to-swipe be enabled?
      */
     val shouldEnablePressToSwipe: Boolean
         get() = SettingsEnum.ENABLE_PRESS_TO_SWIPE_BOOLEAN.boolean
+
+    /**
+     * threshold for swipe detection
+     * this may be called rapidly in onScroll, so we have to load it once and then leave it constant
+     */
+    val swipeMagnitudeThreshold: Float = SettingsEnum.SWIPE_MAGNITUDE_THRESHOLD_FLOAT.float
+//endregion
+
+//region overlay adjustments
 
     /**
      * should the overlay enable haptic feedback?
@@ -58,9 +68,22 @@ class SwipeControlsConfigurationProvider(
         get() = SettingsEnum.SWIPE_OVERLAY_TIMEOUT_LONG.long
 
     /**
-     * threshold for swipe detection
-     * this may be called rapidly in onScroll, so we have to load it once and then leave it constant
+     * text size for the overlay, in sp
      */
-    val swipeMagnitudeThreshold: Float = SettingsEnum.SWIPE_MAGNITUDE_THRESHOLD_FLOAT.float
+    val overlayTextSize: Float
+        get() = SettingsEnum.SWIPE_OVERLAY_TEXT_SIZE_FLOAT.float
+
+    /**
+     * get the background color for text on the overlay, as a color int
+     */
+    val overlayTextBackgroundColor: Int
+        get() = Color.argb(SettingsEnum.SWIPE_OVERLAY_BACKGROUND_ALPHA_INTEGER.int, 0, 0, 0)
+
+    /**
+     * get the foreground color for text on the overlay, as a color int
+     */
+    val overlayForegroundColor: Int
+        get() = Color.WHITE
+
 //endregion
 }
