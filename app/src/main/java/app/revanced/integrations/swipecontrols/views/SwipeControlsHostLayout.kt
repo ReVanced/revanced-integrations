@@ -190,9 +190,10 @@ class SwipeControlsHostLayout(
             val contentView: ViewGroup = window.decorView.findViewById(android.R.id.content)!!
             var content = contentView.getChildAt(0)
 
-            // detach previously attached thief first
+            // detach previously attached swipe host first
             if (content is SwipeControlsHostLayout) {
                 contentView.removeView(content)
+                content.removeAllViews()
                 content = content.mainContentChild
             }
 
