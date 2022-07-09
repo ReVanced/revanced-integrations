@@ -66,8 +66,6 @@ public enum SettingsEnum {
     //Swipe controls
     ENABLE_SWIPE_BRIGHTNESS_BOOLEAN("revanced_enable_swipe_brightness", true),
     ENABLE_SWIPE_VOLUME_BOOLEAN("revanced_enable_swipe_volume", true),
-
-    //ToDo: These Settings have to be added to revanced_prefs.xml
     ENABLE_PRESS_TO_SWIPE_BOOLEAN("revanced_enable_press_to_swipe", false),
     ENABLE_SWIPE_HAPTIC_FEEDBACK_BOOLEAN("revanced_enable_swipe_haptic_feedback", true),
     SWIPE_OVERLAY_TIMEOUT_LONG("revanced_swipe_overlay_timeout", 500L),
