@@ -23,9 +23,9 @@ import com.google.android.apps.youtube.app.YouTubeTikTokRoot_Application;
 import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedUtils;
-import app.revanced.integrations.videoplayer.autorepeat.AutoRepeat;
-import app.revanced.integrations.videoplayer.videourl.Copy;
-import app.revanced.integrations.videoplayer.videourl.CopyWithTimeStamp;
+import app.revanced.integrations.videoplayer.AutoRepeat;
+import app.revanced.integrations.videoplayer.Copy;
+import app.revanced.integrations.videoplayer.CopyWithTimeStamp;
 
 public class ReVancedSettingsFragment extends PreferenceFragment {
 
