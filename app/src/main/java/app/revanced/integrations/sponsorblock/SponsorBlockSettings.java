@@ -30,7 +30,7 @@ public class SponsorBlockSettings {
 
         SharedPreferences preferences = SharedPrefHelper.getPreferences(context, SharedPrefHelper.SharedPrefNames.SPONSOR_BLOCK);
 
-        if (!SettingsEnum.SB_ENABLED_BOOLEAN.getBoolean()) {
+        if (!SettingsEnum.SB_ENABLED.getBoolean()) {
             SkipSegmentView.hide();
             NewSegmentHelperLayout.hide();
             SponsorBlockUtils.hideShieldButton();
@@ -40,7 +40,7 @@ public class SponsorBlockSettings {
             SponsorBlockUtils.showShieldButton();
         }
 
-        if (!SettingsEnum.SB_NEW_SEGMENT_ENABLED_BOOLEAN.getBoolean()) {
+        if (!SettingsEnum.SB_NEW_SEGMENT_ENABLED.getBoolean()) {
             NewSegmentHelperLayout.hide();
             SponsorBlockUtils.hideShieldButton();
         } else {
@@ -48,7 +48,7 @@ public class SponsorBlockSettings {
         }
 
 
-        if (!SettingsEnum.SB_VOTING_ENABLED_BOOLEAN.getBoolean())
+        if (!SettingsEnum.SB_VOTING_ENABLED.getBoolean())
             SponsorBlockUtils.hideVoteButton();
         else
             SponsorBlockUtils.showVoteButton();

@@ -58,7 +58,7 @@ public class SBRequester {
                     long start = (long) (segment.getDouble(0) * 1000);
                     long end = (long) (segment.getDouble(1) * 1000);
 
-                    long minDuration = (long) (SettingsEnum.SB_MIN_DURATION_FLOAT.getFloat() * 1000);
+                    long minDuration = (long) (SettingsEnum.SB_MIN_DURATION.getFloat() * 1000);
                     if ((end - start) < minDuration)
                         continue;
 
@@ -150,7 +150,7 @@ public class SBRequester {
                         SponsorBlockUtils.messageToToast = str("vote_failed_unknown_error", responseCode, connection.getResponseMessage());
                         break;
                 }
-                runOnMainThread(() -> Toast.makeText(context, SponsorBlockUtils.messageToToast, Toast.LENGTH_LONG).show());
+                runOnMainThread(() -> Toast.makeText(context, SponsorBlockUtils.messageToToast, Toast.LENGTH).show());
                 connection.disconnect();
             } catch (Exception ex) {
                 ex.printStackTrace();
@@ -159,7 +159,7 @@ public class SBRequester {
     }
 
     public static void retrieveUserStats(PreferenceCategory category, Preference loadingPreference) {
-        if (!SettingsEnum.SB_ENABLED_BOOLEAN.getBoolean()) {
+        if (!SettingsEnum.SB_ENABLED.getBoolean()) {
             loadingPreference.setTitle(str("stats_sb_disabled"));
             return;
         }
@@ -201,14 +201,14 @@ public class SBRequester {
 
     public static void runVipCheck() {
         long now = System.currentTimeMillis();
-        if (now < (SettingsEnum.SB_LAST_VIP_CHECK_LONG.getLong() + TimeUnit.DAYS.toMillis(3))) {
+        if (now < (SettingsEnum.SB_LAST_VIP_CHECK.getLong() + TimeUnit.DAYS.toMillis(3))) {
             return;
         }
         try {
             JSONObject json = getJSONObject(SBRoutes.IS_USER_VIP, SettingsEnum.SB_UUID_STRING.getString());
             boolean vip = json.getBoolean("vip");
-            SettingsEnum.SB_IS_VIP_BOOLEAN.saveValue(vip);
-            SettingsEnum.SB_LAST_VIP_CHECK_LONG.saveValue(now);
+            SettingsEnum.SB_IS_VIP.saveValue(vip);
+            SettingsEnum.SB_LAST_VIP_CHECK.saveValue(now);
         } catch (Exception ex) {
             ex.printStackTrace();
         }

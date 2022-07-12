@@ -14,7 +14,7 @@ public class HideReelsPatch {
      * @param view
      */
     public static void HideReel(View view) {
-        if (!SettingsEnum.REEL_BUTTON_SHOWN_BOOLEAN.getBoolean()) {
+        if (!SettingsEnum.REEL_BUTTON_SHOWN.getBoolean()) {
             AdRemoverAPI.HideViewWithLayout1dp(view);
         }
     }

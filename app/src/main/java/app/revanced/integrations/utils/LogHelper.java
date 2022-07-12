@@ -10,7 +10,7 @@ public class LogHelper {
     //ToDo: Get Calling classname using Reflection
 
     public static void debug(Class clazz, String message) {
-        if (SettingsEnum.DEBUG_BOOLEAN.getBoolean()) {
+        if (SettingsEnum.DEBUG.getBoolean()) {
             Log.d("ReVanced: " + (clazz != null ? clazz.getSimpleName() : ""), message);
         }
     }

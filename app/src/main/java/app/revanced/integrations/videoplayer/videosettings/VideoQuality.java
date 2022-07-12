@@ -26,7 +26,7 @@ public class VideoQuality {
         int preferredQuality;
         Field[] fields;
         if (!ReVancedUtils.isNewVideoStarted() || userChangedQuality || qInterface == null) {
-            if (SettingsEnum.DEBUG_BOOLEAN.getBoolean() && userChangedQuality) {
+            if (SettingsEnum.DEBUG.getBoolean() && userChangedQuality) {
                 LogHelper.debug(VideoQuality.class, "Skipping quality change because user changed it: " + quality);
             }
             userChangedQuality = false;
@@ -40,10 +40,10 @@ public class VideoQuality {
             return quality;
         }
         if (Connectivity.isConnectedWifi(context)) {
-            preferredQuality = SettingsEnum.PREFERRED_RESOLUTION_WIFI_INTEGER.getInt();
+            preferredQuality = SettingsEnum.PREFERRED_RESOLUTION_WIFI.getInt();
             LogHelper.debug(VideoQuality.class, "Wi-Fi connection detected, preferred quality: " + preferredQuality);
         } else if (Connectivity.isConnectedMobile(context)) {
-            preferredQuality = SettingsEnum.PREFERRED_RESOLUTION_MOBILE_INTEGER.getInt();
+            preferredQuality = SettingsEnum.PREFERRED_RESOLUTION_MOBILE.getInt();
             LogHelper.debug(VideoQuality.class, "Mobile data connection detected, preferred quality: " + preferredQuality);
         } else {
             LogHelper.debug(VideoQuality.class, "No Internet connection!");

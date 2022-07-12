@@ -82,7 +82,7 @@ public abstract class SponsorBlockUtils {
                 case DialogInterface.BUTTON_NEGATIVE:
                     // start
                     newSponsorSegmentStartMillis = newSponsorSegmentDialogShownMillis;
-                    Toast.makeText(context.getApplicationContext(), str("new_segment_time_start_set"), Toast.LENGTH_LONG).show();
+                    Toast.makeText(context.getApplicationContext(), str("new_segment_time_start_set"), Toast.LENGTH).show();
                     break;
                 case DialogInterface.BUTTON_POSITIVE:
                     // end
@@ -190,7 +190,7 @@ public abstract class SponsorBlockUtils {
     private static final Runnable toastRunnable = () -> {
         Context context = appContext.get();
         if (context != null && messageToToast != null)
-            Toast.makeText(context, messageToToast, Toast.LENGTH_LONG).show();
+            Toast.makeText(context, messageToToast, Toast.LENGTH).show();
     };
     private static final DialogInterface.OnClickListener segmentVoteClickListener = (dialog, which) -> {
         final Context context = ((AlertDialog) dialog).getContext();
@@ -202,7 +202,7 @@ public abstract class SponsorBlockUtils {
         for (int i = 0; i < voteOptions.length; i++) {
             VoteOption voteOption = voteOptions[i];
             String title = voteOption.title;
-            if (SettingsEnum.SB_IS_VIP_BOOLEAN.getBoolean() && segment.isLocked && voteOption.shouldHighlight) {
+            if (SettingsEnum.SB_IS_VIP.getBoolean() && segment.isLocked && voteOption.shouldHighlight) {
                 items[i] = Html.fromHtml(String.format("<font color=\"%s\">%s</font>", LOCKED_COLOR, title));
             } else {
                 items[i] = title;
@@ -404,7 +404,7 @@ public abstract class SponsorBlockUtils {
     }
 
     public static String appendTimeWithoutSegments(String totalTime) {
-        if (videoHasSegments && (SettingsEnum.SB_ENABLED_BOOLEAN.getBoolean() && SettingsEnum.SB_SHOW_TIME_WITHOUT_SEGMENTS_BOOLEAN.getBoolean()) && !TextUtils.isEmpty(totalTime) && getCurrentVideoLength() > 1) {
+        if (videoHasSegments && (SettingsEnum.SB_ENABLED.getBoolean() && SettingsEnum.SB_SHOW_TIME_WITHOUT_SEGMENTS.getBoolean()) && !TextUtils.isEmpty(totalTime) && getCurrentVideoLength() > 1) {
             if (timeWithoutSegments.isEmpty()) {
                 timeWithoutSegments = getTimeWithoutSegments(sponsorSegmentsOfCurrentVideo);
             }
@@ -416,7 +416,7 @@ public abstract class SponsorBlockUtils {
 
     public static String getTimeWithoutSegments(SponsorSegment[] sponsorSegmentsOfCurrentVideo) {
         long currentVideoLength = getCurrentVideoLength();
-        if (!(SettingsEnum.SB_ENABLED_BOOLEAN.getBoolean() && SettingsEnum.SB_SHOW_TIME_WITHOUT_SEGMENTS_BOOLEAN.getBoolean()) || sponsorSegmentsOfCurrentVideo == null || currentVideoLength <= 1) {
+        if (!(SettingsEnum.SB_ENABLED.getBoolean() && SettingsEnum.SB_SHOW_TIME_WITHOUT_SEGMENTS.getBoolean()) || sponsorSegmentsOfCurrentVideo == null || currentVideoLength <= 1) {
             return "";
         }
         long timeWithoutSegments = currentVideoLength + 500; // YouTube:tm:
@@ -496,10 +496,10 @@ public abstract class SponsorBlockUtils {
         {
             Preference preference = new Preference(context);
             category.addPreference(preference);
-            String formatted = FORMATTER.format(SettingsEnum.SB_SKIPPED_SEGMENTS_INTEGER.getInt());
+            String formatted = FORMATTER.format(SettingsEnum.SB_SKIPPED_SEGMENTS.getInt());
 
-            long hoursSaved = SettingsEnum.SB_SKIPPED_SEGMENTS_TIME_LONG.getLong() / 3600000;
-            double minutesSaved = (SettingsEnum.SB_SKIPPED_SEGMENTS_TIME_LONG.getLong() / 60000d) % 60;
+            long hoursSaved = SettingsEnum.SB_SKIPPED_SEGMENTS_TIME.getLong() / 3600000;
+            double minutesSaved = (SettingsEnum.SB_SKIPPED_SEGMENTS_TIME.getLong() / 60000d) % 60;
             String formattedSaved = String.format(SAVED_TEMPLATE, hoursSaved, minutesSaved, minutesStr);
 
             preference.setTitle(fromHtml(str("stats_self_saved", formatted)));
@@ -542,13 +542,13 @@ public abstract class SponsorBlockUtils {
                 editor.putString(category.key, behaviour.key);
             }
 
-            SettingsEnum.SB_SHOW_TOAST_WHEN_SKIP_BOOLEAN.saveValue(!settingsJson.getBoolean("dontShowNotice"));
-            SettingsEnum.SB_SHOW_TIME_WITHOUT_SEGMENTS_BOOLEAN.saveValue(settingsJson.getBoolean("showTimeWithSkips"));
-            SettingsEnum.SB_COUNT_SKIPS_BOOLEAN.saveValue(settingsJson.getBoolean("trackViewCount"));
-            SettingsEnum.SB_IS_VIP_BOOLEAN.saveValue(settingsJson.getBoolean("isVip"));
-            SettingsEnum.SB_MIN_DURATION_FLOAT.saveValue(Float.valueOf(settingsJson.getString("minDuration")));
+            SettingsEnum.SB_SHOW_TOAST_WHEN_SKIP.saveValue(!settingsJson.getBoolean("dontShowNotice"));
+            SettingsEnum.SB_SHOW_TIME_WITHOUT_SEGMENTS.saveValue(settingsJson.getBoolean("showTimeWithSkips"));
+            SettingsEnum.SB_COUNT_SKIPS.saveValue(settingsJson.getBoolean("trackViewCount"));
+            SettingsEnum.SB_IS_VIP.saveValue(settingsJson.getBoolean("isVip"));
+            SettingsEnum.SB_MIN_DURATION.saveValue(Float.valueOf(settingsJson.getString("minDuration")));
             SettingsEnum.SB_UUID_STRING.saveValue(settingsJson.getString("userID"));
-            SettingsEnum.SB_LAST_VIP_CHECK_LONG.saveValue(settingsJson.getLong("lastIsVipUpdate"));
+            SettingsEnum.SB_LAST_VIP_CHECK.saveValue(settingsJson.getLong("lastIsVipUpdate"));
 
 
             String serverAddress = settingsJson.getString("serverAddress");
@@ -586,15 +586,15 @@ public abstract class SponsorBlockUtils {
                     categorySelectionsArray.put(behaviorObject);
                 }
             }
-            json.put("dontShowNotice", !SettingsEnum.SB_SHOW_TOAST_WHEN_SKIP_BOOLEAN.getBoolean());
+            json.put("dontShowNotice", !SettingsEnum.SB_SHOW_TOAST_WHEN_SKIP.getBoolean());
             json.put("barTypes", barTypesObject);
-            json.put("showTimeWithSkips", SettingsEnum.SB_SHOW_TIME_WITHOUT_SEGMENTS_BOOLEAN.getBoolean());
-            json.put("minDuration", SettingsEnum.SB_MIN_DURATION_FLOAT.getFloat());
-            json.put("trackViewCount", SettingsEnum.SB_COUNT_SKIPS_BOOLEAN.getBoolean());
+            json.put("showTimeWithSkips", SettingsEnum.SB_SHOW_TIME_WITHOUT_SEGMENTS.getBoolean());
+            json.put("minDuration", SettingsEnum.SB_MIN_DURATION.getFloat());
+            json.put("trackViewCount", SettingsEnum.SB_COUNT_SKIPS.getBoolean());
             json.put("categorySelections", categorySelectionsArray);
             json.put("userID", SettingsEnum.SB_UUID_STRING.getString());
-            json.put("isVip", SettingsEnum.SB_IS_VIP_BOOLEAN.getBoolean());
-            json.put("lastIsVipUpdate", SettingsEnum.SB_LAST_VIP_CHECK_LONG.getLong());
+            json.put("isVip", SettingsEnum.SB_IS_VIP.getBoolean());
+            json.put("lastIsVipUpdate", SettingsEnum.SB_LAST_VIP_CHECK.getLong());
             json.put("serverAddress", SettingsEnum.SB_API_URL_STRING.getString());
 
             return json.toString();
@@ -606,7 +606,7 @@ public abstract class SponsorBlockUtils {
     }
 
     public static boolean isSBButtonEnabled(Context context, String key) {
-        return SettingsEnum.SB_ENABLED_BOOLEAN.getBoolean() && SharedPrefHelper.getBoolean(context, SharedPrefHelper.SharedPrefNames.SPONSOR_BLOCK, key, false);
+        return SettingsEnum.SB_ENABLED.getBoolean() && SharedPrefHelper.getBoolean(context, SharedPrefHelper.SharedPrefNames.SPONSOR_BLOCK, key, false);
     }
 
     public enum VoteOption {
@@ -652,7 +652,7 @@ public abstract class SponsorBlockUtils {
                 else
                     Toast.makeText(context.getApplicationContext(), str("new_segment_edit_by_hand_saved"), Toast.LENGTH_SHORT).show();
             } catch (ParseException e) {
-                Toast.makeText(context.getApplicationContext(), str("new_segment_edit_by_hand_parse_error"), Toast.LENGTH_LONG).show();
+                Toast.makeText(context.getApplicationContext(), str("new_segment_edit_by_hand_parse_error"), Toast.LENGTH).show();
             }
         }
     }

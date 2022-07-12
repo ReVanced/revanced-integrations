@@ -75,7 +75,7 @@ public class Whitelist {
             }
             try {
                 ArrayList<ChannelModel> deserializedChannels = (ArrayList<ChannelModel>) ObjectSerializer.deserialize(serializedChannels);
-                if (SettingsEnum.DEBUG_BOOLEAN.getBoolean()) {
+                if (SettingsEnum.DEBUG.getBoolean()) {
                     LogHelper.debug(Whitelist.class, serializedChannels);
                     for (ChannelModel channel : deserializedChannels) {
                         LogHelper.debug(Whitelist.class, String.format("Whitelisted channel %s (%s) for type %s", channel.getAuthor(), channel.getChannelId(), whitelistType));

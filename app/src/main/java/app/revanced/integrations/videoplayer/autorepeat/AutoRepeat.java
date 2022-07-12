@@ -91,7 +91,7 @@ public class AutoRepeat {
     public static void changeSelected(boolean selected, boolean onlyView) {
         ImageView iView = _autoRepeatBtn.get();
         if (_constraintLayout != null && iView != null) {
-            if (SettingsEnum.DEBUG_BOOLEAN.getBoolean()) {
+            if (SettingsEnum.DEBUG.getBoolean()) {
                 StringBuilder sb = new StringBuilder();
                 sb.append("Changing selected state to: ");
                 sb.append(selected ? "SELECTED" : "NONE");

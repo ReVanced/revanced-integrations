@@ -21,7 +21,7 @@ public class Settings {
     }
 
     public static int getMinimizedVideo(int original) {
-        int preferredType = SettingsEnum.PREFERRED_MINIMIZED_VIDEO_PREVIEW_INTEGER.getInt();
+        int preferredType = SettingsEnum.PREFERRED_MINIMIZED_VIDEO_PREVIEW.getInt();
         if (preferredType == -2) {
             return original;
         }
@@ -60,7 +60,7 @@ public class Settings {
     }
 
     public static void setOldLayout(SharedPreferences sharedPreferences, String config, long timeStamp) {
-        if (!SettingsEnum.OLD_LAYOUT_ENABLED_BOOLEAN.getBoolean()) {
+        if (!SettingsEnum.OLD_LAYOUT_ENABLED.getBoolean()) {
             sharedPreferences.edit().putString("com.google.android.libraries.youtube.innertube.cold_config_group", config).putLong("com.google.android.libraries.youtube.innertube.cold_stored_timestamp", timeStamp).apply();
             LogHelper.debug("Settings", "setOldLayout: true");
             return;
