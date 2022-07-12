@@ -11,7 +11,7 @@ import app.revanced.integrations.utils.PlayerType
  * @param context the context to create in
  */
 class SwipeControlsConfigurationProvider(
-    private val context: Context
+        private val context: Context
 ) {
 //region swipe enable
     /**
@@ -50,7 +50,8 @@ class SwipeControlsConfigurationProvider(
      * threshold for swipe detection
      * this may be called rapidly in onScroll, so we have to load it once and then leave it constant
      */
-    val swipeMagnitudeThreshold: Float = SettingsEnum.SWIPE_MAGNITUDE_THRESHOLD.float
+    val swipeMagnitudeThreshold: Float
+        get() = SettingsEnum.SWIPE_MAGNITUDE_THRESHOLD.float
 //endregion
 
 //region overlay adjustments

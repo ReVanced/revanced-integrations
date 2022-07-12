@@ -79,7 +79,7 @@ public enum SettingsEnum {
     MAX_PLAYBACK_BUFFER_AFTER_REBUFFER("revanced_pref_buffer_for_playback_after_rebuffer_ms", 5000, ReturnType.INTEGER),
 
     //ReVanced General Settings
-    DEBUG("revanced_debug_enabled", false, ReturnType.BOOLEAN),
+    DEBUG("revanced_debug_enabled", true, ReturnType.BOOLEAN),
     USE_DARK_THEME("app_theme_dark", false, ReturnType.BOOLEAN),
 
     //RYD Settings
@@ -129,7 +129,10 @@ public enum SettingsEnum {
 
     static {
         Context context = ReVancedUtils.getContext();
-        if (context != null) {
+
+        if (context == null) {
+            Log.e("SettingsEnum", "Context returned null! Setings NOT initialized");
+        } else {
             for (SettingsEnum setting : values()) {
                 Object value = null;
 

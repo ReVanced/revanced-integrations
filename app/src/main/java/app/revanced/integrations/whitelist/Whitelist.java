@@ -43,10 +43,10 @@ public class Whitelist {
         LogHelper.debug(Whitelist.class, "channel name set to " + channelName);
         VideoInformation.channelName = channelName;
 
-        if (enabledMap.get(WhitelistType.ADS) && adBlockButton != null) {
+        if (enabledMap.containsKey(WhitelistType.ADS) && enabledMap.get(WhitelistType.ADS) && adBlockButton != null) {
             adBlockButton.changeEnabled(shouldShowAds());
         }
-        if (enabledMap.get(WhitelistType.SPONSORBLOCK) && sbWhitelistButton != null) {
+        if (enabledMap.containsKey(WhitelistType.SPONSORBLOCK) && enabledMap.get(WhitelistType.SPONSORBLOCK) && sbWhitelistButton != null) {
             sbWhitelistButton.changeEnabled(isChannelSBWhitelisted());
         }
     }
@@ -101,7 +101,7 @@ public class Whitelist {
 
     private static boolean isWhitelisted(WhitelistType whitelistType) {
         boolean isEnabled = false;
-        if(enabledMap.containsKey(whitelistType) && enabledMap.get(whitelistType) != null) {
+        if (enabledMap.containsKey(whitelistType) && enabledMap.get(whitelistType) != null) {
             isEnabled = enabledMap.get(whitelistType);
         }
         if (!isEnabled) {
