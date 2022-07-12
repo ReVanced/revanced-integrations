@@ -2,7 +2,6 @@ package app.revanced.integrations.utils;
 
 import android.util.Log;
 
-import app.revanced.integrations.settings.Settings;
 import app.revanced.integrations.settings.SettingsEnum;
 
 public class LogHelper {

@@ -3,7 +3,6 @@ package app.revanced.integrations.patches;
 import android.view.View;
 
 import app.revanced.integrations.adremover.AdRemoverAPI;
-import app.revanced.integrations.settings.Settings;
 import app.revanced.integrations.settings.SettingsEnum;
 
 public class HideReelsPatch {

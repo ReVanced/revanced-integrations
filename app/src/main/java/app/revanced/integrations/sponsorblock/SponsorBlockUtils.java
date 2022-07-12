@@ -43,7 +43,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.TimeZone;
 
-import app.revanced.integrations.settings.Settings;
 import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.sponsorblock.player.PlayerType;
 import app.revanced.integrations.utils.LogHelper;
