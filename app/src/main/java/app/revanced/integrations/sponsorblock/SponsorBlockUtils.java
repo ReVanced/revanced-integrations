@@ -82,7 +82,7 @@ public abstract class SponsorBlockUtils {
                 case DialogInterface.BUTTON_NEGATIVE:
                     // start
                     newSponsorSegmentStartMillis = newSponsorSegmentDialogShownMillis;
-                    Toast.makeText(context.getApplicationContext(), str("new_segment_time_start_set"), Toast.LENGTH).show();
+                    Toast.makeText(context.getApplicationContext(), str("new_segment_time_start_set"), Toast.LENGTH_LONG).show();
                     break;
                 case DialogInterface.BUTTON_POSITIVE:
                     // end
@@ -190,7 +190,7 @@ public abstract class SponsorBlockUtils {
     private static final Runnable toastRunnable = () -> {
         Context context = appContext.get();
         if (context != null && messageToToast != null)
-            Toast.makeText(context, messageToToast, Toast.LENGTH).show();
+            Toast.makeText(context, messageToToast, Toast.LENGTH_LONG).show();
     };
     private static final DialogInterface.OnClickListener segmentVoteClickListener = (dialog, which) -> {
         final Context context = ((AlertDialog) dialog).getContext();
@@ -227,7 +227,7 @@ public abstract class SponsorBlockUtils {
     };
     private static final Runnable submitRunnable = () -> {
         messageToToast = null;
-        final String uuid = SettingsEnum.SB_UUID_STRING.getString();
+        final String uuid = SettingsEnum.SB_UUID.getString();
         final long start = newSponsorSegmentStartMillis;
         final long end = newSponsorSegmentEndMillis;
         final String videoId = getCurrentVideoId();
@@ -547,15 +547,15 @@ public abstract class SponsorBlockUtils {
             SettingsEnum.SB_COUNT_SKIPS.saveValue(settingsJson.getBoolean("trackViewCount"));
             SettingsEnum.SB_IS_VIP.saveValue(settingsJson.getBoolean("isVip"));
             SettingsEnum.SB_MIN_DURATION.saveValue(Float.valueOf(settingsJson.getString("minDuration")));
-            SettingsEnum.SB_UUID_STRING.saveValue(settingsJson.getString("userID"));
+            SettingsEnum.SB_UUID.saveValue(settingsJson.getString("userID"));
             SettingsEnum.SB_LAST_VIP_CHECK.saveValue(settingsJson.getLong("lastIsVipUpdate"));
 
 
             String serverAddress = settingsJson.getString("serverAddress");
             if (serverAddress.equalsIgnoreCase("https://sponsor.ajay.app")) {
-                serverAddress = (String) SettingsEnum.SB_API_URL_STRING.getDefaultValue();
+                serverAddress = (String) SettingsEnum.SB_API_URL.getDefaultValue();
             }
-            SettingsEnum.SB_API_URL_STRING.saveValue(serverAddress);
+            SettingsEnum.SB_API_URL.saveValue(serverAddress);
 
             Toast.makeText(context, str("settings_import_successful"), Toast.LENGTH_SHORT).show();
         } catch (Exception ex) {
@@ -592,10 +592,10 @@ public abstract class SponsorBlockUtils {
             json.put("minDuration", SettingsEnum.SB_MIN_DURATION.getFloat());
             json.put("trackViewCount", SettingsEnum.SB_COUNT_SKIPS.getBoolean());
             json.put("categorySelections", categorySelectionsArray);
-            json.put("userID", SettingsEnum.SB_UUID_STRING.getString());
+            json.put("userID", SettingsEnum.SB_UUID.getString());
             json.put("isVip", SettingsEnum.SB_IS_VIP.getBoolean());
             json.put("lastIsVipUpdate", SettingsEnum.SB_LAST_VIP_CHECK.getLong());
-            json.put("serverAddress", SettingsEnum.SB_API_URL_STRING.getString());
+            json.put("serverAddress", SettingsEnum.SB_API_URL.getString());
 
             return json.toString();
         } catch (Exception ex) {
@@ -652,7 +652,7 @@ public abstract class SponsorBlockUtils {
                 else
                     Toast.makeText(context.getApplicationContext(), str("new_segment_edit_by_hand_saved"), Toast.LENGTH_SHORT).show();
             } catch (ParseException e) {
-                Toast.makeText(context.getApplicationContext(), str("new_segment_edit_by_hand_parse_error"), Toast.LENGTH).show();
+                Toast.makeText(context.getApplicationContext(), str("new_segment_edit_by_hand_parse_error"), Toast.LENGTH_LONG).show();
             }
         }
     }

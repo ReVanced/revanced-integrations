@@ -129,7 +129,7 @@ public class SBRequester {
         new Thread(() -> {
             try {
                 String segmentUuid = segment.UUID;
-                String uuid = SettingsEnum.SB_UUID_STRING.getString();
+                String uuid = SettingsEnum.SB_UUID.getString();
                 String vote = Integer.toString(voteOption == VoteOption.UPVOTE ? 1 : 0);
 
                 runOnMainThread(() -> Toast.makeText(context, str("vote_started"), Toast.LENGTH_SHORT).show());
@@ -150,7 +150,7 @@ public class SBRequester {
                         SponsorBlockUtils.messageToToast = str("vote_failed_unknown_error", responseCode, connection.getResponseMessage());
                         break;
                 }
-                runOnMainThread(() -> Toast.makeText(context, SponsorBlockUtils.messageToToast, Toast.LENGTH).show());
+                runOnMainThread(() -> Toast.makeText(context, SponsorBlockUtils.messageToToast, Toast.LENGTH_LONG).show());
                 connection.disconnect();
             } catch (Exception ex) {
                 ex.printStackTrace();
@@ -166,7 +166,7 @@ public class SBRequester {
 
         new Thread(() -> {
             try {
-                JSONObject json = getJSONObject(SBRoutes.GET_USER_STATS, SettingsEnum.SB_UUID_STRING.getString());
+                JSONObject json = getJSONObject(SBRoutes.GET_USER_STATS, SettingsEnum.SB_UUID.getString());
                 UserStats stats = new UserStats(json.getString("userName"), json.getDouble("minutesSaved"), json.getInt("segmentCount"),
                         json.getInt("viewCount"));
                 SponsorBlockUtils.addUserStats(category, loadingPreference, stats);
@@ -179,7 +179,7 @@ public class SBRequester {
     public static void setUsername(String username, EditTextPreference preference, Runnable toastRunnable) {
         new Thread(() -> {
             try {
-                HttpURLConnection connection = getConnectionFromRoute(SBRoutes.CHANGE_USERNAME, SettingsEnum.SB_UUID_STRING.getString(), username);
+                HttpURLConnection connection = getConnectionFromRoute(SBRoutes.CHANGE_USERNAME, SettingsEnum.SB_UUID.getString(), username);
                 int responseCode = connection.getResponseCode();
 
                 if (responseCode == 200) {
@@ -205,7 +205,7 @@ public class SBRequester {
             return;
         }
         try {
-            JSONObject json = getJSONObject(SBRoutes.IS_USER_VIP, SettingsEnum.SB_UUID_STRING.getString());
+            JSONObject json = getJSONObject(SBRoutes.IS_USER_VIP, SettingsEnum.SB_UUID.getString());
             boolean vip = json.getBoolean("vip");
             SettingsEnum.SB_IS_VIP.saveValue(vip);
             SettingsEnum.SB_LAST_VIP_CHECK.saveValue(now);
@@ -217,7 +217,7 @@ public class SBRequester {
     // helpers
 
     private static HttpURLConnection getConnectionFromRoute(Route route, String... params) throws IOException {
-        return Requester.getConnectionFromRoute(SettingsEnum.SB_API_URL_STRING.getString(), route, params);
+        return Requester.getConnectionFromRoute(SettingsEnum.SB_API_URL.getString(), route, params);
     }
 
     private static JSONObject getJSONObject(Route route, String... params) throws Exception {

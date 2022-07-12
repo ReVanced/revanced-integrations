@@ -85,13 +85,13 @@ public class SponsorBlockSettings {
         else
             sponsorBlockUrlCategories = "[%22" + TextUtils.join("%22,%22", enabledCategories) + "%22]";
 
-        String uuid = SettingsEnum.SB_UUID_STRING.getString();
+        String uuid = SettingsEnum.SB_UUID.getString();
         if (uuid == null) {
             uuid = (UUID.randomUUID().toString() +
                     UUID.randomUUID().toString() +
                     UUID.randomUUID().toString())
                     .replace("-", "");
-            SettingsEnum.SB_UUID_STRING.saveValue(uuid);
+            SettingsEnum.SB_UUID.saveValue(uuid);
         }
     }
 
