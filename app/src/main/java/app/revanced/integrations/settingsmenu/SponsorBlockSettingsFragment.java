@@ -27,8 +27,7 @@ import java.lang.ref.WeakReference;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
-import app.revanced.integrations.adremover.whitelist.WhitelistType;
-import app.revanced.integrations.settings.Settings;
+import app.revanced.integrations.whitelist.WhitelistType;
 import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.sponsorblock.SponsorBlockSettings;
 import app.revanced.integrations.sponsorblock.SponsorBlockUtils;

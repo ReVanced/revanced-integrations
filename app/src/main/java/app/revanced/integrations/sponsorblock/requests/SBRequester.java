@@ -16,16 +16,14 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
-import app.revanced.integrations.adremover.whitelist.requests.Requester;
-import app.revanced.integrations.adremover.whitelist.requests.Route;
+import app.revanced.integrations.whitelist.requests.Requester;
+import app.revanced.integrations.whitelist.requests.Route;
 import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.sponsorblock.PlayerController;
 import app.revanced.integrations.sponsorblock.SponsorBlockSettings;
@@ -33,8 +31,6 @@ import app.revanced.integrations.sponsorblock.SponsorBlockUtils;
 import app.revanced.integrations.sponsorblock.SponsorBlockUtils.VoteOption;
 import app.revanced.integrations.sponsorblock.objects.SponsorSegment;
 import app.revanced.integrations.sponsorblock.objects.UserStats;
-import app.revanced.integrations.utils.ReVancedUtils;
-import app.revanced.integrations.utils.SharedPrefHelper;
 
 public class SBRequester {
     private static final String TIME_TEMPLATE = "%.3f";

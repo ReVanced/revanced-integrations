@@ -1,4 +1,4 @@
-package app.revanced.integrations.adremover.whitelist;
+package app.revanced.integrations.whitelist;
 
 import static app.revanced.integrations.sponsorblock.player.VideoInformation.channelName;
 import static app.revanced.integrations.sponsorblock.player.ui.SlimButtonContainer.adBlockButton;
@@ -110,7 +110,6 @@ public class Whitelist {
         }
         if (channelName == null || channelName.trim().isEmpty()) {
             LogHelper.debug(Whitelist.class, String.format("Can't check whitelist status for %s because channel name was missing", whitelistType));
-
             return false;
         }
         List<ChannelModel> whitelistedChannels = whitelistMap.get(whitelistType);

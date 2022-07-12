@@ -1,6 +1,7 @@
 package app.revanced.integrations.settings;
 
 import android.content.Context;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -130,6 +131,10 @@ public enum SettingsEnum {
         if (context != null) {
             for (SettingsEnum setting : values()) {
                 Object value = null;
+
+                //LogHelper is not initialized here
+                Log.d("SettingsEnum", "Loading Setting: " + setting.name());
+
                 switch (setting.getReturnType()) {
                     case FLOAT:
                         value = SharedPrefHelper.getFloat(context, SharedPrefHelper.SharedPrefNames.YOUTUBE, setting.getPath(), (float) setting.getDefaultValue());
@@ -151,6 +156,9 @@ public enum SettingsEnum {
                         break;
                 }
                 setting.setValue(value);
+
+                //LogHelper is not initialized here
+                Log.d("SettingsEnum", "Loaded Setting: " + setting.name() + " Value: " + value);
             }
         }
     }

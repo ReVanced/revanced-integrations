@@ -9,8 +9,8 @@ import android.view.ViewGroup;
 
 import com.google.android.apps.youtube.app.ui.SlimMetadataScrollableButtonContainerLayout;
 
-import app.revanced.integrations.adremover.whitelist.Whitelist;
-import app.revanced.integrations.adremover.whitelist.WhitelistType;
+import app.revanced.integrations.whitelist.Whitelist;
+import app.revanced.integrations.whitelist.WhitelistType;
 import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.SharedPrefHelper;

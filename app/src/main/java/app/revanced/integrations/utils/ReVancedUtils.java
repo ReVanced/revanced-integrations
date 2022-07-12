@@ -12,9 +12,7 @@ import android.os.Looper;
 
 import com.google.android.apps.youtube.app.YouTubeTikTokRoot_Application;
 
-import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.sponsorblock.player.PlayerType;
-import app.revanced.integrations.videoplayer.videosettings.VideoSpeed;
 
 public class ReVancedUtils {
 
