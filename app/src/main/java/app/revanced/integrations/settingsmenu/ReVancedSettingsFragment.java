@@ -8,6 +8,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Process;
 import android.preference.EditTextPreference;
@@ -22,7 +23,6 @@ import com.google.android.apps.youtube.app.YouTubeTikTokRoot_Application;
 import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedUtils;
-import app.revanced.integrations.utils.ScreenSizeHelper;
 import app.revanced.integrations.videoplayer.autorepeat.AutoRepeat;
 import app.revanced.integrations.videoplayer.videourl.Copy;
 import app.revanced.integrations.videoplayer.videourl.CopyWithTimeStamp;
@@ -164,10 +164,10 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
             int identifier = getResources().getIdentifier("revanced_prefs", "xml", getPackageName());
 
             addPreferencesFromResource(identifier);
-            String stringByName = ReVancedUtils.getStringByName(getActivity(), "quality_auto");
+            String stringByName = getStringByName(getActivity(), "quality_auto");
             this.videoQualityEntries[0] = stringByName;
             this.videoSpeedEntries[0] = stringByName;
-            String stringByName2 = ReVancedUtils.getStringByName(getActivity(), "pref_subtitles_scale_normal");
+            String stringByName2 = getStringByName(getActivity(), "pref_subtitles_scale_normal");
             if (stringByName2.equals("")) {
                 this.videoSpeedEntries[4] = "Normal";
             } else {
@@ -224,12 +224,11 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
                 return false;
             });
 
-            if (ScreenSizeHelper.isTablet(ReVancedUtils.getContext())) {
+            if (ReVancedUtils.isTablet(ReVancedUtils.getContext())) {
                 if (this.layoutSettingsPreferenceScreen.findPreference("tablet_miniplayer") != null) {
                     this.layoutSettingsPreferenceScreen.removePreference(this.tabletMiniplayer);
                 }
             }
-
 
             this.sharedPreferences.edit().putBoolean("revanced_initialized", true);
             this.settingsInitialized = true;
@@ -312,7 +311,17 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
     }
 
     private void rebootDialog(final Activity activity) {
-        new AlertDialog.Builder(activity).setMessage(ReVancedUtils.getStringByName(activity, "pref_refresh_config")).setPositiveButton(ReVancedUtils.getStringByName(activity, "in_app_update_restart_button"), (dialog, id) -> reboot(activity, ReVancedSettingsFragment.homeActivityClass)).setNegativeButton(ReVancedUtils.getStringByName(activity, "sign_in_cancel"), null).show();
+        new AlertDialog.Builder(activity).setMessage(getStringByName(activity, "pref_refresh_config")).setPositiveButton(getStringByName(activity, "in_app_update_restart_button"), (dialog, id) -> reboot(activity, ReVancedSettingsFragment.homeActivityClass)).setNegativeButton(getStringByName(activity, "sign_in_cancel"), null).show();
+    }
+
+    private String getStringByName(Context context, String name) {
+        try {
+            Resources res = context.getResources();
+            return res.getString(res.getIdentifier(name, "string", context.getPackageName()));
+        } catch (Throwable exception) {
+            LogHelper.printException(ReVancedUtils.class, "Resource not found.", exception);
+            return "";
+        }
     }
 
 }

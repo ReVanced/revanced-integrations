@@ -22,7 +22,6 @@ import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.sponsorblock.player.ChannelModel;
 import app.revanced.integrations.sponsorblock.player.VideoInformation;
-import app.revanced.integrations.utils.ObjectSerializer;
 import app.revanced.integrations.utils.ReVancedUtils;
 import app.revanced.integrations.utils.SharedPrefHelper;
 
