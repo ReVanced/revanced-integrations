@@ -8,9 +8,11 @@ import android.content.Context;
 import android.icu.text.CompactDecimalFormat;
 import android.os.Build;
 
+import android.text.SpannableString;
 import android.view.View;
 import android.widget.TextView;
 
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.Locale;
 import java.util.Objects;
 
@@ -81,48 +83,75 @@ public class ReturnYouTubeDislikes {
     }
 
     // Call to this needs to be injected in YT code
-    public static void setLikeTag(View view) {
-        if (!isEnabled) return;
+//    public static void setLikeTag(View view) {
+//        if (!isEnabled) return;
+//
+//        setTag(view, "like");
+//    }
 
-        setTag(view, "like");
-    }
-
-    public static void setLikeTag(View view, boolean active) {
-        if (!isEnabled) return;
-
-        likeActive = active;
-        if (likeActive) {
-            votingValue = 1;
-        }
-
-        LogHelper.debug(ReturnYouTubeDislikes.class, "Like tag active " + likeActive);
-        setTag(view, "like");
-    }
-
-    // Call to this needs to be injected in YT code
-    public static void setDislikeTag(View view) {
-        if (!isEnabled) return;
-
-        _dislikeView = view;
-        setTag(view, "dislike");
-    }
-
-    public static void setDislikeTag(View view, boolean active) {
-        if (!isEnabled) return;
-
-        dislikeActive = active;
-        if (dislikeActive) {
-            votingValue = -1;
-        }
-        _dislikeView = view;
-        LogHelper.debug(ReturnYouTubeDislikes.class, "Dislike tag active " + dislikeActive);
-        setTag(view, "dislike");
-    }
+//    public static void setLikeTag(View view, boolean active) {
+//        if (!isEnabled) return;
+//
+//        likeActive = active;
+//        if (likeActive) {
+//            votingValue = 1;
+//        }
+//
+//        LogHelper.debug(ReturnYouTubeDislikes.class, "Like tag active " + likeActive);
+//        setTag(view, "like");
+//    }
 
     // Call to this needs to be injected in YT code
-    public static CharSequence onSetText(View view, CharSequence originalText) {
-        if (!isEnabled) return originalText;
-        return handleOnSetText(view, originalText);
+//    public static void setDislikeTag(View view) {
+//        if (!isEnabled) return;
+//
+//        _dislikeView = view;
+//        setTag(view, "dislike");
+//    }
+
+//    public static void setDislikeTag(View view, boolean active) {
+//        if (!isEnabled) return;
+//
+//        dislikeActive = active;
+//        if (dislikeActive) {
+//            votingValue = -1;
+//        }
+//        _dislikeView = view;
+//        LogHelper.debug(ReturnYouTubeDislikes.class, "Dislike tag active " + dislikeActive);
+//        setTag(view, "dislike");
+//    }
+
+    // Call to this needs to be injected in YT code
+    public static void onComponentCreated(Object conversionContext, AtomicReference textRef) {
+        if (!isEnabled) return;
+
+        try {
+            // Contains a pathBuilder string, used to distinguish from other litho components
+            if (!conversionContext.toString().contains("dislike_button")) return;
+
+            // Have to block the current thread until fetching is done
+            // There's no known way yet to edit the text asynchronously
+            if (_dislikeFetchThread != null) _dislikeFetchThread.join();
+
+            if (dislikeCount != null) {
+                updateDislikeText(textRef);
+            }
+        } catch (Exception ex) {
+            LogHelper.printException(ReturnYouTubeDislikes.class, "Error while trying to set dislikes text", ex);
+        }
+    }
+
+    private static void updateDislikeText(AtomicReference<SpannableString> textRef) {
+        SpannableString oldString = textRef.get();
+        SpannableString newString = new SpannableString(formatDislikes(dislikeCount));
+
+        // Copy style (foreground color, etc) to new string
+        Object[] spans = oldString.getSpans(0, oldString.length(), Object.class);
+        for (Object span : spans) {
+            int flags = oldString.getSpanFlags(span);
+            newString.setSpan(span, 0, newString.length(), flags);
+        }
+        textRef.set(newString);
     }
 
     // Call to this needs to be injected in YT code
@@ -132,48 +161,48 @@ public class ReturnYouTubeDislikes {
         handleOnClick(view, inactive);
     }
 
-    private static CharSequence handleOnSetText(View view, CharSequence originalText) {
-        if (!isEnabled) return originalText;
+//    private static CharSequence handleOnSetText(View view, CharSequence originalText) {
+//        if (!isEnabled) return originalText;
+//
+//        try {
+//            CharSequence tag = (CharSequence) view.getTag();
+//            LogHelper.debug(ReturnYouTubeDislikes.class, "handleOnSetText - " + tag + " - original text - " + originalText);
+//            if (tag == null) return originalText;
+//
+//            if (tag == "like") {
+//                return originalText;
+//            } else if (tag == "dislike") {
+//                return dislikeCount != null ? formatDislikes(dislikeCount) : originalText;
+//            }
+//        } catch (Exception ex) {
+//            LogHelper.printException(ReturnYouTubeDislikes.class, "Error while handling the setText", ex);
+//        }
+//
+//        return originalText;
+//    }
 
-        try {
-            CharSequence tag = (CharSequence) view.getTag();
-            LogHelper.debug(ReturnYouTubeDislikes.class, "handleOnSetText - " + tag + " - original text - " + originalText);
-            if (tag == null) return originalText;
-
-            if (tag == "like") {
-                return originalText;
-            } else if (tag == "dislike") {
-                return dislikeCount != null ? formatDislikes(dislikeCount) : originalText;
-            }
-        } catch (Exception ex) {
-            LogHelper.printException(ReturnYouTubeDislikes.class, "Error while handling the setText", ex);
-        }
-
-        return originalText;
-    }
-
-    public static void trySetDislikes(String dislikeCount) {
-        if (!isEnabled) return;
-
-        try {
-            // Try to set normal video dislike count
-            if (_dislikeView == null) {
-                LogHelper.debug(ReturnYouTubeDislikes.class, "_dislikeView was null");
-                return;
-            }
-
-            View buttonView = _dislikeView.findViewById(getIdentifier("button_text", "id"));
-            if (buttonView == null) {
-                LogHelper.debug(ReturnYouTubeDislikes.class, "buttonView was null");
-                return;
-            }
-            TextView button = (TextView) buttonView;
-            button.setText(dislikeCount);
-            LogHelper.debug(ReturnYouTubeDislikes.class, "trySetDislikes - " + dislikeCount);
-        } catch (Exception ex) {
-            LogHelper.printException(ReturnYouTubeDislikes.class, "Error while trying to set dislikes text", ex);
-        }
-    }
+//    public static void trySetDislikes(String dislikeCount) {
+//        if (!isEnabled) return;
+//
+//        try {
+//            // Try to set normal video dislike count
+//            if (_dislikeView == null) {
+//                LogHelper.debug(ReturnYouTubeDislikes.class, "_dislikeView was null");
+//                return;
+//            }
+//
+//            View buttonView = _dislikeView.findViewById(getIdentifier("button_text", "id"));
+//            if (buttonView == null) {
+//                LogHelper.debug(ReturnYouTubeDislikes.class, "buttonView was null");
+//                return;
+//            }
+//            TextView button = (TextView) buttonView;
+//            button.setText(dislikeCount);
+//            LogHelper.debug(ReturnYouTubeDislikes.class, "trySetDislikes - " + dislikeCount);
+//        } catch (Exception ex) {
+//            LogHelper.printException(ReturnYouTubeDislikes.class, "Error while trying to set dislikes text", ex);
+//        }
+//    }
 
     private static void handleOnClick(View view, boolean previousState) {
         Context context = ReVancedUtils.getContext();
@@ -202,7 +231,7 @@ public class ReturnYouTubeDislikes {
                 // Like was activated and dislike was previously activated
                 if (!previousState && dislikeActive) {
                     dislikeCount--;
-                    trySetDislikes(formatDislikes(dislikeCount));
+//                    trySetDislikes(formatDislikes(dislikeCount));
                 }
                 dislikeActive = false;
             } else if (tag.equals("dislike")) {
@@ -219,7 +248,7 @@ public class ReturnYouTubeDislikes {
                     dislikeActive = false;
                     dislikeCount--;
                 }
-                trySetDislikes(formatDislikes(dislikeCount));
+//                trySetDislikes(formatDislikes(dislikeCount));
             } else {
                 // Unknown tag
                 return;
@@ -257,20 +286,20 @@ public class ReturnYouTubeDislikes {
         _votingThread.start();
     }
 
-    private static void setTag(View view, String tag) {
-        if (!isEnabled) return;
-
-        try {
-            if (view == null) {
-                LogHelper.debug(ReturnYouTubeDislikes.class, "View was empty");
-                return;
-            }
-            LogHelper.debug(ReturnYouTubeDislikes.class, "setTag - " + tag);
-            view.setTag(tag);
-        } catch (Exception ex) {
-            LogHelper.printException(ReturnYouTubeDislikes.class, "Error while trying to set tag to view", ex);
-        }
-    }
+//    private static void setTag(View view, String tag) {
+//        if (!isEnabled) return;
+//
+//        try {
+//            if (view == null) {
+//                LogHelper.debug(ReturnYouTubeDislikes.class, "View was empty");
+//                return;
+//            }
+//            LogHelper.debug(ReturnYouTubeDislikes.class, "setTag - " + tag);
+//            view.setTag(tag);
+//        } catch (Exception ex) {
+//            LogHelper.printException(ReturnYouTubeDislikes.class, "Error while trying to set tag to view", ex);
+//        }
+//    }
 
     public static String formatDislikes(int dislikes) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && compactNumberFormatter != null) {

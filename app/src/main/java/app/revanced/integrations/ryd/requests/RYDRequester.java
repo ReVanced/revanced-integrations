@@ -39,7 +39,7 @@ public class RYDRequester {
 
 
                 // Set the dislikes
-                new Handler(Looper.getMainLooper()).post(() -> ReturnYouTubeDislikes.trySetDislikes(ReturnYouTubeDislikes.formatDislikes(dislikes)));
+//                new Handler(Looper.getMainLooper()).post(() -> ReturnYouTubeDislikes.trySetDislikes(ReturnYouTubeDislikes.formatDislikes(dislikes)));
             } else {
                 LogHelper.debug(RYDRequester.class, "dislikes fetch response was " + connection.getResponseCode());
             }
