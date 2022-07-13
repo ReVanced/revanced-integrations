@@ -33,13 +33,8 @@ public class RYDRequester {
             connection.setConnectTimeout(5 * 1000);
             if (connection.getResponseCode() == 200) {
                 JSONObject json = getJSONObject(connection);
-                int dislikes = json.getInt("dislikes");
-                dislikeCount = dislikes;
+                dislikeCount = json.getInt("dislikes");
                 LogHelper.debug(RYDRequester.class, "dislikes fetched - " + dislikeCount);
-
-
-                // Set the dislikes
-//                new Handler(Looper.getMainLooper()).post(() -> ReturnYouTubeDislikes.trySetDislikes(ReturnYouTubeDislikes.formatDislikes(dislikes)));
             } else {
                 LogHelper.debug(RYDRequester.class, "dislikes fetch response was " + connection.getResponseCode());
             }
