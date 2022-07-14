@@ -2,28 +2,24 @@ package app.revanced.integrations.ryd;
 
 import static app.revanced.integrations.sponsorblock.player.VideoInformation.currentVideoId;
 import static app.revanced.integrations.sponsorblock.player.VideoInformation.dislikeCount;
-import static app.revanced.integrations.utils.ReVancedUtils.getIdentifier;
 
 import android.content.Context;
 import android.icu.text.CompactDecimalFormat;
 import android.os.Build;
-
 import android.text.SpannableString;
-import android.view.View;
-import android.widget.TextView;
 
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicReference;
 
+import app.revanced.integrations.ryd.requests.RYDRequester;
 import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.utils.LogHelper;
-import app.revanced.integrations.ryd.requests.RYDRequester;
 import app.revanced.integrations.utils.ReVancedUtils;
 import app.revanced.integrations.utils.SharedPrefHelper;
 
 public class ReturnYouTubeDislikes {
-    public static boolean isEnabled;
+    private static boolean isEnabled;
     private static Thread _dislikeFetchThread = null;
     private static Thread _votingThread = null;
     private static Registration registration;
@@ -58,7 +54,6 @@ public class ReturnYouTubeDislikes {
         }
     }
 
-    // Call hook in the YT code when the video changes
     public static void newVideoLoaded(String videoId) {
         LogHelper.debug(ReturnYouTubeDislikes.class, "newVideoLoaded - " + videoId);
 
@@ -78,7 +73,6 @@ public class ReturnYouTubeDislikes {
         _dislikeFetchThread.start();
     }
 
-    // Call hook in the YT code when a litho component gets created
     public static void onComponentCreated(Object conversionContext, AtomicReference<Object> textRef) {
         if (!isEnabled) return;
 
@@ -100,8 +94,6 @@ public class ReturnYouTubeDislikes {
         }
     }
 
-    // Call hook in the YT code when the like/dislike button gets clicked
-    // @param vote -1 (dislike), 0 (none) or 1 (like)
     public static void sendVote(int vote) {
         if (!isEnabled) return;
 
