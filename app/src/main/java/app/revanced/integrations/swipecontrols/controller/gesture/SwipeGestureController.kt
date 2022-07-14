@@ -98,7 +98,24 @@ open class SwipeGestureController(
             onUp(motionEvent)
         }
 
-        return detector.onTouchEvent(motionEvent) or shouldForceInterceptEvents
+        return if (shouldForceInterceptEvents || inSwipeZone(motionEvent)) {
+            detector.onTouchEvent(motionEvent) or shouldForceInterceptEvents
+        } else false
+    }
+
+    /**
+     * check if provided motion event is in any active swipe zone?
+     *
+     * @param e the event to check
+     * @return is the event in any active swipe zone?
+     */
+    open fun inSwipeZone(e: MotionEvent): Boolean {
+        val inVolumeZone = if (controller.config.enableVolumeControls)
+            (e.toPoint() in controller.zones.volume) else false
+        val inBrightnessZone = if (controller.config.enableBrightnessControl)
+            (e.toPoint() in controller.zones.brightness) else false
+
+        return inVolumeZone || inBrightnessZone
     }
 
     /**
