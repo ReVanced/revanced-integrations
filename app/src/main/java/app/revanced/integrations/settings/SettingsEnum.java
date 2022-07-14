@@ -140,7 +140,7 @@ public enum SettingsEnum {
                 Object value = setting.getDefaultValue();
 
                 //LogHelper is not initialized here
-                Log.d("ReVanced: SettingsEnum", "Loading Setting: " + setting.name());
+                Log.d("revanced: SettingsEnum", "Loading Setting: " + setting.name());
 
                 switch (setting.getReturnType()) {
                     case FLOAT:
@@ -165,7 +165,7 @@ public enum SettingsEnum {
                 setting.setValue(value);
 
                 //LogHelper is not initialized here
-                Log.d("ReVanced: SettingsEnum", "Loaded Setting: " + setting.name() + " Value: " + value);
+                Log.d("revanced: SettingsEnum", "Loaded Setting: " + setting.name() + " Value: " + value);
             }
         }
     }
@@ -214,27 +214,22 @@ public enum SettingsEnum {
     }
 
     public int getInt() {
-        load();
         return (int) value;
     }
 
     public String getString() {
-        load();
         return (String) value;
     }
 
     public boolean getBoolean() {
-        load();
         return (Boolean) value;
     }
 
     public Long getLong() {
-        load();
         return (Long) value;
     }
 
     public Float getFloat() {
-        load();
         return (Float) value;
     }
 
