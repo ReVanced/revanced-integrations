@@ -1,7 +1,7 @@
 package app.revanced.integrations.ryd;
 
-import static app.revanced.integrations.sponsorblock.player.VideoInformation.currentVideoId;
-import static app.revanced.integrations.sponsorblock.player.VideoInformation.dislikeCount;
+import static app.revanced.integrations.videoplayer.VideoInformation.currentVideoId;
+import static app.revanced.integrations.videoplayer.VideoInformation.dislikeCount;
 
 import android.content.Context;
 import android.icu.text.CompactDecimalFormat;

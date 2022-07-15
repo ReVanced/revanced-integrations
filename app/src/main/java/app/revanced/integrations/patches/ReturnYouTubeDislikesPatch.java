@@ -7,7 +7,7 @@ import app.revanced.integrations.ryd.ReturnYouTubeDislikes;
 /**
  * Used by app.revanced.patches.youtube.layout.returnyoutubedislikes.patch.RYDPatch
  */
-public class ReturnYoutubeDislikesPatch {
+public class ReturnYouTubeDislikesPatch {
 
     /**
      * Called when the video id changes
