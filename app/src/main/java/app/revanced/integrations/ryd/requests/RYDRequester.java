@@ -1,7 +1,7 @@
 package app.revanced.integrations.ryd.requests;
 
 import static app.revanced.integrations.videoplayer.VideoInformation.dislikeCount;
-import static app.revanced.integrations.adremover.whitelist.requests.Requester.parseJson;
+import static app.revanced.integrations.whitelist.requests.Requester.parseJson;
 
 
 import org.json.JSONObject;
@@ -13,8 +13,8 @@ import java.nio.charset.StandardCharsets;
 
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.ryd.Registration;
-import app.revanced.integrations.adremover.whitelist.requests.Requester;
-import app.revanced.integrations.adremover.whitelist.requests.Route;
+import app.revanced.integrations.whitelist.requests.Requester;
+import app.revanced.integrations.whitelist.requests.Route;
 
 public class RYDRequester {
     private static final String RYD_API_URL = "https://returnyoutubedislikeapi.com/";
