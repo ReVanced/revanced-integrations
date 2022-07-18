@@ -14,15 +14,26 @@ import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.utils.LogHelper;
 
 public class OldQualityLayoutPatch {
-    // TODO: hide listView, OnHierarchyChange will not be triggered though
+    public static Window window;
+    private static boolean hideWindow = true;
+    
     public static void showOldQualityMenu(ListView listView)
     {
         if (!SettingsEnum.OLD_STYLE_QUALITY_SETTINGS.getBoolean()) return;
+
+        hideWindow = true;
 
         listView.setOnHierarchyChangeListener(new ViewGroup.OnHierarchyChangeListener() {
             @Override
             public void onChildViewAdded(View parent, View child) {
                 LogHelper.debug(OldQualityLayoutPatch.class, "Added: " + child);
+
+                parent.setVisibility(View.GONE);
+                if (window != null && hideWindow) {
+                    window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+                    hideWindow = false;
+                }
 
                 final var indexOfAdvancedQualityMenuItem = 4;
                 if (listView.indexOfChild(child) != indexOfAdvancedQualityMenuItem) return;
