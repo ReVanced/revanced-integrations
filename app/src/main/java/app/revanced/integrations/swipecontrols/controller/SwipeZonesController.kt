@@ -8,7 +8,7 @@ import app.revanced.integrations.swipecontrols.misc.applyDimension
 import app.revanced.integrations.utils.ReVancedUtils
 import kotlin.math.min
 
-/**
+/** 
  * Y- Axis:
  * -------- 0
  *        ^
