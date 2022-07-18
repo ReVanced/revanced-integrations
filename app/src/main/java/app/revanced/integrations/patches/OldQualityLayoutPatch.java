@@ -1,10 +1,11 @@
 package app.revanced.integrations.patches;
 
-import android.os.Handler;
-import android.os.Looper;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 
