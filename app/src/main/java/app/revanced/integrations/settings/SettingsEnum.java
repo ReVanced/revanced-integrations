@@ -52,11 +52,12 @@ public enum SettingsEnum {
     INFO_CARDS_SHOWN("revanced_info_cards_enabled", false, ReturnType.BOOLEAN),
     BRANDING_SHOWN("revanced_branding_watermark_enabled", false, ReturnType.BOOLEAN),
     CAST_BUTTON_SHOWN("revanced_cast_button_enabled", false, ReturnType.BOOLEAN),
-    AUTOPLAY_BUTTON_SHOWN("revanced_autoplay_button_enabled", false, ReturnType.BOOLEAN), //ToDo: Att to prefs
+    AUTOPLAY_BUTTON_SHOWN("revanced_autoplay_button_enabled", false, ReturnType.BOOLEAN), //ToDo: Add to prefs
     USE_TABLET_MINIPLAYER("revanced_tablet_miniplayer", false, ReturnType.BOOLEAN),
     CREATE_BUTTON_SHOWN("revanced_create_button_enabled", false, ReturnType.BOOLEAN),
     USE_NEW_ACTIONBAR("revanced_new_actionbar", true, ReturnType.BOOLEAN),
     SHORTS_BUTTON_SHOWN("revanced_shorts_button_enabled", false, ReturnType.BOOLEAN),
+    FULLSCREEN_PANELS_SHOWN("revanced_fullscreen_panels_enabled", false, ReturnType.BOOLEAN), //ToDo: Add to prefs
 
     //Misc. Settings
     AUTOREPEAT_BUTTON_SHOWN("revanced_pref_auto_repeat_button", false, ReturnType.BOOLEAN),
@@ -81,7 +82,7 @@ public enum SettingsEnum {
     MAX_PLAYBACK_BUFFER_AFTER_REBUFFER("revanced_pref_buffer_for_playback_after_rebuffer_ms", 5000, ReturnType.INTEGER),
 
     //ReVanced General Settings
-    DEBUG("revanced_debug_enabled", false, ReturnType.BOOLEAN),
+    DEBUG("revanced_debug_enabled", true, ReturnType.BOOLEAN),
     USE_DARK_THEME("app_theme_dark", false, ReturnType.BOOLEAN),
 
     //RYD Settings
