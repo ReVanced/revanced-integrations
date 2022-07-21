@@ -2,7 +2,7 @@ package app.revanced.integrations.patches;
 
 import app.revanced.integrations.settings.SettingsEnum;
 
-public class ForceDisableCaptions {
+public class ForceDisableCaptionsPatch {
 
     //ToDo: Write Patch for it
     public static boolean captionsEnabled() {
