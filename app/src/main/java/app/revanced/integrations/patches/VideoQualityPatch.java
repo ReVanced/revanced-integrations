@@ -18,9 +18,7 @@ public class VideoQualityPatch {
     public static final int[] videoResolutions = {0, 144, 240, 360, 480, 720, 1080, 1440, 2160};
     private static Boolean userChangedQuality = false;
 
-    //ToDo: Write Patch for it.
-    //See https://drive.google.com/file/d/1goodaU0JWrO9BAOUn6El-Id1SNuMGHR9/view?usp=sharing for where it needs to be used.
-    public static int setVideoQuality(Object[] qualities, int quality, Object qInterface) {
+    public static int setVideoQuality(Object[] qualities, int quality, Object qInterface, String qIndexMethod) {
         int preferredQuality;
         Field[] fields;
         if (!ReVancedUtils.isNewVideoStarted() || userChangedQuality || qInterface == null) {
@@ -84,7 +82,8 @@ public class VideoQualityPatch {
         LogHelper.debug(VideoQualityPatch.class, "Index of quality " + quality + " is " + qualityIndex);
         try {
             Class<?> cl = qInterface.getClass();
-            Method m = cl.getMethod("x", Integer.TYPE);
+            Method m = cl.getMethod(qIndexMethod, Integer.TYPE);
+            LogHelper.debug(VideoQualityPatch.class, "Method is: " + qIndexMethod);
             m.invoke(qInterface, iStreamQualities.get(qualityIndex));
             LogHelper.debug(VideoQualityPatch.class, "Quality changed to: " + qualityIndex);
             return qualityIndex;
@@ -94,7 +93,6 @@ public class VideoQualityPatch {
         }
     }
 
-    //See https://drive.google.com/file/d/1_cgCf603XKk4gEbbsmWGtndNt5UJ0np7/view?usp=sharing for usage
     public static void userChangedQuality() {
         userChangedQuality = true;
     }
