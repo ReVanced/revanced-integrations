@@ -14,19 +14,57 @@ import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedUtils;
 
 public class VideoQualityPatch {
-
     public static final int[] videoResolutions = {0, 144, 240, 360, 480, 720, 1080, 1440, 2160};
     private static Boolean userChangedQuality = false;
+    public static int selectedQuality1 = -2;
+
+    public static void changeDefaultQuality(int defaultQuality) {
+        Context context = ReVancedUtils.getContext();
+        if (isConnectedWifi(context)) {
+            SettingsEnum.PREFERRED_RESOLUTION_WIFI.setValue(defaultQuality);
+            LogHelper.debug(VideoQualityPatch.class, "Changing default Wi-Fi quality to: " + defaultQuality);
+        } else if (isConnectedMobile(context)) {
+            SettingsEnum.PREFERRED_RESOLUTION_MOBILE.setValue(defaultQuality);
+            LogHelper.debug(VideoQualityPatch.class, "Changing default mobile data quality to: " + defaultQuality);
+        } else {
+            LogHelper.debug(VideoQualityPatch.class, "No Internet connection, aborting default quality change.");
+        }
+        userChangedQuality = false;
+    }
 
     public static int setVideoQuality(Object[] qualities, int quality, Object qInterface, String qIndexMethod) {
         int preferredQuality;
         Field[] fields;
-        if (!ReVancedUtils.isNewVideoStarted() || userChangedQuality || qInterface == null) {
-            if (SettingsEnum.DEBUG.getBoolean() && userChangedQuality) {
-                LogHelper.debug(VideoQualityPatch.class, "Skipping quality change because user changed it: " + quality);
-            }
-            userChangedQuality = false;
+        if (!ReVancedUtils.isNewVideoStarted() && !userChangedQuality || qInterface == null) {
             return quality;
+        }
+        Class<?> intType = Integer.TYPE;
+        ArrayList<Integer> iStreamQualities = new ArrayList<>();
+        try {
+            for (Object streamQuality : qualities) {
+                for (Field field : streamQuality.getClass().getFields()) {
+                    if (field.getType().isAssignableFrom(intType)) {  // converts quality index to actual readable resolution
+                        int value = field.getInt(streamQuality);
+                        if (field.getName().length() <= 2) {
+                            iStreamQualities.add(value);
+                        }
+                    }
+                }
+            }
+        } catch (Exception ignored) {
+        }
+        Collections.sort(iStreamQualities);
+        int index = 0;
+        if (userChangedQuality) {
+            for (int convertedQuality : iStreamQualities) {
+                int selectedQuality2 = qualities.length - selectedQuality1 + 1;
+                index++;
+                if (selectedQuality2 == index) {
+                    LogHelper.debug(VideoQualityPatch.class, "Quality index is: " + index + " and corresponding value is: " + convertedQuality);
+                    changeDefaultQuality(convertedQuality);
+                    return selectedQuality2;
+                }
+            }
         }
         ReVancedUtils.setNewVideo(false);
         LogHelper.debug(VideoQualityPatch.class, "Quality: " + quality);
@@ -48,23 +86,6 @@ public class VideoQualityPatch {
         if (preferredQuality == -2) {
             return quality;
         }
-        Class<?> intType = Integer.TYPE;
-        ArrayList<Integer> iStreamQualities = new ArrayList<>();
-        try {
-            for (Object streamQuality : qualities) {
-                for (Field field : streamQuality.getClass().getFields()) {
-                    if (field.getType().isAssignableFrom(intType)) {
-                        int value = field.getInt(streamQuality);
-                        if (field.getName().length() <= 2) {
-                            iStreamQualities.add(value);
-                        }
-                    }
-                }
-            }
-        } catch (Exception ignored) {
-        }
-        Collections.sort(iStreamQualities);
-        int index = 0;
         for (int streamQuality2 : iStreamQualities) {
             LogHelper.debug(VideoQualityPatch.class, "Quality at index " + index + ": " + streamQuality2);
             index++;
@@ -93,7 +114,8 @@ public class VideoQualityPatch {
         }
     }
 
-    public static void userChangedQuality() {
+    public static void userChangedQuality(int selectedQuality) {
+        selectedQuality1 = selectedQuality;
         userChangedQuality = true;
     }
 
@@ -112,5 +134,5 @@ public class VideoQualityPatch {
         NetworkInfo info = getNetworkInfo(context);
         return info != null && info.isConnected() && info.getType() == 0;
     }
-    
+
 }
