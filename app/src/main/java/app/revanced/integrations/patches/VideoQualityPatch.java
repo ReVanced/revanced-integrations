@@ -1,6 +1,7 @@
 package app.revanced.integrations.patches;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
@@ -9,7 +10,6 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedUtils;
 
@@ -21,10 +21,16 @@ public class VideoQualityPatch {
     public static void changeDefaultQuality(int defaultQuality) {
         Context context = ReVancedUtils.getContext();
         if (isConnectedWifi(context)) {
-            SettingsEnum.PREFERRED_RESOLUTION_WIFI.setValue(defaultQuality);
+            SharedPreferences wifi = context.getSharedPreferences("revanced_prefs", 0);
+            SharedPreferences.Editor wifieditor = wifi.edit();
+            wifieditor.putInt("wifi_quality",defaultQuality);
+            wifieditor.apply();
             LogHelper.debug(VideoQualityPatch.class, "Changing default Wi-Fi quality to: " + defaultQuality);
         } else if (isConnectedMobile(context)) {
-            SettingsEnum.PREFERRED_RESOLUTION_MOBILE.setValue(defaultQuality);
+            SharedPreferences mobile = context.getSharedPreferences("revanced_prefs", 0);
+            SharedPreferences.Editor mobileeditor = mobile.edit();
+            mobileeditor.putInt("mobile_quality",defaultQuality);
+            mobileeditor.apply();
             LogHelper.debug(VideoQualityPatch.class, "Changing default mobile data quality to: " + defaultQuality);
         } else {
             LogHelper.debug(VideoQualityPatch.class, "No Internet connection, aborting default quality change.");
@@ -74,10 +80,12 @@ public class VideoQualityPatch {
             return quality;
         }
         if (isConnectedWifi(context)) {
-            preferredQuality = SettingsEnum.PREFERRED_RESOLUTION_WIFI.getInt();
+            SharedPreferences wifi = context.getSharedPreferences("revanced_prefs", 0);
+            preferredQuality = wifi.getInt("wifi_quality", -2);
             LogHelper.debug(VideoQualityPatch.class, "Wi-Fi connection detected, preferred quality: " + preferredQuality);
         } else if (isConnectedMobile(context)) {
-            preferredQuality = SettingsEnum.PREFERRED_RESOLUTION_MOBILE.getInt();
+            SharedPreferences mobile = context.getSharedPreferences("revanced_prefs", 0);
+            preferredQuality = mobile.getInt("mobile_quality", -2);
             LogHelper.debug(VideoQualityPatch.class, "Mobile data connection detected, preferred quality: " + preferredQuality);
         } else {
             LogHelper.debug(VideoQualityPatch.class, "No Internet connection!");
