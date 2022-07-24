@@ -3,6 +3,7 @@ package app.revanced.integrations.patches;
 import android.os.Handler;
 import android.os.Looper;
 import android.widget.ListView;
+import android.view.View;
 
 import app.revanced.integrations.settings.SettingsEnum;
 
