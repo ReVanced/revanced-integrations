@@ -5,7 +5,6 @@ import android.os.Looper;
 import android.widget.ListView;
 
 import app.revanced.integrations.settings.SettingsEnum;
-import app.revanced.integrations.utils.LogHelper;
 
 public class OldQualityLayoutPatch {
     public static void showOldQualityMenu(ListView listView)
