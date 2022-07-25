@@ -1,15 +1,8 @@
 package app.revanced.integrations.patches;
 
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
-
-import java.util.Arrays;
 
 import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.utils.LogHelper;
