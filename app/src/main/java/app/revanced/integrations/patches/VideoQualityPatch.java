@@ -14,7 +14,7 @@ import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedUtils;
 
 public class VideoQualityPatch {
-    public static final int[] videoResolutions = {0, 144, 240, 360, 480, 720, 1080, 1440, 2160};
+    public static final int[] videoResolutions = {0, 144, 240, 360, 480, 720, 1080, 1440, 2160, 4320};
     public static int selectedQuality1 = -2;
     private static Boolean userChangedQuality = false;
 
@@ -127,6 +127,9 @@ public class VideoQualityPatch {
         userChangedQuality = true;
     }
 
+    public static void newVideoStarted(String useless) {
+        ReVancedUtils.setNewVideo(true);
+    }
 
     private static NetworkInfo getNetworkInfo(Context context) {
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
