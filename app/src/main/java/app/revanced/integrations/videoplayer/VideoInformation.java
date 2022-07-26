@@ -1,7 +1,6 @@
 package app.revanced.integrations.videoplayer;
 
 import app.revanced.integrations.utils.LogHelper;
-import app.revanced.integrations.utils.ReVancedUtils;
 
 public class VideoInformation {
     public static String currentVideoId;
