@@ -1,3 +1,10 @@
+## [0.28.3](https://github.com/Canny1913/revanced-integrations/compare/v0.28.2...v0.28.3) (2022-07-26)
+
+
+### Bug Fixes
+
+* typo again ([24debc2](https://github.com/Canny1913/revanced-integrations/commit/24debc22f16807301281ccba295837ad2e72ed8f))
+
 ## [0.28.2](https://github.com/Canny1913/revanced-integrations/compare/v0.28.1...v0.28.2) (2022-07-26)
 
 
