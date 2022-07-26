@@ -128,7 +128,7 @@ public class VideoQualityPatch {
         userChangedQuality = true;
     }
 
-    public static void newVideoStarted(String useless) {
+    public static void newVideoStarted(String videoId) {
         newVideo = true;
     }
 
