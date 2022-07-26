@@ -1,3 +1,11 @@
+## [0.28.1](https://github.com/Canny1913/revanced-integrations/compare/v0.28.0...v0.28.1) (2022-07-26)
+
+
+### Bug Fixes
+
+* fix `default-video-quality` patch crashing ([82c43cb](https://github.com/Canny1913/revanced-integrations/commit/82c43cbaefab7a245094712cb28d18c3d90caa82))
+* remove newVideo from VideoInformation ([ea353f3](https://github.com/Canny1913/revanced-integrations/commit/ea353f3d247aaed4498db72230bc383f7dc4cf94))
+
 # [0.28.0](https://github.com/revanced/revanced-integrations/compare/v0.27.6...v0.28.0) (2022-07-24)
 
 
