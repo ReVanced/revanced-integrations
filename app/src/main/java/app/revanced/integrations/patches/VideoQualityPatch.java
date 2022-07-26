@@ -42,7 +42,7 @@ public class VideoQualityPatch {
     public static int setVideoQuality(Object[] qualities, int quality, Object qInterface, String qIndexMethod) {
         int preferredQuality;
         Field[] fields;
-        if (!ReVancedUtils.isNewVideoStarted() && !userChangedQuality || qInterface == null) {
+        if (!newVideo & !userChangedQuality || qInterface == null) {
             return quality;
         }
         Class<?> intType = Integer.TYPE;
