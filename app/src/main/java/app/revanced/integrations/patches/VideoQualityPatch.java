@@ -16,6 +16,7 @@ import app.revanced.integrations.utils.ReVancedUtils;
 public class VideoQualityPatch {
     public static final int[] videoResolutions = {0, 144, 240, 360, 480, 720, 1080, 1440, 2160, 4320};
     public static int selectedQuality1 = -2;
+    private static Boolean newVideo = false;
     private static Boolean userChangedQuality = false;
 
     public static void changeDefaultQuality(int defaultQuality) {
@@ -72,7 +73,7 @@ public class VideoQualityPatch {
                 }
             }
         }
-        ReVancedUtils.setNewVideo(false);
+        newVideo = false;
         LogHelper.debug(VideoQualityPatch.class, "Quality: " + quality);
         Context context = ReVancedUtils.getContext();
         if (context == null) {
@@ -128,7 +129,7 @@ public class VideoQualityPatch {
     }
 
     public static void newVideoStarted(String useless) {
-        ReVancedUtils.setNewVideo(true);
+        newVideo = true;
     }
 
     private static NetworkInfo getNetworkInfo(Context context) {
