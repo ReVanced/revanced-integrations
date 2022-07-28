@@ -17,6 +17,7 @@ import app.revanced.integrations.utils.SharedPrefHelper;
 public class VideoQualityPatch {
     public static final int[] videoResolutions = {0, 144, 240, 360, 480, 720, 1080, 1440, 2160, 4320};
     public static int selectedQuality1 = -2;
+    private static Boolean newVideo = false;
     private static Boolean userChangedQuality = false;
 
     public static void changeDefaultQuality(int defaultQuality) {
@@ -49,7 +50,7 @@ public class VideoQualityPatch {
     public static int setVideoQuality(Object[] qualities, int quality, Object qInterface, String qIndexMethod) {
         int preferredQuality;
         Field[] fields;
-        if (!ReVancedUtils.isNewVideoStarted() && !userChangedQuality || qInterface == null) {
+        if (!(newVideo || userChangedQuality) || qInterface == null) {
             return quality;
         }
         Class<?> intType = Integer.TYPE;
@@ -80,7 +81,7 @@ public class VideoQualityPatch {
                 }
             }
         }
-        ReVancedUtils.setNewVideo(false);
+        newVideo = false;
         LogHelper.debug(VideoQualityPatch.class, "Quality: " + quality);
         Context context = ReVancedUtils.getContext();
         if (context == null) {
@@ -124,6 +125,7 @@ public class VideoQualityPatch {
             return qualityIndex;
         } catch (Exception ex) {
             LogHelper.printException(VideoQualityPatch.class, "Failed to set quality", ex);
+            Toast.makeText(context, "Failed to set quality", Toast.LENGTH_SHORT).show();
             return qualityIndex;
         }
     }
@@ -133,8 +135,8 @@ public class VideoQualityPatch {
         userChangedQuality = true;
     }
 
-    public static void newVideoStarted(String useless) {
-        ReVancedUtils.setNewVideo(true);
+    public static void newVideoStarted(String videoId) {
+        newVideo = true;
     }
 
     private static NetworkInfo getNetworkInfo(Context context) {
