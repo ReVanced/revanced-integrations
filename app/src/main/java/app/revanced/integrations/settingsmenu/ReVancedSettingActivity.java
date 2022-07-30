@@ -37,10 +37,10 @@ public class ReVancedSettingActivity extends LicenseActivity {
             LogHelper.printException(ReVancedSettingActivity.class, "Couldn't set Toolbar click handler", e);
         }
 
-        PreferenceFragment preferenceFragment = null;
-        String preferenceIdentifier = null;
-        String dataString = base.getIntent().getDataString();
+        PreferenceFragment preferenceFragment;
+        String preferenceIdentifier;
 
+        String dataString = base.getIntent().getDataString();
         if (dataString.equalsIgnoreCase("sponsorblock_settings")) {
             preferenceIdentifier = "sb_settings";
             preferenceFragment = new SponsorBlockSettingsFragment();
