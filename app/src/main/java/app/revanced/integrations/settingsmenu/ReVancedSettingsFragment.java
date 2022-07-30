@@ -185,7 +185,7 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
             this.layoutSettingsPreferenceScreen = (PreferenceScreen) getPreferenceScreen().findPreference("layout_settings");
             this.bufferSettingsPreferenceScreen = (PreferenceScreen) getPreferenceScreen().findPreference("buffer_screen");
             this.miscsPreferenceScreen = (PreferenceScreen) getPreferenceScreen().findPreference("misc_screen");
-            this.xSwipeControlPreferenceScreen = (PreferenceScreen) getPreferenceScreen().findPreference("xfenster_screen");
+            this.xSwipeControlPreferenceScreen = (PreferenceScreen) getPreferenceScreen().findPreference("swipe_screen");
             this.vp9Override = (SwitchPreference) this.codecPreferenceScreen.findPreference("revanced_vp9_enabled");
             this.codecDefault = this.codecPreferenceScreen.findPreference("pref_default_override");
             this.codecVP9 = this.codecPreferenceScreen.findPreference("pref_vp9_override");
