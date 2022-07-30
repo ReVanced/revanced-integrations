@@ -16,14 +16,13 @@ import app.revanced.integrations.utils.ThemeHelper;
 public class ReVancedSettingActivity extends LicenseActivity {
 
     public static void setTheme(LicenseActivity base) {
-        var currentTheme = ThemeHelper.isDarkTheme();
-        if (currentTheme) {
-            LogHelper.debug(ReVancedSettingActivity.class, "set Theme.YouTube.Settings.Dark");
-            base.setTheme(getIdentifier("Theme.YouTube.Settings.Dark", "style"));
-        } else {
-            LogHelper.debug(ReVancedSettingActivity.class, "set Theme.YouTube.Settings");
-            base.setTheme(getIdentifier("Theme.YouTube.Settings", "style"));
-        }
+        final var whiteTheme = "Theme.YouTube.Settings";
+        final var darkTheme = "Theme.YouTube.Settings.Dark";
+
+        final var theme = ThemeHelper.isDarkTheme() ? darkTheme : whiteTheme;
+
+        LogHelper.debug(ReVancedSettingActivity.class, "Using theme: " + theme);
+        base.setTheme(getIdentifier(theme, "style"));
     }
 
     public static void initializeSettings(LicenseActivity base) {
@@ -62,37 +61,31 @@ public class ReVancedSettingActivity extends LicenseActivity {
         base.getFragmentManager().beginTransaction().replace(getIdentifier("xsettings_fragments", "id"), preferenceFragment).commit();
     }
 
-    public static ImageButton getImageButton(ViewGroup viewGroup) {
+    public static <T extends View> T getView(Class<T> typeClass, ViewGroup viewGroup) {
         if (viewGroup == null) {
             return null;
         }
         int childCount = viewGroup.getChildCount();
         for (int i = 0; i < childCount; i++) {
             View childAt = viewGroup.getChildAt(i);
-            if (childAt instanceof ImageButton) {
-                return (ImageButton) childAt;
+            if (childAt.getClass() == typeClass) {
+                return (T) childAt;
             }
         }
         return null;
+    }
+
+    public static ImageButton getImageButton(ViewGroup viewGroup) {
+        return getView(ImageButton.class, viewGroup);
     }
 
     public static TextView getTextView(ViewGroup viewGroup) {
-        if (viewGroup == null) {
-            return null;
-        }
-        int childCount = viewGroup.getChildCount();
-        for (int i = 0; i < childCount; i++) {
-            View childAt = viewGroup.getChildAt(i);
-            if (childAt instanceof TextView) {
-                return (TextView) childAt;
-            }
-        }
-        return null;
+        return getView(TextView.class, viewGroup);
     }
 
-    private static int getIdentifier(String str, String str2) {
+    private static int getIdentifier(String name, String defType) {
         Context appContext = ReVancedUtils.getContext();
         assert appContext != null;
-        return appContext.getResources().getIdentifier(str, str2, appContext.getPackageName());
+        return appContext.getResources().getIdentifier(name, defType, appContext.getPackageName());
     }
 }
