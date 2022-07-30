@@ -23,6 +23,7 @@ import com.google.android.apps.youtube.app.YouTubeTikTokRoot_Application;
 import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedUtils;
+import app.revanced.integrations.utils.SharedPrefHelper;
 import app.revanced.integrations.videoplayer.AutoRepeat;
 import app.revanced.integrations.videoplayer.Copy;
 import app.revanced.integrations.videoplayer.CopyWithTimeStamp;
@@ -56,6 +57,14 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
     private final CharSequence[] buttonLocationentryValues = {"NONE", "PLAYER", "BUTTON_BAR", "BOTH"};
 
     SharedPreferences.OnSharedPreferenceChangeListener listener = (sharedPreferences, str) -> {
+        if (str.equals(SettingsEnum.CODEC_OVERRIDE.getPath())) {
+            SettingsEnum.CODEC_OVERRIDE.setValue(((SwitchPreference) findPreference(str)).isChecked());
+            if (ReVancedUtils.getContext() != null && settingsInitialized) {
+                rebootDialog(getActivity());
+            }
+        }
+
+
         if (str.equals(SettingsEnum.DEBUG.getPath())) {
             SettingsEnum.DEBUG.setValue(((SwitchPreference) findPreference(str)).isChecked());
         } else if (str.equals(SettingsEnum.HOME_ADS_SHOWN.getPath())) {
@@ -92,11 +101,6 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
             }
         } else if (str.equals(SettingsEnum.USE_NEW_ACTIONBAR.getPath())) {
             SettingsEnum.USE_NEW_ACTIONBAR.setValue(((SwitchPreference) layoutSettingsPreferenceScreen.findPreference(str)).isChecked());
-            if (ReVancedUtils.getContext() != null && settingsInitialized) {
-                rebootDialog(getActivity());
-            }
-        } else if (str.equals(SettingsEnum.CODEC_OVERRIDE.getPath())) {
-            SettingsEnum.CODEC_OVERRIDE.setValue(((SwitchPreference) findPreference(str)).isChecked());
             if (ReVancedUtils.getContext() != null && settingsInitialized) {
                 rebootDialog(getActivity());
             }
@@ -159,7 +163,7 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
     @Override // android.preference.PreferenceFragment, android.app.Fragment
     public void onCreate(Bundle bundle) {
         super.onCreate(bundle);
-        getPreferenceManager().setSharedPreferencesName("youtube");
+        getPreferenceManager().setSharedPreferencesName(SharedPrefHelper.SharedPrefNames.YOUTUBE.getName());
         try {
             int identifier = getResources().getIdentifier("revanced_prefs", "xml", getPackageName());
 
