@@ -17,8 +17,6 @@ public enum SettingsEnum {
 
     //Video Settings
     OLD_STYLE_QUALITY_SETTINGS("revanced_use_old_style_quality_settings", true, ReturnType.BOOLEAN),
-    PREFERRED_RESOLUTION_WIFI("revanced_pref_video_quality_wifi", -2, ReturnType.INTEGER),
-    PREFERRED_RESOLUTION_MOBILE("revanced_pref_video_quality_mobile", -2, ReturnType.INTEGER),
     PREFERRED_VIDEO_SPEED("revanced_pref_video_speed", -2.0f, ReturnType.FLOAT),
 
     //Whitelist Settings
@@ -243,7 +241,7 @@ public enum SettingsEnum {
         return path;
     }
 
-    private ReturnType getReturnType() {
+    public ReturnType getReturnType() {
         return returnType;
     }
 
