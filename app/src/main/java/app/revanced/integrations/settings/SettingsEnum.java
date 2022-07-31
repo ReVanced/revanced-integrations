@@ -53,7 +53,7 @@ public enum SettingsEnum {
     //ToDo: Not used atm, Patch missing
     USE_TABLET_MINIPLAYER("revanced_tablet_miniplayer", false, ReturnType.BOOLEAN),
     CREATE_BUTTON_SHOWN("revanced_create_button_enabled", false, ReturnType.BOOLEAN, true),
-    USE_NEW_ACTIONBAR("revanced_new_actionbar", true, ReturnType.BOOLEAN, true),
+    USE_NEW_ACTIONBAR("revanced_new_actionbar", false, ReturnType.BOOLEAN, true),
     SHORTS_BUTTON_SHOWN("revanced_shorts_button_enabled", false, ReturnType.BOOLEAN, true),
     FULLSCREEN_PANELS_SHOWN("revanced_fullscreen_panels_enabled", false, ReturnType.BOOLEAN), //ToDo: Add to prefs
 
