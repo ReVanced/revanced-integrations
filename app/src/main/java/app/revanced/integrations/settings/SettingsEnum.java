@@ -13,7 +13,7 @@ import app.revanced.integrations.utils.SharedPrefHelper;
 public enum SettingsEnum {
 
     //Codec Override
-    CODEC_OVERRIDE("revanced_override_codec_enabled", true, ReturnType.BOOLEAN),
+    CODEC_OVERRIDE("revanced_override_codec_enabled", false, ReturnType.BOOLEAN),
 
     //Video Settings
     OLD_STYLE_QUALITY_SETTINGS("revanced_use_old_style_quality_settings", true, ReturnType.BOOLEAN),
@@ -146,19 +146,19 @@ public enum SettingsEnum {
 
                 switch (setting.getReturnType()) {
                     case FLOAT:
-                        value = SharedPrefHelper.getFloat(context, SharedPrefHelper.SharedPrefNames.YOUTUBE, setting.getPath(), (float) setting.getDefaultValue());
+                        value = SharedPrefHelper.getFloat(context, setting.sharedPref, setting.getPath(), (float) setting.getDefaultValue());
                         break;
                     case LONG:
-                        value = SharedPrefHelper.getLong(context, SharedPrefHelper.SharedPrefNames.YOUTUBE, setting.getPath(), (long) setting.getDefaultValue());
+                        value = SharedPrefHelper.getLong(context, setting.sharedPref, setting.getPath(), (long) setting.getDefaultValue());
                         break;
                     case BOOLEAN:
-                        value = SharedPrefHelper.getBoolean(context, SharedPrefHelper.SharedPrefNames.YOUTUBE, setting.getPath(), (boolean) setting.getDefaultValue());
+                        value = SharedPrefHelper.getBoolean(context, setting.sharedPref, setting.getPath(), (boolean) setting.getDefaultValue());
                         break;
                     case INTEGER:
-                        value = SharedPrefHelper.getInt(context, SharedPrefHelper.SharedPrefNames.YOUTUBE, setting.getPath(), (int) setting.getDefaultValue());
+                        value = SharedPrefHelper.getInt(context, setting.sharedPref, setting.getPath(), (int) setting.getDefaultValue());
                         break;
                     case STRING:
-                        value = SharedPrefHelper.getString(context, SharedPrefHelper.SharedPrefNames.YOUTUBE, setting.getPath(), (String) setting.getDefaultValue());
+                        value = SharedPrefHelper.getString(context, setting.sharedPref, setting.getPath(), (String) setting.getDefaultValue());
                         break;
                     default:
                         LogHelper.printException(SettingsEnum.class, "Setting does not have a valid Type. Name is: " + setting.name());
