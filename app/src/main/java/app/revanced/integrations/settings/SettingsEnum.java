@@ -136,36 +136,40 @@ public enum SettingsEnum {
         if (context == null) {
             Log.e("revanced: SettingsEnum", "Context returned null! Setings NOT initialized");
         } else {
-            for (SettingsEnum setting : values()) {
-                Object value = setting.getDefaultValue();
+            try {
+                for (SettingsEnum setting : values()) {
+                    Object value = setting.getDefaultValue();
 
-                //LogHelper is not initialized here
-                Log.d("revanced: SettingsEnum", "Loading Setting: " + setting.name());
+                    //LogHelper is not initialized here
+                    Log.d("revanced: SettingsEnum", "Loading Setting: " + setting.name());
 
-                switch (setting.getReturnType()) {
-                    case FLOAT:
-                        value = SharedPrefHelper.getFloat(context, setting.sharedPref, setting.getPath(), (float) setting.getDefaultValue());
-                        break;
-                    case LONG:
-                        value = SharedPrefHelper.getLong(context, setting.sharedPref, setting.getPath(), (long) setting.getDefaultValue());
-                        break;
-                    case BOOLEAN:
-                        value = SharedPrefHelper.getBoolean(context, setting.sharedPref, setting.getPath(), (boolean) setting.getDefaultValue());
-                        break;
-                    case INTEGER:
-                        value = SharedPrefHelper.getInt(context, setting.sharedPref, setting.getPath(), (int) setting.getDefaultValue());
-                        break;
-                    case STRING:
-                        value = SharedPrefHelper.getString(context, setting.sharedPref, setting.getPath(), (String) setting.getDefaultValue());
-                        break;
-                    default:
-                        LogHelper.printException(SettingsEnum.class, "Setting does not have a valid Type. Name is: " + setting.name());
-                        break;
+                    switch (setting.getReturnType()) {
+                        case FLOAT:
+                            value = SharedPrefHelper.getFloat(context, setting.sharedPref, setting.getPath(), (float) setting.getDefaultValue());
+                            break;
+                        case LONG:
+                            value = SharedPrefHelper.getLong(context, setting.sharedPref, setting.getPath(), (long) setting.getDefaultValue());
+                            break;
+                        case BOOLEAN:
+                            value = SharedPrefHelper.getBoolean(context, setting.sharedPref, setting.getPath(), (boolean) setting.getDefaultValue());
+                            break;
+                        case INTEGER:
+                            value = SharedPrefHelper.getInt(context, setting.sharedPref, setting.getPath(), (int) setting.getDefaultValue());
+                            break;
+                        case STRING:
+                            value = SharedPrefHelper.getString(context, setting.sharedPref, setting.getPath(), (String) setting.getDefaultValue());
+                            break;
+                        default:
+                            LogHelper.printException(SettingsEnum.class, "Setting does not have a valid Type. Name is: " + setting.name());
+                            break;
+                    }
+                    setting.setValue(value);
+
+                    //LogHelper is not initialized here
+                    Log.d("revanced: SettingsEnum", "Loaded Setting: " + setting.name() + " Value: " + value);
                 }
-                setting.setValue(value);
-
-                //LogHelper is not initialized here
-                Log.d("revanced: SettingsEnum", "Loaded Setting: " + setting.name() + " Value: " + value);
+            } catch(Throwable th) {
+                LogHelper.printException(SettingsEnum.class, "Error during load()!", th);
             }
         }
     }

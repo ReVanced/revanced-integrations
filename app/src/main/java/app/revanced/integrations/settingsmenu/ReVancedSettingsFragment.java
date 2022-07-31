@@ -20,6 +20,9 @@ import android.preference.SwitchPreference;
 
 import com.google.android.apps.youtube.app.YouTubeTikTokRoot_Application;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedUtils;
@@ -30,7 +33,7 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
 
     public static Class homeActivityClass;
 
-    private PreferenceScreen[] screens;
+    private List<PreferenceScreen> screens;
 
     private boolean Registered = false;
     private boolean settingsInitialized = false;
@@ -116,16 +119,19 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
             this.settingsInitialized = sharedPreferences.getBoolean("revanced_initialized", false);
             sharedPreferences.registerOnSharedPreferenceChangeListener(this.listener);
             this.Registered = true;
-            this.screens[0] = (PreferenceScreen) getPreferenceScreen().findPreference("codec_override");
-            this.screens[1] = (PreferenceScreen) getPreferenceScreen().findPreference("video_settings");
-            this.screens[2] = (PreferenceScreen) getPreferenceScreen().findPreference("video_ad_settings");
-            this.screens[3] = (PreferenceScreen) getPreferenceScreen().findPreference("ad_settings");
-            this.screens[4] = (PreferenceScreen) getPreferenceScreen().findPreference("layout_settings");
-            this.screens[5] = (PreferenceScreen) getPreferenceScreen().findPreference("buffer_screen");
-            this.screens[6] = (PreferenceScreen) getPreferenceScreen().findPreference("misc_screen");
-            this.screens[7] = (PreferenceScreen) getPreferenceScreen().findPreference("swipe_screen");
+            this.screens = new ArrayList<>();
+            this.screens.add((PreferenceScreen) getPreferenceScreen().findPreference("codec_override"));
+            this.screens.add((PreferenceScreen) getPreferenceScreen().findPreference("video_settings"));
+            this.screens.add((PreferenceScreen) getPreferenceScreen().findPreference("video_ad_settings"));
+            this.screens.add((PreferenceScreen) getPreferenceScreen().findPreference("ad_settings"));
+            this.screens.add((PreferenceScreen) getPreferenceScreen().findPreference("layout_settings"));
+            this.screens.add((PreferenceScreen) getPreferenceScreen().findPreference("buffer_screen"));
+            this.screens.add((PreferenceScreen) getPreferenceScreen().findPreference("misc_screen"));
+            this.screens.add((PreferenceScreen) getPreferenceScreen().findPreference("swipe_screen"));
 
-            final ListPreference listPreference3 = (ListPreference) screens[1].findPreference("pref_preferred_video_speed");
+
+
+            final ListPreference listPreference3 = (ListPreference) screens.get(1).findPreference("revanced_pref_video_speed");
             setSpeedListPreferenceData(listPreference3);
 
             listPreference3.setOnPreferenceClickListener(preference -> {
@@ -136,7 +142,7 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
             sharedPreferences.edit().putBoolean("revanced_initialized", true);
             this.settingsInitialized = true;
         } catch (Throwable th) {
-            LogHelper.printException(ReVancedSettingsFragment.class, "Unable to retrieve resourceId for xfile_prefs", th);
+            LogHelper.printException(ReVancedSettingsFragment.class, "Error during onCreate()", th);
         }
     }
 
