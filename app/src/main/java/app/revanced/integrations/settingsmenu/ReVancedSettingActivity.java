@@ -7,13 +7,13 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import com.google.android.libraries.social.LicenseActivity;
+import com.google.android.libraries.social.licenses.LicenseActivity;
 
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedUtils;
 import app.revanced.integrations.utils.ThemeHelper;
 
-public class ReVancedSettingActivity extends LicenseActivity {
+public class ReVancedSettingActivity {
 
     public static void setTheme(LicenseActivity base) {
         final var whiteTheme = "Theme.YouTube.Settings";
