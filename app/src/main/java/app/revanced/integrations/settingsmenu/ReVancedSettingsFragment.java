@@ -100,7 +100,7 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
                 LogHelper.printException(ReVancedSettingsFragment.class, "Setting cannot be handled! " + pref.toString());
             }
 
-            if (ReVancedUtils.getContext() != null && settingsInitialized) {
+            if (ReVancedUtils.getContext() != null && settingsInitialized && setting.shouldRebootOnChange()) {
                 rebootDialog(getActivity());
             }
         }
