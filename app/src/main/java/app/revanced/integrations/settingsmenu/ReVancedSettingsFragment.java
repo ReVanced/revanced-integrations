@@ -82,10 +82,14 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
             } else if (pref instanceof ListPreference) {
                 ListPreference listPref = (ListPreference) pref;
                 if (setting == SettingsEnum.PREFERRED_VIDEO_SPEED) {
-                    Float value = SettingsEnum.PREFERRED_VIDEO_SPEED.getFloat();
-                    listPref.setDefaultValue(value);
-                    listPref.setSummary(videoSpeedEntries[listPref.findIndexOfValue(String.valueOf(value))]);
-                    SettingsEnum.PREFERRED_VIDEO_SPEED.setValue(value);
+                    try {
+                        String value = sharedPreferences.getString(setting.getPath(), setting.getDefaultValue() + "");
+                        listPref.setDefaultValue(value);
+                        listPref.setSummary(videoSpeedEntries[listPref.findIndexOfValue(String.valueOf(value))]);
+                        SettingsEnum.PREFERRED_VIDEO_SPEED.saveValue(value);
+                    } catch (Throwable th) {
+                        LogHelper.printException(ReVancedSettingsFragment.class, "Error setting value of speed" + th);
+                    }
                 } else {
                     LogHelper.printException(ReVancedSettingsFragment.class, "No valid setting found: " + setting.toString());
                 }
@@ -128,7 +132,6 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
             this.screens.add((PreferenceScreen) getPreferenceScreen().findPreference("buffer_screen"));
             this.screens.add((PreferenceScreen) getPreferenceScreen().findPreference("misc_screen"));
             this.screens.add((PreferenceScreen) getPreferenceScreen().findPreference("swipe_screen"));
-
 
 
             final ListPreference listPreference3 = (ListPreference) screens.get(1).findPreference("revanced_pref_video_speed");
