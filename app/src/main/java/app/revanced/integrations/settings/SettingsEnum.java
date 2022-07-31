@@ -168,7 +168,7 @@ public enum SettingsEnum {
                     //LogHelper is not initialized here
                     Log.d("revanced: SettingsEnum", "Loaded Setting: " + setting.name() + " Value: " + value);
                 }
-            } catch(Throwable th) {
+            } catch (Throwable th) {
                 LogHelper.printException(SettingsEnum.class, "Error during load()!", th);
             }
         }
@@ -191,25 +191,10 @@ public enum SettingsEnum {
     public void saveValue(Object newValue) {
         Context context = ReVancedUtils.getContext();
         if (context != null) {
-            switch (getReturnType()) {
-                case BOOLEAN:
-                    SharedPrefHelper.saveBoolean(context, sharedPref, getPath(), (Boolean) newValue);
-                    break;
-                case INTEGER:
-                    SharedPrefHelper.saveInt(context, sharedPref, getPath(), (int) newValue);
-                    break;
-                case STRING:
-                    SharedPrefHelper.saveString(context, sharedPref, getPath(), (String) newValue);
-                    break;
-                case LONG:
-                    SharedPrefHelper.saveLong(context, sharedPref, getPath(), (Long) newValue);
-                    break;
-                case FLOAT:
-                    SharedPrefHelper.saveFloat(context, sharedPref, getPath(), (Float) newValue);
-                    break;
-                default:
-                    LogHelper.printException(SettingsEnum.class, "Setting does not have with a valid Type. Name is: " + name());
-                    break;
+            if (returnType == ReturnType.BOOLEAN) {
+                SharedPrefHelper.saveBoolean(context, sharedPref, path, (Boolean) newValue);
+            } else {
+                SharedPrefHelper.saveString(context, sharedPref, path, newValue + "");
             }
             value = newValue;
         } else {
@@ -238,7 +223,7 @@ public enum SettingsEnum {
     }
 
     public Object getDefaultValue() {
-       return defaultValue;
+        return defaultValue;
     }
 
     public String getPath() {

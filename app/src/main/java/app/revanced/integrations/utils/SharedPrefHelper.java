@@ -14,21 +14,6 @@ public class SharedPrefHelper {
         sharedPreferences.edit().putBoolean(key, value).apply();
     }
 
-    public static void saveInt(Context context, SharedPrefNames prefName, String key, Integer value) {
-        SharedPreferences sharedPreferences = getPreferences(context, prefName);
-        sharedPreferences.edit().putInt(key, value).apply();
-    }
-
-    public static void saveLong(Context context, SharedPrefNames prefName, String key, Long value) {
-        SharedPreferences sharedPreferences = getPreferences(context, prefName);
-        sharedPreferences.edit().putLong(key, value).apply();
-    }
-
-    public static void saveFloat(Context context, SharedPrefNames prefName, String key, Float value) {
-        SharedPreferences sharedPreferences = getPreferences(context, prefName);
-        sharedPreferences.edit().putFloat(key, value).apply();
-    }
-
     public static String getString(Context context, SharedPrefNames prefName, String key, String _default) {
         SharedPreferences sharedPreferences = getPreferences(context, prefName);
         return (sharedPreferences.getString(key, _default));
