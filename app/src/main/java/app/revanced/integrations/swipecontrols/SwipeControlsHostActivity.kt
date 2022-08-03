@@ -163,8 +163,8 @@ class SwipeControlsHostActivity : Activity() {
      */
     private fun createGestureController() =
         if (config.shouldEnablePressToSwipe)
-            SwipeGestureController(this, this)
-        else NoPtSSwipeGestureController(this, this)
+            SwipeGestureController(this)
+        else NoPtSSwipeGestureController(this)
 
     companion object {
         /**
