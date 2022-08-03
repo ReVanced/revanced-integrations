@@ -2,12 +2,14 @@ package app.revanced.integrations.swipecontrols
 
 import android.app.Activity
 import android.os.Bundle
+import android.view.KeyEvent
 import android.view.MotionEvent
 import android.view.ViewGroup
 import app.revanced.integrations.shared.PlayerType
 import app.revanced.integrations.swipecontrols.controller.AudioVolumeController
 import app.revanced.integrations.swipecontrols.controller.ScreenBrightnessController
 import app.revanced.integrations.swipecontrols.controller.SwipeZonesController
+import app.revanced.integrations.swipecontrols.controller.VolumeKeysController
 import app.revanced.integrations.swipecontrols.controller.gesture.NoPtSSwipeGestureController
 import app.revanced.integrations.swipecontrols.controller.gesture.SwipeGestureController
 import app.revanced.integrations.swipecontrols.misc.Rectangle
@@ -53,6 +55,11 @@ class SwipeControlsHostActivity : Activity() {
     private lateinit var gesture: SwipeGestureController
 
     /**
+     * main volume keys controller
+     */
+    private lateinit var keys: VolumeKeysController
+
+    /**
      * current content view with id [android.R.id.content]
      */
     private val contentRoot
@@ -65,6 +72,7 @@ class SwipeControlsHostActivity : Activity() {
         LogHelper.info(this.javaClass, "initializing swipe controls controllers")
         config = SwipeControlsConfigurationProvider(this)
         gesture = createGestureController()
+        keys = VolumeKeysController(this)
         audio = createAudioController()
         screen = createScreenController()
 
@@ -103,6 +111,12 @@ class SwipeControlsHostActivity : Activity() {
     override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
         return if ((ev != null) && gesture.onTouchEvent(ev)) true else {
             super.dispatchTouchEvent(ev)
+        }
+    }
+
+    override fun dispatchKeyEvent(ev: KeyEvent?): Boolean {
+        return if((ev != null) && keys.onKeyEvent(ev)) true else {
+            super.dispatchKeyEvent(ev)
         }
     }
 
