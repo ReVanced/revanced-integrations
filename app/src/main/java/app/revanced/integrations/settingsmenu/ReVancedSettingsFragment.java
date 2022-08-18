@@ -29,6 +29,8 @@ import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedUtils;
 import app.revanced.integrations.utils.SharedPrefHelper;
 import app.revanced.integrations.videoplayer.AutoRepeat;
+import app.revanced.integrations.videoplayer.Copy;
+import app.revanced.integrations.videoplayer.CopyWithTimeStamp;
 
 public class ReVancedSettingsFragment extends PreferenceFragment {
 
@@ -53,8 +55,14 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
                 SwitchPreference switchPref = (SwitchPreference) pref;
                 setting.setValue(switchPref.isChecked());
 
-                if (setting == SettingsEnum.PREFERRED_AUTO_REPEAT) {
-                    AutoRepeat.changeSelected(setting.getBoolean(), true);
+                if (setting == SettingsEnum.PREFERRED_COPY_BUTTON) {
+                    Copy.refreshShouldBeShown();
+                } else if (setting == SettingsEnum.PREFERRED_COPY_WITH_TIMESTAMP_BUTTON) {
+                    CopyWithTimeStamp.refreshShouldBeShown();
+                } else if (setting == SettingsEnum.PREFERRED_AUTO_REPEAT_BUTTON) {
+                    ReVancedSettingsFragment.this.AutoRepeatLinks();
+                } else if (setting == SettingsEnum.PREFERRED_AUTO_REPEAT) {
+                    AutoRepeat.changeSelected(SettingsEnum.PREFERRED_AUTO_REPEAT.getBoolean(), true);
                 }
 
             } else if (pref instanceof EditTextPreference) {
@@ -130,7 +138,7 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
             this.screens.add((PreferenceScreen) getPreferenceScreen().findPreference("buffer_screen"));
             this.screens.add((PreferenceScreen) getPreferenceScreen().findPreference("misc_screen"));
             this.screens.add((PreferenceScreen) getPreferenceScreen().findPreference("swipe_screen"));
-
+			AutoRepeatLinks();
 
             final ListPreference listPreference3 = (ListPreference) screens.get(1).findPreference("revanced_pref_video_speed");
             setSpeedListPreferenceData(listPreference3);
@@ -174,6 +182,21 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
         }
 
         return pref;
+    }
+
+    public void AutoRepeatLinks() {
+        boolean z = SettingsEnum.PREFERRED_AUTO_REPEAT_BUTTON.getBoolean();
+        SwitchPreference switchPreference = (SwitchPreference) findPreferenceOnScreen("revanced_pref_auto_repeat");
+        if (switchPreference == null) {
+            return;
+        }
+        if (z) {
+            switchPreference.setEnabled(false);
+            AutoRepeat.isAutoRepeatBtnEnabled = true;
+            return;
+        }
+        switchPreference.setEnabled(true);
+        AutoRepeat.isAutoRepeatBtnEnabled = false;
     }
 
     private void setSpeedListPreferenceData(ListPreference listPreference) {

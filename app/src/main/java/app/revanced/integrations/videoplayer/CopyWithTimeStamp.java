@@ -85,17 +85,18 @@ public class CopyWithTimeStamp {
     }
 
     private static boolean shouldBeShown() {
-        Context appContext = ReVancedUtils.getContext();
-        if (appContext == null) {
+        Context context = ReVancedUtils.getContext();
+        if (context == null) {
             LogHelper.printException(CopyWithTimeStamp.class, "shouldBeShown - context is null!");
             return false;
         }
-
-        String string = SharedPrefHelper.getString(appContext, SharedPrefHelper.SharedPrefNames.YOUTUBE, "pref_copy_video_url_timestamp_button_list", null);
+        /*
         if (string == null || string.isEmpty()) {
             return false;
         }
         return string.equalsIgnoreCase("PLAYER") || string.equalsIgnoreCase("BOTH");
+        */
+        return SharedPrefHelper.getBoolean(context, SharedPrefHelper.SharedPrefNames.YOUTUBE, "revanced_pref_copy_video_url_timestamp_button", false);
     }
 
     private static int getIdentifier(String str, String str2) {
