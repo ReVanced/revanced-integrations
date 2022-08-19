@@ -77,7 +77,7 @@ class SwipeControlsHostActivity : Activity() {
         screen = createScreenController()
 
         // create overlay
-        SwipeControlsOverlayLayout(this).let {
+        SwipeControlsOverlayLayout(this, config).let {
             overlay = it
             contentRoot.addView(it)
         }
@@ -115,7 +115,7 @@ class SwipeControlsHostActivity : Activity() {
     }
 
     override fun dispatchKeyEvent(ev: KeyEvent?): Boolean {
-        return if((ev != null) && keys.onKeyEvent(ev)) true else {
+        return if ((ev != null) && keys.onKeyEvent(ev)) true else {
             super.dispatchKeyEvent(ev)
         }
     }

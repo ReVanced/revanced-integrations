@@ -3,6 +3,8 @@ package app.revanced.integrations.swipecontrols.controller.gesture
 import android.util.TypedValue
 import android.view.GestureDetector
 import android.view.MotionEvent
+import app.revanced.integrations.shared.PlayerControlsVisibilityObserver
+import app.revanced.integrations.shared.PlayerControlsVisibilityObserverImpl
 import app.revanced.integrations.swipecontrols.SwipeControlsHostActivity
 import app.revanced.integrations.swipecontrols.misc.ScrollDistanceHelper
 import app.revanced.integrations.swipecontrols.misc.applyDimension
@@ -22,7 +24,8 @@ import kotlin.math.pow
 open class SwipeGestureController(
     private val controller: SwipeControlsHostActivity
 ) :
-    GestureDetector.SimpleOnGestureListener() {
+    GestureDetector.SimpleOnGestureListener(),
+    PlayerControlsVisibilityObserver by PlayerControlsVisibilityObserverImpl(controller) {
 
     /**
      * the main gesture detector that powers everything
@@ -138,6 +141,11 @@ open class SwipeGestureController(
     override fun onLongPress(e: MotionEvent?) {
         if (e == null) return
         LogHelper.debug(this.javaClass, "onLongPress(${e.x}, ${e.y}, ${e.action})")
+
+//        //check that player controls are not currently visible before entering swipe session
+//        if (arePlayerControlsVisible) {
+//            return
+//        }
 
         // enter swipe session with feedback
         inSwipeSession = true

@@ -11,11 +11,15 @@ class NoPtSSwipeGestureController(controller: SwipeControlsHostActivity) :
     SwipeGestureController(controller) {
 
     /**
-     * to disable press-to-swipe, we have to become press-to-swipe
+     * swipe session is activated as soon as a touch is detected in [onDown]
+     * but only if player controls are not visible on touch- down
      */
-    override var inSwipeSession
-        get() = true
-        set(_) {}
+    override var inSwipeSession = false
+
+    override fun onDown(e: MotionEvent): Boolean {
+        inSwipeSession = !arePlayerControlsVisible
+        return super.onDown(e)
+    }
 
     override fun onLongPress(e: MotionEvent?) {
         if (e == null) return
