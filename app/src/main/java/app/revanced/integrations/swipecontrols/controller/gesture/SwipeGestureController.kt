@@ -95,17 +95,38 @@ open class SwipeGestureController(
      * @param motionEvent the motion event that was received
      * @return intercept the event? if true, child views will not receive the event
      */
-    fun onTouchEvent(motionEvent: MotionEvent): Boolean {
+    fun onTouchEvent(e: MotionEvent): Boolean {
+        // ignore if swipe is disabled
         if (!controller.config.enableSwipeControls) {
             return false
         }
-        if (motionEvent.action == MotionEvent.ACTION_UP) {
+
+        // drop the motion event if requested
+        val dropped = shouldDropMotion(e)
+        val motionEvent = if (dropped) {
+            // create a copy and overwrite action
+            MotionEvent.obtain(e).apply {
+                action = MotionEvent.ACTION_CANCEL
+            }
+        } else e
+
+        // send the event to the detector
+        val consumed = if (shouldForceInterceptEvents || inSwipeZone(motionEvent)) {
+            detector.onTouchEvent(motionEvent) || shouldForceInterceptEvents
+        } else false
+
+        // invoke custom onUp handler
+        if (motionEvent.action == MotionEvent.ACTION_UP || motionEvent.action == MotionEvent.ACTION_CANCEL) {
             onUp(motionEvent)
         }
 
-        return if (shouldForceInterceptEvents || inSwipeZone(motionEvent)) {
-            detector.onTouchEvent(motionEvent) or shouldForceInterceptEvents
-        } else false
+        // recycle the copy of the motion event if we created a copy
+        if (dropped) {
+            motionEvent.recycle()
+        }
+
+        // do not consume dropped events
+        return !dropped && consumed
     }
 
     /**
@@ -122,6 +143,9 @@ open class SwipeGestureController(
 
         return inVolumeZone || inBrightnessZone
     }
+
+    //TODO docu
+    open fun shouldDropMotion(motionEvent: MotionEvent): Boolean = false
 
     /**
      * custom handler for ACTION_UP event, because GestureDetector doesn't offer that :|
