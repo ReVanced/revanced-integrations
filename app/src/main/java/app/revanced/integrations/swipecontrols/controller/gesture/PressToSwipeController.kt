@@ -25,17 +25,17 @@ class PressToSwipeController(
 
     override fun shouldDropMotion(motionEvent: MotionEvent): Boolean = false
 
-    override fun isInSwipeZone(e: MotionEvent): Boolean {
+    override fun isInSwipeZone(motionEvent: MotionEvent): Boolean {
         val inVolumeZone = if (controller.config.enableVolumeControls)
-            (e.toPoint() in controller.zones.volume) else false
+            (motionEvent.toPoint() in controller.zones.volume) else false
         val inBrightnessZone = if (controller.config.enableBrightnessControl)
-            (e.toPoint() in controller.zones.brightness) else false
+            (motionEvent.toPoint() in controller.zones.brightness) else false
 
         return inVolumeZone || inBrightnessZone
     }
 
-    override fun onUp(e: MotionEvent) {
-        super.onUp(e)
+    override fun onUp(motionEvent: MotionEvent) {
+        super.onUp(motionEvent)
         isInSwipeSession = false
     }
 

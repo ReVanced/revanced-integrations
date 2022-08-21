@@ -43,40 +43,39 @@ abstract class BaseGestureController(
             return false
         }
 
-        // drop the motion event if requested
-        val dropped = shouldDropMotion(motionEvent)
-        val event = if (dropped) {
-            // create a copy and overwrite action
-            MotionEvent.obtain(motionEvent).apply {
-                action = MotionEvent.ACTION_CANCEL
-            }
-        } else motionEvent
+        // create a copy of the event so we can modify it
+        // without causing any issues downstream
+        val me = MotionEvent.obtain(motionEvent)
+
+        // check if we should drop this motion
+        val dropped = shouldDropMotion(me)
+        if (dropped) {
+            me.action = MotionEvent.ACTION_CANCEL
+        }
 
         // send the event to the detector
-        val consumed = if (shouldForceInterceptEvents || isInSwipeZone(event)) {
-            detector.onTouchEvent(event) || shouldForceInterceptEvents
-        } else false
+        // if we force intercept events, the event is always consumed
+        val consumed = detector.onTouchEvent(me) || shouldForceInterceptEvents
 
-        // invoke custom onUp handler
-        if (event.action == MotionEvent.ACTION_UP || event.action == MotionEvent.ACTION_CANCEL) {
-            onUp(event)
+        // invoke the custom onUp handler
+        if (me.action == MotionEvent.ACTION_UP || me.action == MotionEvent.ACTION_CANCEL) {
+            onUp(me)
         }
 
-        // recycle the copy of the motion event if we created a copy
-        if (dropped) {
-            event.recycle()
-        }
+        // recycle the copy
+        me.recycle()
 
         // do not consume dropped events
-        return !dropped && consumed
+        // or events outside of any swipe zone
+        return !dropped && consumed && isInSwipeZone(me)
     }
 
     /**
      * custom handler for [MotionEvent.ACTION_UP] event, because GestureDetector doesn't offer that :|
      *
-     * @param e the motion event
+     * @param motionEvent the motion event
      */
-    open fun onUp(e: MotionEvent) {
+    open fun onUp(motionEvent: MotionEvent) {
         didCancelDownstream = false
         resetSwipe()
         resetScroller()
@@ -122,10 +121,10 @@ abstract class BaseGestureController(
     /**
      * check if provided motion event is in any active swipe zone?
      *
-     * @param e the event to check
+     * @param motionEvent the event to check
      * @return is the event in any active swipe zone?
      */
-    abstract fun isInSwipeZone(e: MotionEvent): Boolean
+    abstract fun isInSwipeZone(motionEvent: MotionEvent): Boolean
 
     /**
      * check if a touch event should be dropped.

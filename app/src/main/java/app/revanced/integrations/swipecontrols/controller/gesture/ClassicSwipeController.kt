@@ -18,11 +18,6 @@ class ClassicSwipeController(
     private val controller: SwipeControlsHostActivity
 ) : BaseGestureController(controller),
     PlayerControlsVisibilityObserver by PlayerControlsVisibilityObserverImpl(controller) {
-    init {
-        // disable long- press
-        detector.setIsLongpressEnabled(false)
-    }
-
     /**
      * the last event captured in [onDown]
      */
@@ -31,11 +26,11 @@ class ClassicSwipeController(
     override val shouldForceInterceptEvents: Boolean
         get() = currentSwipe == SwipeDetector.SwipeDirection.VERTICAL
 
-    override fun isInSwipeZone(e: MotionEvent): Boolean {
+    override fun isInSwipeZone(motionEvent: MotionEvent): Boolean {
         val inVolumeZone = if (controller.config.enableVolumeControls)
-            (e.toPoint() in controller.zones.volume) else false
+            (motionEvent.toPoint() in controller.zones.volume) else false
         val inBrightnessZone = if (controller.config.enableBrightnessControl)
-            (e.toPoint() in controller.zones.brightness) else false
+            (motionEvent.toPoint() in controller.zones.brightness) else false
 
         return inVolumeZone || inBrightnessZone
     }
@@ -57,7 +52,7 @@ class ClassicSwipeController(
     }
 
     override fun onDown(motionEvent: MotionEvent): Boolean {
-        // save event for later
+        // save the event for later
         lastOnDownEvent?.recycle()
         lastOnDownEvent = MotionEvent.obtain(motionEvent)
 
@@ -65,8 +60,8 @@ class ClassicSwipeController(
         return isInSwipeZone(motionEvent)
     }
 
-    override fun onSingleTapUp(e: MotionEvent): Boolean {
-        MotionEvent.obtain(e).let {
+    override fun onSingleTapUp(motionEvent: MotionEvent): Boolean {
+        MotionEvent.obtain(motionEvent).let {
             it.action = MotionEvent.ACTION_DOWN
             controller.dispatchDownstreamTouchEvent(it)
             it.recycle()
@@ -75,13 +70,22 @@ class ClassicSwipeController(
         return false
     }
 
-    override fun onDoubleTapEvent(e: MotionEvent?): Boolean {
-        MotionEvent.obtain(e).let {
+    override fun onDoubleTapEvent(motionEvent: MotionEvent?): Boolean {
+        MotionEvent.obtain(motionEvent).let {
             controller.dispatchDownstreamTouchEvent(it)
             it.recycle()
         }
 
-        return super.onDoubleTapEvent(e)
+        return super.onDoubleTapEvent(motionEvent)
+    }
+
+    override fun onLongPress(motionEvent: MotionEvent?) {
+        MotionEvent.obtain(motionEvent).let {
+            controller.dispatchDownstreamTouchEvent(it)
+            it.recycle()
+        }
+
+        super.onLongPress(motionEvent)
     }
 
     override fun onSwipe(
