@@ -1,6 +1,7 @@
 package app.revanced.integrations.settings;
 
 import android.content.Context;
+import android.os.Environment;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -11,6 +12,10 @@ import app.revanced.integrations.utils.ReVancedUtils;
 import app.revanced.integrations.utils.SharedPrefHelper;
 
 public enum SettingsEnum {
+    //Download Settings
+    // TODO: DOWNLOAD_PATH("revanced_download_path", Environment.getExternalStorageDirectory().getPath() + "/Download", ReturnType.STRING),
+    DOWNLOADS_BUTTON_SHOWN("revanced_downloads", true, ReturnType.BOOLEAN),
+    DOWNLOADS_PACKAGE_NAME("revanced_downloads_package_name", "org.schabi.newpipe" /* NewPipe */, ReturnType.STRING),
 
     //Video Settings
     OLD_STYLE_QUALITY_SETTINGS("revanced_use_old_style_quality_settings", true, ReturnType.BOOLEAN),
@@ -21,8 +26,8 @@ public enum SettingsEnum {
     ENABLE_WHITELIST("revanced_whitelist_ads_enabled", false, ReturnType.BOOLEAN),
 
     //Ad settings
-    HOME_ADS_SHOWN("revanced_home_ads_enabled", false, ReturnType.BOOLEAN, true),
-    VIDEO_ADS_SHOWN("revanced_video_ads_enabled", false, ReturnType.BOOLEAN, true),
+    HOME_ADS_REMOVAL("revanced_home_ads_removal", true, ReturnType.BOOLEAN, true),
+    VIDEO_ADS_REMOVAL("revanced_video_ads_removal", true, ReturnType.BOOLEAN, true),
     ADREMOVER_AD_REMOVAL("revanced_adremover_ad_removal", true, ReturnType.BOOLEAN, true),
     ADREMOVER_MERCHANDISE_REMOVAL("revanced_adremover_merchandise", true, ReturnType.BOOLEAN, true),
     ADREMOVER_COMMUNITY_POSTS_REMOVAL("revanced_adremover_community_posts_removal", true, ReturnType.BOOLEAN, true),
@@ -49,8 +54,8 @@ public enum SettingsEnum {
     AUTOPLAY_BUTTON_SHOWN("revanced_autoplay_button_enabled", false, ReturnType.BOOLEAN, true),
     //ToDo: Not used atm, Patch missing
     USE_TABLET_MINIPLAYER("revanced_tablet_miniplayer", false, ReturnType.BOOLEAN),
-    CREATE_BUTTON_SHOWN("revanced_create_button_enabled", false, ReturnType.BOOLEAN, true),
-    USE_NEW_ACTIONBAR("revanced_new_actionbar", false, ReturnType.BOOLEAN, true),
+    CREATE_BUTTON_ENABLED("revanced_create_button_enabled", false, ReturnType.BOOLEAN, true),
+    WIDE_SEARCHBAR("revanced_wide_searchbar", false, ReturnType.BOOLEAN, true),
     SHORTS_BUTTON_SHOWN("revanced_shorts_button_enabled", false, ReturnType.BOOLEAN, true),
     FULLSCREEN_PANELS_SHOWN("revanced_fullscreen_panels_enabled", false, ReturnType.BOOLEAN), //ToDo: Add to prefs
 
