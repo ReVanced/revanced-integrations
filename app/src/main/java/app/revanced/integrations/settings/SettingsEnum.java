@@ -75,7 +75,7 @@ public enum SettingsEnum {
     SWIPE_OVERLAY_TIMEOUT("revanced_swipe_overlay_timeout", 500L, ReturnType.LONG),
     SWIPE_OVERLAY_TEXT_SIZE("revanced_swipe_overlay_text_size", 22f, ReturnType.FLOAT),
     SWIPE_OVERLAY_BACKGROUND_ALPHA("revanced_swipe_overlay_background_alpha", 127, ReturnType.INTEGER),
-    SWIPE_MAGNITUDE_THRESHOLD("revanced_swipe_magnitude_threshold", 30f, ReturnType.FLOAT),
+    SWIPE_MAGNITUDE_THRESHOLD("revanced_swipe_magnitude_threshold", 15f, ReturnType.FLOAT),
 
     //Buffer Settings
     MAX_BUFFER("revanced_pref_max_buffer_ms", 120000, ReturnType.INTEGER),
