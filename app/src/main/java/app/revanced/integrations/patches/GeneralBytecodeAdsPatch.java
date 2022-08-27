@@ -42,6 +42,7 @@ public class GeneralBytecodeAdsPatch {
                 blockList.add("ads_video_with_context");
                 blockList.add("cell_divider");
                 blockList.add("googleads");
+                blockList.add("pagead");
                 blockList.add("reels_player_overlay");
                 blockList.add("shelf_header");
                 blockList.add("text_display_ad_with_themed_cta_banner_image");
