@@ -20,8 +20,7 @@ public class GeneralBytecodeAdsPatch {
     }
 
     private static boolean containsLithoAd(String value, ByteBuffer buffer) {
-        String readableBuffer = new String(buffer.array(), StandardCharsets.UTF_8)
-                                .replaceAll("[^A-Za-z0-9:_.()//\\[\\]]", "");
+        String readableBuffer = new String(buffer.array(), StandardCharsets.UTF_8);
         
         boolean enabled = false;
         for (SettingsEnum setting : SettingsEnum.getAdRemovalSettings()) {
