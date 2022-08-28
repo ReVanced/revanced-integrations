@@ -20,7 +20,8 @@ public class GeneralBytecodeAdsPatch {
     }
 
     private static boolean containsLithoAd(String value, ByteBuffer buffer) {
-        String readableBuffer = new String(buffer.array(), StandardCharsets.UTF_8);
+        String readableBuffer = new String(buffer.array(), StandardCharsets.UTF_8)
+                                .replaceAll("[^A-Za-z0-9:_.()//\\[\\]]", "");
         
         boolean enabled = false;
         for (SettingsEnum setting : SettingsEnum.getAdRemovalSettings()) {
@@ -38,12 +39,13 @@ public class GeneralBytecodeAdsPatch {
             List<String> bufferBlockList = new ArrayList<>();
 
             if (SettingsEnum.ADREMOVER_AD_REMOVAL.getBoolean()) {
-                blockList.add("_ad_");
                 blockList.add("ad_badge");
                 blockList.add("ads_video_with_context");
                 blockList.add("cell_divider");
                 blockList.add("reels_player_overlay");
                 blockList.add("shelf_header");
+                blockList.add("text_display_ad_with_themed_cta_banner_image");
+                blockList.add("text_search_ad_with_description_first");
                 blockList.add("watch_metadata_app_promo");
 
                 bufferBlockList.add("ad_cpn");
