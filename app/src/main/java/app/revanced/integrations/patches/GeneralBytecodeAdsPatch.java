@@ -109,17 +109,6 @@ public class GeneralBytecodeAdsPatch {
                 blockList.add("channel_guidelines_entry_banner");
             }
 
-            if (containsAny(value,
-                    "home_video_with_context",
-                    "related_video_with_context",
-                    "search_video_with_context",
-                    "menu",
-                    "root",
-                    "-count",
-                    "-space",
-                    "-button"
-            )) return false;
-
             if (blockList.stream().anyMatch(value::contains)) {
                 LogHelper.debug(GeneralBytecodeAdsPatch.class, "Blocking ad: " + value);
                 return true;
