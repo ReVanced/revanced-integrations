@@ -61,7 +61,7 @@ public enum SettingsEnum {
 
     //Misc. Settings
     //ToDo: Not used atm, Patch missing
-    CAPTIONS_ENABLED("revanced_pref_captions", false, ReturnType.BOOLEAN),
+    CAPTIONS_ENABLED("revanced_autocaptions_enabled", false, ReturnType.BOOLEAN, false),
     PREFERRED_AUTO_REPEAT("revanced_pref_auto_repeat", false, ReturnType.BOOLEAN),
     USE_HDR_AUTO_BRIGHTNESS("revanced_pref_hdr_autobrightness", true, ReturnType.BOOLEAN),
     TAP_SEEKING_ENABLED("revanced_enable_tap_seeking", true, ReturnType.BOOLEAN),
