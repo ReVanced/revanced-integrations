@@ -63,7 +63,8 @@ public class PlayerController {
         Context context = ReVancedUtils.getContext();
         SponsorBlockSettings.update(context);
 
-        if (!SettingsEnum.SB_ENABLED.getBoolean()) {
+        if (!(SettingsEnum.SB_ENABLED.getBoolean() &&
+            SettingsEnum.SB_SHORTS_ENABLED)) {
             currentVideoId = null;
             return;
         }
@@ -134,7 +135,8 @@ public class PlayerController {
     public static void setCurrentVideoTime(long millis) {
         LogHelper.debug(PlayerController.class, "setCurrentVideoTime: current video time: " + millis);
         VideoInformation.lastKnownVideoTime = millis;
-        if (!SettingsEnum.SB_ENABLED.getBoolean()) return;
+        if (!(SettingsEnum.SB_ENABLED.getBoolean() &&
+            SettingsEnum.SB_SHORTS_ENABLED)) return;
         lastKnownVideoTime = millis;
         if (millis <= 0) return;
         //findAndSkipSegment(false);

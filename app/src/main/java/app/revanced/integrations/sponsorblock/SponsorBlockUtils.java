@@ -403,7 +403,7 @@ public abstract class SponsorBlockUtils {
     }
 
     public static String appendTimeWithoutSegments(String totalTime) {
-        if (videoHasSegments && (SettingsEnum.SB_ENABLED.getBoolean() && SettingsEnum.SB_SHOW_TIME_WITHOUT_SEGMENTS.getBoolean()) && !TextUtils.isEmpty(totalTime) && getCurrentVideoLength() > 1) {
+        if (videoHasSegments && (SettingsEnum.SB_ENABLED.getBoolean() && SettingsEnum.SB_SHORTS_ENABLED && SettingsEnum.SB_SHOW_TIME_WITHOUT_SEGMENTS.getBoolean()) && !TextUtils.isEmpty(totalTime) && getCurrentVideoLength() > 1) {
             if (timeWithoutSegments.isEmpty()) {
                 timeWithoutSegments = getTimeWithoutSegments(sponsorSegmentsOfCurrentVideo);
             }
@@ -415,7 +415,7 @@ public abstract class SponsorBlockUtils {
 
     public static String getTimeWithoutSegments(SponsorSegment[] sponsorSegmentsOfCurrentVideo) {
         long currentVideoLength = getCurrentVideoLength();
-        if (!(SettingsEnum.SB_ENABLED.getBoolean() && SettingsEnum.SB_SHOW_TIME_WITHOUT_SEGMENTS.getBoolean()) || sponsorSegmentsOfCurrentVideo == null || currentVideoLength <= 1) {
+        if (!(SettingsEnum.SB_ENABLED.getBoolean() && SettingsEnum.SB_SHORTS_ENABLED && SettingsEnum.SB_SHOW_TIME_WITHOUT_SEGMENTS.getBoolean()) || sponsorSegmentsOfCurrentVideo == null || currentVideoLength <= 1) {
             return "";
         }
         long timeWithoutSegments = currentVideoLength + 500; // YouTube:tm:
@@ -605,7 +605,7 @@ public abstract class SponsorBlockUtils {
     }
 
     public static boolean isSBButtonEnabled(Context context, String key) {
-        return SettingsEnum.SB_ENABLED.getBoolean() && SharedPrefHelper.getBoolean(context, SharedPrefHelper.SharedPrefNames.SPONSOR_BLOCK, key, false);
+        return SettingsEnum.SB_ENABLED.getBoolean() && SettingsEnum.SB_SHORTS_ENABLED && SharedPrefHelper.getBoolean(context, SharedPrefHelper.SharedPrefNames.SPONSOR_BLOCK, key, false);
     }
 
     public enum VoteOption {
