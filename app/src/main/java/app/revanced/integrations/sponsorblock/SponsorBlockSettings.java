@@ -96,6 +96,8 @@ public class SponsorBlockSettings {
     }
 
     public enum SegmentBehaviour {
+        MANUAL_JUMP("manual-jump", 3, sf("manual_jump"), true, true),
+        JUMP("jump", 3, sf("jump"), true, true),
         SKIP_AUTOMATICALLY("skip", 2, sf("skip_automatically"), true, true),
         MANUAL_SKIP("manual-skip", 1, sf("skip_showbutton"), false, true),
         IGNORE("ignore", -1, sf("skip_ignore"), false, false);
@@ -137,7 +139,8 @@ public class SponsorBlockSettings {
         MUSIC_OFFTOPIC("music_offtopic", sf("segments_nomusic"), sf("skipped_nomusic"), sf("segments_nomusic_sum"), SegmentBehaviour.MANUAL_SKIP, 0xFFff9900),
         PREVIEW("preview", sf("segments_preview"), sf("skipped_preview"), sf("segments_preview_sum"), DefaultBehaviour, 0xFF008fd6),
         FILLER("filler", sf("segments_filler"), sf("skipped_filler"), sf("segments_filler_sum"), DefaultBehaviour, 0xFF7300FF),
-        UNSUBMITTED("unsubmitted", StringRef.empty, sf("skipped_unsubmitted"), StringRef.empty, SegmentBehaviour.SKIP_AUTOMATICALLY, 0xFFFFFFFF);
+        UNSUBMITTED("unsubmitted", StringRef.empty, sf("skipped_unsubmitted"), StringRef.empty, SegmentBehaviour.SKIP_AUTOMATICALLY, 0xFFFFFFFF),
+        HIGHLIGHT("poi_highlight", sf("segments_highlight"), StringRef.empty, sf("segments_highlight_sum"), SegmentBehaviour.IGNORE, 0xFF001684);
 
         private static final SegmentInfo[] mValuesWithoutUnsubmitted = new SegmentInfo[]{
                 SPONSOR,
@@ -147,7 +150,8 @@ public class SponsorBlockSettings {
                 SELF_PROMO,
                 MUSIC_OFFTOPIC,
                 PREVIEW,
-                FILLER
+                FILLER,
+                HIGHLIGHT
         };
         private static final Map<String, SegmentInfo> mValuesMap = new HashMap<>(values().length);
 
