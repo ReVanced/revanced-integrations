@@ -116,8 +116,7 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment implements 
         addStatsCategory(context, preferenceScreen);
         addAboutCategory(context, preferenceScreen);
 
-        enableCategoriesIfNeeded(SettingsEnum.SB_ENABLED.getBoolean() &&
-                SettingsEnum.SB_SHORTS_ENABLED);
+        enableCategoriesIfNeeded(SettingsEnum.SB_ENABLED.getBoolean());
     }
 
     private void openGuidelines() {

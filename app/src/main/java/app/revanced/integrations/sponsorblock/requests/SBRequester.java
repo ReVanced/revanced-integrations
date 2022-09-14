@@ -155,8 +155,7 @@ public class SBRequester {
     }
 
     public static void retrieveUserStats(PreferenceCategory category, Preference loadingPreference) {
-        if (!(SettingsEnum.SB_ENABLED.getBoolean() &&
-            SettingsEnum.SB_SHORTS_ENABLED)) {
+        if (!SettingsEnum.SB_ENABLED.getBoolean()) {
             loadingPreference.setTitle(str("stats_sb_disabled"));
             return;
         }

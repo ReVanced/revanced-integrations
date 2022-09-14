@@ -30,8 +30,7 @@ public class SponsorBlockSettings {
 
         SharedPreferences preferences = SharedPrefHelper.getPreferences(context, SharedPrefHelper.SharedPrefNames.SPONSOR_BLOCK);
 
-        if (!SettingsEnum.SB_ENABLED.getBoolean() &&
-            SettingsEnum.SB_SHORTS_ENABLED) {
+        if (!SettingsEnum.SB_ENABLED.getBoolean()) {
             SkipSegmentView.hide();
             NewSegmentHelperLayout.hide();
             SponsorBlockUtils.hideShieldButton();

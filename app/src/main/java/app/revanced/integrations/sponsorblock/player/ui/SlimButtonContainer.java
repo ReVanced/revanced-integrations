@@ -76,11 +76,9 @@ public class SlimButtonContainer extends SlimMetadataScrollableButtonContainerLa
                     copyWithTimestampButton.setVisible(ButtonVisibility.isVisibleInContainer(context, "pref_copy_video_url_timestamp_button_list"));
                     return;
                 }
-                if (SettingsEnum.SB_ENABLED.getPath().equals(key) &&
-                    SettingsEnum.SB_SHORTS_ENABLED) {
+                if (SettingsEnum.SB_ENABLED.getPath().equals(key)) {
                     if (sbWhitelistButton != null) {
-                        if (SettingsEnum.SB_ENABLED.getBoolean() &&
-                            SettingsEnum.SB_SHORTS_ENABLED) {
+                        if (SettingsEnum.SB_ENABLED.getBoolean()) {
                             toggleWhitelistButton();
                         } else {
                             Whitelist.setEnabled(WhitelistType.SPONSORBLOCK, false);
@@ -88,8 +86,7 @@ public class SlimButtonContainer extends SlimMetadataScrollableButtonContainerLa
                         }
                     }
                     if (sbBrowserButton != null) {
-                        if (SettingsEnum.SB_ENABLED.getBoolean() &&
-                            SettingsEnum.SB_SHORTS_ENABLED) {
+                        if (SettingsEnum.SB_ENABLED.getBoolean()) {
                             toggleBrowserButton();
                         } else {
                             sbBrowserButton.setVisible(false);

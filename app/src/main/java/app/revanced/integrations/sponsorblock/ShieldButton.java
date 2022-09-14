@@ -28,6 +28,8 @@ public class ShieldButton {
     static boolean isShowing;
 
     public static void initialize(Object viewStub) {
+        if (SettingsEnum.shorts_playing) return;
+
         try {
             LogHelper.debug(ShieldButton.class, "initializing shield button");
 
@@ -62,10 +64,14 @@ public class ShieldButton {
     }
 
     public static void changeVisibilityNegatedImmediate(boolean visible) {
+        if (SettingsEnum.shorts_playing) return;
+
         changeVisibility(!visible, true);
     }
 
     public static void changeVisibility(boolean visible) {
+        if (SettingsEnum.shorts_playing) return;
+
         changeVisibility(visible, false);
     }
 
@@ -97,7 +103,7 @@ public class ShieldButton {
     }
 
     static boolean shouldBeShown() {
-        return SettingsEnum.SB_ENABLED.getBoolean() && SettingsEnum.SB_SHORTS_ENABLED && SettingsEnum.SB_NEW_SEGMENT_ENABLED.getBoolean();
+        return SettingsEnum.SB_ENABLED.getBoolean() && SettingsEnum.SB_NEW_SEGMENT_ENABLED.getBoolean();
     }
 
     //region Helpers
