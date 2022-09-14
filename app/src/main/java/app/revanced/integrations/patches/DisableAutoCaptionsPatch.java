@@ -2,7 +2,7 @@ package app.revanced.integrations.patches;
 
 import app.revanced.integrations.settings.SettingsEnum;
 
-public class ForceDisableCaptionsPatch {
+public class DisableAutoCaptionsPatch {
 
     public static boolean captionsButtonDisabled;
 
