@@ -66,7 +66,8 @@ public class SharedPrefHelper {
         YOUTUBE("youtube"),
         RYD("ryd"),
         SPONSOR_BLOCK("sponsor-block"),
-        REVANCED_PREFS("revanced_prefs");
+        REVANCED_PREFS("revanced_prefs"),
+        TIKTOK_PREFS("tiktok_revanced");
 
         private final String name;
 

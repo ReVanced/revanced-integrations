@@ -1,4 +1,4 @@
-package app.revanced.integrations.tiktok;
+package app.revanced.integrations.tiktok.feedfilter;
 
 import com.ss.android.ugc.aweme.feed.model.Aweme;
 import com.ss.android.ugc.aweme.feed.model.FeedItemList;
@@ -6,16 +6,13 @@ import com.ss.android.ugc.aweme.feed.model.FeedItemList;
 import java.util.Iterator;
 import java.util.List;
 
+import app.revanced.integrations.tiktok.settings.SettingsEnum;
+
 public class FeedItemsFilter {
-    private static boolean hideLive = false;
 
     public static void filter(FeedItemList feedItemList) {
-        removeAds(feedItemList);
-        if (hideLive) removeLive(feedItemList);
-    }
-
-    public static void enableHideLive() {
-        hideLive = true;
+        if (SettingsEnum.TIK_REMOVE_ADS.getBoolean()) removeAds(feedItemList);
+        if (SettingsEnum.TIK_HIDE_LIVE.getBoolean()) removeLive(feedItemList);
     }
 
     private static void removeAds(FeedItemList feedItemList) {
