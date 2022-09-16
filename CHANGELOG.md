@@ -1,3 +1,24 @@
+## [0.37.3](https://github.com/revanced/revanced-integrations/compare/v0.37.2...v0.37.3) (2022-09-15)
+
+
+### Bug Fixes
+
+* revert consolidating ad filters ([f96dc38](https://github.com/revanced/revanced-integrations/commit/f96dc38f4e29b7cc3c1fb215409bc1e8b68e0b2a))
+
+## [0.37.2](https://github.com/revanced/revanced-integrations/compare/v0.37.1...v0.37.2) (2022-09-15)
+
+
+### Bug Fixes
+
+* consolidate ad filters ([#140](https://github.com/revanced/revanced-integrations/issues/140)) ([8a39551](https://github.com/revanced/revanced-integrations/commit/8a39551abacc5e62a3c60dbdc2644afc9babe156))
+
+## [0.37.1](https://github.com/revanced/revanced-integrations/compare/v0.37.0...v0.37.1) (2022-09-15)
+
+
+### Bug Fixes
+
+* `general-ads` litho ads filter ([#139](https://github.com/revanced/revanced-integrations/issues/139)) ([68d7f98](https://github.com/revanced/revanced-integrations/commit/68d7f98efc879a00f69a2a2e04a98ced17458b08))
+
 # [0.37.0](https://github.com/revanced/revanced-integrations/compare/v0.36.6...v0.37.0) (2022-09-15)
 
 
