@@ -1,8 +1,11 @@
-package app.revanced.integrations.utils;
+package app.revanced.tiktok.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import merger.MergeIf;
+
+@MergeIf(packageName = {"com.ss.android.ugc.trill", "com.zhiliaoapp.musically"})
 public class SharedPrefHelper {
     public static void saveString(Context context, SharedPrefNames prefName, String key, String value) {
         SharedPreferences sharedPreferences = getPreferences(context, prefName);
@@ -62,11 +65,7 @@ public class SharedPrefHelper {
     }
 
     public enum SharedPrefNames {
-
-        YOUTUBE("youtube"),
-        RYD("ryd"),
-        SPONSOR_BLOCK("sponsor-block"),
-        REVANCED_PREFS("revanced_prefs");
+        TIKTOK_PREFS("tiktok_revanced");
 
         private final String name;
 

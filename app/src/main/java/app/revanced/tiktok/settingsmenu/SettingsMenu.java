@@ -1,4 +1,4 @@
-package app.revanced.integrations.tiktok.settingsmenu;
+package app.revanced.tiktok.settingsmenu;
 
 import android.preference.PreferenceFragment;
 import android.view.View;
@@ -7,6 +7,10 @@ import android.widget.LinearLayout;
 
 import com.bytedance.ies.ugc.aweme.commercialize.compliance.personalization.AdPersonalizationActivity;
 
+import merger.MergeIf;
+
+
+@MergeIf(packageName = {"com.ss.android.ugc.trill", "com.zhiliaoapp.musically"})
 public class SettingsMenu {
     public static void initializeSettings(AdPersonalizationActivity base) {
         LinearLayout linearLayout = new LinearLayout(base);

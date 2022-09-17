@@ -1,18 +1,17 @@
-package app.revanced.integrations.tiktok.settings;
+package app.revanced.tiktok.settings;
 
 import android.content.Context;
 import android.util.Log;
 
-import java.util.ArrayList;
-import java.util.List;
+import app.revanced.tiktok.utils.LogHelper;
+import app.revanced.tiktok.utils.ReVancedUtils;
+import app.revanced.tiktok.utils.SharedPrefHelper;
+import merger.MergeIf;
 
-import app.revanced.integrations.utils.LogHelper;
-import app.revanced.integrations.utils.ReVancedUtils;
-import app.revanced.integrations.utils.SharedPrefHelper;
-
+@MergeIf(packageName = {"com.ss.android.ugc.trill", "com.zhiliaoapp.musically"})
 public enum SettingsEnum {
     //TikTok Settings
-    TIK_REMOVE_ADS("tik-remove-ads", true, SharedPrefHelper.SharedPrefNames.TIKTOK_PREFS, ReturnType.BOOLEAN), TIK_HIDE_LIVE("tik-hide-live", false, SharedPrefHelper.SharedPrefNames.TIKTOK_PREFS, ReturnType.BOOLEAN);
+    TIK_REMOVE_ADS("tik-remove-ads", true, SharedPrefHelper.SharedPrefNames.TIKTOK_PREFS, ReturnType.BOOLEAN), TIK_HIDE_LIVE("tik-hide-live", false, SharedPrefHelper.SharedPrefNames.TIKTOK_PREFS, ReturnType.BOOLEAN), TIK_DEBUG("tik_debug", false, SharedPrefHelper.SharedPrefNames.TIKTOK_PREFS, ReturnType.BOOLEAN);
 
     static {
         load();
@@ -28,7 +27,7 @@ public enum SettingsEnum {
     SettingsEnum(String path, Object defaultValue, ReturnType returnType) {
         this.path = path;
         this.defaultValue = defaultValue;
-        this.sharedPref = SharedPrefHelper.SharedPrefNames.YOUTUBE;
+        this.sharedPref = SharedPrefHelper.SharedPrefNames.TIKTOK_PREFS;
         this.returnType = returnType;
         this.rebootApp = false;
     }
@@ -44,7 +43,7 @@ public enum SettingsEnum {
     SettingsEnum(String path, Object defaultValue, ReturnType returnType, Boolean rebootApp) {
         this.path = path;
         this.defaultValue = defaultValue;
-        this.sharedPref = SharedPrefHelper.SharedPrefNames.YOUTUBE;
+        this.sharedPref = SharedPrefHelper.SharedPrefNames.TIKTOK_PREFS;
         this.returnType = returnType;
         this.rebootApp = rebootApp;
     }
@@ -90,16 +89,6 @@ public enum SettingsEnum {
                 LogHelper.printException(SettingsEnum.class, "Error during load()!", th);
             }
         }
-    }
-
-    public static List<SettingsEnum> getAdRemovalSettings() {
-        List<SettingsEnum> list = new ArrayList<>();
-        for (SettingsEnum var : SettingsEnum.values()) {
-            if (var.toString().startsWith("ADREMOVER")) {
-                list.add(var);
-            }
-        }
-        return list;
     }
 
     public void setValue(Object newValue) {
