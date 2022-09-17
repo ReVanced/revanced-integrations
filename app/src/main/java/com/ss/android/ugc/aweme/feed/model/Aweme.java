@@ -8,4 +8,11 @@ public class Aweme {
     public boolean isLive() {
         return true;
     }
+    public boolean isLiveReplay() {
+        return true;
+    }
+    public boolean isWithPromotionalMusic() {
+        return true;
+    }
+
 }

@@ -22,7 +22,7 @@ public class FeedItemsFilter {
         Iterator<Aweme> it = items.iterator();
         while (it.hasNext()) {
             Aweme item = it.next();
-            if (item != null && item.isAd()) {
+            if (item != null && (item.isAd() || item.isWithPromotionalMusic())) {
                 it.remove();
             }
         }
@@ -33,7 +33,7 @@ public class FeedItemsFilter {
         Iterator<Aweme> it = items.iterator();
         while (it.hasNext()) {
             Aweme item = it.next();
-            if (item != null && item.isLive()) {
+            if (item != null && (item.isLive() || item.isLiveReplay())) {
                 it.remove();
             }
         }
