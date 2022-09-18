@@ -11,7 +11,6 @@ import androidx.annotation.Nullable;
 
 import app.revanced.tiktok.settings.SettingsEnum;
 import app.revanced.tiktok.utils.SharedPrefHelper;
-import merger.MergeIf;
 
 public class ReVancedSettingsFragment extends PreferenceFragment {
 
@@ -25,39 +24,41 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
         setPreferenceScreen(preferenceScreen);
 
         //Feed filter
-        PreferenceCategory feedFilter = new PreferenceCategory(context);
-        feedFilter.setTitle("Feed filter");
-        preferenceScreen.addPreference(feedFilter);
+        if (SettingsStatus.feedFilter) {
+            PreferenceCategory feedFilter = new PreferenceCategory(context);
+            feedFilter.setTitle("Feed filter");
+            preferenceScreen.addPreference(feedFilter);
 
-        //Remove ads toggle
-        {
-            SwitchPreference preference = new SwitchPreference(context);
-            feedFilter.addPreference(preference);
-            preference.setKey(SettingsEnum.TIK_REMOVE_ADS.getPath());
-            preference.setDefaultValue(SettingsEnum.TIK_REMOVE_ADS.getDefaultValue());
-            preference.setChecked(SettingsEnum.TIK_REMOVE_ADS.getBoolean());
-            preference.setTitle("Remove feed ads");
-            preference.setSummary("Remove ads from feed.");
-            preference.setOnPreferenceChangeListener((pref, newValue) -> {
-                final boolean value = (Boolean) newValue;
-                SettingsEnum.TIK_REMOVE_ADS.saveValue(value);
-                return true;
-            });
-        }
-        //Hide LiveStreams toggle
-        {
-            SwitchPreference preference = new SwitchPreference(context);
-            feedFilter.addPreference(preference);
-            preference.setKey(SettingsEnum.TIK_HIDE_LIVE.getPath());
-            preference.setDefaultValue(SettingsEnum.TIK_HIDE_LIVE.getDefaultValue());
-            preference.setChecked(SettingsEnum.TIK_HIDE_LIVE.getBoolean());
-            preference.setTitle("Hide livestreams");
-            preference.setSummary("Hide livestreams from feed.");
-            preference.setOnPreferenceChangeListener((pref, newValue) -> {
-                final boolean value = (Boolean) newValue;
-                SettingsEnum.TIK_HIDE_LIVE.saveValue(value);
-                return true;
-            });
+            //Remove ads toggle
+            {
+                SwitchPreference preference = new SwitchPreference(context);
+                feedFilter.addPreference(preference);
+                preference.setKey(SettingsEnum.TIK_REMOVE_ADS.getPath());
+                preference.setDefaultValue(SettingsEnum.TIK_REMOVE_ADS.getDefaultValue());
+                preference.setChecked(SettingsEnum.TIK_REMOVE_ADS.getBoolean());
+                preference.setTitle("Remove feed ads");
+                preference.setSummary("Remove ads from feed.");
+                preference.setOnPreferenceChangeListener((pref, newValue) -> {
+                    final boolean value = (Boolean) newValue;
+                    SettingsEnum.TIK_REMOVE_ADS.saveValue(value);
+                    return true;
+                });
+            }
+            //Hide LiveStreams toggle
+            {
+                SwitchPreference preference = new SwitchPreference(context);
+                feedFilter.addPreference(preference);
+                preference.setKey(SettingsEnum.TIK_HIDE_LIVE.getPath());
+                preference.setDefaultValue(SettingsEnum.TIK_HIDE_LIVE.getDefaultValue());
+                preference.setChecked(SettingsEnum.TIK_HIDE_LIVE.getBoolean());
+                preference.setTitle("Hide livestreams");
+                preference.setSummary("Hide livestreams from feed.");
+                preference.setOnPreferenceChangeListener((pref, newValue) -> {
+                    final boolean value = (Boolean) newValue;
+                    SettingsEnum.TIK_HIDE_LIVE.saveValue(value);
+                    return true;
+                });
+            }
         }
 
         //Integration

@@ -16,6 +16,7 @@ import merger.MergeIf;
 
 public class SettingsMenu {
     public static void initializeSettings(AdPersonalizationActivity base) {
+        SettingsStatus.load();
         LinearLayout linearLayout = new LinearLayout(base);
         linearLayout.setLayoutParams(new LinearLayout.LayoutParams(-1, -1));
         linearLayout.setOrientation(LinearLayout.VERTICAL);
