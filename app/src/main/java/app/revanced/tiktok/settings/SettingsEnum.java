@@ -10,7 +10,9 @@ import merger.MergeIf;
 
 public enum SettingsEnum {
     //TikTok Settings
-    TIK_REMOVE_ADS("tik-remove-ads", true, SharedPrefHelper.SharedPrefNames.TIKTOK_PREFS, ReturnType.BOOLEAN), TIK_HIDE_LIVE("tik-hide-live", false, SharedPrefHelper.SharedPrefNames.TIKTOK_PREFS, ReturnType.BOOLEAN), TIK_DEBUG("tik_debug", false, SharedPrefHelper.SharedPrefNames.TIKTOK_PREFS, ReturnType.BOOLEAN);
+    TIK_REMOVE_ADS("tik-remove-ads", true, SharedPrefHelper.SharedPrefNames.TIKTOK_PREFS, ReturnType.BOOLEAN, true),
+    TIK_HIDE_LIVE("tik-hide-live", false, SharedPrefHelper.SharedPrefNames.TIKTOK_PREFS, ReturnType.BOOLEAN, true),
+    TIK_DEBUG("tik_debug", false, SharedPrefHelper.SharedPrefNames.TIKTOK_PREFS, ReturnType.BOOLEAN);
 
     static {
         load();
@@ -39,10 +41,10 @@ public enum SettingsEnum {
         this.rebootApp = false;
     }
 
-    SettingsEnum(String path, Object defaultValue, ReturnType returnType, Boolean rebootApp) {
+    SettingsEnum(String path, Object defaultValue, SharedPrefHelper.SharedPrefNames prefName, ReturnType returnType, Boolean rebootApp) {
         this.path = path;
         this.defaultValue = defaultValue;
-        this.sharedPref = SharedPrefHelper.SharedPrefNames.TIKTOK_PREFS;
+        this.sharedPref = prefName;
         this.returnType = returnType;
         this.rebootApp = rebootApp;
     }
