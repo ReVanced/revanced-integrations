@@ -13,7 +13,6 @@ import app.revanced.tiktok.settings.SettingsEnum;
 import app.revanced.tiktok.utils.SharedPrefHelper;
 import merger.MergeIf;
 
-@MergeIf(packageName = {"com.ss.android.ugc.trill", "com.zhiliaoapp.musically"})
 public class ReVancedSettingsFragment extends PreferenceFragment {
 
     @Override

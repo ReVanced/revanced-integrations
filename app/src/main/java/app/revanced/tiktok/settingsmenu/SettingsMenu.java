@@ -14,7 +14,6 @@ import app.revanced.tiktok.utils.ReVancedUtils;
 import merger.MergeIf;
 
 
-@MergeIf(packageName = {"com.ss.android.ugc.trill", "com.zhiliaoapp.musically"})
 public class SettingsMenu {
     public static void initializeSettings(AdPersonalizationActivity base) {
         LinearLayout linearLayout = new LinearLayout(base);

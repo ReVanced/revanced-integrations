@@ -9,7 +9,6 @@ import java.util.List;
 import app.revanced.tiktok.settings.SettingsEnum;
 import merger.MergeIf;
 
-@MergeIf(packageName = {"com.ss.android.ugc.trill", "com.zhiliaoapp.musically"})
 public class FeedItemsFilter {
 
     public static void filter(FeedItemList feedItemList) {

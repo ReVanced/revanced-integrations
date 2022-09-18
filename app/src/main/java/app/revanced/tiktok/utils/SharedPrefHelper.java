@@ -5,7 +5,6 @@ import android.content.SharedPreferences;
 
 import merger.MergeIf;
 
-@MergeIf(packageName = {"com.ss.android.ugc.trill", "com.zhiliaoapp.musically"})
 public class SharedPrefHelper {
     public static void saveString(Context context, SharedPrefNames prefName, String key, String value) {
         SharedPreferences sharedPreferences = getPreferences(context, prefName);

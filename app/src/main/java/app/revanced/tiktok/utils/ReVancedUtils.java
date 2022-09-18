@@ -4,7 +4,6 @@ import android.content.Context;
 
 import merger.MergeIf;
 
-@MergeIf(packageName = {"com.ss.android.ugc.trill", "com.zhiliaoapp.musically"})
 public class ReVancedUtils {
 
     //Used by TiktokIntegrations patch

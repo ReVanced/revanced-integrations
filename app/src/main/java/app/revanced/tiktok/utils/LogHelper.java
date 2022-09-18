@@ -5,7 +5,6 @@ import android.util.Log;
 import app.revanced.tiktok.settings.SettingsEnum;
 import merger.MergeIf;
 
-@MergeIf(packageName = {"com.ss.android.ugc.trill", "com.zhiliaoapp.musically"})
 public class LogHelper {
 
     //ToDo: Get Calling classname using Reflection

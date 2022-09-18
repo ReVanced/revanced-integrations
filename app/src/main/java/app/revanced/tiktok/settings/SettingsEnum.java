@@ -8,7 +8,6 @@ import app.revanced.tiktok.utils.ReVancedUtils;
 import app.revanced.tiktok.utils.SharedPrefHelper;
 import merger.MergeIf;
 
-@MergeIf(packageName = {"com.ss.android.ugc.trill", "com.zhiliaoapp.musically"})
 public enum SettingsEnum {
     //TikTok Settings
     TIK_REMOVE_ADS("tik-remove-ads", true, SharedPrefHelper.SharedPrefNames.TIKTOK_PREFS, ReturnType.BOOLEAN), TIK_HIDE_LIVE("tik-hide-live", false, SharedPrefHelper.SharedPrefNames.TIKTOK_PREFS, ReturnType.BOOLEAN), TIK_DEBUG("tik_debug", false, SharedPrefHelper.SharedPrefNames.TIKTOK_PREFS, ReturnType.BOOLEAN);
