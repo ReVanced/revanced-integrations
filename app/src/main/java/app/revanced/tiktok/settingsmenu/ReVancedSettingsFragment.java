@@ -24,16 +24,18 @@ import app.revanced.tiktok.utils.SharedPrefHelper;
 
 public class ReVancedSettingsFragment extends PreferenceFragment {
 
+    private boolean Registered = false;
+    private boolean settingsInitialized = false;
+
     SharedPreferences.OnSharedPreferenceChangeListener listener = (sharedPreferences, str) -> {
         for (SettingsEnum setting : SettingsEnum.values()) {
             if (!setting.getPath().equals(str)) continue;
 
-            if (ReVancedUtils.getAppContext() != null && setting.shouldRebootOnChange()) {
+            if (ReVancedUtils.getAppContext() != null && this.settingsInitialized && setting.shouldRebootOnChange()) {
                 rebootDialog(getActivity());
             }
         }
     };
-    private boolean Registered = false;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -103,6 +105,7 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
                 return true;
             });
         }
+        this.settingsInitialized = true;
     }
 
     @Override // android.preference.PreferenceFragment, android.app.Fragment

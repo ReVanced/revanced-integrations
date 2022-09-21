@@ -6,7 +6,6 @@ import android.util.Log;
 import app.revanced.tiktok.utils.LogHelper;
 import app.revanced.tiktok.utils.ReVancedUtils;
 import app.revanced.tiktok.utils.SharedPrefHelper;
-import merger.MergeIf;
 
 public enum SettingsEnum {
     //TikTok Settings

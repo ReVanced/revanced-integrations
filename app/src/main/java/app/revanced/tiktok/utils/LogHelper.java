@@ -3,7 +3,6 @@ package app.revanced.tiktok.utils;
 import android.util.Log;
 
 import app.revanced.tiktok.settings.SettingsEnum;
-import merger.MergeIf;
 
 public class LogHelper {
 

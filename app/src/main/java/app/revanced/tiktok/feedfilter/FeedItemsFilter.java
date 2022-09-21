@@ -7,7 +7,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import app.revanced.tiktok.settings.SettingsEnum;
-import merger.MergeIf;
 
 public class FeedItemsFilter {
 

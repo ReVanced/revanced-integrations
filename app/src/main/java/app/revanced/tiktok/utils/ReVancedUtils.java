@@ -2,8 +2,6 @@ package app.revanced.tiktok.utils;
 
 import android.content.Context;
 
-import merger.MergeIf;
-
 public class ReVancedUtils {
 
     //Used by TiktokIntegrations patch

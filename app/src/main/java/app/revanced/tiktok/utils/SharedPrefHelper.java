@@ -3,8 +3,6 @@ package app.revanced.tiktok.utils;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import merger.MergeIf;
-
 public class SharedPrefHelper {
     public static void saveString(Context context, SharedPrefNames prefName, String key, String value) {
         SharedPreferences sharedPreferences = getPreferences(context, prefName);

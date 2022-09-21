@@ -11,7 +11,6 @@ import com.bytedance.ies.ugc.aweme.commercialize.compliance.personalization.AdPe
 
 import app.revanced.tiktok.utils.LogHelper;
 import app.revanced.tiktok.utils.ReVancedUtils;
-import merger.MergeIf;
 
 
 public class SettingsMenu {
