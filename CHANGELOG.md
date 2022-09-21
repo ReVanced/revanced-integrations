@@ -1,3 +1,29 @@
+# [0.40.0](https://github.com/revanced/revanced-integrations/compare/v0.39.0...v0.40.0) (2022-09-21)
+
+
+### Bug Fixes
+
+* disable sponsorblock on shorts ([#135](https://github.com/revanced/revanced-integrations/issues/135)) ([3797438](https://github.com/revanced/revanced-integrations/commit/37974389ac27e98d18cdfc67c61c0945b53bd0c1))
+
+
+### Features
+
+* `disable-auto-player-popup-panels` patch ([#145](https://github.com/revanced/revanced-integrations/issues/145)) ([3fd6df8](https://github.com/revanced/revanced-integrations/commit/3fd6df82770acacb6fc16b176521abd98080756f))
+
+# [0.39.0](https://github.com/revanced/revanced-integrations/compare/v0.38.0...v0.39.0) (2022-09-21)
+
+
+### Features
+
+* `hide-time-and-seekbar` patch ([#146](https://github.com/revanced/revanced-integrations/issues/146)) ([7e2f48e](https://github.com/revanced/revanced-integrations/commit/7e2f48eb3e92c49c4ea0516f9a8e7e5fbfb39965))
+
+# [0.38.0](https://github.com/revanced/revanced-integrations/compare/v0.37.4...v0.38.0) (2022-09-20)
+
+
+### Features
+
+* disable `swipe-controls` when player controls are visible ([#123](https://github.com/revanced/revanced-integrations/issues/123)) ([6d8c0a0](https://github.com/revanced/revanced-integrations/commit/6d8c0a0c738ce976a7a37d2e1e3d38e6ebc29d09))
+
 ## [0.37.4](https://github.com/revanced/revanced-integrations/compare/v0.37.3...v0.37.4) (2022-09-18)
 
 
