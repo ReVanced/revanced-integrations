@@ -1,6 +1,5 @@
 package app.revanced.integrations.videoplayer;
 
-import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.utils.LogHelper;
 
 public class VideoInformation {

@@ -117,8 +117,6 @@ public class PlayerController {
         videoHasSegments = false;
         timeWithoutSegments = "";
         if (Whitelist.isChannelSBWhitelisted() || shorts_playing) {
-            // Initialize shorts_playing
-            shorts_playing = false;
             return;
         }
         SponsorSegment[] segments = SBRequester.getSegments(videoId);
