@@ -12,6 +12,7 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 
+import app.revanced.integrations.sponsorblock.PlayerController;
 import app.revanced.integrations.returnyoutubedislike.requests.ReturnYouTubeDislikeApi;
 import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.utils.LogHelper;
@@ -58,7 +59,7 @@ public class ReturnYouTubeDislike {
         LogHelper.debug(ReturnYouTubeDislike.class, "newVideoLoaded - " + videoId);
 
         dislikeCount = null;
-        if (!isEnabled) return;
+        if (!isEnabled || PlayerController.shorts_playing) return;
 
         try {
             if (_dislikeFetchThread != null && _dislikeFetchThread.getState() != Thread.State.TERMINATED) {
