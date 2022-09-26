@@ -1,5 +1,12 @@
 package app.revanced.integrations.patches;
 
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.Toolbar;
+
 import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.utils.LogHelper;
 
@@ -11,11 +18,11 @@ import java.util.List;
 public class GeneralBytecodeAdsPatch {
 
     //Used by app.revanced.patches.youtube.ad.general.bytecode.patch.GeneralBytecodeAdsPatch
-    public static boolean containsAd(String value, ByteBuffer buffer) {
-        return containsLithoAd(value, buffer);
+    public static boolean containsAd(String template, String inflatedTemplate, ByteBuffer buffer) {
+        return containsLithoAd(template, inflatedTemplate, buffer);
     }
 
-    private static boolean containsLithoAd(String value, ByteBuffer buffer) {
+    private static boolean containsLithoAd(String template, String inflatedTemplate, ByteBuffer buffer) {
         boolean enabled = false;
         for (SettingsEnum setting : SettingsEnum.getAdRemovalSettings()) {
             if (setting.getBoolean()) {
@@ -25,8 +32,8 @@ public class GeneralBytecodeAdsPatch {
         }
 
         try {
-            if (value == null || value.isEmpty() || !enabled) return false;
-            LogHelper.debug(GeneralBytecodeAdsPatch.class, "Searching for AD: " + value);
+            if (template == null || template.isEmpty() || !enabled) return false;
+            LogHelper.debug(GeneralBytecodeAdsPatch.class, "Searching for AD: " + template);
 
             List<String> blockList = new ArrayList<>();
             List<String> bufferBlockList = new ArrayList<>();
@@ -55,7 +62,7 @@ public class GeneralBytecodeAdsPatch {
 
                 bufferBlockList.add("YouTube Movies");
             }
-            if (containsAny(value, "home_video_with_context", "related_video_with_context") &&
+            if (containsAny(template, "home_video_with_context", "related_video_with_context") &&
                     anyMatch(bufferBlockList, new String(buffer.array(), StandardCharsets.UTF_8)::contains)
             ) return true;
 
@@ -103,7 +110,7 @@ public class GeneralBytecodeAdsPatch {
                 blockList.add("channel_guidelines_entry_banner");
             }
 
-            if (containsAny(value,
+            if (containsAny(template,
                     "home_video_with_context",
                     "related_video_with_context",
                     "search_video_with_context",
@@ -114,17 +121,17 @@ public class GeneralBytecodeAdsPatch {
                     "-button"
             )) return false;
 
-            if (anyMatch(blockList, value::contains)) {
-                LogHelper.debug(GeneralBytecodeAdsPatch.class, "Blocking ad: " + value);
+            if (anyMatch(blockList, template::contains)) {
+                LogHelper.debug(GeneralBytecodeAdsPatch.class, "Blocking ad: " + template);
                 return true;
             }
 
             if (SettingsEnum.DEBUG.getBoolean()) {
-                if (value.contains("related_video_with_context")) {
-                    LogHelper.debug(GeneralBytecodeAdsPatch.class, value + " | " + bytesToHex(buffer.array()));
+                if (template.contains("related_video_with_context")) {
+                    LogHelper.debug(GeneralBytecodeAdsPatch.class, template + " | " + bytesToHex(buffer.array()));
                     return false;
                 }
-                LogHelper.debug(GeneralBytecodeAdsPatch.class, value + " returns false.");
+                LogHelper.debug(GeneralBytecodeAdsPatch.class, template + " returns false.");
             }
             return false;
         } catch (Exception ex) {
