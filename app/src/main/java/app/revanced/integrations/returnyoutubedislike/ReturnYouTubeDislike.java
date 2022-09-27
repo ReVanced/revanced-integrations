@@ -59,7 +59,7 @@ public class ReturnYouTubeDislike {
         LogHelper.debug(ReturnYouTubeDislike.class, "newVideoLoaded - " + videoId);
 
         dislikeCount = null;
-        if (!isEnabled || PlayerController.shorts_playing) return;
+        if (!isEnabled) return;
 
         try {
             if (_dislikeFetchThread != null && _dislikeFetchThread.getState() != Thread.State.TERMINATED) {
