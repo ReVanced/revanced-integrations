@@ -14,7 +14,7 @@ import java.util.List;
 class GeneralAdsRemovalPatch {
     //Used by app.revanced.patches.youtube.ad.general.bytecode.patch.GeneralAdsRemovalPatch
     public static void hidePromotedVideoItem(View view) {
-        if (SettingsEnum.ADREMOVER_GENERAL_ADS_REMOVAL.getBoolean()) {
+        if (SettingsEnum.GENERAL_ADS_REMOVAL.getBoolean()) {
             AdRemoverAPI.HideViewWithLayout1dp(view);
         }
     }
@@ -40,7 +40,7 @@ class GeneralAdsRemovalPatch {
             List<String> blockList = new ArrayList<>();
             List<String> bufferBlockList = new ArrayList<>();
 
-            if (SettingsEnum.ADREMOVER_GENERAL_ADS_REMOVAL.getBoolean()) {
+            if (SettingsEnum.GENERAL_ADS_REMOVAL.getBoolean()) {
                 blockList.add("_ad");
                 blockList.add("ad_badge");
                 blockList.add("ads_video_with_context");
@@ -53,10 +53,10 @@ class GeneralAdsRemovalPatch {
 
                 bufferBlockList.add("ad_cpn");
             }
-            if (SettingsEnum.ADREMOVER_SUGGESTED_FOR_YOU_REMOVAL.getBoolean()) {
+            if (SettingsEnum.SUGGESTED_FOR_YOU_REMOVAL.getBoolean()) {
                 bufferBlockList.add("watch-vrecH");
             }
-            if (SettingsEnum.ADREMOVER_MOVIE_REMOVAL.getBoolean()) {
+            if (SettingsEnum.MOVIE_REMOVAL.getBoolean()) {
                 blockList.add("browsy_bar");
                 blockList.add("compact_movie");
                 blockList.add("horizontal_movie_shelf");
@@ -68,47 +68,47 @@ class GeneralAdsRemovalPatch {
                     anyMatch(bufferBlockList, new String(buffer.array(), StandardCharsets.UTF_8)::contains)
             ) return true;
 
-            if (SettingsEnum.ADREMOVER_COMMENTS_REMOVAL.getBoolean()) {
+            if (SettingsEnum.COMMENTS_REMOVAL.getBoolean()) {
                 blockList.add("comments_");
             }
-            if (SettingsEnum.ADREMOVER_COMMUNITY_GUIDELINES.getBoolean()) {
+            if (SettingsEnum.COMMUNITY_GUIDELINES.getBoolean()) {
                 blockList.add("community_guidelines");
             }
-            if (SettingsEnum.ADREMOVER_COMPACT_BANNER_REMOVAL.getBoolean()) {
+            if (SettingsEnum.COMPACT_BANNER_REMOVAL.getBoolean()) {
                 blockList.add("compact_banner");
             }
-            if (SettingsEnum.ADREMOVER_EMERGENCY_BOX_REMOVAL.getBoolean()) {
+            if (SettingsEnum.EMERGENCY_BOX_REMOVAL.getBoolean()) {
                 blockList.add("emergency_onebox");
             }
-            if (SettingsEnum.ADREMOVER_FEED_SURVEY_REMOVAL.getBoolean()) {
+            if (SettingsEnum.FEED_SURVEY_REMOVAL.getBoolean()) {
                 blockList.add("in_feed_survey");
             }
-            if (SettingsEnum.ADREMOVER_MEDICAL_PANEL_REMOVAL.getBoolean()) {
+            if (SettingsEnum.MEDICAL_PANEL_REMOVAL.getBoolean()) {
                 blockList.add("medical_panel");
             }
-            if (SettingsEnum.ADREMOVER_PAID_CONTECT_REMOVAL.getBoolean()) {
+            if (SettingsEnum.PAID_CONTECT_REMOVAL.getBoolean()) {
                 blockList.add("paid_content_overlay");
             }
-            if (SettingsEnum.ADREMOVER_COMMUNITY_POSTS_REMOVAL.getBoolean()) {
+            if (SettingsEnum.COMMUNITY_POSTS_REMOVAL.getBoolean()) {
                 blockList.add("post_base_wrapper");
             }
-            if (SettingsEnum.ADREMOVER_MERCHANDISE_REMOVAL.getBoolean()) {
+            if (SettingsEnum.MERCHANDISE_REMOVAL.getBoolean()) {
                 blockList.add("product_carousel");
             }
-            if (SettingsEnum.ADREMOVER_SHORTS_SHELF.getBoolean()) {
+            if (SettingsEnum.SHORTS_SHELF.getBoolean()) {
                 blockList.add("shorts_shelf");
             }
-            if (SettingsEnum.ADREMOVER_INFO_PANEL_REMOVAL.getBoolean()) {
+            if (SettingsEnum.INFO_PANEL_REMOVAL.getBoolean()) {
                 blockList.add("publisher_transparency_panel");
                 blockList.add("single_item_information_panel");
             }
-            if (SettingsEnum.ADREMOVER_HIDE_SUGGESTIONS.getBoolean()) {
+            if (SettingsEnum.HIDE_SUGGESTIONS.getBoolean()) {
                 blockList.add("horizontal_video_shelf");
             }
-            if (SettingsEnum.ADREMOVER_HIDE_LATEST_POSTS.getBoolean()) {
+            if (SettingsEnum.HIDE_LATEST_POSTS.getBoolean()) {
                 blockList.add("post_shelf");
             }
-            if (SettingsEnum.ADREMOVER_HIDE_CHANNEL_GUIDELINES.getBoolean()) {
+            if (SettingsEnum.HIDE_CHANNEL_GUIDELINES.getBoolean()) {
                 blockList.add("channel_guidelines_entry_banner");
             }
 
