@@ -1,3 +1,35 @@
+# [0.43.0](https://github.com/revanced/revanced-integrations/compare/v0.42.2...v0.43.0) (2022-09-26)
+
+
+### Features
+
+* enable minification  ([#158](https://github.com/revanced/revanced-integrations/issues/158)) ([8dde925](https://github.com/revanced/revanced-integrations/commit/8dde925b47ff30afc373303b0fdb65c86f9ba82b))
+
+## [0.42.2](https://github.com/revanced/revanced-integrations/compare/v0.42.1...v0.42.2) (2022-09-25)
+
+
+### Bug Fixes
+
+* **swipe-controls:** crash on SDK below 24 ([#157](https://github.com/revanced/revanced-integrations/issues/157)) ([4c72ac1](https://github.com/revanced/revanced-integrations/commit/4c72ac1cd5ee2aae8478171e56e488563459a0f7))
+
+## [0.42.1](https://github.com/revanced/revanced-integrations/compare/v0.42.0...v0.42.1) (2022-09-23)
+
+
+### Bug Fixes
+
+* **build:** remove distributionSha256Sum property ([#153](https://github.com/revanced/revanced-integrations/issues/153)) [skip ci] ([ae8d39a](https://github.com/revanced/revanced-integrations/commit/ae8d39a83144bb19f2db1403c32b73232be570b5))
+* **custom-playback-speed:** fill array to generate required instructions ([#155](https://github.com/revanced/revanced-integrations/issues/155)) ([868e99a](https://github.com/revanced/revanced-integrations/commit/868e99a6199118151766ecf2dbf7a9df02b59a3e))
+* **hide-time-and-seekbar:** don't draw the seekbar ([#154](https://github.com/revanced/revanced-integrations/issues/154)) ([f1e9aa3](https://github.com/revanced/revanced-integrations/commit/f1e9aa30baa582f7eb07f62168ea2d57c5622685))
+
+# [0.42.0](https://github.com/revanced/revanced-integrations/compare/v0.41.2...v0.42.0) (2022-09-23)
+
+
+### Features
+
+* **tiktok:** adapt `tiktok-download` with `tiktok-settings`. ([#152](https://github.com/revanced/revanced-integrations/issues/152)) ([5a710aa](https://github.com/revanced/revanced-integrations/commit/5a710aa0330741d6ff84dd526e1e59d679e6923c))
+
+## [0.41.2](https://github.com/revanced/revanced-integrations/compare/v0.41.1...v0.41.2) (2022-09-22)
+
 ## [0.41.1](https://github.com/revanced/revanced-integrations/compare/v0.41.0...v0.41.1) (2022-09-22)
 
 # [0.41.0](https://github.com/revanced/revanced-integrations/compare/v0.40.0...v0.41.0) (2022-09-21)
