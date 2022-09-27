@@ -27,7 +27,7 @@ public enum SettingsEnum {
 
     //Ad settings
     VIDEO_ADS_REMOVAL("revanced_video_ads_removal", true, ReturnType.BOOLEAN, true),
-    ADREMOVER_AD_REMOVAL("revanced_adremover_ad_removal", true, ReturnType.BOOLEAN, true),
+    ADREMOVER_GENERAL_ADS_REMOVAL("revanced_adremover_general_ads_removal", true, ReturnType.BOOLEAN, true),
     ADREMOVER_MERCHANDISE_REMOVAL("revanced_adremover_merchandise", true, ReturnType.BOOLEAN, true),
     ADREMOVER_COMMUNITY_POSTS_REMOVAL("revanced_adremover_community_posts_removal", true, ReturnType.BOOLEAN, true),
     ADREMOVER_COMPACT_BANNER_REMOVAL("revanced_adremover_compact_banner_removal", true, ReturnType.BOOLEAN, true),

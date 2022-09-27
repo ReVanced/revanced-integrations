@@ -1,5 +1,8 @@
 package app.revanced.integrations.patches;
 
+import android.view.View;
+
+import app.revanced.integrations.adremover.AdRemoverAPI;
 import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.utils.LogHelper;
 
@@ -8,9 +11,15 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GeneralBytecodeAdsPatch {
+class GeneralAdsRemovalPatch {
+    //Used by app.revanced.patches.youtube.ad.general.bytecode.patch.GeneralAdsRemovalPatch
+    public static void hidePromotedVideoItem(View view) {
+        if (SettingsEnum.ADREMOVER_GENERAL_ADS_REMOVAL.getBoolean()) {
+            AdRemoverAPI.HideViewWithLayout1dp(view);
+        }
+    }
 
-    //Used by app.revanced.patches.youtube.ad.general.bytecode.patch.GeneralBytecodeAdsPatch
+    //Used by app.revanced.patches.youtube.ad.general.bytecode.patch.GeneralAdsRemovalPatch
     public static boolean containsAd(String template, String inflatedTemplate, ByteBuffer buffer) {
         return containsLithoAd(template, inflatedTemplate, buffer);
     }
@@ -26,12 +35,12 @@ public class GeneralBytecodeAdsPatch {
 
         try {
             if (template == null || template.isEmpty() || !enabled) return false;
-            LogHelper.debug(GeneralBytecodeAdsPatch.class, "Searching for AD: " + template);
+            LogHelper.debug(GeneralAdsRemovalPatch.class, "Searching for AD: " + template);
 
             List<String> blockList = new ArrayList<>();
             List<String> bufferBlockList = new ArrayList<>();
 
-            if (SettingsEnum.ADREMOVER_AD_REMOVAL.getBoolean()) {
+            if (SettingsEnum.ADREMOVER_GENERAL_ADS_REMOVAL.getBoolean()) {
                 blockList.add("_ad");
                 blockList.add("ad_badge");
                 blockList.add("ads_video_with_context");
@@ -115,20 +124,20 @@ public class GeneralBytecodeAdsPatch {
             )) return false;
 
             if (anyMatch(blockList, template::contains)) {
-                LogHelper.debug(GeneralBytecodeAdsPatch.class, "Blocking ad: " + template);
+                LogHelper.debug(GeneralAdsRemovalPatch.class, "Blocking ad: " + template);
                 return true;
             }
 
             if (SettingsEnum.DEBUG.getBoolean()) {
                 if (template.contains("related_video_with_context")) {
-                    LogHelper.debug(GeneralBytecodeAdsPatch.class, template + " | " + bytesToHex(buffer.array()));
+                    LogHelper.debug(GeneralAdsRemovalPatch.class, template + " | " + bytesToHex(buffer.array()));
                     return false;
                 }
-                LogHelper.debug(GeneralBytecodeAdsPatch.class, template + " returns false.");
+                LogHelper.debug(GeneralAdsRemovalPatch.class, template + " returns false.");
             }
             return false;
         } catch (Exception ex) {
-            LogHelper.printException(GeneralBytecodeAdsPatch.class, ex.getMessage(), ex);
+            LogHelper.printException(GeneralAdsRemovalPatch.class, ex.getMessage(), ex);
             return false;
         }
     }
