@@ -44,6 +44,14 @@ public enum SettingsEnum {
     HIDE_SUGGESTIONS("revanced_hide_suggestions", true, ReturnType.BOOLEAN, true),
     HIDE_LATEST_POSTS("revanced_hide_latest_posts", true, ReturnType.BOOLEAN, true),
     HIDE_CHANNEL_GUIDELINES("revanced_hide_channel_guidelines", true, ReturnType.BOOLEAN, true),
+    HIDE_PLAYER_LIVE_CHAT_BUTTON("revanced_hide_player_live_chat_button", false, ReturnType.BOOLEAN),
+    HIDE_PLAYER_REPORT_BUTTON("revanced_hide_player_report_button", false, ReturnType.BOOLEAN),
+    HIDE_PLAYER_CREATE_SHORT_BUTTON("revanced_hide_player_create_short_button", false, ReturnType.BOOLEAN),
+    HIDE_PLAYER_THANKS_BUTTON("revanced_hide_player_thanks_button", false, ReturnType.BOOLEAN),
+    HIDE_PLAYER_CREATE_CLIP_BUTTON("revanced_hide_player_create_clip_button", false, ReturnType.BOOLEAN),
+    HIDE_PLAYER_DOWNLOAD_BUTTON("revanced_hide_player_download_button", false, ReturnType.BOOLEAN),
+    HIDE_PLAYER_SPOILER_COMMENT("revanced_hide_player_spoiler_comment", false, ReturnType.BOOLEAN),
+    HIDE_PLAYER_EXTERNAL_COMMENT_BOX("revanced_hide_player_external_comment_box", false, ReturnType.BOOLEAN),
 
     //Layout settings
     ENDSCREEN_SHOWN("revanced_endscreen_enabled", false, ReturnType.BOOLEAN, true),

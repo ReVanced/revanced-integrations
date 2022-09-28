@@ -11,30 +11,24 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
-class GeneralAdsRemovalPatch {
-    //Used by app.revanced.patches.youtube.ad.general.bytecode.patch.GeneralAdsRemovalPatch
+public class GeneralAdsRemovalPatch {
+    //Used by app.revanced.patches.youtube.ad.general.patch.GeneralAdsRemovalPatch
     public static void hidePromotedVideoItem(View view) {
         if (SettingsEnum.GENERAL_ADS_REMOVAL.getBoolean()) {
             AdRemoverAPI.HideViewWithLayout1dp(view);
         }
     }
 
-    //Used by app.revanced.patches.youtube.ad.general.bytecode.patch.GeneralAdsRemovalPatch
+    //Used by app.revanced.patches.youtube.ad.general.patch.GeneralAdsRemovalPatch
     public static boolean containsAd(String template, String inflatedTemplate, ByteBuffer buffer) {
         return containsLithoAd(template, inflatedTemplate, buffer);
     }
 
     private static boolean containsLithoAd(String template, String inflatedTemplate, ByteBuffer buffer) {
-        boolean enabled = false;
-        for (SettingsEnum setting : SettingsEnum.getAdRemovalSettings()) {
-            if (setting.getBoolean()) {
-                enabled = true;
-                break;
-            }
-        }
+        String readableBuffer = new String(buffer.array(), StandardCharsets.UTF_8);
 
-        try {
-            if (template == null || template.isEmpty() || !enabled) return false;
+        //ADS
+        if (template != null && !template.trim().isEmpty()) {
             LogHelper.debug(GeneralAdsRemovalPatch.class, "Searching for AD: " + template);
 
             List<String> blockList = new ArrayList<>();
@@ -65,7 +59,7 @@ class GeneralAdsRemovalPatch {
                 bufferBlockList.add("YouTube Movies");
             }
             if (containsAny(template, "home_video_with_context", "related_video_with_context") &&
-                    anyMatch(bufferBlockList, new String(buffer.array(), StandardCharsets.UTF_8)::contains)
+                    anyMatch(bufferBlockList, readableBuffer::contains)
             ) return true;
 
             if (SettingsEnum.COMMENTS_REMOVAL.getBoolean()) {
@@ -135,11 +129,52 @@ class GeneralAdsRemovalPatch {
                 }
                 LogHelper.debug(GeneralAdsRemovalPatch.class, template + " returns false.");
             }
-            return false;
-        } catch (Exception ex) {
-            LogHelper.printException(GeneralAdsRemovalPatch.class, ex.getMessage(), ex);
-            return false;
         }
+
+        //Action Bar Buttons
+        List<String> actionButtonsBlockList = new ArrayList<>();
+
+        if (SettingsEnum.HIDE_PLAYER_LIVE_CHAT_BUTTON.getBoolean()) {
+            actionButtonsBlockList.add("yt_outline_message_bubble_overlap");
+        }
+        if (SettingsEnum.HIDE_PLAYER_REPORT_BUTTON.getBoolean()) {
+            actionButtonsBlockList.add("yt_outline_flag");
+        }
+        if (SettingsEnum.HIDE_PLAYER_CREATE_SHORT_BUTTON.getBoolean()) {
+            actionButtonsBlockList.add("yt_outline_youtube_shorts_plus");
+        }
+        if (SettingsEnum.HIDE_PLAYER_THANKS_BUTTON.getBoolean()) {
+            actionButtonsBlockList.add("yt_outline_dollar_sign_heart");
+        }
+        if (SettingsEnum.HIDE_PLAYER_CREATE_CLIP_BUTTON.getBoolean()) {
+            actionButtonsBlockList.add("yt_outline_scissors");
+        }
+
+        if (containsAny(inflatedTemplate, "ContainerType|ContainerType|video_action_button") &&
+            anyMatch(actionButtonsBlockList, readableBuffer::contains)) {
+            return true;
+        }
+
+        if (SettingsEnum.HIDE_PLAYER_DOWNLOAD_BUTTON.getBoolean() &&
+            containsAny(inflatedTemplate, "ContainerType|ContainerType|download_button")) {
+            return true;
+        }
+
+        //Comments Teasers
+        List<String> commentsTeaserBlockList = new ArrayList<>();
+
+        if (SettingsEnum.HIDE_PLAYER_SPOILER_COMMENT.getBoolean()) {
+            commentsTeaserBlockList.add("ContainerType|comments_entry_point_teaser");
+        }
+        if (SettingsEnum.HIDE_PLAYER_EXTERNAL_COMMENT_BOX.getBoolean()) {
+            commentsTeaserBlockList.add("ContainerType|comments_entry_point_simplebox");
+        }
+
+        if (anyMatch(commentsTeaserBlockList, inflatedTemplate::contains)) {
+            return true;
+        }
+
+        return false;
     }
 
     private static boolean containsAny(String value, String... targets) {
