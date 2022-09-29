@@ -1,3 +1,31 @@
+# [0.44.0](https://github.com/revanced/revanced-integrations/compare/v0.43.1...v0.44.0) (2022-09-28)
+
+
+### Features
+
+* `hide-email-address` patch ([#149](https://github.com/revanced/revanced-integrations/issues/149)) ([4cc8a22](https://github.com/revanced/revanced-integrations/commit/4cc8a22c26c20164d88bff8953d1de53e2041753))
+
+## [0.43.1](https://github.com/revanced/revanced-integrations/compare/v0.43.0...v0.43.1) (2022-09-27)
+
+
+### Bug Fixes
+
+* move dummy classes to `dummy` module ([#162](https://github.com/revanced/revanced-integrations/issues/162)) ([fa0ad3a](https://github.com/revanced/revanced-integrations/commit/fa0ad3a57b437bfc2d34062ac54e56b6900bafab))
+
+# [0.43.0](https://github.com/revanced/revanced-integrations/compare/v0.42.2...v0.43.0) (2022-09-26)
+
+
+### Features
+
+* enable minification  ([#158](https://github.com/revanced/revanced-integrations/issues/158)) ([8dde925](https://github.com/revanced/revanced-integrations/commit/8dde925b47ff30afc373303b0fdb65c86f9ba82b))
+
+## [0.42.2](https://github.com/revanced/revanced-integrations/compare/v0.42.1...v0.42.2) (2022-09-25)
+
+
+### Bug Fixes
+
+* **swipe-controls:** crash on SDK below 24 ([#157](https://github.com/revanced/revanced-integrations/issues/157)) ([4c72ac1](https://github.com/revanced/revanced-integrations/commit/4c72ac1cd5ee2aae8478171e56e488563459a0f7))
+
 ## [0.42.1](https://github.com/revanced/revanced-integrations/compare/v0.42.0...v0.42.1) (2022-09-23)
 
 
