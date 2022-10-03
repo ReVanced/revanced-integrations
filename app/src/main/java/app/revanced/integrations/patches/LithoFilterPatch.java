@@ -1,10 +1,14 @@
 package app.revanced.integrations.patches;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import android.os.Build;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -35,6 +39,34 @@ final class Extensions {
         }
 
         return false;
+    }
+
+    static int indexOf(byte[] array, byte[] target) {
+        if (target.length == 0) {
+            return 0;
+        }
+
+        for (int i = 0; i < array.length - target.length + 1; i++) {
+            boolean targetFound = true;
+            for (int j = 0; j < target.length; j++) {
+                if (array[i+j] != target[j]) {
+                    targetFound = false;
+                    break;
+                }
+            }
+            if (targetFound) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    static byte[] getBufferArrayByPosition(ByteBuffer buffer, int index) {
+        if (index > 0 && buffer.capacity() - 1 >= index) {
+            return (byte[]) buffer.position(index).array();
+        }
+
+        return "XXXXX".getBytes();
     }
 }
 
@@ -71,6 +103,10 @@ final class BlockRule {
         this.blocks = blocks;
     }
 
+    public String[] getBlocks() {
+        return blocks;
+    }
+
     public boolean isEnabled() {
         return setting.getBoolean();
     }
@@ -83,7 +119,7 @@ final class BlockRule {
 abstract class Filter {
     final LithoBlockRegister register = new LithoBlockRegister();
 
-    abstract boolean filter(final String path, final String identifier);
+    abstract boolean filter(final String path, final String identifier, final ByteBuffer buffer);
 }
 
 final class LithoBlockRegister implements Iterable<BlockRule> {
@@ -119,14 +155,14 @@ public final class LithoFilterPatch {
             new ButtonsPatch()
     };
 
-    public static boolean filter(final StringBuilder pathBuilder, final String identifier) {
+    public static boolean filter(final StringBuilder pathBuilder, final String identifier, final ByteBuffer buffer) {
         var path = pathBuilder.toString();
         if (path.isEmpty()) return false;
 
         LogHelper.debug(LithoFilterPatch.class, String.format("Searching (ID: %s): %s", identifier, path));
 
         for (var filter : filters) {
-            if (filter.filter(path, identifier)) return true;
+            if (filter.filter(path, identifier, buffer)) return true;
         }
 
         return false;
@@ -134,58 +170,74 @@ public final class LithoFilterPatch {
 }
 
 final class ButtonsPatch extends Filter {
-    private final BlockRule actionButtonsRule;
-    private final BlockRule dislikeRule;
-    private final BlockRule actionBarRule;
-
-    private final BlockRule[] rules;
+    public static BlockRule actionBar = new BlockRule(SettingsEnum.HIDE_ACTION_BAR, "video_action_bar");
 
     public ButtonsPatch() {
-        BlockRule like = new BlockRule(SettingsEnum.HIDE_LIKE_BUTTON, "|like_button");
-        dislikeRule = new BlockRule(SettingsEnum.HIDE_DISLIKE_BUTTON, "dislike_button");
-        BlockRule download = new BlockRule(SettingsEnum.HIDE_DOWNLOAD_BUTTON, "download_button");
-        actionButtonsRule = new BlockRule(SettingsEnum.HIDE_ACTION_BUTTON, "ContainerType|video_action_button");
-        BlockRule playlist = new BlockRule(SettingsEnum.HIDE_PLAYLIST_BUTTON, "save_to_playlist_button");
-        rules = new BlockRule[]{like, dislikeRule, download, actionButtonsRule, playlist};
-
-        actionBarRule = new BlockRule(null, "video_action_bar");
+        BlockRule like = new BlockRule(SettingsEnum.HIDE_LIKE_BUTTON, "CellType|ScrollableContainerType|ContainerType|ContainerType|like_button");
+        BlockRule dislike = new BlockRule(SettingsEnum.HIDE_DISLIKE_BUTTON, "CellType|ScrollableContainerType|ContainerType|ContainerType|dislike_button");
+        BlockRule share = new BlockRule(SettingsEnum.HIDE_SHARE_BUTTON, "yt_outline_share");
+        BlockRule live_chat = new BlockRule(SettingsEnum.HIDE_LIVE_CHAT_BUTTON, "yt_outline_message_bubble_overlap");
+        BlockRule report = new BlockRule(SettingsEnum.HIDE_REPORT_BUTTON, "yt_outline_flag");
+        BlockRule shorts = new BlockRule(SettingsEnum.HIDE_SHORTS_BUTTON, "yt_outline_youtube_shorts_plus");
+        BlockRule thanks = new BlockRule(SettingsEnum.HIDE_THANKS_BUTTON, "yt_outline_dollar_sign_heart");
+        BlockRule clip = new BlockRule(SettingsEnum.HIDE_CLIP_BUTTON, "yt_outline_scissors");
+        BlockRule download = new BlockRule(SettingsEnum.HIDE_DOWNLOAD_BUTTON, "CellType|ScrollableContainerType|ContainerType|ContainerType|download_button");
+        BlockRule playlist = new BlockRule(SettingsEnum.HIDE_PLAYLIST_BUTTON, "CellType|ScrollableContainerType|ContainerType|ContainerType|save_to_playlist_button");
 
         this.register.registerAll(
-                like,
-                dislikeRule,
-                download,
-                playlist
+            like,
+            dislike,
+            share,
+            download,
+            live_chat,
+            report,
+            shorts,
+            thanks,
+            clip,
+            playlist
         );
     }
 
-    private boolean hideActionBar() {
-        for (BlockRule rule : rules) if (!rule.isEnabled()) return false;
-        return true;
+    private boolean hideActionButtons(final String path, final ByteBuffer buffer) {
+        for (BlockRule rule : register) {
+            if (rule.isEnabled()) {
+                if (Extensions.containsAny(path, actionBar.getBlocks()[0])) {
+                    if (rule.check(path).isBlocked()) return true;
+
+                    if (Extensions.containsAny(path, "CellType|ScrollableContainerType|ContainerType|ContainerType|video_action_button")) {
+                        if (ActionButton.actionButtonsBufferIndex <= 0) {
+                            ActionButton.actionButtonsBufferIndex = Extensions.indexOf(
+                                    buffer.array(),
+                                    "yt_outline_share".getBytes()
+                            );
+                        }
+
+                        if (rule.check(new String(Extensions.getBufferArrayByPosition(
+                            buffer,
+                            ActionButton.actionButtonsBufferIndex),
+                            UTF_8)).isBlocked()) return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     @Override
-    public boolean filter(final String path, final String identifier) {
-        if (hideActionBar() && actionBarRule.check(identifier).isBlocked()) return true;
-
-        var currentIsActionButton = actionButtonsRule.check(path).isBlocked();
-
-        if (dislikeRule.check(path).isBlocked()) ActionButton.doNotBlockCounter = 4;
-
-        if (currentIsActionButton && ActionButton.doNotBlockCounter-- > 0) {
-            if (SettingsEnum.HIDE_SHARE_BUTTON.getBoolean()) {
-                LogHelper.debug(ButtonsPatch.class, "Hiding share button");
-                return true;
-            } else return false;
+    public boolean filter(final String path, final String identifier, final ByteBuffer buffer) {
+        if (actionBar.isEnabled()) {
+            if (actionBar.check(identifier).isBlocked()) return true;
+        }
+        else
+        {
+            return hideActionButtons(path, buffer);
         }
 
-        if ((currentIsActionButton && ActionButton.doNotBlockCounter <= 0 && actionButtonsRule.isEnabled()) || Extensions.any(register, path)) {
-            LogHelper.debug(ButtonsPatch.class, "Blocked: " + path);
-            return true;
-        } else return false;
+        return false;
     }
 
     static class ActionButton {
-        public static int doNotBlockCounter = 4;
+        private static int actionButtonsBufferIndex = 0;
     }
 }
 
@@ -207,62 +259,62 @@ class GeneralBytecodeAdsPatch extends Filter {
         var latestPosts = new BlockRule(SettingsEnum.ADREMOVER_HIDE_LATEST_POSTS, "post_shelf");
         var channelGuidelines = new BlockRule(SettingsEnum.ADREMOVER_HIDE_CHANNEL_GUIDELINES, "channel_guidelines_entry_banner");
         var generalAds = new BlockRule(
-                SettingsEnum.ADREMOVER_GENERAL_ADS_REMOVAL,
-                // could be required
-                //"full_width_square_image_layout",
-                "video_display_full_buttoned_layout",
-                "_ad",
-                "ad_",
-                "ads_video_with_context",
-                "cell_divider",
-                "reels_player_overlay",
-                "shelf_header",
-                "watch_metadata_app_promo",
-                "video_display_full_layout"
+            SettingsEnum.ADREMOVER_GENERAL_ADS_REMOVAL,
+            // could be required
+            //"full_width_square_image_layout",
+            "video_display_full_buttoned_layout",
+            "_ad",
+            "ad_",
+            "ads_video_with_context",
+            "cell_divider",
+            "reels_player_overlay",
+            "shelf_header",
+            "watch_metadata_app_promo",
+            "video_display_full_layout"
         );
         var movieAds = new BlockRule(
-                SettingsEnum.ADREMOVER_MOVIE_REMOVAL,
-                "browsy_bar",
-                "compact_movie",
-                "horizontal_movie_shelf",
-                "movie_and_show_upsell_card"
+            SettingsEnum.ADREMOVER_MOVIE_REMOVAL,
+            "browsy_bar",
+            "compact_movie",
+            "horizontal_movie_shelf",
+            "movie_and_show_upsell_card"
         );
 
         this.register.registerAll(
-                generalAds,
-                communityPosts,
-                paidContent,
-                shorts,
-                suggestions,
-                latestPosts,
-                movieAds,
-                comments,
-                communityGuidelines,
-                compactBanner,
-                inFeedSurvey,
-                medicalPanel,
-                merchandise,
-                infoPanel,
-                channelGuidelines
+            generalAds,
+            communityPosts,
+            paidContent,
+            shorts,
+            suggestions,
+            latestPosts,
+            movieAds,
+            comments,
+            communityGuidelines,
+            compactBanner,
+            inFeedSurvey,
+            medicalPanel,
+            merchandise,
+            infoPanel,
+            channelGuidelines
         );
 
         // Block for the ComponentContext.identifier field
         identifierBlock = new BlockRule(SettingsEnum.ADREMOVER_GENERAL_ADS_REMOVAL, "carousel_ad");
     }
 
-    public boolean filter(final String path, final String identifier) {
+    public boolean filter(final String path, final String identifier, final ByteBuffer _buffer) {
         // Do not block on these
         if (Extensions.containsAny(path,
-                "home_video_with_context",
-                "related_video_with_context",
-                "search_video_with_context",
-                "download_",
-                "library_recent_shelf",
-                "menu",
-                "root",
-                "-count",
-                "-space",
-                "-button"
+            "home_video_with_context",
+            "related_video_with_context",
+            "search_video_with_context",
+            "download_",
+            "library_recent_shelf",
+            "menu",
+            "root",
+            "-count",
+            "-space",
+            "-button"
         )) return false;
 
         for (var rule : register) {
