@@ -23,6 +23,13 @@ public class VideoQualityPatch {
 
     public static void changeDefaultQuality(int defaultQuality) {
         Context context = ReVancedUtils.getContext();
+        
+        // Do not remember a **new** quality if REMEMBER_VIDEO_QUALITY is true
+        if (SettingsEnum.REMEMBER_VIDEO_QUALITY.getBoolean()) {
+            userChangedQuality = false;
+            return;
+        }
+        
         if (isConnectedWifi(context)) {
             try {
                 SharedPrefHelper.saveString(context, SharedPrefHelper.SharedPrefNames.REVANCED_PREFS, "wifi_quality", defaultQuality + "");
@@ -132,9 +139,6 @@ public class VideoQualityPatch {
     }
 
     public static void userChangedQuality(int selectedQuality) {
-        // Do not remember a **new** quality if REMEMBER_VIDEO_QUALITY is true
-        if (SettingsEnum.REMEMBER_VIDEO_QUALITY.getBoolean()) return;
-
         selectedQuality1 = selectedQuality;
         userChangedQuality = true;
     }
