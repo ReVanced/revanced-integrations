@@ -20,6 +20,8 @@ public enum SettingsEnum {
     //Video Settings
     OLD_STYLE_QUALITY_SETTINGS("revanced_use_old_style_quality_settings", true, ReturnType.BOOLEAN),
     PREFERRED_VIDEO_SPEED("revanced_pref_video_speed", -2.0f, ReturnType.FLOAT),
+    PREFERRED_VIDEO_QUALITY_WIFI("revanced_pref_video_quality_wifi", -2, ReturnType.INTEGER),
+    PREFERRED_VIDEO_QUALITY_MOBILE("revanced_pref_video_quality_mobile", -2, ReturnType.INTEGER),
     REMEMBER_VIDEO_QUALITY("revanced_remember_video_quality_selection", true, ReturnType.BOOLEAN),
 
     //Whitelist Settings
