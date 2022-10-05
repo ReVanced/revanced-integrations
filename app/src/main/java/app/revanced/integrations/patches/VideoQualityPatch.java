@@ -139,9 +139,6 @@ public class VideoQualityPatch {
     }
 
     public static void userChangedQuality(int selectedQuality) {
-        // Do not remember a **new** quality if REMEMBER_VIDEO_QUALITY is true
-        if (SettingsEnum.REMEMBER_VIDEO_QUALITY.getBoolean()) return;
-
         selectedQuality1 = selectedQuality;
         userChangedQuality = true;
     }
