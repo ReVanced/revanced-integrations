@@ -23,9 +23,16 @@ public class VideoQualityPatch {
 
     public static void changeDefaultQuality(int defaultQuality) {
         Context context = ReVancedUtils.getContext();
+        
+        // Do not remember a **new** quality if REMEMBER_VIDEO_QUALITY is true
+        if (SettingsEnum.REMEMBER_VIDEO_QUALITY.getBoolean()) {
+            userChangedQuality = false;
+            return;
+        }
+        
         if (isConnectedWifi(context)) {
             try {
-                SharedPrefHelper.saveString(context, SharedPrefHelper.SharedPrefNames.REVANCED_PREFS, "wifi_quality", defaultQuality + "");
+                SettingsEnum.PREFERRED_VIDEO_QUALITY_WIFI.saveValue(defaultQuality);
             } catch (Exception ex) {
                 LogHelper.printException(VideoQualityPatch.class, "Failed to change default WI-FI quality:" + ex);
                 Toast.makeText(context, "Failed to change default WI-FI quality:", Toast.LENGTH_SHORT).show();
@@ -34,7 +41,7 @@ public class VideoQualityPatch {
             Toast.makeText(context, "Changing default Wi-Fi quality to: " + defaultQuality, Toast.LENGTH_SHORT).show();
         } else if (isConnectedMobile(context)) {
             try {
-                SharedPrefHelper.saveString(context, SharedPrefHelper.SharedPrefNames.REVANCED_PREFS, "mobile_quality", defaultQuality + "");
+                SettingsEnum.PREFERRED_VIDEO_QUALITY_MOBILE.saveValue(defaultQuality);
             } catch (Exception ex) {
                 LogHelper.debug(VideoQualityPatch.class, "Failed to change default mobile data quality" + ex);
                 Toast.makeText(context, "Failed to change default mobile data quality", Toast.LENGTH_SHORT).show();
@@ -90,10 +97,10 @@ public class VideoQualityPatch {
             return quality;
         }
         if (isConnectedWifi(context)) {
-            preferredQuality = SharedPrefHelper.getInt(context, SharedPrefHelper.SharedPrefNames.REVANCED_PREFS, "wifi_quality", -2);
+            preferredQuality = SettingsEnum.PREFERRED_VIDEO_QUALITY_WIFI.getInt();
             LogHelper.debug(VideoQualityPatch.class, "Wi-Fi connection detected, preferred quality: " + preferredQuality);
         } else if (isConnectedMobile(context)) {
-            preferredQuality = SharedPrefHelper.getInt(context, SharedPrefHelper.SharedPrefNames.REVANCED_PREFS, "mobile_quality", -2);
+            preferredQuality = SettingsEnum.PREFERRED_VIDEO_QUALITY_MOBILE.getInt();
             LogHelper.debug(VideoQualityPatch.class, "Mobile data connection detected, preferred quality: " + preferredQuality);
         } else {
             LogHelper.debug(VideoQualityPatch.class, "No Internet connection!");
