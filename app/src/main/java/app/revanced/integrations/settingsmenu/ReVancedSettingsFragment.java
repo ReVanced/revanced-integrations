@@ -1,5 +1,7 @@
 package app.revanced.integrations.settingsmenu;
 
+import static app.revanced.integrations.sponsorblock.StringRef.str;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlarmManager;
@@ -17,10 +19,12 @@ import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceScreen;
 import android.preference.SwitchPreference;
+import android.widget.ListPopupWindow;
 
 import com.google.android.apps.youtube.app.YouTubeTikTokRoot_Application;
 import com.google.android.apps.youtube.app.application.Shell_HomeActivity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import app.revanced.integrations.settings.SettingsEnum;
@@ -41,6 +45,8 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
 
     private final CharSequence[] videoSpeedEntries = {"Auto", "0.25x", "0.5x", "0.75x", "Normal", "1.25x", "1.5x", "1.75x", "2x", "3x", "4x", "5x"};
     private final CharSequence[] videoSpeedentryValues = {"-2", "0.25", "0.5", "0.75", "1.0", "1.25", "1.5", "1.75", "2.0", "3.0", "4.0", "5.0"};
+    private final CharSequence[] videoQualityEntries = {"Auto", "144p", "240p", "360p", "480p", "720p", "1080p", "1440p", "2160p"};
+    private final CharSequence[] videoQualityentryValues = {"-2", "144", "240", "360", "480", "720", "1080", "1440", "2160"};
     //private final CharSequence[] buttonLocationEntries = {"None", "In player", "Under player", "Both"};
     //private final CharSequence[] buttonLocationentryValues = {"NONE", "PLAYER", "BUTTON_BAR", "BOTH"};
 
@@ -81,6 +87,7 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
                 }
                 setting.setValue(value);
             } else if (pref instanceof ListPreference) {
+                Context context = ReVancedUtils.getContext();
                 ListPreference listPref = (ListPreference) pref;
                 if (setting == SettingsEnum.PREFERRED_VIDEO_SPEED) {
                     try {
@@ -90,6 +97,34 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
                         SettingsEnum.PREFERRED_VIDEO_SPEED.saveValue(value);
                     } catch (Throwable th) {
                         LogHelper.printException(ReVancedSettingsFragment.class, "Error setting value of speed" + th);
+                    }
+                } else {
+                    LogHelper.printException(ReVancedSettingsFragment.class, "No valid setting found: " + setting.toString());
+                }
+
+                if (setting == SettingsEnum.PREFERRED_VIDEO_QUALITY_WIFI) {
+                    try {
+                        String value = Integer.toString(SharedPrefHelper.getInt(context, SharedPrefHelper.SharedPrefNames.YOUTUBE, "revanced_pref_video_quality_wifi", -2));
+                        listPref.setDefaultValue(value);
+                        listPref.setSummary(videoQualityEntries[listPref.findIndexOfValue(String.valueOf(value))]);
+                        SettingsEnum.PREFERRED_VIDEO_QUALITY_WIFI.saveValue(Integer.parseInt(value));
+                        SharedPrefHelper.saveString(context, SharedPrefHelper.SharedPrefNames.YOUTUBE, "revanced_pref_video_quality_wifi", value + "");
+                    } catch (Throwable th) {
+                        LogHelper.printException(ReVancedSettingsFragment.class, "Error setting value of wifi quality" + th);
+                    }
+                } else {
+                    LogHelper.printException(ReVancedSettingsFragment.class, "No valid setting found: " + setting.toString());
+                }
+
+                if (setting == SettingsEnum.PREFERRED_VIDEO_QUALITY_MOBILE) {
+                    try {
+                        String value = Integer.toString(SharedPrefHelper.getInt(context, SharedPrefHelper.SharedPrefNames.YOUTUBE, "revanced_pref_video_quality_mobile", -2));
+                        listPref.setDefaultValue(value);
+                        listPref.setSummary(videoQualityEntries[listPref.findIndexOfValue(String.valueOf(value))]);
+                        SettingsEnum.PREFERRED_VIDEO_QUALITY_MOBILE.saveValue(Integer.parseInt(value));
+                        SharedPrefHelper.saveString(context, SharedPrefHelper.SharedPrefNames.YOUTUBE, "revanced_pref_video_quality_mobile", value + "");
+                    } catch (Throwable th) {
+                        LogHelper.printException(ReVancedSettingsFragment.class, "Error setting value of mobile quality" + th);
                     }
                 } else {
                     LogHelper.printException(ReVancedSettingsFragment.class, "No valid setting found: " + setting.toString());
@@ -126,6 +161,32 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
             sharedPreferences.registerOnSharedPreferenceChangeListener(this.listener);
             this.Registered = true;
 
+            this.screens = new ArrayList<>();
+            this.screens.add((PreferenceScreen) getPreferenceScreen().findPreference("ads"));
+            this.screens.add((PreferenceScreen) getPreferenceScreen().findPreference("interactions"));
+            this.screens.add((PreferenceScreen) getPreferenceScreen().findPreference("layout"));
+            this.screens.add((PreferenceScreen) getPreferenceScreen().findPreference("misc"));
+
+            String AUTO = str("quality_auto");
+            this.videoQualityEntries[0] = AUTO;
+
+            final ListPreference wifiQualityList = (ListPreference) screens.get(3).findPreference("revanced_pref_video_quality_wifi");
+            setListPreferenceData(wifiQualityList, true);
+
+            wifiQualityList.setOnPreferenceClickListener(preference -> {
+                setListPreferenceData(wifiQualityList, true);
+                return false;
+            });
+
+            final ListPreference mobileQualityList = (ListPreference) screens.get(3).findPreference("revanced_pref_video_quality_mobile");
+            setListPreferenceData(mobileQualityList, false);
+
+            mobileQualityList.setOnPreferenceClickListener(preference -> {
+                setListPreferenceData(mobileQualityList, false);
+                return false;
+            });
+
+            sharedPreferences.edit().putBoolean("revanced_initialized", true);
             this.settingsInitialized = true;
         } catch (Throwable th) {
             LogHelper.printException(ReVancedSettingsFragment.class, "Error during onCreate()", th);
@@ -159,6 +220,17 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
         }
 
         return pref;
+    }
+
+    private void setListPreferenceData(ListPreference listPreference, boolean z) {
+        SharedPreferences sharedPreferences = getPreferenceManager().getSharedPreferences();
+        String value = sharedPreferences.getString(z ? "revanced_pref_video_quality_wifi" : "revanced_pref_video_quality_mobile", "-2");
+        if (listPreference.getValue() == null) {
+            listPreference.setValue(value);
+        }
+        listPreference.setEntries(this.videoQualityEntries);
+        listPreference.setEntryValues(this.videoQualityentryValues);
+        listPreference.setSummary(this.videoQualityEntries[listPreference.findIndexOfValue(value)]);
     }
 
     /*
