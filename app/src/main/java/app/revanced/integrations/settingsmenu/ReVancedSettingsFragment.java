@@ -164,10 +164,7 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
             this.Registered = true;
 
             this.screens = new ArrayList<>();
-            /**this.screens.add((PreferenceScreen) getPreferenceScreen().findPreference("ads"));
-            this.screens.add((PreferenceScreen) getPreferenceScreen().findPreference("interactions"));
-            this.screens.add((PreferenceScreen) getPreferenceScreen().findPreference("layout"));
-            this.screens.add((PreferenceScreen) getPreferenceScreen().findPreference("misc"));**/
+            this.screens.add((PreferenceScreen) getPreferenceScreen().findPreference("video"));
             this.screens.add((PreferenceScreen) getPreferenceScreen().findPreference("revanced_pref_default_video_quality"));
 
             String AUTO = str("quality_auto");
