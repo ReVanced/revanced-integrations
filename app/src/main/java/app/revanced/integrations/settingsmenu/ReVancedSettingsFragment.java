@@ -164,16 +164,16 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
             this.Registered = true;
 
             this.screens = new ArrayList<>();
-            this.screens.add((PreferenceScreen) getPreferenceScreen().findPreference("ads"));
+            /**this.screens.add((PreferenceScreen) getPreferenceScreen().findPreference("ads"));
             this.screens.add((PreferenceScreen) getPreferenceScreen().findPreference("interactions"));
             this.screens.add((PreferenceScreen) getPreferenceScreen().findPreference("layout"));
-            this.screens.add((PreferenceScreen) getPreferenceScreen().findPreference("misc"));
+            this.screens.add((PreferenceScreen) getPreferenceScreen().findPreference("misc"));**/
             this.screens.add((PreferenceScreen) getPreferenceScreen().findPreference("revanced_pref_default_video_quality"));
 
             String AUTO = str("quality_auto");
             this.videoQualityEntries[0] = AUTO;
 
-            final ListPreference wifiQualityList = (ListPreference) screens.get(4).findPreference("revanced_pref_video_quality_wifi");
+            final ListPreference wifiQualityList = (ListPreference) screens.get(0).findPreference("revanced_pref_video_quality_wifi");
             setListPreferenceData(wifiQualityList, true);
 
             wifiQualityList.setOnPreferenceClickListener(preference -> {
@@ -181,7 +181,7 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
                 return false;
             });
 
-            final ListPreference mobileQualityList = (ListPreference) screens.get(4).findPreference("revanced_pref_video_quality_mobile");
+            final ListPreference mobileQualityList = (ListPreference) screens.get(0).findPreference("revanced_pref_video_quality_mobile");
             setListPreferenceData(mobileQualityList, false);
 
             mobileQualityList.setOnPreferenceClickListener(preference -> {
