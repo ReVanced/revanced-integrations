@@ -172,28 +172,28 @@ public final class LithoFilterPatch {
 final class ButtonsPatch extends Filter {
     public static BlockRule actionBar = new BlockRule(SettingsEnum.HIDE_ACTION_BAR, "video_action_bar");
 
-    public ButtonsPatch() {
-        BlockRule like = new BlockRule(SettingsEnum.HIDE_LIKE_BUTTON, "CellType|ScrollableContainerType|ContainerType|ContainerType|like_button");
-        BlockRule dislike = new BlockRule(SettingsEnum.HIDE_DISLIKE_BUTTON, "CellType|ScrollableContainerType|ContainerType|ContainerType|dislike_button");
-        BlockRule share = new BlockRule(SettingsEnum.HIDE_SHARE_BUTTON, "yt_outline_share");
-        BlockRule live_chat = new BlockRule(SettingsEnum.HIDE_LIVE_CHAT_BUTTON, "yt_outline_message_bubble_overlap");
-        BlockRule report = new BlockRule(SettingsEnum.HIDE_REPORT_BUTTON, "yt_outline_flag");
-        BlockRule shorts = new BlockRule(SettingsEnum.HIDE_SHORTS_BUTTON, "yt_outline_youtube_shorts_plus");
-        BlockRule thanks = new BlockRule(SettingsEnum.HIDE_THANKS_BUTTON, "yt_outline_dollar_sign_heart");
-        BlockRule clip = new BlockRule(SettingsEnum.HIDE_CLIP_BUTTON, "yt_outline_scissors");
-        BlockRule download = new BlockRule(SettingsEnum.HIDE_DOWNLOAD_BUTTON, "CellType|ScrollableContainerType|ContainerType|ContainerType|download_button");
-        BlockRule playlist = new BlockRule(SettingsEnum.HIDE_PLAYLIST_BUTTON, "CellType|ScrollableContainerType|ContainerType|ContainerType|save_to_playlist_button");
+    public static BlockRule like = new BlockRule(SettingsEnum.HIDE_LIKE_BUTTON, "CellType|ScrollableContainerType|ContainerType|ContainerType|like_button");
+    public static BlockRule dislike = new BlockRule(SettingsEnum.HIDE_DISLIKE_BUTTON, "CellType|ScrollableContainerType|ContainerType|ContainerType|dislike_button");
+    public static BlockRule live_chat = new BlockRule(SettingsEnum.HIDE_LIVE_CHAT_BUTTON, "yt_outline_message_bubble_overlap");
+    public static BlockRule share = new BlockRule(SettingsEnum.HIDE_SHARE_BUTTON, "yt_outline_share");
+    public static BlockRule report = new BlockRule(SettingsEnum.HIDE_REPORT_BUTTON, "yt_outline_flag");
+    public static BlockRule shorts = new BlockRule(SettingsEnum.HIDE_SHORTS_BUTTON, "yt_outline_youtube_shorts_plus");
+    public static BlockRule thanks = new BlockRule(SettingsEnum.HIDE_THANKS_BUTTON, "yt_outline_dollar_sign_heart");
+    public static BlockRule clip = new BlockRule(SettingsEnum.HIDE_CLIP_BUTTON, "yt_outline_scissors");
+    public static BlockRule download = new BlockRule(SettingsEnum.HIDE_DOWNLOAD_BUTTON, "CellType|ScrollableContainerType|ContainerType|ContainerType|download_button");
+    public static BlockRule playlist = new BlockRule(SettingsEnum.HIDE_PLAYLIST_BUTTON, "CellType|ScrollableContainerType|ContainerType|ContainerType|save_to_playlist_button");
 
+    public ButtonsPatch() {
         this.register.registerAll(
             like,
             dislike,
-            share,
-            download,
             live_chat,
+            share,
             report,
             shorts,
             thanks,
             clip,
+            download,
             playlist
         );
     }
@@ -205,11 +205,20 @@ final class ButtonsPatch extends Filter {
                     if (rule.check(path).isBlocked()) return true;
 
                     if (Extensions.containsAny(path, "CellType|ScrollableContainerType|ContainerType|ContainerType|video_action_button")) {
-                        if (ActionButton.actionButtonsBufferIndex <= 0) {
-                            ActionButton.actionButtonsBufferIndex = Extensions.indexOf(
-                                    buffer.array(),
-                                    "yt_outline_share".getBytes()
-                            );
+                        class headerButtons { public byte[] byteName; }
+                        headerButtons[] byteNames = new headerButtons[2];
+                        for (int i = 0; i < byteNames.length; i++) {
+                            byteNames[i] = new headerButtons();
+                            byteNames[i].byteName = i == 0 ?
+                                live_chat.getBlocks()[0].getBytes() : share.getBlocks()[0].getBytes();
+
+                            if (ActionButton.actionButtonsBufferIndex <= 0) {
+                                ActionButton.actionButtonsBufferIndex = Extensions.indexOf(buffer.array(), byteNames[i].byteName);
+                            }
+                            else
+                            {
+                                break;
+                            }
                         }
 
                         if (rule.check(new String(Extensions.getBufferArrayByPosition(
