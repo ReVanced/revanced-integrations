@@ -19,7 +19,6 @@ import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceScreen;
 import android.preference.SwitchPreference;
-import android.widget.ListPopupWindow;
 
 import com.google.android.apps.youtube.app.YouTubeTikTokRoot_Application;
 import com.google.android.apps.youtube.app.application.Shell_HomeActivity;
@@ -164,11 +163,7 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
             this.Registered = true;
 
             this.screens = new ArrayList<>();
-            this.screens.add((PreferenceScreen) getPreferenceScreen().findPreference("video"));
             this.screens.add((PreferenceScreen) getPreferenceScreen().findPreference("revanced_pref_default_video_quality"));
-
-            String AUTO = str("quality_auto");
-            this.videoQualityEntries[0] = AUTO;
 
             final ListPreference wifiQualityList = (ListPreference) screens.get(0).findPreference("revanced_pref_video_quality_wifi");
             setListPreferenceData(wifiQualityList, true);
