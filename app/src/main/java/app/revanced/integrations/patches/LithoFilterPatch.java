@@ -60,14 +60,6 @@ final class Extensions {
         }
         return -1;
     }
-
-    static byte[] getBufferArrayByPosition(ByteBuffer buffer, int index) {
-        if (index > 0 && buffer.capacity() - 1 >= index) {
-            return (byte[]) buffer.position(index).array();
-        }
-
-        return "XXXXX".getBytes();
-    }
 }
 
 final class BlockRule {
@@ -204,28 +196,9 @@ final class ButtonsPatch extends Filter {
                 if (Extensions.containsAny(path, actionBar.getBlocks()[0])) {
                     if (rule.check(path).isBlocked()) return true;
 
-                    if (Extensions.containsAny(path, "CellType|ScrollableContainerType|ContainerType|ContainerType|video_action_button")) {
-                        class headerButtons { public byte[] byteName; }
-                        headerButtons[] byteNames = new headerButtons[2];
-                        for (int i = 0; i < byteNames.length; i++) {
-                            byteNames[i] = new headerButtons();
-                            byteNames[i].byteName = i == 0 ?
-                                live_chat.getBlocks()[0].getBytes() : share.getBlocks()[0].getBytes();
-
-                            if (ActionButton.actionButtonsBufferIndex <= 0) {
-                                ActionButton.actionButtonsBufferIndex = Extensions.indexOf(buffer.array(), byteNames[i].byteName);
-                            }
-                            else
-                            {
-                                break;
-                            }
-                        }
-
-                        if (rule.check(new String(Extensions.getBufferArrayByPosition(
-                            buffer,
-                            ActionButton.actionButtonsBufferIndex),
-                            UTF_8)).isBlocked()) return true;
-                    }
+                    if (Extensions.containsAny(path, "ContainerType|ContainerType|video_action_button") &&
+                        Extensions.indexOf(buffer.array(), rule.getBlocks()[0].getBytes()) > 0)
+                            return true;
                 }
             }
         }
@@ -243,10 +216,6 @@ final class ButtonsPatch extends Filter {
         }
 
         return false;
-    }
-
-    static class ActionButton {
-        private static int actionButtonsBufferIndex = 0;
     }
 }
 
