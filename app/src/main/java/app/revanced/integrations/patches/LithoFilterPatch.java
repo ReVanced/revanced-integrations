@@ -196,9 +196,12 @@ final class ButtonsPatch extends Filter {
                 if (Extensions.containsAny(path, actionBar.getBlocks()[0])) {
                     if (rule.check(path).isBlocked()) return true;
 
-                    if (Extensions.containsAny(path, "ContainerType|ContainerType|video_action_button") &&
-                        Extensions.indexOf(buffer.array(), rule.getBlocks()[0].getBytes()) > 0)
+                    if (Extensions.containsAny(path, "ContainerType|ContainerType|video_action_button")) {
+                        int bufferIndex = Extensions.indexOf(buffer.array(), rule.getBlocks()[0].getBytes());
+
+                        if (bufferIndex > 0 && bufferIndex < 2000)
                             return true;
+                    }
                 }
             }
         }
