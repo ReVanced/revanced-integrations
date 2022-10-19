@@ -8,8 +8,7 @@ import app.revanced.integrations.settings.SettingsEnum;
 public class HideMixPlaylistsPatch {
 
     public static void hideMixPlaylists(View view) {
-        if (!SettingsEnum.SHOW_MIX_PLAYLISTS.getBoolean()) {
-            AdRemoverAPI.HideViewWithLayout1dp(view);
-        }
+        if (!SettingsEnum.HIDE_MIX_PLAYLISTS.getBoolean()) return;
+        AdRemoverAPI.HideViewWithLayout1dp(view);
     }
 }
