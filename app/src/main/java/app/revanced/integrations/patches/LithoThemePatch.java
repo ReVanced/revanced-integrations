@@ -11,6 +11,7 @@ public class LithoThemePatch {
         -394759, // music related results panel background
         -83886081, // video chapters list background
     };
+
     private static final int[] DARKCONSTANTS = {
         -14606047, // comments chip background
         -15198184, // music related results panel background
