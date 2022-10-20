@@ -1,3 +1,26 @@
+# [0.53.0](https://github.com/revanced/revanced-integrations/compare/v0.52.1...v0.53.0) (2022-10-20)
+
+
+### Features
+
+* **youtube:** `hide-mix-playlists` patch ([#177](https://github.com/revanced/revanced-integrations/issues/177)) ([0e6a92f](https://github.com/revanced/revanced-integrations/commit/0e6a92fb33fbe660c71dcf15146cde7131693619))
+
+## [0.52.1](https://github.com/revanced/revanced-integrations/compare/v0.52.0...v0.52.1) (2022-10-16)
+
+
+### Performance Improvements
+
+* remove obsolete SDK checks ([#174](https://github.com/revanced/revanced-integrations/issues/174)) ([1755662](https://github.com/revanced/revanced-integrations/commit/1755662a7aa87bebf5ab0d2bd3e51df0aafd4a92))
+
+# [0.52.0](https://github.com/revanced/revanced-integrations/compare/v0.51.1...v0.52.0) (2022-10-13)
+
+
+### Features
+
+* **youtube/remember-video-quality:** remember the quality until changed by default ([c5ca35e](https://github.com/revanced/revanced-integrations/commit/c5ca35e42cbe65939068da75c94d7e69ca0504c1))
+
+## [0.51.1](https://github.com/revanced/revanced-integrations/compare/v0.51.0...v0.51.1) (2022-10-11)
+
 # [0.51.0](https://github.com/revanced/revanced-integrations/compare/v0.50.0...v0.51.0) (2022-10-06)
 
 
