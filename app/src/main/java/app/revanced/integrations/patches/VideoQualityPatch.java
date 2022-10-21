@@ -37,24 +37,24 @@ public class VideoQualityPatch {
                 SettingsEnum.DEFAULT_VIDEO_QUALITY_WIFI.saveValue(defaultQuality);
                 SharedPrefHelper.saveString(context, SharedPrefHelper.SharedPrefNames.REVANCED_PREFS, "revanced_pref_video_quality_wifi", defaultQuality + "");
             } catch (Exception ex) {
-                LogHelper.printException(VideoQualityPatch.class, "Failed to change default WI-FI quality" + ex);
-                Toast.makeText(context, str("revanced_video_quality_wifi_error"), Toast.LENGTH_SHORT).show();
+                LogHelper.printException(VideoQualityPatch.class, "Failed to change default WI-FI quality:" + ex);
+                Toast.makeText(context, "Failed to change default WI-FI quality:", Toast.LENGTH_SHORT).show();
             }
             LogHelper.debug(VideoQualityPatch.class, "Changing default Wi-Fi quality to: " + defaultQuality);
-            Toast.makeText(context, str("revanced_video_quality_wifi") + "" + defaultQuality + "p", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "Changing default Wi-Fi quality to: " + defaultQuality, Toast.LENGTH_SHORT).show();
         } else if (isConnectedMobile(context)) {
             try {
                 SettingsEnum.DEFAULT_VIDEO_QUALITY_MOBILE.saveValue(defaultQuality);
                 SharedPrefHelper.saveString(context, SharedPrefHelper.SharedPrefNames.REVANCED_PREFS, "revanced_pref_video_quality_mobile", defaultQuality + "");
             } catch (Exception ex) {
                 LogHelper.debug(VideoQualityPatch.class, "Failed to change default mobile data quality" + ex);
-                Toast.makeText(context, str("revanced_video_quality_mobile_error"), Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Failed to change default mobile data quality", Toast.LENGTH_SHORT).show();
             }
             LogHelper.debug(VideoQualityPatch.class, "Changing default mobile data quality to:" + defaultQuality);
-            Toast.makeText(context, str("revanced_video_quality_mobile") + "" + defaultQuality + "p", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "Changing default mobile data quality to:" + defaultQuality, Toast.LENGTH_SHORT).show();
         } else {
-            LogHelper.debug(VideoQualityPatch.class, "No internet connection.");
-            Toast.makeText(context, str("revanced_video_quality_internet_error"), Toast.LENGTH_SHORT).show();
+            LogHelper.debug(VideoQualityPatch.class,  "No internet connection.");
+            Toast.makeText(context, "No internet connection.", Toast.LENGTH_SHORT).show();
         }
         userChangedQuality = false;
     }
@@ -141,7 +141,7 @@ public class VideoQualityPatch {
             return qualityIndex;
         } catch (Exception ex) {
             LogHelper.printException(VideoQualityPatch.class, "Failed to set quality", ex);
-            Toast.makeText(context, str("revanced_video_quality_common_error"), Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "Failed to set quality", Toast.LENGTH_SHORT).show();
             return qualityIndex;
         }
     }
