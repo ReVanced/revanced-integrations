@@ -19,6 +19,7 @@ import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceScreen;
 import android.preference.SwitchPreference;
+import android.widget.Toast;
 
 import com.google.android.apps.youtube.app.YouTubeTikTokRoot_Application;
 import com.google.android.apps.youtube.app.application.Shell_HomeActivity;
@@ -103,12 +104,8 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
 
                 if (setting == SettingsEnum.PREFERRED_VIDEO_QUALITY_WIFI) {
                     try {
-                        String value = Integer.toString(SharedPrefHelper.getInt(context, SharedPrefHelper.SharedPrefNames.YOUTUBE, "revanced_pref_video_quality_wifi", -2));
-                        listPref.setDefaultValue(value);
-                        listPref.setSummary(videoQualityEntries[listPref.findIndexOfValue(String.valueOf(value))]);
-                        SettingsEnum.PREFERRED_VIDEO_QUALITY_WIFI.saveValue(Integer.parseInt(value));
-                        SharedPrefHelper.saveString(context, SharedPrefHelper.SharedPrefNames.YOUTUBE, "revanced_pref_video_quality_wifi", value + "");
-                        Toast.makeText(context, "Changing default Wi-Fi quality to: " + SettingsEnum.PREFERRED_VIDEO_QUALITY_WIFI.getInt() + "p", Toast.LENGTH_SHORT).show();
+                        initializeList(context, sharedPreferences, listPref, setting);
+                        Toast.makeText(context, "Changing default Wi-Fi quality to: " + SettingsEnum.DEFAULT_VIDEO_QUALITY_WIFI.getInt() + "p", Toast.LENGTH_SHORT).show();
                     } catch (Throwable th) {
                         LogHelper.printException(ReVancedSettingsFragment.class, "Error setting value of wifi quality" + th);
                     }
@@ -118,12 +115,8 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
 
                 if (setting == SettingsEnum.PREFERRED_VIDEO_QUALITY_MOBILE) {
                     try {
-                        String value = Integer.toString(SharedPrefHelper.getInt(context, SharedPrefHelper.SharedPrefNames.YOUTUBE, "revanced_pref_video_quality_mobile", -2));
-                        listPref.setDefaultValue(value);
-                        listPref.setSummary(videoQualityEntries[listPref.findIndexOfValue(String.valueOf(value))]);
-                        SettingsEnum.PREFERRED_VIDEO_QUALITY_MOBILE.saveValue(Integer.parseInt(value));
-                        SharedPrefHelper.saveString(context, SharedPrefHelper.SharedPrefNames.YOUTUBE, "revanced_pref_video_quality_mobile", value + "");
-                        Toast.makeText(context, "Changing default mobile data quality to: " + SettingsEnum.PREFERRED_VIDEO_QUALITY_MOBILE.getInt() + "p", Toast.LENGTH_SHORT).show();
+                        initializeList(context, sharedPreferences, listPref, setting);
+                        Toast.makeText(context, "Changing default mobile data quality to: " + SettingsEnum.DEFAULT_VIDEO_QUALITY_MOBILE.getInt() + "p", Toast.LENGTH_SHORT).show();
                     } catch (Throwable th) {
                         LogHelper.printException(ReVancedSettingsFragment.class, "Error setting value of mobile quality" + th);
                     }
@@ -215,6 +208,14 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
         }
 
         return pref;
+    }
+    
+    private void initializeList(Context context, SharedPreferences sharedPreferences, ListPreference listPref, SettingsEnum setting) {
+        String value = sharedPreferences.getString(setting.getPath(), setting.getDefaultValue() + "");
+        listPref.setDefaultValue(value);
+        listPref.setSummary(videoQualityEntries[listPref.findIndexOfValue(value)]);
+        setting.saveValue(Integer.parseInt(value));
+        SharedPrefHelper.saveString(context, SharedPrefHelper.SharedPrefNames.REVANCED_PREFS, setting.getPath(), value + "");
     }
 
     private void setListPreferenceData(ListPreference listPreference, boolean z) {
