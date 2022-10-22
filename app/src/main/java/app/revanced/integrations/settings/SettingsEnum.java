@@ -21,8 +21,8 @@ public enum SettingsEnum {
     OLD_STYLE_QUALITY_SETTINGS("revanced_use_old_style_quality_settings", true, ReturnType.BOOLEAN),
     // TODO: DEFAULT_VIDEO_SPEED("revanced_pref_video_speed", -2.0f, SharedPrefHelper.SharedPrefNames.REVANCED_PREFS, ReturnType.FLOAT),
     // TODO: CUSTOM_PLAYBACK_SPEED_ENABLED("revanced_pref_custom_playback_speed", false, ReturnType.BOOLEAN, true),
-    DEFAULT_VIDEO_QUALITY_WIFI("revanced_pref_video_quality_wifi", -2, SharedPrefHelper.SharedPrefNames.REVANCED_PREFS, ReturnType.INTEGER),
-    DEFAULT_VIDEO_QUALITY_MOBILE("revanced_pref_video_quality_mobile", -2, SharedPrefHelper.SharedPrefNames.REVANCED_PREFS, ReturnType.INTEGER),
+    DEFAULT_VIDEO_QUALITY_WIFI("revanced_default_video_quality_wifi", -2, SharedPrefHelper.SharedPrefNames.REVANCED_PREFS, ReturnType.INTEGER),
+    DEFAULT_VIDEO_QUALITY_MOBILE("revanced_default_video_quality_mobile", -2, SharedPrefHelper.SharedPrefNames.REVANCED_PREFS, ReturnType.INTEGER),
     REMEMBER_VIDEO_QUALITY("revanced_remember_video_quality_selection", true, ReturnType.BOOLEAN),
 
     //Whitelist Settings
