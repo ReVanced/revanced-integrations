@@ -23,7 +23,7 @@ public class LithoThemePatch {
     public static int applyLithoTheme(int originalValue) {
         var isDarkTheme = ThemeHelper.isDarkTheme();
         
-        if ((isDarkTheme  && anyEquals(originalValue, DARKCONSTANTS)) || (!isDarkTheme  && anyEquals(originalValue, WHITECONSTANTS)))
+        if ((isDarkTheme && anyEquals(originalValue, DARKCONSTANTS)) || (!isDarkTheme  && anyEquals(originalValue, WHITECONSTANTS)))
                 return 0;
         return originalValue;
     }
