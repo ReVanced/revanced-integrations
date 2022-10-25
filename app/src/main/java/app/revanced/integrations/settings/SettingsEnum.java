@@ -73,7 +73,7 @@ public enum SettingsEnum {
     HIDE_CAPTIONS_BUTTON("revanced_hide_captions_button", false, ReturnType.BOOLEAN),
     HIDE_MIX_PLAYLISTS("revanced_mix_playlists_hidden", false, ReturnType.BOOLEAN, true),
     HIDE_CROWDFUNDING_BOX("revanced_hide_crowdfunding_box", false, ReturnType.BOOLEAN, true),
-    HIDE_ALBUM_CARDS("revanced_album_cards", false, ReturnType.BOOLEAN, true),
+    HIDE_ALBUM_CARDS("revanced_hide_album_cards", false, ReturnType.BOOLEAN, true),
 
     // Misc. Settings
     CAPTIONS_ENABLED("revanced_autocaptions_enabled", false, ReturnType.BOOLEAN, false),
