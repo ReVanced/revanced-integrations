@@ -74,6 +74,8 @@ public enum SettingsEnum {
     HIDE_CROWDFUNDING_BOX("revanced_hide_crowdfunding_box", false, ReturnType.BOOLEAN, true),
     HIDE_COMMENTS_SECTION("revanced_hide_comments_section", false, ReturnType.BOOLEAN, true),
     HIDE_PREVIEW_COMMENT("revanced_hide_preview_comment", false, ReturnType.BOOLEAN, true),
+    HIDE_ALBUM_CARDS("revanced_hide_album_cards", false, ReturnType.BOOLEAN, true),
+    HIDE_ARTIST_CARD("revanced_hide_artist_card", false, ReturnType.BOOLEAN),
 
     // Misc. Settings
     CAPTIONS_ENABLED("revanced_autocaptions_enabled", false, ReturnType.BOOLEAN, false),
