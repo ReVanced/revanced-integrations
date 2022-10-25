@@ -210,7 +210,8 @@ class GeneralBytecodeAdsPatch extends Filter {
                 SettingsEnum.HIDE_PREVIEW_COMMENT,
                 "carousel_item",
                 "comments_entry_point_teaser",
-                "comments_entry_point_simplebox");
+                "comments_entry_point_simplebox"
+        );
         var generalAds = new BlockRule(
                 SettingsEnum.ADREMOVER_GENERAL_ADS_REMOVAL,
                 // could be required
