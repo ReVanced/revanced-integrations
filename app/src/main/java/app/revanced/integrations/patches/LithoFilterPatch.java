@@ -193,41 +193,31 @@ class GeneralBytecodeAdsPatch extends Filter {
     private final BlockRule identifierBlock;
 
     public GeneralBytecodeAdsPatch() {
-        var communityPosts = new BlockRule(SettingsEnum.ADREMOVER_COMMUNITY_POSTS_REMOVAL, "post_base_wrapper");
-        var communityGuidelines = new BlockRule(SettingsEnum.ADREMOVER_COMMUNITY_GUIDELINES_REMOVAL, "community_guidelines");
-        var compactBanner = new BlockRule(SettingsEnum.ADREMOVER_COMPACT_BANNER_REMOVAL, "compact_banner");
-        var inFeedSurvey = new BlockRule(SettingsEnum.ADREMOVER_FEED_SURVEY_REMOVAL, "in_feed_survey");
-        var medicalPanel = new BlockRule(SettingsEnum.ADREMOVER_MEDICAL_PANEL_REMOVAL, "medical_panel");
-        var paidContent = new BlockRule(SettingsEnum.ADREMOVER_PAID_CONTECT_REMOVAL, "paid_content_overlay");
-        var merchandise = new BlockRule(SettingsEnum.ADREMOVER_MERCHANDISE_REMOVAL, "product_carousel");
-        var shorts = new BlockRule(SettingsEnum.ADREMOVER_SHORTS_SHELF_REMOVAL, "shorts_shelf");
-        var infoPanel = new BlockRule(SettingsEnum.ADREMOVER_INFO_PANEL_REMOVAL, "publisher_transparency_panel", "single_item_information_panel");
-        var suggestions = new BlockRule(SettingsEnum.ADREMOVER_SUGGESTIONS_REMOVAL, "horizontal_video_shelf");
-        var latestPosts = new BlockRule(SettingsEnum.ADREMOVER_HIDE_LATEST_POSTS, "post_shelf");
+        var artistCard = new BlockRule(SettingsEnum.HIDE_ARTIST_CARD, "official_card");
         var channelGuidelines = new BlockRule(SettingsEnum.ADREMOVER_HIDE_CHANNEL_GUIDELINES, "channel_guidelines_entry_banner");
         var comments = new BlockRule(SettingsEnum.HIDE_COMMENTS_SECTION, "comments_");
-        var previewComment = new BlockRule(
-                SettingsEnum.HIDE_PREVIEW_COMMENT,
-                "carousel_item",
-                "comments_entry_point_teaser",
-                "comments_entry_point_simplebox"
-        );
-        var artistCard = new BlockRule(SettingsEnum.HIDE_ARTIST_CARD, "official_card");
+        var communityGuidelines = new BlockRule(SettingsEnum.ADREMOVER_COMMUNITY_GUIDELINES_REMOVAL, "community_guidelines");
+        var communityPosts = new BlockRule(SettingsEnum.ADREMOVER_COMMUNITY_POSTS_REMOVAL, "post_base_wrapper");
+        var compactBanner = new BlockRule(SettingsEnum.ADREMOVER_COMPACT_BANNER_REMOVAL, "compact_banner");
         var generalAds = new BlockRule(
                 SettingsEnum.ADREMOVER_GENERAL_ADS_REMOVAL,
-                // could be required
-                //"full_width_square_image_layout",
-                "video_display_full_buttoned_layout",
                 "_ad",
                 "ad_",
                 "ads_video_with_context",
                 "banner_text_icon",
                 "cell_divider",
+                // could be required
+                //"full_width_square_image_layout",
                 "reels_player_overlay",
                 "shelf_header",
-                "watch_metadata_app_promo",
-                "video_display_full_layout"
+                "video_display_full",
+                "watch_metadata_app_promo"
         );
+        var inFeedSurvey = new BlockRule(SettingsEnum.ADREMOVER_FEED_SURVEY_REMOVAL, "in_feed_survey");
+        var infoPanel = new BlockRule(SettingsEnum.ADREMOVER_INFO_PANEL_REMOVAL, "publisher_transparency_panel", "single_item_information_panel");
+        var latestPosts = new BlockRule(SettingsEnum.ADREMOVER_HIDE_LATEST_POSTS, "post_shelf");
+        var medicalPanel = new BlockRule(SettingsEnum.ADREMOVER_MEDICAL_PANEL_REMOVAL, "medical_panel");
+        var merchandise = new BlockRule(SettingsEnum.ADREMOVER_MERCHANDISE_REMOVAL, "product_carousel");
         var movieAds = new BlockRule(
                 SettingsEnum.ADREMOVER_MOVIE_REMOVAL,
                 "browsy_bar",
@@ -235,25 +225,34 @@ class GeneralBytecodeAdsPatch extends Filter {
                 "horizontal_movie_shelf",
                 "movie_and_show_upsell_card"
         );
+        var paidContent = new BlockRule(SettingsEnum.ADREMOVER_PAID_CONTECT_REMOVAL, "paid_content_overlay");
+        var previewComment = new BlockRule(
+                SettingsEnum.HIDE_PREVIEW_COMMENT,
+                "carousel_item",
+                "comments_entry_point_teaser",
+                "comments_entry_point_simplebox"
+        );
+        var shorts = new BlockRule(SettingsEnum.ADREMOVER_SHORTS_SHELF_REMOVAL, "shorts_shelf");
+        var suggestions = new BlockRule(SettingsEnum.ADREMOVER_SUGGESTIONS_REMOVAL, "horizontal_video_shelf");
 
         this.register.registerAll(
-                generalAds,
-                communityPosts,
-                paidContent,
-                shorts,
-                suggestions,
-                latestPosts,
-                movieAds,
+                artistCard,
+                channelGuidelines,
                 comments,
                 communityGuidelines,
+                communityPosts,
                 compactBanner,
+                generalAds,
                 inFeedSurvey,
+                infoPanel,
+                latestPosts,
                 medicalPanel,
                 merchandise,
-                infoPanel,
-                channelGuidelines,
+                movieAds,
+                paidContent,
                 previewComment,
-                artistCard
+                shorts,
+                suggestions
         );
 
         // Block for the ComponentContext.identifier field
@@ -263,16 +262,16 @@ class GeneralBytecodeAdsPatch extends Filter {
     public boolean filter(final String path, final String identifier) {
         // Do not block on these
         if (Extensions.containsAny(path,
-                "home_video_with_context",
-                "related_video_with_context",
-                "search_video_with_context",
+                "-button",
+                "-count",
                 "download_",
+                "home_video_with_context",
                 "library_recent_shelf",
                 "menu",
+                "related_video_with_context",
                 "root",
-                "-count",
-                "-space",
-                "-button"
+                "search_video_with_context",
+                "-space"
         )) return false;
 
         for (var rule : register) {
