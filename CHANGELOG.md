@@ -1,3 +1,45 @@
+# [0.66.0](https://github.com/revanced/revanced-integrations/compare/v0.65.0...v0.66.0) (2022-11-01)
+
+
+### Features
+
+* **youtube:** bump patches compatibility to v17.43.36 ([#194](https://github.com/revanced/revanced-integrations/issues/194)) ([6da66be](https://github.com/revanced/revanced-integrations/commit/6da66be067fdfe0db376925ecf5c96aa01162a2c))
+
+# [0.65.0](https://github.com/revanced/revanced-integrations/compare/v0.64.1...v0.65.0) (2022-11-01)
+
+
+### Features
+
+* **youtube/fix-playback:** check faster for video length ([ac69b36](https://github.com/revanced/revanced-integrations/commit/ac69b36773bf9fcad5b4cc4cd4340eb01d1230c7))
+
+## [0.64.1](https://github.com/revanced/revanced-integrations/compare/v0.64.0...v0.64.1) (2022-11-01)
+
+
+### Bug Fixes
+
+* **youtube/video-ads:** add switch to temporarily fix buffering issues ([8b4bed8](https://github.com/revanced/revanced-integrations/commit/8b4bed8ab372cd9a0e18d3ba34c7b4a73f604d77))
+
+# [0.64.0](https://github.com/revanced/revanced-integrations/compare/v0.63.1...v0.64.0) (2022-10-30)
+
+
+### Features
+
+* `hide-watch-in-vr` patch ([#191](https://github.com/revanced/revanced-integrations/issues/191)) ([fb20ae1](https://github.com/revanced/revanced-integrations/commit/fb20ae19e868032b29c90039bff66e7cafa2d972))
+
+## [0.63.1](https://github.com/revanced/revanced-integrations/compare/v0.63.0...v0.63.1) (2022-10-30)
+
+
+### Bug Fixes
+
+* **youtube/general-ads-patch:** `BlockRule` for comments on old and new layout ([#192](https://github.com/revanced/revanced-integrations/issues/192)) ([d28d657](https://github.com/revanced/revanced-integrations/commit/d28d65734e46e77db3a9cce2b1f323b593fc1a46))
+
+# [0.63.0](https://github.com/revanced/revanced-integrations/compare/v0.62.0...v0.63.0) (2022-10-29)
+
+
+### Features
+
+* **youtube/sponsorblock:** skip segments once automatically ([#190](https://github.com/revanced/revanced-integrations/issues/190)) ([06bebd7](https://github.com/revanced/revanced-integrations/commit/06bebd7017980880765a5735b1dc0502a01c5037))
+
 # [0.62.0](https://github.com/revanced/revanced-integrations/compare/v0.61.0...v0.62.0) (2022-10-29)
 
 
