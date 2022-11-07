@@ -10,5 +10,4 @@ public class HideEndscreenCardsPatch {
         if (!SettingsEnum.HIDE_ENDSCREEN_CARDS.getBoolean()) return;
         view.setVisibility(View.GONE);
     }
-
 }
