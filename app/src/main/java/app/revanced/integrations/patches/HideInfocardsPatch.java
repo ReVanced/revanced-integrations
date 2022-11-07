@@ -6,9 +6,8 @@ import app.revanced.integrations.settings.SettingsEnum;
 
 public class HideInfocardsPatch {
     public static void hideInfocardsIncognito(View view) {
-        if (SettingsEnum.HIDE_INFO_CARDS.getBoolean()) {
-            view.setVisibility(View.GONE);
-        }
+        if (!SettingsEnum.HIDE_INFO_CARDS.getBoolean()) return;
+        view.setVisibility(View.GONE);
     }
 
     public static boolean hideInfocardsMethodCall() {
