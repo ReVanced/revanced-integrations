@@ -261,7 +261,7 @@ class GeneralBytecodeAdsPatch extends Filter {
                 "comment_thread",
                 "home_video_with_context",
                 "related_video_with_context",
-                "search_video_with_context"
+                "search_video_with_context",
                 "horizontal_shelf"
         )) return false;
 
