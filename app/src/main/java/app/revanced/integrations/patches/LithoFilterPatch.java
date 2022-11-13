@@ -259,6 +259,9 @@ class GeneralBytecodeAdsPatch extends Filter {
         // Do not block on these
         if (ReVancedUtils.containsAny(path,
                 "comment_thread",
+                "home_video_with_context",
+                "related_video_with_context",
+                "search_video_with_context"
                 "horizontal_shelf"
         )) return false;
 
