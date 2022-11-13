@@ -214,7 +214,6 @@ class GeneralBytecodeAdsPatch extends Filter {
                 //"full_width_square_image_layout",
                 "video_display_full_buttoned_layout",
                 "_ad",
-                "_ad_",
                 "ad_badge",
                 "ads_video_with_context",
                 "banner_text_icon",
