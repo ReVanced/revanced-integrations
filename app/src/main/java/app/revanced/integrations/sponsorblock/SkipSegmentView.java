@@ -23,6 +23,6 @@ public class SkipSegmentView {
         if (segment == lastNotifiedSegment) return;
         lastNotifiedSegment = segment;
         String skipMessage = segment.category.getSkipMessage().toString();
-        Toast.makeText(ReVancedUtils.context(), skipMessage, Toast.LENGTH_SHORT).show();
+        Toast.makeText(ReVancedUtils.getContext(), skipMessage, Toast.LENGTH_SHORT).show();
     }
 }

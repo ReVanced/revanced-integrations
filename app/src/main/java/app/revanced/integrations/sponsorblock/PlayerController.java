@@ -56,7 +56,7 @@ public class PlayerController {
             return;
         }
 
-        Context context = ReVancedUtils.context();
+        Context context = ReVancedUtils.getContext();
         SponsorBlockSettings.update(context);
 
         if (!SettingsEnum.SB_ENABLED.getBoolean()) {

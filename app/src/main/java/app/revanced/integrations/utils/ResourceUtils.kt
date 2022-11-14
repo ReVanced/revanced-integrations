@@ -5,14 +5,14 @@ import android.app.Activity
 import android.content.Context
 import android.view.View
 import android.view.animation.AnimationUtils
-import app.revanced.integrations.utils.ReVancedUtils.context
+import app.revanced.integrations.utils.ReVancedUtils.getContext
 import app.revanced.integrations.utils.ReVancedUtils.resources
 
 @SuppressLint("DiscouragedApi")
 object ResourceUtils {
     @JvmStatic
     fun identifier(name: String, type: ResourceType) =
-        identifier(name, type, context())
+        identifier(name, type, getContext())
 
     @JvmStatic
     fun identifier(name: String, type: ResourceType, context: Context): Int {
@@ -29,7 +29,7 @@ object ResourceUtils {
 
     @JvmStatic
     fun anim(name: String) =
-        AnimationUtils.loadAnimation(context(), identifier(name, ResourceType.ANIM))
+        AnimationUtils.loadAnimation(getContext(), identifier(name, ResourceType.ANIM))
 
     @JvmStatic
     fun <T : Class<*>, R : View> findView(clazz: T, view: View, name: String): R {

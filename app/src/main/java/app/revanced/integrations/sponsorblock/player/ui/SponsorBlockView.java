@@ -65,7 +65,7 @@ public class SponsorBlockView {
     }
 
     private static void addView() {
-        var context = ReVancedUtils.context();
+        var context = ReVancedUtils.getContext();
         inlineSponsorOverlay = new RelativeLayout(context);
         setLayoutParams(inlineSponsorOverlay);
         LayoutInflater.from(context).inflate(

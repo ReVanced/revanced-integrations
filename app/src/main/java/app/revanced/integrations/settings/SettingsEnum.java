@@ -165,7 +165,7 @@ public enum SettingsEnum {
     }
 
     private static void load() {
-        var context = ReVancedUtils.context();
+        var context = ReVancedUtils.getContext();
         try {
             for (SettingsEnum setting : values()) {
                 Object value = setting.getDefaultValue();
@@ -211,7 +211,7 @@ public enum SettingsEnum {
     }
 
     public void saveValue(Object newValue) {
-        Context context = ReVancedUtils.context();
+        Context context = ReVancedUtils.getContext();
         if (returnType == ReturnType.BOOLEAN) {
             SharedPrefHelper.saveBoolean(context, sharedPref, path, (Boolean) newValue);
         } else {

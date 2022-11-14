@@ -22,7 +22,7 @@ public class RememberVideoQualityPatch {
     private static Boolean userChangedQuality = false;
 
     public static void changeDefaultQuality(int defaultQuality) {
-        Context context = ReVancedUtils.context();
+        Context context = ReVancedUtils.getContext();
         if (isConnectedWifi(context)) {
             try {
                 SharedPrefHelper.saveString(context, SharedPrefHelper.SharedPrefNames.REVANCED_PREFS, "wifi_quality", defaultQuality + "");
@@ -84,7 +84,7 @@ public class RememberVideoQualityPatch {
         }
         newVideo = false;
         LogHelper.debug(RememberVideoQualityPatch.class, "Quality: " + quality);
-        Context context = ReVancedUtils.context();
+        Context context = ReVancedUtils.getContext();
         if (context == null) {
             LogHelper.printException(RememberVideoQualityPatch.class, "Context is null or settings not initialized, returning quality: " + quality);
             return quality;

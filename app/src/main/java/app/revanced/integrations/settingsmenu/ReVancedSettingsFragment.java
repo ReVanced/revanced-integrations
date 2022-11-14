@@ -161,7 +161,7 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
     */
 
     private String getPackageName() {
-        Context context = ReVancedUtils.context();
+        Context context = ReVancedUtils.getContext();
         String PACKAGE_NAME = context.getPackageName();
         LogHelper.debug(ReVancedSettingsFragment.class, "getPackageName: " + PACKAGE_NAME);
 

@@ -118,7 +118,7 @@ public class DownloadButton {
         // TODO: set to null, as this will be set by the settings page later
         final var DEFAULT = "PLAYER";
         return SharedPrefHelper.getString(
-                ReVancedUtils.context(),
+                ReVancedUtils.getContext(),
                 SharedPrefHelper.SharedPrefNames.YOUTUBE,
                 "pref_download_button_list",
                 DEFAULT

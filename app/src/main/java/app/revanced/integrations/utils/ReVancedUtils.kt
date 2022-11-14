@@ -21,10 +21,10 @@ object ReVancedUtils {
     lateinit var handler: Handler
         private set
 
-    val resources: Resources get() = context().resources
+    val resources: Resources get() = getContext().resources
 
     @JvmStatic
-    fun context(): Context {
+    fun getContext(): Context {
         return context?.get() ?: throw CTX_NOT_INIT
     }
 

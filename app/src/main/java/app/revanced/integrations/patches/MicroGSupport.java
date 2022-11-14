@@ -16,7 +16,7 @@ public class MicroGSupport {
     private static final String VANCED_MICROG_DOWNLOAD_LINK = "https://github.com/TeamVanced/VancedMicroG/releases/latest";
 
     public static void checkAvailability() {
-        var context = ReVancedUtils.context();
+        var context = ReVancedUtils.getContext();
         try {
             context.getPackageManager().getPackageInfo(MICROG_PACKAGE_NAME, PackageManager.GET_ACTIVITIES);
             LogHelper.debug(ReVancedUtils.class, "MicroG is installed on the device");
