@@ -38,9 +38,7 @@ public class LithoThemePatch {
             if ((isDarkTheme && anyEquals(originalValue, STANDARDPLAYER.DARKCONSTANTS)) ||
                 (!isDarkTheme && anyEquals(originalValue, STANDARDPLAYER.WHITECONSTANTS)))
                     return 0;
-        }
-        else
-        {
+        } else {
             if ((isDarkTheme && anyEquals(originalValue, SHORTSPLAYER.DARKCONSTANTS)))
                 return -16777215;
         }
