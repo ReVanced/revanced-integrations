@@ -10,7 +10,8 @@ private val CTX_NOT_INIT = IllegalArgumentException("Context is not initialized"
 
 object ReVancedUtils {
     @JvmStatic
-    var isNewVideo = false
+    @get:JvmName("hasNewVideoStarted")
+    var hasNewVideoStarted = false
 
     private var context: WeakReference<Context>? = null
         set(value) {

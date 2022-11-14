@@ -18,10 +18,10 @@ public class VideoSpeedPatch {
     public static int getDefaultSpeed(Object[] speeds, int speed, Object qInterface) {
         int speed2;
         Exception e;
-        if (!ReVancedUtils.isNewVideo()) {
+        if (!ReVancedUtils.hasNewVideoStarted()) {
             return speed;
         }
-        ReVancedUtils.setNewVideo(false);
+        ReVancedUtils.setHasNewVideoStarted(false);
         LogHelper.debug(VideoSpeedPatch.class, "Speed: " + speed);
         float preferredSpeed = SettingsEnum.PREFERRED_VIDEO_SPEED.getFloat();
         LogHelper.debug(VideoSpeedPatch.class, "Preferred speed: " + preferredSpeed);
@@ -95,14 +95,14 @@ public class VideoSpeedPatch {
 
     public static float getSpeedValue(Object[] speeds, int speed) {
         int i = 0;
-        if (!ReVancedUtils.isNewVideo() || userChangedSpeed) {
+        if (!ReVancedUtils.hasNewVideoStarted() || userChangedSpeed) {
             if (SettingsEnum.DEBUG.getBoolean() && userChangedSpeed) {
                 LogHelper.debug(VideoSpeedPatch.class, "Skipping speed change because user changed it: " + speed);
             }
             userChangedSpeed = false;
             return -1.0f;
         }
-        ReVancedUtils.setNewVideo(false);
+        ReVancedUtils.setHasNewVideoStarted(false);
         LogHelper.debug(VideoSpeedPatch.class, "Speed: " + speed);
         float preferredSpeed = SettingsEnum.PREFERRED_VIDEO_SPEED.getFloat();
         LogHelper.debug(VideoSpeedPatch.class, "Preferred speed: " + preferredSpeed);
