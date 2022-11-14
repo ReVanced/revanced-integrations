@@ -10,22 +10,29 @@ public class SponsorSegment implements Comparable<SponsorSegment> {
     public final long start;
     public final long end;
     public final SponsorBlockSettings.SegmentInfo category;
-    public final String UUID;
+    public final String uuid;
     public final boolean isLocked;
-    public boolean didAutoSkipped = false;
+    public boolean hasAutoSkipped = false;
 
-    public SponsorSegment(long start, long end, SponsorBlockSettings.SegmentInfo category, String UUID, boolean isLocked) {
+    public SponsorSegment(long start, long end, SponsorBlockSettings.SegmentInfo category, String uuid, boolean isLocked) {
         this.start = start;
         this.end = end;
         this.category = category;
-        this.UUID = UUID;
+        this.uuid = uuid;
         this.isLocked = isLocked;
     }
 
     @NonNull
     @Override
     public String toString() {
-        return MessageFormat.format("SegmentInfo'{'start={0}, end={1}, category=''{2}'', locked={3}'}'", start, end, category, isLocked);
+        return "SponsorSegment{" +
+                "start=" + start +
+                ", end=" + end +
+                ", category=" + category +
+                ", uuid='" + uuid + '\'' +
+                ", isLocked=" + isLocked +
+                ", hasAutoSkipped=" + hasAutoSkipped +
+                '}';
     }
 
     @Override

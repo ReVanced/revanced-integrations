@@ -8,8 +8,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Rect;
-import android.os.Handler;
-import android.os.Looper;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -127,10 +125,8 @@ public class PlayerController {
 
         for (final SponsorSegment segment : segments) {
             if (segment.start > millis) {
-                if (segment.start > startTimerAtMillis)
-                    break; // it's more then START_TIMER_BEFORE_SEGMENT_MILLIS far away
-                if (!segment.category.getBehaviour().getSkip())
-                    break;
+                if (segment.start > startTimerAtMillis) break;
+                if (!segment.category.getBehaviour().getSkip()) break;
 
                 if (skipSponsorTask == null) {
                     LogHelper.debug(PlayerController.class, "Scheduling skipSponsorTask");
@@ -139,7 +135,7 @@ public class PlayerController {
                         public void run() {
                             skipSponsorTask = null;
                             lastKnownVideoTime = segment.start + 1;
-                            new Handler(Looper.getMainLooper()).post(findAndSkipSegmentRunnable);
+                            ReVancedUtils.runOnMainThread(findAndSkipSegmentRunnable);
                         }
                     };
                     sponsorTimer.schedule(skipSponsorTask, segment.start - millis);
@@ -149,13 +145,11 @@ public class PlayerController {
 
                 break;
             }
-
-            if (segment.end < millis)
-                continue;
+            if (segment.end < millis) continue;
 
             // we are in the segment!
             final var behaviour = segment.category.getBehaviour();
-            if (behaviour.getSkip() && !(behaviour.getKey().equals("skip-once") && segment.didAutoSkipped)) {
+            if (behaviour.getSkip() && !(behaviour.getKey().equals("skip-once") && segment.hasAutoSkipped)) {
                 sendViewRequestAsync(millis, segment);
                 skipSegment(segment, false);
                 break;
@@ -188,8 +182,7 @@ public class PlayerController {
         }
         if (lastKnownVideoTime > 0) {
             lastKnownVideoTime = millis;
-        } else
-            setVideoTime(millis);
+        } else setVideoTime(millis);
     }
 
     public static long getCurrentVideoLength() {
@@ -239,9 +232,6 @@ public class PlayerController {
     }
 
     public static void setSponsorBarThickness(final float thickness) {
-//        if (VERBOSE_DRAW_OPTIONS)
-//            LogH(PlayerController.class, String.format("setSponsorBarThickness: thickness=%.2f", thickness));
-
         sponsorBarThickness = thickness;
     }
 
@@ -255,7 +245,7 @@ public class PlayerController {
         playerActivity = new WeakReference<>((Activity) view.getContext());
         LogHelper.debug(PlayerController.class, "addSkipSponsorView15: view=" + view);
 
-        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+        ReVancedUtils.runDelayed(() -> {
             final ViewGroup viewGroup = (ViewGroup) ((ViewGroup) view).getChildAt(2);
             NewSegmentHelperLayout.context = viewGroup.getContext();
         }, 500);
@@ -264,7 +254,7 @@ public class PlayerController {
     public static void addSkipSponsorView14(final View view) {
         playerActivity = new WeakReference<>((Activity) view.getContext());
         LogHelper.debug(PlayerController.class, "addSkipSponsorView14: view=" + view);
-        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+        ReVancedUtils.runDelayed(() -> {
             final ViewGroup viewGroup = (ViewGroup) view.getParent();
             NewSegmentHelperLayout.context = viewGroup.getContext();
         }, 500);
@@ -342,7 +332,7 @@ public class PlayerController {
             SkipSegmentView.show();
 
             final var behaviour = segment.category.getBehaviour();
-            if (!((behaviour.getSkip() && !(behaviour.getKey().equals("skip-once") && segment.didAutoSkipped)) || wasClicked))
+            if (!((behaviour.getSkip() && !(behaviour.getKey().equals("skip-once") && segment.hasAutoSkipped)) || wasClicked))
                 return;
 
             sendViewRequestAsync(millis, segment);
@@ -363,7 +353,7 @@ public class PlayerController {
 
         boolean didSucceed = skipToMillisecond(segment.end + 2);
         if (didSucceed && !wasClicked) {
-            segment.didAutoSkipped = true;
+            segment.hasAutoSkipped = true;
         }
         SkipSegmentView.hide();
         if (segment.category == SponsorBlockSettings.SegmentInfo.UNSUBMITTED) {

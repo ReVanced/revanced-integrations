@@ -117,7 +117,7 @@ public class SBRequester {
 
     public static void sendViewCountRequest(SponsorSegment segment) {
         try {
-            HttpURLConnection connection = getConnectionFromRoute(SBRoutes.VIEWED_SEGMENT, segment.UUID);
+            HttpURLConnection connection = getConnectionFromRoute(SBRoutes.VIEWED_SEGMENT, segment.uuid);
             connection.disconnect();
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -127,7 +127,7 @@ public class SBRequester {
     public static void voteForSegment(SponsorSegment segment, VoteOption voteOption, Context context, String... args) {
         new Thread(() -> {
             try {
-                String segmentUuid = segment.UUID;
+                String segmentUuid = segment.uuid;
                 String uuid = SettingsEnum.SB_UUID.getString();
                 String vote = Integer.toString(voteOption == VoteOption.UPVOTE ? 1 : 0);
 

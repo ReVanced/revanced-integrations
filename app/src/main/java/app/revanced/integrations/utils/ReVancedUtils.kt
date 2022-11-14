@@ -40,6 +40,11 @@ object ReVancedUtils {
     }
 
     @JvmStatic
+    fun runDelayed(runnable: Runnable, delay: Long) {
+        handler.postDelayed(runnable, delay)
+    }
+
+    @JvmStatic
     fun stringContains(string: String, vararg substrings: String): Boolean {
         return substrings.any { string.contains(it) }
     }
