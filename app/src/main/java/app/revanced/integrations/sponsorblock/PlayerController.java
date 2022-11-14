@@ -173,14 +173,12 @@ public class PlayerController {
             SettingsEnum.SB_SKIPPED_SEGMENTS.saveValue(SettingsEnum.SB_SKIPPED_SEGMENTS.getInt() + 1);
             SettingsEnum.SB_SKIPPED_SEGMENTS_TIME.saveValue(newSkippedTime);
         }
-        new Thread(() -> {
-            if (SettingsEnum.SB_COUNT_SKIPS.getBoolean() &&
-                    segment.category != SponsorBlockSettings.SegmentInfo.UNSUBMITTED &&
-                    millis - segment.start < 2000) {
-                // Only skips from the start should count as a view
-                SBRequester.sendViewCountRequest(segment);
-            }
-        }).start();
+        if (SettingsEnum.SB_COUNT_SKIPS.getBoolean() &&
+                segment.category != SponsorBlockSettings.SegmentInfo.UNSUBMITTED &&
+                millis - segment.start < 2000) {
+            // Only skips from the start should count as a view
+            new Thread(() -> SBRequester.sendViewCountRequest(segment)).start();
+        }
     }
 
     public static void setHighPrecisionVideoTime(final long millis) {
