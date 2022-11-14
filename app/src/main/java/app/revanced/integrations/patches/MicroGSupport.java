@@ -1,6 +1,6 @@
 package app.revanced.integrations.patches;
 
-import static app.revanced.integrations.sponsorblock.StringRef.str;
+import static app.revanced.integrations.utils.StringRef.str;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -16,8 +16,7 @@ public class MicroGSupport {
     private static final String VANCED_MICROG_DOWNLOAD_LINK = "https://github.com/TeamVanced/VancedMicroG/releases/latest";
 
     public static void checkAvailability() {
-        var context = ReVancedUtils.getContext();
-        assert context != null;
+        var context = ReVancedUtils.context();
         try {
             context.getPackageManager().getPackageInfo(MICROG_PACKAGE_NAME, PackageManager.GET_ACTIVITIES);
             LogHelper.debug(ReVancedUtils.class, "MicroG is installed on the device");

@@ -3,6 +3,8 @@ package app.revanced.integrations.utils;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import androidx.annotation.NonNull;
+
 public class SharedPrefHelper {
     public static void saveString(Context context, SharedPrefNames prefName, String key, String value) {
         SharedPreferences sharedPreferences = getPreferences(context, prefName);
@@ -62,7 +64,6 @@ public class SharedPrefHelper {
     }
 
     public enum SharedPrefNames {
-
         YOUTUBE("youtube"),
         RYD("ryd"),
         SPONSOR_BLOCK("sponsor-block"),
@@ -78,6 +79,7 @@ public class SharedPrefHelper {
             return name;
         }
 
+        @NonNull
         @Override
         public String toString() {
             return name;

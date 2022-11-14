@@ -41,7 +41,7 @@ public class ReturnYouTubeDislike {
     private static CompactDecimalFormat compactNumberFormatter;
 
     static {
-        Context context = ReVancedUtils.getContext();
+        Context context = ReVancedUtils.context();
         isEnabled = SettingsEnum.RYD_ENABLED.getBoolean();
         if (isEnabled) {
             registration = new Registration();
@@ -118,7 +118,7 @@ public class ReturnYouTubeDislike {
     public static void sendVote(Vote vote) {
         if (!isEnabled) return;
 
-        Context context = ReVancedUtils.getContext();
+        Context context = ReVancedUtils.context();
         if (SharedPrefHelper.getBoolean(Objects.requireNonNull(context), SharedPrefHelper.SharedPrefNames.YOUTUBE, "user_signed_out", true))
             return;
 

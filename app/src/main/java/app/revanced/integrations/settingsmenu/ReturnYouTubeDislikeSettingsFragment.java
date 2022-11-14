@@ -1,6 +1,6 @@
 package app.revanced.integrations.settingsmenu;
 
-import static app.revanced.integrations.sponsorblock.StringRef.str;
+import static app.revanced.integrations.utils.StringRef.str;
 
 import android.app.Activity;
 import android.content.Context;

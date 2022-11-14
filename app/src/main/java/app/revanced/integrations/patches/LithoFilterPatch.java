@@ -71,7 +71,7 @@ final class BlockRule {
     }
 
     public BlockResult check(final String string) {
-        return new BlockResult(setting, string != null && ReVancedUtils.containsAny(string, blocks));
+        return new BlockResult(setting, string != null && ReVancedUtils.stringContains(string, blocks));
     }
 }
 
@@ -257,7 +257,7 @@ class GeneralBytecodeAdsPatch extends Filter {
 
     public boolean filter(final String path, final String identifier) {
         // Do not block on these
-        if (ReVancedUtils.containsAny(path,
+        if (ReVancedUtils.stringContains(path,
                 "comment_thread",
                 "home_video_with_context",
                 "related_video_with_context",

@@ -1,7 +1,6 @@
 package app.revanced.integrations.sponsorblock.player;
 
 public enum PlayerType {
-
     NONE,
     HIDDEN,
     WATCH_WHILE_MINIMIZED,
@@ -13,6 +12,5 @@ public enum PlayerType {
     WATCH_WHILE_SLIDING_FULLSCREEN_DISMISSED,
     INLINE_MINIMAL,
     VIRTUAL_REALITY_FULLSCREEN,
-    WATCH_WHILE_PICTURE_IN_PICTURE;
-
+    WATCH_WHILE_PICTURE_IN_PICTURE
 }

@@ -1,6 +1,8 @@
 package app.revanced.integrations.settingsmenu;
 
-import android.content.Context;
+import static app.revanced.integrations.utils.ResourceUtils.findView;
+import static app.revanced.integrations.utils.ResourceUtils.identifier;
+
 import android.preference.PreferenceFragment;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,23 +12,22 @@ import android.widget.TextView;
 import com.google.android.libraries.social.licenses.LicenseActivity;
 
 import app.revanced.integrations.utils.LogHelper;
-import app.revanced.integrations.utils.ReVancedUtils;
+import app.revanced.integrations.utils.ResourceType;
 import app.revanced.integrations.utils.ThemeHelper;
 
 public class ReVancedSettingActivity {
+    private static final String WHITE_THEME = "Theme.YouTube.Settings";
+    private static final String DARK_THEME = "Theme.YouTube.Settings.Dark";
 
     public static void setTheme(LicenseActivity base) {
-        final var whiteTheme = "Theme.YouTube.Settings";
-        final var darkTheme = "Theme.YouTube.Settings.Dark";
-
-        final var theme = ThemeHelper.isDarkTheme() ? darkTheme : whiteTheme;
-
+        final var theme = ThemeHelper.isDarkTheme() ? DARK_THEME : WHITE_THEME;
         LogHelper.debug(ReVancedSettingActivity.class, "Using theme: " + theme);
-        base.setTheme(getIdentifier(theme, "style"));
+
+        base.setTheme(identifier(theme, ResourceType.STYLE));
     }
 
     public static void initializeSettings(LicenseActivity base) {
-        base.setContentView(getIdentifier("revanced_settings_with_toolbar", "layout"));
+        base.setContentView(identifier("revanced_settings_with_toolbar", ResourceType.LAYOUT));
 
         PreferenceFragment preferenceFragment;
         String preferenceIdentifier;
@@ -44,12 +45,14 @@ public class ReVancedSettingActivity {
         }
 
         try {
-            getTextView((ViewGroup) base.findViewById(getIdentifier("toolbar", "id"))).setText(preferenceIdentifier);
+            getTextView(
+                    findView(ReVancedSettingActivity.class, base, "toolbar")
+            ).setText(preferenceIdentifier);
         } catch (Exception e) {
             LogHelper.printException(ReVancedSettingActivity.class, "Couldn't set Toolbar title", e);
         }
 
-        base.getFragmentManager().beginTransaction().replace(getIdentifier("revanced_settings_fragments", "id"), preferenceFragment).commit();
+        base.getFragmentManager().beginTransaction().replace(identifier("revanced_settings_fragments", ResourceType.ID), preferenceFragment).commit();
     }
 
 
@@ -61,7 +64,7 @@ public class ReVancedSettingActivity {
         for (int i = 0; i < childCount; i++) {
             View childAt = viewGroup.getChildAt(i);
             if (childAt.getClass() == typeClass) {
-                return (T) childAt;
+                return typeClass.cast(childAt);
             }
         }
         return null;
@@ -73,11 +76,5 @@ public class ReVancedSettingActivity {
 
     public static TextView getTextView(ViewGroup viewGroup) {
         return getView(TextView.class, viewGroup);
-    }
-
-    private static int getIdentifier(String name, String defType) {
-        Context appContext = ReVancedUtils.getContext();
-        assert appContext != null;
-        return appContext.getResources().getIdentifier(name, defType, appContext.getPackageName());
     }
 }

@@ -1,6 +1,6 @@
 package app.revanced.integrations.settingsmenu;
 
-import static app.revanced.integrations.sponsorblock.StringRef.str;
+import static app.revanced.integrations.utils.StringRef.str;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -30,9 +30,9 @@ import java.util.ArrayList;
 import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.sponsorblock.SponsorBlockSettings;
 import app.revanced.integrations.sponsorblock.SponsorBlockUtils;
-import app.revanced.integrations.utils.SharedPrefHelper;
 import app.revanced.integrations.sponsorblock.objects.EditTextListPreference;
 import app.revanced.integrations.sponsorblock.requests.SBRequester;
+import app.revanced.integrations.utils.SharedPrefHelper;
 
 public class SponsorBlockSettingsFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
     public static final DecimalFormat FORMATTER = new DecimalFormat("#,###,###");
@@ -149,18 +149,18 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment implements 
         String[] entryValues = new String[segmentBehaviours.length];
         for (int i = 0, segmentBehavioursLength = segmentBehaviours.length; i < segmentBehavioursLength; i++) {
             SponsorBlockSettings.SegmentBehaviour behaviour = segmentBehaviours[i];
-            entries[i] = behaviour.name.toString();
-            entryValues[i] = behaviour.key;
+            entries[i] = behaviour.getRef().toString();
+            entryValues[i] = behaviour.getKey();
         }
 
-        SponsorBlockSettings.SegmentInfo[] categories = SponsorBlockSettings.SegmentInfo.valuesWithoutUnsubmitted();
+        SponsorBlockSettings.SegmentInfo[] categories = SponsorBlockSettings.SegmentInfo.values();
 
         for (SponsorBlockSettings.SegmentInfo segmentInfo : categories) {
             EditTextListPreference preference = new EditTextListPreference(context);
             preference.setTitle(segmentInfo.getTitleWithDot());
-            preference.setSummary(segmentInfo.description.toString());
-            preference.setKey(segmentInfo.key);
-            preference.setDefaultValue(segmentInfo.behaviour.key);
+            preference.setSummary(segmentInfo.getDescription().toString());
+            preference.setKey(segmentInfo.getKey());
+            preference.setDefaultValue(segmentInfo.getBehaviour().getKey());
             preference.setEntries(entries);
             preference.setEntryValues(entryValues);
 

@@ -1,8 +1,6 @@
 package app.revanced.integrations.settings;
 
 import android.content.Context;
-import android.os.Environment;
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -167,45 +165,34 @@ public enum SettingsEnum {
     }
 
     private static void load() {
-        Context context = ReVancedUtils.getContext();
-        if (context == null) {
-            Log.e("revanced: SettingsEnum", "Context returned null! Setings NOT initialized");
-        } else {
-            try {
-                for (SettingsEnum setting : values()) {
-                    Object value = setting.getDefaultValue();
-
-                    //LogHelper is not initialized here
-                    Log.d("revanced: SettingsEnum", "Loading Setting: " + setting.name());
-
-                    switch (setting.getReturnType()) {
-                        case FLOAT:
-                            value = SharedPrefHelper.getFloat(context, setting.sharedPref, setting.getPath(), (float) setting.getDefaultValue());
-                            break;
-                        case LONG:
-                            value = SharedPrefHelper.getLong(context, setting.sharedPref, setting.getPath(), (long) setting.getDefaultValue());
-                            break;
-                        case BOOLEAN:
-                            value = SharedPrefHelper.getBoolean(context, setting.sharedPref, setting.getPath(), (boolean) setting.getDefaultValue());
-                            break;
-                        case INTEGER:
-                            value = SharedPrefHelper.getInt(context, setting.sharedPref, setting.getPath(), (int) setting.getDefaultValue());
-                            break;
-                        case STRING:
-                            value = SharedPrefHelper.getString(context, setting.sharedPref, setting.getPath(), (String) setting.getDefaultValue());
-                            break;
-                        default:
-                            LogHelper.printException(SettingsEnum.class, "Setting does not have a valid Type. Name is: " + setting.name());
-                            break;
-                    }
-                    setting.setValue(value);
-
-                    //LogHelper is not initialized here
-                    Log.d("revanced: SettingsEnum", "Loaded Setting: " + setting.name() + " Value: " + value);
+        var context = ReVancedUtils.context();
+        try {
+            for (SettingsEnum setting : values()) {
+                Object value = setting.getDefaultValue();
+                switch (setting.getReturnType()) {
+                    case FLOAT:
+                        value = SharedPrefHelper.getFloat(context, setting.sharedPref, setting.getPath(), (float) setting.getDefaultValue());
+                        break;
+                    case LONG:
+                        value = SharedPrefHelper.getLong(context, setting.sharedPref, setting.getPath(), (long) setting.getDefaultValue());
+                        break;
+                    case BOOLEAN:
+                        value = SharedPrefHelper.getBoolean(context, setting.sharedPref, setting.getPath(), (boolean) setting.getDefaultValue());
+                        break;
+                    case INTEGER:
+                        value = SharedPrefHelper.getInt(context, setting.sharedPref, setting.getPath(), (int) setting.getDefaultValue());
+                        break;
+                    case STRING:
+                        value = SharedPrefHelper.getString(context, setting.sharedPref, setting.getPath(), (String) setting.getDefaultValue());
+                        break;
+                    default:
+                        LogHelper.printException(SettingsEnum.class, "Setting " + setting.name() + " does not have a valid type.");
+                        break;
                 }
-            } catch (Throwable th) {
-                LogHelper.printException(SettingsEnum.class, "Error during load()!", th);
+                setting.setValue(value);
             }
+        } catch (Throwable th) {
+            LogHelper.printException(SettingsEnum.class, "Error during load()!", th);
         }
     }
 
@@ -224,17 +211,13 @@ public enum SettingsEnum {
     }
 
     public void saveValue(Object newValue) {
-        Context context = ReVancedUtils.getContext();
-        if (context != null) {
-            if (returnType == ReturnType.BOOLEAN) {
-                SharedPrefHelper.saveBoolean(context, sharedPref, path, (Boolean) newValue);
-            } else {
-                SharedPrefHelper.saveString(context, sharedPref, path, newValue + "");
-            }
-            value = newValue;
+        Context context = ReVancedUtils.context();
+        if (returnType == ReturnType.BOOLEAN) {
+            SharedPrefHelper.saveBoolean(context, sharedPref, path, (Boolean) newValue);
         } else {
-            LogHelper.printException(SettingsEnum.class, "Context on SaveValue is null!");
+            SharedPrefHelper.saveString(context, sharedPref, path, (String) newValue);
         }
+        value = newValue;
     }
 
     public int getInt() {
@@ -255,6 +238,10 @@ public enum SettingsEnum {
 
     public Float getFloat() {
         return (Float) value;
+    }
+
+    public boolean isNull() {
+        return value == null;
     }
 
     public Object getDefaultValue() {

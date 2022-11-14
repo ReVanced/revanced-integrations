@@ -1,23 +1,22 @@
 package app.revanced.integrations.sponsorblock;
 
-import android.content.Context;
+import static app.revanced.integrations.utils.ResourceUtils.anim;
+import static app.revanced.integrations.utils.ResourceUtils.findView;
+import static app.revanced.integrations.utils.ResourceUtils.integer;
 
+import android.annotation.SuppressLint;
 import android.view.View;
 import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import java.lang.ref.WeakReference;
 
-import static app.revanced.integrations.sponsorblock.PlayerController.getCurrentVideoLength;
-import static app.revanced.integrations.sponsorblock.PlayerController.getLastKnownVideoTime;
-
 import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.utils.LogHelper;
-import app.revanced.integrations.utils.ReVancedUtils;
 
 public class VotingButton {
+    @SuppressLint("StaticFieldLeak")
     static RelativeLayout _youtubeControlsLayout;
     static WeakReference<ImageView> _votingButton = new WeakReference<>(null);
     static int fadeDurationFast;
@@ -28,26 +27,20 @@ public class VotingButton {
 
     public static void initialize(Object viewStub) {
         try {
-            LogHelper.debug(VotingButton.class, "initializing voting button");
             _youtubeControlsLayout = (RelativeLayout) viewStub;
+            ImageView view = findView(VotingButton.class, _youtubeControlsLayout, "voting_button");
+            view.setOnClickListener(SponsorBlockUtils.voteButtonListener);
+            _votingButton = new WeakReference<>(view);
 
-            ImageView imageView = (ImageView) _youtubeControlsLayout
-                    .findViewById(getIdentifier("voting_button", "id"));
+            fadeDurationFast = integer("fade_duration_fast");
+            fadeDurationScheduled = integer("fade_duration_scheduled");
 
-            if (imageView == null) {
-                LogHelper.debug(VotingButton.class, "Couldn't find imageView with  \"voting_button\"");
-            }
-            if (imageView == null) return;
-            imageView.setOnClickListener(SponsorBlockUtils.voteButtonListener);
-            _votingButton = new WeakReference<>(imageView);
-
-            // Animations
-            fadeDurationFast = getInteger("fade_duration_fast");
-            fadeDurationScheduled = getInteger("fade_duration_scheduled");
-            fadeIn = getAnimation("fade_in");
+            fadeIn = anim("fade_in");
             fadeIn.setDuration(fadeDurationFast);
-            fadeOut = getAnimation("fade_out");
+
+            fadeOut = anim("fade_out");
             fadeOut.setDuration(fadeDurationScheduled);
+
             isShowing = true;
             changeVisibilityImmediate(false);
         } catch (Exception ex) {
@@ -71,44 +64,24 @@ public class VotingButton {
         if (isShowing == visible) return;
         isShowing = visible;
 
-        ImageView iView = _votingButton.get();
-        if (_youtubeControlsLayout == null || iView == null) return;
+        ImageView view = _votingButton.get();
+        if (_youtubeControlsLayout == null || view == null) return;
 
         if (visible && shouldBeShown()) {
-            if (getLastKnownVideoTime() >= getCurrentVideoLength()) {
+            if (PlayerController.getLastKnownVideoTime() >= PlayerController.getCurrentVideoLength())
                 return;
-            }
-            LogHelper.debug(VotingButton.class, "Fading in");
-            iView.setVisibility(View.VISIBLE);
-            if (!immediate)
-                iView.startAnimation(fadeIn);
+            view.setVisibility(View.VISIBLE);
+            if (!immediate) view.startAnimation(fadeIn);
             return;
         }
 
-        if (iView.getVisibility() == View.VISIBLE) {
-            LogHelper.debug(VotingButton.class, "Fading out");
-            if (!immediate)
-                iView.startAnimation(fadeOut);
-            iView.setVisibility(shouldBeShown() ? View.INVISIBLE : View.GONE);
+        if (view.getVisibility() == View.VISIBLE) {
+            if (!immediate) view.startAnimation(fadeOut);
+            view.setVisibility(shouldBeShown() ? View.INVISIBLE : View.GONE);
         }
     }
 
     static boolean shouldBeShown() {
         return SettingsEnum.SB_ENABLED.getBoolean() && SettingsEnum.SB_VOTING_ENABLED.getBoolean();
     }
-
-    //region Helpers
-    private static int getIdentifier(String name, String defType) {
-        Context context = ReVancedUtils.getContext();
-        return context.getResources().getIdentifier(name, defType, context.getPackageName());
-    }
-
-    private static int getInteger(String name) {
-        return ReVancedUtils.getContext().getResources().getInteger(getIdentifier(name, "integer"));
-    }
-
-    private static Animation getAnimation(String name) {
-        return AnimationUtils.loadAnimation(ReVancedUtils.getContext(), getIdentifier(name, "anim"));
-    }
-    //endregion
 }

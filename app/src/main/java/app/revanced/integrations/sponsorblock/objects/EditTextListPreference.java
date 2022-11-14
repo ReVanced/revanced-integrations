@@ -1,7 +1,7 @@
 package app.revanced.integrations.sponsorblock.objects;
 
 import static app.revanced.integrations.sponsorblock.SponsorBlockUtils.formatColorString;
-import static app.revanced.integrations.sponsorblock.StringRef.str;
+import static app.revanced.integrations.utils.StringRef.str;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -18,7 +18,6 @@ import android.widget.Toast;
 
 import app.revanced.integrations.sponsorblock.SponsorBlockSettings;
 
-@SuppressWarnings("deprecation")
 public class EditTextListPreference extends ListPreference {
 
     private EditText mEditText;
@@ -46,7 +45,7 @@ public class EditTextListPreference extends ListPreference {
 
         mEditText = new EditText(builder.getContext());
         mEditText.setInputType(InputType.TYPE_CLASS_TEXT);
-        mEditText.setText(formatColorString(category.color));
+        mEditText.setText(formatColorString(category.getColor()));
         mEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -60,8 +59,8 @@ public class EditTextListPreference extends ListPreference {
             public void afterTextChanged(Editable s) {
                 try {
                     Color.parseColor(s.toString()); // validation
-                    getDialog().setTitle(Html.fromHtml(String.format("<font color=\"%s\">⬤</font> %s", s, category.title)));
-                } catch (Exception ex) {
+                    getDialog().setTitle(Html.fromHtml(String.format("<font color=\"%s\">⬤</font> %s", s, category.getTitle())));
+                } catch (Exception ignored) {
                 }
             }
         });
@@ -72,8 +71,7 @@ public class EditTextListPreference extends ListPreference {
             EditTextListPreference.this.onClick(dialog, DialogInterface.BUTTON_POSITIVE);
         });
         builder.setNeutralButton(str("reset"), (dialog, which) -> {
-            //EditTextListPreference.this.onClick(dialog, DialogInterface.BUTTON_NEUTRAL);
-            int defaultColor = category.defaultColor;
+            int defaultColor = category.getDefaultColor();
             category.setColor(defaultColor);
             Toast.makeText(getContext().getApplicationContext(), str("color_reset"), Toast.LENGTH_SHORT).show();
             getSharedPreferences().edit().putString(getColorPreferenceKey(), formatColorString(defaultColor)).apply();
@@ -94,7 +92,7 @@ public class EditTextListPreference extends ListPreference {
             }
             String colorString = mEditText.getText().toString();
             SponsorBlockSettings.SegmentInfo category = getCategoryBySelf();
-            if (colorString.equals(formatColorString(category.color))) {
+            if (colorString.equals(formatColorString(category.getColor()))) {
                 return;
             }
             Context applicationContext = getContext().getApplicationContext();

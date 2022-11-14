@@ -18,7 +18,7 @@ public class VideoSpeedPatch {
     public static int getDefaultSpeed(Object[] speeds, int speed, Object qInterface) {
         int speed2;
         Exception e;
-        if (!ReVancedUtils.isNewVideoStarted()) {
+        if (!ReVancedUtils.isNewVideo()) {
             return speed;
         }
         ReVancedUtils.setNewVideo(false);
@@ -95,7 +95,7 @@ public class VideoSpeedPatch {
 
     public static float getSpeedValue(Object[] speeds, int speed) {
         int i = 0;
-        if (!ReVancedUtils.isNewVideoStarted() || userChangedSpeed) {
+        if (!ReVancedUtils.isNewVideo() || userChangedSpeed) {
             if (SettingsEnum.DEBUG.getBoolean() && userChangedSpeed) {
                 LogHelper.debug(VideoSpeedPatch.class, "Skipping speed change because user changed it: " + speed);
             }

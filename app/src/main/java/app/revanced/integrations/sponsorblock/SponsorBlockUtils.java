@@ -3,14 +3,14 @@ package app.revanced.integrations.sponsorblock;
 import static android.text.Html.fromHtml;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
+import static app.revanced.integrations.settingsmenu.SponsorBlockSettingsFragment.FORMATTER;
+import static app.revanced.integrations.settingsmenu.SponsorBlockSettingsFragment.SAVED_TEMPLATE;
 import static app.revanced.integrations.sponsorblock.PlayerController.getCurrentVideoId;
 import static app.revanced.integrations.sponsorblock.PlayerController.getCurrentVideoLength;
 import static app.revanced.integrations.sponsorblock.PlayerController.getLastKnownVideoTime;
 import static app.revanced.integrations.sponsorblock.PlayerController.sponsorSegmentsOfCurrentVideo;
-import static app.revanced.integrations.settingsmenu.SponsorBlockSettingsFragment.FORMATTER;
-import static app.revanced.integrations.settingsmenu.SponsorBlockSettingsFragment.SAVED_TEMPLATE;
-import static app.revanced.integrations.sponsorblock.StringRef.str;
 import static app.revanced.integrations.sponsorblock.requests.SBRequester.voteForSegment;
+import static app.revanced.integrations.utils.StringRef.str;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -24,10 +24,8 @@ import android.preference.Preference;
 import android.preference.PreferenceCategory;
 import android.text.Html;
 import android.text.TextUtils;
-
 import android.view.View;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -44,21 +42,21 @@ import java.util.Objects;
 import java.util.TimeZone;
 
 import app.revanced.integrations.settings.SettingsEnum;
-import app.revanced.integrations.sponsorblock.player.PlayerType;
-import app.revanced.integrations.utils.LogHelper;
-import app.revanced.integrations.utils.SharedPrefHelper;
 import app.revanced.integrations.sponsorblock.objects.SponsorSegment;
 import app.revanced.integrations.sponsorblock.objects.UserStats;
+import app.revanced.integrations.sponsorblock.player.PlayerType;
 import app.revanced.integrations.sponsorblock.requests.SBRequester;
+import app.revanced.integrations.utils.LogHelper;
+import app.revanced.integrations.utils.SharedPrefHelper;
 
 @SuppressWarnings({"LongLogTag"})
+@SuppressLint("DefaultLocale")
 public abstract class SponsorBlockUtils {
     public static final String DATE_FORMAT = "HH:mm:ss.SSS";
     @SuppressLint("SimpleDateFormat")
     public static final SimpleDateFormat dateFormatter = new SimpleDateFormat(DATE_FORMAT);
     public static boolean videoHasSegments = false;
     public static String timeWithoutSegments = "";
-    private static final int sponsorBtnId = 1234;
     private static final String LOCKED_COLOR = "#FFC83D";
     public static final View.OnClickListener sponsorBlockBtnListener = v -> {
         LogHelper.debug(SponsorBlockUtils.class, "Shield button clicked");
@@ -68,7 +66,6 @@ public abstract class SponsorBlockUtils {
         LogHelper.debug(SponsorBlockUtils.class, "Vote button clicked");
         SponsorBlockUtils.onVotingClicked(v.getContext());
     };
-    private static int shareBtnId = -1;
     private static long newSponsorSegmentDialogShownMillis;
     private static long newSponsorSegmentStartMillis = -1;
     private static long newSponsorSegmentEndMillis = -1;
@@ -96,9 +93,9 @@ public abstract class SponsorBlockUtils {
     private static final DialogInterface.OnClickListener segmentTypeListener = new DialogInterface.OnClickListener() {
         @Override
         public void onClick(DialogInterface dialog, int which) {
-            SponsorBlockSettings.SegmentInfo segmentType = SponsorBlockSettings.SegmentInfo.valuesWithoutUnsubmitted()[which];
+            SponsorBlockSettings.SegmentInfo segmentType = SponsorBlockSettings.SegmentInfo.getSubmittableSegments()[which];
             boolean enableButton;
-            if (!segmentType.behaviour.showOnTimeBar) {
+            if (!segmentType.getBehaviour().getShowOnTimeBar()) {
                 Toast.makeText(
                         ((AlertDialog) dialog).getContext().getApplicationContext(),
                         str("new_segment_disabled_category"),
@@ -107,7 +104,7 @@ public abstract class SponsorBlockUtils {
             } else {
                 Toast.makeText(
                         ((AlertDialog) dialog).getContext().getApplicationContext(),
-                        segmentType.description.toString(),
+                        segmentType.getDescription().toString(),
                         Toast.LENGTH_SHORT).show();
                 newSponsorBlockSegmentType = segmentType;
                 enableButton = true;
@@ -126,7 +123,7 @@ public abstract class SponsorBlockUtils {
             Context context = ((AlertDialog) dialog).getContext();
             dialog.dismiss();
 
-            SponsorBlockSettings.SegmentInfo[] values = SponsorBlockSettings.SegmentInfo.valuesWithoutUnsubmitted();
+            SponsorBlockSettings.SegmentInfo[] values = SponsorBlockSettings.SegmentInfo.getSubmittableSegments();
             CharSequence[] titles = new CharSequence[values.length];
             for (int i = 0; i < values.length; i++) {
 //                titles[i] = values[i].title;
@@ -236,7 +233,7 @@ public abstract class SponsorBlockUtils {
                 LogHelper.printException(SponsorBlockUtils.class, "Unable to submit times, invalid parameters");
                 return;
             }
-            SBRequester.submitSegments(videoId, uuid, ((float) start) / 1000f, ((float) end) / 1000f, segmentType.key, toastRunnable);
+            SBRequester.submitSegments(videoId, uuid, ((float) start) / 1000f, ((float) end) / 1000f, segmentType.getKey(), toastRunnable);
             newSponsorSegmentEndMillis = newSponsorSegmentStartMillis = -1;
         } catch (Exception e) {
             LogHelper.printException(SponsorBlockUtils.class, "Unable to submit segment", e);
@@ -254,12 +251,12 @@ public abstract class SponsorBlockUtils {
     }
 
     public static void showShieldButton() {
-        View i = ShieldButton._shieldBtn.get();
-        if (i == null || !ShieldButton.shouldBeShown()) return;
-        i.setVisibility(VISIBLE);
-        i.bringToFront();
-        i.requestLayout();
-        i.invalidate();
+        var view = ShieldButton._shieldBtn.get();
+        if (view == null || !ShieldButton.shouldBeShown()) return;
+        view.setVisibility(VISIBLE);
+        view.bringToFront();
+        view.requestLayout();
+        view.invalidate();
     }
 
     public static void hideShieldButton() {
@@ -269,7 +266,7 @@ public abstract class SponsorBlockUtils {
     }
 
     public static void showVoteButton() {
-        View i = VotingButton._votingButton.get();
+        var i = VotingButton._votingButton.get();
         if (i == null || !VotingButton.shouldBeShown()) return;
         i.setVisibility(VISIBLE);
         i.bringToFront();
@@ -278,9 +275,8 @@ public abstract class SponsorBlockUtils {
     }
 
     public static void hideVoteButton() {
-        View i = VotingButton._votingButton.get();
-        if (i != null)
-            i.setVisibility(GONE);
+        var view = VotingButton._votingButton.get();
+        if (view != null) view.setVisibility(GONE);
     }
 
     @SuppressLint("DefaultLocale")
@@ -336,7 +332,7 @@ public abstract class SponsorBlockUtils {
             String end = dateFormatter.format(new Date(segment.end));
             StringBuilder htmlBuilder = new StringBuilder();
             htmlBuilder.append(String.format("<b><font color=\"#%06X\">⬤</font> %s<br> %s to %s",
-                    segment.category.color, segment.category.title, start, end));
+                    segment.category.getColor(), segment.category.getTitle(), start, end));
             if (i + 1 != segmentAmount) // prevents trailing new line after last segment
                 htmlBuilder.append("<br>");
             titles.add(Html.fromHtml(htmlBuilder.toString()));
@@ -348,7 +344,7 @@ public abstract class SponsorBlockUtils {
     }
 
     private static void onNewCategorySelect(final SponsorSegment segment, Context context) {
-        final SponsorBlockSettings.SegmentInfo[] values = SponsorBlockSettings.SegmentInfo.valuesWithoutUnsubmitted();
+        final SponsorBlockSettings.SegmentInfo[] values = SponsorBlockSettings.SegmentInfo.getSubmittableSegments();
         CharSequence[] titles = new CharSequence[values.length];
         for (int i = 0; i < values.length; i++) {
             titles[i] = values[i].getTitleWithDot();
@@ -356,7 +352,7 @@ public abstract class SponsorBlockUtils {
 
         new AlertDialog.Builder(context)
                 .setTitle(str("new_segment_choose_category"))
-                .setItems(titles, (dialog, which) -> voteForSegment(segment, VoteOption.CATEGORY_CHANGE, appContext.get(), values[which].key))
+                .setItems(titles, (dialog, which) -> voteForSegment(segment, VoteOption.CATEGORY_CHANGE, appContext.get(), values[which].getKey()))
                 .show();
     }
 
@@ -389,17 +385,6 @@ public abstract class SponsorBlockUtils {
                 .setNegativeButton(str("new_segment_mark_start"), editByHandDialogListener)
                 .setPositiveButton(str("new_segment_mark_end"), editByHandDialogListener)
                 .show();
-    }
-
-    public static void notifyShareBtnVisibilityChanged(View v) {
-        if (v.getId() != shareBtnId || !/*SponsorBlockSettings.isAddNewSegmentEnabled*/false)
-            return;
-//        if (VERBOSE)
-//            LogH(TAG, "VISIBILITY CHANGED of view " + v);
-        ImageView sponsorBtn = ShieldButton._shieldBtn.get();
-        if (sponsorBtn != null) {
-            sponsorBtn.setVisibility(v.getVisibility());
-        }
     }
 
     public static String appendTimeWithoutSegments(String totalTime) {
@@ -444,7 +429,6 @@ public abstract class SponsorBlockUtils {
         return String.format("#%06X", color);
     }
 
-    @SuppressWarnings("deprecation")
     public static void addUserStats(PreferenceCategory category, Preference loadingPreference, UserStats stats) {
         category.removePreference(loadingPreference);
 
@@ -509,21 +493,19 @@ public abstract class SponsorBlockUtils {
     public static void importSettings(String json, Context context) {
         try {
             JSONObject settingsJson = new JSONObject(json);
-
             JSONObject barTypesObject = settingsJson.getJSONObject("barTypes");
             JSONArray categorySelectionsArray = settingsJson.getJSONArray("categorySelections");
 
-
             SharedPreferences.Editor editor = SharedPrefHelper.getPreferences(context, SharedPrefHelper.SharedPrefNames.SPONSOR_BLOCK).edit();
 
-            SponsorBlockSettings.SegmentInfo[] categories = SponsorBlockSettings.SegmentInfo.valuesWithoutUnsubmitted();
+            SponsorBlockSettings.SegmentInfo[] categories = SponsorBlockSettings.SegmentInfo.getSubmittableSegments();
             for (SponsorBlockSettings.SegmentInfo category : categories) {
-                String categoryKey = category.key;
+                String categoryKey = category.getKey();
                 JSONObject categoryObject = barTypesObject.getJSONObject(categoryKey);
                 String color = categoryObject.getString("color");
 
                 editor.putString(categoryKey + SponsorBlockSettings.CATEGORY_COLOR_SUFFIX, color);
-                editor.putString(categoryKey, SponsorBlockSettings.SegmentBehaviour.IGNORE.key);
+                editor.putString(categoryKey, SponsorBlockSettings.SegmentBehaviour.IGNORE.getKey());
             }
 
             for (int i = 0; i < categorySelectionsArray.length(); i++) {
@@ -538,9 +520,11 @@ public abstract class SponsorBlockUtils {
 
                 int desktopKey = categorySelectionObject.getInt("option");
                 SponsorBlockSettings.SegmentBehaviour behaviour = SponsorBlockSettings.SegmentBehaviour.byDesktopKey(desktopKey);
-                editor.putString(category.key, behaviour.key);
+                assert behaviour != null;
+                editor.putString(category.getKey(), behaviour.getKey());
             }
 
+            editor.apply(); // apply changes
             SettingsEnum.SB_SHOW_TOAST_WHEN_SKIP.saveValue(!settingsJson.getBoolean("dontShowNotice"));
             SettingsEnum.SB_SHOW_TIME_WITHOUT_SEGMENTS.saveValue(settingsJson.getBoolean("showTimeWithSkips"));
             SettingsEnum.SB_COUNT_SKIPS.saveValue(settingsJson.getBoolean("trackViewCount"));
@@ -548,7 +532,6 @@ public abstract class SponsorBlockUtils {
             SettingsEnum.SB_MIN_DURATION.saveValue(Float.valueOf(settingsJson.getString("minDuration")));
             SettingsEnum.SB_UUID.saveValue(settingsJson.getString("userID"));
             SettingsEnum.SB_LAST_VIP_CHECK.saveValue(settingsJson.getLong("lastIsVipUpdate"));
-
 
             String serverAddress = settingsJson.getString("serverAddress");
             if (serverAddress.equalsIgnoreCase("https://sponsor.ajay.app")) {
@@ -570,19 +553,19 @@ public abstract class SponsorBlockUtils {
             JSONObject barTypesObject = new JSONObject(); // categories' colors
             JSONArray categorySelectionsArray = new JSONArray(); // categories' behavior
 
-            SponsorBlockSettings.SegmentInfo[] categories = SponsorBlockSettings.SegmentInfo.valuesWithoutUnsubmitted();
+            SponsorBlockSettings.SegmentInfo[] categories = SponsorBlockSettings.SegmentInfo.getSubmittableSegments();
             for (SponsorBlockSettings.SegmentInfo category : categories) {
                 JSONObject categoryObject = new JSONObject();
-                String categoryKey = category.key;
-                categoryObject.put("color", formatColorString(category.color));
+                String categoryKey = category.getKey();
+                categoryObject.put("color", formatColorString(category.getColor()));
                 barTypesObject.put(categoryKey, categoryObject);
 
-                int desktopKey = category.behaviour.desktopKey;
+                int desktopKey = category.getBehaviour().getDesktopKey();
                 if (desktopKey != -1) {
-                    JSONObject behaviorObject = new JSONObject();
-                    behaviorObject.put("name", categoryKey);
-                    behaviorObject.put("option", desktopKey);
-                    categorySelectionsArray.put(behaviorObject);
+                    JSONObject behaviourObject = new JSONObject();
+                    behaviourObject.put("name", categoryKey);
+                    behaviourObject.put("option", desktopKey);
+                    categorySelectionsArray.put(behaviourObject);
                 }
             }
             json.put("dontShowNotice", !SettingsEnum.SB_SHOW_TOAST_WHEN_SKIP.getBoolean());
@@ -602,10 +585,6 @@ public abstract class SponsorBlockUtils {
             ex.printStackTrace();
             return "";
         }
-    }
-
-    public static boolean isSBButtonEnabled(Context context, String key) {
-        return SettingsEnum.SB_ENABLED.getBoolean() && SharedPrefHelper.getBoolean(context, SharedPrefHelper.SharedPrefNames.SPONSOR_BLOCK, key, false);
     }
 
     public enum VoteOption {

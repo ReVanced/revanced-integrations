@@ -5,20 +5,17 @@ import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.graphics.drawable.RippleDrawable;
 import android.util.AttributeSet;
-
 import android.util.TypedValue;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
 import app.revanced.integrations.settings.SettingsEnum;
-import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.sponsorblock.NewSegmentHelperLayout;
 import app.revanced.integrations.sponsorblock.PlayerController;
-import app.revanced.integrations.sponsorblock.SponsorBlockSettings;
 import app.revanced.integrations.sponsorblock.SponsorBlockUtils;
+import app.revanced.integrations.utils.LogHelper;
 
 public class NewSegmentLayout extends FrameLayout {
 
@@ -53,7 +50,7 @@ public class NewSegmentLayout extends FrameLayout {
         this.initialize(context);
     }
 
-    private final void initialize(Context context) {
+    private void initialize(Context context) {
         LayoutInflater.from(context).inflate(getIdentifier(context, "new_segment", "layout"), this, true);
         Resources resources = context.getResources();
 
@@ -61,72 +58,54 @@ public class NewSegmentLayout extends FrameLayout {
         getContext().getTheme().resolveAttribute(android.R.attr.selectableItemBackground, rippleEffect, true);
         rippleEffectId = rippleEffect.resourceId;
 
-        this.newSegmentContainer = (LinearLayout) this.findViewById(getIdentifier(context, "new_segment_container", "id"));
+        this.newSegmentContainer = this.findViewById(getIdentifier(context, "new_segment_container", "id"));
 
-        this.rewindButton = (ImageButton) this.findViewById(getIdentifier(context, "new_segment_rewind", "id"));
+        this.rewindButton = this.findViewById(getIdentifier(context, "new_segment_rewind", "id"));
         if (this.rewindButton != null) {
             setClickEffect(this.rewindButton);
-            this.rewindButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    LogHelper.debug(NewSegmentLayout.class, "Rewind button clicked");
-                    PlayerController.skipRelativeMilliseconds(-SettingsEnum.SB_ADJUST_NEW_SEGMENT_STEP.getInt());
-                }
+            this.rewindButton.setOnClickListener(v -> {
+                LogHelper.debug(NewSegmentLayout.class, "Rewind button clicked");
+                PlayerController.skipRelativeMilliseconds(-SettingsEnum.SB_ADJUST_NEW_SEGMENT_STEP.getInt());
             });
         }
-        this.forwardButton = (ImageButton) this.findViewById(getIdentifier(context, "new_segment_forward", "id"));
+        this.forwardButton = this.findViewById(getIdentifier(context, "new_segment_forward", "id"));
         if (this.forwardButton != null) {
             setClickEffect(this.forwardButton);
-            this.forwardButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    LogHelper.debug(NewSegmentLayout.class, "Forward button clicked");
-                    PlayerController.skipRelativeMilliseconds(SettingsEnum.SB_ADJUST_NEW_SEGMENT_STEP.getInt());
-                }
+            this.forwardButton.setOnClickListener(v -> {
+                LogHelper.debug(NewSegmentLayout.class, "Forward button clicked");
+                PlayerController.skipRelativeMilliseconds(SettingsEnum.SB_ADJUST_NEW_SEGMENT_STEP.getInt());
             });
         }
-        this.adjustButton = (ImageButton) this.findViewById(getIdentifier(context, "new_segment_adjust", "id"));
+        this.adjustButton = this.findViewById(getIdentifier(context, "new_segment_adjust", "id"));
         if (this.adjustButton != null) {
             setClickEffect(this.adjustButton);
-            this.adjustButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    LogHelper.debug(NewSegmentLayout.class, "Adjust button clicked");
-                    SponsorBlockUtils.onMarkLocationClicked(NewSegmentHelperLayout.context);
-                }
+            this.adjustButton.setOnClickListener(v -> {
+                LogHelper.debug(NewSegmentLayout.class, "Adjust button clicked");
+                SponsorBlockUtils.onMarkLocationClicked(NewSegmentHelperLayout.context);
             });
         }
-        this.compareButton = (ImageButton) this.findViewById(getIdentifier(context, "new_segment_compare", "id"));
+        this.compareButton = this.findViewById(getIdentifier(context, "new_segment_compare", "id"));
         if (this.compareButton != null) {
             setClickEffect(this.compareButton);
-            this.compareButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    LogHelper.debug(NewSegmentLayout.class, "Compare button clicked");
-                    SponsorBlockUtils.onPreviewClicked(NewSegmentHelperLayout.context);
-                }
+            this.compareButton.setOnClickListener(v -> {
+                LogHelper.debug(NewSegmentLayout.class, "Compare button clicked");
+                SponsorBlockUtils.onPreviewClicked(NewSegmentHelperLayout.context);
             });
         }
-        this.editButton = (ImageButton) this.findViewById(getIdentifier(context, "new_segment_edit", "id"));
+        this.editButton = this.findViewById(getIdentifier(context, "new_segment_edit", "id"));
         if (this.editButton != null) {
             setClickEffect(this.editButton);
-            this.editButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    LogHelper.debug(NewSegmentLayout.class, "Edit button clicked");
-                    SponsorBlockUtils.onEditByHandClicked(NewSegmentHelperLayout.context);
-                }
+            this.editButton.setOnClickListener(v -> {
+                LogHelper.debug(NewSegmentLayout.class, "Edit button clicked");
+                SponsorBlockUtils.onEditByHandClicked(NewSegmentHelperLayout.context);
             });
         }
-        this.publishButton = (ImageButton) this.findViewById(getIdentifier(context, "new_segment_publish", "id"));
+        this.publishButton = this.findViewById(getIdentifier(context, "new_segment_publish", "id"));
         if (this.publishButton != null) {
             setClickEffect(this.publishButton);
-            this.publishButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    LogHelper.debug(NewSegmentLayout.class, "Publish button clicked");
-                    SponsorBlockUtils.onPublishClicked(NewSegmentHelperLayout.context);
-                }
+            this.publishButton.setOnClickListener(v -> {
+                LogHelper.debug(NewSegmentLayout.class, "Publish button clicked");
+                SponsorBlockUtils.onPublishClicked(NewSegmentHelperLayout.context);
             });
         }
 

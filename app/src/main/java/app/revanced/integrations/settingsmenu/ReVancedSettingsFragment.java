@@ -77,23 +77,23 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
                     try {
                         String value = sharedPreferences.getString(setting.getPath(), setting.getDefaultValue() + "");
                         listPref.setDefaultValue(value);
-                        listPref.setSummary(videoSpeedEntries[listPref.findIndexOfValue(String.valueOf(value))]);
+                        listPref.setSummary(videoSpeedEntries[listPref.findIndexOfValue(value)]);
                         SettingsEnum.PREFERRED_VIDEO_SPEED.saveValue(value);
                     } catch (Throwable th) {
                         LogHelper.printException(ReVancedSettingsFragment.class, "Error setting value of speed" + th);
                     }
                 } else {
-                    LogHelper.printException(ReVancedSettingsFragment.class, "No valid setting found: " + setting.toString());
+                    LogHelper.printException(ReVancedSettingsFragment.class, "No valid setting found: " + setting);
                 }
 
                 if ("pref_download_button_list".equals(str)) {
                     DownloadButton.refreshShouldBeShown();
                 }
             } else {
-                LogHelper.printException(ReVancedSettingsFragment.class, "Setting cannot be handled! " + pref.toString());
+                LogHelper.printException(ReVancedSettingsFragment.class, "Setting cannot be handled! " + pref);
             }
 
-            if (ReVancedUtils.getContext() != null && settingsInitialized && setting.shouldRebootOnChange()) {
+            if (settingsInitialized && setting.shouldRebootOnChange()) {
                 rebootDialog(getActivity());
             }
         }
@@ -161,26 +161,21 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
     */
 
     private String getPackageName() {
-        Context context = ReVancedUtils.getContext();
-        if (context == null) {
-            LogHelper.printException(ReVancedSettingsFragment.class, "Context is null, returning com.google.android.youtube!");
-            return "com.google.android.youtube";
-        }
+        Context context = ReVancedUtils.context();
         String PACKAGE_NAME = context.getPackageName();
         LogHelper.debug(ReVancedSettingsFragment.class, "getPackageName: " + PACKAGE_NAME);
 
         return PACKAGE_NAME;
     }
 
-    private void reboot(Activity activity, Class homeActivityClass) {
-        int intent;
-        intent = PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE;
+    private void reboot(Activity activity) {
+        int intent = PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE;
         ((AlarmManager) activity.getSystemService(Context.ALARM_SERVICE)).setExact(AlarmManager.ELAPSED_REALTIME, 1500L, PendingIntent.getActivity(activity, 0, new Intent(activity, Shell_HomeActivity.class), intent));
         Process.killProcess(Process.myPid());
     }
 
     private void rebootDialog(final Activity activity) {
-        new AlertDialog.Builder(activity).setMessage(getStringByName(activity, "pref_refresh_config")).setPositiveButton(getStringByName(activity, "in_app_update_restart_button"), (dialog, id) -> reboot(activity, Shell_HomeActivity.class)).setNegativeButton(getStringByName(activity, "sign_in_cancel"), null).show();
+        new AlertDialog.Builder(activity).setMessage(getStringByName(activity, "pref_refresh_config")).setPositiveButton(getStringByName(activity, "in_app_update_restart_button"), (dialog, id) -> reboot(activity)).setNegativeButton(getStringByName(activity, "sign_in_cancel"), null).show();
     }
 
     private String getStringByName(Context context, String name) {

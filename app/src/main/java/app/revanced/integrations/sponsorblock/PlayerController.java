@@ -56,7 +56,7 @@ public class PlayerController {
             return;
         }
 
-        Context context = ReVancedUtils.getContext();
+        Context context = ReVancedUtils.context();
         SponsorBlockSettings.update(context);
 
         if (!SettingsEnum.SB_ENABLED.getBoolean()) {
@@ -129,7 +129,7 @@ public class PlayerController {
             if (segment.start > millis) {
                 if (segment.start > startTimerAtMillis)
                     break; // it's more then START_TIMER_BEFORE_SEGMENT_MILLIS far away
-                if (!segment.category.behaviour.skip)
+                if (!segment.category.getBehaviour().getSkip())
                     break;
 
                 if (skipSponsorTask == null) {
@@ -154,7 +154,8 @@ public class PlayerController {
                 continue;
 
             // we are in the segment!
-            if (segment.category.behaviour.skip && !(segment.category.behaviour.key.equals("skip-once") && segment.didAutoSkipped)) {
+            final var behaviour = segment.category.getBehaviour();
+            if (behaviour.getSkip() && !(behaviour.getKey().equals("skip-once") && segment.didAutoSkipped)) {
                 sendViewRequestAsync(millis, segment);
                 skipSegment(segment, false);
                 break;
@@ -168,12 +169,9 @@ public class PlayerController {
 
     private static void sendViewRequestAsync(final long millis, final SponsorSegment segment) {
         if (segment.category != SponsorBlockSettings.SegmentInfo.UNSUBMITTED) {
-            Context context = ReVancedUtils.getContext();
-            if (context != null) {
-                long newSkippedTime = SettingsEnum.SB_SKIPPED_SEGMENTS_TIME.getLong() + (segment.end - segment.start);
-                SettingsEnum.SB_SKIPPED_SEGMENTS.saveValue(SettingsEnum.SB_SKIPPED_SEGMENTS.getInt() + 1);
-                SettingsEnum.SB_SKIPPED_SEGMENTS_TIME.saveValue(newSkippedTime);
-            }
+            long newSkippedTime = SettingsEnum.SB_SKIPPED_SEGMENTS_TIME.getLong() + (segment.end - segment.start);
+            SettingsEnum.SB_SKIPPED_SEGMENTS.saveValue(SettingsEnum.SB_SKIPPED_SEGMENTS.getInt() + 1);
+            SettingsEnum.SB_SKIPPED_SEGMENTS_TIME.saveValue(newSkippedTime);
         }
         new Thread(() -> {
             if (SettingsEnum.SB_COUNT_SKIPS.getBoolean() &&
@@ -257,22 +255,20 @@ public class PlayerController {
 
     public static void addSkipSponsorView15(final View view) {
         playerActivity = new WeakReference<>((Activity) view.getContext());
-        LogHelper.debug(PlayerController.class, "addSkipSponsorView15: view=" + view.toString());
+        LogHelper.debug(PlayerController.class, "addSkipSponsorView15: view=" + view);
 
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
             final ViewGroup viewGroup = (ViewGroup) ((ViewGroup) view).getChildAt(2);
-            Activity context = ((Activity) viewGroup.getContext());
-            NewSegmentHelperLayout.context = context;
+            NewSegmentHelperLayout.context = viewGroup.getContext();
         }, 500);
     }
 
     public static void addSkipSponsorView14(final View view) {
         playerActivity = new WeakReference<>((Activity) view.getContext());
-        LogHelper.debug(PlayerController.class, "addSkipSponsorView14: view=" + view.toString());
+        LogHelper.debug(PlayerController.class, "addSkipSponsorView14: view=" + view);
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
             final ViewGroup viewGroup = (ViewGroup) view.getParent();
-            Activity activity = (Activity) viewGroup.getContext();
-            NewSegmentHelperLayout.context = activity;
+            NewSegmentHelperLayout.context = viewGroup.getContext();
         }, 500);
     }
 
@@ -295,7 +291,7 @@ public class PlayerController {
         for (SponsorSegment segment : sponsorSegmentsOfCurrentVideo) {
             float left = segment.start * tmp1 + absoluteLeft;
             float right = segment.end * tmp1 + absoluteLeft;
-            canvas.drawRect(left, top, right, bottom, segment.category.paint);
+            canvas.drawRect(left, top, right, bottom, segment.category.getPaint());
         }
     }
 
@@ -318,14 +314,12 @@ public class PlayerController {
         }
         allowNextSkipRequestTime = now + 100;
 
-        LogHelper.debug(PlayerController.class, String.format("Requesting skip to millis=%d on thread %s", millisecond, Thread.currentThread().toString()));
-
-        final long finalMillisecond = millisecond;
+        LogHelper.debug(PlayerController.class, String.format("Requesting skip to millis=%d on thread %s", millisecond, Thread.currentThread()));
 
         try {
-            LogHelper.debug(PlayerController.class, "Skipping to millis=" + finalMillisecond);
-            lastKnownVideoTime = finalMillisecond;
-            VideoInformation.seekTo(finalMillisecond);
+            LogHelper.debug(PlayerController.class, "Skipping to millis=" + millisecond);
+            lastKnownVideoTime = millisecond;
+            VideoInformation.seekTo(millisecond);
         } catch (Exception e) {
             LogHelper.printException(PlayerController.class, "Cannot skip to millisecond", e);
         }
@@ -348,7 +342,9 @@ public class PlayerController {
                 continue;
 
             SkipSegmentView.show();
-            if (!((segment.category.behaviour.skip && !(segment.category.behaviour.key.equals("skip-once") && segment.didAutoSkipped)) || wasClicked))
+
+            final var behaviour = segment.category.getBehaviour();
+            if (!((behaviour.getSkip() && !(behaviour.getKey().equals("skip-once") && segment.didAutoSkipped)) || wasClicked))
                 return;
 
             sendViewRequestAsync(millis, segment);

@@ -3,8 +3,8 @@ package app.revanced.integrations.sponsorblock.requests;
 import static android.text.Html.fromHtml;
 import static app.revanced.integrations.sponsorblock.SponsorBlockUtils.timeWithoutSegments;
 import static app.revanced.integrations.sponsorblock.SponsorBlockUtils.videoHasSegments;
-import static app.revanced.integrations.sponsorblock.StringRef.str;
 import static app.revanced.integrations.utils.ReVancedUtils.runOnMainThread;
+import static app.revanced.integrations.utils.StringRef.str;
 
 import android.content.Context;
 import android.preference.EditTextPreference;
@@ -41,7 +41,7 @@ public class SBRequester {
     public static synchronized SponsorSegment[] getSegments(String videoId) {
         List<SponsorSegment> segments = new ArrayList<>();
         try {
-            HttpURLConnection connection = getConnectionFromRoute(SBRoutes.GET_SEGMENTS, videoId, SponsorBlockSettings.sponsorBlockUrlCategories);
+            HttpURLConnection connection = getConnectionFromRoute(SBRoutes.GET_SEGMENTS, videoId, SponsorBlockSettings.getUrlCategories());
             int responseCode = connection.getResponseCode();
             runVipCheck();
 
@@ -63,7 +63,7 @@ public class SBRequester {
                     boolean locked = obj.getInt("locked") == 1;
 
                     SponsorBlockSettings.SegmentInfo segmentCategory = SponsorBlockSettings.SegmentInfo.byCategoryKey(category);
-                    if (segmentCategory != null && segmentCategory.behaviour.showOnTimeBar) {
+                    if (segmentCategory != null && segmentCategory.getBehaviour().getShowOnTimeBar()) {
                         SponsorSegment sponsorSegment = new SponsorSegment(start, end, segmentCategory, uuid, locked);
                         segments.add(sponsorSegment);
                     }
