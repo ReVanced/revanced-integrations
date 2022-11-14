@@ -258,7 +258,6 @@ class GeneralBytecodeAdsPatch extends Filter {
     public boolean filter(final String path, final String identifier) {
         // Do not block on these
         if (ReVancedUtils.stringContains(path,
-                "comment_thread",
                 "home_video_with_context",
                 "related_video_with_context",
                 "search_video_with_context",
