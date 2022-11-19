@@ -242,7 +242,8 @@ final class GeneralBytecodeAdsPatch extends Filter {
                 "cell_divider",
                 "reels_player_overlay",
                 "watch_metadata_app_promo",
-                "video_display_full_layout"
+                "video_display_full_layout",
+                "active_view_display_container"
         );
         var movieAds = new BlockRule(
                 SettingsEnum.ADREMOVER_MOVIE_REMOVAL,
