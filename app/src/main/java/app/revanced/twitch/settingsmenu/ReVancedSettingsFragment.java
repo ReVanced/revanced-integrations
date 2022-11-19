@@ -1,7 +1,5 @@
 package app.revanced.twitch.settingsmenu;
 
-import static app.revanced.twitch.utils.ReVancedUtils.getPackageName;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlarmManager;
@@ -24,7 +22,6 @@ import androidx.annotation.Nullable;
 import app.revanced.twitch.settings.SettingsEnum;
 import app.revanced.twitch.utils.LogHelper;
 import app.revanced.twitch.utils.ReVancedUtils;
-import app.revanced.twitch.utils.SharedPrefHelper;
 
 import tv.twitch.android.app.core.LandingActivity;
 
@@ -51,30 +48,10 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
             LogHelper.debug("Syncing setting '%s' with UI", setting.getPath());
 
             if (pref instanceof SwitchPreference) {
-                SwitchPreference switchPref = (SwitchPreference) pref;
-                setting.setValue(switchPref.isChecked());
+                setting.setValue(((SwitchPreference) pref).isChecked());
             }
             else if (pref instanceof EditTextPreference) {
-                EditTextPreference editPref = (EditTextPreference) pref;
-                Object value = null;
-                switch (setting.getReturnType()) {
-                    case FLOAT:
-                        value = Float.parseFloat(editPref.getText());
-                        break;
-                    case LONG:
-                        value = Long.parseLong(editPref.getText());
-                        break;
-                    case STRING:
-                        value = editPref.getText();
-                        break;
-                    case INTEGER:
-                        value = Integer.parseInt(editPref.getText());
-                        break;
-                    default:
-                        LogHelper.error("Setting '%s' has no valid return type!", setting.getReturnType().toString());
-                        break;
-                }
-                setting.setValue(value);
+                setting.setValue(((EditTextPreference) pref).getText());
             }
             else if (pref instanceof ListPreference) {
                 ListPreference listPref = (ListPreference) pref;
@@ -101,11 +78,15 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
 
         try {
             PreferenceManager mgr = getPreferenceManager();
-            mgr.setSharedPreferencesName(SharedPrefHelper.SharedPrefNames.REVANCED_PREFS.getName());
+            mgr.setSharedPreferencesName(SettingsEnum.REVANCED_PREFS);
             mgr.getSharedPreferences().registerOnSharedPreferenceChangeListener(this.listener);
 
             addPreferencesFromResource(
-                getResources().getIdentifier("revanced_prefs", "xml", getPackageName())
+                getResources().getIdentifier(
+                        SettingsEnum.REVANCED_PREFS,
+                        "xml",
+                        this.getContext().getPackageName()
+                )
             );
 
             // Sync all preferences with UI

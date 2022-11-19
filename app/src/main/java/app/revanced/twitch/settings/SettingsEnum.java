@@ -1,8 +1,10 @@
 package app.revanced.twitch.settings;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+
 import app.revanced.twitch.utils.LogHelper;
 import app.revanced.twitch.utils.ReVancedUtils;
-import app.revanced.twitch.utils.SharedPrefHelper;
 
 public enum SettingsEnum {
     /* Ads */
@@ -15,9 +17,10 @@ public enum SettingsEnum {
     /* Misc */
     DEBUG_MODE("revanced_debug_mode", false, ReturnType.BOOLEAN, true);
 
+    public static final String REVANCED_PREFS = "revanced_prefs";
+
     private final String path;
     private final Object defaultValue;
-    private final SharedPrefHelper.SharedPrefNames sharedPref;
     private final ReturnType returnType;
     private final boolean rebootApp;
 
@@ -26,15 +29,6 @@ public enum SettingsEnum {
     SettingsEnum(String path, Object defaultValue, ReturnType returnType) {
         this.path = path;
         this.defaultValue = defaultValue;
-        this.sharedPref = SharedPrefHelper.SharedPrefNames.REVANCED_PREFS;
-        this.returnType = returnType;
-        this.rebootApp = false;
-    }
-
-    SettingsEnum(String path, Object defaultValue, SharedPrefHelper.SharedPrefNames prefName, ReturnType returnType) {
-        this.path = path;
-        this.defaultValue = defaultValue;
-        this.sharedPref = prefName;
         this.returnType = returnType;
         this.rebootApp = false;
     }
@@ -42,7 +36,6 @@ public enum SettingsEnum {
     SettingsEnum(String path, Object defaultValue, ReturnType returnType, Boolean rebootApp) {
         this.path = path;
         this.defaultValue = defaultValue;
-        this.sharedPref = SharedPrefHelper.SharedPrefNames.REVANCED_PREFS;
         this.returnType = returnType;
         this.rebootApp = rebootApp;
     }
@@ -54,31 +47,32 @@ public enum SettingsEnum {
     private static void load() {
         ReVancedUtils.ifContextAttached((context -> {
             try {
+                SharedPreferences prefs = context.getSharedPreferences(REVANCED_PREFS, Context.MODE_PRIVATE);
                 for (SettingsEnum setting : values()) {
                     Object value = setting.getDefaultValue();
 
-                    switch (setting.getReturnType()) {
-                        case FLOAT:
-                            value = SharedPrefHelper.getFloat(context, setting.sharedPref, setting.getPath(), (float) setting.getDefaultValue());
-                            break;
-                        case LONG:
-                            value = SharedPrefHelper.getLong(context, setting.sharedPref, setting.getPath(), (long) setting.getDefaultValue());
-                            break;
-                        case BOOLEAN:
-                            value = SharedPrefHelper.getBoolean(context, setting.sharedPref, setting.getPath(), (boolean) setting.getDefaultValue());
-                            break;
-                        case INTEGER:
-                            value = SharedPrefHelper.getInt(context, setting.sharedPref, setting.getPath(), (int) setting.getDefaultValue());
-                            break;
-                        case STRING:
-                            value = SharedPrefHelper.getString(context, setting.sharedPref, setting.getPath(), (String) setting.getDefaultValue());
-                            break;
-                        default:
-                            LogHelper.error("Setting '%s' does not have a valid type", setting.name());
-                            break;
+                    try {
+                        switch (setting.getReturnType()) {
+                            case BOOLEAN:
+                                value = prefs.getBoolean(setting.getPath(), (boolean)setting.getDefaultValue());
+                                break;
+                            // Numbers are implicitly converted from strings
+                            case FLOAT:
+                            case LONG:
+                            case INTEGER:
+                            case STRING:
+                                value = prefs.getString(setting.getPath(), setting.getDefaultValue() + "");
+                                break;
+                            default:
+                                LogHelper.error("Setting '%s' does not have a valid type", setting.name());
+                                break;
+                        }
                     }
-                    setting.setValue(value);
+                    catch (ClassCastException ex) {
+                        LogHelper.printException("Failed to read value", ex);
+                    }
 
+                    setting.setValue(value);
                     LogHelper.debug("Loaded setting '%s' with value %s", setting.name(), value);
                 }
             } catch (Throwable th) {
@@ -88,15 +82,30 @@ public enum SettingsEnum {
     }
 
     public void setValue(Object newValue) {
-        this.value = newValue;
+        // Implicitly convert strings to numbers depending on the ResultType
+        switch (returnType) {
+            case FLOAT:
+                value = Float.valueOf(newValue + "");
+                break;
+            case LONG:
+                value = Long.valueOf(newValue + "");
+                break;
+            case INTEGER:
+                value = Integer.valueOf(newValue + "");
+                break;
+            default:
+                value = newValue;
+                break;
+        }
     }
 
     public void saveValue(Object newValue) {
         ReVancedUtils.ifContextAttached((context) -> {
+            SharedPreferences prefs = context.getSharedPreferences(REVANCED_PREFS, Context.MODE_PRIVATE);
             if (returnType == ReturnType.BOOLEAN) {
-                SharedPrefHelper.saveBoolean(context, sharedPref, path, (Boolean) newValue);
+                prefs.edit().putBoolean(path, (Boolean)newValue).apply();
             } else {
-                SharedPrefHelper.saveString(context, sharedPref, path, newValue + "");
+                prefs.edit().putString(path, newValue + "").apply();
             }
             value = newValue;
         });

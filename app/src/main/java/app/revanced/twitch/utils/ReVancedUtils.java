@@ -54,13 +54,6 @@ public class ReVancedUtils {
     }
 
     /**
-     * Get package name safely
-     */
-    public static String getPackageName() {
-        return ifContextAttached(Context::getPackageName, "tv.twitch.android.app");
-    }
-
-    /**
      * Get resource id safely
      * @return May return 0 if resource not found or context not attached
      */
@@ -78,10 +71,12 @@ public class ReVancedUtils {
         );
     }
 
+    /* Called from SettingsPatch smali */
     public static int getStringId(String name) {
         return getIdentifier(name, "string");
     }
 
+    /* Called from SettingsPatch smali */
     public static int getDrawableId(String name) {
         return getIdentifier(name, "drawable");
     }
