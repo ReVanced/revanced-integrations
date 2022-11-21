@@ -41,7 +41,7 @@ public class SettingsHooks {
      * Helper for easy access in smali
      * @return Returns string resource id
      */
-    public static int getRevancedSettingsString() {
+    public static int getReVancedSettingsString() {
         return getStringId("revanced_settings");
     }
 
