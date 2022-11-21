@@ -134,7 +134,13 @@ public class ReturnYouTubeDislike {
         interruptDislikeFetchThreadIfRunning();
 
         // TODO use a private fixed size thread pool
-        _dislikeFetchThread = new Thread(() -> ReturnYouTubeDislikeApi.fetchDislikes(videoId));
+        _dislikeFetchThread = new Thread(() -> {
+            try {
+                ReturnYouTubeDislikeApi.fetchDislikes(videoId);
+            } catch (Exception ex) {
+                LogHelper.printException(ReturnYouTubeDislike.class, "Failed to fetch dislikes for videoId: " + videoId, ex);
+            }
+        });
         _dislikeFetchThread.start();
     }
 
