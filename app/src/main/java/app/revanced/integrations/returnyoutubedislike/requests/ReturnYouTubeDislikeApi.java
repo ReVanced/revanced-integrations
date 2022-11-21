@@ -18,6 +18,7 @@ import app.revanced.integrations.requests.Route;
 
 public class ReturnYouTubeDislikeApi {
     private static final String RYD_API_URL = "https://returnyoutubedislikeapi.com/";
+    private static final int THREAD_TIMEOUT_REQUEST_DEFAULT = 5000;
 
     private ReturnYouTubeDislikeApi() {
     }
@@ -26,7 +27,7 @@ public class ReturnYouTubeDislikeApi {
         try {
             LogHelper.debug(ReturnYouTubeDislikeApi.class, "Fetching dislikes for " + videoId);
             HttpURLConnection connection = getConnectionFromRoute(ReturnYouTubeDislikeRoutes.GET_DISLIKES, videoId);
-            connection.setConnectTimeout(1000);
+            connection.setConnectTimeout(THREAD_TIMEOUT_REQUEST_DEFAULT);
             if (connection.getResponseCode() == 200) {
                 JSONObject json = getJSONObject(connection);
                 Integer dislikeCount = json.getInt("dislikes");
@@ -48,7 +49,7 @@ public class ReturnYouTubeDislikeApi {
     public static String register(String userId, Registration registration) {
         try {
             HttpURLConnection connection = getConnectionFromRoute(ReturnYouTubeDislikeRoutes.GET_REGISTRATION, userId);
-            connection.setConnectTimeout(5 * 1000);
+            connection.setConnectTimeout(THREAD_TIMEOUT_REQUEST_DEFAULT);
             if (connection.getResponseCode() == 200) {
                 JSONObject json = getJSONObject(connection);
                 String challenge = json.getString("challenge");
@@ -173,7 +174,7 @@ public class ReturnYouTubeDislikeApi {
         connection.setRequestProperty("Content-Type", "application/json");
         connection.setRequestProperty("Accept", "application/json");
         connection.setDoOutput(true);
-        connection.setConnectTimeout(5 * 1000);
+        connection.setConnectTimeout(THREAD_TIMEOUT_REQUEST_DEFAULT);
     }
 
     // helpers
