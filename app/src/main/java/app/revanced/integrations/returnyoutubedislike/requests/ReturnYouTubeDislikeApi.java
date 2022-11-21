@@ -106,13 +106,12 @@ public class ReturnYouTubeDislikeApi {
         return null;
     }
 
-    public static boolean sendVote(String videoId, String userId, int vote) {
-        ReVancedUtils.verifyOffMainThread();
+    public static boolean sendVote(String videoId, String userId, ReturnYouTubeDislike.Vote vote) {
         try {
             HttpURLConnection connection = getConnectionFromRoute(ReturnYouTubeDislikeRoutes.SEND_VOTE);
             applyCommonRequestSettings(connection);
 
-            String voteJsonString = "{\"userId\": \"" + userId + "\", \"videoId\": \"" + videoId + "\", \"value\": \"" + vote + "\"}";
+            String voteJsonString = "{\"userId\": \"" + userId + "\", \"videoId\": \"" + videoId + "\", \"value\": \"" + vote.value + "\"}";
             try (OutputStream os = connection.getOutputStream()) {
                 byte[] input = voteJsonString.getBytes(StandardCharsets.UTF_8);
                 os.write(input, 0, input.length);
