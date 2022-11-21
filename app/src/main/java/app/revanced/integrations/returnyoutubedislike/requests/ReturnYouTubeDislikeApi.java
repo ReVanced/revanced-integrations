@@ -18,7 +18,7 @@ import app.revanced.integrations.utils.ReVancedUtils;
 
 public class ReturnYouTubeDislikeApi {
     private static final String RYD_API_URL = "https://returnyoutubedislikeapi.com/";
-    private static final int THREAD_TIMEOUT_REQUEST_DEFAULT = 5000;
+    private static final int HTTP_CONNECTION_DEFAULT_TIMEOUT = 5000;
 
     private ReturnYouTubeDislikeApi() { } // utility class
 
@@ -27,7 +27,7 @@ public class ReturnYouTubeDislikeApi {
         try {
             LogHelper.debug(ReturnYouTubeDislikeApi.class, "Fetching dislikes for " + videoId);
             HttpURLConnection connection = getConnectionFromRoute(ReturnYouTubeDislikeRoutes.GET_DISLIKES, videoId);
-            connection.setConnectTimeout(THREAD_TIMEOUT_REQUEST_DEFAULT);
+            connection.setConnectTimeout(HTTP_CONNECTION_DEFAULT_TIMEOUT);
             if (connection.getResponseCode() == 200) {
                 JSONObject json = getJSONObject(connection);
                 Integer dislikeCount = json.getInt("dislikes");
@@ -50,7 +50,7 @@ public class ReturnYouTubeDislikeApi {
         ReVancedUtils.verifyOffMainThread();
         try {
             HttpURLConnection connection = getConnectionFromRoute(ReturnYouTubeDislikeRoutes.GET_REGISTRATION, userId);
-            connection.setConnectTimeout(THREAD_TIMEOUT_REQUEST_DEFAULT);
+            connection.setConnectTimeout(HTTP_CONNECTION_DEFAULT_TIMEOUT);
             if (connection.getResponseCode() == 200) {
                 JSONObject json = getJSONObject(connection);
                 String challenge = json.getString("challenge");
@@ -178,7 +178,7 @@ public class ReturnYouTubeDislikeApi {
         connection.setRequestProperty("Content-Type", "application/json");
         connection.setRequestProperty("Accept", "application/json");
         connection.setDoOutput(true);
-        connection.setConnectTimeout(THREAD_TIMEOUT_REQUEST_DEFAULT);
+        connection.setConnectTimeout(HTTP_CONNECTION_DEFAULT_TIMEOUT);
     }
 
     // helpers
