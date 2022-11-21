@@ -33,7 +33,7 @@ public class ReturnYouTubeDislike {
         DISLIKE(-1),
         LIKE_REMOVE(0);
 
-        public int value;
+        public final int value;
 
         Vote(int value) {
             this.value = value;
@@ -48,12 +48,6 @@ public class ReturnYouTubeDislike {
 
     static {
         Context context = ReVancedUtils.getContext();
-        isEnabled = SettingsEnum.RYD_ENABLED.getBoolean();
-        if (isEnabled) {
-            registration = new Registration();
-            voting = new Voting(registration);
-        }
-
         Locale locale = context.getResources().getConfiguration().locale;
         LogHelper.debug(ReturnYouTubeDislike.class, "locale - " + locale);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -62,10 +56,16 @@ public class ReturnYouTubeDislike {
                     CompactDecimalFormat.CompactStyle.SHORT
             );
         }
+        onEnabledChange(SettingsEnum.RYD_ENABLED.getBoolean()); // call after all static fields are initialized
     }
+
+    private void ReturnYouTubeDislike() { } // only static methods
 
     public static void onEnabledChange(boolean enabled) {
         isEnabled = enabled;
+        if (!enabled) {
+            return;
+        }
         if (registration == null) {
             registration = new Registration();
         }
@@ -74,23 +74,66 @@ public class ReturnYouTubeDislike {
         }
     }
 
-    public static void newVideoLoaded(String videoId) {
-        LogHelper.debug(ReturnYouTubeDislike.class, "newVideoLoaded - " + videoId);
-
-        dislikeCount = null;
-        if (!isEnabled) return;
-
+    public static synchronized String getCurrentVideoId() {
+        return currentVideoId;
+    }
+    public static synchronized void setCurrentVideoId(String videoId) {
+        Objects.requireNonNull(videoId);
         currentVideoId = videoId;
+        dislikeCount = null;
+    }
 
+    /**
+     * @return the dislikeCount for {@link #getCurrentVideoId()}.
+     *         Returns NULL if the dislike is not yet loaded, or if the dislike network fetch failed.
+     */
+    public static synchronized Integer getDislikeCount() {
+        return dislikeCount;
+    }
+    /**
+     * @return true if the videoId parameter matches the current dislike request, and the set value was successful
+     *         If videoID parameter does not match currentVideoId, then this call does nothing
+     */
+    public static synchronized boolean setCurrentDislikeCount(String videoId, Integer videoIdDislikeCount) {
+        if (! videoId.equals(currentVideoId)) {
+            return false;
+        }
+        dislikeCount = videoIdDislikeCount;
+        return true;
+    }
+
+    private static void interruptDislikeFetchThreadIfRunning() {
+        if (_dislikeFetchThread == null) return;
         try {
-            if (_dislikeFetchThread != null && _dislikeFetchThread.getState() != Thread.State.TERMINATED) {
-                LogHelper.debug(ReturnYouTubeDislike.class, "Interrupting the thread. Current state " + _dislikeFetchThread.getState());
+            Thread.State dislikeFetchThreadState = _dislikeFetchThread.getState();
+            if (dislikeFetchThreadState != Thread.State.TERMINATED) {
+                LogHelper.debug(ReturnYouTubeDislike.class, "Interrupting the fetch dislike thread of state: " + dislikeFetchThreadState);
                 _dislikeFetchThread.interrupt();
             }
         } catch (Exception ex) {
-            LogHelper.printException(ReturnYouTubeDislike.class, "Error in the dislike fetch thread", ex);
+            LogHelper.printException(ReturnYouTubeDislike.class, "Error in the fetch dislike thread", ex);
         }
+    }
+    private static void interruptVoteThreadIfRunning() {
+        if (_votingThread == null) return;
+        try {
+            Thread.State voteThreadState = _votingThread.getState();
+            if (voteThreadState != Thread.State.TERMINATED) {
+                LogHelper.debug(ReturnYouTubeDislike.class, "Interrupting the voting thread of state: " + voteThreadState);
+                _votingThread.interrupt();
+            }
+        } catch (Exception ex) {
+            LogHelper.printException(ReturnYouTubeDislike.class, "Error in the voting thread", ex);
+        }
+    }
 
+    public static void newVideoLoaded(String videoId) {
+        if (!isEnabled) return;
+        LogHelper.debug(ReturnYouTubeDislike.class, "newVideoLoaded - " + videoId);
+        setCurrentVideoId(videoId);
+        interruptDislikeFetchThreadIfRunning();
+
+        // TODO use a private fixed size thread pool
         _dislikeFetchThread = new Thread(() -> ReturnYouTubeDislikeApi.fetchDislikes(videoId));
         _dislikeFetchThread.start();
     }
@@ -102,11 +145,12 @@ public class ReturnYouTubeDislike {
             var conversionContextString = conversionContext.toString();
 
             // Check for new component
-            if (conversionContextString.contains("|segmented_like_dislike_button.eml|"))
+            if (conversionContextString.contains("|segmented_like_dislike_button.eml|")) {
                 segmentedButton = true;
-            else if (!conversionContextString.contains("|dislike_button.eml|"))
+            } else if (!conversionContextString.contains("|dislike_button.eml|")) {
+                LogHelper.debug(ReturnYouTubeDislike.class, "could not find a dislike button in " + conversionContextString);
                 return;
-
+            }
 
             // Have to block the current thread until fetching is done
             // There's no known way to edit the text after creation yet
@@ -114,7 +158,13 @@ public class ReturnYouTubeDislike {
                 _dislikeFetchThread.join(MILLISECONDS_TO_BLOCK_UI_WHILE_WAITING_FOR_DISLIKE_FETCH_TO_COMPLETE);
             }
 
-            if (dislikeCount == null) return;
+            Integer fetchedDislikeCount = getDislikeCount();
+            if (fetchedDislikeCount == null) {
+                LogHelper.debug(ReturnYouTubeDislike.class, "timed out waiting for Dislike fetch thread to complete");
+                // no point letting the request continue, as there is not another chance to use the result
+                interruptDislikeFetchThreadIfRunning();
+                return;
+            }
 
             updateDislike(textRef, dislikeCount);
             LogHelper.debug(ReturnYouTubeDislike.class, "Updated text on component" + conversionContextString);
@@ -126,23 +176,18 @@ public class ReturnYouTubeDislike {
     public static void sendVote(Vote vote) {
         if (!isEnabled) return;
 
-        Context context = ReVancedUtils.getContext();
-        if (SharedPrefHelper.getBoolean(Objects.requireNonNull(context), SharedPrefHelper.SharedPrefNames.YOUTUBE, "user_signed_out", true))
+        Context context = Objects.requireNonNull(ReVancedUtils.getContext());
+        if (SharedPrefHelper.getBoolean(context, SharedPrefHelper.SharedPrefNames.YOUTUBE, "user_signed_out", true))
             return;
 
-        LogHelper.debug(ReturnYouTubeDislike.class, "sending vote - " + vote + " for video " + currentVideoId);
-        try {
-            if (_votingThread != null && _votingThread.getState() != Thread.State.TERMINATED) {
-                LogHelper.debug(ReturnYouTubeDislike.class, "Interrupting the thread. Current state " + _votingThread.getState());
-                _votingThread.interrupt();
-            }
-        } catch (Exception ex) {
-            LogHelper.printException(ReturnYouTubeDislike.class, "Error in the voting thread", ex);
-        }
+        interruptVoteThreadIfRunning();
+        String videoIdToVoteFor = getCurrentVideoId();
+        LogHelper.debug(ReturnYouTubeDislike.class, "sending vote - " + vote + " for video " + videoIdToVoteFor);
 
+        // TODO use a private fixed sized thread pool
         _votingThread = new Thread(() -> {
             try {
-                boolean result = voting.sendVote(currentVideoId, vote);
+                boolean result = voting.sendVote(videoIdToVoteFor, vote);
                 LogHelper.debug(ReturnYouTubeDislike.class, "sendVote status " + result);
             } catch (Exception ex) {
                 LogHelper.printException(ReturnYouTubeDislike.class, "Failed to send vote", ex);

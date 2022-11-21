@@ -29,8 +29,13 @@ public class ReturnYouTubeDislikeApi {
             connection.setConnectTimeout(1000);
             if (connection.getResponseCode() == 200) {
                 JSONObject json = getJSONObject(connection);
-                ReturnYouTubeDislike.dislikeCount = json.getInt("dislikes");
-                LogHelper.debug(ReturnYouTubeDislikeApi.class, "dislikes fetched - " + ReturnYouTubeDislike.dislikeCount);
+                Integer dislikeCount = json.getInt("dislikes");
+                boolean dislikeWasSet = ReturnYouTubeDislike.setCurrentDislikeCount(videoId, dislikeCount);
+                if (dislikeWasSet) {
+                    LogHelper.debug(ReturnYouTubeDislikeApi.class, "dislikes fetched - " + dislikeCount);
+                } else {
+                    LogHelper.debug(ReturnYouTubeDislikeApi.class, "ignoring stale dislike fetched call for video " + videoId);
+                }
             } else {
                 LogHelper.debug(ReturnYouTubeDislikeApi.class, "dislikes fetch response was " + connection.getResponseCode());
             }
