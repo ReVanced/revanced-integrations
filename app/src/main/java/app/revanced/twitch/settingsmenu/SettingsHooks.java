@@ -22,10 +22,10 @@ public class SettingsHooks {
     private static final String EXTRA_REVANCED_SETTINGS = "app.revanced.twitch.settings";
 
     /**
-     * Launches SettingsActivity and show revanced settings
+     * Launches SettingsActivity and show ReVanced settings
      */
     public static void startSettingsActivity() {
-        LogHelper.debug("Launching revanced settings");
+        LogHelper.debug("Launching ReVanced settings");
 
         ReVancedUtils.ifContextAttached((c) -> {
             Intent intent = new Intent(c, SettingsActivity.class);
@@ -94,7 +94,7 @@ public class SettingsHooks {
             LogHelper.debug("Revanced settings not requested");
             return false; // User wants to enter another settings fragment
         }
-        LogHelper.debug("Revanced settings requested");
+        LogHelper.debug("ReVanced settings requested");
 
         ReVancedSettingsFragment fragment = new ReVancedSettingsFragment();
         ActionBar supportActionBar = base.getSupportActionBar();
