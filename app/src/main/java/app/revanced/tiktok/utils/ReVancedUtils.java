@@ -2,6 +2,7 @@ package app.revanced.tiktok.utils;
 
 import android.content.Context;
 
+// TODO?  rename this to ReVancedTikTokUtils?
 public class ReVancedUtils {
 
     //Used by TiktokIntegrations patch
