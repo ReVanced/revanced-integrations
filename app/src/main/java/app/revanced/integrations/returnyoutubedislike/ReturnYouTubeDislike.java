@@ -5,6 +5,8 @@ import android.icu.text.CompactDecimalFormat;
 import android.os.Build;
 import android.text.SpannableString;
 
+import androidx.annotation.GuardedBy;
+
 import java.util.Locale;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
@@ -16,8 +18,12 @@ import app.revanced.integrations.utils.ReVancedUtils;
 import app.revanced.integrations.utils.SharedPrefHelper;
 
 public class ReturnYouTubeDislike {
-    private static String currentVideoId;
-    public static Integer dislikeCount;
+    /** maximum amount of time to block the UI from updates, while waiting for dislike network call to complete */
+    private static final long MILLISECONDS_TO_BLOCK_UI_WHILE_WAITING_FOR_DISLIKE_FETCH_TO_COMPLETE = 5000;
+
+    // different threads read and write these fields. access to them must be synchronized
+    @GuardedBy("this") private static String currentVideoId;
+    @GuardedBy("this") private static Integer dislikeCount;
 
     private static boolean isEnabled;
     private static boolean segmentedButton;
@@ -104,7 +110,9 @@ public class ReturnYouTubeDislike {
 
             // Have to block the current thread until fetching is done
             // There's no known way to edit the text after creation yet
-            if (_dislikeFetchThread != null) _dislikeFetchThread.join();
+            if (_dislikeFetchThread != null) {
+                _dislikeFetchThread.join(MILLISECONDS_TO_BLOCK_UI_WHILE_WAITING_FOR_DISLIKE_FETCH_TO_COMPLETE);
+            }
 
             if (dislikeCount == null) return;
 
