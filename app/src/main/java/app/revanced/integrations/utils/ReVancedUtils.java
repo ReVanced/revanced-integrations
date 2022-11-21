@@ -10,7 +10,7 @@ import app.revanced.integrations.sponsorblock.player.PlayerType;
 public class ReVancedUtils {
 
     private static PlayerType env;
-    public static boolean newVideo = false;
+    private static boolean newVideo = false;
 
     public static Context context;
 
@@ -54,10 +54,6 @@ public class ReVancedUtils {
         return context.getResources().getIdentifier(name, defType, context.getPackageName());
     }
 
-    public static void runOnMainThread(Runnable runnable) {
-        new Handler(Looper.getMainLooper()).post(runnable);
-    }
-
     public static Context getContext() {
         if (context != null) {
             return context;
@@ -69,6 +65,10 @@ public class ReVancedUtils {
 
     public static boolean isTablet(Context context) {
         return context.getResources().getConfiguration().smallestScreenWidthDp >= 600;
+    }
+
+    public static void runOnMainThread(Runnable runnable) {
+        new Handler(Looper.getMainLooper()).post(runnable);
     }
 
     /**
