@@ -7,7 +7,9 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
+import java.net.ProtocolException;
 import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 
 import app.revanced.integrations.requests.Requester;
 import app.revanced.integrations.requests.Route;
@@ -24,6 +26,7 @@ public class ReturnYouTubeDislikeApi {
 
     public static void fetchDislikes(String videoId) {
         ReVancedUtils.verifyOffMainThread();
+        Objects.requireNonNull(videoId);
         try {
             LogHelper.debug(ReturnYouTubeDislikeApi.class, "Fetching dislikes for " + videoId);
             HttpURLConnection connection = getConnectionFromRoute(ReturnYouTubeDislikeRoutes.GET_DISLIKES, videoId);
@@ -48,6 +51,8 @@ public class ReturnYouTubeDislikeApi {
 
     public static String register(String userId, Registration registration) {
         ReVancedUtils.verifyOffMainThread();
+        Objects.requireNonNull(userId);
+        Objects.requireNonNull(registration);
         try {
             HttpURLConnection connection = getConnectionFromRoute(ReturnYouTubeDislikeRoutes.GET_REGISTRATION, userId);
             connection.setConnectTimeout(HTTP_CONNECTION_DEFAULT_TIMEOUT);
@@ -74,6 +79,9 @@ public class ReturnYouTubeDislikeApi {
 
     private static String confirmRegistration(String userId, String solution, Registration registration) {
         ReVancedUtils.verifyOffMainThread();
+        Objects.requireNonNull(userId);
+        Objects.requireNonNull(solution);
+        Objects.requireNonNull(registration);
         try {
             LogHelper.debug(ReturnYouTubeDislikeApi.class, "Trying to confirm registration for the following userId: " + userId + " with solution: " + solution);
 
@@ -107,6 +115,10 @@ public class ReturnYouTubeDislikeApi {
     }
 
     public static boolean sendVote(String videoId, String userId, ReturnYouTubeDislike.Vote vote) {
+        ReVancedUtils.verifyOffMainThread();
+        Objects.requireNonNull(videoId);
+        Objects.requireNonNull(userId);
+        Objects.requireNonNull(vote);
         try {
             HttpURLConnection connection = getConnectionFromRoute(ReturnYouTubeDislikeRoutes.SEND_VOTE);
             applyCommonRequestSettings(connection);
@@ -141,6 +153,9 @@ public class ReturnYouTubeDislikeApi {
 
     private static boolean confirmVote(String videoId, String userId, String solution) {
         ReVancedUtils.verifyOffMainThread();
+        Objects.requireNonNull(videoId);
+        Objects.requireNonNull(userId);
+        Objects.requireNonNull(solution);
         try {
             HttpURLConnection connection = getConnectionFromRoute(ReturnYouTubeDislikeRoutes.CONFIRM_VOTE);
             applyCommonRequestSettings(connection);
@@ -157,7 +172,6 @@ public class ReturnYouTubeDislikeApi {
 
                 if (result.equalsIgnoreCase("true")) {
                     LogHelper.debug(ReturnYouTubeDislikeApi.class, "Vote was successful for user " + userId);
-
                     return true;
                 }
             } else {
@@ -172,7 +186,7 @@ public class ReturnYouTubeDislikeApi {
 
     // utils
 
-    private static void applyCommonRequestSettings(HttpURLConnection connection) throws Exception {
+    private static void applyCommonRequestSettings(HttpURLConnection connection) throws ProtocolException {
         connection.setRequestMethod("POST");
         connection.setRequestProperty("Content-Type", "application/json");
         connection.setRequestProperty("Accept", "application/json");
