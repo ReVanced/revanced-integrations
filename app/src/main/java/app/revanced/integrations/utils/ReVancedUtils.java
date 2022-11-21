@@ -14,6 +14,8 @@ public class ReVancedUtils {
 
     public static Context context;
 
+    private ReVancedUtils() {} // utility class
+
     public static boolean containsAny(final String value, final String... targets) {
         for (String string : targets)
             if (!string.isEmpty() && value.contains(string)) return true;
@@ -67,5 +69,28 @@ public class ReVancedUtils {
 
     public static boolean isTablet(Context context) {
         return context.getResources().getConfiguration().smallestScreenWidthDp >= 600;
+    }
+
+    /**
+     * @return if the calling thread is on the main thread
+     */
+    public static boolean currentIsOnMainThread() {
+        return Looper.getMainLooper().isCurrentThread();
+    }
+    /**
+     * @throws IllegalStateException if the calling thread is _not_ on the main thread
+     */
+    public static void verifyOnMainThread() throws IllegalStateException {
+        if (! currentIsOnMainThread()) {
+            throw new IllegalStateException("must call _on_ the main thread");
+        }
+    }
+    /**
+     * @throws IllegalStateException if the calling thread _is_ on the main thread
+     */
+    public static void verifyOffMainThread() throws IllegalStateException {
+        if (currentIsOnMainThread()) {
+            throw new IllegalStateException("must call _off_ the main thread");
+        }
     }
 }

@@ -2,7 +2,6 @@ package app.revanced.integrations.returnyoutubedislike.requests;
 
 import static app.revanced.integrations.requests.Requester.parseJson;
 
-
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -10,20 +9,21 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.nio.charset.StandardCharsets;
 
-import app.revanced.integrations.returnyoutubedislike.ReturnYouTubeDislike;
-import app.revanced.integrations.utils.LogHelper;
-import app.revanced.integrations.returnyoutubedislike.Registration;
 import app.revanced.integrations.requests.Requester;
 import app.revanced.integrations.requests.Route;
+import app.revanced.integrations.returnyoutubedislike.Registration;
+import app.revanced.integrations.returnyoutubedislike.ReturnYouTubeDislike;
+import app.revanced.integrations.utils.LogHelper;
+import app.revanced.integrations.utils.ReVancedUtils;
 
 public class ReturnYouTubeDislikeApi {
     private static final String RYD_API_URL = "https://returnyoutubedislikeapi.com/";
     private static final int THREAD_TIMEOUT_REQUEST_DEFAULT = 5000;
 
-    private ReturnYouTubeDislikeApi() {
-    }
+    private ReturnYouTubeDislikeApi() { } // utility class
 
     public static void fetchDislikes(String videoId) {
+        ReVancedUtils.verifyOffMainThread();
         try {
             LogHelper.debug(ReturnYouTubeDislikeApi.class, "Fetching dislikes for " + videoId);
             HttpURLConnection connection = getConnectionFromRoute(ReturnYouTubeDislikeRoutes.GET_DISLIKES, videoId);
@@ -47,6 +47,7 @@ public class ReturnYouTubeDislikeApi {
     }
 
     public static String register(String userId, Registration registration) {
+        ReVancedUtils.verifyOffMainThread();
         try {
             HttpURLConnection connection = getConnectionFromRoute(ReturnYouTubeDislikeRoutes.GET_REGISTRATION, userId);
             connection.setConnectTimeout(THREAD_TIMEOUT_REQUEST_DEFAULT);
@@ -72,6 +73,7 @@ public class ReturnYouTubeDislikeApi {
     }
 
     private static String confirmRegistration(String userId, String solution, Registration registration) {
+        ReVancedUtils.verifyOffMainThread();
         try {
             LogHelper.debug(ReturnYouTubeDislikeApi.class, "Trying to confirm registration for the following userId: " + userId + " with solution: " + solution);
 
@@ -105,6 +107,7 @@ public class ReturnYouTubeDislikeApi {
     }
 
     public static boolean sendVote(String videoId, String userId, int vote) {
+        ReVancedUtils.verifyOffMainThread();
         try {
             HttpURLConnection connection = getConnectionFromRoute(ReturnYouTubeDislikeRoutes.SEND_VOTE);
             applyCommonRequestSettings(connection);
@@ -138,6 +141,7 @@ public class ReturnYouTubeDislikeApi {
     }
 
     private static boolean confirmVote(String videoId, String userId, String solution) {
+        ReVancedUtils.verifyOffMainThread();
         try {
             HttpURLConnection connection = getConnectionFromRoute(ReturnYouTubeDislikeRoutes.CONFIRM_VOTE);
             applyCommonRequestSettings(connection);
