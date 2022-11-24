@@ -24,7 +24,7 @@ public class ReVancedUtils {
     }
 
     public static void setNewVideo(boolean started) {
-        LogHelper.debug(ReVancedUtils.class, "New video started: " + started);
+        LogHelper.printDebug(() -> "New video started: " + started);
         newVideo = started;
     }
 
@@ -37,7 +37,7 @@ public class ReVancedUtils {
             Resources res = context.getResources();
             return res.getIdentifier(name, type, context.getPackageName());
         } catch (Throwable exception) {
-            LogHelper.printException(ReVancedUtils.class, "Resource not found.", exception);
+            LogHelper.printException(() -> ("Resource not found."), exception);
             return null;
         }
     }
@@ -59,7 +59,7 @@ public class ReVancedUtils {
         if (context != null) {
             return context;
         } else {
-            LogHelper.printException(ReVancedUtils.class, "Context is null, returning null!");
+            LogHelper.printException(() -> ("Context is null, returning null!"));
             return null;
         }
     }
