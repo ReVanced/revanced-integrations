@@ -221,12 +221,12 @@ public class ReturnYouTubeDislike {
     private static String getUserId() {
         ReVancedUtils.verifyOffMainThread();
 
-        String userId = SettingsEnum.RYD_USER_ID.getString();
-        if (userId != null) {
-            return userId;
-        }
-
         synchronized (rydUserIdLock) {
+            String userId = SettingsEnum.RYD_USER_ID.getString();
+            if (userId != null) {
+                return userId;
+            }
+
             userId = ReturnYouTubeDislikeApi.registerAsNewUser(); // blocks until network call is completed
             if (userId != null) {
                 SettingsEnum.RYD_USER_ID.saveValue(userId);
