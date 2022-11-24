@@ -15,8 +15,6 @@ import java.net.ProtocolException;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.SecureRandom;
-import java.time.Clock;
-import java.time.LocalTime;
 import java.util.Objects;
 
 import app.revanced.integrations.requests.Requester;
@@ -50,7 +48,7 @@ public class ReturnYouTubeDislikeApi {
     /**
      * @return true, if api rate limit is in effect
      */
-    private static boolean rateLimitInEffect(String apiEndPointName) {
+    private static boolean checkIfRateLimitInEffect(String apiEndPointName) {
         if (lastTimeLimitWasHit == 0) {
             return false;
         }
@@ -66,7 +64,7 @@ public class ReturnYouTubeDislikeApi {
     /**
      * @return true, if the rate limit was reached
      */
-    private static boolean checkIfRateLimitWasHit(int httpResponseCode, String apiEndPointName) {
+    private static boolean checkIfRateLimitWasHit(int httpResponseCode) {
         if (httpResponseCode == RATE_LIMIT_HTTP_STATUS_CODE) {
             lastTimeLimitWasHit = System.currentTimeMillis();
             LogHelper.debug(() -> "API rate limit was hit.  Stopping API calls for the next "
@@ -84,14 +82,14 @@ public class ReturnYouTubeDislikeApi {
         Objects.requireNonNull(videoId);
         try {
             String apiEndPointName = "fetchDislikes";
-            if (rateLimitInEffect(apiEndPointName)) {
+            if (checkIfRateLimitInEffect(apiEndPointName)) {
                 return null;
             }
             LogHelper.debug(()->"Fetching dislikes for " + videoId);
             HttpURLConnection connection = getConnectionFromRoute(ReturnYouTubeDislikeRoutes.GET_DISLIKES, videoId);
             connection.setConnectTimeout(HTTP_CONNECTION_DEFAULT_TIMEOUT);
             final int responseCode = connection.getResponseCode();
-            if (checkIfRateLimitWasHit(responseCode, apiEndPointName)) {
+            if (checkIfRateLimitWasHit(responseCode)) {
                 connection.disconnect();
                 return null;
             } else if (responseCode == 200) {
@@ -117,7 +115,7 @@ public class ReturnYouTubeDislikeApi {
         ReVancedUtils.verifyOffMainThread();
         try {
             String apiEndPointName = "registerAsNewUser";
-            if (rateLimitInEffect(apiEndPointName)) {
+            if (checkIfRateLimitInEffect(apiEndPointName)) {
                 return null;
             }
             String userId = randomString(36);
@@ -126,7 +124,7 @@ public class ReturnYouTubeDislikeApi {
             HttpURLConnection connection = getConnectionFromRoute(ReturnYouTubeDislikeRoutes.GET_REGISTRATION, userId);
             connection.setConnectTimeout(HTTP_CONNECTION_DEFAULT_TIMEOUT);
             final int responseCode = connection.getResponseCode();
-            if (checkIfRateLimitWasHit(responseCode, apiEndPointName)) {
+            if (checkIfRateLimitWasHit(responseCode)) {
                 connection.disconnect();
                 return null;
             } else if (responseCode == 200) {
@@ -158,7 +156,7 @@ public class ReturnYouTubeDislikeApi {
         Objects.requireNonNull(solution);
         try {
             String apiEndPointName = "confirmRegistration";
-            if (rateLimitInEffect(apiEndPointName)) {
+            if (checkIfRateLimitInEffect(apiEndPointName)) {
                 return null;
             }
             LogHelper.debug(()->"Trying to confirm registration for the following userId: " + userId + " with solution: " + solution);
@@ -172,7 +170,7 @@ public class ReturnYouTubeDislikeApi {
                 os.write(input, 0, input.length);
             }
             final int responseCode = connection.getResponseCode();
-            if (checkIfRateLimitWasHit(responseCode, apiEndPointName)) {
+            if (checkIfRateLimitWasHit(responseCode)) {
                 connection.disconnect();
                 return null;
             } else if (responseCode == 200) {
@@ -202,7 +200,7 @@ public class ReturnYouTubeDislikeApi {
         Objects.requireNonNull(vote);
 
         String apiEndPointName = "sendVote";
-        if (rateLimitInEffect(apiEndPointName)) {
+        if (checkIfRateLimitInEffect(apiEndPointName)) {
             return false;
         }
         LogHelper.debug(()->"Trying to vote the following video: "
@@ -218,7 +216,7 @@ public class ReturnYouTubeDislikeApi {
             }
 
             final int responseCode = connection.getResponseCode();
-            if (checkIfRateLimitWasHit(responseCode, apiEndPointName)) {
+            if (checkIfRateLimitWasHit(responseCode)) {
                 connection.disconnect();
                 return false;
             } else if (responseCode == 200) {
@@ -250,7 +248,7 @@ public class ReturnYouTubeDislikeApi {
         Objects.requireNonNull(solution);
 
         String apiEndPointName = "confirmVote";
-        if (rateLimitInEffect(apiEndPointName)) {
+        if (checkIfRateLimitInEffect(apiEndPointName)) {
             return false;
         }
         try {
@@ -263,7 +261,7 @@ public class ReturnYouTubeDislikeApi {
                 os.write(input, 0, input.length);
             }
             final int responseCode = connection.getResponseCode();
-            if (checkIfRateLimitWasHit(responseCode, apiEndPointName)) {
+            if (checkIfRateLimitWasHit(responseCode)) {
                 connection.disconnect();
                 return false;
             } else if (responseCode == 200) {
