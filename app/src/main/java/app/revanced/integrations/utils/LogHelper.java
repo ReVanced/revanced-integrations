@@ -41,7 +41,7 @@ public class LogHelper {
     /**
      * Logs information messages with the most outer class name of the code that is calling this method.
      */
-    public static void printInfo(LogMessage message) { // must be private
+    public static void printInfo(LogMessage message) {
         Log.i("ReVanced: " + message.findOuterClassSimpleName(), message.buildStringMessage());
     }
 
@@ -74,7 +74,7 @@ public class LogHelper {
      */
     @Deprecated
     public static void debug(Class _clazz, String message) {
-        printDebug(() -> message);
+        printDebug(() -> message); // this fails to capture the correct calling class name, but it's deprecated who cares
     }
 
     /**
