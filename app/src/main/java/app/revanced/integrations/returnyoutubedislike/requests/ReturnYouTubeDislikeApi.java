@@ -53,9 +53,9 @@ public class ReturnYouTubeDislikeApi {
             return false;
         }
         final long numberOfSecondsSinceLastRateLimit = (System.currentTimeMillis() - lastTimeLimitWasHit) / 1000;
-        if (numberOfSecondsSinceLastRateLimit > RATE_LIMIT_BACKOFF_SECONDS) {
+        if (numberOfSecondsSinceLastRateLimit < RATE_LIMIT_BACKOFF_SECONDS) {
             LogHelper.debug(()->"Ignoring api call " + apiEndPointName + " as only "
-                    + numberOfSecondsSinceLastRateLimit + " has passed since last rate limit");
+                    + numberOfSecondsSinceLastRateLimit + " seconds has passed since last rate limit.");
             return true;
         }
         return false;
@@ -65,6 +65,16 @@ public class ReturnYouTubeDislikeApi {
      * @return true, if the rate limit was reached
      */
     private static boolean checkIfRateLimitWasHit(int httpResponseCode) {
+        // set to true, to verify rate limit works
+        final boolean DEBUG_RATE_LIMIT = false;  // SHOULD ALWAYS BE FALSE UNLESS LOCALLY DEBUGGING
+        if (DEBUG_RATE_LIMIT) {
+            final double RANDOM_RATE_LIMIT_PERCENTAGE = 0.1; // 10% chance of a triggering a rate limit
+            if (Math.random() < RANDOM_RATE_LIMIT_PERCENTAGE) {
+                LogHelper.debug(()-> "!!! ARTIFICALLY TRIGGERING RATE LIMIT FOR DEBUG PURPOSES !!!");
+                httpResponseCode = RATE_LIMIT_HTTP_STATUS_CODE;
+            }
+        }
+
         if (httpResponseCode == RATE_LIMIT_HTTP_STATUS_CODE) {
             lastTimeLimitWasHit = System.currentTimeMillis();
             LogHelper.debug(() -> "API rate limit was hit.  Stopping API calls for the next "

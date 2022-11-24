@@ -162,7 +162,7 @@ public class ReturnYouTubeDislike {
 
             Integer fetchedDislikeCount = getDislikeCount();
             if (fetchedDislikeCount == null) {
-                LogHelper.debug(()->"timed out waiting for Dislike fetch thread to complete");
+                LogHelper.debug(()->"rate limit or timeout waiting for Dislike fetch thread to complete");
                 // no point letting the request continue, as there is not another chance to use the result
                 interruptDislikeFetchThreadIfRunning();
                 return;
