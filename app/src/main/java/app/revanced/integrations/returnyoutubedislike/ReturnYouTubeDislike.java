@@ -62,7 +62,7 @@ public class ReturnYouTubeDislike {
         }
     }
 
-    private void ReturnYouTubeDislike() {
+    private ReturnYouTubeDislike() {
     } // only static methods
 
     public static void onEnabledChange(boolean enabled) {
