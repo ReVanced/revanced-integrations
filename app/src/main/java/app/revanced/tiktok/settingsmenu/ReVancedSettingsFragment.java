@@ -125,7 +125,7 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
             }
         }
 
-        //SimSpoof
+        // SpoofSimPatch
         if(SettingsStatus.simSpoof) {
             PreferenceCategory simSpoof = new PreferenceCategory(context);
             simSpoof.setTitle("Bypass regional restriction");

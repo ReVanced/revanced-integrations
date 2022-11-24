@@ -1,8 +1,8 @@
-package app.revanced.tiktok.simspoof;
+package app.revanced.tiktok.spoof.sim;
 
 import app.revanced.tiktok.settings.SettingsEnum;
 
-public class SimSpoof {
+public class SpoofSimPatch {
     public static boolean isEnable() {
         return SettingsEnum.TIK_SIMSPOOF.getBoolean();
     }
