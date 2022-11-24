@@ -125,8 +125,8 @@ public class ReturnYouTubeDislikeApi {
     /**
      * @return The newly created and registered user id.  Returns NULL if registration failed.
      */
-    public static @Nullable
-    String registerAsNewUser() {
+    @Nullable
+    public static String registerAsNewUser() {
         ReVancedUtils.verifyOffMainThread();
         try {
             if (checkIfRateLimitInEffect("registerAsNewUser")) {
@@ -145,6 +145,7 @@ public class ReturnYouTubeDislikeApi {
                 JSONObject json = getJSONObject(connection);
                 String challenge = json.getString("challenge");
                 int difficulty = json.getInt("difficulty");
+
                 LogHelper.printDebug(() -> "Registration challenge - " + challenge + " with difficulty of " + difficulty);
                 connection.disconnect();
 

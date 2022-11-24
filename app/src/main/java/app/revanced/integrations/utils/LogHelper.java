@@ -80,7 +80,7 @@ public class LogHelper {
     /**
      * Deprecated.  Instead call {@link #printException(LogMessage, Throwable)}
      * or {@link #printException(LogMessage)}
-     * which does not cause log messages to be constructed unless logging is enabled.<br>
+     * which does not cause log messages to be constructed unless logging is enabled.
      */
     @Deprecated
     public static void printException(Class _clazz, String message, Throwable ex) {
@@ -105,4 +105,3 @@ public class LogHelper {
         printInfo(() -> (message));
     }
 }
-

@@ -171,7 +171,8 @@ public class ReturnYouTubeDislike {
 
             Integer fetchedDislikeCount = getDislikeCount();
             if (fetchedDislikeCount == null) {
-                LogHelper.printDebug(() -> "Rate limit or timeout waiting for Dislike fetch thread to complete");
+                LogHelper.debug(ReturnYouTubeDislike.class, "Cannot add dislike count to UI (dislike count not available)");
+                
                 // There's no point letting the request continue, as there is not another chance to use the result
                 interruptDislikeFetchThreadIfRunning();
                 return;
