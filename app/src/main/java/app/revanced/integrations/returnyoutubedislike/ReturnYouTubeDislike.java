@@ -54,7 +54,7 @@ public class ReturnYouTubeDislike {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             Context context = ReVancedUtils.getContext();
             Locale locale = context.getResources().getConfiguration().locale;
-            LogHelper.debug(ReturnYouTubeDislike.class, "locale - " + locale);
+            LogHelper.printDebug(() -> "Locale: " + locale);
             compactNumberFormatter = CompactDecimalFormat.getInstance(
                     locale,
                     CompactDecimalFormat.CompactStyle.SHORT
@@ -217,16 +217,16 @@ public class ReturnYouTubeDislike {
      * @return ReturnYouTubeDislike user ID. If user registration has never happened
      * and the network call fails, this will return NULL
      */
-    private static @Nullable
-    String getUserId() {
+    @Nullable
+    private static String getUserId() {
         ReVancedUtils.verifyOffMainThread();
 
-        String userId = SettingsEnum.RYD_USER_ID.getString();
-        if (userId != null) {
-            return userId;
-        }
-
         synchronized (rydUserIdLock) {
+            String userId = SettingsEnum.RYD_USER_ID.getString();
+            if (userId != null) {
+                return userId;
+            }
+
             userId = ReturnYouTubeDislikeApi.registerAsNewUser(); // blocks until network call is completed
             if (userId != null) {
                 SettingsEnum.RYD_USER_ID.saveValue(userId);

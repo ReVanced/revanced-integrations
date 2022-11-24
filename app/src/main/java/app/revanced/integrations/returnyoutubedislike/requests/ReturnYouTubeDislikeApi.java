@@ -73,7 +73,7 @@ public class ReturnYouTubeDislikeApi {
         if (DEBUG_RATE_LIMIT) {
             final double RANDOM_RATE_LIMIT_PERCENTAGE = 0.1; // 10% chance of a triggering a rate limit
             if (Math.random() < RANDOM_RATE_LIMIT_PERCENTAGE) {
-                LogHelper.printDebug(() -> "!!! ARTIFICALLY TRIGGERING RATE LIMIT FOR DEBUG PURPOSES !!!");
+                LogHelper.printDebug(() -> "Artificially triggering rate limit for debug purposes");
                 httpResponseCode = RATE_LIMIT_HTTP_STATUS_CODE;
             }
         }
@@ -88,8 +88,10 @@ public class ReturnYouTubeDislikeApi {
     }
 
     /**
-     * @return NULL if fetch failed or if calling thread is interrupted.
+     * @return The number of dislikes.
+     * Returns NULL if fetch failed, calling thread is interrupted, or rate limit is in effect.
      */
+    @Nullable
     public static Integer fetchDislikes(String videoId) {
         ReVancedUtils.verifyOffMainThread();
         Objects.requireNonNull(videoId);
@@ -163,6 +165,7 @@ public class ReturnYouTubeDislikeApi {
         return null;
     }
 
+    @Nullable
     private static String confirmRegistration(String userId, String solution) {
         ReVancedUtils.verifyOffMainThread();
         Objects.requireNonNull(userId);

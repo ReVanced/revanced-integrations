@@ -8,12 +8,6 @@ public class LogHelper {
 
     /**
      * Message log using lambdas.
-     * <p>
-     * ie:
-     * <code>
-     * printDebug(() -> "something happened to id: " variable + " at time: " + time);
-     * </code>
-     * <p>
      */
     public interface LogMessage {
         String buildStringMessage();
@@ -21,9 +15,11 @@ public class LogHelper {
         /**
          * @return For non inner classes, this returns {@link Class#getSimpleName()}.
          * For inner and classes (static and anonymous), this returns the enclosing class simple name.<br>
-         * ie: java.util.AbstractMap returns 'AbstractMap'<br>
-         * ie: java.util.AbstractMap$SimpleEntry returns 'AbstractMap'<br>
-         * returns an empty string for null classes
+         * <br>
+         * ie: each of these classes return 'SomethingView'<br>
+         * com.company.SomethingView<br>
+         * com.company.SomethingView$StaticClass<br>
+         * com.company.SomethingView$1<br>
          */
         private String findOuterClassSimpleName() {
             var selfClass = this.getClass();
@@ -45,7 +41,7 @@ public class LogHelper {
     /**
      * Logs information messages with the most outer class name of the code that is calling this method.
      */
-    public static void printInfo(LogMessage message) {
+    public static void printInfo(LogMessage message) { // must be private
         Log.i("ReVanced: " + message.findOuterClassSimpleName(), message.buildStringMessage());
     }
 
@@ -75,8 +71,6 @@ public class LogHelper {
     /**
      * Deprecated. Instead call {@link #printDebug(LogMessage)},
      * which does not cause log messages to be constructed unless logging is enabled.
-     *
-     * TODO: delete this method
      */
     @Deprecated
     public static void debug(Class _clazz, String message) {
@@ -85,9 +79,8 @@ public class LogHelper {
 
     /**
      * Deprecated.  Instead call {@link #printException(LogMessage, Throwable)}
-     * which does not cause log messages to be constructed unless logging is enabled.
-     *
-     * TODO: delete this method
+     * or {@link #printException(LogMessage)}
+     * which does not cause log messages to be constructed unless logging is enabled.<br>
      */
     @Deprecated
     public static void printException(Class _clazz, String message, Throwable ex) {
@@ -97,8 +90,6 @@ public class LogHelper {
     /**
      * Deprecated. Instead call {@link #printException(LogMessage)},
      * which does not cause log messages to be constructed unless logging is enabled.
-     *
-     * TODO: delete this method
      */
     @Deprecated
     public static void printException(Class _clazz, String message) {
@@ -108,11 +99,10 @@ public class LogHelper {
     /**
      * Deprecated. Instead call {@link #printInfo(LogMessage)},
      * which does not cause log messages to be constructed unless logging is enabled.
-     *
-     * TODO: delete this method
      */
     @Deprecated
     public static void info(Class _clazz, String message) {
         printInfo(() -> (message));
     }
 }
+
