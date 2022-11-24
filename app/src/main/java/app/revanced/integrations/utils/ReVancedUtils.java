@@ -67,6 +67,29 @@ public class ReVancedUtils {
         return context.getResources().getConfiguration().smallestScreenWidthDp >= 600;
     }
 
+    /**
+     * @return For non inner classes, this returns {@link Class#getSimpleName()}.
+     *         For inner and classes (static and anonymous), this returns the enclosing class simple name.<br>
+     *         ie: java.util.AbstractMap returns 'AbstractMap'<br>
+     *         ie: java.util.AbstractMap$SimpleEntry returns 'AbstractMap'<br>
+     *         returns an empty string for null classes
+     */
+    public static String findOuterClassSimpleName(Class clazz) {
+        if (clazz == null) return ""; // It might be better to throw an exception
+
+        String fullClassName = clazz.getName();
+        final int dollarSignIndex = fullClassName.indexOf('$');
+        if (dollarSignIndex == -1) {
+            return clazz.getSimpleName(); // already an outer class
+        }
+        // else, class is inner class (static or anonymous)
+
+        // parse the simple name full name
+        // a class with no package returns index of -1, but incrementing gives index zero which is correct
+        final int simpleClassNameStartIndex = fullClassName.lastIndexOf('.') + 1;
+        return fullClassName.substring(simpleClassNameStartIndex, dollarSignIndex);
+    }
+
     public static void runOnMainThread(Runnable runnable) {
         new Handler(Looper.getMainLooper()).post(runnable);
     }
