@@ -54,7 +54,7 @@ public class ReturnYouTubeDislike {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             Context context = ReVancedUtils.getContext();
             Locale locale = context.getResources().getConfiguration().locale;
-            LogHelper.printDebug(() -> "Locale: " + locale);
+            LogHelper.debug(ReturnYouTubeDislike.class, "locale - " + locale);
             compactNumberFormatter = CompactDecimalFormat.getInstance(
                     locale,
                     CompactDecimalFormat.CompactStyle.SHORT
