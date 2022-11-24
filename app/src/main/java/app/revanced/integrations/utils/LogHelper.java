@@ -11,7 +11,7 @@ public class LogHelper {
      * <p>
      * ie:
      * <code>
-     * debug(()->"something happened to id: " variable + " at time: " + time);
+     * debug(() -> "something happened to id: " variable + " at time: " + time);
      * </code>
      * <p>
      */
