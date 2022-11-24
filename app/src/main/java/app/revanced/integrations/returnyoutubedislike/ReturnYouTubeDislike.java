@@ -88,7 +88,7 @@ public class ReturnYouTubeDislike {
     }
 
     /**
-     * @return true if the videoId parameter matches the current dislike request, and the set value was successfull.
+     * @return true if the videoId parameter matches the current dislike request, and the set value was successful.
      * If videoID parameter does not match currentVideoId, then this call does nothing
      */
     private static synchronized boolean setCurrentDislikeCount(String videoId, Integer videoIdDislikeCount) {
