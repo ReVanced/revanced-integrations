@@ -88,8 +88,10 @@ public class ReturnYouTubeDislikeApi {
     }
 
     /**
-     * @return NULL if fetch failed or if calling thread is interrupted.
+     * @return The number of dislikes.
+     * Returns NULL if fetch failed, calling thread is interrupted, or rate limit is in effect.
      */
+    @Nullable
     public static Integer fetchDislikes(String videoId) {
         ReVancedUtils.verifyOffMainThread();
         Objects.requireNonNull(videoId);
@@ -123,8 +125,8 @@ public class ReturnYouTubeDislikeApi {
     /**
      * @return The newly created and registered user id.  Returns NULL if registration failed.
      */
-    public static @Nullable
-    String registerAsNewUser() {
+    @Nullable
+    public static String registerAsNewUser() {
         ReVancedUtils.verifyOffMainThread();
         try {
             if (checkIfRateLimitInEffect("registerAsNewUser")) {
@@ -163,6 +165,7 @@ public class ReturnYouTubeDislikeApi {
         return null;
     }
 
+    @Nullable
     private static String confirmRegistration(String userId, String solution) {
         ReVancedUtils.verifyOffMainThread();
         Objects.requireNonNull(userId);

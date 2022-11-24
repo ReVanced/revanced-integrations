@@ -171,7 +171,7 @@ public class ReturnYouTubeDislike {
 
             Integer fetchedDislikeCount = getDislikeCount();
             if (fetchedDislikeCount == null) {
-                LogHelper.printDebug(() -> "Rate limit or timeout waiting for Dislike fetch thread to complete");
+                LogHelper.printDebug(() -> "Cannot add dislike count to UI (dislike count not available)");
                 // There's no point letting the request continue, as there is not another chance to use the result
                 interruptDislikeFetchThreadIfRunning();
                 return;
@@ -217,8 +217,8 @@ public class ReturnYouTubeDislike {
      * @return ReturnYouTubeDislike user ID. If user registration has never happened
      * and the network call fails, this will return NULL
      */
-    private static @Nullable
-    String getUserId() {
+    @Nullable
+    private static String getUserId() {
         ReVancedUtils.verifyOffMainThread();
 
         String userId = SettingsEnum.RYD_USER_ID.getString();
