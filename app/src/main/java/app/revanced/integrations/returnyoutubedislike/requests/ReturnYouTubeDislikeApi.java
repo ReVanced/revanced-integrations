@@ -287,7 +287,7 @@ public class ReturnYouTubeDislikeApi {
 
             if (responseCode == 200) {
                 String result = parseJson(connection);
-                LogHelper.debug(ReturnYouTubeDislikeApi.class, "Vote confirmation result was " + result);
+                LogHelper.printDebug(() -> "Vote confirmation result was " + result);
                 connection.disconnect();
 
                 if (result.equalsIgnoreCase("true")) {
