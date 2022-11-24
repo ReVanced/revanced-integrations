@@ -1,3 +1,35 @@
+# [0.77.0](https://github.com/revanced/revanced-integrations/compare/v0.76.0...v0.77.0) (2022-11-24)
+
+
+### Bug Fixes
+
+* invalid syntax error ([d4a23ed](https://github.com/revanced/revanced-integrations/commit/d4a23ed5c931993e9c642d0948e9551f848f480c))
+
+
+### Features
+
+* **youtube/general-ads:** hide movie ad from search ([767201c](https://github.com/revanced/revanced-integrations/commit/767201ce05f01db692828b453d2b31487f88e015))
+
+# [0.76.0](https://github.com/revanced/revanced-integrations/compare/v0.75.0...v0.76.0) (2022-11-22)
+
+
+### Bug Fixes
+
+* **youtube/general-ads:** hide reels shelf ([1f48749](https://github.com/revanced/revanced-integrations/commit/1f48749958675926dd71b08e079497daed2b332b))
+* **youtube/general-ads:** make restarting mandatory when toggling shorts ([25978ae](https://github.com/revanced/revanced-integrations/commit/25978ae4a4982782bc18830a1c160b2ac1dfb7e8))
+
+
+### Features
+
+* **youtube/debugging:** do not require restarting on toggle ([ee1f895](https://github.com/revanced/revanced-integrations/commit/ee1f895e877e515898118ff440066645de0a6a76))
+
+# [0.75.0](https://github.com/revanced/revanced-integrations/compare/v0.74.1...v0.75.0) (2022-11-21)
+
+
+### Features
+
+* **twitch:** integrations code for patches ([#216](https://github.com/revanced/revanced-integrations/issues/216)) ([d4c3b74](https://github.com/revanced/revanced-integrations/commit/d4c3b74a9a49c7595cf63e3ccedc03586bc2de8d))
+
 ## [0.74.1](https://github.com/revanced/revanced-integrations/compare/v0.74.0...v0.74.1) (2022-11-20)
 
 
