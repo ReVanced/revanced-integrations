@@ -17,6 +17,7 @@ import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.sponsorblock.NewSegmentHelperLayout;
 import app.revanced.integrations.sponsorblock.PlayerController;
+import app.revanced.integrations.sponsorblock.SponsorBlockSettings;
 import app.revanced.integrations.sponsorblock.SponsorBlockUtils;
 
 public class NewSegmentLayout extends FrameLayout {
@@ -68,7 +69,7 @@ public class NewSegmentLayout extends FrameLayout {
             this.rewindButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    LogHelper.printDebug(() -> "Rewind button clicked");
+                    LogHelper.debug(NewSegmentLayout.class, "Rewind button clicked");
                     PlayerController.skipRelativeMilliseconds(-SettingsEnum.SB_ADJUST_NEW_SEGMENT_STEP.getInt());
                 }
             });
@@ -79,7 +80,7 @@ public class NewSegmentLayout extends FrameLayout {
             this.forwardButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    LogHelper.printDebug(() -> "Forward button clicked");
+                    LogHelper.debug(NewSegmentLayout.class, "Forward button clicked");
                     PlayerController.skipRelativeMilliseconds(SettingsEnum.SB_ADJUST_NEW_SEGMENT_STEP.getInt());
                 }
             });
@@ -90,7 +91,7 @@ public class NewSegmentLayout extends FrameLayout {
             this.adjustButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    LogHelper.printDebug(() -> "Adjust button clicked");
+                    LogHelper.debug(NewSegmentLayout.class, "Adjust button clicked");
                     SponsorBlockUtils.onMarkLocationClicked(NewSegmentHelperLayout.context);
                 }
             });
@@ -101,7 +102,7 @@ public class NewSegmentLayout extends FrameLayout {
             this.compareButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    LogHelper.printDebug(() -> "Compare button clicked");
+                    LogHelper.debug(NewSegmentLayout.class, "Compare button clicked");
                     SponsorBlockUtils.onPreviewClicked(NewSegmentHelperLayout.context);
                 }
             });
@@ -112,7 +113,7 @@ public class NewSegmentLayout extends FrameLayout {
             this.editButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    LogHelper.printDebug(() -> "Edit button clicked");
+                    LogHelper.debug(NewSegmentLayout.class, "Edit button clicked");
                     SponsorBlockUtils.onEditByHandClicked(NewSegmentHelperLayout.context);
                 }
             });
@@ -123,7 +124,7 @@ public class NewSegmentLayout extends FrameLayout {
             this.publishButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    LogHelper.printDebug(() -> "Publish button clicked");
+                    LogHelper.debug(NewSegmentLayout.class, "Publish button clicked");
                     SponsorBlockUtils.onPublishClicked(NewSegmentHelperLayout.context);
                 }
             });

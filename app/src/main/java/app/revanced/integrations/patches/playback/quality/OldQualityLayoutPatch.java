@@ -15,14 +15,14 @@ public class OldQualityLayoutPatch {
         listView.setOnHierarchyChangeListener(new ViewGroup.OnHierarchyChangeListener() {
             @Override
             public void onChildViewAdded(View parent, View child) {
-                LogHelper.printDebug(() -> "Added: " + child);
+                LogHelper.debug(OldQualityLayoutPatch.class, "Added: " + child);
 
                 parent.setVisibility(View.GONE);
 
                 final var indexOfAdvancedQualityMenuItem = 4;
                 if (listView.indexOfChild(child) != indexOfAdvancedQualityMenuItem) return;
 
-                LogHelper.printDebug(() -> "Found advanced menu: " + child);
+                LogHelper.debug(OldQualityLayoutPatch.class, "Found advanced menu: " + child);
 
                 final var qualityItemMenuPosition = 4;
                 listView.performItemClick(null, qualityItemMenuPosition, 0);

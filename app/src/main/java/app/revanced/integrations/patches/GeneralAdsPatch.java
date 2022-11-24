@@ -168,6 +168,6 @@ public final class GeneralAdsPatch extends Filter {
     }
 
     private static void log(String message) {
-        LogHelper.printDebug(() -> message);
+        LogHelper.debug(GeneralAdsPatch.class, message);
     }
 }

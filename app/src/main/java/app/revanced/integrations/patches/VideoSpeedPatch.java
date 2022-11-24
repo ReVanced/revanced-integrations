@@ -22,9 +22,9 @@ public class VideoSpeedPatch {
             return speed;
         }
         ReVancedUtils.setNewVideo(false);
-        LogHelper.printDebug(() -> "Speed: " + speed);
+        LogHelper.debug(VideoSpeedPatch.class, "Speed: " + speed);
         float preferredSpeed = SettingsEnum.PREFERRED_VIDEO_SPEED.getFloat();
-        LogHelper.printDebug(() -> "Preferred speed: " + preferredSpeed);
+        LogHelper.debug(VideoSpeedPatch.class, "Preferred speed: " + preferredSpeed);
         if (preferredSpeed == -2.0f) {
             return speed;
         }
@@ -48,20 +48,18 @@ public class VideoSpeedPatch {
         int index = 0;
         while (it.hasNext()) {
             float streamSpeed2 = it.next();
-            final int logIndex = index;
-            LogHelper.printDebug(() -> "Speed at index " + logIndex + ": " + streamSpeed2);
+            LogHelper.debug(VideoSpeedPatch.class, "Speed at index " + index + ": " + streamSpeed2);
             index++;
         }
         int speed3 = -1;
         for (float streamSpeed3 : iStreamSpeeds) {
             if (streamSpeed3 <= preferredSpeed) {
                 speed3++;
-                final int speed3ToLog = speed3;
-                LogHelper.printDebug(() -> "Speed loop at index " + speed3ToLog + ": " + streamSpeed3);
+                LogHelper.debug(VideoSpeedPatch.class, "Speed loop at index " + speed3 + ": " + streamSpeed3);
             }
         }
         if (speed3 == -1) {
-            LogHelper.printDebug(() -> "Speed was not found");
+            LogHelper.debug(VideoSpeedPatch.class, "Speed was not found");
             speed2 = 3;
         } else {
             speed2 = speed3;
@@ -70,13 +68,14 @@ public class VideoSpeedPatch {
             Method[] declaredMethods = qInterface.getClass().getDeclaredMethods();
             for (Method method : declaredMethods) {
                 if (method.getName().length() <= 2) {
-                    LogHelper.printDebug(() -> "Method name: " + method.getName());
+                    LogHelper.debug(VideoSpeedPatch.class, "Method name: " + method.getName());
                     try {
                         try {
                             method.invoke(qInterface, videoSpeeds[speed2]);
                         } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ignored) {
-                        } catch (final Exception e6) {
-                            LogHelper.printException(() -> (e6.getMessage()));
+                        } catch (Exception e6) {
+                            e = e6;
+                            LogHelper.printException(VideoSpeedPatch.class, e.getMessage());
                             return speed2;
                         }
                     } catch (Exception ignored) {
@@ -86,7 +85,7 @@ public class VideoSpeedPatch {
         } catch (Exception e10) {
             e = e10;
         }
-        LogHelper.printDebug(() -> "Speed changed to: " + speed2);
+        LogHelper.debug(VideoSpeedPatch.class, "Speed changed to: " + speed2);
         return speed2;
     }
 
@@ -98,15 +97,15 @@ public class VideoSpeedPatch {
         int i = 0;
         if (!ReVancedUtils.isNewVideoStarted() || userChangedSpeed) {
             if (SettingsEnum.DEBUG.getBoolean() && userChangedSpeed) {
-                LogHelper.printDebug(() -> "Skipping speed change because user changed it: " + speed);
+                LogHelper.debug(VideoSpeedPatch.class, "Skipping speed change because user changed it: " + speed);
             }
             userChangedSpeed = false;
             return -1.0f;
         }
         ReVancedUtils.setNewVideo(false);
-        LogHelper.printDebug(() -> "Speed: " + speed);
+        LogHelper.debug(VideoSpeedPatch.class, "Speed: " + speed);
         float preferredSpeed = SettingsEnum.PREFERRED_VIDEO_SPEED.getFloat();
-        LogHelper.printDebug(() -> "Preferred speed: " + preferredSpeed);
+        LogHelper.debug(VideoSpeedPatch.class, "Preferred speed: " + preferredSpeed);
         if (preferredSpeed == -2.0f) {
             return -1.0f;
         }
@@ -137,8 +136,7 @@ public class VideoSpeedPatch {
         int index = 0;
         for (Float iStreamSpeed : iStreamSpeeds) {
             float streamSpeed2 = iStreamSpeed;
-            final int indexToLog = index;
-            LogHelper.printDebug(() -> "Speed at index " + indexToLog + ": " + streamSpeed2);
+            LogHelper.debug(VideoSpeedPatch.class, "Speed at index " + index + ": " + streamSpeed2);
             index++;
         }
         int newSpeedIndex = -1;
@@ -146,21 +144,18 @@ public class VideoSpeedPatch {
             float streamSpeed3 = iStreamSpeed;
             if (streamSpeed3 <= preferredSpeed) {
                 newSpeedIndex++;
-                final int newSpeedIndexToLog = newSpeedIndex;
-                LogHelper.printDebug(() -> "Speed loop at index " + newSpeedIndexToLog + ": " + streamSpeed3);
+                LogHelper.debug(VideoSpeedPatch.class, "Speed loop at index " + newSpeedIndex + ": " + streamSpeed3);
             }
         }
         if (newSpeedIndex == -1) {
-            LogHelper.printDebug(() -> "Speed was not found");
+            LogHelper.debug(VideoSpeedPatch.class, "Speed was not found");
             newSpeedIndex = 3;
         }
         if (newSpeedIndex == speed) {
-            final int newSpeedIndexToLog = newSpeedIndex;
-            LogHelper.printDebug(() -> "Trying to set speed to what it already is, skipping...: " + newSpeedIndexToLog);
+            LogHelper.debug(VideoSpeedPatch.class, "Trying to set speed to what it already is, skipping...: " + newSpeedIndex);
             return -1.0f;
         }
-        final int newSpeedIndexToLog = newSpeedIndex;
-        LogHelper.printDebug(() -> "Speed changed to: " + newSpeedIndexToLog);
+        LogHelper.debug(VideoSpeedPatch.class, "Speed changed to: " + newSpeedIndex);
         return getSpeedByIndex(newSpeedIndex);
     }
 

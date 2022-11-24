@@ -5,6 +5,7 @@ import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -89,7 +90,7 @@ public class SkipSponsorButton extends FrameLayout {
         this.skipSponsorBtnContainer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                LogHelper.printDebug(() -> "Skip button clicked");
+                LogHelper.debug(SkipSponsorButton.class, "Skip button clicked");
                 PlayerController.onSkipSponsorClicked();
             }
         });

@@ -13,7 +13,7 @@ public class DownloadsPatch {
      * @param videoId The current video id
      */
     public static void setVideoId(String videoId) {
-        LogHelper.printDebug(() -> "newVideoLoaded - " + videoId);
+        LogHelper.debug(DownloadsPatch.class, "newVideoLoaded - " + videoId);
 
         DownloadsPatch.videoId = videoId;
     }

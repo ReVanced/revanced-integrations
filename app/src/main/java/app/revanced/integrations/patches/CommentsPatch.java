@@ -24,7 +24,7 @@ final class CommentsPatch extends Filter {
     boolean filter(String path, String _identifier) {
         if (!pathRegister.contains(path)) return false;
 
-        LogHelper.printDebug(() -> "Blocked: " + path);
+        LogHelper.debug(CommentsPatch.class, "Blocked: " + path);
 
         return true;
     }

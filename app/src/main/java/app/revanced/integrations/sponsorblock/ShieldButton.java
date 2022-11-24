@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import java.lang.ref.WeakReference;
+import java.util.Set;
 
 import static app.revanced.integrations.sponsorblock.PlayerController.getCurrentVideoLength;
 import static app.revanced.integrations.sponsorblock.PlayerController.getLastKnownVideoTime;
@@ -28,7 +29,7 @@ public class ShieldButton {
 
     public static void initialize(Object viewStub) {
         try {
-            LogHelper.printDebug(() -> "initializing shield button");
+            LogHelper.debug(ShieldButton.class, "initializing shield button");
 
             _youtubeControlsLayout = (RelativeLayout) viewStub;
 
@@ -36,7 +37,7 @@ public class ShieldButton {
                     .findViewById(getIdentifier("sponsorblock_button", "id"));
 
             if (imageView == null) {
-                LogHelper.printDebug(() -> "Couldn't find imageView with \"sponsorblock_button\"");
+                LogHelper.debug(ShieldButton.class, "Couldn't find imageView with \"sponsorblock_button\"");
             }
             if (imageView == null) return;
             imageView.setOnClickListener(SponsorBlockUtils.sponsorBlockBtnListener);
@@ -52,7 +53,7 @@ public class ShieldButton {
             isShowing = true;
             changeVisibilityImmediate(false);
         } catch (Exception ex) {
-            LogHelper.printException(() -> ("Unable to set RelativeLayout"), ex);
+            LogHelper.printException(ShieldButton.class, "Unable to set RelativeLayout", ex);
         }
     }
 
@@ -79,7 +80,7 @@ public class ShieldButton {
             if (getLastKnownVideoTime() >= getCurrentVideoLength()) {
                 return;
             }
-            LogHelper.printDebug(() -> "Fading in");
+            LogHelper.debug(ShieldButton.class, "Fading in");
 
             iView.setVisibility(View.VISIBLE);
             if (!immediate)
@@ -88,7 +89,7 @@ public class ShieldButton {
         }
 
         if (iView.getVisibility() == View.VISIBLE) {
-            LogHelper.printDebug(() -> "Fading out");
+            LogHelper.debug(ShieldButton.class, "Fading out");
             if (!immediate)
                 iView.startAnimation(fadeOut);
             iView.setVisibility(shouldBeShown() ? View.INVISIBLE : View.GONE);
