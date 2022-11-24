@@ -1,5 +1,7 @@
 package app.revanced.integrations.utils;
 
+import app.revanced.integrations.utils.ReVancedUtils;
+
 import android.util.Log;
 
 import app.revanced.integrations.settings.SettingsEnum;
