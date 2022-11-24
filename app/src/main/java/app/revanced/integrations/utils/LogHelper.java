@@ -1,7 +1,5 @@
 package app.revanced.integrations.utils;
 
-import app.revanced.integrations.utils.ReVancedUtils;
-
 import android.util.Log;
 
 import app.revanced.integrations.settings.SettingsEnum;
@@ -9,167 +7,160 @@ import app.revanced.integrations.settings.SettingsEnum;
 public class LogHelper {
 
     /**
-     * Allows creating log messages using lambdas.
-     *
+     * Message log using lambdas.
+     * <p>
      * ie:
      * <code>
-     *     debug(()->"something happened to id: " variable + " at time: " + time);
+     * debug(()->"something happened to id: " variable + " at time: " + time);
      * </code>
-     *
-     * Performance is improved since the log message is constructed only if logging is actually enabled.
+     * <p>
      */
     public interface LogMessage {
-        public String buildStringMessage();
-    }
+        String buildStringMessage();
 
-    /**
-     * Calls {@link #debug(Class, LogMessage)} with the most outer class name of the code that is calling this method.
-     * If you wish to log under a different class, instead directly call {@link #debug(Class, LogMessage)}
-     */
-    public static void debug(LogMessage message) {
-        debug(ReVancedUtils.findOuterClassSimpleName(message.getClass()), message);
-    }
-    public static void debug(Class clazz, LogMessage message) {
-        debug(clazz.getSimpleName(), message);
-    }
-    private static void debug(String simpleClassName, LogMessage message) { // must be private
-        if (SettingsEnum.DEBUG.getBoolean()) {
-            Log.d("revanced: " + simpleClassName, message.buildStringMessage());
+        /**
+         * @return For non inner classes, this returns {@link Class#getSimpleName()}.
+         * For inner and classes (static and anonymous), this returns the enclosing class simple name.<br>
+         * ie: java.util.AbstractMap returns 'AbstractMap'<br>
+         * ie: java.util.AbstractMap$SimpleEntry returns 'AbstractMap'<br>
+         * returns an empty string for null classes
+         */
+        private String findOuterClassSimpleName() {
+            var self = this.getClass();
+
+            String fullClassName = self.getName();
+            final int dollarSignIndex = fullClassName.indexOf('$');
+            if (dollarSignIndex == -1) {
+                return self.getSimpleName(); // already an outer class
+            }
+            // else, class is inner class (static or anonymous)
+
+            // parse the simple name full name
+            // a class with no package returns index of -1, but incrementing gives index zero which is correct
+            final int simpleClassNameStartIndex = fullClassName.lastIndexOf('.') + 1;
+            return fullClassName.substring(simpleClassNameStartIndex, dollarSignIndex);
         }
     }
 
+    /**
+     * Logs information messages with the most outer class name of the code that is calling this method.
+     */
+    public static void printInfo(LogMessage message) { // must be private
+        Log.i("ReVanced: " + message.findOuterClassSimpleName(), message.buildStringMessage());
+    }
 
     /**
-     * Calls {@link #printException(Class, LogMessage)}
-     * with the most outer class name of the code that is calling this method.
-     * If you wish to log under a different class, instead directly call {@link #printException(Class, LogMessage)}
+     * Logs debug messages with the most outer class name of the code that is calling this method.
+     */
+    public static void printDebug(LogMessage message) {
+        if (SettingsEnum.DEBUG.getBoolean()) {
+            Log.d("ReVanced: " + message.findOuterClassSimpleName(), message.buildStringMessage());
+        }
+    }
+
+    /**
+     * Logs messages with the most outer class name of the code that is calling this method.
      */
     public static void printException(LogMessage message) {
-        printException(ReVancedUtils.findOuterClassSimpleName(message.getClass()), message);
+        Log.e("ReVanced: " + message.findOuterClassSimpleName(), message.buildStringMessage());
     }
-    public static void printException(Class clazz, LogMessage message) {
-        printException(clazz.getSimpleName(), message);
-    }
-    private static void printException(String simpleClassName, LogMessage message) { // must be private
-        Log.e("revanced: " + simpleClassName, message.buildStringMessage());
-    }
-
-
 
     /**
-     * Calls {@link #printException(Class, LogMessage, Throwable)}
-     * with the most outer class name of the code that is calling this method.
-     * If you wish to log under a different class, instead directly call {@link #printException(Class, LogMessage, Throwable)}
+     * Logs exceptions with the most outer class name of the code that is calling this method.
      */
     public static void printException(LogMessage message, Throwable ex) {
-        printException(ReVancedUtils.findOuterClassSimpleName(message.getClass()), message, ex);
+        Log.e("ReVanced: " + message.findOuterClassSimpleName(), message.buildStringMessage(), ex);
     }
-    public static void printException(Class clazz, LogMessage message, Throwable ex) {
-        printException(clazz.getSimpleName(), message, ex);
-    }
-    private static void printException(String simpleClassName, LogMessage message, Throwable ex) { // must be private
-        Log.e("revanced: " + simpleClassName, message.buildStringMessage(), ex);
-    }
-
 
     /**
-     * Calls {@link #info(Class, LogMessage)}
-     * with the most outer class name of the code that is calling this method.
-     * If you wish to log under a different class, instead directly call {@link #info(Class, LogMessage)}
-     */
-    public static void info(LogMessage message) {
-        info(ReVancedUtils.findOuterClassSimpleName(message.getClass()), message);
-    }
-    public static void info(Class clazz, LogMessage message) {
-        info(clazz.getSimpleName(), message);
-    }
-    private static void info(String simpleClassName, LogMessage message) { // must be private
-        Log.i("revanced: " + simpleClassName, message.buildStringMessage());
-    }
-
-
-
-    //
-    // deprecated slow methods.  Should eventually delete these methods
-    //
-
-    /**
-     * Deprecated.  Instead call {@link #debug(LogMessage)},
-     *              which does not cause log messages to be constructed unless logging is enabled.
-     *
-     *              change existing code from:
-     *              <code>
-     *                  debug(Whatever.class, "something happened to id: " variable + " at time: " + time);
-     *              </code>
-     *
-     *              into:
-     *              <code>
-     *                  debug(()->"something happened to id: " variable + " at time: " + time);
-     *              </code>
-     *
-     *
+     * Deprecated. Instead call {@link #printDebug(LogMessage)},
+     * which does not cause log messages to be constructed unless logging is enabled.
+     * <p>
+     * change existing code from:
+     * <code>
+     * debug(Whatever.class, "something happened to id: " variable + " at time: " + time);
+     * </code>
+     * <p>
+     * into:
+     * <code>
+     * debug(()->"something happened to id: " variable + " at time: " + time);
+     * </code>
+     * <p>
+     * <p>
      * TODO: to quickly change an entire project , change the deprecated code below from:
      *      <code>debug(clazz, ()->message);</code>
      * into:
      *      <code>debug(()->message);</code>
      *  then do Android Studio->Refactor->Inline  on this method
      *  and the entire project is now change.
-     *
-     *  A few places will need to be manually edited, such as string that could generate a checked exception):
-     *       <code>debug(clazz, "url connection response code " + connection.getResponseCode());</code>
-     *
-     *  but that's usually easy to fix by extracting the code that could generate a checked exception
-     *       <code>int responseCode = connection.getResponseCode();
-     *       debug(()->"url connection response code " + responseCode);</code>
+     * <p>
+     * A few places will need to be manually edited, such as string that could generate a checked exception):
+     * <code>debug(clazz, "url connection response code " + connection.getResponseCode());</code>
+     * <p>
+     * but that's usually easy to fix by extracting the code that could generate a checked exception
+     * <code>int responseCode = connection.getResponseCode();
+     * debug(()->"url connection response code " + responseCode);</code>
      */
     @Deprecated
-    public static void debug(Class clazz, String message) {
-        debug(clazz, ()->message);
+    public static void debug(Class _clazz, String message) {
+        printDebug(() -> message);
     }
+
     /**
-     * Deprecated.  Instead call {@link #printException(Class, LogMessage, Throwable)}
-     *              or {@link #printException(Class, LogMessage)}
-     *              which does not cause log messages to be constructed unless logging is enabled.<br>
-     *
-     *              change existing code from:
-     *              <code>
-     *                  printException(Whatever.class, "something happened to id: " variable + " at time: " + time, ex);
-     *              </code>
-     *
-     *              into:
-     *              <code>
-     *                  printException(()->"something happened to id: " variable + " at time: " + time, ex);
-     *              </code>
+     * Deprecated.  Instead call {@link #printException(LogMessage, Throwable)}
+     * or {@link #printException(LogMessage)}
+     * which does not cause log messages to be constructed unless logging is enabled.<br>
+     * <p>
+     * change existing code from:
+     * <code>
+     * printException(Whatever.class, "something happened to id: " variable + " at time: " + time, ex);
+     * </code>
+     * <p>
+     * into:
+     * <code>
+     * printException(()->"something happened to id: " variable + " at time: " + time, ex);
+     * </code>
      */
     @Deprecated
-    public static void printException(Class clazz, String message, Throwable ex) {
-        printException(clazz, ()->(message), ex);
+    public static void printException(Class _clazz, String message, Throwable ex) {
+        printException(() -> (message), ex);
     }
+
     /**
-     * Deprecated.  Instead call {@link #printException(Class, LogMessage)},
-     *              which does not cause log messages to be constructed unless logging is enabled.
-     *
-     *              change existing code from:
-     *              <code>
-     *                  printException(Whatever.class, "something happened to id: " variable + " at time: " + time);
-     *              </code>
-     *
-     *              into:
-     *              <code>
-     *                  printException(()->"something happened to id: " variable + " at time: " + time);
-     *              </code>
+     * Deprecated. Instead call {@link #printException(LogMessage)},
+     * which does not cause log messages to be constructed unless logging is enabled.
+     * <p>
+     * change existing code from:
+     * <code>
+     * printException(Whatever.class, "something happened to id: " variable + " at time: " + time);
+     * </code>
+     * <p>
+     * into:
+     * <code>
+     * printException(()->"something happened to id: " variable + " at time: " + time);
+     * </code>
      */
     @Deprecated
-    public static void printException(Class clazz, String message) {
-        printException(clazz, ()->(message));
+    public static void printException(Class _clazz, String message) {
+        printException(() -> (message));
     }
+
     /**
-     * Deprecated.  Instead call {@link #info(Class, LogMessage)}
-     *              or {@link #info(Class, LogMessage)}
-     *              which does not cause log messages to be constructed unless logging is enabled.
+     * Deprecated. Instead call {@link #printInfo(LogMessage)},
+     * which does not cause log messages to be constructed unless logging is enabled.
+     * <p>
+     * change existing code from:
+     * <code>
+     * printInfo(Whatever.class, "something happened to id: " variable + " at time: " + time);
+     * </code>
+     * <p>
+     * into:
+     * <code>
+     * printInfo(()->"something happened to id: " variable + " at time: " + time);
+     * </code>
      */
     @Deprecated
-    public static void info(Class clazz, String message) {
-        info(clazz, ()->(message));
+    public static void info(Class _clazz, String message) {
+        printInfo(() -> (message));
     }
 }

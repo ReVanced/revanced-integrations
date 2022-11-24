@@ -43,7 +43,8 @@ public class ReturnYouTubeDislikeApi {
      */
     private static volatile long lastTimeLimitWasHit; // must be volatile, since different threads access this
 
-    private ReturnYouTubeDislikeApi() { } // utility class
+    private ReturnYouTubeDislikeApi() {
+    } // utility class
 
     /**
      * @return true, if api rate limit is in effect
@@ -78,7 +79,7 @@ public class ReturnYouTubeDislikeApi {
         if (httpResponseCode == RATE_LIMIT_HTTP_STATUS_CODE) {
             lastTimeLimitWasHit = System.currentTimeMillis();
             LogHelper.debug(() -> "API rate limit was hit.  Stopping API calls for the next "
-                    + RATE_LIMIT_BACKOFF_SECONDS + " seconds");
+                                   + RATE_LIMIT_BACKOFF_SECONDS + " seconds");
             return true;
         }
         return false;
@@ -158,6 +159,7 @@ public class ReturnYouTubeDislikeApi {
         }
         return null;
     }
+
     private static String confirmRegistration(String userId, String solution) {
         ReVancedUtils.verifyOffMainThread();
         Objects.requireNonNull(userId);
@@ -247,6 +249,7 @@ public class ReturnYouTubeDislikeApi {
         }
         return false;
     }
+
     private static boolean confirmVote(String videoId, String userId, String solution) {
         ReVancedUtils.verifyOffMainThread();
         Objects.requireNonNull(videoId);
