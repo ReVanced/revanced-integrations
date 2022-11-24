@@ -6,6 +6,7 @@ import android.os.Build;
 import android.text.SpannableString;
 
 import androidx.annotation.GuardedBy;
+import androidx.annotation.Nullable;
 
 import java.util.Locale;
 import java.util.Objects;
@@ -42,36 +43,25 @@ public class ReturnYouTubeDislike {
 
     private static Thread _dislikeFetchThread = null;
     private static Thread _votingThread = null;
-    private static Registration registration;
-    private static Voting voting;
     private static CompactDecimalFormat compactNumberFormatter;
 
     static {
-        Context context = ReVancedUtils.getContext();
-        Locale locale = context.getResources().getConfiguration().locale;
-        LogHelper.debug(ReturnYouTubeDislike.class, "locale - " + locale);
+        isEnabled = SettingsEnum.RYD_ENABLED.getBoolean();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            Context context = ReVancedUtils.getContext();
+            Locale locale = context.getResources().getConfiguration().locale;
+            LogHelper.debug(ReturnYouTubeDislike.class, "locale - " + locale);
             compactNumberFormatter = CompactDecimalFormat.getInstance(
                     locale,
                     CompactDecimalFormat.CompactStyle.SHORT
             );
         }
-        onEnabledChange(SettingsEnum.RYD_ENABLED.getBoolean()); // call after all static fields are initialized
     }
 
     private void ReturnYouTubeDislike() { } // only static methods
 
     public static void onEnabledChange(boolean enabled) {
         isEnabled = enabled;
-        if (!enabled) {
-            return;
-        }
-        if (registration == null) {
-            registration = new Registration();
-        }
-        if (voting == null) {
-            voting = new Voting(registration);
-        }
     }
 
     public static synchronized String getCurrentVideoId() {
@@ -94,7 +84,7 @@ public class ReturnYouTubeDislike {
      * @return true if the videoId parameter matches the current dislike request, and the set value was successful
      *         If videoID parameter does not match currentVideoId, then this call does nothing
      */
-    public static synchronized boolean setCurrentDislikeCount(String videoId, Integer videoIdDislikeCount) {
+    private static synchronized boolean setCurrentDislikeCount(String videoId, Integer videoIdDislikeCount) {
         if (! videoId.equals(currentVideoId)) {
             return false;
         }
@@ -136,7 +126,13 @@ public class ReturnYouTubeDislike {
         // TODO use a private fixed size thread pool
         _dislikeFetchThread = new Thread(() -> {
             try {
-                ReturnYouTubeDislikeApi.fetchDislikes(videoId);
+                Integer fetchedDislikeCount = ReturnYouTubeDislikeApi.fetchDislikes(videoId);
+                if (fetchedDislikeCount == null) {
+                    return; // fetch failed or thread was interrupted
+                }
+                if (! ReturnYouTubeDislike.setCurrentDislikeCount(videoId, fetchedDislikeCount)) {
+                    LogHelper.debug(ReturnYouTubeDislike.class, "ignoring stale dislike fetched call for video " + videoId);
+                }
             } catch (Exception ex) {
                 LogHelper.printException(ReturnYouTubeDislike.class, "Failed to fetch dislikes for videoId: " + videoId, ex);
             }
@@ -186,20 +182,42 @@ public class ReturnYouTubeDislike {
         if (SharedPrefHelper.getBoolean(context, SharedPrefHelper.SharedPrefNames.YOUTUBE, "user_signed_out", true))
             return;
 
-        interruptVoteThreadIfRunning();
+        // must make a local copy of videoId, since it may change between now and when the vote thread runs
         String videoIdToVoteFor = getCurrentVideoId();
-        LogHelper.debug(ReturnYouTubeDislike.class, "sending vote - " + vote + " for video " + videoIdToVoteFor);
+        interruptVoteThreadIfRunning();
 
         // TODO use a private fixed sized thread pool
         _votingThread = new Thread(() -> {
             try {
-                boolean result = voting.sendVote(videoIdToVoteFor, vote);
-                LogHelper.debug(ReturnYouTubeDislike.class, "sendVote status " + result);
+                ReturnYouTubeDislikeApi.sendVote(videoIdToVoteFor, getUserId(), vote);
             } catch (Exception ex) {
                 LogHelper.printException(ReturnYouTubeDislike.class, "Failed to send vote", ex);
             }
         });
         _votingThread.start();
+    }
+
+    /** lock used exclusively by {@link #getUserId()} */
+    private static final Object rydUserIdLock = new Object();
+    /**
+     * Must call off main thread, as this will make a network call if user has not yet been registered yet
+     *
+     * @return  ReturnYouTubeDislike user ID. If user registration has never happened
+     *          and the network call fails, this will return NULL
+     */
+    private static @Nullable String getUserId() {
+        ReVancedUtils.verifyOffMainThread();
+        synchronized (rydUserIdLock) {
+            String userId = SettingsEnum.RYD_USER_ID.getString();
+            if (userId != null) {
+                return userId;
+            }
+            userId = ReturnYouTubeDislikeApi.registerAsNewUser(); // blocks until network call is completed
+            if (userId != null) {
+                SettingsEnum.RYD_USER_ID.saveValue(userId);
+            }
+            return userId;
+        }
     }
 
     private static void updateDislike(AtomicReference<Object> textRef, Integer dislikeCount) {
