@@ -78,7 +78,7 @@ public class ReturnYouTubeDislikeApi {
         if (httpResponseCode == RATE_LIMIT_HTTP_STATUS_CODE) {
             lastTimeLimitWasHit = System.currentTimeMillis();
             LogHelper.debug(() -> "API rate limit was hit.  Stopping API calls for the next "
-                                   + RATE_LIMIT_BACKOFF_SECONDS + " seconds");
+                    + RATE_LIMIT_BACKOFF_SECONDS + " seconds");
             return true;
         }
         return false;
@@ -210,7 +210,7 @@ public class ReturnYouTubeDislikeApi {
             return false;
         }
         LogHelper.debug(()->"Trying to vote the following video: "
-                        + videoId + " with vote " + vote + " and userId: " + userId);
+                + videoId + " with vote " + vote + " and userId: " + userId);
         try {
             HttpURLConnection connection = getConnectionFromRoute(ReturnYouTubeDislikeRoutes.SEND_VOTE);
             applyCommonRequestSettings(connection);
