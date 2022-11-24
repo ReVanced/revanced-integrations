@@ -81,8 +81,7 @@ public class ReturnYouTubeDislikeApi {
         ReVancedUtils.verifyOffMainThread();
         Objects.requireNonNull(videoId);
         try {
-            String apiEndPointName = "fetchDislikes";
-            if (checkIfRateLimitInEffect(apiEndPointName)) {
+            if (checkIfRateLimitInEffect("fetchDislikes")) {
                 return null;
             }
             LogHelper.debug(()->"Fetching dislikes for " + videoId);
@@ -114,8 +113,7 @@ public class ReturnYouTubeDislikeApi {
     public static @Nullable String registerAsNewUser() {
         ReVancedUtils.verifyOffMainThread();
         try {
-            String apiEndPointName = "registerAsNewUser";
-            if (checkIfRateLimitInEffect(apiEndPointName)) {
+            if (checkIfRateLimitInEffect("registerAsNewUser")) {
                 return null;
             }
             String userId = randomString(36);
@@ -155,8 +153,7 @@ public class ReturnYouTubeDislikeApi {
         Objects.requireNonNull(userId);
         Objects.requireNonNull(solution);
         try {
-            String apiEndPointName = "confirmRegistration";
-            if (checkIfRateLimitInEffect(apiEndPointName)) {
+            if (checkIfRateLimitInEffect("confirmRegistration")) {
                 return null;
             }
             LogHelper.debug(()->"Trying to confirm registration for the following userId: " + userId + " with solution: " + solution);
@@ -199,8 +196,7 @@ public class ReturnYouTubeDislikeApi {
         Objects.requireNonNull(userId);
         Objects.requireNonNull(vote);
 
-        String apiEndPointName = "sendVote";
-        if (checkIfRateLimitInEffect(apiEndPointName)) {
+        if (checkIfRateLimitInEffect("sendVote")) {
             return false;
         }
         LogHelper.debug(()->"Trying to vote the following video: "
@@ -247,8 +243,7 @@ public class ReturnYouTubeDislikeApi {
         Objects.requireNonNull(userId);
         Objects.requireNonNull(solution);
 
-        String apiEndPointName = "confirmVote";
-        if (checkIfRateLimitInEffect(apiEndPointName)) {
+        if (checkIfRateLimitInEffect("confirmVote")) {
             return false;
         }
         try {
