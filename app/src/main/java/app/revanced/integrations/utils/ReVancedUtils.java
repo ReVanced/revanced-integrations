@@ -1,5 +1,6 @@
 package app.revanced.integrations.utils;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources;
 import android.os.Handler;
@@ -12,6 +13,7 @@ public class ReVancedUtils {
     private static PlayerType env;
     private static boolean newVideo = false;
 
+    @SuppressLint("StaticFieldLeak")
     public static Context context;
 
     private ReVancedUtils() {

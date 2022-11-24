@@ -24,7 +24,7 @@ public class ReturnYouTubeDislike {
      */
     private static final long MILLISECONDS_TO_BLOCK_UI_WHILE_WAITING_FOR_DISLIKE_FETCH_TO_COMPLETE = 5000;
 
-    // different threads read and write these fields. access to them must be synchronized
+    // Different threads read and write these fields. access to them must be synchronized
     @GuardedBy("this")
     private static String currentVideoId;
     @GuardedBy("this")
@@ -88,7 +88,7 @@ public class ReturnYouTubeDislike {
     }
 
     /**
-     * @return true if the videoId parameter matches the current dislike request, and the set value was successfull.
+     * @return true if the videoId parameter matches the current dislike request, and the set value was successful.
      * If videoID parameter does not match currentVideoId, then this call does nothing
      */
     private static synchronized boolean setCurrentDislikeCount(String videoId, Integer videoIdDislikeCount) {
@@ -172,7 +172,7 @@ public class ReturnYouTubeDislike {
             Integer fetchedDislikeCount = getDislikeCount();
             if (fetchedDislikeCount == null) {
                 LogHelper.printDebug(() -> "Rate limit or timeout waiting for Dislike fetch thread to complete");
-                // no point letting the request continue, as there is not another chance to use the result
+                // There's no point letting the request continue, as there is not another chance to use the result
                 interruptDislikeFetchThreadIfRunning();
                 return;
             }
@@ -191,11 +191,11 @@ public class ReturnYouTubeDislike {
         if (SharedPrefHelper.getBoolean(context, SharedPrefHelper.SharedPrefNames.YOUTUBE, "user_signed_out", true))
             return;
 
-        // must make a local copy of videoId, since it may change between now and when the vote thread runs
+        // Must make a local copy of videoId, since it may change between now and when the vote thread runs
         String videoIdToVoteFor = getCurrentVideoId();
         interruptVoteThreadIfRunning();
 
-        // TODO use a private fixed sized thread pool
+        // TODO: use a private fixed sized thread pool
         _votingThread = new Thread(() -> {
             try {
                 ReturnYouTubeDislikeApi.sendVote(videoIdToVoteFor, getUserId(), vote);
@@ -207,7 +207,7 @@ public class ReturnYouTubeDislike {
     }
 
     /**
-     * lock used exclusively by {@link #getUserId()}
+     * Lock used exclusively by {@link #getUserId()}
      */
     private static final Object rydUserIdLock = new Object();
 
@@ -220,11 +220,13 @@ public class ReturnYouTubeDislike {
     private static @Nullable
     String getUserId() {
         ReVancedUtils.verifyOffMainThread();
+
+        String userId = SettingsEnum.RYD_USER_ID.getString();
+        if (userId != null) {
+            return userId;
+        }
+
         synchronized (rydUserIdLock) {
-            String userId = SettingsEnum.RYD_USER_ID.getString();
-            if (userId != null) {
-                return userId;
-            }
             userId = ReturnYouTubeDislikeApi.registerAsNewUser(); // blocks until network call is completed
             if (userId != null) {
                 SettingsEnum.RYD_USER_ID.saveValue(userId);
@@ -236,8 +238,8 @@ public class ReturnYouTubeDislike {
     private static void updateDislike(AtomicReference<Object> textRef, Integer dislikeCount) {
         SpannableString oldSpannableString = (SpannableString) textRef.get();
 
-        // parse the buttons string
-        // if the button is segmented, only get the like count as a string
+        // Parse the buttons string.
+        // If the button is segmented, only get the like count as a string
         var oldButtonString = oldSpannableString.toString();
         if (segmentedButton) oldButtonString = oldButtonString.split(" \\| ")[0];
 

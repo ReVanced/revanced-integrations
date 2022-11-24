@@ -49,7 +49,7 @@ public class ReturnYouTubeDislikeApi {
     } // utility class
 
     /**
-     * @return true, if api rate limit is in effect
+     * @return True, if api rate limit is in effect.
      */
     private static boolean checkIfRateLimitInEffect(String apiEndPointName) {
         if (lastTimeLimitWasHit == 0) {
@@ -65,7 +65,7 @@ public class ReturnYouTubeDislikeApi {
     }
 
     /**
-     * @return true, if the rate limit was reached
+     * @return True, if the rate limit was reached.
      */
     private static boolean checkIfRateLimitWasHit(int httpResponseCode) {
         // set to true, to verify rate limit works
@@ -88,7 +88,7 @@ public class ReturnYouTubeDislikeApi {
     }
 
     /**
-     * @return returns NULL if fetch failed or if calling thread is interrupted
+     * @return NULL if fetch failed or if calling thread is interrupted.
      */
     public static Integer fetchDislikes(String videoId) {
         ReVancedUtils.verifyOffMainThread();
@@ -107,11 +107,11 @@ public class ReturnYouTubeDislikeApi {
             } else if (responseCode == 200) {
                 JSONObject json = getJSONObject(connection);
                 Integer fetchedDislikeCount = json.getInt("dislikes");
-                LogHelper.printDebug(() -> "dislikes fetched - " + fetchedDislikeCount);
+                LogHelper.printDebug(() -> "Dislikes fetched: " + fetchedDislikeCount);
                 connection.disconnect();
                 return fetchedDislikeCount;
             } else {
-                LogHelper.printDebug(() -> "dislikes fetch response was " + responseCode);
+                LogHelper.printDebug(() -> "Dislikes fetch response was " + responseCode);
                 connection.disconnect();
             }
         } catch (Exception ex) {
@@ -121,7 +121,7 @@ public class ReturnYouTubeDislikeApi {
     }
 
     /**
-     * @return the newly created and registered user id.  Returns NULL if registration failed.
+     * @return The newly created and registered user id.  Returns NULL if registration failed.
      */
     public static @Nullable
     String registerAsNewUser() {
@@ -185,7 +185,9 @@ public class ReturnYouTubeDislikeApi {
             if (checkIfRateLimitWasHit(responseCode)) {
                 connection.disconnect();
                 return null;
-            } else if (responseCode == 200) {
+            }
+
+            if (responseCode == 200) {
                 String result = parseJson(connection);
                 LogHelper.printDebug(() -> "Registration confirmation result was " + result);
                 connection.disconnect();
@@ -230,7 +232,9 @@ public class ReturnYouTubeDislikeApi {
             if (checkIfRateLimitWasHit(responseCode)) {
                 connection.disconnect();
                 return false;
-            } else if (responseCode == 200) {
+            }
+
+            if (responseCode == 200) {
                 JSONObject json = getJSONObject(connection);
                 String challenge = json.getString("challenge");
                 int difficulty = json.getInt("difficulty");
@@ -275,7 +279,9 @@ public class ReturnYouTubeDislikeApi {
             if (checkIfRateLimitWasHit(responseCode)) {
                 connection.disconnect();
                 return false;
-            } else if (responseCode == 200) {
+            }
+
+            if (responseCode == 200) {
                 String result = parseJson(connection);
                 LogHelper.debug(ReturnYouTubeDislikeApi.class, "Vote confirmation result was " + result);
                 connection.disconnect();
