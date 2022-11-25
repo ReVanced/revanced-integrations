@@ -14,9 +14,9 @@ public class LogHelper {
 
         /**
          * @return For non inner classes, this returns {@link Class#getSimpleName()}.
-         * For inner and classes (static and anonymous), this returns the enclosing class simple name.<br>
+         * For inner classes (static and anonymous), this returns the enclosing class simple name.<br>
          * <br>
-         * ie: each of these classes return 'SomethingView'<br>
+         * For example, each of these classes return 'SomethingView':<br>
          * com.company.SomethingView<br>
          * com.company.SomethingView$StaticClass<br>
          * com.company.SomethingView$1<br>
