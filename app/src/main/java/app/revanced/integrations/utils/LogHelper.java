@@ -7,7 +7,7 @@ import app.revanced.integrations.settings.SettingsEnum;
 public class LogHelper {
 
     /**
-     * Message log using lambdas.
+     * Log messages using lambdas.
      */
     public interface LogMessage {
         String buildMessageString();
@@ -84,7 +84,7 @@ public class LogHelper {
      */
     @Deprecated
     public static void printException(Class _clazz, String message, Throwable ex) {
-        printException(() -> (message), ex);
+        printException(() -> message, ex);
     }
 
     /**
@@ -93,7 +93,7 @@ public class LogHelper {
      */
     @Deprecated
     public static void printException(Class _clazz, String message) {
-        printException(() -> (message));
+        printException(() -> message);
     }
 
     /**
@@ -102,6 +102,6 @@ public class LogHelper {
      */
     @Deprecated
     public static void info(Class _clazz, String message) {
-        printInfo(() -> (message));
+        printInfo(() -> message);
     }
 }
