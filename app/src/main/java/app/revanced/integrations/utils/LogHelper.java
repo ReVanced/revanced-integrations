@@ -74,7 +74,7 @@ public class LogHelper {
      */
     @Deprecated
     public static void debug(Class _clazz, String message) {
-        printDebug(() -> message); // this fails to capture the correct calling class name, but it's deprecated who cares
+        printDebug(() -> message); // this fails to show the correct calling class name, but it's deprecated who cares
     }
 
     /**

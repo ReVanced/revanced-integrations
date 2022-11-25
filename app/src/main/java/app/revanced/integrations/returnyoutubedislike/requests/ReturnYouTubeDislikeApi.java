@@ -68,7 +68,7 @@ public class ReturnYouTubeDislikeApi {
      * @return True, if the rate limit was reached.
      */
     private static boolean checkIfRateLimitWasHit(int httpResponseCode) {
-        // set to true, to verify rate limit works
+        // set to true, to verify rate limit logic is working.
         final boolean DEBUG_RATE_LIMIT = false;
         if (DEBUG_RATE_LIMIT) {
             final double RANDOM_RATE_LIMIT_PERCENTAGE = 0.1; // 10% chance of a triggering a rate limit
