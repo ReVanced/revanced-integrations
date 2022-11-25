@@ -263,7 +263,7 @@ public class ReturnYouTubeDislike {
             LogHelper.printDebug(() -> "Formatting dislikes - " + dislikes + " - " + formatted);
             return formatted;
         }
-        LogHelper.printDebug(() -> "Couldn't format dislikes, using the unformatted count - " + dislikes);
+        LogHelper.printDebug(() -> "Could not format dislikes, using the unformatted count - " + dislikes);
         return String.valueOf(dislikes);
     }
 }
