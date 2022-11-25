@@ -29,6 +29,11 @@ public class ReturnYouTubeDislikeApi {
     private static final int HTTP_CONNECTION_DEFAULT_TIMEOUT = 5000;
 
     /**
+     * Response code of a successful API call
+     */
+    private static final int SUCCESS_HTTP_STATUS_CODE = 200;
+
+    /**
      * Indicates a client rate limit has been reached
      */
     private static final int RATE_LIMIT_HTTP_STATUS_CODE = 429;
@@ -47,6 +52,29 @@ public class ReturnYouTubeDislikeApi {
 
     private ReturnYouTubeDislikeApi() {
     } // utility class
+
+    /**
+     * Only for local debugging to simulate a very slow api call.
+     * Does this by doing meaningless calculations.
+     */
+    private static long randomlyWaitIfLocallyDebugging() {
+        final boolean DEBUG_RANDOMLY_DELAY_NETWORK_CALLS = false;
+        if (DEBUG_RANDOMLY_DELAY_NETWORK_CALLS) {
+            final long MAX_RANDOM_AMOUNT_OF_TIME_TO_WASTE = (long) (1.5 * HTTP_CONNECTION_DEFAULT_TIMEOUT);
+            final long amountOfTimeToWaste = (long) (Math.random() * MAX_RANDOM_AMOUNT_OF_TIME_TO_WASTE);
+            final long timeCalculationStarted = System.currentTimeMillis();
+            LogHelper.debug(ReturnYouTubeDislikeApi.class, "Artificially creating network delay of: " + amountOfTimeToWaste + " ms");
+
+            long meaninglessValue = 0;
+            while (System.currentTimeMillis() - timeCalculationStarted < amountOfTimeToWaste) {
+                meaninglessValue += Long.numberOfLeadingZeros((long)(Math.random() * Long.MAX_VALUE));
+            }
+            // return the value, otherwise the compiler or VM might optimize and remove the meaningless time wasting work,
+            // leaving an empty loop that hammers on the System.currentTimeMillis native call
+            return meaninglessValue;
+        }
+        return 0;
+    }
 
     /**
      * @return True, if api rate limit is in effect.
@@ -100,13 +128,15 @@ public class ReturnYouTubeDislikeApi {
                 return null;
             }
             LogHelper.debug(ReturnYouTubeDislikeApi.class, "Fetching dislikes for " + videoId);
+
+            randomlyWaitIfLocallyDebugging();
             HttpURLConnection connection = getConnectionFromRoute(ReturnYouTubeDislikeRoutes.GET_DISLIKES, videoId);
             connection.setConnectTimeout(HTTP_CONNECTION_DEFAULT_TIMEOUT);
             final int responseCode = connection.getResponseCode();
             if (checkIfRateLimitWasHit(responseCode)) {
                 connection.disconnect();
                 return null;
-            } else if (responseCode == 200) {
+            } else if (responseCode == SUCCESS_HTTP_STATUS_CODE) {
                 JSONObject json = getJSONObject(connection);
                 Integer fetchedDislikeCount = json.getInt("dislikes");
                 LogHelper.debug(ReturnYouTubeDislikeApi.class, "Dislikes fetched: " + fetchedDislikeCount);
@@ -135,13 +165,14 @@ public class ReturnYouTubeDislikeApi {
             String userId = randomString(36);
             LogHelper.debug(ReturnYouTubeDislikeApi.class, "Trying to register the following userId: " + userId);
 
+            randomlyWaitIfLocallyDebugging();
             HttpURLConnection connection = getConnectionFromRoute(ReturnYouTubeDislikeRoutes.GET_REGISTRATION, userId);
             connection.setConnectTimeout(HTTP_CONNECTION_DEFAULT_TIMEOUT);
             final int responseCode = connection.getResponseCode();
             if (checkIfRateLimitWasHit(responseCode)) {
                 connection.disconnect();
                 return null;
-            } else if (responseCode == 200) {
+            } else if (responseCode == SUCCESS_HTTP_STATUS_CODE) {
                 JSONObject json = getJSONObject(connection);
                 String challenge = json.getString("challenge");
                 int difficulty = json.getInt("difficulty");
@@ -150,7 +181,6 @@ public class ReturnYouTubeDislikeApi {
 
                 // Solve the puzzle
                 String solution = solvePuzzle(challenge, difficulty);
-                LogHelper.debug(ReturnYouTubeDislikeApi.class, "Registration confirmation solution is " + solution);
                 if (solution == null) {
                     return null; // failed to solve puzzle
                 }
@@ -176,6 +206,7 @@ public class ReturnYouTubeDislikeApi {
             }
             LogHelper.debug(ReturnYouTubeDislikeApi.class, "Trying to confirm registration for the following userId: " + userId + " with solution: " + solution);
 
+            randomlyWaitIfLocallyDebugging();
             HttpURLConnection connection = getConnectionFromRoute(ReturnYouTubeDislikeRoutes.CONFIRM_REGISTRATION, userId);
             applyCommonRequestSettings(connection);
 
@@ -190,7 +221,7 @@ public class ReturnYouTubeDislikeApi {
                 return null;
             }
 
-            if (responseCode == 200) {
+            if (responseCode == SUCCESS_HTTP_STATUS_CODE) {
                 String result = parseJson(connection);
                 LogHelper.debug(ReturnYouTubeDislikeApi.class, "Registration confirmation result was " + result);
                 connection.disconnect();
@@ -222,6 +253,7 @@ public class ReturnYouTubeDislikeApi {
         LogHelper.debug(ReturnYouTubeDislikeApi.class, "Trying to vote the following video: "
                 + videoId + " with vote " + vote + " and userId: " + userId);
         try {
+            randomlyWaitIfLocallyDebugging();
             HttpURLConnection connection = getConnectionFromRoute(ReturnYouTubeDislikeRoutes.SEND_VOTE);
             applyCommonRequestSettings(connection);
 
@@ -237,7 +269,7 @@ public class ReturnYouTubeDislikeApi {
                 return false;
             }
 
-            if (responseCode == 200) {
+            if (responseCode == SUCCESS_HTTP_STATUS_CODE) {
                 JSONObject json = getJSONObject(connection);
                 String challenge = json.getString("challenge");
                 int difficulty = json.getInt("difficulty");
@@ -246,7 +278,6 @@ public class ReturnYouTubeDislikeApi {
 
                 // Solve the puzzle
                 String solution = solvePuzzle(challenge, difficulty);
-                LogHelper.debug(ReturnYouTubeDislikeApi.class, "Vote confirmation solution is " + solution);
 
                 // Confirm vote
                 return confirmVote(videoId, userId, solution);
@@ -270,6 +301,7 @@ public class ReturnYouTubeDislikeApi {
             return false;
         }
         try {
+            randomlyWaitIfLocallyDebugging();
             HttpURLConnection connection = getConnectionFromRoute(ReturnYouTubeDislikeRoutes.CONFIRM_VOTE);
             applyCommonRequestSettings(connection);
 
@@ -284,7 +316,7 @@ public class ReturnYouTubeDislikeApi {
                 return false;
             }
 
-            if (responseCode == 200) {
+            if (responseCode == SUCCESS_HTTP_STATUS_CODE) {
                 String result = parseJson(connection);
                 LogHelper.debug(ReturnYouTubeDislikeApi.class, "Vote confirmation result was " + result);
                 connection.disconnect();
@@ -327,6 +359,7 @@ public class ReturnYouTubeDislikeApi {
     }
 
     private static String solvePuzzle(String challenge, int difficulty) {
+        final long timeSolveStarted = System.currentTimeMillis();
         byte[] decodedChallenge = Base64.decode(challenge, Base64.NO_WRAP);
 
         byte[] buffer = new byte[20];
@@ -345,7 +378,11 @@ public class ReturnYouTubeDislikeApi {
                 byte[] messageDigest = md.digest(buffer);
 
                 if (countLeadingZeroes(messageDigest) >= difficulty) {
-                    return Base64.encodeToString(new byte[]{buffer[0], buffer[1], buffer[2], buffer[3]}, Base64.NO_WRAP);
+                    String solution = Base64.encodeToString(new byte[]{buffer[0], buffer[1], buffer[2], buffer[3]}, Base64.NO_WRAP);
+                    LogHelper.debug(ReturnYouTubeDislikeApi.class, "Solved puzzle of difficulty " + difficulty
+                            + " in " + (System.currentTimeMillis() - timeSolveStarted) + " milliseconds,"
+                            + " with solution of " + solution);
+                    return solution;
                 }
             }
         } catch (Exception ex) {
