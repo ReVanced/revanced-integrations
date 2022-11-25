@@ -42,7 +42,7 @@ public class LogHelper {
      * Logs information messages with the most outer class name of the code that is calling this method.
      */
     public static void printInfo(LogMessage message) {
-        Log.i("ReVanced: " + message.findOuterClassSimpleName(), message.buildMessageString());
+        Log.i("revanced: " + message.findOuterClassSimpleName(), message.buildMessageString());
     }
 
     /**
@@ -50,7 +50,7 @@ public class LogHelper {
      */
     public static void printDebug(LogMessage message) {
         if (SettingsEnum.DEBUG.getBoolean()) {
-            Log.d("ReVanced: " + message.findOuterClassSimpleName(), message.buildMessageString());
+            Log.d("revanced: " + message.findOuterClassSimpleName(), message.buildMessageString());
         }
     }
 
@@ -58,14 +58,14 @@ public class LogHelper {
      * Logs messages with the most outer class name of the code that is calling this method.
      */
     public static void printException(LogMessage message) {
-        Log.e("ReVanced: " + message.findOuterClassSimpleName(), message.buildMessageString());
+        Log.e("revanced: " + message.findOuterClassSimpleName(), message.buildMessageString());
     }
 
     /**
      * Logs exceptions with the most outer class name of the code that is calling this method.
      */
     public static void printException(LogMessage message, Throwable ex) {
-        Log.e("ReVanced: " + message.findOuterClassSimpleName(), message.buildMessageString(), ex);
+        Log.e("revanced: " + message.findOuterClassSimpleName(), message.buildMessageString(), ex);
     }
 
     /**
