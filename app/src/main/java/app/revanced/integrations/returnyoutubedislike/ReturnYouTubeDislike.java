@@ -30,7 +30,7 @@ public class ReturnYouTubeDislike {
     @GuardedBy("this")
     private static Integer dislikeCount;
 
-    private static boolean isEnabled;
+    private static boolean isEnabled = SettingsEnum.RYD_ENABLED.getBoolean();
     private static boolean segmentedButton;
 
     public enum Vote {
@@ -49,21 +49,23 @@ public class ReturnYouTubeDislike {
     private static Thread _votingThread = null;
     private static CompactDecimalFormat compactNumberFormatter;
 
-    static {
-        isEnabled = SettingsEnum.RYD_ENABLED.getBoolean();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            Context context = ReVancedUtils.getContext();
-            Locale locale = context.getResources().getConfiguration().locale;
-            LogHelper.debug(ReturnYouTubeDislike.class, "Locale: " + locale);
-            compactNumberFormatter = CompactDecimalFormat.getInstance(
-                    locale,
-                    CompactDecimalFormat.CompactStyle.SHORT
-            );
-        }
-    }
-
     private ReturnYouTubeDislike() {
     } // only static methods
+
+    private static CompactDecimalFormat getNumberFormatter() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            if (compactNumberFormatter == null) {
+                Context context = ReVancedUtils.getContext();
+                Locale locale = context.getResources().getConfiguration().locale;
+                LogHelper.debug(ReturnYouTubeDislike.class, "Locale: " + locale);
+                compactNumberFormatter = CompactDecimalFormat.getInstance(
+                        locale,
+                        CompactDecimalFormat.CompactStyle.SHORT
+                );
+            }
+        }
+        return compactNumberFormatter;
+    }
 
     public static void onEnabledChange(boolean enabled) {
         isEnabled = enabled;
@@ -257,8 +259,9 @@ public class ReturnYouTubeDislike {
     }
 
     private static String formatDislikes(int dislikes) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && compactNumberFormatter != null) {
-            final String formatted = compactNumberFormatter.format(dislikes);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            CompactDecimalFormat numberFormatter = getNumberFormatter();
+            final String formatted = numberFormatter.format(dislikes);
             LogHelper.debug(ReturnYouTubeDislike.class, "Formatting dislikes - " + dislikes + " - " + formatted);
             return formatted;
         }
