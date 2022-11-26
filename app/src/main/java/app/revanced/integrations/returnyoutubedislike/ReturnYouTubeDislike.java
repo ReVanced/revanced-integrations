@@ -57,9 +57,15 @@ public class ReturnYouTubeDislike {
     private ReturnYouTubeDislike() {
     } // only static methods
 
-    private static CompactDecimalFormat getNumberFormatter() {
+    /**
+     * Used to format like/dislike count.
+     * Class is not listed as thread safe. Must synchronize on it while using.
+     */
+    @GuardedBy("itself")
+    private static CompactDecimalFormat compactNumberFormatter;
+
+    static {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            ReVancedUtils.verifyOnMainThread();
             if (compactNumberFormatter == null) {
                 Context context = ReVancedUtils.getContext();
                 Locale locale = context.getResources().getConfiguration().locale;
@@ -70,7 +76,6 @@ public class ReturnYouTubeDislike {
                 );
             }
         }
-        return compactNumberFormatter;
     }
 
     public static void onEnabledChange(boolean enabled) {
@@ -266,8 +271,10 @@ public class ReturnYouTubeDislike {
 
     private static String formatDislikes(int dislikes) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            CompactDecimalFormat numberFormatter = getNumberFormatter();
-            final String formatted = numberFormatter.format(dislikes);
+            final String formatted;
+            synchronized (compactNumberFormatter) {
+                formatted = compactNumberFormatter.format(dislikes);
+            }
             LogHelper.debug(ReturnYouTubeDislike.class, "Formatting dislikes - " + dislikes + " - " + formatted);
             return formatted;
         }
