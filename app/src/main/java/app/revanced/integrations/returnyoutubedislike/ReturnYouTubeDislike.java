@@ -33,6 +33,11 @@ public class ReturnYouTubeDislike {
     private static boolean isEnabled = SettingsEnum.RYD_ENABLED.getBoolean();
     private static boolean segmentedButton;
 
+    /**
+     * Used to format like/dislike count
+     */
+    private static CompactDecimalFormat compactNumberFormatter;
+
     public enum Vote {
         LIKE(1),
         DISLIKE(-1),
@@ -54,6 +59,7 @@ public class ReturnYouTubeDislike {
 
     private static CompactDecimalFormat getNumberFormatter() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            ReVancedUtils.verifyOnMainThread();
             if (compactNumberFormatter == null) {
                 Context context = ReVancedUtils.getContext();
                 Locale locale = context.getResources().getConfiguration().locale;
