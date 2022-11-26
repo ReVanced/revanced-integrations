@@ -247,12 +247,13 @@ public class ReturnYouTubeDislikeApi {
         Objects.requireNonNull(userId);
         Objects.requireNonNull(vote);
 
-        if (checkIfRateLimitInEffect("sendVote")) {
-            return false;
-        }
-        LogHelper.debug(ReturnYouTubeDislikeApi.class, "Trying to vote the following video: "
-                + videoId + " with vote " + vote + " and userId: " + userId);
         try {
+            if (checkIfRateLimitInEffect("sendVote")) {
+                return false;
+            }
+            LogHelper.debug(ReturnYouTubeDislikeApi.class, "Trying to vote the following video: "
+                    + videoId + " with vote " + vote + " and userId: " + userId);
+
             randomlyWaitIfLocallyDebugging();
             HttpURLConnection connection = getConnectionFromRoute(ReturnYouTubeDislikeRoutes.SEND_VOTE);
             applyCommonRequestSettings(connection);
@@ -297,10 +298,10 @@ public class ReturnYouTubeDislikeApi {
         Objects.requireNonNull(userId);
         Objects.requireNonNull(solution);
 
-        if (checkIfRateLimitInEffect("confirmVote")) {
-            return false;
-        }
         try {
+            if (checkIfRateLimitInEffect("confirmVote")) {
+                return false;
+            }
             randomlyWaitIfLocallyDebugging();
             HttpURLConnection connection = getConnectionFromRoute(ReturnYouTubeDislikeRoutes.CONFIRM_VOTE);
             applyCommonRequestSettings(connection);
