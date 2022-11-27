@@ -212,13 +212,13 @@ public class ReturnYouTubeDislike {
             oldButtonString = oldButtonString.split(" \\| ")[0];
 
             // YouTube creators can hide the like count on a video,
-            // and the like count appears as a device language specific string that says 'Likes'
+            // and the like count appears as a device language specific string that says 'Like'
             // check if the first character is not a number
             if (!Character.isDigit(oldButtonString.charAt(0))) {
                 // likes number is a localized 'Like' string
                 //
                 // RYD does not provide usable data for these types of videos,
-                // and the API returns bogus data (such as a zero like, and a zero dislike count)
+                // and the API returns bogus data (data shows zero likes and zero dislikes)
                 //
                 // you can see an example video here: https://www.youtube.com/watch?v=UnrU5vxCHxw
                 // and the RYD data here: https://returnyoutubedislikeapi.com/votes?videoId=UnrU5vxCHxw
