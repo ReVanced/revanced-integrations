@@ -1,6 +1,7 @@
 package app.revanced.integrations.requests;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -24,10 +25,16 @@ public class Requester {
         return connection;
     }
 
+    /**
+     * Parses the stream and closes it's input stream, but does NOT close the {@link HttpURLConnection}
+     */
     public static String parseJson(HttpURLConnection connection) throws IOException {
         return parseJson(connection.getInputStream(), false);
     }
 
+    /**
+     * Parse, and then close the stream
+     */
     public static String parseJson(InputStream inputStream, boolean isError) throws IOException {
         StringBuilder jsonBuilder = new StringBuilder();
         BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
@@ -41,15 +48,26 @@ public class Requester {
         return jsonBuilder.toString();
     }
 
+    /**
+     * Parse the underlying {@link InputStream}, but do NOT disconnect the {@link HttpURLConnection}
+     */
     public static String parseErrorJson(HttpURLConnection connection) throws IOException {
         return parseJson(connection.getErrorStream(), true);
     }
 
-    public static JSONObject getJSONObject(HttpURLConnection connection) throws Exception {
+    /**
+     * Parse a {@link JSONObject} and disconnects the {@link HttpURLConnection}
+     */
+    // maybe rename this to getJSONObjectAndDisconnect
+    public static JSONObject getJSONObject(HttpURLConnection connection) throws JSONException, IOException {
         return new JSONObject(parseJsonAndDisconnect(connection));
     }
 
-    public static JSONArray getJSONArray(HttpURLConnection connection) throws Exception {
+    /**
+     * Parse a {@link JSONArray} and then disconnect the {@link HttpURLConnection}
+     */
+    // maybe rename this to getJSONArrayAndDisconnect
+    public static JSONArray getJSONArray(HttpURLConnection connection) throws JSONException, IOException  {
         return new JSONArray(parseJsonAndDisconnect(connection));
     }
 
