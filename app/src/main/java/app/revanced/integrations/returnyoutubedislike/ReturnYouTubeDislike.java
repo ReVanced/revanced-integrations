@@ -25,9 +25,12 @@ import app.revanced.integrations.utils.SharedPrefHelper;
 
 public class ReturnYouTubeDislike {
     /**
-     * Maximum amount of time to block the UI from updates, while waiting for dislike network call to complete
+     * Maximum amount of time to block the UI from updates while waiting for dislike network call to complete.
+     *
+     * Must be less than 5 seconds, as per:
+     * https://developer.android.com/topic/performance/vitals/anr
      */
-    private static final long MILLISECONDS_TO_BLOCK_UI_WHILE_WAITING_FOR_DISLIKE_FETCH_TO_COMPLETE = 5000;
+    private static final long MILLISECONDS_TO_BLOCK_UI_WHILE_WAITING_FOR_DISLIKE_FETCH_TO_COMPLETE = 4000;
 
     /**
      * Used to send votes, one by one, in the same order the user created them
@@ -141,8 +144,8 @@ public class ReturnYouTubeDislike {
             if (updateDislike(textRef, isSegmentedButton, dislikeCount)) {
                 LogHelper.debug(ReturnYouTubeDislike.class, "Updated text on component" + conversionContextString);
             } else {
-                LogHelper.debug(ReturnYouTubeDislike.class, "Video like count is hidden by video creator. " +
-                        "Cannot show a dislike count (RYD does not provide data for videos with hidden likes).");
+                LogHelper.debug(ReturnYouTubeDislike.class, "Like count is hidden by its creator for video: " + getCurrentVideoId()
+                        + "Cannot show a dislike count (RYD does not provide data for videos with hidden likes).");
             }
         } catch (Exception ex) {
             LogHelper.printException(ReturnYouTubeDislike.class, "Error while trying to set dislikes text", ex);
@@ -253,7 +256,7 @@ public class ReturnYouTubeDislike {
                 }
                 formatted = compactNumberFormatter.format(dislikeCount);
             }
-            LogHelper.debug(ReturnYouTubeDislike.class, "Formatting dislikes - " + dislikeCount + " - " + formatted);
+            LogHelper.debug(ReturnYouTubeDislike.class, "Dislike count: " + dislikeCount + " formatted as: " + formatted);
             return formatted;
         }
         LogHelper.debug(ReturnYouTubeDislike.class, "Couldn't format dislikes, using the unformatted count - " + dislikeCount);
