@@ -138,8 +138,12 @@ public class ReturnYouTubeDislike {
                 return;
             }
 
-            updateDislike(textRef, isSegmentedButton, dislikeCount);
-            LogHelper.debug(ReturnYouTubeDislike.class, "Updated text on component" + conversionContextString);
+            if (updateDislike(textRef, isSegmentedButton, dislikeCount)) {
+                LogHelper.debug(ReturnYouTubeDislike.class, "Updated text on component" + conversionContextString);
+            } else {
+                LogHelper.debug(ReturnYouTubeDislike.class, "Video like count is hidden by video creator. " +
+                        "Cannot show a dislike count (RYD does not provide data for videos with hidden likes).");
+            }
         } catch (Exception ex) {
             LogHelper.printException(ReturnYouTubeDislike.class, "Error while trying to set dislikes text", ex);
         }
@@ -193,25 +197,48 @@ public class ReturnYouTubeDislike {
         return userId;
     }
 
-    private static void updateDislike(AtomicReference<Object> textRef, boolean isSegmentedButton, Integer dislikeCount) {
+    /**
+     * @return if the video likes are visible, and the dislike count was added to the UI
+     */
+    private static boolean updateDislike(AtomicReference<Object> textRef, boolean isSegmentedButton, int dislikeCount) {
+        var dislikeString = formatDislikeCount(dislikeCount);
+
         SpannableString oldSpannableString = (SpannableString) textRef.get();
 
-        // Parse the buttons string.
-        // If the button is segmented, only get the like count as a string
-        var oldButtonString = oldSpannableString.toString();
-        if (isSegmentedButton) oldButtonString = oldButtonString.split(" \\| ")[0];
+        SpannableString newDislikeString;
+        if (isSegmentedButton) {
+            // If the button is segmented, then parse out the like count as a string
+            var oldButtonString = oldSpannableString.toString();
+            oldButtonString = oldButtonString.split(" \\| ")[0];
 
-        var dislikeString = formatDislikeCount(dislikeCount);
-        SpannableString newString = new SpannableString(
-                isSegmentedButton ? (oldButtonString + " | " + dislikeString) : dislikeString
-        );
+            // YouTube creators can hide the like count on a video,
+            // and the like count appears as a device language specific string that says 'Likes'
+            // check if the first character is not a number
+            if (!Character.isDigit(oldButtonString.charAt(0))) {
+                // likes number is a localized 'Like' string
+                //
+                // RYD does not provide usable data for these types of videos,
+                // and the API returns bogus data (such as a zero like, and a zero dislike count)
+                //
+                // you can see an example video here: https://www.youtube.com/watch?v=UnrU5vxCHxw
+                // and the RYD data here: https://returnyoutubedislikeapi.com/votes?videoId=UnrU5vxCHxw
+                //
+                // you can read some discussion here: https://github.com/Anarios/return-youtube-dislike/discussions/530
+                return false;
+            }
+            newDislikeString = new SpannableString(oldButtonString + " | " + dislikeString);
+        } else {
+            newDislikeString = new SpannableString(dislikeString);
+        }
 
         // Copy style (foreground color, etc) to new string
         Object[] spans = oldSpannableString.getSpans(0, oldSpannableString.length(), Object.class);
-        for (Object span : spans)
-            newString.setSpan(span, 0, newString.length(), oldSpannableString.getSpanFlags(span));
+        for (Object span : spans) {
+            newDislikeString.setSpan(span, 0, newDislikeString.length(), oldSpannableString.getSpanFlags(span));
+        }
+        textRef.set(newDislikeString);
 
-        textRef.set(newString);
+        return true;
     }
 
     private static String formatDislikeCount(int dislikeCount) {
