@@ -26,14 +26,17 @@ public class Requester {
     }
 
     /**
-     * Parses the stream and closes it's input stream, but does NOT close the {@link HttpURLConnection}
+     * Parses the connection stream, and then and disconnects the {@link HttpURLConnection}
      */
+    // maybe rename this to parseJsonAndDisconnect
     public static String parseJson(HttpURLConnection connection) throws IOException {
-        return parseJson(connection.getInputStream(), false);
+        String result = parseJson(connection.getInputStream(), false);
+        connection.disconnect();
+        return result;
     }
 
     /**
-     * Parse, and then close the stream
+     * Parse, and then close the {@link InputStream}
      */
     public static String parseJson(InputStream inputStream, boolean isError) throws IOException {
         StringBuilder jsonBuilder = new StringBuilder();

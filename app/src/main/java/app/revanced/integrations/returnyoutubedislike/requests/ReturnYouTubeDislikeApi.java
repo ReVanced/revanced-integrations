@@ -224,7 +224,6 @@ public class ReturnYouTubeDislikeApi {
             if (responseCode == SUCCESS_HTTP_STATUS_CODE) {
                 String result = parseJson(connection);
                 LogHelper.debug(ReturnYouTubeDislikeApi.class, "Registration confirmation result was " + result);
-                connection.disconnect();
 
                 if (result.equalsIgnoreCase("true")) {
                     LogHelper.debug(ReturnYouTubeDislikeApi.class, "Registration was successful for user " + userId);
@@ -232,7 +231,6 @@ public class ReturnYouTubeDislikeApi {
                 }
             } else {
                 LogHelper.debug(ReturnYouTubeDislikeApi.class, "Registration confirmation response was " + responseCode);
-                connection.disconnect();
             }
         } catch (Exception ex) {
             LogHelper.printException(ReturnYouTubeDislikeApi.class, "Failed to confirm registration", ex);
@@ -320,7 +318,6 @@ public class ReturnYouTubeDislikeApi {
             if (responseCode == SUCCESS_HTTP_STATUS_CODE) {
                 String result = parseJson(connection);
                 LogHelper.debug(ReturnYouTubeDislikeApi.class, "Vote confirmation result was " + result);
-                connection.disconnect();
 
                 if (result.equalsIgnoreCase("true")) {
                     LogHelper.debug(ReturnYouTubeDislikeApi.class, "Vote was successful for user " + userId);
@@ -331,7 +328,6 @@ public class ReturnYouTubeDislikeApi {
                 }
             } else {
                 LogHelper.debug(ReturnYouTubeDislikeApi.class, "Vote confirmation response was " + responseCode);
-                connection.disconnect();
             }
         } catch (Exception ex) {
             LogHelper.printException(ReturnYouTubeDislikeApi.class, "Failed to confirm vote", ex);
