@@ -28,7 +28,18 @@ import app.revanced.integrations.utils.ReVancedUtils;
 public class ReturnYouTubeDislikeApi {
     private static final String RYD_API_URL = "https://returnyoutubedislikeapi.com/";
 
-    private static final int HTTP_API_CALL_DEFAULT_TIMEOUT = 5000;
+    /**
+     * Default connection and response timeout for {@link #fetchDislikes(String)}
+     */
+    private static final int API_GET_DISLIKE_DEFAULT_TIMEOUT_MILLISECONDS = 5000;
+
+    /**
+     * Default connection and response timeout for voting and registration.
+     *
+     * Voting and user registration runs in the background and has has no urgency
+     * so this can be a larger value.
+     */
+    private static final int API_REGISTER_VOTE_DEFAULT_TIMEOUT_MILLISECONDS = 90000;
 
     /**
      * Response code of a successful API call
@@ -56,14 +67,15 @@ public class ReturnYouTubeDislikeApi {
     } // utility class
 
     /**
-     * Only for local debugging to simulate a very slow api call.
+     * Only for local debugging to simulate a slow api call.
      * Does this by doing meaningless calculations.
+     *
+     * @param maximumTimeToWait maximum time to wait
      */
-    private static long randomlyWaitIfLocallyDebugging() {
+    private static long randomlyWaitIfLocallyDebugging(long maximumTimeToWait) {
         final boolean DEBUG_RANDOMLY_DELAY_NETWORK_CALLS = false;
         if (DEBUG_RANDOMLY_DELAY_NETWORK_CALLS) {
-            final long MAX_RANDOM_AMOUNT_OF_TIME_TO_WASTE = (long) (1.5 * HTTP_API_CALL_DEFAULT_TIMEOUT);
-            final long amountOfTimeToWaste = (long) (Math.random() * MAX_RANDOM_AMOUNT_OF_TIME_TO_WASTE);
+            final long amountOfTimeToWaste = (long) (Math.random() * maximumTimeToWait);
             final long timeCalculationStarted = System.currentTimeMillis();
             LogHelper.debug(ReturnYouTubeDislikeApi.class, "Artificially creating network delay of: " + amountOfTimeToWaste + " ms");
 
@@ -131,10 +143,11 @@ public class ReturnYouTubeDislikeApi {
             }
             LogHelper.debug(ReturnYouTubeDislikeApi.class, "Fetching dislikes for: " + videoId);
 
-            randomlyWaitIfLocallyDebugging();
             HttpURLConnection connection = getConnectionFromRoute(ReturnYouTubeDislikeRoutes.GET_DISLIKES, videoId);
-            connection.setConnectTimeout(HTTP_API_CALL_DEFAULT_TIMEOUT); // timeout for TCP connection to server
-            connection.setReadTimeout(HTTP_API_CALL_DEFAULT_TIMEOUT); // timeout for server response
+            connection.setConnectTimeout(API_GET_DISLIKE_DEFAULT_TIMEOUT_MILLISECONDS); // timeout for TCP connection to server
+            connection.setReadTimeout(API_GET_DISLIKE_DEFAULT_TIMEOUT_MILLISECONDS); // timeout for server response
+            randomlyWaitIfLocallyDebugging(2*API_GET_DISLIKE_DEFAULT_TIMEOUT_MILLISECONDS);
+
             final int responseCode = connection.getResponseCode();
             if (checkIfRateLimitWasHit(responseCode)) {
                 connection.disconnect();
@@ -169,9 +182,10 @@ public class ReturnYouTubeDislikeApi {
             String userId = randomString(36);
             LogHelper.debug(ReturnYouTubeDislikeApi.class, "Trying to register new user: " + userId);
 
-            randomlyWaitIfLocallyDebugging();
             HttpURLConnection connection = getConnectionFromRoute(ReturnYouTubeDislikeRoutes.GET_REGISTRATION, userId);
-            connection.setConnectTimeout(HTTP_API_CALL_DEFAULT_TIMEOUT);
+            connection.setConnectTimeout(API_REGISTER_VOTE_DEFAULT_TIMEOUT_MILLISECONDS);
+            connection.setReadTimeout(API_REGISTER_VOTE_DEFAULT_TIMEOUT_MILLISECONDS);
+
             final int responseCode = connection.getResponseCode();
             if (checkIfRateLimitWasHit(responseCode)) {
                 connection.disconnect();
@@ -205,9 +219,8 @@ public class ReturnYouTubeDislikeApi {
             }
             LogHelper.debug(ReturnYouTubeDislikeApi.class, "Trying to confirm registration for user: " + userId + " with solution: " + solution);
 
-            randomlyWaitIfLocallyDebugging();
             HttpURLConnection connection = getConnectionFromRoute(ReturnYouTubeDislikeRoutes.CONFIRM_REGISTRATION, userId);
-            applyCommonRequestSettings(connection);
+            applyCommonPostRequestSettings(connection);
 
             String jsonInputString = "{\"solution\": \"" + solution + "\"}";
             try (OutputStream os = connection.getOutputStream()) {
@@ -253,9 +266,8 @@ public class ReturnYouTubeDislikeApi {
             LogHelper.debug(ReturnYouTubeDislikeApi.class, "Trying to vote for video: "
                     + videoId + " with vote: " + vote + " user: " + userId);
 
-            randomlyWaitIfLocallyDebugging();
             HttpURLConnection connection = getConnectionFromRoute(ReturnYouTubeDislikeRoutes.SEND_VOTE);
-            applyCommonRequestSettings(connection);
+            applyCommonPostRequestSettings(connection);
 
             String voteJsonString = "{\"userId\": \"" + userId + "\", \"videoId\": \"" + videoId + "\", \"value\": \"" + vote.value + "\"}";
             try (OutputStream os = connection.getOutputStream()) {
@@ -298,9 +310,8 @@ public class ReturnYouTubeDislikeApi {
             }
             LogHelper.debug(ReturnYouTubeDislikeApi.class, "Trying to confirm vote for video: "
                     + videoId + " user: " + userId + " solution: " + solution);
-            randomlyWaitIfLocallyDebugging();
             HttpURLConnection connection = getConnectionFromRoute(ReturnYouTubeDislikeRoutes.CONFIRM_VOTE);
-            applyCommonRequestSettings(connection);
+            applyCommonPostRequestSettings(connection);
 
             String jsonInputString = "{\"userId\": \"" + userId + "\", \"videoId\": \"" + videoId + "\", \"solution\": \"" + solution + "\"}";
             try (OutputStream os = connection.getOutputStream()) {
@@ -335,12 +346,13 @@ public class ReturnYouTubeDislikeApi {
 
     // utils
 
-    private static void applyCommonRequestSettings(HttpURLConnection connection) throws ProtocolException {
+    private static void applyCommonPostRequestSettings(HttpURLConnection connection) throws ProtocolException {
         connection.setRequestMethod("POST");
         connection.setRequestProperty("Content-Type", "application/json");
         connection.setRequestProperty("Accept", "application/json");
         connection.setDoOutput(true);
-        connection.setConnectTimeout(HTTP_API_CALL_DEFAULT_TIMEOUT);
+        connection.setConnectTimeout(API_REGISTER_VOTE_DEFAULT_TIMEOUT_MILLISECONDS); // timeout for TCP connection to server
+        connection.setReadTimeout(API_REGISTER_VOTE_DEFAULT_TIMEOUT_MILLISECONDS); // timeout for server response
     }
 
     // helpers
