@@ -39,16 +39,16 @@ public class Requester {
      * Parse, and then close the {@link InputStream}
      */
     public static String parseJson(InputStream inputStream, boolean isError) throws IOException {
-        StringBuilder jsonBuilder = new StringBuilder();
-        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-        String line;
-        while ((line = reader.readLine()) != null) {
-            jsonBuilder.append(line);
-            if (isError)
-                jsonBuilder.append("\n");
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
+            StringBuilder jsonBuilder = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                jsonBuilder.append(line);
+                if (isError)
+                    jsonBuilder.append("\n");
+            }
+            return jsonBuilder.toString();
         }
-        inputStream.close();
-        return jsonBuilder.toString();
     }
 
     /**
