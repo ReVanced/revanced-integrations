@@ -362,30 +362,32 @@ public class ReturnYouTubeDislikeApi {
             buffer[i] = decodedChallenge[i - 4];
         }
 
+        MessageDigest md;
         try {
-            int maxCount = (int) (Math.pow(2, difficulty + 1) * 5);
-            MessageDigest md = MessageDigest.getInstance("SHA-512");
-            for (int i = 0; i < maxCount; i++) {
-                buffer[0] = (byte) i;
-                buffer[1] = (byte) (i >> 8);
-                buffer[2] = (byte) (i >> 16);
-                buffer[3] = (byte) (i >> 24);
-                byte[] messageDigest = md.digest(buffer);
-
-                if (countLeadingZeroes(messageDigest) >= difficulty) {
-                    String solution = Base64.encodeToString(new byte[]{buffer[0], buffer[1], buffer[2], buffer[3]}, Base64.NO_WRAP);
-                    LogHelper.debug(ReturnYouTubeDislikeApi.class,
-                            "Found puzzle solution: " + solution + " of difficulty: " + difficulty
-                                    + " in: " + (System.currentTimeMillis() - timeSolveStarted) + " ms");
-                    return solution;
-                }
-            }
-
-            // should never happen
-            throw new IllegalStateException("Failed to solve puzzle challenge: " + challenge + " of difficulty: " + difficulty);
+            md = MessageDigest.getInstance("SHA-512");
         } catch (NoSuchAlgorithmException ex) {
             throw new IllegalStateException(ex); // should never happen
         }
+
+        final int maxCount = (int) (Math.pow(2, difficulty + 1) * 5);
+        for (int i = 0; i < maxCount; i++) {
+            buffer[0] = (byte) i;
+            buffer[1] = (byte) (i >> 8);
+            buffer[2] = (byte) (i >> 16);
+            buffer[3] = (byte) (i >> 24);
+            byte[] messageDigest = md.digest(buffer);
+
+            if (countLeadingZeroes(messageDigest) >= difficulty) {
+                String solution = Base64.encodeToString(new byte[]{buffer[0], buffer[1], buffer[2], buffer[3]}, Base64.NO_WRAP);
+                LogHelper.debug(ReturnYouTubeDislikeApi.class,
+                        "Found puzzle solution: " + solution + " of difficulty: " + difficulty
+                                + " in: " + (System.currentTimeMillis() - timeSolveStarted) + " ms");
+                return solution;
+            }
+        }
+
+        // should never be reached
+        throw new IllegalStateException("Failed to solve puzzle challenge: " + challenge + " of difficulty: " + difficulty);
     }
 
     // https://stackoverflow.com/a/157202
