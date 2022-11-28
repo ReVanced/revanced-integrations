@@ -107,7 +107,7 @@ public class ReturnYouTubeDislike {
                 dislikeFetchFuture = ReVancedUtils.submitOnBackgroundThread(() -> ReturnYouTubeDislikeApi.fetchDislikes(videoId));
             }
         } catch (Exception ex) {
-            LogHelper.printException(ReturnYouTubeDislike.class, "Failed to process new video id: " + videoId, ex);
+            LogHelper.printException(ReturnYouTubeDislike.class, "Failed to load new video: " + videoId, ex);
         }
     }
 
@@ -142,22 +142,24 @@ public class ReturnYouTubeDislike {
             }
 
             if (updateDislike(textRef, isSegmentedButton, dislikeCount)) {
-                LogHelper.debug(ReturnYouTubeDislike.class, "Updated text on component" + conversionContextString);
+                LogHelper.debug(ReturnYouTubeDislike.class, "Updated text on component: " + conversionContextString);
             } else {
                 LogHelper.debug(ReturnYouTubeDislike.class, "Like count is hidden by its creator for video: " + getCurrentVideoId()
-                        + "Cannot show a dislike count (RYD does not provide data for videos with hidden likes).");
+                        + "Cannot show a dislike count (RYD does not provide data for videos with hidden likes)");
             }
         } catch (Exception ex) {
-            LogHelper.printException(ReturnYouTubeDislike.class, "Error while trying to set dislikes text", ex);
+            LogHelper.printException(ReturnYouTubeDislike.class, "Error while trying to update dislikes text", ex);
         }
     }
 
     public static void sendVote(Vote vote) {
         if (!isEnabled) return;
         try {
+            Objects.requireNonNull(vote);
             Context context = Objects.requireNonNull(ReVancedUtils.getContext());
-            if (SharedPrefHelper.getBoolean(context, SharedPrefHelper.SharedPrefNames.YOUTUBE, "user_signed_out", true))
+            if (SharedPrefHelper.getBoolean(context, SharedPrefHelper.SharedPrefNames.YOUTUBE, "user_signed_out", true)) {
                 return;
+            }
 
             // Must make a local copy of videoId, since it may change between now and when the vote thread runs
             String videoIdToVoteFor = getCurrentVideoId();
@@ -215,10 +217,9 @@ public class ReturnYouTubeDislike {
             // and the like count appears as a device language specific string that says 'Like'
             // check if the first character is not a number
             if (!Character.isDigit(oldButtonString.charAt(0))) {
-                // likes number is a localized 'Like' string
-                //
+                // likes are hidden.
                 // RYD does not provide usable data for these types of videos,
-                // and the API returns bogus data (data shows zero likes and zero dislikes)
+                // and the API returns bogus data (zero likes and zero dislikes)
                 //
                 // you can see an example video here: https://www.youtube.com/watch?v=UnrU5vxCHxw
                 // and the RYD data here: https://returnyoutubedislikeapi.com/votes?videoId=UnrU5vxCHxw
@@ -256,7 +257,7 @@ public class ReturnYouTubeDislike {
             LogHelper.debug(ReturnYouTubeDislike.class, "Dislike count: " + dislikeCount + " formatted as: " + formatted);
             return formatted;
         }
-        LogHelper.debug(ReturnYouTubeDislike.class, "Couldn't format dislikes, using the unformatted count - " + dislikeCount);
+        LogHelper.debug(ReturnYouTubeDislike.class, "Could not format dislikes, using unformatted count: " + dislikeCount);
         return String.valueOf(dislikeCount);
     }
 }
