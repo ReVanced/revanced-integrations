@@ -162,15 +162,12 @@ public class ReturnYouTubeDislike {
             // Must make a local copy of videoId, since it may change between now and when the vote thread runs
             String videoIdToVoteFor = getCurrentVideoId();
 
-            voteSerialExecutor.execute(new Runnable() {
-                @Override
-                public void run() {
-                    // must wrap in try/catch to properly log exceptions
-                    try {
-                        ReturnYouTubeDislikeApi.sendVote(videoIdToVoteFor, getUserId(), vote);
-                    } catch (Exception ex) {
-                        LogHelper.printException(ReturnYouTubeDislike.class, "Failed to send vote", ex);
-                    }
+            voteSerialExecutor.execute(() -> {
+                // must wrap in try/catch to properly log exceptions
+                try {
+                    ReturnYouTubeDislikeApi.sendVote(videoIdToVoteFor, getUserId(), vote);
+                } catch (Exception ex) {
+                    LogHelper.printException(ReturnYouTubeDislike.class, "Failed to send vote", ex);
                 }
             });
         } catch (Exception ex) {
