@@ -28,7 +28,7 @@ import app.revanced.integrations.utils.ReVancedUtils;
 public class ReturnYouTubeDislikeApi {
     private static final String RYD_API_URL = "https://returnyoutubedislikeapi.com/";
 
-    private static final int HTTP_CONNECTION_DEFAULT_TIMEOUT = 5000;
+    private static final int HTTP_API_CALL_DEFAULT_TIMEOUT = 5000;
 
     /**
      * Response code of a successful API call
@@ -62,7 +62,7 @@ public class ReturnYouTubeDislikeApi {
     private static long randomlyWaitIfLocallyDebugging() {
         final boolean DEBUG_RANDOMLY_DELAY_NETWORK_CALLS = false;
         if (DEBUG_RANDOMLY_DELAY_NETWORK_CALLS) {
-            final long MAX_RANDOM_AMOUNT_OF_TIME_TO_WASTE = (long) (1.5 * HTTP_CONNECTION_DEFAULT_TIMEOUT);
+            final long MAX_RANDOM_AMOUNT_OF_TIME_TO_WASTE = (long) (1.5 * HTTP_API_CALL_DEFAULT_TIMEOUT);
             final long amountOfTimeToWaste = (long) (Math.random() * MAX_RANDOM_AMOUNT_OF_TIME_TO_WASTE);
             final long timeCalculationStarted = System.currentTimeMillis();
             LogHelper.debug(ReturnYouTubeDislikeApi.class, "Artificially creating network delay of: " + amountOfTimeToWaste + " ms");
@@ -133,7 +133,8 @@ public class ReturnYouTubeDislikeApi {
 
             randomlyWaitIfLocallyDebugging();
             HttpURLConnection connection = getConnectionFromRoute(ReturnYouTubeDislikeRoutes.GET_DISLIKES, videoId);
-            connection.setConnectTimeout(HTTP_CONNECTION_DEFAULT_TIMEOUT);
+            connection.setConnectTimeout(HTTP_API_CALL_DEFAULT_TIMEOUT); // timeout for TCP connection to server
+            connection.setReadTimeout(HTTP_API_CALL_DEFAULT_TIMEOUT); // timeout for server response
             final int responseCode = connection.getResponseCode();
             if (checkIfRateLimitWasHit(responseCode)) {
                 connection.disconnect();
@@ -170,7 +171,7 @@ public class ReturnYouTubeDislikeApi {
 
             randomlyWaitIfLocallyDebugging();
             HttpURLConnection connection = getConnectionFromRoute(ReturnYouTubeDislikeRoutes.GET_REGISTRATION, userId);
-            connection.setConnectTimeout(HTTP_CONNECTION_DEFAULT_TIMEOUT);
+            connection.setConnectTimeout(HTTP_API_CALL_DEFAULT_TIMEOUT);
             final int responseCode = connection.getResponseCode();
             if (checkIfRateLimitWasHit(responseCode)) {
                 connection.disconnect();
@@ -339,7 +340,7 @@ public class ReturnYouTubeDislikeApi {
         connection.setRequestProperty("Content-Type", "application/json");
         connection.setRequestProperty("Accept", "application/json");
         connection.setDoOutput(true);
-        connection.setConnectTimeout(HTTP_CONNECTION_DEFAULT_TIMEOUT);
+        connection.setConnectTimeout(HTTP_API_CALL_DEFAULT_TIMEOUT);
     }
 
     // helpers
