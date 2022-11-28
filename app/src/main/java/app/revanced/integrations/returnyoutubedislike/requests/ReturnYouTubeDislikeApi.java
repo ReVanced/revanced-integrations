@@ -317,15 +317,14 @@ public class ReturnYouTubeDislikeApi {
 
             if (responseCode == SUCCESS_HTTP_STATUS_CODE) {
                 String result = parseJson(connection);
-                LogHelper.debug(ReturnYouTubeDislikeApi.class, "Vote confirmation result was " + result);
 
                 if (result.equalsIgnoreCase("true")) {
-                    LogHelper.debug(ReturnYouTubeDislikeApi.class, "Vote was successful for user " + userId);
+                    LogHelper.debug(ReturnYouTubeDislikeApi.class, "Vote was successful for user: " + userId);
                     return true;
-                } else {
-                    LogHelper.debug(ReturnYouTubeDislikeApi.class, "Vote was unsuccessful for user " + userId);
-                    return false;
                 }
+                LogHelper.debug(ReturnYouTubeDislikeApi.class, "Vote was unsuccessful for user: " + userId
+                        + " result was: " + result);
+                return false;
             } else {
                 LogHelper.debug(ReturnYouTubeDislikeApi.class, "Vote confirmation response was " + responseCode);
             }
