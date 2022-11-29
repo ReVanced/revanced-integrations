@@ -21,7 +21,7 @@ public enum SettingsEnum {
     PREFERRED_VIDEO_SPEED("revanced_pref_video_speed", -2.0f, ReturnType.FLOAT),
     DEFAULT_VIDEO_QUALITY_WIFI("revanced_default_video_quality_wifi", -2, ReturnType.INTEGER),
     DEFAULT_VIDEO_QUALITY_MOBILE("revanced_default_video_quality_mobile", -2, ReturnType.INTEGER),
-    REMEMBER_VIDEO_QUALITY("revanced_remember_video_quality_selection", false, ReturnType.BOOLEAN),
+    REMEMBER_VIDEO_QUALITY("revanced_remember_video_quality_selection", true, ReturnType.BOOLEAN),
 
     // Whitelist settings
     //ToDo: Not used atm, Patch missing
