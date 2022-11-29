@@ -37,6 +37,8 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
 
     private final CharSequence[] videoSpeedEntries = {"Auto", "0.25x", "0.5x", "0.75x", "Normal", "1.25x", "1.5x", "1.75x", "2x", "3x", "4x", "5x"};
     private final CharSequence[] videoSpeedentryValues = {"-2", "0.25", "0.5", "0.75", "1.0", "1.25", "1.5", "1.75", "2.0", "3.0", "4.0", "5.0"};
+    private final CharSequence[] videoQualityEntries = {"Auto", "144p", "240p", "360p", "480p", "720p", "1080p", "1440p", "2160p"};
+    private final CharSequence[] videoQualityEntryValues = {"-2", "144", "240", "360", "480", "720", "1080", "1440", "2160"};
     //private final CharSequence[] buttonLocationEntries = {"None", "In player", "Under player", "Both"};
     //private final CharSequence[] buttonLocationentryValues = {"NONE", "PLAYER", "BUTTON_BAR", "BOTH"};
 
@@ -72,6 +74,8 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
                 }
                 setting.setValue(value);
             } else if (pref instanceof ListPreference) {
+                Context context = ReVancedUtils.getContext();
+                Boolean auto = false;
                 ListPreference listPref = (ListPreference) pref;
                 if (setting == SettingsEnum.PREFERRED_VIDEO_SPEED) {
                     try {
@@ -84,6 +88,34 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
                     }
                 } else {
                     LogHelper.printException(ReVancedSettingsFragment.class, "No valid setting found: " + setting.toString());
+                }
+
+                if (setting == SettingsEnum.DEFAULT_VIDEO_QUALITY_WIFI) {
+                    try {
+                        updateVideoQuality(context, listPref, setting);
+                        if (setting.getInt() == Integer.parseInt((String) videoQualityEntryValues[0]))
+                            auto = true;
+                        String qualityValue = auto ? "Auto" : setting.getInt() + "p";
+                        Toast.makeText(context, "Changing default Wi-Fi quality to: " + qualityValue, Toast.LENGTH_SHORT).show();
+                    } catch (Throwable th) {
+                        LogHelper.printException(ReVancedSettingsFragment.class, "Error setting value of wifi quality" + th);
+                    }
+                } else {
+                    LogHelper.printException(ReVancedSettingsFragment.class, "No valid setting found: " + setting);
+                }
+
+                if (setting == SettingsEnum.DEFAULT_VIDEO_QUALITY_MOBILE) {
+                    try {
+                        updateVideoQuality(context, listPref, setting);
+                        if (setting.getInt() == Integer.parseInt((String) videoQualityEntryValues[0]))
+                            auto = true;
+                        String qualityValue = auto ? "Auto" : setting.getInt() + "p";
+                        Toast.makeText(context, "Changing default Mobile quality to: " + qualityValue, Toast.LENGTH_SHORT).show();
+                    } catch (Throwable th) {
+                        LogHelper.printException(ReVancedSettingsFragment.class, "Error setting value of mobile quality" + th);
+                    }
+                } else {
+                    LogHelper.printException(ReVancedSettingsFragment.class, "No valid setting found: " + setting);
                 }
 
                 if ("pref_download_button_list".equals(str)) {
@@ -146,6 +178,15 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
         }
 
         return pref;
+    }
+
+    private void updateVideoQuality(Context context, ListPreference listPref, SettingsEnum setting) {
+        String key = setting.getPath();
+        String value = Integer.toString(SharedPrefHelper.getInt(context, SharedPrefHelper.SharedPrefNames.YOUTUBE, key, -2));
+        listPref.setDefaultValue(value);
+        listPref.setSummary(listPref.getEntry());
+        setting.saveValue(Integer.parseInt(value));
+        SharedPrefHelper.saveString(context, SharedPrefHelper.SharedPrefNames.YOUTUBE, key, value + "");
     }
 
     /*

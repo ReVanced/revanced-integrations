@@ -13,36 +13,38 @@ import java.util.Collections;
 import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedUtils;
-import app.revanced.integrations.utils.SharedPrefHelper;
 
-public class RememberVideoQualityPatch {
+public class DefaultVideoQualityPatch {
 
     public static int selectedQuality1 = -2;
     private static Boolean newVideo = false;
     private static Boolean userChangedQuality = false;
 
+    private static final SettingsEnum wifiQualitySetting = SettingsEnum.DEFAULT_VIDEO_QUALITY_WIFI;
+    private static final SettingsEnum mobileQualitySetting = SettingsEnum.DEFAULT_VIDEO_QUALITY_MOBILE;
+
     public static void changeDefaultQuality(int defaultQuality) {
         Context context = ReVancedUtils.getContext();
         if (isConnectedWifi(context)) {
             try {
-                SharedPrefHelper.saveString(context, SharedPrefHelper.SharedPrefNames.REVANCED_PREFS, "wifi_quality", defaultQuality + "");
+                wifiQualitySetting.saveValue(defaultQuality);
             } catch (Exception ex) {
-                LogHelper.printException(RememberVideoQualityPatch.class, "Failed to change default WI-FI quality:" + ex);
+                LogHelper.printException(DefaultVideoQualityPatch.class, "Failed to change default WI-FI quality:" + ex);
                 Toast.makeText(context, "Failed to change default WI-FI quality:", Toast.LENGTH_SHORT).show();
             }
-            LogHelper.debug(RememberVideoQualityPatch.class, "Changing default Wi-Fi quality to: " + defaultQuality);
+            LogHelper.debug(DefaultVideoQualityPatch.class, "Changing default Wi-Fi quality to: " + defaultQuality);
             Toast.makeText(context, "Changing default Wi-Fi quality to: " + defaultQuality, Toast.LENGTH_SHORT).show();
         } else if (isConnectedMobile(context)) {
             try {
-                SharedPrefHelper.saveString(context, SharedPrefHelper.SharedPrefNames.REVANCED_PREFS, "mobile_quality", defaultQuality + "");
+                mobileQualitySetting.saveValue(defaultQuality);
             } catch (Exception ex) {
-                LogHelper.debug(RememberVideoQualityPatch.class, "Failed to change default mobile data quality" + ex);
+                LogHelper.debug(DefaultVideoQualityPatch.class, "Failed to change default mobile data quality" + ex);
                 Toast.makeText(context, "Failed to change default mobile data quality", Toast.LENGTH_SHORT).show();
             }
-            LogHelper.debug(RememberVideoQualityPatch.class, "Changing default mobile data quality to:" + defaultQuality);
+            LogHelper.debug(DefaultVideoQualityPatch.class, "Changing default mobile data quality to:" + defaultQuality);
             Toast.makeText(context, "Changing default mobile data quality to:" + defaultQuality, Toast.LENGTH_SHORT).show();
         } else {
-            LogHelper.debug(RememberVideoQualityPatch.class,  "No internet connection.");
+            LogHelper.debug(DefaultVideoQualityPatch.class,  "No internet connection.");
             Toast.makeText(context, "No internet connection.", Toast.LENGTH_SHORT).show();
         }
         userChangedQuality = false;
@@ -76,34 +78,34 @@ public class RememberVideoQualityPatch {
                 int selectedQuality2 = qualities.length - selectedQuality1 + 1;
                 index++;
                 if (selectedQuality2 == index) {
-                    LogHelper.debug(RememberVideoQualityPatch.class, "Quality index is: " + index + " and corresponding value is: " + convertedQuality);
+                    LogHelper.debug(DefaultVideoQualityPatch.class, "Quality index is: " + index + " and corresponding value is: " + convertedQuality);
                     changeDefaultQuality(convertedQuality);
                     return selectedQuality2;
                 }
             }
         }
         newVideo = false;
-        LogHelper.debug(RememberVideoQualityPatch.class, "Quality: " + quality);
+        LogHelper.debug(DefaultVideoQualityPatch.class, "Quality: " + quality);
         Context context = ReVancedUtils.getContext();
         if (context == null) {
-            LogHelper.printException(RememberVideoQualityPatch.class, "Context is null or settings not initialized, returning quality: " + quality);
+            LogHelper.printException(DefaultVideoQualityPatch.class, "Context is null or settings not initialized, returning quality: " + quality);
             return quality;
         }
         if (isConnectedWifi(context)) {
-            preferredQuality = SharedPrefHelper.getInt(context, SharedPrefHelper.SharedPrefNames.REVANCED_PREFS, "wifi_quality", -2);
-            LogHelper.debug(RememberVideoQualityPatch.class, "Wi-Fi connection detected, preferred quality: " + preferredQuality);
+            preferredQuality = wifiQualitySetting.getInt();
+            LogHelper.debug(DefaultVideoQualityPatch.class, "Wi-Fi connection detected, preferred quality: " + preferredQuality);
         } else if (isConnectedMobile(context)) {
-            preferredQuality = SharedPrefHelper.getInt(context, SharedPrefHelper.SharedPrefNames.REVANCED_PREFS, "mobile_quality", -2);
-            LogHelper.debug(RememberVideoQualityPatch.class, "Mobile data connection detected, preferred quality: " + preferredQuality);
+            preferredQuality = mobileQualitySetting.getInt();
+            LogHelper.debug(DefaultVideoQualityPatch.class, "Mobile data connection detected, preferred quality: " + preferredQuality);
         } else {
-            LogHelper.debug(RememberVideoQualityPatch.class, "No Internet connection!");
+            LogHelper.debug(DefaultVideoQualityPatch.class, "No Internet connection!");
             return quality;
         }
         if (preferredQuality == -2) {
             return quality;
         }
         for (int streamQuality2 : iStreamQualities) {
-            LogHelper.debug(RememberVideoQualityPatch.class, "Quality at index " + index + ": " + streamQuality2);
+            LogHelper.debug(DefaultVideoQualityPatch.class, "Quality at index " + index + ": " + streamQuality2);
             index++;
         }
         for (Integer iStreamQuality : iStreamQualities) {
@@ -116,16 +118,16 @@ public class RememberVideoQualityPatch {
             return quality;
         }
         int qualityIndex = iStreamQualities.indexOf(quality);
-        LogHelper.debug(RememberVideoQualityPatch.class, "Index of quality " + quality + " is " + qualityIndex);
+        LogHelper.debug(DefaultVideoQualityPatch.class, "Index of quality " + quality + " is " + qualityIndex);
         try {
             Class<?> cl = qInterface.getClass();
             Method m = cl.getMethod(qIndexMethod, Integer.TYPE);
-            LogHelper.debug(RememberVideoQualityPatch.class, "Method is: " + qIndexMethod);
+            LogHelper.debug(DefaultVideoQualityPatch.class, "Method is: " + qIndexMethod);
             m.invoke(qInterface, iStreamQualities.get(qualityIndex));
-            LogHelper.debug(RememberVideoQualityPatch.class, "Quality changed to: " + qualityIndex);
+            LogHelper.debug(DefaultVideoQualityPatch.class, "Quality changed to: " + qualityIndex);
             return qualityIndex;
         } catch (Exception ex) {
-            LogHelper.printException(RememberVideoQualityPatch.class, "Failed to set quality", ex);
+            LogHelper.printException(DefaultVideoQualityPatch.class, "Failed to set quality", ex);
             Toast.makeText(context, "Failed to set quality", Toast.LENGTH_SHORT).show();
             return qualityIndex;
         }
