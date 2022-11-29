@@ -1,7 +1,5 @@
 package app.revanced.integrations.returnyoutubedislike.requests;
 
-import static app.revanced.integrations.requests.Requester.parseJson;
-
 import android.util.Base64;
 
 import androidx.annotation.Nullable;
@@ -232,7 +230,7 @@ public class ReturnYouTubeDislikeApi {
                 return null;
             }
             if (responseCode == SUCCESS_HTTP_STATUS_CODE) {
-                String result = parseJson(connection); // also disconnects
+                String result = Requester.parseJson(connection); // also disconnects
                 if (result.equalsIgnoreCase("true")) {
                     LogHelper.debug(ReturnYouTubeDislikeApi.class, "Registration confirmation successful for user: " + userId);
                     return userId;
@@ -324,7 +322,7 @@ public class ReturnYouTubeDislikeApi {
             }
 
             if (responseCode == SUCCESS_HTTP_STATUS_CODE) {
-                String result = parseJson(connection); // also disconnects
+                String result = Requester.parseJson(connection); // also disconnects
                 if (result.equalsIgnoreCase("true")) {
                     LogHelper.debug(ReturnYouTubeDislikeApi.class, "Vote confirm successful for video: " + videoId);
                     return true;
