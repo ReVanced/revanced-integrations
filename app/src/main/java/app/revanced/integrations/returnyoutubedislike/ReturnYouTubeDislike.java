@@ -167,7 +167,10 @@ public class ReturnYouTubeDislike {
             voteSerialExecutor.execute(() -> {
                 // must wrap in try/catch to properly log exceptions
                 try {
-                    ReturnYouTubeDislikeApi.sendVote(videoIdToVoteFor, getUserId(), vote);
+                    String userId = getUserId();
+                    if (userId != null) {
+                        ReturnYouTubeDislikeApi.sendVote(videoIdToVoteFor, userId, vote);
+                    }
                 } catch (Exception ex) {
                     LogHelper.printException(ReturnYouTubeDislike.class, "Failed to send vote", ex);
                 }
