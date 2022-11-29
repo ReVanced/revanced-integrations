@@ -221,10 +221,15 @@ public class ReturnYouTubeDislike {
                 // RYD does not provide usable data for these types of videos,
                 // and the API returns bogus data (zero likes and zero dislikes)
                 //
-                // you can see an example video here: https://www.youtube.com/watch?v=UnrU5vxCHxw
-                // and the RYD data here: https://returnyoutubedislikeapi.com/votes?videoId=UnrU5vxCHxw
+                // example video: https://www.youtube.com/watch?v=UnrU5vxCHxw
+                // RYD data: https://returnyoutubedislikeapi.com/votes?videoId=UnrU5vxCHxw
                 //
-                // you can read some discussion here: https://github.com/Anarios/return-youtube-dislike/discussions/530
+                // discussion about this: https://github.com/Anarios/return-youtube-dislike/discussions/530
+
+                //
+                // RYD browser plugin shows the dislikes as a localized translated string of "disabled by owner"
+                // ReVanced could do the same, but for now just leave as-is
+                //
                 return false;
             }
             newDislikeString = new SpannableString(oldButtonString + " | " + dislikeString);
