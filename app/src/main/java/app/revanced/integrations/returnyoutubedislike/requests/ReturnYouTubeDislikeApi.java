@@ -6,7 +6,6 @@ import android.util.Base64;
 
 import androidx.annotation.Nullable;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -154,7 +153,7 @@ public class ReturnYouTubeDislikeApi {
                 return null;
             }
             if (responseCode == SUCCESS_HTTP_STATUS_CODE) {
-                JSONObject json = getJSONObjectAndDisconnect(connection);
+                JSONObject json = Requester.getJSONObject(connection); // also disconnects
                 Integer fetchedDislikeCount = json.getInt("dislikes");
                 LogHelper.debug(ReturnYouTubeDislikeApi.class, "Fetched video: " + videoId
                         + " dislikes: " + fetchedDislikeCount);
@@ -192,7 +191,7 @@ public class ReturnYouTubeDislikeApi {
                 return null;
             }
             if (responseCode == SUCCESS_HTTP_STATUS_CODE) {
-                JSONObject json = getJSONObjectAndDisconnect(connection);
+                JSONObject json = Requester.getJSONObject(connection);  // also disconnects
                 String challenge = json.getString("challenge");
                 int difficulty = json.getInt("difficulty");
 
@@ -281,7 +280,7 @@ public class ReturnYouTubeDislikeApi {
                 return false;
             }
             if (responseCode == SUCCESS_HTTP_STATUS_CODE) {
-                JSONObject json = getJSONObjectAndDisconnect(connection);
+                JSONObject json = Requester.getJSONObject(connection);  // also disconnects
                 String challenge = json.getString("challenge");
                 int difficulty = json.getInt("difficulty");
 
@@ -359,10 +358,6 @@ public class ReturnYouTubeDislikeApi {
 
     private static HttpURLConnection getConnectionFromRoute(Route route, String... params) throws IOException {
         return Requester.getConnectionFromRoute(RYD_API_URL, route, params);
-    }
-
-    private static JSONObject getJSONObjectAndDisconnect(HttpURLConnection connection) throws JSONException, IOException {
-        return Requester.getJSONObject(connection);
     }
 
     private static String solvePuzzle(String challenge, int difficulty) {
