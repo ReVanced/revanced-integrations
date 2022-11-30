@@ -38,8 +38,9 @@ public class Requester {
 
     /**
      * Parse, and then close the {@link InputStream}
+     *
+     * TODO: rename this to #parseJsonAndCloseStream
      */
-    // maybe rename this to parseJsonAndCloseStream
     public static String parseJson(InputStream inputStream, boolean isError) throws IOException {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
             StringBuilder jsonBuilder = new StringBuilder();
