@@ -56,10 +56,9 @@ public class Requester {
 
     /**
      * Parse, and then do NOT disconnect the {@link HttpURLConnection}
-     *
-     * TODO: rename this to #parseErrorJsonAndDisconnect
      */
     public static String parseErrorJson(HttpURLConnection connection) throws IOException {
+        // TODO: make this also disconnect, and rename method to #parseErrorJsonAndDisconnect
         return parseJson(connection.getErrorStream(), true);
     }
 
