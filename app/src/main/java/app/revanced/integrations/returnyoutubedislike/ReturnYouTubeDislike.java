@@ -145,7 +145,7 @@ public class ReturnYouTubeDislike {
                 LogHelper.printDebug(() -> "Updated text on component: " + conversionContextString);
             } else {
                 LogHelper.printDebug(() -> "Like count is hidden by its creator for video: " + getCurrentVideoId()
-                                + "Cannot show a dislike count (RYD does not provide data for videos with hidden likes)");
+                        + "Cannot show a dislike count (RYD does not provide data for videos with hidden likes)");
             }
         } catch (Exception ex) {
             LogHelper.printException(() -> "Error while trying to update dislikes text", ex);
