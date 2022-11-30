@@ -128,7 +128,7 @@ public class ReturnYouTubeDislikeApi {
 
     /**
      * @return The number of dislikes.
-     * Returns NULL if fetch failed, calling thread is interrupted, or rate limit is in effect.
+     * Returns NULL if fetch failed, or a rate limit is in effect.
      */
     @Nullable
     public static Integer fetchDislikes(String videoId) {
