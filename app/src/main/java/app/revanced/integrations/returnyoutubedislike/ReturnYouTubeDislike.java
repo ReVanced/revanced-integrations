@@ -123,7 +123,6 @@ public class ReturnYouTubeDislike {
             if (conversionContextString.contains("|segmented_like_dislike_button.eml|")) {
                 isSegmentedButton = true;
             } else if (!conversionContextString.contains("|dislike_button.eml|")) {
-                LogHelper.printDebug(() -> "ignoring UI component: " + conversionContextString);
                 return;
             }
 
