@@ -26,7 +26,7 @@ public class Requester {
     }
 
     /**
-     * Parses the connection stream, and then and disconnects the {@link HttpURLConnection}
+     * Parse, and then and disconnect the {@link HttpURLConnection}
      */
     // maybe rename this to parseJsonAndDisconnect
     public static String parseJson(HttpURLConnection connection) throws IOException {
@@ -38,6 +38,7 @@ public class Requester {
     /**
      * Parse, and then close the {@link InputStream}
      */
+    // maybe rename this to parseJsonAndCloseStream
     public static String parseJson(InputStream inputStream, boolean isError) throws IOException {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
             StringBuilder jsonBuilder = new StringBuilder();
@@ -52,14 +53,15 @@ public class Requester {
     }
 
     /**
-     * Parse the underlying {@link InputStream}, but do NOT disconnect the {@link HttpURLConnection}
+     * Parse, and then do NOT disconnect the {@link HttpURLConnection}
      */
+    // maybe change this to also disconnect
     public static String parseErrorJson(HttpURLConnection connection) throws IOException {
         return parseJson(connection.getErrorStream(), true);
     }
 
     /**
-     * Parse a {@link JSONObject} and disconnects the {@link HttpURLConnection}
+     * Parse, and then disconnect the {@link HttpURLConnection}
      */
     // maybe rename this to getJSONObjectAndDisconnect
     public static JSONObject getJSONObject(HttpURLConnection connection) throws JSONException, IOException {
@@ -67,7 +69,7 @@ public class Requester {
     }
 
     /**
-     * Parse a {@link JSONArray} and then disconnect the {@link HttpURLConnection}
+     * Parse, and then disconnect the {@link HttpURLConnection}
      */
     // maybe rename this to getJSONArrayAndDisconnect
     public static JSONArray getJSONArray(HttpURLConnection connection) throws JSONException, IOException  {
