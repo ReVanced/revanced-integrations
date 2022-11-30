@@ -181,7 +181,7 @@ public class ReturnYouTubeDislike {
     }
 
     /**
-     * Must call off main thread, as this will make a network call if user has not yet been registered yet
+     * Must call off main thread, as this will make a network call if user has not yet been registered
      *
      * @return ReturnYouTubeDislike user ID. If user registration has never happened
      * and the network call fails, this will return NULL
