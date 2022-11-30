@@ -168,7 +168,7 @@ public class ReturnYouTubeDislikeApi {
                         + " response code was: " + responseCode); // this fails to show the correct calling class name, but it's deprecated who cares
             connection.disconnect();
         } catch (Exception ex) {
-            LogHelper.printException(ReturnYouTubeDislikeApi.class, "Failed to fetch dislikes", ex);
+            LogHelper.printException(() -> "Failed to fetch dislikes", ex);
         }
         return null;
     }
@@ -207,7 +207,7 @@ public class ReturnYouTubeDislikeApi {
                         + " response code was: " + responseCode); // this fails to show the correct calling class name, but it's deprecated who cares
             connection.disconnect();
         } catch (Exception ex) {
-            LogHelper.printException(ReturnYouTubeDislikeApi.class, "Failed to register user", ex);
+            LogHelper.printException(() -> "Failed to register user", ex);
         }
         return null;
     }
@@ -250,8 +250,8 @@ public class ReturnYouTubeDislikeApi {
                         + " solution: " + solution + " response code was: " + responseCode); // this fails to show the correct calling class name, but it's deprecated who cares
             connection.disconnect();
         } catch (Exception ex) {
-            LogHelper.printException(ReturnYouTubeDislikeApi.class, "Failed to confirm registration for user: " + userId
-                    + "solution: " + solution, ex);
+            LogHelper.printException(() -> "Failed to confirm registration for user: " + userId
+                        + "solution: " + solution, ex);
         }
 
         return null;
@@ -296,8 +296,8 @@ public class ReturnYouTubeDislikeApi {
                         + " userId: " + userId + " vote: " + vote + " response code was: " + responseCode); // this fails to show the correct calling class name, but it's deprecated who cares
             connection.disconnect();
         } catch (Exception ex) {
-            LogHelper.printException(ReturnYouTubeDislikeApi.class,"Failed to send vote for video: " + videoId
-                    + " user: " + userId + " vote: " + vote, ex);
+            LogHelper.printException(() -> "Failed to send vote for video: " + videoId
+                        + " user: " + userId + " vote: " + vote, ex);
         }
         return false;
     }
@@ -342,8 +342,8 @@ public class ReturnYouTubeDislikeApi {
                         + " user: " + userId + " solution: " + solution + " response code was: " + responseCode); // this fails to show the correct calling class name, but it's deprecated who cares
             connection.disconnect();
         } catch (Exception ex) {
-            LogHelper.printException(ReturnYouTubeDislikeApi.class, "Failed to confirm vote for video: " + videoId
-                    + " user: " + userId + " solution: " + solution, ex);
+            LogHelper.printException(() -> "Failed to confirm vote for video: " + videoId
+                        + " user: " + userId + " solution: " + solution, ex);
         }
         return false;
     }

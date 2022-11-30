@@ -107,7 +107,7 @@ public class ReturnYouTubeDislike {
                 dislikeFetchFuture = ReVancedUtils.submitOnBackgroundThread(() -> ReturnYouTubeDislikeApi.fetchDislikes(videoId));
             }
         } catch (Exception ex) {
-            LogHelper.printException(ReturnYouTubeDislike.class, "Failed to load new video: " + videoId, ex);
+            LogHelper.printException(() -> "Failed to load new video: " + videoId, ex);
         }
     }
 
@@ -148,7 +148,7 @@ public class ReturnYouTubeDislike {
                                 + "Cannot show a dislike count (RYD does not provide data for videos with hidden likes)");
             }
         } catch (Exception ex) {
-            LogHelper.printException(ReturnYouTubeDislike.class, "Error while trying to update dislikes text", ex);
+            LogHelper.printException(() -> "Error while trying to update dislikes text", ex);
         }
     }
 
@@ -172,11 +172,11 @@ public class ReturnYouTubeDislike {
                         ReturnYouTubeDislikeApi.sendVote(videoIdToVoteFor, userId, vote);
                     }
                 } catch (Exception ex) {
-                    LogHelper.printException(ReturnYouTubeDislike.class, "Failed to send vote", ex);
+                    LogHelper.printException(() -> "Failed to send vote", ex);
                 }
             });
         } catch (Exception ex) {
-            LogHelper.printException(ReturnYouTubeDislike.class, "Error while trying to send vote", ex);
+            LogHelper.printException(() -> "Error while trying to send vote", ex);
         }
     }
 
