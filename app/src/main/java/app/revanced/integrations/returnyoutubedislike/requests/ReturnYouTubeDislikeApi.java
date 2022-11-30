@@ -143,7 +143,8 @@ public class ReturnYouTubeDislikeApi {
 
             HttpURLConnection connection = getConnectionFromRoute(ReturnYouTubeDislikeRoutes.GET_DISLIKES, videoId);
             // request headers, as per https://returnyoutubedislike.com/docs/fetching
-            connection.setRequestProperty("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9");
+            // the documentation says to use 'Accept:text/html', but the RYD browser plugin uses 'Accept:application/json'
+            connection.setRequestProperty("Accept", "application/json");
             connection.setRequestProperty("Connection", "keep-alive"); // keep-alive is on by default with http 1.1, but specify anyways
             connection.setRequestProperty("Pragma", "no-cache");
             connection.setRequestProperty("Cache-Control", "no-cache");
@@ -188,6 +189,7 @@ public class ReturnYouTubeDislikeApi {
             LogHelper.printDebug(() -> "Trying to register new user: " + userId);
 
             HttpURLConnection connection = getConnectionFromRoute(ReturnYouTubeDislikeRoutes.GET_REGISTRATION, userId);
+            connection.setRequestProperty("Accept", "application/json");
             connection.setConnectTimeout(API_REGISTER_VOTE_DEFAULT_TIMEOUT_MILLISECONDS);
             connection.setReadTimeout(API_REGISTER_VOTE_DEFAULT_TIMEOUT_MILLISECONDS);
 
