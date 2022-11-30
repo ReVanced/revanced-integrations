@@ -219,9 +219,9 @@ public class ReturnYouTubeDislike {
                 // discussion about this: https://github.com/Anarios/return-youtube-dislike/discussions/530
 
                 //
-                // Change the "Likes" string to show that likes are hidden
+                // Change the "Likes" string to show that likes and dislikes are hidden
                 //
-                newDislikeString = "Likes Hidden by Creator"; // for now, this is not localized
+                newDislikeString = "Likes Hidden"; // for now, this is not localized
                 LogHelper.printDebug(() -> "Like count is hidden by video creator. "
                         + "RYD does not provide data for videos with hidden likes.");
             } else {
