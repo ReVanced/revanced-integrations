@@ -26,7 +26,7 @@ public class Requester {
     }
 
     /**
-     * Parse, and then and disconnect the {@link HttpURLConnection}
+     * Parse, and then disconnect the {@link HttpURLConnection}
      */
     // maybe rename this to parseJsonAndDisconnect
     public static String parseJson(HttpURLConnection connection) throws IOException {
