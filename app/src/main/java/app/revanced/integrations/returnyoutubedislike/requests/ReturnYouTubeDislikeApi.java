@@ -74,7 +74,7 @@ public class ReturnYouTubeDislikeApi {
         if (DEBUG_RANDOMLY_DELAY_NETWORK_CALLS) {
             final long amountOfTimeToWaste = (long) (Math.random() * maximumTimeToWait);
             final long timeCalculationStarted = System.currentTimeMillis();
-            LogHelper.debug(ReturnYouTubeDislikeApi.class, "Artificially creating network delay of: " + amountOfTimeToWaste + " ms");
+            LogHelper.printDebug(() -> "Artificially creating network delay of: " + amountOfTimeToWaste + " ms"); // this fails to show the correct calling class name, but it's deprecated who cares
 
             long meaninglessValue = 0;
             while (System.currentTimeMillis() - timeCalculationStarted < amountOfTimeToWaste) {
@@ -96,8 +96,8 @@ public class ReturnYouTubeDislikeApi {
         }
         final long numberOfSecondsSinceLastRateLimit = (System.currentTimeMillis() - lastTimeLimitWasHit) / 1000;
         if (numberOfSecondsSinceLastRateLimit < RATE_LIMIT_BACKOFF_SECONDS) {
-            LogHelper.debug(ReturnYouTubeDislikeApi.class, "Ignoring api call " + apiEndPointName + " as only "
-                    + numberOfSecondsSinceLastRateLimit + " seconds has passed since last rate limit.");
+            LogHelper.printDebug(() -> "Ignoring api call " + apiEndPointName + " as only "
+                        + numberOfSecondsSinceLastRateLimit + " seconds has passed since last rate limit."); // this fails to show the correct calling class name, but it's deprecated who cares
             return true;
         }
         return false;
@@ -112,15 +112,15 @@ public class ReturnYouTubeDislikeApi {
         if (DEBUG_RATE_LIMIT) {
             final double RANDOM_RATE_LIMIT_PERCENTAGE = 0.1; // 10% chance of a triggering a rate limit
             if (Math.random() < RANDOM_RATE_LIMIT_PERCENTAGE) {
-                LogHelper.debug(ReturnYouTubeDislikeApi.class, "Artificially triggering rate limit for debug purposes");
+                LogHelper.printDebug(() -> "Artificially triggering rate limit for debug purposes"); // this fails to show the correct calling class name, but it's deprecated who cares
                 httpResponseCode = RATE_LIMIT_HTTP_STATUS_CODE;
             }
         }
 
         if (httpResponseCode == RATE_LIMIT_HTTP_STATUS_CODE) {
             lastTimeLimitWasHit = System.currentTimeMillis();
-            LogHelper.debug(ReturnYouTubeDislikeApi.class, "API rate limit was hit. Stopping API calls for the next "
-                    + RATE_LIMIT_BACKOFF_SECONDS + " seconds");
+            LogHelper.printDebug(() -> "API rate limit was hit. Stopping API calls for the next "
+                        + RATE_LIMIT_BACKOFF_SECONDS + " seconds"); // this fails to show the correct calling class name, but it's deprecated who cares
             return true;
         }
         return false;
@@ -138,7 +138,7 @@ public class ReturnYouTubeDislikeApi {
             if (checkIfRateLimitInEffect("fetchDislikes")) {
                 return null;
             }
-            LogHelper.debug(ReturnYouTubeDislikeApi.class, "Fetching dislikes for: " + videoId);
+            LogHelper.printDebug(() -> "Fetching dislikes for: " + videoId); // this fails to show the correct calling class name, but it's deprecated who cares
 
             HttpURLConnection connection = getConnectionFromRoute(ReturnYouTubeDislikeRoutes.GET_DISLIKES, videoId);
             // request headers, as per https://returnyoutubedislike.com/docs/fetching
@@ -160,12 +160,12 @@ public class ReturnYouTubeDislikeApi {
             if (responseCode == SUCCESS_HTTP_STATUS_CODE) {
                 JSONObject json = Requester.getJSONObject(connection); // also disconnects
                 Integer fetchedDislikeCount = json.getInt("dislikes");
-                LogHelper.debug(ReturnYouTubeDislikeApi.class, "Fetched video: " + videoId
-                        + " dislikes: " + fetchedDislikeCount);
+                LogHelper.printDebug(() -> "Fetched video: " + videoId
+                                + " dislikes: " + fetchedDislikeCount); // this fails to show the correct calling class name, but it's deprecated who cares
                 return fetchedDislikeCount;
             }
-            LogHelper.debug(ReturnYouTubeDislikeApi.class, "Failed to fetch dislikes for video: " + videoId
-                    + " response code was: " + responseCode);
+            LogHelper.printDebug(() -> "Failed to fetch dislikes for video: " + videoId
+                        + " response code was: " + responseCode); // this fails to show the correct calling class name, but it's deprecated who cares
             connection.disconnect();
         } catch (Exception ex) {
             LogHelper.printException(ReturnYouTubeDislikeApi.class, "Failed to fetch dislikes", ex);
@@ -184,7 +184,7 @@ public class ReturnYouTubeDislikeApi {
                 return null;
             }
             String userId = randomString(36);
-            LogHelper.debug(ReturnYouTubeDislikeApi.class, "Trying to register new user: " + userId);
+            LogHelper.printDebug(() -> "Trying to register new user: " + userId); // this fails to show the correct calling class name, but it's deprecated who cares
 
             HttpURLConnection connection = getConnectionFromRoute(ReturnYouTubeDislikeRoutes.GET_REGISTRATION, userId);
             connection.setConnectTimeout(API_REGISTER_VOTE_DEFAULT_TIMEOUT_MILLISECONDS);
@@ -203,8 +203,8 @@ public class ReturnYouTubeDislikeApi {
                 String solution = solvePuzzle(challenge, difficulty);
                 return confirmRegistration(userId, solution);
             }
-            LogHelper.debug(ReturnYouTubeDislikeApi.class, "Failed to register new user: " + userId
-                    + " response code was: " + responseCode);
+            LogHelper.printDebug(() -> "Failed to register new user: " + userId
+                        + " response code was: " + responseCode); // this fails to show the correct calling class name, but it's deprecated who cares
             connection.disconnect();
         } catch (Exception ex) {
             LogHelper.printException(ReturnYouTubeDislikeApi.class, "Failed to register user", ex);
@@ -221,7 +221,7 @@ public class ReturnYouTubeDislikeApi {
             if (checkIfRateLimitInEffect("confirmRegistration")) {
                 return null;
             }
-            LogHelper.debug(ReturnYouTubeDislikeApi.class, "Trying to confirm registration for user: " + userId + " with solution: " + solution);
+            LogHelper.printDebug(() -> "Trying to confirm registration for user: " + userId + " with solution: " + solution); // this fails to show the correct calling class name, but it's deprecated who cares
 
             HttpURLConnection connection = getConnectionFromRoute(ReturnYouTubeDislikeRoutes.CONFIRM_REGISTRATION, userId);
             applyCommonPostRequestSettings(connection);
@@ -239,15 +239,15 @@ public class ReturnYouTubeDislikeApi {
             if (responseCode == SUCCESS_HTTP_STATUS_CODE) {
                 String result = Requester.parseJson(connection); // also disconnects
                 if (result.equalsIgnoreCase("true")) {
-                    LogHelper.debug(ReturnYouTubeDislikeApi.class, "Registration confirmation successful for user: " + userId);
+                    LogHelper.printDebug(() -> "Registration confirmation successful for user: " + userId); // this fails to show the correct calling class name, but it's deprecated who cares
                     return userId;
                 }
-                LogHelper.debug(ReturnYouTubeDislikeApi.class, "Failed to confirm registration for user: " + userId
-                        + " solution: " + solution + " response string was: " + result);
+                LogHelper.printDebug(() -> "Failed to confirm registration for user: " + userId
+                                + " solution: " + solution + " response string was: " + result); // this fails to show the correct calling class name, but it's deprecated who cares
                 return null;
             }
-            LogHelper.debug(ReturnYouTubeDislikeApi.class, "Failed to confirm registration for user: " + userId
-                    + " solution: " + solution + " response code was: " + responseCode);
+            LogHelper.printDebug(() -> "Failed to confirm registration for user: " + userId
+                        + " solution: " + solution + " response code was: " + responseCode); // this fails to show the correct calling class name, but it's deprecated who cares
             connection.disconnect();
         } catch (Exception ex) {
             LogHelper.printException(ReturnYouTubeDislikeApi.class, "Failed to confirm registration for user: " + userId
@@ -267,8 +267,8 @@ public class ReturnYouTubeDislikeApi {
             if (checkIfRateLimitInEffect("sendVote")) {
                 return false;
             }
-            LogHelper.debug(ReturnYouTubeDislikeApi.class, "Trying to vote for video: "
-                    + videoId + " with vote: " + vote + " user: " + userId);
+            LogHelper.printDebug(() -> "Trying to vote for video: "
+                        + videoId + " with vote: " + vote + " user: " + userId); // this fails to show the correct calling class name, but it's deprecated who cares
 
             HttpURLConnection connection = getConnectionFromRoute(ReturnYouTubeDislikeRoutes.SEND_VOTE);
             applyCommonPostRequestSettings(connection);
@@ -292,8 +292,8 @@ public class ReturnYouTubeDislikeApi {
                 String solution = solvePuzzle(challenge, difficulty);
                 return confirmVote(videoId, userId, solution);
             }
-            LogHelper.debug(ReturnYouTubeDislikeApi.class, "Failed to send vote for video: " + videoId
-                    + " userId: " + userId + " vote: " + vote + " response code was: " + responseCode);
+            LogHelper.printDebug(() -> "Failed to send vote for video: " + videoId
+                        + " userId: " + userId + " vote: " + vote + " response code was: " + responseCode); // this fails to show the correct calling class name, but it's deprecated who cares
             connection.disconnect();
         } catch (Exception ex) {
             LogHelper.printException(ReturnYouTubeDislikeApi.class,"Failed to send vote for video: " + videoId
@@ -312,8 +312,8 @@ public class ReturnYouTubeDislikeApi {
             if (checkIfRateLimitInEffect("confirmVote")) {
                 return false;
             }
-            LogHelper.debug(ReturnYouTubeDislikeApi.class, "Trying to confirm vote for video: "
-                    + videoId + " user: " + userId + " solution: " + solution);
+            LogHelper.printDebug(() -> "Trying to confirm vote for video: "
+                        + videoId + " user: " + userId + " solution: " + solution); // this fails to show the correct calling class name, but it's deprecated who cares
             HttpURLConnection connection = getConnectionFromRoute(ReturnYouTubeDislikeRoutes.CONFIRM_VOTE);
             applyCommonPostRequestSettings(connection);
 
@@ -331,15 +331,15 @@ public class ReturnYouTubeDislikeApi {
             if (responseCode == SUCCESS_HTTP_STATUS_CODE) {
                 String result = Requester.parseJson(connection); // also disconnects
                 if (result.equalsIgnoreCase("true")) {
-                    LogHelper.debug(ReturnYouTubeDislikeApi.class, "Vote confirm successful for video: " + videoId);
+                    LogHelper.printDebug(() -> "Vote confirm successful for video: " + videoId); // this fails to show the correct calling class name, but it's deprecated who cares
                     return true;
                 }
-                LogHelper.debug(ReturnYouTubeDislikeApi.class, "Failed to confirm vote for video: " + videoId
-                        + " user: " + userId + " solution: " + solution + " response string was: " + result);
+                LogHelper.printDebug(() -> "Failed to confirm vote for video: " + videoId
+                                + " user: " + userId + " solution: " + solution + " response string was: " + result); // this fails to show the correct calling class name, but it's deprecated who cares
                 return false;
             }
-            LogHelper.debug(ReturnYouTubeDislikeApi.class, "Failed to confirm vote for video: " + videoId
-                    + " user: " + userId + " solution: " + solution + " response code was: " + responseCode);
+            LogHelper.printDebug(() -> "Failed to confirm vote for video: " + videoId
+                        + " user: " + userId + " solution: " + solution + " response code was: " + responseCode); // this fails to show the correct calling class name, but it's deprecated who cares
             connection.disconnect();
         } catch (Exception ex) {
             LogHelper.printException(ReturnYouTubeDislikeApi.class, "Failed to confirm vote for video: " + videoId
@@ -394,9 +394,8 @@ public class ReturnYouTubeDislikeApi {
 
             if (countLeadingZeroes(messageDigest) >= difficulty) {
                 String solution = Base64.encodeToString(new byte[]{buffer[0], buffer[1], buffer[2], buffer[3]}, Base64.NO_WRAP);
-                LogHelper.debug(ReturnYouTubeDislikeApi.class,
-                        "Found puzzle solution: " + solution + " of difficulty: " + difficulty
-                                + " in: " + (System.currentTimeMillis() - timeSolveStarted) + " ms");
+                LogHelper.printDebug(() -> "Found puzzle solution: " + solution + " of difficulty: " + difficulty
+                                        + " in: " + (System.currentTimeMillis() - timeSolveStarted) + " ms"); // this fails to show the correct calling class name, but it's deprecated who cares
                 return solution;
             }
         }

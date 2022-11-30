@@ -98,7 +98,7 @@ public class ReturnYouTubeDislike {
         if (!isEnabled) return;
         try {
             Objects.requireNonNull(videoId);
-            LogHelper.debug(ReturnYouTubeDislike.class, "New video loaded: " + videoId);
+            LogHelper.printDebug(() -> "New video loaded: " + videoId);
 
             synchronized (videoIdLockObject) {
                 currentVideoId = videoId;
@@ -123,7 +123,7 @@ public class ReturnYouTubeDislike {
             if (conversionContextString.contains("|segmented_like_dislike_button.eml|")) {
                 isSegmentedButton = true;
             } else if (!conversionContextString.contains("|dislike_button.eml|")) {
-                LogHelper.debug(ReturnYouTubeDislike.class, "ignoring UI component: " + conversionContextString);
+                LogHelper.printDebug(() -> "ignoring UI component: " + conversionContextString);
                 return;
             }
 
@@ -133,19 +133,19 @@ public class ReturnYouTubeDislike {
             try {
                 dislikeCount = getDislikeFetchFuture().get(MILLISECONDS_TO_BLOCK_UI_WHILE_WAITING_FOR_DISLIKE_FETCH_TO_COMPLETE, TimeUnit.MILLISECONDS);
             } catch (TimeoutException e) {
-                LogHelper.debug(ReturnYouTubeDislike.class, "UI timed out waiting for dislike fetch to complete");
+                LogHelper.printDebug(() -> "UI timed out waiting for dislike fetch to complete");
                 return;
             }
             if (dislikeCount == null) {
-                LogHelper.debug(ReturnYouTubeDislike.class, "Cannot add dislike count to UI (dislike count not available)");
+                LogHelper.printDebug(() -> "Cannot add dislike count to UI (dislike count not available)");
                 return;
             }
 
             if (updateDislike(textRef, isSegmentedButton, dislikeCount)) {
-                LogHelper.debug(ReturnYouTubeDislike.class, "Updated text on component: " + conversionContextString);
+                LogHelper.printDebug(() -> "Updated text on component: " + conversionContextString);
             } else {
-                LogHelper.debug(ReturnYouTubeDislike.class, "Like count is hidden by its creator for video: " + getCurrentVideoId()
-                        + "Cannot show a dislike count (RYD does not provide data for videos with hidden likes)");
+                LogHelper.printDebug(() -> "Like count is hidden by its creator for video: " + getCurrentVideoId()
+                                + "Cannot show a dislike count (RYD does not provide data for videos with hidden likes)");
             }
         } catch (Exception ex) {
             LogHelper.printException(ReturnYouTubeDislike.class, "Error while trying to update dislikes text", ex);
@@ -255,17 +255,17 @@ public class ReturnYouTubeDislike {
             String formatted;
             synchronized (ReturnYouTubeDislike.class) { // number formatter is not thread safe, must synchronize
                 if (compactNumberFormatter == null) {
-                    Context context = ReVancedUtils.getContext();
-                    Locale locale = context.getResources().getConfiguration().locale;
-                    LogHelper.debug(ReturnYouTubeDislike.class, "Locale: " + locale);
+                    Locale locale = ReVancedUtils.getContext().getResources().getConfiguration().locale;
+                    LogHelper.printDebug(() -> "Locale: " + locale);
                     compactNumberFormatter = CompactDecimalFormat.getInstance(locale, CompactDecimalFormat.CompactStyle.SHORT);
                 }
                 formatted = compactNumberFormatter.format(dislikeCount);
             }
-            LogHelper.debug(ReturnYouTubeDislike.class, "Dislike count: " + dislikeCount + " formatted as: " + formatted);
+            LogHelper.printDebug(() -> "Dislike count: " + dislikeCount + " formatted as: " + formatted);
             return formatted;
         }
-        LogHelper.debug(ReturnYouTubeDislike.class, "Could not format dislikes, using unformatted count: " + dislikeCount);
+
+        // never will be reached, as the oldest supported YouTube app requires Android N or greater
         return String.valueOf(dislikeCount);
     }
 }
