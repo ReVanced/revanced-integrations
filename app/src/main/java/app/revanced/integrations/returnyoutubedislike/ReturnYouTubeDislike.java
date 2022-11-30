@@ -221,7 +221,7 @@ public class ReturnYouTubeDislike {
                 //
                 // Change the "Likes" string to show that likes and dislikes are hidden
                 //
-                newDislikeString = "Likes Hidden"; // for now, this is not localized
+                newDislikeString = "Hidden"; // for now, this is not localized
                 LogHelper.printDebug(() -> "Like count is hidden by video creator. "
                         + "RYD does not provide data for videos with hidden likes.");
             } else {
