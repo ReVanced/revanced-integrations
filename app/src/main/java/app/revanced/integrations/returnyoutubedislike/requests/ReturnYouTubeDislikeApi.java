@@ -49,7 +49,7 @@ public class ReturnYouTubeDislikeApi {
     private static final int RATE_LIMIT_HTTP_STATUS_CODE = 429;
 
     /**
-     * How long wait until API calls are resumed, if a rate limit is hit
+     * How long to wait until API calls are resumed, if a rate limit is hit.
      * No clear guideline of how long to backoff.  Using 60 seconds for now.
      */
     private static final int RATE_LIMIT_BACKOFF_SECONDS = 60;
@@ -58,7 +58,7 @@ public class ReturnYouTubeDislikeApi {
      * Last time a {@link #RATE_LIMIT_HTTP_STATUS_CODE} was reached.
      * zero if has not been reached.
      */
-    private static volatile long lastTimeLimitWasHit; // must be volatile, since different threads access this
+    private static volatile long lastTimeLimitWasHit; // must be volatile, since different threads read/write to this
 
     private ReturnYouTubeDislikeApi() {
     } // utility class
@@ -78,6 +78,7 @@ public class ReturnYouTubeDislikeApi {
 
             long meaninglessValue = 0;
             while (System.currentTimeMillis() - timeCalculationStarted < amountOfTimeToWaste) {
+                // could do a thread sleep, but that will trigger an exception if the thread is interrupted
                 meaninglessValue += Long.numberOfLeadingZeros((long) (Math.random() * Long.MAX_VALUE));
             }
             // return the value, otherwise the compiler or VM might optimize and remove the meaningless time wasting work,
