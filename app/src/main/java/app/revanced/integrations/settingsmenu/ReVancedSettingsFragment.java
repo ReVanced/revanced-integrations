@@ -21,7 +21,6 @@ import android.widget.Toast;
 
 import com.google.android.apps.youtube.app.application.Shell_HomeActivity;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import app.revanced.integrations.settings.SettingsEnum;
@@ -77,7 +76,6 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
                 setting.setValue(value);
             } else if (pref instanceof ListPreference) {
                 Context context = ReVancedUtils.getContext();
-                Boolean auto = false;
                 ListPreference listPref = (ListPreference) pref;
                 if (setting == SettingsEnum.PREFERRED_VIDEO_SPEED) {
                     try {
@@ -94,11 +92,7 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
 
                 if (setting == SettingsEnum.DEFAULT_VIDEO_QUALITY_WIFI) {
                     try {
-                        updateVideoQuality(context, listPref, setting);
-                        if (setting.getInt() == Integer.parseInt((String) videoQualityEntryValues[0]))
-                            auto = true;
-                        String qualityValue = auto ? "Auto" : setting.getInt() + "p";
-                        Toast.makeText(context, "Changing default Wi-Fi quality to: " + qualityValue, Toast.LENGTH_SHORT).show();
+                        updateVideoQuality(context, listPref, setting, false);
                     } catch (Throwable th) {
                         LogHelper.printException(ReVancedSettingsFragment.class, "Error setting value of wifi quality" + th);
                     }
@@ -108,11 +102,7 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
 
                 if (setting == SettingsEnum.DEFAULT_VIDEO_QUALITY_MOBILE) {
                     try {
-                        updateVideoQuality(context, listPref, setting);
-                        if (setting.getInt() == Integer.parseInt((String) videoQualityEntryValues[0]))
-                            auto = true;
-                        String qualityValue = auto ? "Auto" : setting.getInt() + "p";
-                        Toast.makeText(context, "Changing default Mobile quality to: " + qualityValue, Toast.LENGTH_SHORT).show();
+                        updateVideoQuality(context, listPref, setting, false);
                     } catch (Throwable th) {
                         LogHelper.printException(ReVancedSettingsFragment.class, "Error setting value of mobile quality" + th);
                     }
@@ -182,13 +172,19 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
         return pref;
     }
 
-    private void updateVideoQuality(Context context, ListPreference listPref, SettingsEnum setting) {
+    private void updateVideoQuality(Context context, ListPreference listPref, SettingsEnum setting, Boolean auto) {
         String key = setting.getPath();
         String value = Integer.toString(SharedPrefHelper.getInt(context, SharedPrefHelper.SharedPrefNames.YOUTUBE, key, -2));
         listPref.setDefaultValue(value);
         listPref.setSummary(listPref.getEntry());
         setting.saveValue(Integer.parseInt(value));
         SharedPrefHelper.saveString(context, SharedPrefHelper.SharedPrefNames.YOUTUBE, key, value + "");
+
+        if (setting.getInt() == Integer.parseInt((String) videoQualityEntryValues[0]))
+            auto = true;
+        String network = key == SettingsEnum.DEFAULT_VIDEO_QUALITY_WIFI.getPath() ? " Wi-Fi " : " mobile ";
+        String qualityValue = auto ? "Auto" : setting.getInt() + "p";
+        Toast.makeText(context, "Changing default" + network + "quality to: " + qualityValue, Toast.LENGTH_SHORT).show();
     }
 
     /*
