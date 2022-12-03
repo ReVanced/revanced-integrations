@@ -21,7 +21,7 @@ public final class RYDVoteData {
     public final long viewCount;
 
     /**
-     * Estimated Like count
+     * Estimated like count
      */
     public final long likeCount;
 
