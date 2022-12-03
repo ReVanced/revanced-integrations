@@ -62,8 +62,8 @@ public final class RYDVoteData {
 
     @Override
     public String toString() {
-        return "RYDVoteData{" +
-                "videoId=" + videoId
+        return "RYDVoteData{"
+                + "videoId=" + videoId
                 + ", viewCount=" + viewCount
                 + ", likeCount=" + likeCount
                 + ", dislikeCount=" + dislikeCount
