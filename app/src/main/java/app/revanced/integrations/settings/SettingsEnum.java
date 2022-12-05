@@ -60,7 +60,7 @@ public enum SettingsEnum {
     // Layout settings
     REEL_BUTTON_SHOWN("revanced_reel_button_enabled", false, ReturnType.BOOLEAN, true),
     HIDE_INFO_CARDS("revanced_hide_infocards", true, ReturnType.BOOLEAN),
-    BRANDING_SHOWN("revanced_branding_watermark_enabled", false, ReturnType.BOOLEAN),
+    HIDE_BRANDING_VIDEO_WATERMARK("revanced_branding_video_watermark_hidden", true, ReturnType.BOOLEAN),
     HIDE_ENDSCREEN_CARDS("revanced_hide_endscreen_cards", true, ReturnType.BOOLEAN),
     CAST_BUTTON_HIDDEN("revanced_cast_button_hidden", true, ReturnType.BOOLEAN, true),
     AUTOPLAY_BUTTON_HIDDEN("revanced_autoplay_button_hidden", true, ReturnType.BOOLEAN, true),
@@ -145,7 +145,9 @@ public enum SettingsEnum {
     @Deprecated
     AUTOPLAY_BUTTON_SHOWN("revanced_autoplay_button_enabled", false, ReturnType.BOOLEAN, true),
     @Deprecated
-    CAST_BUTTON_SHOWN("revanced_cast_button_enabled", false, ReturnType.BOOLEAN, true);
+    CAST_BUTTON_SHOWN("revanced_cast_button_enabled", false, ReturnType.BOOLEAN, true),
+    @Deprecated
+    BRANDING_SHOWN("revanced_branding_watermark_enabled", false, ReturnType.BOOLEAN);
     //
     // end deprecated settings
     //
@@ -191,6 +193,7 @@ public enum SettingsEnum {
                 // old/new settings where old is default off, and new is default on
                 {AUTOPLAY_BUTTON_SHOWN, AUTOPLAY_BUTTON_HIDDEN},
                 {CAST_BUTTON_SHOWN, CAST_BUTTON_HIDDEN},
+                {BRANDING_SHOWN, HIDE_BRANDING_VIDEO_WATERMARK},
                 };
         for (SettingsEnum oldNewSetting[] : settingsToMigrate) {
             // by default, old setting was default off
