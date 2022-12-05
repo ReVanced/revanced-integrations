@@ -19,7 +19,7 @@ public enum SettingsEnum {
     // Video settings
     OLD_STYLE_QUALITY_SETTINGS("revanced_use_old_style_quality_settings", true, ReturnType.BOOLEAN),
     PREFERRED_VIDEO_SPEED("revanced_pref_video_speed", -2.0f, ReturnType.FLOAT),
-    REMEMBER_VIDEO_QUALITY("revanced_remember_video_quality_selection", false, ReturnType.BOOLEAN),
+    REMEMBER_VIDEO_QUALITY_LAST_SELECTED("revanced_remember_video_quality_last_selected", true, ReturnType.BOOLEAN),
 
     // Whitelist settings
     //ToDo: Not used atm, Patch missing
@@ -155,7 +155,9 @@ public enum SettingsEnum {
     @Deprecated
     CAST_BUTTON_SHOWN("revanced_cast_button_enabled", false, ReturnType.BOOLEAN, true),
     @Deprecated
-    BRANDING_SHOWN("revanced_branding_watermark_enabled", false, ReturnType.BOOLEAN);
+    BRANDING_SHOWN("revanced_branding_watermark_enabled", false, ReturnType.BOOLEAN),
+    @Deprecated
+    REMEMBER_VIDEO_QUALITY("revanced_remember_video_quality_selection", false, ReturnType.BOOLEAN);
     //
     // end deprecated settings
     //
@@ -206,6 +208,7 @@ public enum SettingsEnum {
                 {AUTOPLAY_BUTTON_SHOWN, HIDE_AUTOPLAY_BUTTON},
                 {CAST_BUTTON_SHOWN, HIDE_CAST_BUTTON},
                 {BRANDING_SHOWN, HIDE_BRANDING_VIDEO_WATERMARK},
+                {REMEMBER_VIDEO_QUALITY, REMEMBER_VIDEO_QUALITY_LAST_SELECTED},
                 };
         for (SettingsEnum oldNewSetting[] : settingsToMigrate) {
             // by default, old setting was default off
