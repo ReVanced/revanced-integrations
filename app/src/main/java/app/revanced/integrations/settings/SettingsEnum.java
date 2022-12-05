@@ -218,7 +218,7 @@ public enum SettingsEnum {
                 // this code will only run once
                 LogHelper.printInfo(() -> "Migrating setting: " + oldSetting + " of 'true' to new setting: "
                         + newSetting + " of 'false'");
-                newSetting.saveValue(true); // move the updated value to the new setting
+                newSetting.saveValue(false); // set opposite of old value
                 oldSetting.saveValue(false); // clear old value
             }
         }
