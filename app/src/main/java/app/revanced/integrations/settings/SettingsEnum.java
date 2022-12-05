@@ -190,7 +190,7 @@ public enum SettingsEnum {
         this(path, defaultValue, SharedPrefHelper.SharedPrefNames.YOUTUBE, returnType, false);
     }
 
-    SettingsEnum(String path, Object defaultValue, ReturnType returnType, Boolean rebootApp) {
+    SettingsEnum(String path, Object defaultValue, ReturnType returnType, boolean rebootApp) {
         this(path, defaultValue, SharedPrefHelper.SharedPrefNames.YOUTUBE, returnType, rebootApp);
     }
 
@@ -198,7 +198,7 @@ public enum SettingsEnum {
         this(path, defaultValue, prefName, returnType, false);
     }
 
-    SettingsEnum(String path, Object defaultValue, SharedPrefHelper.SharedPrefNames prefName, ReturnType returnType, Boolean rebootApp) {
+    SettingsEnum(String path, Object defaultValue, SharedPrefHelper.SharedPrefNames prefName, ReturnType returnType, boolean rebootApp) {
         this.path = path;
         this.defaultValue = defaultValue;
         this.sharedPref = prefName;
