@@ -62,7 +62,7 @@ public enum SettingsEnum {
     HIDE_INFO_CARDS("revanced_hide_infocards", true, ReturnType.BOOLEAN),
     BRANDING_SHOWN("revanced_branding_watermark_enabled", false, ReturnType.BOOLEAN),
     HIDE_ENDSCREEN_CARDS("revanced_hide_endscreen_cards", true, ReturnType.BOOLEAN),
-    CAST_BUTTON_SHOWN("revanced_cast_button_enabled", false, ReturnType.BOOLEAN, true),
+    CAST_BUTTON_HIDDEN("revanced_cast_button_hidden", true, ReturnType.BOOLEAN, true),
     AUTOPLAY_BUTTON_HIDDEN("revanced_autoplay_button_hidden", true, ReturnType.BOOLEAN, true),
     USE_TABLET_MINIPLAYER("revanced_tablet_miniplayer", false, ReturnType.BOOLEAN, true),
     CREATE_BUTTON_ENABLED("revanced_create_button_enabled", false, ReturnType.BOOLEAN, true),
@@ -143,7 +143,9 @@ public enum SettingsEnum {
     // FIXME: eventually delete these settings
     //
     @Deprecated
-    AUTOPLAY_BUTTON_SHOWN("revanced_autoplay_button_enabled", false, ReturnType.BOOLEAN, true);
+    AUTOPLAY_BUTTON_SHOWN("revanced_autoplay_button_enabled", false, ReturnType.BOOLEAN, true),
+    @Deprecated
+    CAST_BUTTON_SHOWN("revanced_cast_button_enabled", false, ReturnType.BOOLEAN, true);
     //
     // end deprecated settings
     //
@@ -188,6 +190,7 @@ public enum SettingsEnum {
         SettingsEnum settingsToMigrate[][] = {
                 // old/new settings where old is default off, and new is default on
                 {AUTOPLAY_BUTTON_SHOWN, AUTOPLAY_BUTTON_HIDDEN},
+                {CAST_BUTTON_SHOWN, CAST_BUTTON_HIDDEN},
                 };
         for (SettingsEnum oldNewSetting[] : settingsToMigrate) {
             // by default, old setting was default off
