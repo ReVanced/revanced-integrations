@@ -139,8 +139,8 @@ public enum SettingsEnum {
 
 
     //
-    // old deprecated settings.
-    // FIXME: eventually delete these settings
+    // old deprecated settings, kept around to migrate user settings on existing installations
+    // FIXME: after a few months, eventually delete these settings
     //
     @Deprecated
     CREATE_BUTTON_ENABLED("revanced_create_button_enabled", false, ReturnType.BOOLEAN, true),
