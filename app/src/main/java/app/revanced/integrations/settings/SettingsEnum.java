@@ -68,7 +68,7 @@ public enum SettingsEnum {
     HIDE_CREATE_BUTTON("revanced_create_button_hidden", true, ReturnType.BOOLEAN, true),
     WIDE_SEARCHBAR("revanced_wide_searchbar", false, ReturnType.BOOLEAN, true),
     HIDE_SHORTS_BUTTON("revanced_shorts_button_hidden", true, ReturnType.BOOLEAN, true),
-    FULLSCREEN_PANELS_SHOWN("revanced_fullscreen_panels_enabled", false, ReturnType.BOOLEAN), //ToDo: Add to prefs
+    HIDE_FULLSCREEN_PANELS("revanced_fullscreen_panels_hidden", true, ReturnType.BOOLEAN), //ToDo: Add to prefs
     PLAYER_POPUP_PANELS("revanced_player_popup_panels_enabled", false, ReturnType.BOOLEAN),
     HIDE_TIME_AND_SEEKBAR("revanced_hide_time_and_seekbar", false, ReturnType.BOOLEAN),
     HIDE_EMAIL_ADDRESS("revanced_hide_email_address", false, ReturnType.BOOLEAN),
@@ -143,6 +143,8 @@ public enum SettingsEnum {
     // FIXME: after a few months, eventually delete these settings
     //
     @Deprecated
+    FULLSCREEN_PANELS_SHOWN("revanced_fullscreen_panels_enabled", false, ReturnType.BOOLEAN),
+    @Deprecated
     CREATE_BUTTON_ENABLED("revanced_create_button_enabled", false, ReturnType.BOOLEAN, true),
     @Deprecated
     SHORTS_BUTTON_SHOWN("revanced_shorts_button_enabled", false, ReturnType.BOOLEAN, true),
@@ -197,6 +199,7 @@ public enum SettingsEnum {
         //
         SettingsEnum settingsToMigrate[][] = {
                 // old/new settings where old is default off, and new is default on
+                {FULLSCREEN_PANELS_SHOWN, HIDE_FULLSCREEN_PANELS},
                 {CREATE_BUTTON_ENABLED, HIDE_CREATE_BUTTON},
                 {SHORTS_BUTTON_SHOWN, HIDE_SHORTS_BUTTON},
                 {REEL_BUTTON_SHOWN, HIDE_REEL_BUTTON},
