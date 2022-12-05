@@ -75,7 +75,7 @@ public enum SettingsEnum {
     HIDE_ENDSCREEN_CARDS("revanced_hide_endscreen_cards", true, ReturnType.BOOLEAN),
     HIDE_FULLSCREEN_PANELS("revanced_fullscreen_panels_hidden", true, ReturnType.BOOLEAN), //ToDo: Add to prefs
     HIDE_INFO_CARDS("revanced_hide_infocards", true, ReturnType.BOOLEAN),
-    HIDE_MIX_PLAYLISTS("revanced_mix_playlists_hidden", false, ReturnType.BOOLEAN, true),
+    HIDE_MIX_PLAYLISTS("revanced_hide_mix_playlists", false, ReturnType.BOOLEAN, true),
     HIDE_PREVIEW_COMMENT("revanced_hide_preview_comment", false, ReturnType.BOOLEAN, true),
     HIDE_REEL_BUTTON("revanced_reel_button_hidden", true, ReturnType.BOOLEAN, true),
     HIDE_SHORTS_BUTTON("revanced_shorts_button_hidden", true, ReturnType.BOOLEAN, true),
@@ -143,6 +143,8 @@ public enum SettingsEnum {
     // FIXME: after a few months, eventually delete these settings
     //
     @Deprecated
+    DEPRECATED_HIDE_MIX_PLAYLISTS("revanced_mix_playlists_hidden", false, ReturnType.BOOLEAN, true),
+    @Deprecated
     DEPRECATED_FULLSCREEN_PANELS_SHOWN("revanced_fullscreen_panels_enabled", false, ReturnType.BOOLEAN),
     @Deprecated
     DEPRECATED_CREATE_BUTTON_ENABLED("revanced_create_button_enabled", false, ReturnType.BOOLEAN, true),
@@ -199,8 +201,9 @@ public enum SettingsEnum {
         // temporary code to migrate old setting names into new names.
         // FIXME: eventually delete this code
         //
-        SettingsEnum settingsToMigrate[][] = {
-                // old/new settings where old is default off, and new has inverted value and is default on
+
+        // old/new settings where old is default off, and new has inverted value and is default on
+        SettingsEnum invertedSettingsToMigrate[][] = {
                 {DEPRECATED_FULLSCREEN_PANELS_SHOWN, HIDE_FULLSCREEN_PANELS},
                 {DEPRECATED_CREATE_BUTTON_ENABLED, HIDE_CREATE_BUTTON},
                 {DEPRECATED_SHORTS_BUTTON_SHOWN, HIDE_SHORTS_BUTTON},
@@ -210,7 +213,7 @@ public enum SettingsEnum {
                 {DEPRECATED_BRANDING_SHOWN, HIDE_BRANDING_VIDEO_WATERMARK},
                 {DEPRECATED_REMEMBER_VIDEO_QUALITY, REMEMBER_VIDEO_QUALITY_LAST_SELECTED},
         };
-        for (SettingsEnum oldNewSetting[] : settingsToMigrate) {
+        for (SettingsEnum oldNewSetting[] : invertedSettingsToMigrate) {
             // by default, old setting was default off
             // migrate to new setting of default on
             SettingsEnum oldSetting = oldNewSetting[0];
@@ -223,6 +226,24 @@ public enum SettingsEnum {
                         + newSetting + " of 'false'");
                 newSetting.saveValue(false); // set opposite of old value
                 oldSetting.saveValue(false); // clear old value
+            }
+        }
+
+        //
+        // migrate settings with renamed path names, but otherwise both settings are identical
+        //
+        SettingsEnum renamedSettings[][] = {
+                {DEPRECATED_HIDE_MIX_PLAYLISTS, HIDE_MIX_PLAYLISTS}
+        };
+        for (SettingsEnum oldNewSetting[] : invertedSettingsToMigrate) {
+            SettingsEnum oldSetting = oldNewSetting[0];
+            SettingsEnum newSetting = oldNewSetting[1];
+
+            if (oldSetting.getBoolean()) {
+                LogHelper.printInfo(() -> "Migrating enabled setting from: " + oldSetting
+                        + " into replacement setting: " + newSetting);
+                newSetting.saveValue(true);
+                oldSetting.saveValue(false);
             }
         }
         //
