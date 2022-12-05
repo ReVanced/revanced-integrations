@@ -50,12 +50,12 @@ public enum SettingsEnum {
     ADREMOVER_GRAY_SEPARATOR("revanced_adremover_separator", true, ReturnType.BOOLEAN),
 
     // Action buttons
-    HIDE_LIKE_BUTTON("revanced_like_button", false, ReturnType.BOOLEAN, false),
-    HIDE_DISLIKE_BUTTON("revanced_dislike_button", false, ReturnType.BOOLEAN, false),
-    HIDE_DOWNLOAD_BUTTON("revanced_download_button", false, ReturnType.BOOLEAN, false),
-    HIDE_PLAYLIST_BUTTON("revanced_playlist_button", false, ReturnType.BOOLEAN, false),
-    HIDE_ACTION_BUTTON("revanced_action_button", false, ReturnType.BOOLEAN, false),
-    HIDE_SHARE_BUTTON("revanced_share_button", false, ReturnType.BOOLEAN, false),
+    HIDE_LIKE_BUTTON("revanced_hide_like_button", false, ReturnType.BOOLEAN, false),
+    HIDE_DISLIKE_BUTTON("revanced_hide_dislike_button", false, ReturnType.BOOLEAN, false),
+    HIDE_DOWNLOAD_BUTTON("revanced_hide_download_button", false, ReturnType.BOOLEAN, false),
+    HIDE_PLAYLIST_BUTTON("revanced_hide_playlist_button", false, ReturnType.BOOLEAN, false),
+    HIDE_ACTION_BUTTON("revanced_hide_action_button", false, ReturnType.BOOLEAN, false),
+    HIDE_SHARE_BUTTON("revanced_hide_share_button", false, ReturnType.BOOLEAN, false),
 
     // Layout settings
     DISABLE_STARTUP_SHORTS_PLAYER("revanced_startup_shorts_player_enabled", false, ReturnType.BOOLEAN),
@@ -145,6 +145,18 @@ public enum SettingsEnum {
     @Deprecated
     DEPRECATED_HIDE_MIX_PLAYLISTS("revanced_mix_playlists_hidden", false, ReturnType.BOOLEAN, true),
     @Deprecated
+    DEPRECATED_HIDE_LIKE_BUTTON("revanced_like_button", false, ReturnType.BOOLEAN, false),
+    @Deprecated
+    DEPRECATED_HIDE_DISLIKE_BUTTON("revanced_dislike_button", false, ReturnType.BOOLEAN, false),
+    @Deprecated
+    DEPRECATED_HIDE_DOWNLOAD_BUTTON("revanced_download_button", false, ReturnType.BOOLEAN, false),
+    @Deprecated
+    DEPRECATED_HIDE_PLAYLIST_BUTTON("revanced_playlist_button", false, ReturnType.BOOLEAN, false),
+    @Deprecated
+    DEPRECATED_HIDE_ACTION_BUTTON("revanced_action_button", false, ReturnType.BOOLEAN, false),
+    @Deprecated
+    DEPRECATED_HIDE_SHARE_BUTTON("revanced_share_button", false, ReturnType.BOOLEAN, false),
+    @Deprecated
     DEPRECATED_FULLSCREEN_PANELS_SHOWN("revanced_fullscreen_panels_enabled", false, ReturnType.BOOLEAN),
     @Deprecated
     DEPRECATED_CREATE_BUTTON_ENABLED("revanced_create_button_enabled", false, ReturnType.BOOLEAN, true),
@@ -230,10 +242,16 @@ public enum SettingsEnum {
         }
 
         //
-        // migrate settings with renamed path names, but otherwise both settings are identical
+        // migrate preference of prior 'default off' settings, into replacement setting with different path name but otherwise is identical
         //
         SettingsEnum renamedSettings[][] = {
-                {DEPRECATED_HIDE_MIX_PLAYLISTS, HIDE_MIX_PLAYLISTS}
+                {DEPRECATED_HIDE_MIX_PLAYLISTS, HIDE_MIX_PLAYLISTS},
+                {DEPRECATED_HIDE_LIKE_BUTTON, HIDE_LIKE_BUTTON},
+                {DEPRECATED_HIDE_DISLIKE_BUTTON, HIDE_DISLIKE_BUTTON},
+                {DEPRECATED_HIDE_DOWNLOAD_BUTTON, HIDE_DOWNLOAD_BUTTON},
+                {DEPRECATED_HIDE_PLAYLIST_BUTTON, HIDE_PLAYLIST_BUTTON},
+                {DEPRECATED_HIDE_ACTION_BUTTON, HIDE_ACTION_BUTTON},
+                {DEPRECATED_HIDE_SHARE_BUTTON, HIDE_SHARE_BUTTON},
         };
         for (SettingsEnum oldNewSetting[] : invertedSettingsToMigrate) {
             SettingsEnum oldSetting = oldNewSetting[0];
