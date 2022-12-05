@@ -323,7 +323,7 @@ public enum SettingsEnum {
     }
 
     /**
-     * Sets, but does _not_ save the value.
+     * Sets, but does _not_ persistently save the value.
      *
      * @see #saveValue(Object)
      */
