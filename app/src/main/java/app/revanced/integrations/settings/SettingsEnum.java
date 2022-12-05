@@ -58,7 +58,7 @@ public enum SettingsEnum {
     HIDE_SHARE_BUTTON("revanced_share_button", false, ReturnType.BOOLEAN, false),
 
     // Layout settings
-    REEL_BUTTON_SHOWN("revanced_reel_button_enabled", false, ReturnType.BOOLEAN, true),
+    HIDE_REEL_BUTTON("revanced_reel_button_hidden", true, ReturnType.BOOLEAN, true),
     HIDE_INFO_CARDS("revanced_hide_infocards", true, ReturnType.BOOLEAN),
     HIDE_BRANDING_VIDEO_WATERMARK("revanced_branding_video_watermark_hidden", true, ReturnType.BOOLEAN),
     HIDE_ENDSCREEN_CARDS("revanced_hide_endscreen_cards", true, ReturnType.BOOLEAN),
@@ -143,6 +143,8 @@ public enum SettingsEnum {
     // FIXME: eventually delete these settings
     //
     @Deprecated
+    REEL_BUTTON_SHOWN("revanced_reel_button_enabled", false, ReturnType.BOOLEAN, true),
+    @Deprecated
     AUTOPLAY_BUTTON_SHOWN("revanced_autoplay_button_enabled", false, ReturnType.BOOLEAN, true),
     @Deprecated
     CAST_BUTTON_SHOWN("revanced_cast_button_enabled", false, ReturnType.BOOLEAN, true),
@@ -191,6 +193,7 @@ public enum SettingsEnum {
         //
         SettingsEnum settingsToMigrate[][] = {
                 // old/new settings where old is default off, and new is default on
+                {REEL_BUTTON_SHOWN, HIDE_REEL_BUTTON},
                 {AUTOPLAY_BUTTON_SHOWN, AUTOPLAY_BUTTON_HIDDEN},
                 {CAST_BUTTON_SHOWN, HIDE_CAST_BUTTON},
                 {BRANDING_SHOWN, HIDE_BRANDING_VIDEO_WATERMARK},
