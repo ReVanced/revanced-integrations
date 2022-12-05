@@ -67,7 +67,7 @@ public enum SettingsEnum {
     USE_TABLET_MINIPLAYER("revanced_tablet_miniplayer", false, ReturnType.BOOLEAN, true),
     CREATE_BUTTON_ENABLED("revanced_create_button_enabled", false, ReturnType.BOOLEAN, true),
     WIDE_SEARCHBAR("revanced_wide_searchbar", false, ReturnType.BOOLEAN, true),
-    SHORTS_BUTTON_SHOWN("revanced_shorts_button_enabled", false, ReturnType.BOOLEAN, true),
+    HIDE_SHORTS_BUTTON("revanced_shorts_button_hidden", true, ReturnType.BOOLEAN, true),
     FULLSCREEN_PANELS_SHOWN("revanced_fullscreen_panels_enabled", false, ReturnType.BOOLEAN), //ToDo: Add to prefs
     PLAYER_POPUP_PANELS("revanced_player_popup_panels_enabled", false, ReturnType.BOOLEAN),
     HIDE_TIME_AND_SEEKBAR("revanced_hide_time_and_seekbar", false, ReturnType.BOOLEAN),
@@ -143,6 +143,8 @@ public enum SettingsEnum {
     // FIXME: eventually delete these settings
     //
     @Deprecated
+    SHORTS_BUTTON_SHOWN("revanced_shorts_button_enabled", false, ReturnType.BOOLEAN, true),
+    @Deprecated
     REEL_BUTTON_SHOWN("revanced_reel_button_enabled", false, ReturnType.BOOLEAN, true),
     @Deprecated
     AUTOPLAY_BUTTON_SHOWN("revanced_autoplay_button_enabled", false, ReturnType.BOOLEAN, true),
@@ -193,6 +195,7 @@ public enum SettingsEnum {
         //
         SettingsEnum settingsToMigrate[][] = {
                 // old/new settings where old is default off, and new is default on
+                {SHORTS_BUTTON_SHOWN, HIDE_SHORTS_BUTTON},
                 {REEL_BUTTON_SHOWN, HIDE_REEL_BUTTON},
                 {AUTOPLAY_BUTTON_SHOWN, AUTOPLAY_BUTTON_HIDDEN},
                 {CAST_BUTTON_SHOWN, HIDE_CAST_BUTTON},
