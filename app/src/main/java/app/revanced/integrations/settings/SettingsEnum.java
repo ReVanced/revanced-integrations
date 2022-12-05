@@ -203,8 +203,8 @@ public enum SettingsEnum {
                 // this code will only run once
                 LogHelper.printInfo(() -> "Migrating setting: " + oldSetting + " of 'true' to new setting: "
                         + newSetting + " of 'false'");
-                newSetting.setValue(true); // move the updated value to the new setting
-                oldSetting.setValue(false); // clear old value
+                newSetting.saveValue(true); // move the updated value to the new setting
+                oldSetting.saveValue(false); // clear old value
             }
         }
         //
@@ -265,10 +265,18 @@ public enum SettingsEnum {
         return list;
     }
 
+    /**
+     * Sets, but does _not_ save the value.
+     *
+     * @see #saveValue(Object)
+     */
     public void setValue(Object newValue) {
         this.value = newValue;
     }
 
+    /**
+     * Sets the value, and persistently saves it
+     */
     public void saveValue(Object newValue) {
         Context context = ReVancedUtils.getContext();
         if (context != null) {
