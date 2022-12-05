@@ -63,7 +63,7 @@ public enum SettingsEnum {
     BRANDING_SHOWN("revanced_branding_watermark_enabled", false, ReturnType.BOOLEAN),
     HIDE_ENDSCREEN_CARDS("revanced_hide_endscreen_cards", true, ReturnType.BOOLEAN),
     CAST_BUTTON_SHOWN("revanced_cast_button_enabled", false, ReturnType.BOOLEAN, true),
-    AUTOPLAY_BUTTON_SHOWN("revanced_autoplay_button_enabled", false, ReturnType.BOOLEAN, true),
+    AUTOPLAY_BUTTON_HIDDEN("revanced_autoplay_button_hidden", true, ReturnType.BOOLEAN, true),
     USE_TABLET_MINIPLAYER("revanced_tablet_miniplayer", false, ReturnType.BOOLEAN, true),
     CREATE_BUTTON_ENABLED("revanced_create_button_enabled", false, ReturnType.BOOLEAN, true),
     WIDE_SEARCHBAR("revanced_wide_searchbar", false, ReturnType.BOOLEAN, true),
@@ -135,7 +135,18 @@ public enum SettingsEnum {
     SB_IS_VIP("sb-is-vip", false, SharedPrefHelper.SharedPrefNames.SPONSOR_BLOCK, ReturnType.BOOLEAN),
     SB_LAST_VIP_CHECK("sb-last-vip-check", 0L, SharedPrefHelper.SharedPrefNames.SPONSOR_BLOCK, ReturnType.LONG),
     SB_SHOW_BROWSER_BUTTON("sb-browser-button", false, SharedPrefHelper.SharedPrefNames.SPONSOR_BLOCK, ReturnType.BOOLEAN),
-    SB_API_URL("sb-api-url", "https://sponsor.ajay.app/api/", SharedPrefHelper.SharedPrefNames.SPONSOR_BLOCK, ReturnType.STRING);
+    SB_API_URL("sb-api-url", "https://sponsor.ajay.app/api/", SharedPrefHelper.SharedPrefNames.SPONSOR_BLOCK, ReturnType.STRING),
+
+
+    //
+    // old deprecated settings.
+    // FIXME: eventually delete these settings
+    //
+    @Deprecated
+    AUTOPLAY_BUTTON_SHOWN("revanced_autoplay_button_enabled", false, ReturnType.BOOLEAN, true);
+    //
+    // end deprecated settings
+    //
 
     private final String path;
     private final Object defaultValue;
@@ -176,6 +187,7 @@ public enum SettingsEnum {
         //
         SettingsEnum settingsToMigrate[][] = {
                 // old/new settings where old is default off, and new is default on
+                {AUTOPLAY_BUTTON_SHOWN, AUTOPLAY_BUTTON_HIDDEN},
                 };
         for (SettingsEnum oldNewSetting[] : settingsToMigrate) {
             // by default, old setting was default off
