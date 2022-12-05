@@ -143,21 +143,21 @@ public enum SettingsEnum {
     // FIXME: after a few months, eventually delete these settings
     //
     @Deprecated
-    FULLSCREEN_PANELS_SHOWN("revanced_fullscreen_panels_enabled", false, ReturnType.BOOLEAN),
+    DEPRECATED_FULLSCREEN_PANELS_SHOWN("revanced_fullscreen_panels_enabled", false, ReturnType.BOOLEAN),
     @Deprecated
-    CREATE_BUTTON_ENABLED("revanced_create_button_enabled", false, ReturnType.BOOLEAN, true),
+    DEPRECATED_CREATE_BUTTON_ENABLED("revanced_create_button_enabled", false, ReturnType.BOOLEAN, true),
     @Deprecated
-    SHORTS_BUTTON_SHOWN("revanced_shorts_button_enabled", false, ReturnType.BOOLEAN, true),
+    DEPRECATED_SHORTS_BUTTON_SHOWN("revanced_shorts_button_enabled", false, ReturnType.BOOLEAN, true),
     @Deprecated
-    REEL_BUTTON_SHOWN("revanced_reel_button_enabled", false, ReturnType.BOOLEAN, true),
+    DEPRECATED_REEL_BUTTON_SHOWN("revanced_reel_button_enabled", false, ReturnType.BOOLEAN, true),
     @Deprecated
-    AUTOPLAY_BUTTON_SHOWN("revanced_autoplay_button_enabled", false, ReturnType.BOOLEAN, true),
+    DEPRECATED_AUTOPLAY_BUTTON_SHOWN("revanced_autoplay_button_enabled", false, ReturnType.BOOLEAN, true),
     @Deprecated
-    CAST_BUTTON_SHOWN("revanced_cast_button_enabled", false, ReturnType.BOOLEAN, true),
+    DEPRECATED_CAST_BUTTON_SHOWN("revanced_cast_button_enabled", false, ReturnType.BOOLEAN, true),
     @Deprecated
-    BRANDING_SHOWN("revanced_branding_watermark_enabled", false, ReturnType.BOOLEAN),
+    DEPRECATED_BRANDING_SHOWN("revanced_branding_watermark_enabled", false, ReturnType.BOOLEAN),
     @Deprecated
-    REMEMBER_VIDEO_QUALITY("revanced_remember_video_quality_selection", false, ReturnType.BOOLEAN);
+    DEPRECATED_REMEMBER_VIDEO_QUALITY("revanced_remember_video_quality_selection", false, ReturnType.BOOLEAN);
     //
     // end deprecated settings
     //
@@ -201,14 +201,14 @@ public enum SettingsEnum {
         //
         SettingsEnum settingsToMigrate[][] = {
                 // old/new settings where old is default off, and new is default on
-                {FULLSCREEN_PANELS_SHOWN, HIDE_FULLSCREEN_PANELS},
-                {CREATE_BUTTON_ENABLED, HIDE_CREATE_BUTTON},
-                {SHORTS_BUTTON_SHOWN, HIDE_SHORTS_BUTTON},
-                {REEL_BUTTON_SHOWN, HIDE_REEL_BUTTON},
-                {AUTOPLAY_BUTTON_SHOWN, HIDE_AUTOPLAY_BUTTON},
-                {CAST_BUTTON_SHOWN, HIDE_CAST_BUTTON},
-                {BRANDING_SHOWN, HIDE_BRANDING_VIDEO_WATERMARK},
-                {REMEMBER_VIDEO_QUALITY, REMEMBER_VIDEO_QUALITY_LAST_SELECTED},
+                {DEPRECATED_FULLSCREEN_PANELS_SHOWN, HIDE_FULLSCREEN_PANELS},
+                {DEPRECATED_CREATE_BUTTON_ENABLED, HIDE_CREATE_BUTTON},
+                {DEPRECATED_SHORTS_BUTTON_SHOWN, HIDE_SHORTS_BUTTON},
+                {DEPRECATED_REEL_BUTTON_SHOWN, HIDE_REEL_BUTTON},
+                {DEPRECATED_AUTOPLAY_BUTTON_SHOWN, HIDE_AUTOPLAY_BUTTON},
+                {DEPRECATED_CAST_BUTTON_SHOWN, HIDE_CAST_BUTTON},
+                {DEPRECATED_BRANDING_SHOWN, HIDE_BRANDING_VIDEO_WATERMARK},
+                {DEPRECATED_REMEMBER_VIDEO_QUALITY, REMEMBER_VIDEO_QUALITY_LAST_SELECTED},
                 };
         for (SettingsEnum oldNewSetting[] : settingsToMigrate) {
             // by default, old setting was default off
