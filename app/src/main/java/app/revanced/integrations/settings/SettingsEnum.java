@@ -62,7 +62,7 @@ public enum SettingsEnum {
     HIDE_INFO_CARDS("revanced_hide_infocards", true, ReturnType.BOOLEAN),
     HIDE_BRANDING_VIDEO_WATERMARK("revanced_branding_video_watermark_hidden", true, ReturnType.BOOLEAN),
     HIDE_ENDSCREEN_CARDS("revanced_hide_endscreen_cards", true, ReturnType.BOOLEAN),
-    CAST_BUTTON_HIDDEN("revanced_cast_button_hidden", true, ReturnType.BOOLEAN, true),
+    HIDE_CAST_BUTTON("revanced_cast_button_hidden", true, ReturnType.BOOLEAN, true),
     AUTOPLAY_BUTTON_HIDDEN("revanced_autoplay_button_hidden", true, ReturnType.BOOLEAN, true),
     USE_TABLET_MINIPLAYER("revanced_tablet_miniplayer", false, ReturnType.BOOLEAN, true),
     CREATE_BUTTON_ENABLED("revanced_create_button_enabled", false, ReturnType.BOOLEAN, true),
@@ -192,7 +192,7 @@ public enum SettingsEnum {
         SettingsEnum settingsToMigrate[][] = {
                 // old/new settings where old is default off, and new is default on
                 {AUTOPLAY_BUTTON_SHOWN, AUTOPLAY_BUTTON_HIDDEN},
-                {CAST_BUTTON_SHOWN, CAST_BUTTON_HIDDEN},
+                {CAST_BUTTON_SHOWN, HIDE_CAST_BUTTON},
                 {BRANDING_SHOWN, HIDE_BRANDING_VIDEO_WATERMARK},
                 };
         for (SettingsEnum oldNewSetting[] : settingsToMigrate) {
