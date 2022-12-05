@@ -143,30 +143,26 @@ public enum SettingsEnum {
     private final ReturnType returnType;
     private final boolean rebootApp;
 
-    // must be volatile, as some settings are changed from non-main threads
+    // must be volatile, as some settings are read/write from different threads
     // of note, the object value is persistently stored using SharedPreferences (which is thread safe)
     private volatile Object value;
 
     SettingsEnum(String path, Object defaultValue, ReturnType returnType) {
-        this.path = path;
-        this.defaultValue = defaultValue;
-        this.sharedPref = SharedPrefHelper.SharedPrefNames.YOUTUBE;
-        this.returnType = returnType;
-        this.rebootApp = false;
-    }
-
-    SettingsEnum(String path, Object defaultValue, SharedPrefHelper.SharedPrefNames prefName, ReturnType returnType) {
-        this.path = path;
-        this.defaultValue = defaultValue;
-        this.sharedPref = prefName;
-        this.returnType = returnType;
-        this.rebootApp = false;
+        this(path, defaultValue, SharedPrefHelper.SharedPrefNames.YOUTUBE, returnType, false);
     }
 
     SettingsEnum(String path, Object defaultValue, ReturnType returnType, Boolean rebootApp) {
+        this(path, defaultValue, SharedPrefHelper.SharedPrefNames.YOUTUBE, returnType, rebootApp);
+    }
+
+    SettingsEnum(String path, Object defaultValue, SharedPrefHelper.SharedPrefNames prefName, ReturnType returnType) {
+        this(path, defaultValue, prefName, returnType, false);
+    }
+
+    private SettingsEnum(String path, Object defaultValue, SharedPrefHelper.SharedPrefNames prefName, ReturnType returnType, Boolean rebootApp) {
         this.path = path;
         this.defaultValue = defaultValue;
-        this.sharedPref = SharedPrefHelper.SharedPrefNames.YOUTUBE;
+        this.sharedPref = prefName;
         this.returnType = returnType;
         this.rebootApp = rebootApp;
     }
