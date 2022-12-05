@@ -210,7 +210,7 @@ public enum SettingsEnum {
         load();
 
         //
-        // temporary code to migrate old setting names into new names.
+        // temporary code to migrate user configuration of old settings into current settings
         // FIXME: eventually delete this code
         //
 
