@@ -200,7 +200,7 @@ public enum SettingsEnum {
         // FIXME: eventually delete this code
         //
         SettingsEnum settingsToMigrate[][] = {
-                // old/new settings where old is default off, and new is default on
+                // old/new settings where old is default off, and new has inverted value and is default on
                 {DEPRECATED_FULLSCREEN_PANELS_SHOWN, HIDE_FULLSCREEN_PANELS},
                 {DEPRECATED_CREATE_BUTTON_ENABLED, HIDE_CREATE_BUTTON},
                 {DEPRECATED_SHORTS_BUTTON_SHOWN, HIDE_SHORTS_BUTTON},
