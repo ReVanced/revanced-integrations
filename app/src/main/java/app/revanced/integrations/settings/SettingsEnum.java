@@ -209,7 +209,7 @@ public enum SettingsEnum {
                 {DEPRECATED_CAST_BUTTON_SHOWN, HIDE_CAST_BUTTON},
                 {DEPRECATED_BRANDING_SHOWN, HIDE_BRANDING_VIDEO_WATERMARK},
                 {DEPRECATED_REMEMBER_VIDEO_QUALITY, REMEMBER_VIDEO_QUALITY_LAST_SELECTED},
-                };
+        };
         for (SettingsEnum oldNewSetting[] : settingsToMigrate) {
             // by default, old setting was default off
             // migrate to new setting of default on
