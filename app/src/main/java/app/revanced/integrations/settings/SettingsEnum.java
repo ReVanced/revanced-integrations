@@ -65,7 +65,7 @@ public enum SettingsEnum {
     HIDE_ALBUM_CARDS("revanced_hide_album_cards", false, ReturnType.BOOLEAN, true),
     HIDE_ARTIST_CARD("revanced_hide_artist_card", false, ReturnType.BOOLEAN),
     HIDE_AUTOPLAY_BUTTON("revanced_hide_autoplay_button", true, ReturnType.BOOLEAN, true),
-    HIDE_BRANDING_VIDEO_WATERMARK("revanced_hide_branding_video_watermark", true, ReturnType.BOOLEAN),
+    HIDE_VIDEO_WATERMARK("revanced_hide_video_watermark", true, ReturnType.BOOLEAN),
     HIDE_CAPTIONS_BUTTON("revanced_hide_captions_button", false, ReturnType.BOOLEAN),
     HIDE_CAST_BUTTON("revanced_hide_cast_button", true, ReturnType.BOOLEAN, true),
     HIDE_COMMENTS_SECTION("revanced_hide_comments_section", false, ReturnType.BOOLEAN, true),
@@ -222,7 +222,7 @@ public enum SettingsEnum {
                 {DEPRECATED_REEL_BUTTON_SHOWN, HIDE_REEL_BUTTON},
                 {DEPRECATED_AUTOPLAY_BUTTON_SHOWN, HIDE_AUTOPLAY_BUTTON},
                 {DEPRECATED_CAST_BUTTON_SHOWN, HIDE_CAST_BUTTON},
-                {DEPRECATED_BRANDING_SHOWN, HIDE_BRANDING_VIDEO_WATERMARK},
+                {DEPRECATED_BRANDING_SHOWN, HIDE_VIDEO_WATERMARK},
                 {DEPRECATED_REMEMBER_VIDEO_QUALITY, REMEMBER_VIDEO_QUALITY_LAST_SELECTED},
         };
         for (SettingsEnum oldNewSetting[] : invertedSettingsToMigrate) {
