@@ -63,7 +63,7 @@ public enum SettingsEnum {
     HIDE_BRANDING_VIDEO_WATERMARK("revanced_branding_video_watermark_hidden", true, ReturnType.BOOLEAN),
     HIDE_ENDSCREEN_CARDS("revanced_hide_endscreen_cards", true, ReturnType.BOOLEAN),
     HIDE_CAST_BUTTON("revanced_cast_button_hidden", true, ReturnType.BOOLEAN, true),
-    AUTOPLAY_BUTTON_HIDDEN("revanced_autoplay_button_hidden", true, ReturnType.BOOLEAN, true),
+    HIDE_AUTOPLAY_BUTTON("revanced_autoplay_button_hidden", true, ReturnType.BOOLEAN, true),
     USE_TABLET_MINIPLAYER("revanced_tablet_miniplayer", false, ReturnType.BOOLEAN, true),
     HIDE_CREATE_BUTTON("revanced_create_button_hidden", true, ReturnType.BOOLEAN, true),
     WIDE_SEARCHBAR("revanced_wide_searchbar", false, ReturnType.BOOLEAN, true),
@@ -200,7 +200,7 @@ public enum SettingsEnum {
                 {CREATE_BUTTON_ENABLED, HIDE_CREATE_BUTTON},
                 {SHORTS_BUTTON_SHOWN, HIDE_SHORTS_BUTTON},
                 {REEL_BUTTON_SHOWN, HIDE_REEL_BUTTON},
-                {AUTOPLAY_BUTTON_SHOWN, AUTOPLAY_BUTTON_HIDDEN},
+                {AUTOPLAY_BUTTON_SHOWN, HIDE_AUTOPLAY_BUTTON},
                 {CAST_BUTTON_SHOWN, HIDE_CAST_BUTTON},
                 {BRANDING_SHOWN, HIDE_BRANDING_VIDEO_WATERMARK},
                 };
