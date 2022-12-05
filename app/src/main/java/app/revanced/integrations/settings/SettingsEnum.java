@@ -169,6 +169,32 @@ public enum SettingsEnum {
 
     static {
         load();
+
+        //
+        // temporary code to migrate old setting names into new names.
+        // FIXME: eventually delete this code
+        //
+        SettingsEnum settingsToMigrate[][] = {
+                // old/new settings where old is default off, and new is default on
+                };
+        for (SettingsEnum oldNewSetting[] : settingsToMigrate) {
+            // by default, old setting was default off
+            // migrate to new setting of default on
+            SettingsEnum oldSetting = oldNewSetting[0];
+            SettingsEnum newSetting = oldNewSetting[1];
+
+            // only need to check if old setting was turned on
+            if (oldSetting.getBoolean()) {
+                // this code will only run once
+                LogHelper.printInfo(() -> "Migrating setting: " + oldSetting + " of 'true' to new setting: "
+                        + newSetting + " of 'false'");
+                newSetting.setValue(true); // move the updated value to the new setting
+                oldSetting.setValue(false); // clear old value
+            }
+        }
+        //
+        // end temporary code
+        //
     }
 
     private static void load() {
