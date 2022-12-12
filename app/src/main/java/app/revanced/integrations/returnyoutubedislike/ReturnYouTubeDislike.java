@@ -138,12 +138,19 @@ public class ReturnYouTubeDislike {
             // Have to block the current thread until fetching is done
             // There's no known way to edit the text after creation yet
             RYDVoteData votingData;
+            long fetchStartTime = 0;
             try {
-                votingData = getVoteFetchFuture().get(MILLISECONDS_TO_BLOCK_UI_WHILE_WAITING_FOR_DISLIKE_FETCH_TO_COMPLETE, TimeUnit.MILLISECONDS);
+                Future<RYDVoteData> fetchFuture = getVoteFetchFuture();
+                if (SettingsEnum.DEBUG.getBoolean() && !fetchFuture.isDone()) {
+                    fetchStartTime = System.currentTimeMillis();
+                }
+                votingData = fetchFuture.get(MILLISECONDS_TO_BLOCK_UI_WHILE_WAITING_FOR_DISLIKE_FETCH_TO_COMPLETE, TimeUnit.MILLISECONDS);
             } catch (TimeoutException e) {
                 LogHelper.printDebug(() -> "UI timed out waiting for dislike fetch to complete");
+                recordTimeUISpentWaitingForNetworkCall(fetchStartTime);
                 return;
             }
+            recordTimeUISpentWaitingForNetworkCall(fetchStartTime);
             if (votingData == null) {
                 LogHelper.printDebug(() -> "Cannot add dislike count to UI (RYD data not available)");
                 return;
@@ -292,5 +299,30 @@ public class ReturnYouTubeDislike {
 
         // never will be reached, as the oldest supported YouTube app requires Android N or greater
         return (int) (100 * dislikePercentage) + "%";
+    }
+
+
+    /**
+     * Number of times the UI was forced to wait on a network fetch to complete
+     */
+    private static int numberOfTimesUIWaitedOnNetworkCall;
+
+    /**
+     * Average amount of time the UI waited, of all times it was forced to wait.
+     */
+    private static long averageTimeForcedToWait;
+
+    private static void recordTimeUISpentWaitingForNetworkCall(long timeUIWaitingStarted) {
+        if (timeUIWaitingStarted == 0 || !SettingsEnum.DEBUG.getBoolean()) {
+            return;
+        }
+        final long timeUIWaitingTotal = System.currentTimeMillis() - timeUIWaitingStarted;
+        LogHelper.printDebug(() -> "UI thread paused for: " + timeUIWaitingTotal + "ms waiting for vote fetch to complete");
+
+        final double weightedOldAverageLoadTime = averageTimeForcedToWait * ((double) numberOfTimesUIWaitedOnNetworkCall / (numberOfTimesUIWaitedOnNetworkCall + 1));
+        numberOfTimesUIWaitedOnNetworkCall++;
+        final double weightedRecentAverageLoadTime = (double)timeUIWaitingTotal / numberOfTimesUIWaitedOnNetworkCall;
+        averageTimeForcedToWait = (long) (weightedOldAverageLoadTime + weightedRecentAverageLoadTime);
+        LogHelper.printDebug(() -> "UI thread paused: " + numberOfTimesUIWaitedOnNetworkCall + " times, waiting an average time of: " + averageTimeForcedToWait + "ms");
     }
 }
