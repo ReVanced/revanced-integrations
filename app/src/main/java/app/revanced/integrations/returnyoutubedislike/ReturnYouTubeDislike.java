@@ -312,11 +312,11 @@ public class ReturnYouTubeDislike {
      */
     private static long totalTimeUIWaitedOnNetworkCalls;
 
-    private static void recordTimeUISpentWaitingForNetworkCall(long timeUIWaitingStarted) {
-        if (timeUIWaitingStarted == 0 || !SettingsEnum.DEBUG.getBoolean()) {
+    private static void recordTimeUISpentWaitingForNetworkCall(long timeUIWaitStarted) {
+        if (timeUIWaitStarted == 0 || !SettingsEnum.DEBUG.getBoolean()) {
             return;
         }
-        final long timeUIWaitingTotal = System.currentTimeMillis() - timeUIWaitingStarted;
+        final long timeUIWaitingTotal = System.currentTimeMillis() - timeUIWaitStarted;
         LogHelper.printDebug(() -> "UI thread paused for: " + timeUIWaitingTotal + "ms waiting for vote fetch to complete");
 
         totalTimeUIWaitedOnNetworkCalls += timeUIWaitingTotal;
