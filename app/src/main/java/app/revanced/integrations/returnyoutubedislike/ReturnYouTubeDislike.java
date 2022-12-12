@@ -323,7 +323,7 @@ public class ReturnYouTubeDislike {
         numberOfTimesUIWaitedOnNetworkCall++;
         final long averageTimeForcedToWait = totalTimeUIWaited / numberOfTimesUIWaitedOnNetworkCall;
         LogHelper.printDebug(() -> "UI thread forced to wait: " + numberOfTimesUIWaitedOnNetworkCall + " times, "
-                + "waiting a total wait time of: " + totalTimeUIWaited + "ms, "
-                + "with an average time of: " + averageTimeForcedToWait + "ms") ;
+                + "total wait time of: " + totalTimeUIWaited + "ms, "
+                + "average wait time of: " + averageTimeForcedToWait + "ms") ;
     }
 }
