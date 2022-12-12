@@ -305,12 +305,12 @@ public class ReturnYouTubeDislike {
     /**
      * Number of times the UI was forced to wait on a network fetch to complete
      */
-    private static int numberOfTimesUIWaitedOnNetworkCall;
+    private static int numberOfTimesUIWaitedOnNetworkCalls;
 
     /**
      * Total time the UI waited, of all times it was forced to wait.
      */
-    private static long totalTimeUIWaited;
+    private static long totalTimeUIWaitedOnNetworkCalls;
 
     private static void recordTimeUISpentWaitingForNetworkCall(long timeUIWaitingStarted) {
         if (timeUIWaitingStarted == 0 || !SettingsEnum.DEBUG.getBoolean()) {
@@ -319,11 +319,11 @@ public class ReturnYouTubeDislike {
         final long timeUIWaitingTotal = System.currentTimeMillis() - timeUIWaitingStarted;
         LogHelper.printDebug(() -> "UI thread paused for: " + timeUIWaitingTotal + "ms waiting for vote fetch to complete");
 
-        totalTimeUIWaited += timeUIWaitingTotal;
-        numberOfTimesUIWaitedOnNetworkCall++;
-        final long averageTimeForcedToWait = totalTimeUIWaited / numberOfTimesUIWaitedOnNetworkCall;
-        LogHelper.printDebug(() -> "UI thread forced to wait: " + numberOfTimesUIWaitedOnNetworkCall + " times, "
-                + "total wait time of: " + totalTimeUIWaited + "ms, "
+        totalTimeUIWaitedOnNetworkCalls += timeUIWaitingTotal;
+        numberOfTimesUIWaitedOnNetworkCalls++;
+        final long averageTimeForcedToWait = totalTimeUIWaitedOnNetworkCalls / numberOfTimesUIWaitedOnNetworkCalls;
+        LogHelper.printDebug(() -> "UI thread forced to wait: " + numberOfTimesUIWaitedOnNetworkCalls + " times, "
+                + "total wait time of: " + totalTimeUIWaitedOnNetworkCalls + "ms, "
                 + "average wait time of: " + averageTimeForcedToWait + "ms") ;
     }
 }
