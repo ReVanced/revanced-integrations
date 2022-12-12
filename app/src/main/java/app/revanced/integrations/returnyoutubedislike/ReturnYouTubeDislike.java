@@ -147,10 +147,10 @@ public class ReturnYouTubeDislike {
                 votingData = fetchFuture.get(MILLISECONDS_TO_BLOCK_UI_WHILE_WAITING_FOR_DISLIKE_FETCH_TO_COMPLETE, TimeUnit.MILLISECONDS);
             } catch (TimeoutException e) {
                 LogHelper.printDebug(() -> "UI timed out waiting for dislike fetch to complete");
-                recordTimeUISpentWaitingForNetworkCall(fetchStartTime);
                 return;
+            } finally {
+                recordTimeUISpentWaitingForNetworkCall(fetchStartTime);
             }
-            recordTimeUISpentWaitingForNetworkCall(fetchStartTime);
             if (votingData == null) {
                 LogHelper.printDebug(() -> "Cannot add dislike count to UI (RYD data not available)");
                 return;
