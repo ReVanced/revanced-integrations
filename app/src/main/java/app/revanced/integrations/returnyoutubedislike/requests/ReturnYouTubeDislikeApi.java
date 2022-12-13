@@ -2,6 +2,7 @@ package app.revanced.integrations.returnyoutubedislike.requests;
 
 import android.util.Base64;
 
+import androidx.annotation.CheckResult;
 import androidx.annotation.Nullable;
 
 import org.json.JSONException;
@@ -136,10 +137,10 @@ public class ReturnYouTubeDislikeApi {
         ReVancedUtils.verifyOffMainThread();
         Objects.requireNonNull(videoId);
         try {
-            if (checkIfRateLimitInEffect("fetchDislikes")) {
+            if (checkIfRateLimitInEffect("fetchVotes")) {
                 return null;
             }
-            LogHelper.printDebug(() -> "Fetching dislikes for: " + videoId);
+            LogHelper.printDebug(() -> "Fetching votes for: " + videoId);
 
             HttpURLConnection connection = getConnectionFromRoute(ReturnYouTubeDislikeRoutes.GET_DISLIKES, videoId);
             // request headers, as per https://returnyoutubedislike.com/docs/fetching
@@ -170,11 +171,11 @@ public class ReturnYouTubeDislikeApi {
                     return null;
                 }
             }
-            LogHelper.printDebug(() -> "Failed to fetch dislikes for video: " + videoId
+            LogHelper.printDebug(() -> "Failed to fetch votes for video: " + videoId
                     + " response code was: " + responseCode);
             connection.disconnect();
         } catch (Exception ex) {
-            LogHelper.printException(() -> "Failed to fetch dislikes", ex);
+            LogHelper.printException(() -> "Failed to fetch votes", ex);
         }
         return null;
     }
