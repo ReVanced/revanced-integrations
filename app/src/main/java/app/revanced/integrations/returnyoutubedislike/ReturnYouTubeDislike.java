@@ -317,13 +317,13 @@ public class ReturnYouTubeDislike {
             return;
         }
         final long timeUIWaitingTotal = System.currentTimeMillis() - timeUIWaitStarted;
-        LogHelper.printDebug(() -> "UI thread paused for: " + timeUIWaitingTotal + "ms waiting for vote fetch to complete");
+        LogHelper.printDebug(() -> "UI thread waited for: " + timeUIWaitingTotal + "ms for vote fetch to complete");
 
         totalTimeUIWaitedOnNetworkCalls += timeUIWaitingTotal;
         numberOfTimesUIWaitedOnNetworkCalls++;
         final long averageTimeForcedToWait = totalTimeUIWaitedOnNetworkCalls / numberOfTimesUIWaitedOnNetworkCalls;
         LogHelper.printDebug(() -> "UI thread forced to wait: " + numberOfTimesUIWaitedOnNetworkCalls + " times, "
-                + "total wait time of: " + totalTimeUIWaitedOnNetworkCalls + "ms, "
-                + "average wait time of: " + averageTimeForcedToWait + "ms") ;
+                + "total wait time: " + totalTimeUIWaitedOnNetworkCalls + "ms, "
+                + "average wait time: " + averageTimeForcedToWait + "ms") ;
     }
 }
