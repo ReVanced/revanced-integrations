@@ -1,11 +1,19 @@
 package app.revanced.integrations.returnyoutubedislike;
 
 import android.content.Context;
+import android.content.res.Configuration;
+import android.graphics.Color;
 import android.icu.text.CompactDecimalFormat;
 import android.icu.text.DecimalFormat;
 import android.icu.text.DecimalFormatSymbols;
 import android.os.Build;
+import android.text.Spannable;
 import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
+import android.text.TextPaint;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.MetricAffectingSpan;
+import android.text.style.RelativeSizeSpan;
 
 import androidx.annotation.GuardedBy;
 import androidx.annotation.Nullable;
@@ -120,18 +128,24 @@ public class ReturnYouTubeDislike {
         }
     }
 
-    // BEWARE! This method is sometimes called on the main thread, but it usually is called _off_ the main thread!
+    /**
+     * This method is sometimes called on the main thread, but it usually is called _off_ the main thread.
+     *
+     * This method can be called multiple times for the same UI element (including after dislikes was added)
+     * This code should avoid needlessly replacing the same UI element with identical versions.
+     */
     public static void onComponentCreated(Object conversionContext, AtomicReference<Object> textRef) {
         if (!isEnabled) return;
 
         try {
-            var conversionContextString = conversionContext.toString();
+            String conversionContextString = conversionContext.toString();
 
-            boolean isSegmentedButton = false;
-            // Check for new component
+            final boolean isSegmentedButton;
             if (conversionContextString.contains("|segmented_like_dislike_button.eml|")) {
                 isSegmentedButton = true;
-            } else if (!conversionContextString.contains("|dislike_button.eml|")) {
+            } else if (conversionContextString.contains("|dislike_button.eml|")) {
+                isSegmentedButton = false;
+            } else {
                 return;
             }
 
@@ -141,18 +155,22 @@ public class ReturnYouTubeDislike {
             try {
                 votingData = getVoteFetchFuture().get(MILLISECONDS_TO_BLOCK_UI_WHILE_WAITING_FOR_DISLIKE_FETCH_TO_COMPLETE, TimeUnit.MILLISECONDS);
             } catch (TimeoutException e) {
-                LogHelper.printDebug(() -> "UI timed out waiting for dislike fetch to complete");
+                LogHelper.printDebug(() -> "UI timed out waiting for fetch votes to complete");
                 return;
             }
             if (votingData == null) {
-                LogHelper.printDebug(() -> "Cannot add dislike count to UI (RYD data not available)");
+                LogHelper.printDebug(() -> "Cannot add dislike to UI (RYD data not available)");
                 return;
             }
 
-            updateDislike(textRef, isSegmentedButton, votingData);
-            LogHelper.printDebug(() -> "Updated text");
+            if (updateDislike(textRef, isSegmentedButton, votingData)) {
+                LogHelper.printDebug(() -> "Updated dislike text to: " + textRef.get());
+            } else {
+                LogHelper.printDebug(() -> "Ignoring dislike text: " + textRef.get()
+                        + " that appears to already show voting data: " + votingData);
+            }
         } catch (Exception ex) {
-            LogHelper.printException(() -> "Error while trying to update dislikes text", ex);
+            LogHelper.printException(() -> "Error while trying to update dislikes", ex);
         }
     }
 
@@ -185,10 +203,10 @@ public class ReturnYouTubeDislike {
     }
 
     /**
-     * Must call off main thread, as this will make a network call if user has not yet been registered
+     * Must call off main thread, as this will make a network call if user is not yet registered
      *
      * @return ReturnYouTubeDislike user ID. If user registration has never happened
-     * and the network call fails, this will return NULL
+     * and the network call fails, this returns NULL
      */
     @Nullable
     private static String getUserId() {
@@ -206,15 +224,27 @@ public class ReturnYouTubeDislike {
         return userId;
     }
 
-    private static void updateDislike(AtomicReference<Object> textRef, boolean isSegmentedButton, RYDVoteData voteData) {
-        SpannableString oldSpannableString = (SpannableString) textRef.get();
-        String newDislikeString = SettingsEnum.RYD_SHOW_DISLIKE_PERCENTAGE.getBoolean()
-                ? formatDislikePercentage(voteData.dislikePercentage)
-                : formatDislikeCount(voteData.dislikeCount);
+    /**
+     * @param isSegmentedButton if UI is using the segmented single UI component for both like and dislike
+     * @return false, if the text reference already has dislike information and no changes were made.
+     */
+    private static boolean updateDislike(AtomicReference<Object> textRef, boolean isSegmentedButton, RYDVoteData voteData) {
+        Spannable oldSpannable = (Spannable) textRef.get();
+        String oldLikesString = oldSpannable.toString();
+        final Spannable replacementSpannable;
 
-        if (isSegmentedButton) { // both likes and dislikes are on a custom segmented button
-            // parse out the like count as a string
-            String oldLikesString = oldSpannableString.toString().split(" \\| ")[0];
+        if (!isSegmentedButton) {
+            // simple replacement of 'dislike' with a number/percentage
+            if (Character.isDigit(oldLikesString.charAt(0))) {
+                // already is a number, and was modified in a previous call to this method
+                return false;
+            }
+            replacementSpannable = newSpannableWithDislikes(oldSpannable, voteData);
+        } else {
+            final String segmentedSeparatorString = "  |  ";
+            if (oldLikesString.contains(segmentedSeparatorString)) {
+                return false; // dislikes was previously added
+            }
 
             // YouTube creators can hide the like count on a video,
             // and the like count appears as a device language specific string that says 'Like'
@@ -232,22 +262,79 @@ public class ReturnYouTubeDislike {
                 //
                 // Change the "Likes" string to show that likes and dislikes are hidden
                 //
-                newDislikeString = "Hidden"; // for now, this is not localized
                 LogHelper.printDebug(() -> "Like count is hidden by video creator. "
                         + "RYD does not provide data for videos with hidden likes.");
+
+                final String hiddenMessageString = "Hidden"; // not localized, for now.
+                if (oldLikesString.equals(hiddenMessageString)) {
+                    return false;
+                }
+                replacementSpannable = newSpanUsingFormattingOfAnotherSpan(oldSpannable, hiddenMessageString);
             } else {
-                // temporary fix for https://github.com/revanced/revanced-integrations/issues/118
-                newDislikeString = oldLikesString + " | " + newDislikeString;
+                // fix for https://github.com/revanced/revanced-integrations/issues/118
+                // show both like and dislike in a single span, with a separator between values
+                Spannable likesSpan = newSpanUsingFormattingOfAnotherSpan(oldSpannable, oldLikesString);
+
+                Spannable separatorSpan = newSpanUsingFormattingOfAnotherSpan(oldSpannable, segmentedSeparatorString);
+                final int uiMode = ReVancedUtils.getContext().getResources().getConfiguration().uiMode;
+                final int separatorColor = (uiMode & Configuration.UI_MODE_NIGHT_YES) == Configuration.UI_MODE_NIGHT_YES
+                        ? Color.DKGRAY
+                        : Color.LTGRAY;
+                separatorSpan.setSpan(new ForegroundColorSpan(separatorColor), 0, separatorSpan.length(), 0);
+
+                Spannable dislikeSpan = newSpannableWithDislikes(oldSpannable, voteData);
+
+                // use a larger font size of the separator, but this causes the entire span (including the like/dislike text)
+                // to move downward.  Use a custom span to adjust the span back upward, at a relative ratio
+                class RelativeVerticalOffsetSpan extends MetricAffectingSpan {
+                    final float relativeVerticalShiftRatio;
+                    RelativeVerticalOffsetSpan(float relativeVerticalShiftRatio) {
+                        this.relativeVerticalShiftRatio = relativeVerticalShiftRatio;
+                    }
+                    @Override
+                    public void updateMeasureState(TextPaint tp) {
+                        tp.baselineShift += (int)(relativeVerticalShiftRatio * tp.ascent());
+                    }
+                    @Override
+                    public void updateDrawState(TextPaint tp) {
+                        tp.baselineShift += (int)(relativeVerticalShiftRatio * tp.ascent());
+                    }
+                }
+                final float separatorRelativeFontIncrease = 1.6f;
+                final float relativeVerticalShiftRatio = 0.25f;
+                likesSpan.setSpan(new RelativeVerticalOffsetSpan(relativeVerticalShiftRatio), 0, likesSpan.length(), 0);
+                separatorSpan.setSpan(new RelativeVerticalOffsetSpan(relativeVerticalShiftRatio), 0, separatorSpan.length(), 0);
+                dislikeSpan.setSpan(new RelativeVerticalOffsetSpan(relativeVerticalShiftRatio), 0, dislikeSpan.length(), 0);
+
+                // must set relative font size after relative vertical offset (otherwise vertical alignment is not right)
+                separatorSpan.setSpan(new RelativeSizeSpan(separatorRelativeFontIncrease), 0, separatorSpan.length(), 0);
+
+                // put everything together
+                SpannableStringBuilder builder = new SpannableStringBuilder(likesSpan);
+                builder.append(separatorSpan);
+                builder.append(dislikeSpan);
+                replacementSpannable = new SpannableString(builder);
             }
         }
 
-        SpannableString newSpannableString = new SpannableString(newDislikeString);
-        // Copy style (foreground color, etc) to new string
-        Object[] spans = oldSpannableString.getSpans(0, oldSpannableString.length(), Object.class);
+        textRef.set(replacementSpannable);
+        return true;
+    }
+
+    private static Spannable newSpannableWithDislikes(Spannable sourceFormatting, RYDVoteData voteData) {
+        return newSpanUsingFormattingOfAnotherSpan(sourceFormatting,
+                SettingsEnum.RYD_SHOW_DISLIKE_PERCENTAGE.getBoolean()
+                ? formatDislikePercentage(voteData.dislikePercentage)
+                : formatDislikeCount(voteData.dislikeCount));
+    }
+
+    private static Spannable newSpanUsingFormattingOfAnotherSpan(Spannable sourceFormatting, String newSpanText) {
+        SpannableString destination = new SpannableString(newSpanText);
+        Object[] spans = sourceFormatting.getSpans(0, sourceFormatting.length(), Object.class);
         for (Object span : spans) {
-            newSpannableString.setSpan(span, 0, newDislikeString.length(), oldSpannableString.getSpanFlags(span));
+            destination.setSpan(span, 0, destination.length(), sourceFormatting.getSpanFlags(span));
         }
-        textRef.set(newSpannableString);
+        return destination;
     }
 
     private static String formatDislikeCount(long dislikeCount) {
