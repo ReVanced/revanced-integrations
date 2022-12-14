@@ -11,8 +11,8 @@ import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.TextPaint;
+import android.text.style.CharacterStyle;
 import android.text.style.ForegroundColorSpan;
-import android.text.style.MetricAffectingSpan;
 import android.text.style.RelativeSizeSpan;
 
 import androidx.annotation.GuardedBy;
@@ -286,14 +286,10 @@ public class ReturnYouTubeDislike {
 
                 // use a larger font size of the separator, but this causes the entire span (including the like/dislike text)
                 // to move downward.  Use a custom span to adjust the span back upward, at a relative ratio
-                class RelativeVerticalOffsetSpan extends MetricAffectingSpan {
+                class RelativeVerticalOffsetSpan extends CharacterStyle {
                     final float relativeVerticalShiftRatio;
                     RelativeVerticalOffsetSpan(float relativeVerticalShiftRatio) {
                         this.relativeVerticalShiftRatio = relativeVerticalShiftRatio;
-                    }
-                    @Override
-                    public void updateMeasureState(TextPaint tp) {
-                        tp.baselineShift -= (int)(relativeVerticalShiftRatio * tp.ascent());
                     }
                     @Override
                     public void updateDrawState(TextPaint tp) {
