@@ -92,7 +92,7 @@ public class ReturnYouTubeDislike {
     /**
      * Used to format like/dislike count.
      */
-    @GuardedBy("ReturnYouTubeDislike.class") // not thread safe
+    @GuardedBy("ReturnYouTubeDislike.class")
     private static DecimalFormat dislikePercentageFormatter;
 
     public static void onEnabledChange(boolean enabled) {
@@ -243,7 +243,7 @@ public class ReturnYouTubeDislike {
             }
             replacementSpannable = newSpannableWithDislikes(oldSpannable, voteData);
         } else {
-            final String segmentedSeparatorString = " | ";
+            final String segmentedSeparatorString = "  |  ";
             if (oldLikesString.contains(segmentedSeparatorString)) {
                 return false; // dislikes was previously added
             }
