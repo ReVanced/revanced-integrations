@@ -2,7 +2,6 @@ package app.revanced.integrations.returnyoutubedislike;
 
 import android.content.Context;
 import android.content.res.Configuration;
-import android.graphics.Color;
 import android.icu.text.CompactDecimalFormat;
 import android.icu.text.DecimalFormat;
 import android.icu.text.DecimalFormatSymbols;
@@ -278,9 +277,16 @@ public class ReturnYouTubeDislike {
                 Spannable separatorSpan = newSpanUsingFormattingOfAnotherSpan(oldSpannable, segmentedSeparatorString);
                 final int uiMode = ReVancedUtils.getContext().getResources().getConfiguration().uiMode;
                 final int separatorColor = (uiMode & Configuration.UI_MODE_NIGHT_YES) == Configuration.UI_MODE_NIGHT_YES
-                        ? Color.DKGRAY
-                        : Color.LTGRAY;
+                        ? 0xFF313131  // dark gray
+                        : 0xFFD9D9D9; // light gray
                 separatorSpan.setSpan(new ForegroundColorSpan(separatorColor), 0, separatorSpan.length(), 0);
+                // remove antialiasing to better mimic the existing button separator
+                separatorSpan.setSpan(new CharacterStyle() {
+                        @Override
+                        public void updateDrawState(TextPaint tp) {
+                            tp.setAntiAlias(false);
+                        }
+                }, 0, separatorSpan.length(), 0);
 
                 Spannable dislikeSpan = newSpannableWithDislikes(oldSpannable, voteData);
 
@@ -296,13 +302,12 @@ public class ReturnYouTubeDislike {
                         tp.baselineShift -= (int)(relativeVerticalShiftRatio * tp.ascent());
                     }
                 }
-                final float separatorRelativeFontIncrease = 1.6f;
+                final float separatorRelativeFontIncrease = 1.53f;
                 final float relativeVerticalShiftRatio = -0.25f; // shift the span up by 25% of the text height
                 likesSpan.setSpan(new RelativeVerticalOffsetSpan(relativeVerticalShiftRatio), 0, likesSpan.length(), 0);
                 separatorSpan.setSpan(new RelativeVerticalOffsetSpan(relativeVerticalShiftRatio), 0, separatorSpan.length(), 0);
                 dislikeSpan.setSpan(new RelativeVerticalOffsetSpan(relativeVerticalShiftRatio), 0, dislikeSpan.length(), 0);
-
-                // must set relative font size after relative vertical offset (otherwise vertical alignment is not right)
+                // must set font size after vertical offset (otherwise vertical alignment is not right)
                 separatorSpan.setSpan(new RelativeSizeSpan(separatorRelativeFontIncrease), 0, separatorSpan.length(), 0);
 
                 // put everything together
