@@ -36,12 +36,12 @@ import app.revanced.integrations.utils.SharedPrefHelper;
 
 public class ReturnYouTubeDislike {
     /**
-     * Maximum amount of time to block the UI from updates while waiting for dislike network call to complete.
+     * Maximum amount of time to block the UI from updates while waiting for fetch call to complete.
      *
      * Must be less than 5 seconds, as per:
      * https://developer.android.com/topic/performance/vitals/anr
      */
-    private static final long MILLISECONDS_TO_BLOCK_UI_WHILE_WAITING_FOR_DISLIKE_FETCH_TO_COMPLETE = 4000;
+    private static final long MILLISECONDS_TO_BLOCK_UI_WAITING_FOR_FETCH_VOTES_TO_COMPLETE = 4000;
 
     /**
      * Used to send votes, one by one, in the same order the user created them
@@ -153,7 +153,7 @@ public class ReturnYouTubeDislike {
             // There's no known way to edit the text after creation yet
             RYDVoteData votingData;
             try {
-                votingData = getVoteFetchFuture().get(MILLISECONDS_TO_BLOCK_UI_WHILE_WAITING_FOR_DISLIKE_FETCH_TO_COMPLETE, TimeUnit.MILLISECONDS);
+                votingData = getVoteFetchFuture().get(MILLISECONDS_TO_BLOCK_UI_WAITING_FOR_FETCH_VOTES_TO_COMPLETE, TimeUnit.MILLISECONDS);
             } catch (TimeoutException e) {
                 LogHelper.printDebug(() -> "UI timed out waiting for fetch votes to complete");
                 return;
