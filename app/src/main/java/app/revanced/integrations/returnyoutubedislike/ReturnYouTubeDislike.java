@@ -1,5 +1,7 @@
 package app.revanced.integrations.returnyoutubedislike;
 
+import static app.revanced.integrations.sponsorblock.StringRef.str;
+
 import android.content.Context;
 import android.content.res.Configuration;
 import android.icu.text.CompactDecimalFormat;
@@ -264,8 +266,8 @@ public class ReturnYouTubeDislike {
                 LogHelper.printDebug(() -> "Like count is hidden by video creator. "
                         + "RYD does not provide data for videos with hidden likes.");
 
-                final String hiddenMessageString = "Hidden"; // not localized, for now.
-                if (oldLikesString.equals(hiddenMessageString)) {
+                String hiddenMessageString = str("revanced_ryd_video_likes_hidden_by_video_owner");
+                if (hiddenMessageString.equals(oldLikesString)) {
                     return false;
                 }
                 replacementSpannable = newSpanUsingFormattingOfAnotherSpan(oldSpannable, hiddenMessageString);
