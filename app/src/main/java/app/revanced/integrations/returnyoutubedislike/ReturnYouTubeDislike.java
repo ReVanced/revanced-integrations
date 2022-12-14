@@ -15,6 +15,7 @@ import android.text.TextPaint;
 import android.text.style.CharacterStyle;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
+import android.util.DisplayMetrics;
 
 import androidx.annotation.GuardedBy;
 import androidx.annotation.Nullable;
@@ -232,7 +233,7 @@ public class ReturnYouTubeDislike {
     private static boolean updateDislike(AtomicReference<Object> textRef, boolean isSegmentedButton, RYDVoteData voteData) {
         Spannable oldSpannable = (Spannable) textRef.get();
         String oldLikesString = oldSpannable.toString();
-        final Spannable replacementSpannable;
+        Spannable replacementSpannable;
 
         if (!isSegmentedButton) {
             // simple replacement of 'dislike' with a number/percentage
@@ -242,7 +243,7 @@ public class ReturnYouTubeDislike {
             }
             replacementSpannable = newSpannableWithDislikes(oldSpannable, voteData);
         } else {
-            final String segmentedSeparatorString = "  |  ";
+            final String segmentedSeparatorString = " | ";
             if (oldLikesString.contains(segmentedSeparatorString)) {
                 return false; // dislikes was previously added
             }
@@ -301,16 +302,34 @@ public class ReturnYouTubeDislike {
                     }
                     @Override
                     public void updateDrawState(TextPaint tp) {
-                        tp.baselineShift -= (int)(relativeVerticalShiftRatio * tp.ascent());
+                        tp.baselineShift -= (int)(relativeVerticalShiftRatio * tp.getFontMetrics().top);
                     }
                 }
-                final float separatorRelativeFontIncrease = 1.53f;
-                final float relativeVerticalShiftRatio = -0.25f; // shift the span up by 25% of the text height
+                final float separatorRelativeFontRatio;
+                final float relativeVerticalShiftRatio;
+
+                switch (ReVancedUtils.getContext().getResources().getDisplayMetrics().densityDpi) {
+                    // any of these cases is close enough to use for all devices
+                    // but to get the layout 100% exact, the scaling and offsets can be adjusted for the screen density
+                    default: // fall thru to XXHIGH
+                    case DisplayMetrics.DENSITY_420:
+                    case DisplayMetrics.DENSITY_450:
+                    case DisplayMetrics.DENSITY_XXHIGH:
+                        separatorRelativeFontRatio = 1.50f;
+                        relativeVerticalShiftRatio = -0.20f; // shift the span up by 20% of the text height
+                        break;
+                    case DisplayMetrics.DENSITY_560:
+                    case DisplayMetrics.DENSITY_600:
+                    case DisplayMetrics.DENSITY_XXXHIGH:
+                        separatorRelativeFontRatio = 1.6f;
+                        relativeVerticalShiftRatio = -0.16f;
+                        break;
+                }
                 likesSpan.setSpan(new RelativeVerticalOffsetSpan(relativeVerticalShiftRatio), 0, likesSpan.length(), 0);
                 separatorSpan.setSpan(new RelativeVerticalOffsetSpan(relativeVerticalShiftRatio), 0, separatorSpan.length(), 0);
                 dislikeSpan.setSpan(new RelativeVerticalOffsetSpan(relativeVerticalShiftRatio), 0, dislikeSpan.length(), 0);
                 // must set font size after vertical offset (otherwise vertical alignment is not right)
-                separatorSpan.setSpan(new RelativeSizeSpan(separatorRelativeFontIncrease), 0, separatorSpan.length(), 0);
+                separatorSpan.setSpan(new RelativeSizeSpan(separatorRelativeFontRatio), 0, separatorSpan.length(), 0);
 
                 // put everything together
                 SpannableStringBuilder builder = new SpannableStringBuilder(likesSpan);
