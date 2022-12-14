@@ -293,15 +293,15 @@ public class ReturnYouTubeDislike {
                     }
                     @Override
                     public void updateMeasureState(TextPaint tp) {
-                        tp.baselineShift += (int)(relativeVerticalShiftRatio * tp.ascent());
+                        tp.baselineShift -= (int)(relativeVerticalShiftRatio * tp.ascent());
                     }
                     @Override
                     public void updateDrawState(TextPaint tp) {
-                        tp.baselineShift += (int)(relativeVerticalShiftRatio * tp.ascent());
+                        tp.baselineShift -= (int)(relativeVerticalShiftRatio * tp.ascent());
                     }
                 }
                 final float separatorRelativeFontIncrease = 1.6f;
-                final float relativeVerticalShiftRatio = 0.25f;
+                final float relativeVerticalShiftRatio = -0.25f; // shift the span up by 25% of the text height
                 likesSpan.setSpan(new RelativeVerticalOffsetSpan(relativeVerticalShiftRatio), 0, likesSpan.length(), 0);
                 separatorSpan.setSpan(new RelativeVerticalOffsetSpan(relativeVerticalShiftRatio), 0, separatorSpan.length(), 0);
                 dislikeSpan.setSpan(new RelativeVerticalOffsetSpan(relativeVerticalShiftRatio), 0, dislikeSpan.length(), 0);
