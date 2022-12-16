@@ -311,6 +311,7 @@ public class ReturnYouTubeDislikeApi {
         } catch (Exception ex) {
             LogHelper.printException(() -> "Failed to register user", ex);
         }
+        showToast("revanced_ryd_failure_register_user");
         return null;
     }
 
@@ -346,15 +347,16 @@ public class ReturnYouTubeDislikeApi {
                 }
                 LogHelper.printDebug(() -> "Failed to confirm registration for user: " + userId
                         + " solution: " + solution + " response string was: " + result);
-                return null;
+            } else {
+                LogHelper.printDebug(() -> "Failed to confirm registration for user: " + userId
+                        + " solution: " + solution + " response code was: " + responseCode);
+                connection.disconnect();
             }
-            LogHelper.printDebug(() -> "Failed to confirm registration for user: " + userId
-                    + " solution: " + solution + " response code was: " + responseCode);
-            connection.disconnect();
         } catch (Exception ex) {
             LogHelper.printException(() -> "Failed to confirm registration for user: " + userId
                     + "solution: " + solution, ex);
         }
+        showToast("revanced_ryd_failure_confirm_user");
 
         return null;
     }
@@ -401,6 +403,7 @@ public class ReturnYouTubeDislikeApi {
             LogHelper.printException(() -> "Failed to send vote for video: " + videoId
                     + " user: " + userId + " vote: " + vote, ex);
         }
+        showToast("revanced_ryd_failure_send_vote_failed");
         return false;
     }
 
@@ -438,15 +441,16 @@ public class ReturnYouTubeDislikeApi {
                 }
                 LogHelper.printDebug(() -> "Failed to confirm vote for video: " + videoId
                         + " user: " + userId + " solution: " + solution + " response string was: " + result);
-                return false;
+            } else {
+                LogHelper.printDebug(() -> "Failed to confirm vote for video: " + videoId
+                        + " user: " + userId + " solution: " + solution + " response code was: " + responseCode);
+                connection.disconnect();
             }
-            LogHelper.printDebug(() -> "Failed to confirm vote for video: " + videoId
-                    + " user: " + userId + " solution: " + solution + " response code was: " + responseCode);
-            connection.disconnect();
         } catch (Exception ex) {
             LogHelper.printException(() -> "Failed to confirm vote for video: " + videoId
                     + " user: " + userId + " solution: " + solution, ex);
         }
+        showToast("revanced_ryd_failure_confirm_vote_failed");
         return false;
     }
 
