@@ -27,11 +27,11 @@ import app.revanced.integrations.utils.ReVancedUtils;
 
 public class ReturnYouTubeDislikeApi {
     /**
-     * Default connection and response timeout for {@link #fetchVotes(String)}
+     * {@link #fetchVotes(String)} TCP connection and HTTP read timeout
      *
      * To locally debug and force timeouts, change this to a very small number (ie: 100)
      */
-    private static final int API_GET_DISLIKE_DEFAULT_TIMEOUT_MILLISECONDS = 4000;
+    private static final int API_GET_DISLIKE_TIMEOUT_MILLISECONDS = 4000;
 
     /**
      * Default connection and response timeout for voting and registration.
@@ -39,7 +39,7 @@ public class ReturnYouTubeDislikeApi {
      * Voting and user registration runs in the background and has has no urgency
      * so this can be a larger value.
      */
-    private static final int API_REGISTER_VOTE_DEFAULT_TIMEOUT_MILLISECONDS = 90000;
+    private static final int API_REGISTER_VOTE_TIMEOUT_MILLISECONDS = 90000;
 
     /**
      * Response code of a successful API call
@@ -127,13 +127,13 @@ public class ReturnYouTubeDislikeApi {
     } // utility class
 
     /**
-     * Only for local debugging to simulate a slow api call.
-     * Does this by doing meaningless calculations.
+     * Only to simulate a slow api call, for debugging the app UI with slow url calls.
+     * Simulates a slow response by doing meaningless calculations.
      *
      * @param maximumTimeToWait maximum time to wait
      */
     private static long randomlyWaitIfLocallyDebugging(long maximumTimeToWait) {
-        final boolean DEBUG_RANDOMLY_DELAY_NETWORK_CALLS = false;
+        final boolean DEBUG_RANDOMLY_DELAY_NETWORK_CALLS = false; // set true to debug UI
         if (DEBUG_RANDOMLY_DELAY_NETWORK_CALLS) {
             final long amountOfTimeToWaste = (long) (Math.random() * maximumTimeToWait);
             final long timeCalculationStarted = System.currentTimeMillis();
@@ -171,8 +171,7 @@ public class ReturnYouTubeDislikeApi {
      * @return True, if a client rate limit was requested
      */
     private static boolean checkIfRateLimitWasHit(int httpResponseCode) {
-        // set to true, to verify rate limit works
-        final boolean DEBUG_RATE_LIMIT = false;
+        final boolean DEBUG_RATE_LIMIT = false;  // set to true, to verify rate limit works
         if (DEBUG_RATE_LIMIT) {
             final double RANDOM_RATE_LIMIT_PERCENTAGE = 0.2; // 20% chance of a triggering a rate limit
             if (Math.random() < RANDOM_RATE_LIMIT_PERCENTAGE) {
@@ -235,10 +234,10 @@ public class ReturnYouTubeDislikeApi {
             connection.setRequestProperty("Pragma", "no-cache");
             connection.setRequestProperty("Cache-Control", "no-cache");
             connection.setUseCaches(false);
-            connection.setConnectTimeout(API_GET_DISLIKE_DEFAULT_TIMEOUT_MILLISECONDS); // timeout for TCP connection to server
-            connection.setReadTimeout(API_GET_DISLIKE_DEFAULT_TIMEOUT_MILLISECONDS); // timeout for server response
+            connection.setConnectTimeout(API_GET_DISLIKE_TIMEOUT_MILLISECONDS); // timeout for TCP connection to server
+            connection.setReadTimeout(API_GET_DISLIKE_TIMEOUT_MILLISECONDS); // timeout for server response
 
-            randomlyWaitIfLocallyDebugging(2 * API_GET_DISLIKE_DEFAULT_TIMEOUT_MILLISECONDS);
+            randomlyWaitIfLocallyDebugging(2 * API_GET_DISLIKE_TIMEOUT_MILLISECONDS);
 
             final int responseCode = connection.getResponseCode();
             if (checkIfRateLimitWasHit(responseCode)) {
@@ -286,8 +285,8 @@ public class ReturnYouTubeDislikeApi {
 
             HttpURLConnection connection = getRYDConnectionFromRoute(ReturnYouTubeDislikeRoutes.GET_REGISTRATION, userId);
             connection.setRequestProperty("Accept", "application/json");
-            connection.setConnectTimeout(API_REGISTER_VOTE_DEFAULT_TIMEOUT_MILLISECONDS);
-            connection.setReadTimeout(API_REGISTER_VOTE_DEFAULT_TIMEOUT_MILLISECONDS);
+            connection.setConnectTimeout(API_REGISTER_VOTE_TIMEOUT_MILLISECONDS);
+            connection.setReadTimeout(API_REGISTER_VOTE_TIMEOUT_MILLISECONDS);
 
             final int responseCode = connection.getResponseCode();
             if (checkIfRateLimitWasHit(responseCode)) {
@@ -465,8 +464,8 @@ public class ReturnYouTubeDislikeApi {
         connection.setRequestProperty("Cache-Control", "no-cache");
         connection.setUseCaches(false);
         connection.setDoOutput(true);
-        connection.setConnectTimeout(API_REGISTER_VOTE_DEFAULT_TIMEOUT_MILLISECONDS); // timeout for TCP connection to server
-        connection.setReadTimeout(API_REGISTER_VOTE_DEFAULT_TIMEOUT_MILLISECONDS); // timeout for server response
+        connection.setConnectTimeout(API_REGISTER_VOTE_TIMEOUT_MILLISECONDS); // timeout for TCP connection to server
+        connection.setReadTimeout(API_REGISTER_VOTE_TIMEOUT_MILLISECONDS); // timeout for server response
     }
 
 
