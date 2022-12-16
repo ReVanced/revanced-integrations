@@ -13,6 +13,7 @@ import android.preference.PreferenceScreen;
 import android.preference.SwitchPreference;
 
 import app.revanced.integrations.returnyoutubedislike.ReturnYouTubeDislike;
+import app.revanced.integrations.returnyoutubedislike.requests.ReturnYouTubeDislikeApi;
 import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.utils.SharedPrefHelper;
 
@@ -100,6 +101,75 @@ public class ReturnYouTubeDislikeSettingsFragment extends PreferenceFragment {
             return false;
         });
         preferenceScreen.addPreference(aboutWebsitePreference);
+
+        // RYD API connection statistics
+        
+        if (SettingsEnum.DEBUG.getBoolean()) {
+            PreferenceCategory emptyCategory = new PreferenceCategory(context);
+            preferenceScreen.addPreference(emptyCategory);
+
+            PreferenceCategory statisticsCategory = new PreferenceCategory(context);
+            statisticsCategory.setTitle(str("revanced_ryd_connection_statistics_category_title"));
+            preferenceScreen.addPreference(statisticsCategory);
+
+            Preference statisticPreference;
+
+            statisticPreference = new Preference(context);
+            statisticPreference.setTitle(str("revanced_ryd_connection_statistics_getFetchCallResponseTimeAverage_title"));
+            statisticPreference.setSummary(createMillisecondStringFromNumber(ReturnYouTubeDislikeApi.getFetchCallResponseTimeAverage()));
+            preferenceScreen.addPreference(statisticPreference);
+
+            statisticPreference = new Preference(context);
+            statisticPreference.setTitle(str("revanced_ryd_connection_statistics_getFetchCallResponseTimeMin_title"));
+            statisticPreference.setSummary(createMillisecondStringFromNumber(ReturnYouTubeDislikeApi.getFetchCallResponseTimeMin()));
+            preferenceScreen.addPreference(statisticPreference);
+
+            statisticPreference = new Preference(context);
+            statisticPreference.setTitle(str("revanced_ryd_connection_statistics_getFetchCallResponseTimeMax_title"));
+            statisticPreference.setSummary(createMillisecondStringFromNumber(ReturnYouTubeDislikeApi.getFetchCallResponseTimeMax()));
+            preferenceScreen.addPreference(statisticPreference);
+
+            String fetchCallTimeWaitingLastSummary;
+            final long fetchCallTimeWaitingLast = ReturnYouTubeDislikeApi.getFetchCallResponseTimeLast();
+            if (fetchCallTimeWaitingLast == ReturnYouTubeDislikeApi.FETCH_CALL_RESPONSE_TIME_VALUE_RATE_LIMIT) {
+                fetchCallTimeWaitingLastSummary = str("revanced_ryd_connection_statistics_api_call_rate_limit_in_effect_text");
+            } else if (fetchCallTimeWaitingLast == ReturnYouTubeDislikeApi.FETCH_CALL_RESPONSE_TIME_VALUE_TIMEOUT) {
+                fetchCallTimeWaitingLastSummary = str("revanced_ryd_connection_statistics_api_call_timeout_text");
+            } else {
+                fetchCallTimeWaitingLastSummary = createMillisecondStringFromNumber(fetchCallTimeWaitingLast);
+            }
+            statisticPreference = new Preference(context);
+            statisticPreference.setTitle(str("revanced_ryd_connection_statistics_getFetchCallResponseTimeLast_title"));
+            statisticPreference.setSummary(fetchCallTimeWaitingLastSummary);
+            preferenceScreen.addPreference(statisticPreference);
+
+            statisticPreference = new Preference(context);
+            statisticPreference.setTitle(str("revanced_ryd_connection_statistics_getFetchCallCount_title"));
+            statisticPreference.setSummary(String.valueOf(ReturnYouTubeDislikeApi.getFetchCallCount()));
+            preferenceScreen.addPreference(statisticPreference);
+
+            statisticPreference = new Preference(context);
+            statisticPreference.setTitle(str("revanced_ryd_connection_statistics_getFetchCallNumberOfFailedCalls_title"));
+            final int fetchCallNumberOfFailedCalls = ReturnYouTubeDislikeApi.getFetchCallNumberOfFailedCalls();
+            String fetchFailedSummary = fetchCallNumberOfFailedCalls == 0
+                    ? str("revanced_ryd_connection_statistics_fetchCallNumberOfFailedCalls_zero_summary")
+                    : String.valueOf(fetchCallNumberOfFailedCalls);
+            statisticPreference.setSummary(fetchFailedSummary);
+            preferenceScreen.addPreference(statisticPreference);
+
+            statisticPreference = new Preference(context);
+            statisticPreference.setTitle(str("revanced_ryd_connection_statistics_getNumberOfRateLimitRequestsEncountered_title"));
+            final int numberOfRateLimitRequestsEncountered = ReturnYouTubeDislikeApi.getNumberOfRateLimitRequestsEncountered();
+            String rateLimitSummary = numberOfRateLimitRequestsEncountered == 0
+                    ? str("revanced_ryd_connection_statistics_getNumberOfRateLimitRequestsEncountered_zero_summary")
+                    : String.valueOf(numberOfRateLimitRequestsEncountered);
+            statisticPreference.setSummary(rateLimitSummary);
+            preferenceScreen.addPreference(statisticPreference);
+        }
+    }
+
+    private static String createMillisecondStringFromNumber(long number) {
+        return number + " " + str("revanced_ryd_connection_statistics_millisecond_text");
     }
 
 }

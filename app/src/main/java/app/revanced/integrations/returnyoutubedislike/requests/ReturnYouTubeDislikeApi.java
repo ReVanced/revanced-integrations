@@ -1,6 +1,9 @@
 package app.revanced.integrations.returnyoutubedislike.requests;
 
+import static app.revanced.integrations.sponsorblock.StringRef.str;
+
 import android.util.Base64;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
@@ -61,6 +64,61 @@ public class ReturnYouTubeDislikeApi {
      */
     private static volatile long lastTimeLimitWasHit; // must be volatile, since different threads read/write to this
 
+    /**
+     * Number of times {@link #RATE_LIMIT_HTTP_STATUS_CODE} was requested by RYD api.
+     * Does not include network calls attempted while rate limit is in effect
+     */
+    private static volatile int numberOfRateLimitRequestsEncountered;
+
+    /**
+     * Number of times calls {@link #fetchVotes(String)} fails due to timeout or any other error.
+     */
+    private static volatile int fetchCallNumberOfFailedCalls;
+
+    /**
+     * Total time spent waiting for {@link #fetchVotes(String)} network call to complete.
+     * Value does does not persist on app shut down.
+     */
+    private static volatile long fetchCallResponseTimeTotal;
+
+    /**
+     * Round trip network time for the most recent call to {@link #fetchVotes(String)}
+     */
+    private static volatile long fetchCallResponseTimeLast;
+    private static volatile long fetchCallResponseTimeMin;
+    private static volatile long fetchCallResponseTimeMax;
+    private static volatile int fetchCallCount;
+
+    public static final int FETCH_CALL_RESPONSE_TIME_VALUE_TIMEOUT = -1;
+    public static final int FETCH_CALL_RESPONSE_TIME_VALUE_RATE_LIMIT = -2;
+
+    /**
+     * If the most recent call failed, this returns {@link #FETCH_CALL_RESPONSE_TIME_VALUE_TIMEOUT}
+     *
+     * If timeout was in effect, this returns {@link #FETCH_CALL_RESPONSE_TIME_VALUE_RATE_LIMIT}
+     */
+    public static long getFetchCallResponseTimeLast() {
+        return fetchCallResponseTimeLast;
+    }
+    public static long getFetchCallResponseTimeMin() {
+        return fetchCallResponseTimeMin;
+    }
+    public static long getFetchCallResponseTimeMax() {
+        return fetchCallResponseTimeMax;
+    }
+    public static long getFetchCallResponseTimeAverage() {
+        return fetchCallCount == 0 ? 0 : (fetchCallResponseTimeTotal / fetchCallCount);
+    }
+    public static int getFetchCallCount() {
+        return fetchCallCount;
+    }
+    public static int getNumberOfRateLimitRequestsEncountered() {
+        return numberOfRateLimitRequestsEncountered;
+    }
+    public static int getFetchCallNumberOfFailedCalls() {
+        return fetchCallNumberOfFailedCalls;
+    }
+
     private ReturnYouTubeDislikeApi() {
     } // utility class
 
@@ -106,7 +164,7 @@ public class ReturnYouTubeDislikeApi {
     }
 
     /**
-     * @return True, if the rate limit was reached.
+     * @return True, if a client rate limit was requested
      */
     private static boolean checkIfRateLimitWasHit(int httpResponseCode) {
         // set to true, to verify rate limit works
@@ -121,8 +179,12 @@ public class ReturnYouTubeDislikeApi {
 
         if (httpResponseCode == RATE_LIMIT_HTTP_STATUS_CODE) {
             lastTimeLimitWasHit = System.currentTimeMillis();
+            numberOfRateLimitRequestsEncountered++;
             LogHelper.printDebug(() -> "API rate limit was hit. Stopping API calls for the next "
                     + RATE_LIMIT_BACKOFF_SECONDS + " seconds");
+            ReVancedUtils.runOnMainThread(() -> { // must show taasts on main thread
+                Toast.makeText(ReVancedUtils.getContext(), str("revanced_ryd_client_rate_limit_requested"), Toast.LENGTH_LONG).show();
+            });
             return true;
         }
         return false;
@@ -141,6 +203,8 @@ public class ReturnYouTubeDislikeApi {
             }
             LogHelper.printDebug(() -> "Fetching dislikes for: " + videoId);
 
+            final long timeNetworkCallStarted = System.currentTimeMillis();
+
             HttpURLConnection connection = getConnectionFromRoute(ReturnYouTubeDislikeRoutes.GET_DISLIKES, videoId);
             // request headers, as per https://returnyoutubedislike.com/docs/fetching
             // the documentation says to use 'Accept:text/html', but the RYD browser plugin uses 'Accept:application/json'
@@ -155,11 +219,21 @@ public class ReturnYouTubeDislikeApi {
             randomlyWaitIfLocallyDebugging(2 * API_GET_DISLIKE_DEFAULT_TIMEOUT_MILLISECONDS);
 
             final int responseCode = connection.getResponseCode();
+
+            final long totalTimeOfNetworkCall = System.currentTimeMillis() - timeNetworkCallStarted;
+            fetchCallResponseTimeTotal += totalTimeOfNetworkCall;
+            fetchCallResponseTimeMin = (fetchCallResponseTimeMin == 0) ? totalTimeOfNetworkCall : Math.min(totalTimeOfNetworkCall, fetchCallResponseTimeMin);
+            fetchCallResponseTimeMax = Math.max(totalTimeOfNetworkCall, fetchCallResponseTimeMax);
+            fetchCallCount++;
+
             if (checkIfRateLimitWasHit(responseCode)) {
                 connection.disconnect();
+                fetchCallResponseTimeLast = FETCH_CALL_RESPONSE_TIME_VALUE_RATE_LIMIT;
                 return null;
             }
+
             if (responseCode == SUCCESS_HTTP_STATUS_CODE) {
+                fetchCallResponseTimeLast = totalTimeOfNetworkCall;
                 JSONObject json = Requester.getJSONObject(connection); // also disconnects
                 try {
                     RYDVoteData votingData = new RYDVoteData(json);
@@ -173,9 +247,15 @@ public class ReturnYouTubeDislikeApi {
             LogHelper.printDebug(() -> "Failed to fetch dislikes for video: " + videoId
                     + " response code was: " + responseCode);
             connection.disconnect();
-        } catch (Exception ex) {
+        } catch (Exception ex) { // connection timed out, response timeout, or some other network error
             LogHelper.printException(() -> "Failed to fetch dislikes", ex);
         }
+
+        fetchCallNumberOfFailedCalls++;
+        fetchCallResponseTimeLast = FETCH_CALL_RESPONSE_TIME_VALUE_TIMEOUT;
+        ReVancedUtils.runOnMainThread(() -> { // must show taasts on main thread
+            Toast.makeText(ReVancedUtils.getContext(), str("revanced_ryd_connection_timeout_message"), Toast.LENGTH_LONG).show();
+        });
         return null;
     }
 
