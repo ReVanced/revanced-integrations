@@ -230,12 +230,7 @@ public class ReturnYouTubeDislikeApi {
         final long timeNetworkCallStarted = System.currentTimeMillis();
 
         try {
-            if (checkIfRateLimitInEffect("fetchDislikes")) {
-                return null;
-            }
-            LogHelper.printDebug(() -> "Fetching dislikes for: " + videoId);
-
-            HttpURLConnection connection = getConnectionFromRoute(ReturnYouTubeDislikeRoutes.GET_DISLIKES, videoId);
+            HttpURLConnection connection = getRYDConnectionFromRoute(ReturnYouTubeDislikeRoutes.GET_DISLIKES, videoId);
             // request headers, as per https://returnyoutubedislike.com/docs/fetching
             // the documentation says to use 'Accept:text/html', but the RYD browser plugin uses 'Accept:application/json'
             connection.setRequestProperty("Accept", "application/json");
