@@ -115,16 +115,19 @@ public class ReturnYouTubeDislikeSettingsFragment extends PreferenceFragment {
             Preference statisticPreference;
 
             statisticPreference = new Preference(context);
+            statisticPreference.setSelectable(false);
             statisticPreference.setTitle(str("revanced_ryd_connection_statistics_getFetchCallResponseTimeAverage_title"));
             statisticPreference.setSummary(createMillisecondStringFromNumber(ReturnYouTubeDislikeApi.getFetchCallResponseTimeAverage()));
             preferenceScreen.addPreference(statisticPreference);
 
             statisticPreference = new Preference(context);
+            statisticPreference.setSelectable(false);
             statisticPreference.setTitle(str("revanced_ryd_connection_statistics_getFetchCallResponseTimeMin_title"));
             statisticPreference.setSummary(createMillisecondStringFromNumber(ReturnYouTubeDislikeApi.getFetchCallResponseTimeMin()));
             preferenceScreen.addPreference(statisticPreference);
 
             statisticPreference = new Preference(context);
+            statisticPreference.setSelectable(false);
             statisticPreference.setTitle(str("revanced_ryd_connection_statistics_getFetchCallResponseTimeMax_title"));
             statisticPreference.setSummary(createMillisecondStringFromNumber(ReturnYouTubeDislikeApi.getFetchCallResponseTimeMax()));
             preferenceScreen.addPreference(statisticPreference);
@@ -139,11 +142,13 @@ public class ReturnYouTubeDislikeSettingsFragment extends PreferenceFragment {
                 fetchCallTimeWaitingLastSummary = createMillisecondStringFromNumber(fetchCallTimeWaitingLast);
             }
             statisticPreference = new Preference(context);
+            statisticPreference.setSelectable(false);
             statisticPreference.setTitle(str("revanced_ryd_connection_statistics_getFetchCallResponseTimeLast_title"));
             statisticPreference.setSummary(fetchCallTimeWaitingLastSummary);
             preferenceScreen.addPreference(statisticPreference);
 
             statisticPreference = new Preference(context);
+            statisticPreference.setSelectable(false);
             statisticPreference.setTitle(str("revanced_ryd_connection_statistics_getFetchCallCount_title"));
             statisticPreference.setSummary(createSummaryText(ReturnYouTubeDislikeApi.getFetchCallCount(),
                     "revanced_ryd_connection_statistics_getFetchCallCount_zero_summary",
@@ -151,6 +156,7 @@ public class ReturnYouTubeDislikeSettingsFragment extends PreferenceFragment {
             preferenceScreen.addPreference(statisticPreference);
 
             statisticPreference = new Preference(context);
+            statisticPreference.setSelectable(false);
             statisticPreference.setTitle(str("revanced_ryd_connection_statistics_getFetchCallNumberOfFailures_title"));
             statisticPreference.setSummary(createSummaryText(ReturnYouTubeDislikeApi.getFetchCallNumberOfFailures(),
                     "revanced_ryd_connection_statistics_getFetchCallNumberOfFailures_zero_summary",
@@ -158,6 +164,7 @@ public class ReturnYouTubeDislikeSettingsFragment extends PreferenceFragment {
             preferenceScreen.addPreference(statisticPreference);
 
             statisticPreference = new Preference(context);
+            statisticPreference.setSelectable(false);
             statisticPreference.setTitle(str("revanced_ryd_connection_statistics_getNumberOfRateLimitRequestsEncountered_title"));
             statisticPreference.setSummary(createSummaryText(ReturnYouTubeDislikeApi.getNumberOfRateLimitRequestsEncountered(),
                     "revanced_ryd_connection_statistics_getNumberOfRateLimitRequestsEncountered_zero_summary",
