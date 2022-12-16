@@ -32,7 +32,7 @@ public class ReturnYouTubeDislikeApi {
     /**
      * Default connection and response timeout for {@link #fetchVotes(String)}
      */
-    private static final int API_GET_DISLIKE_DEFAULT_TIMEOUT_MILLISECONDS = 5000;
+    private static final int API_GET_DISLIKE_DEFAULT_TIMEOUT_MILLISECONDS = 4000;
 
     /**
      * Default connection and response timeout for voting and registration.
