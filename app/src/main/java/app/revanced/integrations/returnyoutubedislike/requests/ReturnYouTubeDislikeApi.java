@@ -31,6 +31,8 @@ public class ReturnYouTubeDislikeApi {
 
     /**
      * Default connection and response timeout for {@link #fetchVotes(String)}
+     *
+     * To locally debug and force timeouts, change this to a very small number (ie: 100)
      */
     private static final int API_GET_DISLIKE_DEFAULT_TIMEOUT_MILLISECONDS = 4000;
 
@@ -171,7 +173,7 @@ public class ReturnYouTubeDislikeApi {
         // set to true, to verify rate limit works
         final boolean DEBUG_RATE_LIMIT = false;
         if (DEBUG_RATE_LIMIT) {
-            final double RANDOM_RATE_LIMIT_PERCENTAGE = 0.1; // 10% chance of a triggering a rate limit
+            final double RANDOM_RATE_LIMIT_PERCENTAGE = 0.2; // 20% chance of a triggering a rate limit
             if (Math.random() < RANDOM_RATE_LIMIT_PERCENTAGE) {
                 LogHelper.printDebug(() -> "Artificially triggering rate limit for debug purposes");
                 httpResponseCode = RATE_LIMIT_HTTP_STATUS_CODE;

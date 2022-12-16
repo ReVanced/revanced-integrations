@@ -105,7 +105,7 @@ public class ReturnYouTubeDislikeSettingsFragment extends PreferenceFragment {
         // RYD API connection statistics
         
         if (SettingsEnum.DEBUG.getBoolean()) {
-            PreferenceCategory emptyCategory = new PreferenceCategory(context);
+            PreferenceCategory emptyCategory = new PreferenceCategory(context); // vertical padding
             preferenceScreen.addPreference(emptyCategory);
 
             PreferenceCategory statisticsCategory = new PreferenceCategory(context);
@@ -145,35 +145,32 @@ public class ReturnYouTubeDislikeSettingsFragment extends PreferenceFragment {
 
             statisticPreference = new Preference(context);
             statisticPreference.setTitle(str("revanced_ryd_connection_statistics_getFetchCallCount_title"));
-            statisticPreference.setSummary(String.valueOf(ReturnYouTubeDislikeApi.getFetchCallCount()));
+            statisticPreference.setSummary(createSummaryText(ReturnYouTubeDislikeApi.getFetchCallCount(),
+                    "revanced_ryd_connection_statistics_getFetchCallCount_zero_summary",
+                    "revanced_ryd_connection_statistics_getFetchCallCount_non_zero_summary"));
             preferenceScreen.addPreference(statisticPreference);
 
             statisticPreference = new Preference(context);
             statisticPreference.setTitle(str("revanced_ryd_connection_statistics_getFetchCallNumberOfFailures_title"));
-            final int fetchCallNumberOfFailures = ReturnYouTubeDislikeApi.getFetchCallNumberOfFailures();
-            String fetchFailedSummary;
-            if (fetchCallNumberOfFailures == 0) {
-                fetchFailedSummary = str("revanced_ryd_connection_statistics_getFetchCallNumberOfFailures_zero_summary");
-            } else {
-                String formatString = str("revanced_ryd_connection_statistics_getFetchCallNumberOfFailures_non_zero_summary");
-                fetchFailedSummary = String.format(formatString, fetchCallNumberOfFailures);
-            }
-            statisticPreference.setSummary(fetchFailedSummary);
+            statisticPreference.setSummary(createSummaryText(ReturnYouTubeDislikeApi.getFetchCallNumberOfFailures(),
+                    "revanced_ryd_connection_statistics_getFetchCallNumberOfFailures_zero_summary",
+                    "revanced_ryd_connection_statistics_getFetchCallNumberOfFailures_non_zero_summary"));
             preferenceScreen.addPreference(statisticPreference);
 
             statisticPreference = new Preference(context);
             statisticPreference.setTitle(str("revanced_ryd_connection_statistics_getNumberOfRateLimitRequestsEncountered_title"));
-            final int numberOfRateLimitRequestsEncountered = ReturnYouTubeDislikeApi.getNumberOfRateLimitRequestsEncountered();
-            String rateLimitSummary;
-            if (numberOfRateLimitRequestsEncountered == 0) {
-                rateLimitSummary = str("revanced_ryd_connection_statistics_getNumberOfRateLimitRequestsEncountered_zero_summary");
-            } else {
-                String formatString = str("revanced_ryd_connection_statistics_getNumberOfRateLimitRequestsEncountered_non_zero_summary");
-                rateLimitSummary = String.format(formatString, numberOfRateLimitRequestsEncountered);
-            }
-            statisticPreference.setSummary(rateLimitSummary);
+            statisticPreference.setSummary(createSummaryText(ReturnYouTubeDislikeApi.getNumberOfRateLimitRequestsEncountered(),
+                    "revanced_ryd_connection_statistics_getNumberOfRateLimitRequestsEncountered_zero_summary",
+                    "revanced_ryd_connection_statistics_getNumberOfRateLimitRequestsEncountered_non_zero_summary"));
             preferenceScreen.addPreference(statisticPreference);
         }
+    }
+
+    private String createSummaryText(int value, String summaryStringZeroKey, String summaryStringOneOrMoreKey) {
+        if (value == 0) {
+            return str(summaryStringZeroKey);
+        }
+        return String.format(str(summaryStringOneOrMoreKey), value);
     }
 
     private static String createMillisecondStringFromNumber(long number) {
