@@ -1,5 +1,6 @@
 package app.revanced.integrations.returnyoutubedislike.requests;
 
+import static app.revanced.integrations.returnyoutubedislike.requests.ReturnYouTubeDislikeRoutes.getRYDConnectionFromRoute;
 import static app.revanced.integrations.sponsorblock.StringRef.str;
 
 import android.util.Base64;
@@ -10,7 +11,6 @@ import androidx.annotation.Nullable;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.ProtocolException;
@@ -21,14 +21,11 @@ import java.security.SecureRandom;
 import java.util.Objects;
 
 import app.revanced.integrations.requests.Requester;
-import app.revanced.integrations.requests.Route;
 import app.revanced.integrations.returnyoutubedislike.ReturnYouTubeDislike;
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedUtils;
 
 public class ReturnYouTubeDislikeApi {
-    private static final String RYD_API_URL = "https://returnyoutubedislikeapi.com/";
-
     /**
      * Default connection and response timeout for {@link #fetchVotes(String)}
      *
@@ -287,7 +284,7 @@ public class ReturnYouTubeDislikeApi {
             String userId = randomString(36);
             LogHelper.printDebug(() -> "Trying to register new user: " + userId);
 
-            HttpURLConnection connection = getConnectionFromRoute(ReturnYouTubeDislikeRoutes.GET_REGISTRATION, userId);
+            HttpURLConnection connection = getRYDConnectionFromRoute(ReturnYouTubeDislikeRoutes.GET_REGISTRATION, userId);
             connection.setRequestProperty("Accept", "application/json");
             connection.setConnectTimeout(API_REGISTER_VOTE_DEFAULT_TIMEOUT_MILLISECONDS);
             connection.setReadTimeout(API_REGISTER_VOTE_DEFAULT_TIMEOUT_MILLISECONDS);
@@ -326,7 +323,7 @@ public class ReturnYouTubeDislikeApi {
             }
             LogHelper.printDebug(() -> "Trying to confirm registration for user: " + userId + " with solution: " + solution);
 
-            HttpURLConnection connection = getConnectionFromRoute(ReturnYouTubeDislikeRoutes.CONFIRM_REGISTRATION, userId);
+            HttpURLConnection connection = getRYDConnectionFromRoute(ReturnYouTubeDislikeRoutes.CONFIRM_REGISTRATION, userId);
             applyCommonPostRequestSettings(connection);
 
             String jsonInputString = "{\"solution\": \"" + solution + "\"}";
@@ -374,7 +371,7 @@ public class ReturnYouTubeDislikeApi {
             LogHelper.printDebug(() -> "Trying to vote for video: "
                     + videoId + " with vote: " + vote + " user: " + userId);
 
-            HttpURLConnection connection = getConnectionFromRoute(ReturnYouTubeDislikeRoutes.SEND_VOTE);
+            HttpURLConnection connection = getRYDConnectionFromRoute(ReturnYouTubeDislikeRoutes.SEND_VOTE);
             applyCommonPostRequestSettings(connection);
 
             String voteJsonString = "{\"userId\": \"" + userId + "\", \"videoId\": \"" + videoId + "\", \"value\": \"" + vote.value + "\"}";
@@ -419,7 +416,7 @@ public class ReturnYouTubeDislikeApi {
             }
             LogHelper.printDebug(() -> "Trying to confirm vote for video: "
                     + videoId + " user: " + userId + " solution: " + solution);
-            HttpURLConnection connection = getConnectionFromRoute(ReturnYouTubeDislikeRoutes.CONFIRM_VOTE);
+            HttpURLConnection connection = getRYDConnectionFromRoute(ReturnYouTubeDislikeRoutes.CONFIRM_VOTE);
             applyCommonPostRequestSettings(connection);
 
             String jsonInputString = "{\"userId\": \"" + userId + "\", \"videoId\": \"" + videoId + "\", \"solution\": \"" + solution + "\"}";
@@ -472,9 +469,6 @@ public class ReturnYouTubeDislikeApi {
         connection.setReadTimeout(API_REGISTER_VOTE_DEFAULT_TIMEOUT_MILLISECONDS); // timeout for server response
     }
 
-    private static HttpURLConnection getConnectionFromRoute(Route route, String... params) throws IOException {
-        return Requester.getConnectionFromRoute(RYD_API_URL, route, params);
-    }
 
     private static String solvePuzzle(String challenge, int difficulty) {
         final long timeSolveStarted = System.currentTimeMillis();
