@@ -71,7 +71,8 @@ public class ReturnYouTubeDislikeApi {
     private static volatile int numberOfRateLimitRequestsEncountered;
 
     /**
-     * Number of times calls {@link #fetchVotes(String)} fails due to timeout or any other error.
+     * Number of times {@link #fetchVotes(String)} failed due to timeout or any other error.
+     * This does not include when rate limit requests are encountered.
      */
     private static volatile int fetchCallNumberOfFailedCalls;
 
