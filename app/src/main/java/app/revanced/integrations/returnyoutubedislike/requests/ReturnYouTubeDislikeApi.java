@@ -74,7 +74,7 @@ public class ReturnYouTubeDislikeApi {
      * Number of times {@link #fetchVotes(String)} failed due to timeout or any other error.
      * This does not include when rate limit requests are encountered.
      */
-    private static volatile int fetchCallNumberOfFailedCalls;
+    private static volatile int fetchCallNumberOfFailures;
 
     /**
      * Total time spent waiting for {@link #fetchVotes(String)} network call to complete.
@@ -113,11 +113,11 @@ public class ReturnYouTubeDislikeApi {
     public static int getFetchCallCount() {
         return fetchCallCount;
     }
+    public static int getFetchCallNumberOfFailures() {
+        return fetchCallNumberOfFailures;
+    }
     public static int getNumberOfRateLimitRequestsEncountered() {
         return numberOfRateLimitRequestsEncountered;
-    }
-    public static int getFetchCallNumberOfFailedCalls() {
-        return fetchCallNumberOfFailedCalls;
     }
 
     private ReturnYouTubeDislikeApi() {
@@ -198,13 +198,13 @@ public class ReturnYouTubeDislikeApi {
     public static RYDVoteData fetchVotes(String videoId) {
         ReVancedUtils.verifyOffMainThread();
         Objects.requireNonNull(videoId);
-        try {
-            if (checkIfRateLimitInEffect("fetchDislikes")) {
-                return null;
-            }
-            LogHelper.printDebug(() -> "Fetching dislikes for: " + videoId);
 
-            final long timeNetworkCallStarted = System.currentTimeMillis();
+        if (checkIfRateLimitInEffect("fetchDislikes")) {
+            return null;
+        }
+        final long timeNetworkCallStarted = System.currentTimeMillis();
+        try {
+            LogHelper.printDebug(() -> "Fetching dislikes for: " + videoId);
 
             HttpURLConnection connection = getConnectionFromRoute(ReturnYouTubeDislikeRoutes.GET_DISLIKES, videoId);
             // request headers, as per https://returnyoutubedislike.com/docs/fetching
@@ -220,13 +220,6 @@ public class ReturnYouTubeDislikeApi {
             randomlyWaitIfLocallyDebugging(2 * API_GET_DISLIKE_DEFAULT_TIMEOUT_MILLISECONDS);
 
             final int responseCode = connection.getResponseCode();
-
-            final long totalTimeOfNetworkCall = System.currentTimeMillis() - timeNetworkCallStarted;
-            fetchCallResponseTimeTotal += totalTimeOfNetworkCall;
-            fetchCallResponseTimeMin = (fetchCallResponseTimeMin == 0) ? totalTimeOfNetworkCall : Math.min(totalTimeOfNetworkCall, fetchCallResponseTimeMin);
-            fetchCallResponseTimeMax = Math.max(totalTimeOfNetworkCall, fetchCallResponseTimeMax);
-            fetchCallCount++;
-
             if (checkIfRateLimitWasHit(responseCode)) {
                 connection.disconnect();
                 fetchCallResponseTimeLast = FETCH_CALL_RESPONSE_TIME_VALUE_RATE_LIMIT;
@@ -234,7 +227,6 @@ public class ReturnYouTubeDislikeApi {
             }
 
             if (responseCode == SUCCESS_HTTP_STATUS_CODE) {
-                fetchCallResponseTimeLast = totalTimeOfNetworkCall;
                 JSONObject json = Requester.getJSONObject(connection); // also disconnects
                 try {
                     RYDVoteData votingData = new RYDVoteData(json);
@@ -242,17 +234,25 @@ public class ReturnYouTubeDislikeApi {
                     return votingData;
                 } catch (JSONException ex) {
                     LogHelper.printException(() -> "Failed to parse video: " + videoId + " json: " + json, ex);
-                    return null;
+                    // should never be reached, but fall thru to show a toast in code below
                 }
+            } else {
+                LogHelper.printDebug(() -> "Failed to fetch dislikes for video: " + videoId
+                        + " response code was: " + responseCode);
+                connection.disconnect();
             }
-            LogHelper.printDebug(() -> "Failed to fetch dislikes for video: " + videoId
-                    + " response code was: " + responseCode);
-            connection.disconnect();
         } catch (Exception ex) { // connection timed out, response timeout, or some other network error
             LogHelper.printException(() -> "Failed to fetch dislikes", ex);
+        } finally {
+            final long responseTimeOfFetchCall = System.currentTimeMillis() - timeNetworkCallStarted;
+            fetchCallResponseTimeLast = responseTimeOfFetchCall;
+            fetchCallResponseTimeTotal += responseTimeOfFetchCall;
+            fetchCallResponseTimeMin = (fetchCallResponseTimeMin == 0) ? responseTimeOfFetchCall : Math.min(responseTimeOfFetchCall, fetchCallResponseTimeMin);
+            fetchCallResponseTimeMax = Math.max(responseTimeOfFetchCall, fetchCallResponseTimeMax);
+            fetchCallCount++;
         }
 
-        fetchCallNumberOfFailedCalls++;
+        fetchCallNumberOfFailures++;
         fetchCallResponseTimeLast = FETCH_CALL_RESPONSE_TIME_VALUE_TIMEOUT;
         ReVancedUtils.runOnMainThread(() -> { // must show taasts on main thread
             Toast.makeText(ReVancedUtils.getContext(), str("revanced_ryd_connection_timeout_message"), Toast.LENGTH_LONG).show();
