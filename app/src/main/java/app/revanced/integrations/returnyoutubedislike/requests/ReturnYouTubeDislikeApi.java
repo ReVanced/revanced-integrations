@@ -205,11 +205,11 @@ public class ReturnYouTubeDislikeApi {
         if (timedOut) {
             fetchCallResponseTimeLast = FETCH_CALL_RESPONSE_TIME_VALUE_TIMEOUT;
             fetchCallNumberOfFailures++;
-            showToast("revanced_ryd_connection_timeout_message");
+            showToast("revanced_ryd_failure_connection_timeout");
         } else if (rateLimitHit) {
             fetchCallResponseTimeLast = FETCH_CALL_RESPONSE_TIME_VALUE_RATE_LIMIT;
             numberOfRateLimitRequestsEncountered++;
-            showToast("revanced_ryd_client_rate_limit_requested");
+            showToast("revanced_ryd_failure_client_rate_limit_requested");
         } else {
             fetchCallResponseTimeLast = responseTimeOfFetchCall;
         }
