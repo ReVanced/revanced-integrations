@@ -64,13 +64,18 @@ public class ReturnYouTubeDislikeApi {
      * Last time a {@link #RATE_LIMIT_HTTP_STATUS_CODE} was reached.
      * zero if has not been reached.
      */
-    private static volatile long lastTimeLimitWasHit; // must be volatile, since different threads read/write to this
+    private static volatile long lastTimeRateLimitWasHit; // must be volatile, since different threads read/write to this
 
     /**
      * Number of times {@link #RATE_LIMIT_HTTP_STATUS_CODE} was requested by RYD api.
      * Does not include network calls attempted while rate limit is in effect
      */
     private static volatile int numberOfRateLimitRequestsEncountered;
+
+    /**
+     * Number of network calls made in {@link #fetchVotes(String)}
+     */
+    private static volatile int fetchCallCount;
 
     /**
      * Number of times {@link #fetchVotes(String)} failed due to timeout or any other error.
@@ -90,7 +95,6 @@ public class ReturnYouTubeDislikeApi {
     private static volatile long fetchCallResponseTimeLast;
     private static volatile long fetchCallResponseTimeMin;
     private static volatile long fetchCallResponseTimeMax;
-    private static volatile int fetchCallCount;
 
     public static final int FETCH_CALL_RESPONSE_TIME_VALUE_TIMEOUT = -1;
     public static final int FETCH_CALL_RESPONSE_TIME_VALUE_RATE_LIMIT = -2;
@@ -98,7 +102,7 @@ public class ReturnYouTubeDislikeApi {
     /**
      * If the most recent call failed, this returns {@link #FETCH_CALL_RESPONSE_TIME_VALUE_TIMEOUT}
      *
-     * If timeout was in effect, this returns {@link #FETCH_CALL_RESPONSE_TIME_VALUE_RATE_LIMIT}
+     * If rate limit was hit, this returns {@link #FETCH_CALL_RESPONSE_TIME_VALUE_RATE_LIMIT}
      */
     public static long getFetchCallResponseTimeLast() {
         return fetchCallResponseTimeLast;
@@ -154,10 +158,10 @@ public class ReturnYouTubeDislikeApi {
      * @return True, if api rate limit is in effect.
      */
     private static boolean checkIfRateLimitInEffect(String apiEndPointName) {
-        if (lastTimeLimitWasHit == 0) {
+        if (lastTimeRateLimitWasHit == 0) {
             return false;
         }
-        final long numberOfSecondsSinceLastRateLimit = (System.currentTimeMillis() - lastTimeLimitWasHit) / 1000;
+        final long numberOfSecondsSinceLastRateLimit = (System.currentTimeMillis() - lastTimeRateLimitWasHit) / 1000;
         if (numberOfSecondsSinceLastRateLimit < RATE_LIMIT_BACKOFF_SECONDS) {
             LogHelper.printDebug(() -> "Ignoring api call " + apiEndPointName + " as only "
                     + numberOfSecondsSinceLastRateLimit + " seconds has passed since last rate limit.");
@@ -181,16 +185,34 @@ public class ReturnYouTubeDislikeApi {
         }
 
         if (httpResponseCode == RATE_LIMIT_HTTP_STATUS_CODE) {
-            lastTimeLimitWasHit = System.currentTimeMillis();
-            numberOfRateLimitRequestsEncountered++;
+            lastTimeRateLimitWasHit = System.currentTimeMillis();
             LogHelper.printDebug(() -> "API rate limit was hit. Stopping API calls for the next "
                     + RATE_LIMIT_BACKOFF_SECONDS + " seconds");
-            ReVancedUtils.runOnMainThread(() -> { // must show taasts on main thread
-                Toast.makeText(ReVancedUtils.getContext(), str("revanced_ryd_client_rate_limit_requested"), Toast.LENGTH_LONG).show();
-            });
             return true;
         }
         return false;
+    }
+
+    private static void updateStatistics(long timeNetworkCallStarted, boolean timedOut, boolean rateLimitHit) {
+        if (timedOut && rateLimitHit) {
+            throw new IllegalArgumentException("both timeout and rate limit parameter were true");
+        }
+        final long responseTimeOfFetchCall = System.currentTimeMillis() - timeNetworkCallStarted;
+        fetchCallResponseTimeTotal += responseTimeOfFetchCall;
+        fetchCallResponseTimeMin = (fetchCallResponseTimeMin == 0) ? responseTimeOfFetchCall : Math.min(responseTimeOfFetchCall, fetchCallResponseTimeMin);
+        fetchCallResponseTimeMax = Math.max(responseTimeOfFetchCall, fetchCallResponseTimeMax);
+        fetchCallCount++;
+        if (timedOut) {
+            fetchCallResponseTimeLast = FETCH_CALL_RESPONSE_TIME_VALUE_TIMEOUT;
+            fetchCallNumberOfFailures++;
+            showToast("revanced_ryd_connection_timeout_message");
+        } else if (rateLimitHit) {
+            fetchCallResponseTimeLast = FETCH_CALL_RESPONSE_TIME_VALUE_RATE_LIMIT;
+            numberOfRateLimitRequestsEncountered++;
+            showToast("revanced_ryd_client_rate_limit_requested");
+        } else {
+            fetchCallResponseTimeLast = responseTimeOfFetchCall;
+        }
     }
 
     /**
@@ -201,11 +223,11 @@ public class ReturnYouTubeDislikeApi {
         ReVancedUtils.verifyOffMainThread();
         Objects.requireNonNull(videoId);
 
-        if (checkIfRateLimitInEffect("fetchDislikes")) {
-            return null;
-        }
         final long timeNetworkCallStarted = System.currentTimeMillis();
         try {
+            if (checkIfRateLimitInEffect("fetchDislikes")) {
+                return null;
+            }
             LogHelper.printDebug(() -> "Fetching dislikes for: " + videoId);
 
             HttpURLConnection connection = getConnectionFromRoute(ReturnYouTubeDislikeRoutes.GET_DISLIKES, videoId);
@@ -224,7 +246,7 @@ public class ReturnYouTubeDislikeApi {
             final int responseCode = connection.getResponseCode();
             if (checkIfRateLimitWasHit(responseCode)) {
                 connection.disconnect();
-                fetchCallResponseTimeLast = FETCH_CALL_RESPONSE_TIME_VALUE_RATE_LIMIT;
+                updateStatistics(timeNetworkCallStarted, false, true);
                 return null;
             }
 
@@ -232,6 +254,7 @@ public class ReturnYouTubeDislikeApi {
                 JSONObject json = Requester.getJSONObject(connection); // also disconnects
                 try {
                     RYDVoteData votingData = new RYDVoteData(json);
+                    updateStatistics(timeNetworkCallStarted, false, false);
                     LogHelper.printDebug(() -> "Voting data fetched: " + votingData);
                     return votingData;
                 } catch (JSONException ex) {
@@ -245,20 +268,9 @@ public class ReturnYouTubeDislikeApi {
             }
         } catch (Exception ex) { // connection timed out, response timeout, or some other network error
             LogHelper.printException(() -> "Failed to fetch dislikes", ex);
-        } finally {
-            final long responseTimeOfFetchCall = System.currentTimeMillis() - timeNetworkCallStarted;
-            fetchCallResponseTimeLast = responseTimeOfFetchCall;
-            fetchCallResponseTimeTotal += responseTimeOfFetchCall;
-            fetchCallResponseTimeMin = (fetchCallResponseTimeMin == 0) ? responseTimeOfFetchCall : Math.min(responseTimeOfFetchCall, fetchCallResponseTimeMin);
-            fetchCallResponseTimeMax = Math.max(responseTimeOfFetchCall, fetchCallResponseTimeMax);
-            fetchCallCount++;
         }
 
-        fetchCallNumberOfFailures++;
-        fetchCallResponseTimeLast = FETCH_CALL_RESPONSE_TIME_VALUE_TIMEOUT;
-        ReVancedUtils.runOnMainThread(() -> { // must show taasts on main thread
-            Toast.makeText(ReVancedUtils.getContext(), str("revanced_ryd_connection_timeout_message"), Toast.LENGTH_LONG).show();
-        });
+        updateStatistics(timeNetworkCallStarted, true, false);
         return null;
     }
 
@@ -438,7 +450,11 @@ public class ReturnYouTubeDislikeApi {
         return false;
     }
 
-    // utils
+    private static void showToast(String toastTextStringKey) {
+        ReVancedUtils.runOnMainThread(() -> { // must show toasts on main thread
+            Toast.makeText(ReVancedUtils.getContext(), str(toastTextStringKey), Toast.LENGTH_LONG).show();
+        });
+    }
 
     private static void applyCommonPostRequestSettings(HttpURLConnection connection) throws ProtocolException {
         connection.setRequestMethod("POST");
@@ -451,8 +467,6 @@ public class ReturnYouTubeDislikeApi {
         connection.setConnectTimeout(API_REGISTER_VOTE_DEFAULT_TIMEOUT_MILLISECONDS); // timeout for TCP connection to server
         connection.setReadTimeout(API_REGISTER_VOTE_DEFAULT_TIMEOUT_MILLISECONDS); // timeout for server response
     }
-
-    // helpers
 
     private static HttpURLConnection getConnectionFromRoute(Route route, String... params) throws IOException {
         return Requester.getConnectionFromRoute(RYD_API_URL, route, params);
