@@ -241,13 +241,14 @@ public class ReturnYouTubeDislikeApi {
 
             final int responseCode = connection.getResponseCode();
             if (checkIfRateLimitWasHit(responseCode)) {
-                connection.disconnect();
+                connection.disconnect(); // rate limit hit, should disconnect
                 updateStatistics(timeNetworkCallStarted, false, true);
                 return null;
             }
 
             if (responseCode == SUCCESS_HTTP_STATUS_CODE) {
-                JSONObject json = Requester.getJSONObject(connection); // also disconnects
+                // do not disconnect, the same server connection will likely be used again soon
+                JSONObject json = Requester.getJSONObject(connection, false);
                 try {
                     RYDVoteData votingData = new RYDVoteData(json);
                     updateStatistics(timeNetworkCallStarted, false, false);
@@ -260,7 +261,7 @@ public class ReturnYouTubeDislikeApi {
             } else {
                 LogHelper.printDebug(() -> "Failed to fetch dislikes for video: " + videoId
                         + " response code was: " + responseCode);
-                connection.disconnect();
+                connection.disconnect(); // something went wrong, might as well disconnect
             }
         } catch (Exception ex) { // connection timed out, response timeout, or some other network error
             LogHelper.printException(() -> "Failed to fetch dislikes", ex);
@@ -290,11 +291,11 @@ public class ReturnYouTubeDislikeApi {
 
             final int responseCode = connection.getResponseCode();
             if (checkIfRateLimitWasHit(responseCode)) {
-                connection.disconnect();
+                connection.disconnect(); // disconnect, as no more connections will be made for a little while
                 return null;
             }
             if (responseCode == SUCCESS_HTTP_STATUS_CODE) {
-                JSONObject json = Requester.getJSONObject(connection);  // also disconnects
+                JSONObject json = Requester.getJSONObject(connection, false);
                 String challenge = json.getString("challenge");
                 int difficulty = json.getInt("difficulty");
 
@@ -332,11 +333,11 @@ public class ReturnYouTubeDislikeApi {
             }
             final int responseCode = connection.getResponseCode();
             if (checkIfRateLimitWasHit(responseCode)) {
-                connection.disconnect();
+                connection.disconnect(); // disconnect, as no more connections will be made for a little while
                 return null;
             }
             if (responseCode == SUCCESS_HTTP_STATUS_CODE) {
-                String result = Requester.parseJson(connection); // also disconnects
+                String result = Requester.parseJson(connection, false);
                 if (result.equalsIgnoreCase("true")) {
                     LogHelper.printDebug(() -> "Registration confirmation successful for user: " + userId);
                     return userId;
@@ -346,8 +347,8 @@ public class ReturnYouTubeDislikeApi {
             } else {
                 LogHelper.printDebug(() -> "Failed to confirm registration for user: " + userId
                         + " solution: " + solution + " response code was: " + responseCode);
-                connection.disconnect();
             }
+            connection.disconnect(); // something went wrong, might as well disconnect
         } catch (Exception ex) {
             LogHelper.printException(() -> "Failed to confirm registration for user: " + userId
                     + "solution: " + solution, ex);
@@ -381,11 +382,11 @@ public class ReturnYouTubeDislikeApi {
 
             final int responseCode = connection.getResponseCode();
             if (checkIfRateLimitWasHit(responseCode)) {
-                connection.disconnect();
+                connection.disconnect(); // disconnect, as no more connections will be made for a little while
                 return false;
             }
             if (responseCode == SUCCESS_HTTP_STATUS_CODE) {
-                JSONObject json = Requester.getJSONObject(connection);  // also disconnects
+                JSONObject json = Requester.getJSONObject(connection, false);
                 String challenge = json.getString("challenge");
                 int difficulty = json.getInt("difficulty");
 
@@ -394,7 +395,7 @@ public class ReturnYouTubeDislikeApi {
             }
             LogHelper.printDebug(() -> "Failed to send vote for video: " + videoId
                     + " userId: " + userId + " vote: " + vote + " response code was: " + responseCode);
-            connection.disconnect();
+            connection.disconnect(); // something went wrong, might as well disconnect
         } catch (Exception ex) {
             LogHelper.printException(() -> "Failed to send vote for video: " + videoId
                     + " user: " + userId + " vote: " + vote, ex);
@@ -425,12 +426,12 @@ public class ReturnYouTubeDislikeApi {
             }
             final int responseCode = connection.getResponseCode();
             if (checkIfRateLimitWasHit(responseCode)) {
-                connection.disconnect();
+                connection.disconnect(); // disconnect, as no more connections will be made for a little while
                 return false;
             }
 
             if (responseCode == SUCCESS_HTTP_STATUS_CODE) {
-                String result = Requester.parseJson(connection); // also disconnects
+                String result = Requester.parseJson(connection, false);
                 if (result.equalsIgnoreCase("true")) {
                     LogHelper.printDebug(() -> "Vote confirm successful for video: " + videoId);
                     return true;
@@ -440,8 +441,8 @@ public class ReturnYouTubeDislikeApi {
             } else {
                 LogHelper.printDebug(() -> "Failed to confirm vote for video: " + videoId
                         + " user: " + userId + " solution: " + solution + " response code was: " + responseCode);
-                connection.disconnect();
             }
+            connection.disconnect(); // something went wrong, might as well disconnect
         } catch (Exception ex) {
             LogHelper.printException(() -> "Failed to confirm vote for video: " + videoId
                     + " user: " + userId + " solution: " + solution, ex);

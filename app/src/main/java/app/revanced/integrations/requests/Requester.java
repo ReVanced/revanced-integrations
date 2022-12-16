@@ -26,22 +26,22 @@ public class Requester {
     }
 
     /**
-     * Parse, and then disconnect the {@link HttpURLConnection}
+     * Parse the {@link HttpURLConnection} and optionally disconnect.
      *
-     * TODO: rename this to #parseJsonAndDisconnect
+     * @param disconnect should be true, <b>only if other requests to the server are unlikely in the near future</b>
      */
-    public static String parseJson(HttpURLConnection connection) throws IOException {
-        String result = parseJson(connection.getInputStream(), false);
-        connection.disconnect();
+    public static String parseJson(HttpURLConnection connection, boolean disconnect) throws IOException {
+        String result = parseInputStreamAndClose(connection.getInputStream(), false);
+        if (disconnect) {
+            connection.disconnect();
+        }
         return result;
     }
 
     /**
      * Parse, and then close the {@link InputStream}
-     *
-     * TODO: rename this to #parseJsonAndCloseStream
      */
-    public static String parseJson(InputStream inputStream, boolean isError) throws IOException {
+    public static String parseInputStreamAndClose(InputStream inputStream, boolean isError) throws IOException {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
             StringBuilder jsonBuilder = new StringBuilder();
             String line;
@@ -55,35 +55,34 @@ public class Requester {
     }
 
     /**
-     * Parse, and then do NOT disconnect the {@link HttpURLConnection}
+     * Parse the {@link HttpURLConnection} and optionally disconnect.
+     *
+     * @param disconnect should be true, <b>only if other requests to the server are unlikely in the near future</b>
      */
-    public static String parseErrorJson(HttpURLConnection connection) throws IOException {
-        String result = parseJson(connection.getErrorStream(), true);
-//        connection.disconnect(); // TODO: uncomment this line and rename method to #parseErrorJsonAndDisconnect
+    public static String parseErrorJson(HttpURLConnection connection, boolean disconnect) throws IOException {
+        String result = parseInputStreamAndClose(connection.getErrorStream(), true);
+        if (disconnect) {
+            connection.disconnect();
+        }
         return result;
     }
 
     /**
-     * Parse, and then disconnect the {@link HttpURLConnection}
+     * Parse the {@link HttpURLConnection} and optionally disconnect.
      *
-     * TODO: rename this to #getJSONObjectAndDisconnect
+     * @param disconnect should be true, <b>only if other requests to the server are unlikely in the near future</b>
      */
-    public static JSONObject getJSONObject(HttpURLConnection connection) throws JSONException, IOException {
-        return new JSONObject(parseJsonAndDisconnect(connection));
+    public static JSONObject getJSONObject(HttpURLConnection connection, boolean disconnect) throws JSONException, IOException {
+        return new JSONObject(parseJson(connection, disconnect));
     }
 
     /**
-     * Parse, and then disconnect the {@link HttpURLConnection}
+     * Parse the {@link HttpURLConnection} and optionally disconnect.
      *
-     * TODO: rename this to #getJSONArrayAndDisconnect
+     * @param disconnect should be true, <b>only if other requests to the server are unlikely in the near future</b>
      */
-    public static JSONArray getJSONArray(HttpURLConnection connection) throws JSONException, IOException  {
-        return new JSONArray(parseJsonAndDisconnect(connection));
+    public static JSONArray getJSONArray(HttpURLConnection connection, boolean disconnect) throws JSONException, IOException  {
+        return new JSONArray(parseJson(connection, disconnect));
     }
 
-    private static String parseJsonAndDisconnect(HttpURLConnection connection) throws IOException {
-        String json = parseJson(connection);
-        connection.disconnect();
-        return json;
-    }
 }
