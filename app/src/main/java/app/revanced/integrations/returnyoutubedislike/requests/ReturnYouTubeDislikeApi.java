@@ -193,16 +193,16 @@ public class ReturnYouTubeDislikeApi {
         return false;
     }
 
-    private static void updateStatistics(long timeNetworkCallStarted, boolean timedOut, boolean rateLimitHit) {
-        if (timedOut && rateLimitHit) {
-            throw new IllegalArgumentException("both timeout and rate limit parameter were true");
+    private static void updateStatistics(long timeNetworkCallStarted, boolean connectionError, boolean rateLimitHit) {
+        if (connectionError && rateLimitHit) {
+            throw new IllegalArgumentException("both connection error and rate limit parameter were true");
         }
         final long responseTimeOfFetchCall = System.currentTimeMillis() - timeNetworkCallStarted;
         fetchCallResponseTimeTotal += responseTimeOfFetchCall;
         fetchCallResponseTimeMin = (fetchCallResponseTimeMin == 0) ? responseTimeOfFetchCall : Math.min(responseTimeOfFetchCall, fetchCallResponseTimeMin);
         fetchCallResponseTimeMax = Math.max(responseTimeOfFetchCall, fetchCallResponseTimeMax);
         fetchCallCount++;
-        if (timedOut) {
+        if (connectionError) {
             fetchCallResponseTimeLast = FETCH_CALL_RESPONSE_TIME_VALUE_TIMEOUT;
             fetchCallNumberOfFailures++;
             showToast("revanced_ryd_failure_connection_timeout");
@@ -259,7 +259,7 @@ public class ReturnYouTubeDislikeApi {
                     return votingData;
                 } catch (JSONException ex) {
                     LogHelper.printException(() -> "Failed to parse video: " + videoId + " json: " + json, ex);
-                    // should never be reached, but fall thru to show a toast in code below
+                    // fall thru to update statistics
                 }
             } else {
                 LogHelper.printDebug(() -> "Failed to fetch dislikes for video: " + videoId
