@@ -149,20 +149,28 @@ public class ReturnYouTubeDislikeSettingsFragment extends PreferenceFragment {
             preferenceScreen.addPreference(statisticPreference);
 
             statisticPreference = new Preference(context);
-            statisticPreference.setTitle(str("revanced_ryd_connection_statistics_getFetchCallNumberOfFailedCalls_title"));
-            final int fetchCallNumberOfFailedCalls = ReturnYouTubeDislikeApi.getFetchCallNumberOfFailedCalls();
-            String fetchFailedSummary = fetchCallNumberOfFailedCalls == 0
-                    ? str("revanced_ryd_connection_statistics_fetchCallNumberOfFailedCalls_zero_summary")
-                    : String.valueOf(fetchCallNumberOfFailedCalls);
+            statisticPreference.setTitle(str("revanced_ryd_connection_statistics_getFetchCallNumberOfFailures_title"));
+            final int fetchCallNumberOfFailures = ReturnYouTubeDislikeApi.getFetchCallNumberOfFailures();
+            String fetchFailedSummary;
+            if (fetchCallNumberOfFailures == 0) {
+                fetchFailedSummary = str("revanced_ryd_connection_statistics_getFetchCallNumberOfFailures_zero_summary");
+            } else {
+                String formatString = str("revanced_ryd_connection_statistics_getFetchCallNumberOfFailures_non_zero_summary");
+                fetchFailedSummary = String.format(formatString, fetchCallNumberOfFailures);
+            }
             statisticPreference.setSummary(fetchFailedSummary);
             preferenceScreen.addPreference(statisticPreference);
 
             statisticPreference = new Preference(context);
             statisticPreference.setTitle(str("revanced_ryd_connection_statistics_getNumberOfRateLimitRequestsEncountered_title"));
             final int numberOfRateLimitRequestsEncountered = ReturnYouTubeDislikeApi.getNumberOfRateLimitRequestsEncountered();
-            String rateLimitSummary = numberOfRateLimitRequestsEncountered == 0
-                    ? str("revanced_ryd_connection_statistics_getNumberOfRateLimitRequestsEncountered_zero_summary")
-                    : String.valueOf(numberOfRateLimitRequestsEncountered);
+            String rateLimitSummary;
+            if (numberOfRateLimitRequestsEncountered == 0) {
+                rateLimitSummary = str("revanced_ryd_connection_statistics_getNumberOfRateLimitRequestsEncountered_zero_summary");
+            } else {
+                String formatString = str("revanced_ryd_connection_statistics_getNumberOfRateLimitRequestsEncountered_non_zero_summary");
+                rateLimitSummary = String.format(formatString, numberOfRateLimitRequestsEncountered);
+            }
             statisticPreference.setSummary(rateLimitSummary);
             preferenceScreen.addPreference(statisticPreference);
         }
