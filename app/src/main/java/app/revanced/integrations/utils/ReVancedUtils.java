@@ -125,8 +125,18 @@ public class ReVancedUtils {
         return context.getResources().getConfiguration().smallestScreenWidthDp >= 600;
     }
 
+    /**
+     * Automatically logs any exceptions the runnable throws
+     */
     public static void runOnMainThread(Runnable runnable) {
-        new Handler(Looper.getMainLooper()).post(runnable);
+        Runnable exceptLoggingRunnable = () -> {
+            try {
+                runnable.run();
+            } catch (Exception ex) {
+                LogHelper.printException(() -> "Exception on main thread from runnable: " + runnable.toString(), ex);
+            }
+        };
+        new Handler(Looper.getMainLooper()).post(exceptLoggingRunnable);
     }
 
     /**
