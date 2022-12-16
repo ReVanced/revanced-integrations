@@ -223,7 +223,12 @@ public class ReturnYouTubeDislikeApi {
         ReVancedUtils.verifyOffMainThread();
         Objects.requireNonNull(videoId);
 
+        if (checkIfRateLimitInEffect("fetchDislikes")) {
+            return null;
+        }
+        LogHelper.printDebug(() -> "Fetching dislikes for: " + videoId);
         final long timeNetworkCallStarted = System.currentTimeMillis();
+
         try {
             if (checkIfRateLimitInEffect("fetchDislikes")) {
                 return null;
