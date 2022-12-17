@@ -31,7 +31,7 @@ public class Requester {
      * @param disconnect should be true, <b>only if other requests to the server are unlikely in the near future</b>
      */
     public static String parseJson(HttpURLConnection connection, boolean disconnect) throws IOException {
-        String result = parseInputStreamAndClose(connection.getInputStream(), false);
+        String result = parseInputStreamAndClose(connection.getInputStream(), true);
         if (disconnect) {
             connection.disconnect();
         }
@@ -41,16 +41,15 @@ public class Requester {
     /**
      * Parse, and then close the {@link InputStream}
      *
-     * @param retainNewLineCharacters if newline (\n) characters should be retained in the parsed string.
-     *                                If false, then newlines are stripped from the InputStream
+     * @param stripNewLineCharacters if newline (\n) characters should be stripped from the InputStream
      */
-    public static String parseInputStreamAndClose(InputStream inputStream, boolean retainNewLineCharacters) throws IOException {
+    public static String parseInputStreamAndClose(InputStream inputStream, boolean stripNewLineCharacters) throws IOException {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
             StringBuilder jsonBuilder = new StringBuilder();
             String line;
             while ((line = reader.readLine()) != null) {
                 jsonBuilder.append(line);
-                if (retainNewLineCharacters)
+                if (!stripNewLineCharacters)
                     jsonBuilder.append("\n");
             }
             return jsonBuilder.toString();
@@ -63,7 +62,7 @@ public class Requester {
      * @param disconnect should be true, <b>only if other requests to the server are unlikely in the near future</b>
      */
     public static String parseErrorJson(HttpURLConnection connection, boolean disconnect) throws IOException {
-        String result = parseInputStreamAndClose(connection.getErrorStream(), true);
+        String result = parseInputStreamAndClose(connection.getErrorStream(), false);
         if (disconnect) {
             connection.disconnect();
         }
