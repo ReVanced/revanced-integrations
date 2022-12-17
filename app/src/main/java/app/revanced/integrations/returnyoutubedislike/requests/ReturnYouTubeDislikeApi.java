@@ -220,10 +220,10 @@ public class ReturnYouTubeDislikeApi {
         ReVancedUtils.verifyOffMainThread();
         Objects.requireNonNull(videoId);
 
-        if (checkIfRateLimitInEffect("fetchDislikes")) {
+        if (checkIfRateLimitInEffect("fetchVotes")) {
             return null;
         }
-        LogHelper.printDebug(() -> "Fetching dislikes for: " + videoId);
+        LogHelper.printDebug(() -> "Fetching votes for: " + videoId);
         final long timeNetworkCallStarted = System.currentTimeMillis();
 
         try {
@@ -261,12 +261,12 @@ public class ReturnYouTubeDislikeApi {
                     // fall thru to update statistics
                 }
             } else {
-                LogHelper.printDebug(() -> "Failed to fetch dislikes for video: " + videoId
+                LogHelper.printDebug(() -> "Failed to fetch votes for video: " + videoId
                         + " response code was: " + responseCode);
                 connection.disconnect(); // something went wrong, might as well disconnect
             }
         } catch (Exception ex) { // connection timed out, response timeout, or some other network error
-            LogHelper.printException(() -> "Failed to fetch dislikes", ex);
+            LogHelper.printException(() -> "Failed to fetch votes", ex);
         }
 
         updateStatistics(timeNetworkCallStarted, System.currentTimeMillis(), true, false);
