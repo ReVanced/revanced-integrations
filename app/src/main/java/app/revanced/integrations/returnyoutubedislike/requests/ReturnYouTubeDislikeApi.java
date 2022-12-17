@@ -97,12 +97,9 @@ public class ReturnYouTubeDislikeApi {
     private static volatile long fetchCallResponseTimeMin;
     private static volatile long fetchCallResponseTimeMax;
 
-    public static final int FETCH_CALL_RESPONSE_TIME_VALUE_TIMEOUT = -1;
     public static final int FETCH_CALL_RESPONSE_TIME_VALUE_RATE_LIMIT = -2;
 
     /**
-     * If the most recent call failed, this returns {@link #FETCH_CALL_RESPONSE_TIME_VALUE_TIMEOUT}
-     *
      * If rate limit was hit, this returns {@link #FETCH_CALL_RESPONSE_TIME_VALUE_RATE_LIMIT}
      */
     public static long getFetchCallResponseTimeLast() {
@@ -193,17 +190,17 @@ public class ReturnYouTubeDislikeApi {
         return false;
     }
 
-    private static void updateStatistics(long timeNetworkCallStarted, boolean connectionError, boolean rateLimitHit) {
+    private static void updateStatistics(long timeNetworkCallStarted, long timeNetworkCallEnded, boolean connectionError, boolean rateLimitHit) {
         if (connectionError && rateLimitHit) {
             throw new IllegalArgumentException("both connection error and rate limit parameter were true");
         }
-        final long responseTimeOfFetchCall = System.currentTimeMillis() - timeNetworkCallStarted;
+        final long responseTimeOfFetchCall = timeNetworkCallEnded - timeNetworkCallStarted;
         fetchCallResponseTimeTotal += responseTimeOfFetchCall;
         fetchCallResponseTimeMin = (fetchCallResponseTimeMin == 0) ? responseTimeOfFetchCall : Math.min(responseTimeOfFetchCall, fetchCallResponseTimeMin);
         fetchCallResponseTimeMax = Math.max(responseTimeOfFetchCall, fetchCallResponseTimeMax);
         fetchCallCount++;
         if (connectionError) {
-            fetchCallResponseTimeLast = FETCH_CALL_RESPONSE_TIME_VALUE_TIMEOUT;
+            fetchCallResponseTimeLast = responseTimeOfFetchCall;
             fetchCallNumberOfFailures++;
             showToast("revanced_ryd_failure_connection_timeout");
         } else if (rateLimitHit) {
@@ -246,16 +243,17 @@ public class ReturnYouTubeDislikeApi {
             final int responseCode = connection.getResponseCode();
             if (checkIfRateLimitWasHit(responseCode)) {
                 connection.disconnect(); // rate limit hit, should disconnect
-                updateStatistics(timeNetworkCallStarted, false, true);
+                updateStatistics(timeNetworkCallStarted, System.currentTimeMillis(),false, true);
                 return null;
             }
 
             if (responseCode == SUCCESS_HTTP_STATUS_CODE) {
+                final long timeNetworkCallEnded = System.currentTimeMillis(); // record end time before parsing
                 // do not disconnect, the same server connection will likely be used again soon
                 JSONObject json = Requester.parseJSONObject(connection);
                 try {
                     RYDVoteData votingData = new RYDVoteData(json);
-                    updateStatistics(timeNetworkCallStarted, false, false);
+                    updateStatistics(timeNetworkCallStarted, timeNetworkCallEnded, false, false);
                     LogHelper.printDebug(() -> "Voting data fetched: " + votingData);
                     return votingData;
                 } catch (JSONException ex) {
@@ -271,7 +269,7 @@ public class ReturnYouTubeDislikeApi {
             LogHelper.printException(() -> "Failed to fetch dislikes", ex);
         }
 
-        updateStatistics(timeNetworkCallStarted, true, false);
+        updateStatistics(timeNetworkCallStarted, System.currentTimeMillis(), true, false);
         return null;
     }
 
