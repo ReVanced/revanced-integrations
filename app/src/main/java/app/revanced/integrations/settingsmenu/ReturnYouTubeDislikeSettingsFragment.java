@@ -181,7 +181,7 @@ public class ReturnYouTubeDislikeSettingsFragment extends PreferenceFragment {
     }
 
     private static String createMillisecondStringFromNumber(long number) {
-        return number + " " + str("revanced_ryd_statistics_millisecond_text");
+        return String.format(str("revanced_ryd_statistics_millisecond_text"), number);
     }
 
 }
