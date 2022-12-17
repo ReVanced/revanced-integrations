@@ -40,14 +40,17 @@ public class Requester {
 
     /**
      * Parse, and then close the {@link InputStream}
+     *
+     * @param retainNewLineCharacters if newline (\n) characters should be retained in the parsed string.
+     *                                If false, then newlines are stripped from the InputStream
      */
-    public static String parseInputStreamAndClose(InputStream inputStream, boolean isError) throws IOException {
+    public static String parseInputStreamAndClose(InputStream inputStream, boolean retainNewLineCharacters) throws IOException {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
             StringBuilder jsonBuilder = new StringBuilder();
             String line;
             while ((line = reader.readLine()) != null) {
                 jsonBuilder.append(line);
-                if (isError)
+                if (retainNewLineCharacters)
                     jsonBuilder.append("\n");
             }
             return jsonBuilder.toString();
