@@ -46,11 +46,11 @@ public class SBRequester {
             runVipCheck();
 
             if (responseCode == 200) {
-                // FIXME? should this not disconnect?
+                // FIXME? should this use Requester#getJSONArray and not disconnect?
                 // HTTPURLConnection#disconnect says:
                 // disconnect if other requests to the server
                 // are unlikely in the near future.
-                JSONArray responseArray = Requester.getJSONArray(connection, true);
+                JSONArray responseArray = Requester.parseJSONArrayAndDisconnect(connection);
                 int length = responseArray.length();
                 for (int i = 0; i < length; i++) {
                     JSONObject obj = (JSONObject) responseArray.get(i);
@@ -100,13 +100,13 @@ public class SBRequester {
                     SponsorBlockUtils.messageToToast = str("submit_failed_duplicate");
                     break;
                 case 403:
-                    SponsorBlockUtils.messageToToast = str("submit_failed_forbidden", Requester.parseErrorJson(connection, true));
+                    SponsorBlockUtils.messageToToast = str("submit_failed_forbidden", Requester.parseErrorJsonAndDisconnect(connection));
                     break;
                 case 429:
                     SponsorBlockUtils.messageToToast = str("submit_failed_rate_limit");
                     break;
                 case 400:
-                    SponsorBlockUtils.messageToToast = str("submit_failed_invalid", Requester.parseErrorJson(connection, true));
+                    SponsorBlockUtils.messageToToast = str("submit_failed_invalid", Requester.parseErrorJsonAndDisconnect(connection));
                     break;
                 default:
                     SponsorBlockUtils.messageToToast = str("submit_failed_unknown_error", responseCode, connection.getResponseMessage());
@@ -147,7 +147,7 @@ public class SBRequester {
                         SponsorBlockUtils.messageToToast = str("vote_succeeded");
                         break;
                     case 403:
-                        SponsorBlockUtils.messageToToast = str("vote_failed_forbidden", Requester.parseErrorJson(connection, true));
+                        SponsorBlockUtils.messageToToast = str("vote_failed_forbidden", Requester.parseErrorJsonAndDisconnect(connection));
                         break;
                     default:
                         SponsorBlockUtils.messageToToast = str("vote_failed_unknown_error", responseCode, connection.getResponseMessage());
@@ -224,6 +224,6 @@ public class SBRequester {
     }
 
     private static JSONObject getJSONObject(Route route, String... params) throws Exception {
-        return Requester.getJSONObject(getConnectionFromRoute(route, params), true);
+        return Requester.parseJSONObjectAndDisconnect(getConnectionFromRoute(route, params));
     }
 }

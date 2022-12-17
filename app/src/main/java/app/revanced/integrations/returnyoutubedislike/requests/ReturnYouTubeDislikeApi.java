@@ -248,7 +248,7 @@ public class ReturnYouTubeDislikeApi {
 
             if (responseCode == SUCCESS_HTTP_STATUS_CODE) {
                 // do not disconnect, the same server connection will likely be used again soon
-                JSONObject json = Requester.getJSONObject(connection, false);
+                JSONObject json = Requester.parseJSONObject(connection);
                 try {
                     RYDVoteData votingData = new RYDVoteData(json);
                     updateStatistics(timeNetworkCallStarted, false, false);
@@ -295,7 +295,7 @@ public class ReturnYouTubeDislikeApi {
                 return null;
             }
             if (responseCode == SUCCESS_HTTP_STATUS_CODE) {
-                JSONObject json = Requester.getJSONObject(connection, false);
+                JSONObject json = Requester.parseJSONObject(connection);
                 String challenge = json.getString("challenge");
                 int difficulty = json.getInt("difficulty");
 
@@ -337,7 +337,7 @@ public class ReturnYouTubeDislikeApi {
                 return null;
             }
             if (responseCode == SUCCESS_HTTP_STATUS_CODE) {
-                String result = Requester.parseJson(connection, false);
+                String result = Requester.parseJson(connection);
                 if (result.equalsIgnoreCase("true")) {
                     LogHelper.printDebug(() -> "Registration confirmation successful for user: " + userId);
                     return userId;
@@ -386,7 +386,7 @@ public class ReturnYouTubeDislikeApi {
                 return false;
             }
             if (responseCode == SUCCESS_HTTP_STATUS_CODE) {
-                JSONObject json = Requester.getJSONObject(connection, false);
+                JSONObject json = Requester.parseJSONObject(connection);
                 String challenge = json.getString("challenge");
                 int difficulty = json.getInt("difficulty");
 
@@ -431,7 +431,7 @@ public class ReturnYouTubeDislikeApi {
             }
 
             if (responseCode == SUCCESS_HTTP_STATUS_CODE) {
-                String result = Requester.parseJson(connection, false);
+                String result = Requester.parseJson(connection);
                 if (result.equalsIgnoreCase("true")) {
                     LogHelper.printDebug(() -> "Vote confirm successful for video: " + videoId);
                     return true;
