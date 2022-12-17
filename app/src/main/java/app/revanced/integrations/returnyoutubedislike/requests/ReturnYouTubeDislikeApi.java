@@ -27,11 +27,15 @@ import app.revanced.integrations.utils.ReVancedUtils;
 
 public class ReturnYouTubeDislikeApi {
     /**
-     * {@link #fetchVotes(String)} TCP connection and HTTP read timeout
-     *
-     * To locally debug and force timeouts, change this to a very small number (ie: 100)
+     * {@link #fetchVotes(String)} TCP connection timeout
      */
-    private static final int API_GET_DISLIKE_TIMEOUT_MILLISECONDS = 4000;
+    private static final int API_GET_VOTES_TCP_TIMEOUT_MILLISECONDS = 2000;
+
+    /**
+     * {@link #fetchVotes(String)} HTTP read timeout
+     *  To locally debug and force timeouts, change this to a very small number (ie: 100)
+     */
+    private static final int API_GET_VOTES_HTTP_TIMEOUT_MILLISECONDS = 4000;
 
     /**
      * Default connection and response timeout for voting and registration.
@@ -234,10 +238,10 @@ public class ReturnYouTubeDislikeApi {
             connection.setRequestProperty("Pragma", "no-cache");
             connection.setRequestProperty("Cache-Control", "no-cache");
             connection.setUseCaches(false);
-            connection.setConnectTimeout(API_GET_DISLIKE_TIMEOUT_MILLISECONDS); // timeout for TCP connection to server
-            connection.setReadTimeout(API_GET_DISLIKE_TIMEOUT_MILLISECONDS); // timeout for server response
+            connection.setConnectTimeout(API_GET_VOTES_TCP_TIMEOUT_MILLISECONDS); // timeout for TCP connection to server
+            connection.setReadTimeout(API_GET_VOTES_HTTP_TIMEOUT_MILLISECONDS); // timeout for server response
 
-            randomlyWaitIfLocallyDebugging(2 * API_GET_DISLIKE_TIMEOUT_MILLISECONDS);
+            randomlyWaitIfLocallyDebugging(2*(API_GET_VOTES_TCP_TIMEOUT_MILLISECONDS + API_GET_VOTES_HTTP_TIMEOUT_MILLISECONDS));
 
             final int responseCode = connection.getResponseCode();
             if (checkIfRateLimitWasHit(responseCode)) {
