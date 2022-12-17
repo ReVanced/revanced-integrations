@@ -33,7 +33,7 @@ public class Requester {
     }
 
     /**
-     * Parse the {@link HttpURLConnection}, close the underlying InputStream, and disconnect the connect.
+     * Parse the {@link HttpURLConnection}, close the underlying InputStream, and disconnect.
      *
      * <b>Should only be used if other requests to the server are unlikely in the near future</b>
      *
@@ -71,7 +71,7 @@ public class Requester {
     }
 
     /**
-     * Parse the {@link HttpURLConnection}, close the underlying InputStream, and disconnect the connect.
+     * Parse the {@link HttpURLConnection}, close the underlying InputStream, and disconnect.
      *
      * <b>Should only be used if other requests to the server are unlikely in the near future</b>
      *
@@ -91,7 +91,7 @@ public class Requester {
     }
 
     /**
-     * Parse the {@link HttpURLConnection}, close the underlying InputStream, and disconnect the connect.
+     * Parse the {@link HttpURLConnection}, close the underlying InputStream, and disconnect.
      *
      * <b>Should only be used if other requests to the server are unlikely in the near future</b>
      *
@@ -111,7 +111,7 @@ public class Requester {
     }
 
     /**
-     * Parse the {@link HttpURLConnection}, close the underlying InputStream, and disconnect the connect.
+     * Parse the {@link HttpURLConnection}, close the underlying InputStream, and disconnect.
      *
      * <b>Should only be used if other requests to the server are unlikely in the near future</b>
      *
