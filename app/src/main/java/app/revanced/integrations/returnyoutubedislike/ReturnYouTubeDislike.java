@@ -305,12 +305,12 @@ public class ReturnYouTubeDislike {
     /**
      * Number of times the UI was forced to wait on a network fetch to complete
      */
-    private static int numberOfTimesUIWaitedOnNetworkCalls;
+    private static volatile int numberOfTimesUIWaitedOnNetworkCalls;
 
     /**
      * Total time the UI waited, of all times it was forced to wait.
      */
-    private static long totalTimeUIWaitedOnNetworkCalls;
+    private static volatile long totalTimeUIWaitedOnNetworkCalls;
 
     private static void recordTimeUISpentWaitingForNetworkCall(long timeUIWaitStarted) {
         if (timeUIWaitStarted == 0 || !SettingsEnum.DEBUG.getBoolean()) {
