@@ -40,7 +40,7 @@ public class ReturnYouTubeDislike {
      */
     private static final ExecutorService voteSerialExecutor = Executors.newSingleThreadExecutor();
 
-    // Must be volatile, since this is read/wright from different threads
+    // Must be volatile, since this is read/write from different threads
     private static volatile boolean isEnabled = SettingsEnum.RYD_ENABLED.getBoolean();
 
     /**
