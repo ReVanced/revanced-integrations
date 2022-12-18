@@ -1,7 +1,5 @@
 package app.revanced.integrations.patches;
 
-import android.util.Log;
-
 import app.revanced.integrations.utils.ThemeHelper;
 
 public class LithoThemePatch {
@@ -20,12 +18,17 @@ public class LithoThemePatch {
         -98492127 // video chapters list background
     };
 
+    // boolean used to check if shorts comment box is currently visible
+    public static boolean shortsCommentBox = false;
+
     // Used by app.revanced.patches.youtube.layout.theme.patch.LithoThemePatch
     public static int applyLithoTheme(int originalValue) {
         var isDarkTheme = ThemeHelper.isDarkTheme();
         
-        if ((isDarkTheme && anyEquals(originalValue, DARKCONSTANTS)) || (!isDarkTheme  && anyEquals(originalValue, WHITECONSTANTS)))
-                return 0;
+        if ((isDarkTheme && anyEquals(originalValue, DARKCONSTANTS)) ||
+            (!isDarkTheme && anyEquals(originalValue, WHITECONSTANTS)))
+                return shortsCommentBox ? -16777215 : 0;
+
         return originalValue;
     }
 
