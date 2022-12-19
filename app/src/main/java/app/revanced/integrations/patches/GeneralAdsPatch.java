@@ -11,7 +11,6 @@ public final class GeneralAdsPatch extends Filter {
     private final String[] IGNORE = {
             "home_video_with_context",
             "related_video_with_context",
-            "search_video_with_context",
             "comment_thread", // skip blocking anything in the comments
             "|comment.", // skip blocking anything in the comments replies
             "download_",
