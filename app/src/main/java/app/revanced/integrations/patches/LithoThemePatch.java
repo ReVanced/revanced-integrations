@@ -17,6 +17,9 @@ public class LithoThemePatch {
         -15790321, // comments chip background (new layout)
         -98492127 // video chapters list background
     };
+    private static final int solidBlack = -16777215;
+
+    private static final int trasparent = 0;
 
     // boolean used to check if shorts comment box is currently visible
     public static boolean shortsCommentBox = false;
@@ -27,7 +30,7 @@ public class LithoThemePatch {
         
         if ((isDarkTheme && anyEquals(originalValue, DARKCONSTANTS)) ||
             (!isDarkTheme && anyEquals(originalValue, WHITECONSTANTS)))
-                return shortsCommentBox ? -16777215 : 0;
+                return shortsCommentBox ? solidBlack : trasparent;
 
         return originalValue;
     }
