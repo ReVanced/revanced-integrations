@@ -22,7 +22,7 @@ public class LithoThemePatch {
     private static final int TRANSPARENT = 0;
 
     // boolean used to check if shorts comment box is currently visible
-    public static boolean shortsCommentBox = false;
+    public static boolean isShortsCommentBox = false;
 
     // Used by app.revanced.patches.youtube.layout.theme.patch.LithoThemePatch
     public static int applyLithoTheme(int originalValue) {
@@ -30,7 +30,7 @@ public class LithoThemePatch {
         
         if (isDarkTheme) {
             if (anyEquals(originalValue, DARKCONSTANTS))
-                return shortsCommentBox ? SOLID_BLACK : TRANSPARENT;
+                return isShortsCommentBox ? SOLID_BLACK : TRANSPARENT;
         } else if (anyEquals(originalValue, WHITECONSTANTS))
             return TRANSPARENT;
 
