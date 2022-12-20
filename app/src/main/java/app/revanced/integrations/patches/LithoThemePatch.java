@@ -28,9 +28,10 @@ public class LithoThemePatch {
     public static int applyLithoTheme(int originalValue) {
         var isDarkTheme = ThemeHelper.isDarkTheme();
         
-        if ((isDarkTheme && anyEquals(originalValue, DARKCONSTANTS)) ||
-            (!isDarkTheme && anyEquals(originalValue, WHITECONSTANTS)))
-                return shortsCommentBox ? solidBlack : trasparent;
+        if ((isDarkTheme && anyEquals(originalValue, DARKCONSTANTS)))
+            return shortsCommentBox ? solidBlack : trasparent;
+        if (!isDarkTheme && anyEquals(originalValue, WHITECONSTANTS)))
+            return trasparent;
 
         return originalValue;
     }
