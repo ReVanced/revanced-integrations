@@ -46,7 +46,7 @@ public class SBRequester {
             runVipCheck();
 
             if (responseCode == 200) {
-                JSONArray responseArray = Requester.getJSONArray(connection);
+                JSONArray responseArray = Requester.getJSONArrayAndDisconnect(connection);
                 int length = responseArray.length();
                 for (int i = 0; i < length; i++) {
                     JSONObject obj = (JSONObject) responseArray.get(i);
@@ -220,6 +220,6 @@ public class SBRequester {
     }
 
     private static JSONObject getJSONObject(Route route, String... params) throws Exception {
-        return Requester.getJSONObject(getConnectionFromRoute(route, params));
+        return Requester.getJSONObjectAndDisconnect(getConnectionFromRoute(route, params));
     }
 }

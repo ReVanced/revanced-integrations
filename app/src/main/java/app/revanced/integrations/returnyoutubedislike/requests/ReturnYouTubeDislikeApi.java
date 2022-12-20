@@ -160,7 +160,7 @@ public class ReturnYouTubeDislikeApi {
                 return null;
             }
             if (responseCode == SUCCESS_HTTP_STATUS_CODE) {
-                JSONObject json = Requester.getJSONObject(connection); // also disconnects
+                JSONObject json = Requester.getJSONObjectAndDisconnect(connection); // also disconnects
                 try {
                     RYDVoteData votingData = new RYDVoteData(json);
                     LogHelper.printDebug(() -> "Voting data fetched: " + votingData);
@@ -203,7 +203,7 @@ public class ReturnYouTubeDislikeApi {
                 return null;
             }
             if (responseCode == SUCCESS_HTTP_STATUS_CODE) {
-                JSONObject json = Requester.getJSONObject(connection);  // also disconnects
+                JSONObject json = Requester.getJSONObjectAndDisconnect(connection);  // also disconnects
                 String challenge = json.getString("challenge");
                 int difficulty = json.getInt("difficulty");
 
@@ -244,7 +244,7 @@ public class ReturnYouTubeDislikeApi {
                 return null;
             }
             if (responseCode == SUCCESS_HTTP_STATUS_CODE) {
-                String result = Requester.parseJson(connection); // also disconnects
+                String result = Requester.parseJsonAndDisconnect(connection); // also disconnects
                 if (result.equalsIgnoreCase("true")) {
                     LogHelper.printDebug(() -> "Registration confirmation successful for user: " + userId);
                     return userId;
@@ -292,7 +292,7 @@ public class ReturnYouTubeDislikeApi {
                 return false;
             }
             if (responseCode == SUCCESS_HTTP_STATUS_CODE) {
-                JSONObject json = Requester.getJSONObject(connection);  // also disconnects
+                JSONObject json = Requester.getJSONObjectAndDisconnect(connection);  // also disconnects
                 String challenge = json.getString("challenge");
                 int difficulty = json.getInt("difficulty");
 
@@ -336,7 +336,7 @@ public class ReturnYouTubeDislikeApi {
             }
 
             if (responseCode == SUCCESS_HTTP_STATUS_CODE) {
-                String result = Requester.parseJson(connection); // also disconnects
+                String result = Requester.parseJsonAndDisconnect(connection); // also disconnects
                 if (result.equalsIgnoreCase("true")) {
                     LogHelper.printDebug(() -> "Vote confirm successful for video: " + videoId);
                     return true;

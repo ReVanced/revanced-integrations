@@ -28,9 +28,8 @@ public class Requester {
     /**
      * Parse, and then disconnect the {@link HttpURLConnection}
      *
-     * TODO: rename this to #parseJsonAndDisconnect
      */
-    public static String parseJson(HttpURLConnection connection) throws IOException {
+    public static String parseJsonAndDisconnect(HttpURLConnection connection) throws IOException {
         String result = parseJson(connection.getInputStream(), false);
         connection.disconnect();
         return result;
@@ -65,24 +64,16 @@ public class Requester {
     /**
      * Parse, and then disconnect the {@link HttpURLConnection}
      *
-     * TODO: rename this to #getJSONObjectAndDisconnect
      */
-    public static JSONObject getJSONObject(HttpURLConnection connection) throws JSONException, IOException {
+    public static JSONObject getJSONObjectAndDisconnect(HttpURLConnection connection) throws JSONException, IOException {
         return new JSONObject(parseJsonAndDisconnect(connection));
     }
 
     /**
      * Parse, and then disconnect the {@link HttpURLConnection}
      *
-     * TODO: rename this to #getJSONArrayAndDisconnect
      */
-    public static JSONArray getJSONArray(HttpURLConnection connection) throws JSONException, IOException  {
+    public static JSONArray getJSONArrayAndDisconnect(HttpURLConnection connection) throws JSONException, IOException  {
         return new JSONArray(parseJsonAndDisconnect(connection));
-    }
-
-    private static String parseJsonAndDisconnect(HttpURLConnection connection) throws IOException {
-        String json = parseJson(connection);
-        connection.disconnect();
-        return json;
     }
 }
