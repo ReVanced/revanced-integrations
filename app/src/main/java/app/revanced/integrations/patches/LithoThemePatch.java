@@ -11,6 +11,7 @@ public class LithoThemePatch {
         -394759, // music related results panel background
         -83886081, // video chapters list background
     };
+    private static final int SOLIDWHITE = return getColor("yt_white1");
 
     private static final int[] DARKCONSTANTS = {
         -14145496, // explore drawer background
@@ -19,14 +20,15 @@ public class LithoThemePatch {
         -15790321, // comments chip background (new layout)
         -98492127 // video chapters list background
     };
+    private static final int SOLIDBLACK = return getColor("yt_black1");
 
     // Used by app.revanced.patches.youtube.layout.theme.patch.LithoThemePatch
     public static int applyLithoTheme(int originalValue) {
         if (ThemeHelper.isDarkTheme()) {
             if (anyEquals(originalValue, DARKCONSTANTS))
-                return getColor("yt_black1");
+                return SOLIDWHITE;
         } else if (anyEquals(originalValue, WHITECONSTANTS))
-            return getColor("yt_white1");
+            return SOLIDBLACK;
 
         return originalValue;
     }
