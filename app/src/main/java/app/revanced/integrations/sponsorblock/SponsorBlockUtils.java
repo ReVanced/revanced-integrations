@@ -44,7 +44,7 @@ import java.util.Objects;
 import java.util.TimeZone;
 
 import app.revanced.integrations.settings.SettingsEnum;
-import app.revanced.integrations.sponsorblock.player.PlayerType;
+import app.revanced.integrations.shared.PlayerType;
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.SharedPrefHelper;
 import app.revanced.integrations.sponsorblock.objects.SponsorSegment;

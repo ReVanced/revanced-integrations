@@ -4,6 +4,8 @@ import androidx.annotation.Nullable;
 
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.shared.PlayerType;
+import app.revanced.integrations.sponsorblock.player.ui.SponsorBlockView;
+import app.revanced.integrations.sponsorblock.SponsorBlockUtils;
 
 /**
  * Hook receiver class for 'player-type-hook' patch
@@ -26,6 +28,8 @@ public class PlayerTypeHookPatch {
         final PlayerType newType = PlayerType.safeParseFromString(type.toString());
         if (newType != null) {
             PlayerType.setCurrent(newType);
+            SponsorBlockView.playerTypeChanged(newType);
+            SponsorBlockUtils.playerTypeChanged(newType);
             LogHelper.printDebug(() -> "YouTubePlayerOverlaysLayout player type was updated to " + newType);
         }
     }
