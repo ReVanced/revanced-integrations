@@ -12,11 +12,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import app.revanced.integrations.sponsorblock.player.PlayerType;
-
 public class ReVancedUtils {
 
-    private static PlayerType env;
     private static boolean newVideo = false;
 
     @SuppressLint("StaticFieldLeak")
@@ -86,14 +83,6 @@ public class ReVancedUtils {
             LogHelper.printException(() -> ("Resource not found."), exception);
             return null;
         }
-    }
-
-    public static void setPlayerType(PlayerType type) {
-        env = type;
-    }
-
-    public static PlayerType getPlayerType() {
-        return env;
     }
 
     public static int getIdentifier(String name, String defType) {

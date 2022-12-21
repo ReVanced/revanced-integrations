@@ -11,7 +11,6 @@ import java.lang.ref.WeakReference;
 import app.revanced.integrations.shared.PlayerType;
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedUtils;
-import app.revanced.integrations.sponsorblock.SwipeHelper;
 
 public class SponsorBlockView {
 
@@ -151,19 +150,14 @@ public class SponsorBlockView {
 
     private static void checkLayout() {
         if (inlineSponsorOverlay.getHeight() == 0) {
-            ViewGroup watchLayout = SwipeHelper.nextGenWatchLayout;
-            if (watchLayout == null) {
-                LogHelper.printDebug(() -> "nextGenWatchLayout is null!");
-                return;
-            }
-            View layout = watchLayout.findViewById(getIdentifier("player_overlays", "id"));
+            // FIXME: nextGenWatchLayout is never being set by the patches.
+            // Decompile YT Vanced and modify the swipe-controls patch to set nextGenWatchLayout.
+            // ViewGroup watchLayout = SwipeHelper.nextGenWatchLayout;
+            ViewGroup watchLayout = null;
+            //noinspection ConstantConditions
+            if (watchLayout == null) return;
 
-            if (layout == null) {
-                LogHelper.printDebug(() -> "player_overlays was not found for SB");
-                return;
-            }
-
-            initialize(layout);
+            initialize(watchLayout.findViewById(getIdentifier("player_overlays", "id")));
             LogHelper.printDebug(() -> "player_overlays refreshed for SB");
         }
     }
