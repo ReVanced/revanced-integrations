@@ -1,5 +1,7 @@
 package app.revanced.integrations.patches;
 
+import static app.revanced.integrations.utils.ReVancedUtils.context;
+
 import app.revanced.integrations.utils.ThemeHelper;
 
 public class LithoThemePatch {
@@ -17,24 +19,26 @@ public class LithoThemePatch {
         -15790321, // comments chip background (new layout)
         -98492127 // video chapters list background
     };
-    private static final int SOLID_BLACK = -16777215;
-
-    private static final int TRANSPARENT = 0;
-
-    // boolean used to check if shorts comment box is currently visible
-    public static boolean isShortsCommentBox = false;
 
     // Used by app.revanced.patches.youtube.layout.theme.patch.LithoThemePatch
     public static int applyLithoTheme(int originalValue) {
-        var isDarkTheme = ThemeHelper.isDarkTheme();
-        
-        if (isDarkTheme) {
+        if (ThemeHelper.isDarkTheme()) {
             if (anyEquals(originalValue, DARKCONSTANTS))
-                return isShortsCommentBox ? SOLID_BLACK : TRANSPARENT;
+                return getColor("yt_black1");
         } else if (anyEquals(originalValue, WHITECONSTANTS))
-            return TRANSPARENT;
+            return getColor("yt_white1");
 
         return originalValue;
+    }
+
+    private static int getColor(String colorName) {
+        return context.getColor(
+            context.getResources().getIdentifier(
+                colorName,
+                "color",
+                context.getPackageName()
+            )
+        );
     }
 
     private static boolean anyEquals(int value, int... of) {
