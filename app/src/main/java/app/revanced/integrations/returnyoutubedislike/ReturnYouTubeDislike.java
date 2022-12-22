@@ -35,6 +35,7 @@ import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedUtils;
 import app.revanced.integrations.utils.SharedPrefHelper;
+import app.revanced.integrations.utils.ThemeHelper;
 
 public class ReturnYouTubeDislike {
     /**
@@ -285,8 +286,7 @@ public class ReturnYouTubeDislike {
                 Spannable likesSpan = newSpanUsingFormattingOfAnotherSpan(oldSpannable, oldLikesString);
 
                 Spannable separatorSpan = newSpanUsingFormattingOfAnotherSpan(oldSpannable, segmentedSeparatorString);
-                final int uiMode = ReVancedUtils.getContext().getResources().getConfiguration().uiMode;
-                final int separatorColor = (uiMode & Configuration.UI_MODE_NIGHT_YES) == Configuration.UI_MODE_NIGHT_YES
+                final int separatorColor = ThemeHelper.isDarkTheme()
                         ? 0xFF313131  // dark gray
                         : 0xFFD9D9D9; // light gray
                 separatorSpan.setSpan(new ForegroundColorSpan(separatorColor), 0, separatorSpan.length(), 0);
