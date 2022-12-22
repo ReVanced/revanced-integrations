@@ -1,3 +1,17 @@
+## [0.84.2](https://github.com/revanced/revanced-integrations/compare/v0.84.1...v0.84.2) (2022-12-20)
+
+
+### Bug Fixes
+
+* migrate old to new settings correctly ([#241](https://github.com/revanced/revanced-integrations/issues/241)) ([98ce2df](https://github.com/revanced/revanced-integrations/commit/98ce2df47dded785986dee3c64becf96956f5eb6))
+
+## [0.84.1](https://github.com/revanced/revanced-integrations/compare/v0.84.0...v0.84.1) (2022-12-18)
+
+
+### Performance Improvements
+
+* **youtube/general-ads-patch:** reduce amount of ignored components ([#237](https://github.com/revanced/revanced-integrations/issues/237)) ([bf368e8](https://github.com/revanced/revanced-integrations/commit/bf368e8dd49a91ba1d7a1df66344f77d8b788072))
+
 # [0.84.0](https://github.com/revanced/revanced-integrations/compare/v0.83.1...v0.84.0) (2022-12-08)
 
 
