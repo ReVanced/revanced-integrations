@@ -332,11 +332,11 @@ public class ReturnYouTubeDislike {
                         relativeVerticalShiftRatio = -0.16f;
                         break;
                 }
-                likesSpan.setSpan(new RelativeVerticalOffsetSpan(relativeVerticalShiftRatio), 0, likesSpan.length(), 0);
-                separatorSpan.setSpan(new RelativeVerticalOffsetSpan(relativeVerticalShiftRatio), 0, separatorSpan.length(), 0);
-                dislikeSpan.setSpan(new RelativeVerticalOffsetSpan(relativeVerticalShiftRatio), 0, dislikeSpan.length(), 0);
+                addSpan(likesSpan, new RelativeVerticalOffsetSpan(relativeVerticalShiftRatio));
+                addSpan(separatorSpan, new RelativeVerticalOffsetSpan(relativeVerticalShiftRatio));
+                addSpan(dislikeSpan, new RelativeVerticalOffsetSpan(relativeVerticalShiftRatio));
                 // must set font size after vertical offset (otherwise vertical alignment is not right)
-                separatorSpan.setSpan(new RelativeSizeSpan(separatorRelativeFontRatio), 0, separatorSpan.length(), 0);
+                addSpan(separatorSpan, new RelativeSizeSpan(separatorRelativeFontRatio));
 
                 // put everything together
                 SpannableStringBuilder builder = new SpannableStringBuilder(likesSpan);
@@ -348,6 +348,10 @@ public class ReturnYouTubeDislike {
 
         textRef.set(replacementSpannable);
         return true;
+    }
+
+    private static void addSpan(Spannable destination, Object styling) {
+        destination.setSpan(styling, 0, destination.length(), 0);
     }
 
     private static Spannable newSpannableWithDislikes(Spannable sourceFormatting, RYDVoteData voteData) {
