@@ -3,7 +3,6 @@ package app.revanced.integrations.returnyoutubedislike;
 import static app.revanced.integrations.sponsorblock.StringRef.str;
 
 import android.content.Context;
-import android.content.res.Configuration;
 import android.icu.text.CompactDecimalFormat;
 import android.icu.text.DecimalFormat;
 import android.icu.text.DecimalFormatSymbols;
@@ -14,6 +13,7 @@ import android.text.SpannableStringBuilder;
 import android.text.TextPaint;
 import android.text.style.CharacterStyle;
 import android.text.style.ForegroundColorSpan;
+import android.text.style.MetricAffectingSpan;
 import android.text.style.RelativeSizeSpan;
 import android.util.DisplayMetrics;
 
@@ -286,17 +286,23 @@ public class ReturnYouTubeDislike {
                 Spannable likesSpan = newSpanUsingFormattingOfAnotherSpan(oldSpannable, oldLikesString);
 
                 Spannable separatorSpan = newSpanUsingFormattingOfAnotherSpan(oldSpannable, segmentedSeparatorString);
+                // adjust the separator appearance to better mimic the existing layout
                 final int separatorColor = ThemeHelper.isDarkTheme()
                         ? 0xFF313131  // dark gray
                         : 0xFFD9D9D9; // light gray
-                separatorSpan.setSpan(new ForegroundColorSpan(separatorColor), 0, separatorSpan.length(), 0);
-                // remove antialiasing to better mimic the existing button separator
-                separatorSpan.setSpan(new CharacterStyle() {
-                        @Override
-                        public void updateDrawState(TextPaint tp) {
-                            tp.setAntiAlias(false);
-                        }
-                }, 0, separatorSpan.length(), 0);
+                addSpan(separatorSpan, new ForegroundColorSpan(separatorColor));
+                final float separatorHorizontalCompression = 0.8f; // horizontally compress the separator and its spacing
+                addSpan(separatorSpan, new MetricAffectingSpan() {
+                    @Override
+                    public void updateMeasureState(TextPaint tp) {
+                        tp.setTextScaleX(separatorHorizontalCompression);
+                    }
+                    @Override
+                    public void updateDrawState(TextPaint tp) {
+                        tp.setTextScaleX(separatorHorizontalCompression);
+                        tp.setAntiAlias(false);
+                    }
+                });
 
                 Spannable dislikeSpan = newSpannableWithDislikes(oldSpannable, voteData);
 
