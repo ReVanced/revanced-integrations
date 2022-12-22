@@ -111,7 +111,8 @@ public class DownloadButton {
         ImageView imageView = _button.get();
         
         if (_constraintLayout == null || imageView == null)
-            return ;
+            return;
+
         if (z && isDownloadButtonEnabled) {
             LogHelper.printDebug(() -> "Fading in");
             imageView.setVisibility(View.VISIBLE);
