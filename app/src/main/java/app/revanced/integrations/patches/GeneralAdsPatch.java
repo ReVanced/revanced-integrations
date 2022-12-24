@@ -79,7 +79,6 @@ public final class GeneralAdsPatch extends Filter {
                 movieAds,
                 chapterTeaser,
                 communityGuidelines,
-                subscribersCommunityGuidelines,
                 compactBanner,
                 inFeedSurvey,
                 medicalPanel,
@@ -87,7 +86,8 @@ public final class GeneralAdsPatch extends Filter {
                 infoPanel,
                 channelGuidelines,
                 artistCard,
-                selfSponsor
+                selfSponsor,
+                subscribersCommunityGuidelines
         );
 
         var carouselAd = new BlockRule(SettingsEnum.ADREMOVER_GENERAL_ADS_REMOVAL,
