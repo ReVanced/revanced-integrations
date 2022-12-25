@@ -395,27 +395,22 @@ public class ReturnYouTubeDislike {
     }
 
     private static String formatDislikePercentage(float dislikePercentage) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            String formatted;
-            synchronized (ReturnYouTubeDislike.class) { // number formatter is not thread safe, must synchronize
-                if (dislikePercentageFormatter == null) {
-                    Locale locale = ReVancedUtils.getContext().getResources().getConfiguration().locale;
-                    LogHelper.printDebug(() -> "Locale: " + locale);
-                    dislikePercentageFormatter = NumberFormat.getPercentInstance(locale);
-                }
-                if (dislikePercentage >= 0.01) { // at least 1%
-                    dislikePercentageFormatter.setMaximumFractionDigits(0); // show only whole percentage points
-                } else {
-                    dislikePercentageFormatter.setMaximumFractionDigits(1); // show up to 1 digit precision
-                }
-                formatted = dislikePercentageFormatter.format(dislikePercentage);
+        String formatted;
+        synchronized (ReturnYouTubeDislike.class) { // number formatter is not thread safe, must synchronize
+            if (dislikePercentageFormatter == null) {
+                Locale locale = ReVancedUtils.getContext().getResources().getConfiguration().locale;
+                LogHelper.printDebug(() -> "Locale: " + locale);
+                dislikePercentageFormatter = NumberFormat.getPercentInstance(locale);
             }
-            LogHelper.printDebug(() -> "Dislike percentage: " + dislikePercentage + " formatted as: " + formatted);
-            return formatted;
+            if (dislikePercentage >= 0.01) { // at least 1%
+                dislikePercentageFormatter.setMaximumFractionDigits(0); // show only whole percentage points
+            } else {
+                dislikePercentageFormatter.setMaximumFractionDigits(1); // show up to 1 digit precision
+            }
+            formatted = dislikePercentageFormatter.format(dislikePercentage);
         }
-
-        // never will be reached, as the oldest supported YouTube app requires Android N or greater
-        return (int) (100 * dislikePercentage) + "%";
+        LogHelper.printDebug(() -> "Dislike percentage: " + dislikePercentage + " formatted as: " + formatted);
+        return formatted;
     }
 
 
