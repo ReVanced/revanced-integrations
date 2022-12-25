@@ -278,20 +278,20 @@ public class ReturnYouTubeDislike {
                 if (hiddenMessageString.equals(oldLikesString)) {
                     return false;
                 }
-                replacementSpannable = newSpanUsingFormattingOfAnotherSpan(oldSpannable, hiddenMessageString);
+                replacementSpannable = newSpanUsingStylingOfAnotherSpan(oldSpannable, hiddenMessageString);
             } else {
                 // fix for https://github.com/revanced/revanced-integrations/issues/118
                 // show both like and dislike in a single span, with a separator between values
-                Spannable likesSpan = newSpanUsingFormattingOfAnotherSpan(oldSpannable, oldLikesString);
+                Spannable likesSpan = newSpanUsingStylingOfAnotherSpan(oldSpannable, oldLikesString);
 
-                Spannable separatorSpan = newSpanUsingFormattingOfAnotherSpan(oldSpannable, segmentedSeparatorString);
+                Spannable separatorSpan = newSpanUsingStylingOfAnotherSpan(oldSpannable, segmentedSeparatorString);
                 // adjust the separator appearance to better mimic the existing layout
                 final int separatorColor = ThemeHelper.isDarkTheme()
                         ? 0xFF313131  // dark gray
                         : 0xFFD9D9D9; // light gray
-                addSpan(separatorSpan, new ForegroundColorSpan(separatorColor));
+                addSpanStyling(separatorSpan, new ForegroundColorSpan(separatorColor));
                 final float separatorHorizontalCompression = 0.8f; // horizontally compress the separator and its spacing
-                addSpan(separatorSpan, new MetricAffectingSpan() {
+                addSpanStyling(separatorSpan, new MetricAffectingSpan() {
                     @Override
                     public void updateMeasureState(TextPaint tp) {
                         tp.setTextScaleX(separatorHorizontalCompression);
@@ -337,11 +337,11 @@ public class ReturnYouTubeDislike {
                         relativeVerticalShiftRatio = -0.16f;
                         break;
                 }
-                addSpan(likesSpan, new RelativeVerticalOffsetSpan(relativeVerticalShiftRatio));
-                addSpan(separatorSpan, new RelativeVerticalOffsetSpan(relativeVerticalShiftRatio));
-                addSpan(dislikeSpan, new RelativeVerticalOffsetSpan(relativeVerticalShiftRatio));
+                addSpanStyling(likesSpan, new RelativeVerticalOffsetSpan(relativeVerticalShiftRatio));
+                addSpanStyling(separatorSpan, new RelativeVerticalOffsetSpan(relativeVerticalShiftRatio));
+                addSpanStyling(dislikeSpan, new RelativeVerticalOffsetSpan(relativeVerticalShiftRatio));
                 // must set font size after vertical offset (otherwise vertical alignment is not right)
-                addSpan(separatorSpan, new RelativeSizeSpan(separatorRelativeFontRatio));
+                addSpanStyling(separatorSpan, new RelativeSizeSpan(separatorRelativeFontRatio));
 
                 // put everything together
                 SpannableStringBuilder builder = new SpannableStringBuilder(likesSpan);
@@ -355,22 +355,22 @@ public class ReturnYouTubeDislike {
         return true;
     }
 
-    private static void addSpan(Spannable destination, Object styling) {
+    private static void addSpanStyling(Spannable destination, Object styling) {
         destination.setSpan(styling, 0, destination.length(), 0);
     }
 
-    private static Spannable newSpannableWithDislikes(Spannable sourceFormatting, RYDVoteData voteData) {
-        return newSpanUsingFormattingOfAnotherSpan(sourceFormatting,
+    private static Spannable newSpannableWithDislikes(Spannable sourceStyling, RYDVoteData voteData) {
+        return newSpanUsingStylingOfAnotherSpan(sourceStyling,
                 SettingsEnum.RYD_SHOW_DISLIKE_PERCENTAGE.getBoolean()
                 ? formatDislikePercentage(voteData.dislikePercentage)
                 : formatDislikeCount(voteData.dislikeCount));
     }
 
-    private static Spannable newSpanUsingFormattingOfAnotherSpan(Spannable sourceFormatting, String newSpanText) {
+    private static Spannable newSpanUsingStylingOfAnotherSpan(Spannable sourceStyle, String newSpanText) {
         SpannableString destination = new SpannableString(newSpanText);
-        Object[] spans = sourceFormatting.getSpans(0, sourceFormatting.length(), Object.class);
+        Object[] spans = sourceStyle.getSpans(0, sourceStyle.length(), Object.class);
         for (Object span : spans) {
-            destination.setSpan(span, 0, destination.length(), sourceFormatting.getSpanFlags(span));
+            destination.setSpan(span, 0, destination.length(), sourceStyle.getSpanFlags(span));
         }
         return destination;
     }
