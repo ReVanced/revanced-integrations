@@ -4,8 +4,6 @@ import static app.revanced.integrations.sponsorblock.StringRef.str;
 
 import android.content.Context;
 import android.icu.text.CompactDecimalFormat;
-import android.icu.text.DecimalFormat;
-import android.icu.text.DecimalFormatSymbols;
 import android.os.Build;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -20,6 +18,7 @@ import android.util.DisplayMetrics;
 import androidx.annotation.GuardedBy;
 import androidx.annotation.Nullable;
 
+import java.text.NumberFormat;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.concurrent.ExecutorService;
@@ -94,7 +93,7 @@ public class ReturnYouTubeDislike {
      * Used to format like/dislike count.
      */
     @GuardedBy("ReturnYouTubeDislike.class")
-    private static DecimalFormat dislikePercentageFormatter;
+    private static NumberFormat dislikePercentageFormatter;
 
     public static void onEnabledChange(boolean enabled) {
         isEnabled = enabled;
@@ -402,15 +401,14 @@ public class ReturnYouTubeDislike {
                 if (dislikePercentageFormatter == null) {
                     Locale locale = ReVancedUtils.getContext().getResources().getConfiguration().locale;
                     LogHelper.printDebug(() -> "Locale: " + locale);
-                    dislikePercentageFormatter = new DecimalFormat("", new DecimalFormatSymbols(locale));
+                    dislikePercentageFormatter = NumberFormat.getPercentInstance(locale);
                 }
-                if (dislikePercentage == 0 || dislikePercentage >= 0.01) { // zero, or at least 1%
-                    dislikePercentageFormatter.applyLocalizedPattern("0"); // show only whole percentage points
-                } else { // between (0, 1)%
-                    dislikePercentageFormatter.applyLocalizedPattern("0.#"); // show 1 digit precision
+                if (dislikePercentage >= 0.01) { // at least 1%
+                    dislikePercentageFormatter.setMaximumFractionDigits(0); // show only whole percentage points
+                } else {
+                    dislikePercentageFormatter.setMaximumFractionDigits(1); // show up to 1 digit precision
                 }
-                final char percentChar = dislikePercentageFormatter.getDecimalFormatSymbols().getPercent();
-                formatted = dislikePercentageFormatter.format(100 * dislikePercentage) + percentChar;
+                formatted = dislikePercentageFormatter.format(dislikePercentage);
             }
             LogHelper.printDebug(() -> "Dislike percentage: " + dislikePercentage + " formatted as: " + formatted);
             return formatted;
