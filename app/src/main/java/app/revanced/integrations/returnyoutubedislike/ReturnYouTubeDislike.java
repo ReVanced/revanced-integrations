@@ -244,7 +244,7 @@ public class ReturnYouTubeDislike {
 
         if (!isSegmentedButton) {
             // simple replacement of 'dislike' with a number/percentage
-            if (Character.isDigit(oldLikesString.charAt(0))) {
+            if (ReVancedUtils.stringContainsNumber(oldLikesString)) {
                 // already is a number, and was modified in a previous call to this method
                 return false;
             }
@@ -258,7 +258,7 @@ public class ReturnYouTubeDislike {
             // YouTube creators can hide the like count on a video,
             // and the like count appears as a device language specific string that says 'Like'
             // check if the first character is not a number
-            if (!Character.isDigit(oldLikesString.charAt(0))) {
+            if (!ReVancedUtils.stringContainsNumber(oldLikesString)) {
                 // likes are hidden.
                 // RYD does not provide usable data for these types of videos,
                 // and the API returns bogus data (zero likes and zero dislikes)
@@ -344,15 +344,29 @@ public class ReturnYouTubeDislike {
                 addSpanStyling(separatorSpan, new RelativeSizeSpan(separatorRelativeFontRatio));
 
                 // put everything together
-                SpannableStringBuilder builder = new SpannableStringBuilder(likesSpan);
-                builder.append(separatorSpan);
-                builder.append(dislikeSpan);
+                SpannableStringBuilder builder = new SpannableStringBuilder();
+                if (isDeviceLocaleTextLayoutRightToLeft()) {
+                    builder.append(dislikeSpan);
+                    builder.append(separatorSpan);
+                    builder.append(likesSpan);
+                } else {
+                    builder.append(likesSpan);
+                    builder.append(separatorSpan);
+                    builder.append(dislikeSpan);
+                }
                 replacementSpannable = new SpannableString(builder);
             }
         }
 
         textRef.set(replacementSpannable);
         return true;
+    }
+
+    /**
+     * If the device locale uses right to left text layout (arabic, hebrew, etc)
+     */
+    private static boolean isDeviceLocaleTextLayoutRightToLeft() {
+        return Boolean.parseBoolean(str("is_text_layout_right_to_left"));
     }
 
     private static void addSpanStyling(Spannable destination, Object styling) {
