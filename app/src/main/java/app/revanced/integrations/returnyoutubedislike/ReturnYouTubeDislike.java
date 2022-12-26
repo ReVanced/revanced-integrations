@@ -242,9 +242,9 @@ public class ReturnYouTubeDislike {
         Spannable replacementSpannable;
 
         // note: some locales use right to left layout (arabic, hebrew, etc),
-        // and care must be taken to use the existing RTL encoding character on the likes string
+        // and care must be taken to retain the existing RTL encoding character on the likes string
         // otherwise text will incorrectly show as left to right
-        // if making changes this code, change device to a RTL language and verify layout is correct
+        // if making changes to this code, change device settings to a RTL language and verify this layout is correct
 
         if (!isSegmentedButton) {
             // simple replacement of 'dislike' with a number/percentage
@@ -386,9 +386,9 @@ public class ReturnYouTubeDislike {
             synchronized (ReturnYouTubeDislike.class) { // number formatter is not thread safe, must synchronize
                 if (dislikeCountFormatter == null) {
                     // Note: Java number formatters will use the locale specific number characters.
-                    // such as arabic which formats "1.2" into "١٫٢"
-                    // But YouTube disregards the locale specific number characters
-                    // and instead shows shows regular roman numbers everywhere.
+                    // such as Arabic which formats "1.2" into "١٫٢"
+                    // But YouTube disregards locale specific number characters
+                    // and instead shows english numbers characters everywhere.
                     Locale locale = ReVancedUtils.getContext().getResources().getConfiguration().locale;
                     LogHelper.printDebug(() -> "Locale: " + locale);
                     dislikeCountFormatter = CompactDecimalFormat.getInstance(locale, CompactDecimalFormat.CompactStyle.SHORT);
