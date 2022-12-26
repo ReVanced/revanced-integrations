@@ -80,20 +80,6 @@ public class ReVancedUtils {
         return false;
     }
 
-    /**
-     * Correctly handles unicode numbers (such as non-roman arabic numbers)
-     *
-     * @return true, if any number is found
-     */
-    public static boolean stringContainsNumber(String text) {
-        for (int index = 0, length = text.length(); index < length; index++) {
-            if (Character.isDigit(text.codePointAt(index))) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     public static void setNewVideo(boolean started) {
         LogHelper.printDebug(() -> "New video started: " + started);
         newVideo = started;

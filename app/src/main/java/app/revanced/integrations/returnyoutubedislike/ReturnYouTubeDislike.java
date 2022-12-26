@@ -244,7 +244,7 @@ public class ReturnYouTubeDislike {
 
         if (!isSegmentedButton) {
             // simple replacement of 'dislike' with a number/percentage
-            if (ReVancedUtils.stringContainsNumber(oldLikesString)) {
+            if (stringContainsNumber(oldLikesString)) {
                 // already is a number, and was modified in a previous call to this method
                 return false;
             }
@@ -258,7 +258,7 @@ public class ReturnYouTubeDislike {
             // YouTube creators can hide the like count on a video,
             // and the like count appears as a device language specific string that says 'Like'
             // check if the first character is not a number
-            if (!ReVancedUtils.stringContainsNumber(oldLikesString)) {
+            if (!stringContainsNumber(oldLikesString)) {
                 // likes are hidden.
                 // RYD does not provide usable data for these types of videos,
                 // and the API returns bogus data (zero likes and zero dislikes)
@@ -367,6 +367,20 @@ public class ReturnYouTubeDislike {
      */
     private static boolean isDeviceLocaleTextLayoutRightToLeft() {
         return Boolean.parseBoolean(str("is_text_layout_right_to_left"));
+    }
+
+    /**
+     * Correctly handles unicode numbers (such as non-roman arabic numbers)
+     *
+     * @return true, if any number is found
+     */
+    private static boolean stringContainsNumber(String text) {
+        for (int index = 0, length = text.length(); index < length; index++) {
+            if (Character.isDigit(text.codePointAt(index))) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private static void addSpanStyling(Spannable destination, Object styling) {
