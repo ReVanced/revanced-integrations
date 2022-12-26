@@ -93,9 +93,11 @@ public class StringRef {
     @NonNull
     public String toString() {
         if (!resolved) {
-            Context context = ReVancedUtils.getContext();
-            resources = context.getResources();
-            packageName = context.getPackageName();
+            if (resources == null || packageName == null) {
+                Context context = ReVancedUtils.getContext();
+                resources = context.getResources();
+                packageName = context.getPackageName();
+            }
             resolved = true;
             if (resources != null) {
                 final int identifier = resources.getIdentifier(value, "string", packageName);
