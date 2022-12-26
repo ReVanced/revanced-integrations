@@ -17,6 +17,7 @@ public class StringRef {
     private static Resources resources;
     private static String packageName;
 
+    // must use a thread safe map, as this class is used both on and off the main thread
     private static final Map<String, StringRef> strings = Collections.synchronizedMap(new HashMap());
 
     /**
