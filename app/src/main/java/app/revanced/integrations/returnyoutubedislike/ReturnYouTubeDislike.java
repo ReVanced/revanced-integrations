@@ -347,9 +347,9 @@ public class ReturnYouTubeDislike {
     }
 
     /**
-     * Correctly handles unicode numbers (such as non-roman arabic numbers)
+     * Correctly handles any unicode number (such as Arabic numbers)
      *
-     * @return true, if any number is found
+     * @return true, the string contains at least 1 number character
      */
     private static boolean stringContainsNumber(String text) {
         for (int index = 0, length = text.length(); index < length; index++) {
