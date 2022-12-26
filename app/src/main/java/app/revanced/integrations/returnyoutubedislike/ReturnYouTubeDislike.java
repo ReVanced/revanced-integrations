@@ -242,6 +242,11 @@ public class ReturnYouTubeDislike {
         String oldLikesString = oldSpannable.toString();
         Spannable replacementSpannable;
 
+        // note: some locales use right to left layout (arabic, hebrew, etc),
+        // and care must be taken to use the existing RTL encoding character on the likes string
+        // otherwise text will incorrectly show as left to right
+        // if making changes this code, change device to a RTL language and verify layout is correct
+
         if (!isSegmentedButton) {
             // simple replacement of 'dislike' with a number/percentage
             if (stringContainsNumber(oldLikesString)) {
@@ -345,28 +350,15 @@ public class ReturnYouTubeDislike {
 
                 // put everything together
                 SpannableStringBuilder builder = new SpannableStringBuilder();
-                if (isDeviceLocaleTextLayoutRightToLeft()) {
-                    builder.append(dislikeSpan);
-                    builder.append(separatorSpan);
-                    builder.append(likesSpan);
-                } else {
-                    builder.append(likesSpan);
-                    builder.append(separatorSpan);
-                    builder.append(dislikeSpan);
-                }
+                builder.append(likesSpan);
+                builder.append(separatorSpan);
+                builder.append(dislikeSpan);
                 replacementSpannable = new SpannableString(builder);
             }
         }
 
         textRef.set(replacementSpannable);
         return true;
-    }
-
-    /**
-     * If the device locale uses right to left text layout (arabic, hebrew, etc)
-     */
-    private static boolean isDeviceLocaleTextLayoutRightToLeft() {
-        return Boolean.parseBoolean(str("is_text_layout_right_to_left"));
     }
 
     /**
