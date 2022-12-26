@@ -394,6 +394,9 @@ public class ReturnYouTubeDislike {
             String formatted;
             synchronized (ReturnYouTubeDislike.class) { // number formatter is not thread safe, must synchronize
                 if (dislikeCountFormatter == null) {
+                    // Note: Java number formatters will use the locale specific number characters.
+                    // But with some locales (such as Persian) YouTube disregards the locale specific number characters
+                    // and instead shows shows regular roman numbers everywhere.
                     Locale locale = ReVancedUtils.getContext().getResources().getConfiguration().locale;
                     LogHelper.printDebug(() -> "Locale: " + locale);
                     dislikeCountFormatter = CompactDecimalFormat.getInstance(locale, CompactDecimalFormat.CompactStyle.SHORT);
