@@ -13,7 +13,6 @@ import android.text.style.CharacterStyle;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.MetricAffectingSpan;
 import android.text.style.RelativeSizeSpan;
-import android.util.DisplayMetrics;
 
 import androidx.annotation.GuardedBy;
 import androidx.annotation.Nullable;
@@ -295,7 +294,7 @@ public class ReturnYouTubeDislike {
                         ? 0xFF313131  // dark gray
                         : 0xFFD9D9D9; // light gray
                 addSpanStyling(separatorSpan, new ForegroundColorSpan(separatorColor));
-                final float separatorHorizontalCompression = 0.8f; // horizontally compress the separator and its spacing
+                final float separatorHorizontalCompression = 0.71f; // horizontally compress the separator and its spacing
                 addSpanStyling(separatorSpan, new MetricAffectingSpan() {
                     @Override
                     public void updateMeasureState(TextPaint tp) {
@@ -322,26 +321,12 @@ public class ReturnYouTubeDislike {
                         tp.baselineShift -= (int)(relativeVerticalShiftRatio * tp.getFontMetrics().top);
                     }
                 }
-                final float separatorRelativeFontRatio;
-                final float relativeVerticalShiftRatio;
 
-                switch (ReVancedUtils.getContext().getResources().getDisplayMetrics().densityDpi) {
-                    // any of these cases is close enough to use for all devices
-                    // but to get the layout 100% exact, the scaling and offsets can be adjusted for the screen density
-                    default: // fall thru to XXHIGH
-                    case DisplayMetrics.DENSITY_420:
-                    case DisplayMetrics.DENSITY_450:
-                    case DisplayMetrics.DENSITY_XXHIGH:
-                        separatorRelativeFontRatio = 1.50f;
-                        relativeVerticalShiftRatio = -0.20f; // shift the span up by 20% of the text height
-                        break;
-                    case DisplayMetrics.DENSITY_560:
-                    case DisplayMetrics.DENSITY_600:
-                    case DisplayMetrics.DENSITY_XXXHIGH:
-                        separatorRelativeFontRatio = 1.6f;
-                        relativeVerticalShiftRatio = -0.16f;
-                        break;
-                }
+                // Ratios values tested on Android 13, Samsung and Google branded phones, using screen densities of 300 to 560
+                // On other devices the separator may be vertically shifted by a few pixels,
+                // but it's good enough and still visually better than not doing this scaling/shifting
+                final float separatorRelativeFontRatio = 1.6f;  // increase separator height by 75%
+                final float relativeVerticalShiftRatio = -0.19f; // shift the spans up by 19%
                 addSpanStyling(likesSpan, new RelativeVerticalOffsetSpan(relativeVerticalShiftRatio));
                 addSpanStyling(separatorSpan, new RelativeVerticalOffsetSpan(relativeVerticalShiftRatio));
                 addSpanStyling(dislikeSpan, new RelativeVerticalOffsetSpan(relativeVerticalShiftRatio));
