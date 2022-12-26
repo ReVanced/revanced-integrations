@@ -5,16 +5,19 @@ import android.content.res.Resources;
 
 import androidx.annotation.NonNull;
 
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Map;
 
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedUtils;
 
+// should probably move this class into utils package
 public class StringRef {
     private static Resources resources;
     private static String packageName;
 
-    private static final HashMap<String, StringRef> strings = new HashMap<>();
+    private static final Map<String, StringRef> strings = Collections.synchronizedMap(new HashMap());
 
     /**
      * Gets strings reference from shared collection or creates if not exists yet,
