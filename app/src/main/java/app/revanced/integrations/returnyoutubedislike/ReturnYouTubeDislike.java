@@ -37,12 +37,12 @@ import app.revanced.integrations.utils.ThemeHelper;
 
 public class ReturnYouTubeDislike {
     /**
-     * Maximum amount of time to block the UI from updates while waiting for dislike network call to complete.
+     * Maximum amount of time to block the UI from updates while waiting for network call to complete.
      *
      * Must be less than 5 seconds, as per:
      * https://developer.android.com/topic/performance/vitals/anr
      */
-    private static final long MILLISECONDS_TO_BLOCK_UI_WHILE_WAITING_FOR_DISLIKE_FETCH_TO_COMPLETE = 4000;
+    private static final long MILLISECONDS_TO_BLOCK_UI_WHILE_WAITING_FOR_FETCH_VOTES_TO_COMPLETE = 4000;
 
     /**
      * Used to send votes, one by one, in the same order the user created them
@@ -120,7 +120,7 @@ public class ReturnYouTubeDislike {
 
             synchronized (videoIdLockObject) {
                 currentVideoId = videoId;
-                // no need to wrap the fetchDislike call in a try/catch,
+                // no need to wrap the call in a try/catch,
                 // as any exceptions are propagated out in the later Future#Get call
                 voteFetchFuture = ReVancedUtils.submitOnBackgroundThread(() -> ReturnYouTubeDislikeApi.fetchVotes(videoId));
             }
@@ -159,9 +159,9 @@ public class ReturnYouTubeDislike {
                 if (SettingsEnum.DEBUG.getBoolean() && !fetchFuture.isDone()) {
                     fetchStartTime = System.currentTimeMillis();
                 }
-                votingData = fetchFuture.get(MILLISECONDS_TO_BLOCK_UI_WHILE_WAITING_FOR_DISLIKE_FETCH_TO_COMPLETE, TimeUnit.MILLISECONDS);
+                votingData = fetchFuture.get(MILLISECONDS_TO_BLOCK_UI_WHILE_WAITING_FOR_FETCH_VOTES_TO_COMPLETE, TimeUnit.MILLISECONDS);
             } catch (TimeoutException e) {
-                LogHelper.printDebug(() -> "UI timed out waiting for dislike fetch to complete");
+                LogHelper.printDebug(() -> "UI timed out waiting for fetch votes to complete");
                 return;
             } finally {
                 recordTimeUISpentWaitingForNetworkCall(fetchStartTime);
