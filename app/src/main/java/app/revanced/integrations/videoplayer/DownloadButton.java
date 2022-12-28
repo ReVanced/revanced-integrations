@@ -25,10 +25,6 @@ import app.revanced.integrations.utils.SharedPrefHelper;
 public class DownloadButton {
     static WeakReference<ImageView> _button = new WeakReference<>(null);
     static ConstraintLayout _constraintLayout;
-    static int fadeDurationFast;
-    static int fadeDurationScheduled;
-    static Animation fadeIn;
-    static Animation fadeOut;
     public static boolean isDownloadButtonEnabled;
     static boolean isShowing;
 
@@ -88,14 +84,6 @@ public class DownloadButton {
                 // TODO: show popup and download via newpipe
             });
             _button = new WeakReference<>(imageView);
-            fadeDurationFast = getInteger("fade_duration_fast");
-            fadeDurationScheduled = getInteger("fade_duration_scheduled");
-            Animation animation = getAnimation("fade_in");
-            fadeIn = animation;
-            animation.setDuration(fadeDurationFast);
-            Animation animation2 = getAnimation("fade_out");
-            fadeOut = animation2;
-            animation2.setDuration(fadeDurationScheduled);
             isShowing = true;
             changeVisibility(false);
 
@@ -116,12 +104,12 @@ public class DownloadButton {
         if (z && isDownloadButtonEnabled) {
             LogHelper.printDebug(() -> "Fading in");
             imageView.setVisibility(View.VISIBLE);
-            imageView.startAnimation(fadeIn);
+            imageView.startAnimation(DownloadButtonAnimation.getFadeInAnimation());
         }
         else if (imageView.getVisibility() == View.VISIBLE) {
             LogHelper.printDebug(() -> "Fading out");
-            imageView.startAnimation(fadeOut);
             imageView.setVisibility(View.GONE);
+            imageView.startAnimation(DownloadButtonAnimation.getFadeOutAnimation());
         }
     }
 
@@ -149,13 +137,6 @@ public class DownloadButton {
     private static int getIdentifier(String str, String str2) {
         Context appContext = ReVancedUtils.getContext();
         return appContext.getResources().getIdentifier(str, str2, appContext.getPackageName());
-    }
-
-    private static int getInteger(String str) {
-        return ReVancedUtils.getContext().getResources().getInteger(getIdentifier(str, "integer"));
-    }
-    private static Animation getAnimation(String str) {
-        return AnimationUtils.loadAnimation(ReVancedUtils.getContext(), getIdentifier(str, "anim"));
     }
 }
 
