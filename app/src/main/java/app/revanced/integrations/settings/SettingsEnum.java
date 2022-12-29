@@ -83,7 +83,7 @@ public enum SettingsEnum {
     HIDE_SHORTS_COMMENTS_BUTTON("revanced_hide_shorts_comments_button", false, ReturnType.BOOLEAN),
     HIDE_TIME_AND_SEEKBAR("revanced_hide_time_and_seekbar", false, ReturnType.BOOLEAN),
     HIDE_WATCH_IN_VR("revanced_hide_watch_in_vr", false, ReturnType.BOOLEAN, true),
-    HIDE_BREAKING_NEWS_SHELF("revanced_hide_breaking_news_shelf", false, ReturnType.BOOLEAN, true),
+    HIDE_BREAKING_NEWS_SHELF("revanced_hide_breaking_news_shelf", true, ReturnType.BOOLEAN, true),
 
     // Misc. Settings
     FIX_PLAYBACK("revanced_fix_playback", false, ReturnType.BOOLEAN, false),
