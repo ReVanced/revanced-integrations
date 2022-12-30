@@ -17,7 +17,6 @@ import android.text.style.RelativeSizeSpan;
 import androidx.annotation.GuardedBy;
 import androidx.annotation.Nullable;
 
-import java.text.Bidi;
 import java.text.NumberFormat;
 import java.util.Locale;
 import java.util.Objects;
@@ -67,15 +66,6 @@ public class ReturnYouTubeDislike {
      */
     @GuardedBy("videoIdLockObject")
     private static Future<RYDVoteData> voteFetchFuture;
-
-    /**
-     * If the device language uses right to left text layout (hebrew, arabic, etc)
-     */
-    private static final boolean isRightToLeftTextLayout;
-    static {
-        Bidi bidi = new Bidi(Locale.getDefault().getDisplayLanguage(), Bidi.DIRECTION_DEFAULT_RIGHT_TO_LEFT);
-        isRightToLeftTextLayout = bidi.isRightToLeft();
-    }
 
     public enum Vote {
         LIKE(1),
@@ -264,7 +254,7 @@ public class ReturnYouTubeDislike {
             }
             replacementSpannable = newSpannableWithDislikes(oldSpannable, voteData);
         } else {
-            String leftSegmentedSeparatorString = isRightToLeftTextLayout ? "\u200F|  " : "|  ";
+            String leftSegmentedSeparatorString = ReVancedUtils.isRightToLeftTextLayout() ? "\u200F|  " : "|  ";
 
             if (oldLikesString.contains(leftSegmentedSeparatorString)) {
                 return false; // dislikes was previously added
