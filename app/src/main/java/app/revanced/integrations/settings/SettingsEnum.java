@@ -38,6 +38,7 @@ public enum SettingsEnum {
     ADREMOVER_SHORTS_REMOVAL("revanced_adremover_shorts", true, ReturnType.BOOLEAN, true),
     ADREMOVER_COMMUNITY_GUIDELINES_REMOVAL("revanced_adremover_community_guidelines", true, ReturnType.BOOLEAN),
     ADREMOVER_SUBSCRIBERS_COMMUNITY_GUIDELINES_REMOVAL("revanced_adremover_subscribers_community_guidelines_removal", true, ReturnType.BOOLEAN),
+    ADREMOVER_CHANNEL_MEMBER_SHELF_REMOVAL("revanced_adremover_channel_member_shelf_removal", true, ReturnType.BOOLEAN),
     ADREMOVER_EMERGENCY_BOX_REMOVAL("revanced_adremover_emergency_box_removal", true, ReturnType.BOOLEAN),
     ADREMOVER_INFO_PANEL_REMOVAL("revanced_adremover_info_panel", true, ReturnType.BOOLEAN),
     ADREMOVER_MEDICAL_PANEL_REMOVAL("revanced_adremover_medical_panel", true, ReturnType.BOOLEAN),
@@ -83,6 +84,7 @@ public enum SettingsEnum {
     HIDE_SHORTS_COMMENTS_BUTTON("revanced_hide_shorts_comments_button", false, ReturnType.BOOLEAN),
     HIDE_TIME_AND_SEEKBAR("revanced_hide_time_and_seekbar", false, ReturnType.BOOLEAN),
     HIDE_WATCH_IN_VR("revanced_hide_watch_in_vr", false, ReturnType.BOOLEAN, true),
+    HIDE_BREAKING_NEWS("revanced_hide_breaking_news", true, ReturnType.BOOLEAN, true),
 
     // Misc. Settings
     FIX_PLAYBACK("revanced_fix_playback", false, ReturnType.BOOLEAN, false),
