@@ -264,16 +264,15 @@ public class ReturnYouTubeDislike {
             }
             replacementSpannable = newSpannableWithDislikes(oldSpannable, voteData);
         } else {
-            String leftSegmentedSeparatorString = isRightToLeftTextLayout
-                    ? "\u200F |  "
-                    : " |  ";
+            String leftSegmentedSeparatorString = isRightToLeftTextLayout ? "\u200F|  " : "|  ";
+
             if (oldLikesString.contains(leftSegmentedSeparatorString)) {
                 return false; // dislikes was previously added
             }
 
             // YouTube creators can hide the like count on a video,
             // and the like count appears as a device language specific string that says 'Like'
-            // check if the first character is not a number
+            // check if the string contains any numbers
             if (!stringContainsNumber(oldLikesString)) {
                 // likes are hidden.
                 // RYD does not provide usable data for these types of videos,
@@ -367,9 +366,9 @@ public class ReturnYouTubeDislike {
     }
 
     /**
-     * Correctly handles any unicode number (such as Arabic numbers)
+     * Correctly handles any unicode numbers (such as Arabic numbers)
      *
-     * @return true, the string contains at least 1 number character
+     * @return if the string contains at least 1 number
      */
     private static boolean stringContainsNumber(String text) {
         for (int index = 0, length = text.length(); index < length; index++) {
@@ -408,7 +407,7 @@ public class ReturnYouTubeDislike {
                     // Note: Java number formatters will use the locale specific number characters.
                     // such as Arabic which formats "1.2" into "١٫٢"
                     // But YouTube disregards locale specific number characters
-                    // and instead shows english numbers characters everywhere.
+                    // and instead shows english number characters everywhere.
                     Locale locale = ReVancedUtils.getContext().getResources().getConfiguration().locale;
                     LogHelper.printDebug(() -> "Locale: " + locale);
                     dislikeCountFormatter = CompactDecimalFormat.getInstance(locale, CompactDecimalFormat.CompactStyle.SHORT);
