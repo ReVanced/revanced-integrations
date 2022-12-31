@@ -297,8 +297,8 @@ public class ReturnYouTubeDislike {
                 final int separatorColor = ThemeHelper.isDarkTheme()
                         // it might be possible to extract these colors from the litho layout
                         // and put these colors in LithoThemePatch (but that would add a dependency for this RYD patch)
-                        ? 0xFF424242  // dark gray
-                        : 0xFFD9D9D9; // light gray
+                        ? 0xFF313131  // dark gray // FIXME: the stock separators have a slight transparency
+                        : 0xFFD9D9D9; // light gray // FIXME: need to find the exact transparency level, and use that here
                 addSpanStyling(leftSeparatorSpan, new ForegroundColorSpan(separatorColor));
                 addSpanStyling(middleSeparatorSpan, new ForegroundColorSpan(separatorColor));
                 CharacterStyle noAntiAliasingStyle = new CharacterStyle() {
