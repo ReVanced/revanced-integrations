@@ -9,12 +9,7 @@ import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedUtils;
 
 public class CopyVideoUrlPatch {
-    private static String currentVideoId;
     private static long currentVideoTimestamp = 0;
-
-    public static void setVideoId(String videoId) {
-        currentVideoId = videoId;
-    }
 
     public static void setVideoTime(long millis) {
         if (!SettingsEnum.COPY_VIDEO_URL_TIMESTAMP_BUTTON_SHOWN.getBoolean()) return;
@@ -23,7 +18,7 @@ public class CopyVideoUrlPatch {
 
     public static void copyUrl(Boolean addTimestamp) {
         try {
-            String url = String.format("https://youtu.be/%s", currentVideoId);
+            String url = String.format("https://youtu.be/%s", VideoInformation.getCurrentVideoId());
             if (addTimestamp) {
                 long seconds = currentVideoTimestamp / 1000;
                 url += String.format("?t=%s", seconds);

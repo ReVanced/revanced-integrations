@@ -13,7 +13,7 @@ import android.widget.Toast;
 
 import java.lang.ref.WeakReference;
 
-import app.revanced.integrations.patches.downloads.DownloadsPatch;
+import app.revanced.integrations.patches.VideoInformation;
 import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.sponsorblock.StringRef;
 import app.revanced.integrations.utils.LogHelper;
@@ -65,7 +65,7 @@ public class DownloadButton {
 
                 // Launch PowerTube intent
                 try {
-                    String content = String.format("https://youtu.be/%s", DownloadsPatch.getCurrentVideoId());
+                    String content = String.format("https://youtu.be/%s", VideoInformation.getCurrentVideoId());
 
                     Intent intent = new Intent("android.intent.action.SEND");
                     intent.setType("text/plain");
