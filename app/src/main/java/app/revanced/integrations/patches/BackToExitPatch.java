@@ -4,8 +4,6 @@ import com.google.android.apps.youtube.app.watchwhile.WatchWhileActivity;
 import app.revanced.integrations.utils.LogHelper;
 
 public class BackToExitPatch {
-    private static long backPressedCount = 0;
-
     /**
      * State whether the scroll position reaches the top.
      */
@@ -19,16 +17,8 @@ public class BackToExitPatch {
     public static void exitOnBackPressed(WatchWhileActivity activity) {
         if (!isHomeScrolledTop) return;
 
-        // Close the current activity once counter reached 1
-        if (backPressedCount <= 0) {
-            LogHelper.printDebug(() -> "BackPressed detected");
-
-            backPressedCount++;
-        } else {
-            LogHelper.printDebug(() -> "Activity is finished");
-
-            activity.finish();
-        }
+        // Close the current activity
+        activity.finish();
     }
 
     /**
@@ -36,8 +26,6 @@ public class BackToExitPatch {
      */
     public static void onStartScrollView() {
         isHomeScrolledTop = false;
-
-        backPressedCount = 0;
 
         LogHelper.printDebug(() -> "Started scrolling");
     }
