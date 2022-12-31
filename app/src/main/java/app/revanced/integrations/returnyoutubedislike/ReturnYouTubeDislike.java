@@ -378,14 +378,10 @@ public class ReturnYouTubeDislike {
                 + " width: " + deviceWidth + " height: " + deviceHeight);
 
         // device used to determine the configuration below
-        final String manufacturer; // very important
-        final int sdk; // important
-        final float scaledDensityDpi; // important only if using non default system font size
-        final int densityDpi, width, height; // rarely important
-        // configuration based on the specific device above
-        final float verticalShiftRatio;
-        final float leftSeparatorFontRatio;
-        final float leftSeparatorHorizontalScaleRatio;
+        final String configManufacturer; // very important
+        final int configSdk; // important
+        final float configScaledDensityDpi; // important only if using non default system font size
+        final int configDensityDpi, configWidth, configHeight; // rarely important
 
         // If adding a configuration, then apply the new configuration to the
         // broadest number of devices while preserving existing settings.
@@ -403,36 +399,32 @@ public class ReturnYouTubeDislike {
             default: // use Google layout by default
             case "Google":
                 // logging and documentation
-                manufacturer = "Google";
-                sdk = 33;
-                scaledDensityDpi = 2.75f;
-                densityDpi = 560;
-                width = 1080;
-                height = 2154;
+                configManufacturer = "Google";
+                configSdk = 33;
+                configScaledDensityDpi = 2.75f;
+                configDensityDpi = 560;
+                configWidth = 1080;
+                configHeight = 2154;
                 // actual adjustment values
-                verticalShiftRatio = -0.18f; // move separator and like/dislike up by 18%
-                leftSeparatorFontRatio = 1.8f;  // increase left separator size by 80%
-                leftSeparatorHorizontalScaleRatio = 0.75f; // horizontally compress left separator by 25%
+                segmentedVerticalShiftRatio = -0.18f; // move separator and like/dislike up by 18%
+                segmentedLeftSeparatorFontRatio = 1.8f;  // increase left separator size by 80%
+                segmentedLeftSeparatorHorizontalScaleRatio = 0.75f; // horizontally compress left separator by 25%
                 break;
             case "samsung":
-                manufacturer = "samsung";
-                sdk = 33;
-                scaledDensityDpi = 3.0f;
-                densityDpi = 480;
-                width = 1080;
-                height = 2124;
-                verticalShiftRatio = -0.19f;
-                leftSeparatorFontRatio = 1.5f;
-                leftSeparatorHorizontalScaleRatio = 0.7f;
+                configManufacturer = "samsung";
+                configSdk = 33;
+                configScaledDensityDpi = 3.0f;
+                configDensityDpi = 480;
+                configWidth = 1080;
+                configHeight = 2124;
+                segmentedVerticalShiftRatio = -0.19f;
+                segmentedLeftSeparatorFontRatio = 1.5f;
+                segmentedLeftSeparatorHorizontalScaleRatio = 0.7f;
                 break;
         }
 
-        LogHelper.printDebug(() -> "Using layout adjustments based on manufacturer: '" + manufacturer + "' SDK: " + sdk
-                + " scaledDensity: " + scaledDensityDpi + " densityDpi: " + densityDpi + " width: " + width + " height: " + height);
-
-        segmentedVerticalShiftRatio = verticalShiftRatio;
-        segmentedLeftSeparatorFontRatio = leftSeparatorFontRatio;
-        segmentedLeftSeparatorHorizontalScaleRatio = leftSeparatorHorizontalScaleRatio;
+        LogHelper.printDebug(() -> "Using layout adjustments based on manufacturer: '" + configManufacturer + "' SDK: " + configSdk
+                + " scaledDensity: " + configScaledDensityDpi + " densityDpi: " + configDensityDpi + " width: " + configWidth + " height: " + configHeight);
         segmentedValuesSet = true;
     }
 
