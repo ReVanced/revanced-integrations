@@ -7,17 +7,16 @@ public class BackToExitPatch {
     private static long backPressedCount = 0;
 
     /**
-     * State whether scroll position reaches the top
+     * State whether the scroll position reaches the top.
      */
     public static boolean isHomeScrolledTop = false;
 
     /**
-     * Detect event when back button is pressed
+     * Handle the event of clicking the back button.
      *
-     * @param activity is used when closing the app
+     * @param activity The activity, the app is launched with to finish.
      */
     public static void exitOnBackPressed(WatchWhileActivity activity) {
-        // Check scroll position reaches the top in home feed
         if (!isHomeScrolledTop) return;
 
         // Close the current activity once counter reached 1
@@ -33,22 +32,22 @@ public class BackToExitPatch {
     }
 
     /**
-     * Detect event when ScrollView is created by RecyclerView
+     * Handle the event, when it is being scrolled.
      */
     public static void onStartScrollView() {
         isHomeScrolledTop = false;
 
         backPressedCount = 0;
 
-        LogHelper.printDebug(() -> "ScrollView is created");
+        LogHelper.printDebug(() -> "Started scrolling");
     }
 
     /**
-     * Detect event when the scroll position reaches the top by the back button
+     * Handle the event of stopping to scroll.
      */
     public static void onStopScrollView() {
         isHomeScrolledTop = true;
 
-        LogHelper.printDebug(() -> "ScrollView is stopped");
+        LogHelper.printDebug(() -> "Stopped scrolling");
     }
 }
