@@ -325,11 +325,11 @@ public class ReturnYouTubeDislike {
                 }
 
                 // Ratio values tested on Android 13, Samsung, Google and OnePlus branded phones, using screen densities of 300 to 560
-                // On other devices and fonts the left separator may be vertically shifted by a few pixels,
+                // On other devices and fonts the left separator may be off vertically by a few pixels,
                 // but it's good enough and still visually better than not doing this scaling/shifting
                 final float verticalShiftRatio = -0.15f; // shift up by 15%
-                final float leftSeparatorHorizontalStretchRatio = 0.6f; // compress horizontally by 40%
                 final float leftSeparatorFontRatio = 1.6f;  // increase height by 60%
+                final float leftSeparatorHorizontalScaleRatio = 0.6f; // compress horizontally by 40%
 
                 // shift the left separator up by a smaller amount, to visually align it after changing the size
                 addSpanStyling(leftSeparatorSpan, new RelativeVerticalOffsetSpan(verticalShiftRatio));
@@ -337,9 +337,9 @@ public class ReturnYouTubeDislike {
                 addSpanStyling(middleSeparatorSpan, new RelativeVerticalOffsetSpan(verticalShiftRatio));
                 addSpanStyling(dislikeSpan, new RelativeVerticalOffsetSpan(verticalShiftRatio));
 
-                // must set font size after vertical offset (otherwise alignment gets off)
+                // important: must set font size after vertical offset (otherwise alignment gets off)
                 addSpanStyling(leftSeparatorSpan, new RelativeSizeSpan(leftSeparatorFontRatio));
-                addSpanStyling(leftSeparatorSpan, new ScaleXSpan(leftSeparatorHorizontalStretchRatio));
+                addSpanStyling(leftSeparatorSpan, new ScaleXSpan(leftSeparatorHorizontalScaleRatio));
                 // middle separator does not need resizing
 
                 // put everything together
