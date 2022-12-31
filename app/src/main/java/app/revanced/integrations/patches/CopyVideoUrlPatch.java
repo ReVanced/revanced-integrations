@@ -3,24 +3,16 @@ package app.revanced.integrations.patches;
 import android.content.Context;
 import android.widget.Toast;
 
-import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.sponsorblock.StringRef;
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedUtils;
 
 public class CopyVideoUrlPatch {
-    private static long currentVideoTimestamp = 0;
-
-    public static void setVideoTime(long millis) {
-        if (!SettingsEnum.COPY_VIDEO_URL_TIMESTAMP_BUTTON_SHOWN.getBoolean()) return;
-        currentVideoTimestamp = millis;
-    }
-
     public static void copyUrl(Boolean withTimestamp) {
         try {
             String url = String.format("https://youtu.be/%s", VideoInformation.getCurrentVideoId());
             if (withTimestamp) {
-                long seconds = currentVideoTimestamp / 1000;
+                long seconds = VideoInformation.getVideoTime() / 1000;
                 url += String.format("?t=%s", seconds);
             }
 
