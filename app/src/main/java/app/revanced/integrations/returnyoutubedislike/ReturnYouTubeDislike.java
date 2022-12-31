@@ -13,6 +13,7 @@ import android.text.style.CharacterStyle;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.MetricAffectingSpan;
 import android.text.style.RelativeSizeSpan;
+import android.text.style.ScaleXSpan;
 
 import androidx.annotation.GuardedBy;
 import androidx.annotation.Nullable;
@@ -38,7 +39,7 @@ import app.revanced.integrations.utils.ThemeHelper;
 public class ReturnYouTubeDislike {
     /**
      * Maximum amount of time to block the UI from updates while waiting for network call to complete.
-     *
+     * <p>
      * Must be less than 5 seconds, as per:
      * https://developer.android.com/topic/performance/vitals/anr
      */
@@ -131,7 +132,7 @@ public class ReturnYouTubeDislike {
 
     /**
      * This method is sometimes called on the main thread, but it usually is called _off_ the main thread.
-     *
+     * <p>
      * This method can be called multiple times for the same UI element (including after dislikes was added)
      * This code should avoid needlessly replacing the same UI element with identical versions.
      */
@@ -293,16 +294,18 @@ public class ReturnYouTubeDislike {
                 Spannable middleSeparatorSpan = newSpanUsingStylingOfAnotherSpan(oldSpannable, middleSegmentedSeparatorString);
                 // style the separator appearance to mimic the existing layout
                 final int separatorColor = ThemeHelper.isDarkTheme()
-                        ? 0xFF313131  // dark gray
+                        ? 0xFF424242  // dark gray
                         : 0xFFD9D9D9; // light gray
                 addSpanStyling(leftSeparatorSpan, new ForegroundColorSpan(separatorColor));
                 addSpanStyling(middleSeparatorSpan, new ForegroundColorSpan(separatorColor));
                 MetricAffectingSpan separatorStyle = new MetricAffectingSpan() {
                     final float separatorHorizontalCompression = 0.71f; // horizontally compress the separator and its spacing
+
                     @Override
                     public void updateMeasureState(TextPaint tp) {
                         tp.setTextScaleX(separatorHorizontalCompression);
                     }
+
                     @Override
                     public void updateDrawState(TextPaint tp) {
                         tp.setTextScaleX(separatorHorizontalCompression);
@@ -318,27 +321,34 @@ public class ReturnYouTubeDislike {
                 // to move downward.  Use a custom span to adjust the span back upward, at a relative ratio
                 class RelativeVerticalOffsetSpan extends CharacterStyle {
                     final float relativeVerticalShiftRatio;
+
                     RelativeVerticalOffsetSpan(float relativeVerticalShiftRatio) {
                         this.relativeVerticalShiftRatio = relativeVerticalShiftRatio;
                     }
+
                     @Override
                     public void updateDrawState(TextPaint tp) {
-                        tp.baselineShift -= (int)(relativeVerticalShiftRatio * tp.getFontMetrics().top);
+                        tp.baselineShift -= (int) (relativeVerticalShiftRatio * tp.getFontMetrics().top);
                     }
                 }
 
-                // Ratio values tested on Android 13, Samsung and Google branded phones, using screen densities of 300 to 560
-                // On other devices the left separator may be vertically shifted by a few pixels,
+                // Ratio values tested on Android 13, Samsung, Google and OnePlus branded phones, using screen densities of 300 to 560
+                // On other devices and fonts the left separator may be vertically shifted by a few pixels,
                 // but it's good enough and still visually better than not doing this scaling/shifting
-                final float verticalShiftRatio = -0.19f; // shift up by 19%
-                final float leftSeparatorFontRatio = 1.7f;  // increase height by 70%
+                final float verticalShiftRatio = -0.35f; // shift up by 35%
+                final float verticalLeftSeparatorShiftRatio = -0.08f; // shift up by 8%
+                final float horizontalStretchRatio = 0.93f; // stretch narrower by 7%
+                final float leftSeparatorFontRatio = 1.88f;  // increase height by 88%
 
-                addSpanStyling(leftSeparatorSpan, new RelativeVerticalOffsetSpan(verticalShiftRatio));
+                addSpanStyling(leftSeparatorSpan, new RelativeSizeSpan(leftSeparatorFontRatio));
+                addSpanStyling(leftSeparatorSpan, new ScaleXSpan(horizontalStretchRatio));
+
+                // shift the left separator up by a smaller amount, to visually align it after changing the size
+                addSpanStyling(leftSeparatorSpan, new RelativeVerticalOffsetSpan(verticalLeftSeparatorShiftRatio));
                 addSpanStyling(likesSpan, new RelativeVerticalOffsetSpan(verticalShiftRatio));
                 addSpanStyling(middleSeparatorSpan, new RelativeVerticalOffsetSpan(verticalShiftRatio));
                 addSpanStyling(dislikeSpan, new RelativeVerticalOffsetSpan(verticalShiftRatio));
-                // must set font size after vertical offset (otherwise vertical alignment is not right)
-                addSpanStyling(leftSeparatorSpan, new RelativeSizeSpan(leftSeparatorFontRatio));
+
                 // middle separator does not need resizing
 
                 // put everything together
@@ -376,8 +386,8 @@ public class ReturnYouTubeDislike {
     private static Spannable newSpannableWithDislikes(Spannable sourceStyling, RYDVoteData voteData) {
         return newSpanUsingStylingOfAnotherSpan(sourceStyling,
                 SettingsEnum.RYD_SHOW_DISLIKE_PERCENTAGE.getBoolean()
-                ? formatDislikePercentage(voteData.dislikePercentage)
-                : formatDislikeCount(voteData.dislikeCount));
+                        ? formatDislikePercentage(voteData.dislikePercentage)
+                        : formatDislikeCount(voteData.dislikeCount));
     }
 
     private static Spannable newSpanUsingStylingOfAnotherSpan(Spannable sourceStyle, String newSpanText) {
@@ -454,6 +464,6 @@ public class ReturnYouTubeDislike {
         final long averageTimeForcedToWait = totalTimeUIWaitedOnNetworkCalls / numberOfTimesUIWaitedOnNetworkCalls;
         LogHelper.printDebug(() -> "UI thread forced to wait: " + numberOfTimesUIWaitedOnNetworkCalls + " times, "
                 + "total wait time: " + totalTimeUIWaitedOnNetworkCalls + "ms, "
-                + "average wait time: " + averageTimeForcedToWait + "ms") ;
+                + "average wait time: " + averageTimeForcedToWait + "ms");
     }
 }
