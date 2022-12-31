@@ -3,7 +3,7 @@ package app.revanced.integrations.patches;
 import com.google.android.apps.youtube.app.watchwhile.WatchWhileActivity;
 import app.revanced.integrations.utils.LogHelper;
 
-public class BackToExitPatch {
+public class FixBackToExitGesturePatch {
     /**
      * State whether the scroll position reaches the top.
      */
