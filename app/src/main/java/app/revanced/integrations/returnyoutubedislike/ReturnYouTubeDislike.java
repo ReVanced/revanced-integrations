@@ -331,7 +331,7 @@ public class ReturnYouTubeDislike {
                 final float leftSeparatorFontRatio = 1.6f;  // increase height by 60%
                 final float leftSeparatorHorizontalScaleRatio = 0.6f; // compress horizontally by 40%
 
-                // shift the left separator up by a smaller amount, to visually align it after changing the size
+                // shift everything up, to compensate for the vertical movement caused by the font change below
                 addSpanStyling(leftSeparatorSpan, new RelativeVerticalOffsetSpan(verticalShiftRatio));
                 addSpanStyling(likesSpan, new RelativeVerticalOffsetSpan(verticalShiftRatio));
                 addSpanStyling(middleSeparatorSpan, new RelativeVerticalOffsetSpan(verticalShiftRatio));
