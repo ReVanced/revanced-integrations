@@ -318,8 +318,8 @@ public class ReturnYouTubeDislike {
                 // On other devices and fonts the left separator may be off vertically by a few pixels,
                 // but it's good enough and still visually better than not doing this scaling/shifting
                 //
-                // important: any changes made here should be tested on a few different devices
-                // getting these values perfect on one device, may looks quite wrong on another device
+                // important: any changes made here should be tested on a few different devices.
+                // Getting these values perfect ons one device, may looks quite wrong on another device
                 final float verticalShiftRatio = -0.15f; // shift up by 15%
                 final float leftSeparatorFontRatio = 1.6f;  // increase height by 60%
                 final float leftSeparatorHorizontalScaleRatio = 0.6f; // compress horizontally by 40%
