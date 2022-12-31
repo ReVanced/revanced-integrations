@@ -309,8 +309,20 @@ public class ReturnYouTubeDislike {
 
                 Spannable dislikeSpan = newSpannableWithDislikes(oldSpannable, voteData);
 
-                // When using a larger font size on the left separator, the entire span becomes shifted downward (including the like/dislike text)
-                // Use a custom span to move the span back up to roughly the correct location
+                // Increase the size of the left separator, so it better matches the stock separator on the right.
+                // But when using a larger font, the entire span (including the like/dislike text) becomes shifted downward.
+                // To correct this, use additional spans to move the alignment back upward by a relative amount.
+                //
+                // The ratio values here were tested on Android 13,
+                // using Samsung, Google and OnePlus branded phones with screen densities of 300 to 560.
+                // On other devices and fonts the left separator may be off vertically by a few pixels,
+                // but it's good enough and still visually better than not doing this scaling/shifting
+                //
+                // important: any changes made here should be tested on a few different devices
+                // getting these values perfect on one device, may looks quite wrong on another device
+                final float verticalShiftRatio = -0.15f; // shift up by 15%
+                final float leftSeparatorFontRatio = 1.6f;  // increase height by 60%
+                final float leftSeparatorHorizontalScaleRatio = 0.6f; // compress horizontally by 40%
                 class RelativeVerticalOffsetSpan extends CharacterStyle {
                     final float relativeVerticalShiftRatio;
 
@@ -323,16 +335,6 @@ public class ReturnYouTubeDislike {
                         tp.baselineShift -= (int) (relativeVerticalShiftRatio * tp.getFontMetrics().top);
                     }
                 }
-
-                // Ratio values tested on Android 13, Samsung, Google and OnePlus branded phones, using screen densities of 300 to 560
-                // On other devices and fonts the left separator may be off vertically by a few pixels,
-                // but it's good enough and still visually better than not doing this scaling/shifting
-                //
-                // important: any changes made here should be tested on a few different devices
-                // getting these values perfect on one device, may looks quite wrong on another device
-                final float verticalShiftRatio = -0.15f; // shift up by 15%
-                final float leftSeparatorFontRatio = 1.6f;  // increase height by 60%
-                final float leftSeparatorHorizontalScaleRatio = 0.6f; // compress horizontally by 40%
 
                 // shift everything up, to compensate for the vertical movement caused by the font change below
                 addSpanStyling(leftSeparatorSpan, new RelativeVerticalOffsetSpan(verticalShiftRatio));
