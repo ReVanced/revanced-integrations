@@ -17,8 +17,9 @@ public class BackToExitPatch {
     public static void exitOnBackPressed(WatchWhileActivity activity) {
         if (!isHomeScrolledTop) return;
 
-        // Close the current activity
         activity.finish();
+        
+        LogHelper.printDebug(() -> "Closed activity");
     }
 
     /**
