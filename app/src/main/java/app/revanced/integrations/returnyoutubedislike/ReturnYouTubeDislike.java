@@ -14,6 +14,7 @@ import android.text.style.ForegroundColorSpan;
 import android.text.style.MetricAffectingSpan;
 import android.text.style.RelativeSizeSpan;
 import android.text.style.ScaleXSpan;
+import android.util.DisplayMetrics;
 
 import androidx.annotation.GuardedBy;
 import androidx.annotation.Nullable;
@@ -314,18 +315,7 @@ public class ReturnYouTubeDislike {
                 // Increase the size of the left separator, so it better matches the stock separator on the right.
                 // But when using a larger font, the entire span (including the like/dislike text) becomes shifted downward.
                 // To correct this, use additional spans to move the alignment back upward by a relative amount.
-                //
-                // The ratio values here were tested on Android 13,
-                // using Samsung, Google and OnePlus branded phones with screen densities of 300 to 560.
-                // On other devices and fonts the left separator may be off vertically by a few pixels,
-                // but it's good enough and still visually better than not doing this scaling/shifting
-                //
-                // important: any changes made here should be tested on a few different devices.
-                // Getting these values perfect on one device, may looks wrong on another device.
-                // The goal is a happy compromise for all devices.
-                final float verticalShiftRatio = -0.15f; // shift up by 15%
-                final float leftSeparatorFontRatio = 1.6f;  // increase height by 60%
-                final float leftSeparatorHorizontalScaleRatio = 0.6f; // compress horizontally by 40%
+                setSegmentedAdjustmentValues();
                 class RelativeVerticalOffsetSpan extends CharacterStyle {
                     final float relativeVerticalShiftRatio;
 
@@ -338,16 +328,15 @@ public class ReturnYouTubeDislike {
                         tp.baselineShift -= (int) (relativeVerticalShiftRatio * tp.getFontMetrics().top);
                     }
                 }
-
                 // shift everything up, to compensate for the vertical movement caused by the font change below
-                addSpanStyling(leftSeparatorSpan, new RelativeVerticalOffsetSpan(verticalShiftRatio));
-                addSpanStyling(likesSpan, new RelativeVerticalOffsetSpan(verticalShiftRatio));
-                addSpanStyling(middleSeparatorSpan, new RelativeVerticalOffsetSpan(verticalShiftRatio));
-                addSpanStyling(dislikeSpan, new RelativeVerticalOffsetSpan(verticalShiftRatio));
+                addSpanStyling(leftSeparatorSpan, new RelativeVerticalOffsetSpan(segmentedVerticalShiftRatio));
+                addSpanStyling(likesSpan, new RelativeVerticalOffsetSpan(segmentedVerticalShiftRatio));
+                addSpanStyling(middleSeparatorSpan, new RelativeVerticalOffsetSpan(segmentedVerticalShiftRatio));
+                addSpanStyling(dislikeSpan, new RelativeVerticalOffsetSpan(segmentedVerticalShiftRatio));
 
                 // important: must add size scaling after vertical offset (otherwise alignment gets off)
-                addSpanStyling(leftSeparatorSpan, new RelativeSizeSpan(leftSeparatorFontRatio));
-                addSpanStyling(leftSeparatorSpan, new ScaleXSpan(leftSeparatorHorizontalScaleRatio));
+                addSpanStyling(leftSeparatorSpan, new RelativeSizeSpan(segmentedLeftSeparatorFontRatio));
+                addSpanStyling(leftSeparatorSpan, new ScaleXSpan(segmentedLeftSeparatorHorizontalScaleRatio));
                 // middle separator does not need resizing
 
                 // put everything together
@@ -364,6 +353,88 @@ public class ReturnYouTubeDislike {
         return true;
     }
 
+    private static boolean segmentedValuesSet = false;
+    private static float segmentedVerticalShiftRatio;
+    private static float segmentedLeftSeparatorFontRatio;
+    private static float segmentedLeftSeparatorHorizontalScaleRatio;
+
+    /**
+     * Set the size/position adjustment values, based on the device.
+     */
+    private static void setSegmentedAdjustmentValues() {
+        if (segmentedValuesSet) {
+            return;
+        }
+
+        String deviceManufacturer = Build.MANUFACTURER;
+        final int deviceSdkVersion = Build.VERSION.SDK_INT;
+        DisplayMetrics metric = ReVancedUtils.getContext().getResources().getDisplayMetrics();
+        final float deviceScaledDensity = metric.scaledDensity;
+        final int deviceDensityDpi = metric.densityDpi;
+        final int deviceHeight = metric.heightPixels;
+        final int deviceWidth = metric.widthPixels;
+        LogHelper.printDebug(() -> "Device manufacturer: '" + deviceManufacturer + "' SDK: " + deviceSdkVersion
+                + " scaledDensity: " + deviceScaledDensity + " densityDpi:" + deviceDensityDpi
+                + " width: " + deviceWidth + " height: " + deviceHeight);
+
+        // device used to determine the configuration below
+        final String manufacturer; // very important
+        final int sdk; // important
+        final float scaledDensityDpi; // important only if using non default system font size
+        final int densityDpi, width, height; // rarely important
+        // configuration based on the specific device above
+        final float verticalShiftRatio;
+        final float leftSeparatorFontRatio;
+        final float leftSeparatorHorizontalScaleRatio;
+
+        // If adding a configuration, then apply the new configuration to the
+        // broadest number of devices while preserving existing settings.
+        // ie: A new configuration for a Sony Android 13 phone should apply to all Sony phones.
+        // ie: If later adding Sony Android 12, then that configuration applies only to Sony Android 12.
+        // For logging/documentation variables, use the values in the log output above.
+        //
+        // IMPORTANT: configurations must be with the system font size default setting.
+        // If you want to add font size specific configurations, then add multiple configurations based on scaledDensity.
+        //
+        // In generally, a single configuration will give perfect layout for all devices
+        // with that manufacture and version of Android.
+        // In general, fine tuning based on density and screen size is usually not needed.
+        switch (deviceManufacturer) {
+            default: // use Google layout by default
+            case "Google":
+                // logging and documentation
+                manufacturer = "Google";
+                sdk = 33;
+                scaledDensityDpi = 2.75f;
+                densityDpi = 560;
+                width = 1080;
+                height = 2154;
+                // actual adjustment values
+                verticalShiftRatio = -0.18f; // move separator and like/dislike up by 18%
+                leftSeparatorFontRatio = 1.8f;  // increase left separator size by 80%
+                leftSeparatorHorizontalScaleRatio = 0.75f; // horizontally compress left separator by 25%
+                break;
+            case "samsung":
+                manufacturer = "samsung";
+                sdk = 33;
+                scaledDensityDpi = 3.0f;
+                densityDpi = 480;
+                width = 1080;
+                height = 2124;
+                verticalShiftRatio = -0.19f;
+                leftSeparatorFontRatio = 1.5f;
+                leftSeparatorHorizontalScaleRatio = 0.7f;
+                break;
+        }
+
+        LogHelper.printDebug(() -> "Using layout adjustments based on manufacturer: '" + manufacturer + "' SDK: " + sdk
+                + " scaledDensity: " + scaledDensityDpi + " densityDpi: " + densityDpi + " width: " + width + " height: " + height);
+
+        segmentedVerticalShiftRatio = verticalShiftRatio;
+        segmentedLeftSeparatorFontRatio = leftSeparatorFontRatio;
+        segmentedLeftSeparatorHorizontalScaleRatio = leftSeparatorHorizontalScaleRatio;
+        segmentedValuesSet = true;
+    }
 
     /**
      * Correctly handles any unicode numbers (such as Arabic numbers)
