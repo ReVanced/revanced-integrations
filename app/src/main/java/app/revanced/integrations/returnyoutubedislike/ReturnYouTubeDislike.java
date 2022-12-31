@@ -295,7 +295,7 @@ public class ReturnYouTubeDislike {
                 // style the separator appearance to mimic the existing layout
                 final int separatorColor = ThemeHelper.isDarkTheme()
                         // it might be possible to extract these colors from the litho layout
-                        // and put these colors in LithoThemePatch (but that would add a dependency for this RYD patch
+                        // and put these colors in LithoThemePatch (but that would add a dependency for this RYD patch)
                         ? 0xFF424242  // dark gray
                         : 0xFFD9D9D9; // light gray
                 addSpanStyling(leftSeparatorSpan, new ForegroundColorSpan(separatorColor));
