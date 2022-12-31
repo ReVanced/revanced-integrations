@@ -301,7 +301,7 @@ public class ReturnYouTubeDislike {
                 CharacterStyle noAntiAliasingStyle = new CharacterStyle() {
                     @Override
                     public void updateDrawState(TextPaint tp) {
-                        tp.setAntiAlias(false); // draw without anti-alising, to give a sharper edge
+                        tp.setAntiAlias(false); // draw without anti-aliasing, to give a sharper edge
                     }
                 };
                 addSpanStyling(leftSeparatorSpan, noAntiAliasingStyle);
