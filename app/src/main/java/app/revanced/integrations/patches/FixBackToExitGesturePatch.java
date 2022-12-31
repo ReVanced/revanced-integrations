@@ -7,36 +7,36 @@ public class FixBackToExitGesturePatch {
     /**
      * State whether the scroll position reaches the top.
      */
-    public static boolean isHomeScrolledTop = false;
+    public static boolean isTopView = false;
 
     /**
-     * Handle the event of clicking the back button.
+     * Handle the event after clicking the back button.
      *
      * @param activity The activity, the app is launched with to finish.
      */
-    public static void exitOnBackPressed(WatchWhileActivity activity) {
-        if (!isHomeScrolledTop) return;
+    public static void onBackPressed(WatchWhileActivity activity) {
+        if (!isTopView) return;
+
+        LogHelper.printDebug(() -> "Activity is closed");
 
         activity.finish();
-        
-        LogHelper.printDebug(() -> "Closed activity");
     }
 
     /**
-     * Handle the event, when it is being scrolled.
+     * Handle the event when the homepage list of views is being scrolled.
      */
-    public static void onStartScrollView() {
-        isHomeScrolledTop = false;
+    public static void onScrollingViews() {
+        LogHelper.printDebug(() -> "Views are scrolling");
 
-        LogHelper.printDebug(() -> "Started scrolling");
+        isTopView = false;
     }
 
     /**
-     * Handle the event of stopping to scroll.
+     * Handle the event when the homepage list of views reached the top.
      */
-    public static void onStopScrollView() {
-        isHomeScrolledTop = true;
+    public static void onTopView() {
+        LogHelper.printDebug(() -> "Scrolling reached the top");
 
-        LogHelper.printDebug(() -> "Stopped scrolling");
+        isTopView = true;
     }
 }
