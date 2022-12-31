@@ -394,7 +394,7 @@ public class ReturnYouTubeDislike {
         //
         // In generally, a single configuration will give perfect layout for all devices
         // with that manufacture and version of Android.
-        // In general, fine tuning based on density and screen size is usually not needed.
+        // Fine tuning based on screen size and densityDpi is usually not needed.
         switch (deviceManufacturer) {
             default: // use Google layout by default
             case "Google":
