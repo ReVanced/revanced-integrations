@@ -8,7 +8,12 @@ public class CopyVideoUrlButton extends BottomControlButton {
     public static CopyVideoUrlButton instance;
 
     public CopyVideoUrlButton(Object obj) {
-        super(obj, "copy_video_url_button", SettingsEnum.COPY_VIDEO_URL_BUTTON_SHOWN.getBoolean(), view -> CopyVideoUrlPatch.copyUrl(false));
+        super(
+                obj,
+                "copy_video_url_button",
+                SettingsEnum.COPY_VIDEO_URL_BUTTON_SHOWN.getBoolean(),
+                view -> CopyVideoUrlPatch.copyUrl(false)
+        );
     }
 
     public static void initializeButton(Object obj) {
@@ -16,6 +21,6 @@ public class CopyVideoUrlButton extends BottomControlButton {
     }
 
     public static void changeVisibility(boolean showing) {
-        instance.setVisibility(showing);
+        if (instance != null) instance.setVisibility(showing);
     }
 }

@@ -27,7 +27,7 @@ public class DownloadButton extends BottomControlButton {
     }
 
     public static void changeVisibility(boolean showing) {
-        instance.setVisibility(showing);
+        if (instance != null) instance.setVisibility(showing);
     }
 
     private static void onDownloadClick(View view) {

@@ -20,7 +20,7 @@ public class CopyVideoUrlTimestampButton extends BottomControlButton {
     }
 
     public static void changeVisibility(boolean showing) {
-        instance.setVisibility(showing);
+        if (instance != null) instance.setVisibility(showing);
     }
 
 }
