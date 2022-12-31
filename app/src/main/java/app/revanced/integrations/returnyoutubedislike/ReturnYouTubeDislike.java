@@ -371,10 +371,10 @@ public class ReturnYouTubeDislike {
         DisplayMetrics metric = ReVancedUtils.getContext().getResources().getDisplayMetrics();
         final float deviceScaledDensity = metric.scaledDensity;
         final int deviceDensityDpi = metric.densityDpi;
-        final int deviceHeight = metric.heightPixels;
         final int deviceWidth = metric.widthPixels;
+        final int deviceHeight = metric.heightPixels;
         LogHelper.printDebug(() -> "Device manufacturer: '" + deviceManufacturer + "' SDK: " + deviceSdkVersion
-                + " scaledDensity: " + deviceScaledDensity + " densityDpi:" + deviceDensityDpi
+                + " scaledDensity: " + deviceScaledDensity + " densityDpi: " + deviceDensityDpi
                 + " width: " + deviceWidth + " height: " + deviceHeight);
 
         // device used to determine the configuration below
