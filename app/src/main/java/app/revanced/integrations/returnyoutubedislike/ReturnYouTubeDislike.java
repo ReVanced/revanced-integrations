@@ -255,7 +255,7 @@ public class ReturnYouTubeDislike {
             }
             replacementSpannable = newSpannableWithDislikes(oldSpannable, voteData);
         } else {
-            String leftSegmentedSeparatorString = ReVancedUtils.isRightToLeftTextLayout() ? "\u200F|  " : "|  ";
+            String leftSegmentedSeparatorString = ReVancedUtils.isRightToLeftTextLayout() ? "\u200F|   " : "|   ";
 
             if (oldLikesString.contains(leftSegmentedSeparatorString)) {
                 return false; // dislikes was previously added
@@ -294,26 +294,18 @@ public class ReturnYouTubeDislike {
                 Spannable middleSeparatorSpan = newSpanUsingStylingOfAnotherSpan(oldSpannable, middleSegmentedSeparatorString);
                 // style the separator appearance to mimic the existing layout
                 final int separatorColor = ThemeHelper.isDarkTheme()
-                        ? 0xFF414141  // dark gray
+                        ? 0xFF424242  // dark gray
                         : 0xFFD9D9D9; // light gray
                 addSpanStyling(leftSeparatorSpan, new ForegroundColorSpan(separatorColor));
                 addSpanStyling(middleSeparatorSpan, new ForegroundColorSpan(separatorColor));
-                MetricAffectingSpan separatorStyle = new MetricAffectingSpan() {
-                    final float separatorHorizontalCompression = 0.71f; // horizontally compress the separator and its spacing
-
-                    @Override
-                    public void updateMeasureState(TextPaint tp) {
-                        tp.setTextScaleX(separatorHorizontalCompression);
-                    }
-
+                CharacterStyle noAntiAliasingStyle = new CharacterStyle() {
                     @Override
                     public void updateDrawState(TextPaint tp) {
-                        tp.setTextScaleX(separatorHorizontalCompression);
-                        tp.setAntiAlias(false);
+                        tp.setAntiAlias(false); // draw without antialising, to give a sharper edge
                     }
                 };
-                addSpanStyling(leftSeparatorSpan, separatorStyle);
-                addSpanStyling(middleSeparatorSpan, separatorStyle);
+                addSpanStyling(leftSeparatorSpan, noAntiAliasingStyle);
+                addSpanStyling(middleSeparatorSpan, noAntiAliasingStyle);
 
                 Spannable dislikeSpan = newSpannableWithDislikes(oldSpannable, voteData);
 
@@ -335,20 +327,19 @@ public class ReturnYouTubeDislike {
                 // Ratio values tested on Android 13, Samsung, Google and OnePlus branded phones, using screen densities of 300 to 560
                 // On other devices and fonts the left separator may be vertically shifted by a few pixels,
                 // but it's good enough and still visually better than not doing this scaling/shifting
-                final float verticalShiftRatio = -0.38f; // shift up by 38%
-                final float verticalLeftSeparatorShiftRatio = -0.075f; // shift up by 8%
-                final float horizontalStretchRatio = 0.92f; // stretch narrower by 8%
-                final float leftSeparatorFontRatio = 1.87f;  // increase height by 87%
-
-                addSpanStyling(leftSeparatorSpan, new RelativeSizeSpan(leftSeparatorFontRatio));
-                addSpanStyling(leftSeparatorSpan, new ScaleXSpan(horizontalStretchRatio));
+                final float verticalShiftRatio = -0.15f; // shift up by 15%
+                final float leftSeparatorHorizontalStretchRatio = 0.65f; // compress horizontally by 35%
+                final float leftSeparatorFontRatio = 1.6f;  // increase height by 60%
 
                 // shift the left separator up by a smaller amount, to visually align it after changing the size
-                addSpanStyling(leftSeparatorSpan, new RelativeVerticalOffsetSpan(verticalLeftSeparatorShiftRatio));
+                addSpanStyling(leftSeparatorSpan, new RelativeVerticalOffsetSpan(verticalShiftRatio));
                 addSpanStyling(likesSpan, new RelativeVerticalOffsetSpan(verticalShiftRatio));
                 addSpanStyling(middleSeparatorSpan, new RelativeVerticalOffsetSpan(verticalShiftRatio));
                 addSpanStyling(dislikeSpan, new RelativeVerticalOffsetSpan(verticalShiftRatio));
 
+                // must set font size after vertical shift (otherwise alignment gets off)
+                addSpanStyling(leftSeparatorSpan, new RelativeSizeSpan(leftSeparatorFontRatio));
+                addSpanStyling(leftSeparatorSpan, new ScaleXSpan(leftSeparatorHorizontalStretchRatio));
                 // middle separator does not need resizing
 
                 // put everything together
@@ -364,6 +355,7 @@ public class ReturnYouTubeDislike {
         textRef.set(replacementSpannable);
         return true;
     }
+
 
     /**
      * Correctly handles any unicode numbers (such as Arabic numbers)
