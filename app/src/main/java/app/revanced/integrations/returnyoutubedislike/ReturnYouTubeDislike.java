@@ -309,8 +309,8 @@ public class ReturnYouTubeDislike {
 
                 Spannable dislikeSpan = newSpannableWithDislikes(oldSpannable, voteData);
 
-                // use a larger font size on the left separator, but this causes the entire span (including the like/dislike text)
-                // to move downward.  Use a custom span to adjust the span back upward, at a relative ratio
+                // When using a larger font size on the left separator, the entire span becomes shifted downward (including the like/dislike text)
+                // Use a custom span to move the span back up to roughly the correct location
                 class RelativeVerticalOffsetSpan extends CharacterStyle {
                     final float relativeVerticalShiftRatio;
 
