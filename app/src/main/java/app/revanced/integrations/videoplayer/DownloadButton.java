@@ -10,13 +10,11 @@ import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.sponsorblock.StringRef;
 import app.revanced.integrations.utils.LogHelper;
 
-/* loaded from: classes6.dex */
-//ToDo: Refactor
-public class DownloadButton {
-    static BottomControlButton _button;
+public class DownloadButton extends BottomControlButton {
+    public static DownloadButton instance;
 
-    public static void initializeButton(Object obj) {
-        _button = new BottomControlButton(
+    public DownloadButton(Object obj) {
+        super(
                 obj,
                 "download_button",
                 SettingsEnum.DOWNLOADS_BUTTON_SHOWN.getBoolean(),
@@ -24,8 +22,12 @@ public class DownloadButton {
         );
     }
 
-    public static void changeVisibility(boolean z) {
-        if (_button != null) _button.changeVisibility(z);
+    public static void initializeButton(Object obj) {
+        instance = new DownloadButton(obj);
+    }
+
+    public static void changeVisibility(boolean showing) {
+        instance.setVisibility(showing);
     }
 
     private static void onDownloadClick(View view) {
@@ -62,15 +64,6 @@ public class DownloadButton {
         } catch (Exception error) {
             LogHelper.printDebug(() -> "Failed to launch the intent: " + error);
         }
-
-        //var options = Arrays.asList("Video", "Audio").toArray(new CharSequence[0]);
-        //
-        //new AlertDialog.Builder(view.getContext())
-        //        .setItems(options, (dialog, which) -> {
-        //            LogHelper.debug(DownloadButton.class, String.valueOf(options[which]));
-        //        })
-        //        .show();
-        // TODO: show popup and download via newpipe
     }
 }
 

@@ -16,10 +16,10 @@ public class CopyVideoUrlPatch {
         currentVideoTimestamp = millis;
     }
 
-    public static void copyUrl(Boolean addTimestamp) {
+    public static void copyUrl(Boolean withTimestamp) {
         try {
             String url = String.format("https://youtu.be/%s", VideoInformation.getCurrentVideoId());
-            if (addTimestamp) {
+            if (withTimestamp) {
                 long seconds = currentVideoTimestamp / 1000;
                 url += String.format("?t=%s", seconds);
             }

@@ -12,7 +12,7 @@ import java.lang.ref.WeakReference;
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedUtils;
 
-public class BottomControlButton {
+public abstract class BottomControlButton {
     WeakReference<ImageView> button = new WeakReference<>(null);
     ConstraintLayout constraintLayout;
     Boolean isButtonEnabled;
@@ -44,22 +44,22 @@ public class BottomControlButton {
             fadeIn.setDuration(fadeDurationFast);
             fadeOut.setDuration(fadeDurationScheduled);
             isShowing = true;
-            changeVisibility(false);
+            setVisibility(false);
         } catch (Exception e) {
             LogHelper.printException(() -> "Failed to initialize button with id: " + viewId, e);
         }
     }
 
-    public void changeVisibility(boolean z) {
-        if (isShowing == z) return;
+    public void setVisibility(boolean showing) {
+        if (isShowing == showing) return;
 
-        isShowing = z;
+        isShowing = showing;
         ImageView imageView = button.get();
 
         if (constraintLayout == null || imageView == null)
             return;
 
-        if (z && isButtonEnabled) {
+        if (showing && isButtonEnabled) {
             LogHelper.printDebug(() -> "Fading in");
             imageView.setVisibility(View.VISIBLE);
             imageView.startAnimation(fadeIn);
