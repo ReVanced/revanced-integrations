@@ -345,7 +345,7 @@ public class ReturnYouTubeDislike {
                 addSpanStyling(middleSeparatorSpan, new RelativeVerticalOffsetSpan(verticalShiftRatio));
                 addSpanStyling(dislikeSpan, new RelativeVerticalOffsetSpan(verticalShiftRatio));
 
-                // important: must set font size after vertical offset (otherwise alignment gets off)
+                // important: must add size scaling after vertical offset (otherwise alignment gets off)
                 addSpanStyling(leftSeparatorSpan, new RelativeSizeSpan(leftSeparatorFontRatio));
                 addSpanStyling(leftSeparatorSpan, new ScaleXSpan(leftSeparatorHorizontalScaleRatio));
                 // middle separator does not need resizing
