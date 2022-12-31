@@ -30,20 +30,11 @@ public class CopyVideoUrlPatch {
             }
 
             Context context = ReVancedUtils.getContext();
-            if (context != null) {
-                setClipboard(context, url);
-                Toast.makeText(context, StringRef.str("share_copy_url_success"), Toast.LENGTH_SHORT).show();
-            } else {
-                LogHelper.printDebug(() -> "context was null, failed to set clipboard");
-            }
+
+            ReVancedUtils.setClipboard(url);
+            if (context != null) Toast.makeText(context, StringRef.str("share_copy_url_success"), Toast.LENGTH_SHORT).show();
         } catch (Exception e) {
             LogHelper.printException(() -> "Failed to generate video url", e);
         }
-    }
-
-    private static void setClipboard(Context context, String text) {
-        android.content.ClipboardManager clipboard = (android.content.ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
-        android.content.ClipData clip = android.content.ClipData.newPlainText("link", text);
-        clipboard.setPrimaryClip(clip);
     }
 }
