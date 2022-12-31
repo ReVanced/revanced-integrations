@@ -294,7 +294,7 @@ public class ReturnYouTubeDislike {
                 Spannable middleSeparatorSpan = newSpanUsingStylingOfAnotherSpan(oldSpannable, middleSegmentedSeparatorString);
                 // style the separator appearance to mimic the existing layout
                 final int separatorColor = ThemeHelper.isDarkTheme()
-                        ? 0xFF424242  // dark gray
+                        ? 0xFF414141  // dark gray
                         : 0xFFD9D9D9; // light gray
                 addSpanStyling(leftSeparatorSpan, new ForegroundColorSpan(separatorColor));
                 addSpanStyling(middleSeparatorSpan, new ForegroundColorSpan(separatorColor));
@@ -335,10 +335,10 @@ public class ReturnYouTubeDislike {
                 // Ratio values tested on Android 13, Samsung, Google and OnePlus branded phones, using screen densities of 300 to 560
                 // On other devices and fonts the left separator may be vertically shifted by a few pixels,
                 // but it's good enough and still visually better than not doing this scaling/shifting
-                final float verticalShiftRatio = -0.35f; // shift up by 35%
-                final float verticalLeftSeparatorShiftRatio = -0.08f; // shift up by 8%
-                final float horizontalStretchRatio = 0.93f; // stretch narrower by 7%
-                final float leftSeparatorFontRatio = 1.88f;  // increase height by 88%
+                final float verticalShiftRatio = -0.38f; // shift up by 38%
+                final float verticalLeftSeparatorShiftRatio = -0.075f; // shift up by 8%
+                final float horizontalStretchRatio = 0.92f; // stretch narrower by 8%
+                final float leftSeparatorFontRatio = 1.87f;  // increase height by 87%
 
                 addSpanStyling(leftSeparatorSpan, new RelativeSizeSpan(leftSeparatorFontRatio));
                 addSpanStyling(leftSeparatorSpan, new ScaleXSpan(horizontalStretchRatio));
