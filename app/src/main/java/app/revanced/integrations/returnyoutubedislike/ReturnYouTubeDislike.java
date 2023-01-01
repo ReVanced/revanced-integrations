@@ -407,7 +407,7 @@ public class ReturnYouTubeDislike {
                 // actual adjustment values
                 segmentedVerticalShiftRatio = -0.18f; // move separators and like/dislike up by 18%
                 segmentedLeftSeparatorFontRatio = 1.8f;  // increase left separator size by 80%
-                segmentedLeftSeparatorHorizontalScaleRatio = 0.75f; // horizontally compress left separator by 25%
+                segmentedLeftSeparatorHorizontalScaleRatio = 0.65f; // horizontally compress left separator by 35%
                 break;
             case "samsung":
                 configManufacturer = "samsung";
