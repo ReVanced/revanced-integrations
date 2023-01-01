@@ -292,12 +292,9 @@ public class ReturnYouTubeDislike {
                 String middleSegmentedSeparatorString = "  •  ";
                 Spannable leftSeparatorSpan = newSpanUsingStylingOfAnotherSpan(oldSpannable, leftSegmentedSeparatorString);
                 Spannable middleSeparatorSpan = newSpanUsingStylingOfAnotherSpan(oldSpannable, middleSegmentedSeparatorString);
-                // style the separator appearance to mimic the existing layout
                 final int separatorColor = ThemeHelper.isDarkTheme()
-                        // it might be possible to extract these colors from the litho layout
-                        // and put these colors in LithoThemePatch (but that would add a dependency for this RYD patch)
-                        ? 0xFF313131  // dark gray // FIXME: the stock separators have a slight transparency
-                        : 0xFFD9D9D9; // light gray // FIXME: need to find the exact transparency level, and use that here
+                        ? 0x37A0A0A0  // transparent dark gray
+                        : 0xFFD9D9D9; // light gray
                 addSpanStyling(leftSeparatorSpan, new ForegroundColorSpan(separatorColor));
                 addSpanStyling(middleSeparatorSpan, new ForegroundColorSpan(separatorColor));
                 CharacterStyle noAntiAliasingStyle = new CharacterStyle() {
@@ -328,6 +325,7 @@ public class ReturnYouTubeDislike {
                     }
                 }
                 // shift everything up, to compensate for the vertical movement caused by the font change below
+                // each section needs it's own Relative span, otherwise alignment is wrong
                 addSpanStyling(leftSeparatorSpan, new RelativeVerticalOffsetSpan(segmentedVerticalShiftRatio));
                 addSpanStyling(likesSpan, new RelativeVerticalOffsetSpan(segmentedVerticalShiftRatio));
                 addSpanStyling(middleSeparatorSpan, new RelativeVerticalOffsetSpan(segmentedVerticalShiftRatio));
@@ -358,7 +356,7 @@ public class ReturnYouTubeDislike {
     private static float segmentedLeftSeparatorHorizontalScaleRatio;
 
     /**
-     * Set the size/position adjustment values, based on the device.
+     * Set the segmented adjustment values, based on the device.
      */
     private static void setSegmentedAdjustmentValues() {
         if (segmentedValuesSet) {
@@ -388,7 +386,7 @@ public class ReturnYouTubeDislike {
         // ie: If later adding Sony Android 12, then that configuration applies only to Sony Android 12.
         // For logging/documentation variables, use the values in the log output above.
         //
-        // IMPORTANT: configurations must be with the system font size default setting.
+        // IMPORTANT: configurations must be with the default system font size setting.
         // If you want to add font size specific configurations, then add multiple configurations based on scaledDensity.
         //
         // In generally, a single configuration will give perfect layout for all devices
