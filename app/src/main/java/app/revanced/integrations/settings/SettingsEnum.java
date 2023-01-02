@@ -16,6 +16,10 @@ public enum SettingsEnum {
     DOWNLOADS_BUTTON_SHOWN("revanced_downloads", true, ReturnType.BOOLEAN, true),
     DOWNLOADS_PACKAGE_NAME("revanced_downloads_package_name", "org.schabi.newpipe" /* NewPipe */, ReturnType.STRING),
 
+    // Copy video URL settings
+    COPY_VIDEO_URL_BUTTON_SHOWN("revanced_copy_video_url", true, ReturnType.BOOLEAN, true),
+    COPY_VIDEO_URL_TIMESTAMP_BUTTON_SHOWN("revanced_copy_video_url_timestamp", true, ReturnType.BOOLEAN, true),
+
     // Video settings
     OLD_STYLE_VIDEO_QUALITY_PLAYER_SETTINGS("revanced_use_old_style_quality_settings", true, ReturnType.BOOLEAN),
     PREFERRED_VIDEO_SPEED("revanced_pref_video_speed", -2.0f, ReturnType.FLOAT),
@@ -38,6 +42,7 @@ public enum SettingsEnum {
     ADREMOVER_SHORTS_REMOVAL("revanced_adremover_shorts", true, ReturnType.BOOLEAN, true),
     ADREMOVER_COMMUNITY_GUIDELINES_REMOVAL("revanced_adremover_community_guidelines", true, ReturnType.BOOLEAN),
     ADREMOVER_SUBSCRIBERS_COMMUNITY_GUIDELINES_REMOVAL("revanced_adremover_subscribers_community_guidelines_removal", true, ReturnType.BOOLEAN),
+    ADREMOVER_CHANNEL_MEMBER_SHELF_REMOVAL("revanced_adremover_channel_member_shelf_removal", true, ReturnType.BOOLEAN),
     ADREMOVER_EMERGENCY_BOX_REMOVAL("revanced_adremover_emergency_box_removal", true, ReturnType.BOOLEAN),
     ADREMOVER_INFO_PANEL_REMOVAL("revanced_adremover_info_panel", true, ReturnType.BOOLEAN),
     ADREMOVER_MEDICAL_PANEL_REMOVAL("revanced_adremover_medical_panel", true, ReturnType.BOOLEAN),
@@ -83,6 +88,7 @@ public enum SettingsEnum {
     HIDE_SHORTS_COMMENTS_BUTTON("revanced_hide_shorts_comments_button", false, ReturnType.BOOLEAN),
     HIDE_TIME_AND_SEEKBAR("revanced_hide_time_and_seekbar", false, ReturnType.BOOLEAN),
     HIDE_WATCH_IN_VR("revanced_hide_watch_in_vr", false, ReturnType.BOOLEAN, true),
+    HIDE_BREAKING_NEWS("revanced_hide_breaking_news", true, ReturnType.BOOLEAN, true),
 
     // Misc. Settings
     FIX_PLAYBACK("revanced_fix_playback", false, ReturnType.BOOLEAN, false),

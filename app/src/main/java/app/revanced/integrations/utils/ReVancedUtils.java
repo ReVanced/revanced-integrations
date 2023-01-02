@@ -6,6 +6,8 @@ import android.content.res.Resources;
 import android.os.Handler;
 import android.os.Looper;
 
+import java.text.Bidi;
+import java.util.Locale;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -121,8 +123,23 @@ public class ReVancedUtils {
         }
     }
 
+    public static void setClipboard(String text) {
+        android.content.ClipboardManager clipboard = (android.content.ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+        android.content.ClipData clip = android.content.ClipData.newPlainText("ReVanced", text);
+        clipboard.setPrimaryClip(clip);
+    }
+
     public static boolean isTablet(Context context) {
         return context.getResources().getConfiguration().smallestScreenWidthDp >= 600;
+    }
+
+    private static final boolean isRightToLeftTextLayout =
+            new Bidi(Locale.getDefault().getDisplayLanguage(), Bidi.DIRECTION_DEFAULT_RIGHT_TO_LEFT).isRightToLeft();
+    /**
+     * If the device language uses right to left text layout (hebrew, arabic, etc)
+     */
+    public static boolean isRightToLeftTextLayout() {
+        return isRightToLeftTextLayout;
     }
 
     /**

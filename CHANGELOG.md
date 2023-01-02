@@ -1,3 +1,84 @@
+## [0.91.1](https://github.com/revanced/revanced-integrations/compare/v0.91.0...v0.91.1) (2023-01-02)
+
+
+### Bug Fixes
+
+* revert removing workaround task `publish` ([64c31b8](https://github.com/revanced/revanced-integrations/commit/64c31b84e76a270513efb4ae111afae507cacad4))
+* **twitch/block-embedded-ads:** rewrite Kotlin classes to Java ([#270](https://github.com/revanced/revanced-integrations/issues/270)) ([843dd9d](https://github.com/revanced/revanced-integrations/commit/843dd9de9e7fcd0b2b609e8af9a705faa1e23bc6))
+
+# [0.91.0](https://github.com/revanced/revanced-integrations/compare/v0.90.0...v0.91.0) (2022-12-31)
+
+
+### Bug Fixes
+
+* **youtube/general-ads:** restore swipe back to exit gesture ([#264](https://github.com/revanced/revanced-integrations/issues/264)) ([76c36da](https://github.com/revanced/revanced-integrations/commit/76c36daee09be00d36477ea21c8b97f11444b7d2))
+
+
+### Features
+
+* **youtube:** `copy-video-url` patch ([#263](https://github.com/revanced/revanced-integrations/issues/263)) ([e856d9d](https://github.com/revanced/revanced-integrations/commit/e856d9dccdf11888005e757e84a06523ad2c8dc5))
+
+# [0.91.0-dev.2](https://github.com/revanced/revanced-integrations/compare/v0.91.0-dev.1...v0.91.0-dev.2) (2022-12-31)
+
+
+### Bug Fixes
+
+* **youtube/general-ads:** restore swipe back to exit gesture ([#264](https://github.com/revanced/revanced-integrations/issues/264)) ([76c36da](https://github.com/revanced/revanced-integrations/commit/76c36daee09be00d36477ea21c8b97f11444b7d2))
+
+# [0.91.0-dev.1](https://github.com/revanced/revanced-integrations/compare/v0.90.0...v0.91.0-dev.1) (2022-12-31)
+
+
+### Features
+
+* **youtube:** `copy-video-url` patch ([#263](https://github.com/revanced/revanced-integrations/issues/263)) ([e856d9d](https://github.com/revanced/revanced-integrations/commit/e856d9dccdf11888005e757e84a06523ad2c8dc5))
+
+# [0.90.0](https://github.com/revanced/revanced-integrations/compare/v0.89.0...v0.90.0) (2022-12-31)
+
+
+### Features
+
+* **youtube/return-youtube-dislike:** better formatting and LTR support ([#252](https://github.com/revanced/revanced-integrations/issues/252)) ([b839600](https://github.com/revanced/revanced-integrations/commit/b83960072831b4097fcca91afafb9111f55d8e10))
+
+
+### Performance Improvements
+
+* **youtube/general-ads-patch:** reduce list of ignored component names ([#261](https://github.com/revanced/revanced-integrations/issues/261)) ([8d233a2](https://github.com/revanced/revanced-integrations/commit/8d233a2f82f49b93adb90e2b11c9fa46836dd9b0))
+
+## [0.89.1-dev.1](https://github.com/revanced/revanced-integrations/compare/v0.89.0...v0.89.1-dev.1) (2022-12-30)
+
+
+### Performance Improvements
+
+* **youtube/general-ads-patch:** reduce list of ignored component names ([#261](https://github.com/revanced/revanced-integrations/issues/261)) ([8d233a2](https://github.com/revanced/revanced-integrations/commit/8d233a2f82f49b93adb90e2b11c9fa46836dd9b0))
+
+# [0.89.0](https://github.com/revanced/revanced-integrations/compare/v0.88.0...v0.89.0) (2022-12-30)
+
+
+### Features
+
+* **youtube/general-ads-patch:** hide channel member shelf ([#257](https://github.com/revanced/revanced-integrations/issues/257)) ([87799e5](https://github.com/revanced/revanced-integrations/commit/87799e5c553f71e01c59d4ba38898bba571d8134))
+
+# [0.89.0-dev.1](https://github.com/revanced/revanced-integrations/compare/v0.88.0...v0.89.0-dev.1) (2022-12-30)
+
+
+### Features
+
+* **youtube/general-ads-patch:** hide channel member shelf ([#257](https://github.com/revanced/revanced-integrations/issues/257)) ([87799e5](https://github.com/revanced/revanced-integrations/commit/87799e5c553f71e01c59d4ba38898bba571d8134))
+
+# [0.88.0](https://github.com/revanced/revanced-integrations/compare/v0.87.0...v0.88.0) (2022-12-29)
+
+
+### Features
+
+* **youtube:** `hide-breaking-news-shelf` patch ([#258](https://github.com/revanced/revanced-integrations/issues/258)) ([eec90ee](https://github.com/revanced/revanced-integrations/commit/eec90ee04cdfcad08f0448c0f2e860e6eb25294f))
+
+# [0.88.0-dev.1](https://github.com/revanced/revanced-integrations/compare/v0.87.0...v0.88.0-dev.1) (2022-12-29)
+
+
+### Features
+
+* **youtube:** `hide-breaking-news-shelf` patch ([#258](https://github.com/revanced/revanced-integrations/issues/258)) ([eec90ee](https://github.com/revanced/revanced-integrations/commit/eec90ee04cdfcad08f0448c0f2e860e6eb25294f))
+
 # [0.87.0](https://github.com/revanced/revanced-integrations/compare/v0.86.1...v0.87.0) (2022-12-26)
 
 
