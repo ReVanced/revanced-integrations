@@ -365,20 +365,7 @@ public class ReturnYouTubeDislike {
 
         String deviceManufacturer = Build.MANUFACTURER;
         final int deviceSdkVersion = Build.VERSION.SDK_INT;
-        DisplayMetrics metric = ReVancedUtils.getContext().getResources().getDisplayMetrics();
-        final float deviceScaledDensity = metric.scaledDensity;
-        final int deviceDensityDpi = metric.densityDpi;
-        final int deviceWidth = metric.widthPixels;
-        final int deviceHeight = metric.heightPixels;
-        LogHelper.printDebug(() -> "Device manufacturer: '" + deviceManufacturer + "' SDK: " + deviceSdkVersion
-                + " scaledDensity: " + deviceScaledDensity + " densityDpi: " + deviceDensityDpi
-                + " width: " + deviceWidth + " height: " + deviceHeight);
-
-        // device used to determine the configuration below
-        final String configManufacturer; // very important
-        final int configSdk; // important
-        final float configScaledDensityDpi; // important only if using non default system font size
-        final int configDensityDpi, configWidth, configHeight; // rarely important
+        LogHelper.printDebug(() -> "Device manufacturer: '" + deviceManufacturer + "' SDK: " + deviceSdkVersion);
 
         // If adding a configuration, then apply the new configuration to the
         // broadest number of devices while preserving existing settings.
@@ -387,22 +374,17 @@ public class ReturnYouTubeDislike {
         // For logging/documentation variables, use the values in the log output above.
         //
         // IMPORTANT: configurations must be with the default system font size setting.
-        // If you want to add font size specific configurations, then add multiple configurations based on scaledDensity.
         //
-        // In generally, a single configuration will give perfect layout for all devices
-        // with that manufacture and version of Android.
-        // Fine tuning based on screen size and densityDpi is usually not needed.
+        // In generally, a single configuration will give perfect layout for all devices of the same manufacturer
+        final String configManufacturer;
+        final int configSdk;
         switch (deviceManufacturer) {
             default: // use Google layout by default
             case "Google":
                 // logging and documentation
                 configManufacturer = "Google";
                 configSdk = 33;
-                configScaledDensityDpi = 2.75f;
-                configDensityDpi = 560;
-                configWidth = 1080;
-                configHeight = 2154;
-                // actual adjustment values
+                // tested on Android 10 thru 13, and works well for all
                 segmentedVerticalShiftRatio = -0.18f; // move separators and like/dislike up by 18%
                 segmentedLeftSeparatorFontRatio = 1.8f;  // increase left separator size by 80%
                 segmentedLeftSeparatorHorizontalScaleRatio = 0.65f; // horizontally compress left separator by 35%
@@ -410,18 +392,14 @@ public class ReturnYouTubeDislike {
             case "samsung":
                 configManufacturer = "samsung";
                 configSdk = 33;
-                configScaledDensityDpi = 3.0f;
-                configDensityDpi = 480;
-                configWidth = 1080;
-                configHeight = 2124;
+                // tested on S22
                 segmentedVerticalShiftRatio = -0.19f;
                 segmentedLeftSeparatorFontRatio = 1.5f;
                 segmentedLeftSeparatorHorizontalScaleRatio = 0.7f;
                 break;
         }
 
-        LogHelper.printDebug(() -> "Using layout adjustments based on manufacturer: '" + configManufacturer + "' SDK: " + configSdk
-                + " scaledDensity: " + configScaledDensityDpi + " densityDpi: " + configDensityDpi + " width: " + configWidth + " height: " + configHeight);
+        LogHelper.printDebug(() -> "Using layout adjustments based on manufacturer: '" + configManufacturer + "' SDK: " + configSdk);
         segmentedValuesSet = true;
     }
 
