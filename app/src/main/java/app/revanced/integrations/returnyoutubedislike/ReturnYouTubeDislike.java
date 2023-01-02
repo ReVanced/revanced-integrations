@@ -255,7 +255,7 @@ public class ReturnYouTubeDislike {
             }
             replacementSpannable = newSpannableWithDislikes(oldSpannable, voteData);
         } else {
-            String leftSegmentedSeparatorString = ReVancedUtils.isRightToLeftTextLayout() ? "\u200F|   " : "|   ";
+            String leftSegmentedSeparatorString = ReVancedUtils.isRightToLeftTextLayout() ? "\u200F|  " : "|  ";
 
             if (oldLikesString.contains(leftSegmentedSeparatorString)) {
                 return false; // dislikes was previously added
