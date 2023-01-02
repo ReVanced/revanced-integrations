@@ -367,11 +367,6 @@ public class ReturnYouTubeDislike {
         final int deviceSdkVersion = Build.VERSION.SDK_INT;
         LogHelper.printDebug(() -> "Device manufacturer: '" + deviceManufacturer + "' SDK: " + deviceSdkVersion);
 
-        // If adding a configuration, then apply the new configuration to the
-        // broadest number of devices while preserving existing settings.
-        // ie: A new configuration for a Sony Android 13 phone should apply to all Sony phones.
-        // ie: If later adding Sony Android 12, then that configuration applies only to Sony Android 12.
-        // For logging/documentation variables, use the values in the log output above.
         //
         // IMPORTANT: configurations must be with the default system font size setting.
         //
