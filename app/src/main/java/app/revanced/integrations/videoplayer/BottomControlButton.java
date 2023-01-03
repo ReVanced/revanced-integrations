@@ -74,6 +74,6 @@ public abstract class BottomControlButton {
     }
 
     private static Animation getAnimation(String str) {
-        return AnimationUtils.loadAnimation(ReVancedUtils.getContext(), ReVancedUtils.getIdentifier((str, "anim"));
+        return AnimationUtils.loadAnimation(ReVancedUtils.getContext(), ReVancedUtils.getIdentifier(str, "anim"));
     }
 }
