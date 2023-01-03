@@ -1,6 +1,5 @@
 package app.revanced.integrations.videoplayer;
 
-import android.content.Context;
 import android.support.constraint.ConstraintLayout;
 import android.view.View;
 import android.view.animation.Animation;
