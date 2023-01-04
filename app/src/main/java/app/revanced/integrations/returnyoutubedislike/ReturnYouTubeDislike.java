@@ -401,7 +401,7 @@ public class ReturnYouTubeDislike {
                 segmentedLeftSeparatorVerticalShiftRatio = -0.075f;
                 segmentedVerticalShiftRatio = -0.38f;
                 segmentedLeftSeparatorFontRatio = 1.87f;
-                segmentedLeftSeparatorHorizontalScaleRatio = 0.91f;
+                segmentedLeftSeparatorHorizontalScaleRatio = 0.50f;
                 break;
 
         }
