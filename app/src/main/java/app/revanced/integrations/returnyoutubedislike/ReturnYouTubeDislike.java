@@ -394,6 +394,16 @@ public class ReturnYouTubeDislike {
                 segmentedLeftSeparatorFontRatio = 1.5f;
                 segmentedLeftSeparatorHorizontalScaleRatio = 0.7f;
                 break;
+            case "OnePlus":
+                configManufacturer = "oneplus";
+                configSdk = 33;
+                // tested on OnePlus 8 Pro
+                segmentedLeftSeparatorVerticalShiftRatio = -0.075f;
+                segmentedVerticalShiftRatio = -0.38f;
+                segmentedLeftSeparatorFontRatio = 1.87f;
+                segmentedLeftSeparatorHorizontalScaleRatio = 0.91f;
+                break;
+
         }
 
         LogHelper.printDebug(() -> "Using layout adjustments based on manufacturer: '" + configManufacturer + "' SDK: " + configSdk);
