@@ -326,7 +326,8 @@ public class ReturnYouTubeDislike {
                 }
                 // shift everything up, to compensate for the vertical movement caused by the font change below
                 // each section needs it's own Relative span, otherwise alignment is wrong
-                addSpanStyling(leftSeparatorSpan, new RelativeVerticalOffsetSpan(segmentedVerticalShiftRatio));
+                addSpanStyling(leftSeparatorSpan, new RelativeVerticalOffsetSpan(segmentedLeftSeparatorVerticalShiftRatio));
+
                 addSpanStyling(likesSpan, new RelativeVerticalOffsetSpan(segmentedVerticalShiftRatio));
                 addSpanStyling(middleSeparatorSpan, new RelativeVerticalOffsetSpan(segmentedVerticalShiftRatio));
                 addSpanStyling(dislikeSpan, new RelativeVerticalOffsetSpan(segmentedVerticalShiftRatio));
@@ -352,6 +353,7 @@ public class ReturnYouTubeDislike {
 
     private static boolean segmentedValuesSet = false;
     private static float segmentedVerticalShiftRatio;
+    private static float segmentedLeftSeparatorVerticalShiftRatio;
     private static float segmentedLeftSeparatorFontRatio;
     private static float segmentedLeftSeparatorHorizontalScaleRatio;
 
@@ -380,7 +382,7 @@ public class ReturnYouTubeDislike {
                 configManufacturer = "Google";
                 configSdk = 33;
                 // tested on Android 10 thru 13, and works well for all
-                segmentedVerticalShiftRatio = -0.18f; // move separators and like/dislike up by 18%
+                segmentedLeftSeparatorVerticalShiftRatio = segmentedVerticalShiftRatio = -0.18f; // move separators and like/dislike up by 18%
                 segmentedLeftSeparatorFontRatio = 1.8f;  // increase left separator size by 80%
                 segmentedLeftSeparatorHorizontalScaleRatio = 0.65f; // horizontally compress left separator by 35%
                 break;
@@ -388,7 +390,7 @@ public class ReturnYouTubeDislike {
                 configManufacturer = "samsung";
                 configSdk = 33;
                 // tested on S22
-                segmentedVerticalShiftRatio = -0.19f;
+                segmentedLeftSeparatorVerticalShiftRatio = segmentedVerticalShiftRatio = -0.19f;
                 segmentedLeftSeparatorFontRatio = 1.5f;
                 segmentedLeftSeparatorHorizontalScaleRatio = 0.7f;
                 break;
