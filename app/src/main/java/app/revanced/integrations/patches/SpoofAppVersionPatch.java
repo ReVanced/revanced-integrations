@@ -2,7 +2,7 @@ package app.revanced.integrations.patches;
 
 import app.revanced.integrations.settings.SettingsEnum;
 
-public class SpoofOldAppVersionPatch {
+public class SpoofAppVersionPatch {
 
     public static String getYouTubeVersionOverride(String version) {
         if (SettingsEnum.SPOOF_OLD_YOUTUBE_APP_VERSION.getBoolean()){
