@@ -46,7 +46,7 @@ public class ReVancedSettingActivity {
         try {
             getTextView((ViewGroup) base.findViewById(getIdentifier("toolbar", "id"))).setText(preferenceIdentifier);
         } catch (Exception e) {
-            LogHelper.printException(() -> ("Couldn't set Toolbar title"), e);
+            LogHelper.printException(() -> "Couldn't set Toolbar title", e);
         }
 
         base.getFragmentManager().beginTransaction().replace(getIdentifier("revanced_settings_fragments", "id"), preferenceFragment).commit();

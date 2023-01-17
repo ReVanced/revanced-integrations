@@ -51,7 +51,7 @@ public class VotingButton {
             isShowing = true;
             changeVisibilityImmediate(false);
         } catch (Exception ex) {
-            LogHelper.printException(() -> ("Unable to set RelativeLayout"), ex);
+            LogHelper.printException(() -> "Unable to set RelativeLayout", ex);
         }
     }
 

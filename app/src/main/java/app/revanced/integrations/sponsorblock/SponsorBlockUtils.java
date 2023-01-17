@@ -233,13 +233,13 @@ public abstract class SponsorBlockUtils {
         final SponsorBlockSettings.SegmentInfo segmentType = SponsorBlockUtils.newSponsorBlockSegmentType;
         try {
             if (start < 0 || end < 0 || start >= end || segmentType == null || videoId == null || uuid == null) {
-                LogHelper.printException(() -> ("Unable to submit times, invalid parameters"));
+                LogHelper.printException(() -> "Unable to submit times, invalid parameters");
                 return;
             }
             SBRequester.submitSegments(videoId, uuid, ((float) start) / 1000f, ((float) end) / 1000f, segmentType.key, toastRunnable);
             newSponsorSegmentEndMillis = newSponsorSegmentStartMillis = -1;
         } catch (Exception e) {
-            LogHelper.printException(() -> ("Unable to submit segment"), e);
+            LogHelper.printException(() -> "Unable to submit segment", e);
         }
 
         if (videoId != null)
@@ -436,7 +436,7 @@ public abstract class SponsorBlockUtils {
                 PlayerController.setCurrentVideoId(null);
             }
         } catch (Exception ex) {
-            LogHelper.printException(() -> ("Player type changed caused a crash."), ex);
+            LogHelper.printException(() -> "Player type changed caused a crash.", ex);
         }
     }
 

@@ -326,7 +326,7 @@ public class PlayerController {
             lastKnownVideoTime = finalMillisecond;
             VideoInformation.seekTo(finalMillisecond);
         } catch (Exception e) {
-            LogHelper.printException(() -> ("Cannot skip to millisecond"), e);
+            LogHelper.printException(() -> "Cannot skip to millisecond", e);
         }
 
         return true;

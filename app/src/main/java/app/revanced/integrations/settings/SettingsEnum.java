@@ -305,7 +305,7 @@ public enum SettingsEnum {
                     defaultValue = SharedPrefHelper.getString(setting.sharedPref, path, (String) defaultValue);
                     break;
                 default:
-                    LogHelper.printException(() -> ("Setting does not have a valid Type. Name is: " + setting.name()));
+                    LogHelper.printException(() -> "Setting does not have a valid Type. Name is: " + setting.name());
                     break;
             }
             setting.setValue(defaultValue);
@@ -338,7 +338,7 @@ public enum SettingsEnum {
         Context context = ReVancedUtils.getContext();
 
         if (context == null) {
-            LogHelper.printException(() -> ("Context on SaveValue is null!"));
+            LogHelper.printException(() -> "Context on SaveValue is null!");
             return;
         }
 
@@ -359,7 +359,7 @@ public enum SettingsEnum {
                 SharedPrefHelper.saveString(sharedPref, path, (String) defaultValue);
                 break;
             default:
-                LogHelper.printException(() -> ("Setting does not have a valid Type. Name is: " + name()));
+                LogHelper.printException(() -> "Setting does not have a valid Type. Name is: " + name());
                 break;
         }
 

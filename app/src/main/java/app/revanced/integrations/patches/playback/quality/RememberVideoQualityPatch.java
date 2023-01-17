@@ -86,7 +86,7 @@ public class RememberVideoQualityPatch {
         LogHelper.printDebug(() -> "Quality: " + qualityToLog);
         Context context = ReVancedUtils.getContext();
         if (context == null) {
-            LogHelper.printException(() -> ("Context is null or settings not initialized, returning quality: " + qualityToLog));
+            LogHelper.printException(() -> "Context is null or settings not initialized, returning quality: " + qualityToLog);
             return quality;
         }
         if (isConnectedWifi(context)) {
