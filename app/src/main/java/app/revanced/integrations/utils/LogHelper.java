@@ -46,11 +46,13 @@ public class LogHelper {
         }
     }
 
+    private static final String REVANCED_LOG_PREFIX = "revanced: ";
+
     /**
      * Logs information messages with the most outer class name of the code that is calling this method.
      */
     public static void printInfo(LogMessage message) {
-        Log.i("revanced: " + message.findOuterClassSimpleName(), message.buildMessageString());
+        Log.i(REVANCED_LOG_PREFIX + message.findOuterClassSimpleName(), message.buildMessageString());
     }
 
     /**
@@ -71,7 +73,7 @@ public class LogHelper {
                 messageString = builder.toString();
             }
 
-            Log.d("revanced: " + message.findOuterClassSimpleName(), messageString);
+            Log.d(REVANCED_LOG_PREFIX + message.findOuterClassSimpleName(), messageString);
         }
     }
 
@@ -100,7 +102,7 @@ public class LogHelper {
                                       @Nullable String userToastMessage) {
         String messageString = message.buildMessageString();
         String outerClassSimpleName = message.findOuterClassSimpleName();
-        String logMessage = "revanced: " + outerClassSimpleName;
+        String logMessage = REVANCED_LOG_PREFIX + outerClassSimpleName;
         if (ex == null) {
             Log.e(logMessage, messageString);
         } else {
