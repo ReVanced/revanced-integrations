@@ -3,6 +3,9 @@ package app.revanced.integrations.utils;
 import android.util.Log;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
@@ -73,27 +76,39 @@ public class LogHelper {
      * Logs messages with the most outer class name of the code that is calling this method.
      */
     public static void printException(LogMessage message) {
-        String messageString = message.buildMessageString();
-        String outerClassSimpleName = message.findOuterClassSimpleName();
-        Log.e("revanced: " + outerClassSimpleName, messageString);
-        showExceptionToast(messageString, outerClassSimpleName);
+        printException(message, null, null);
     }
 
     /**
      * Logs exceptions with the most outer class name of the code that is calling this method.
      */
     public static void printException(LogMessage message, Throwable ex) {
-        String messageString = message.buildMessageString();
-        String outerClassSimpleName = message.findOuterClassSimpleName();
-        Log.e("revanced: " + outerClassSimpleName, messageString, ex);
-        showExceptionToast(messageString, outerClassSimpleName);
+        printException(message, ex, null);
     }
 
-    private static void showExceptionToast(String messageString, String outerClassSimpleName) {
-        if (SettingsEnum.DEBUG_SHOW_TOAST_ON_EXCEPTION.getBoolean()) {
+    /**
+     * @param message log message
+     * @param ex optional exception
+     * @param userToastMessage optional toast message to display to user.
+     *                         If not null, the toast is displayed regardless
+     *                         if {@link SettingsEnum#DEBUG_SHOW_TOAST_ON_EXCEPTION} is enabled.
+     */
+    public static void printException(@NonNull LogMessage message, @Nullable Throwable ex,
+                                      @Nullable String userToastMessage) {
+        String messageString = message.buildMessageString();
+        String outerClassSimpleName = message.findOuterClassSimpleName();
+        String logMessage = "revanced: " + outerClassSimpleName;
+        if (ex == null) {
+            Log.e(logMessage, messageString);
+        } else {
+            Log.e(logMessage, messageString, ex);
+        }
+        if (userToastMessage != null || SettingsEnum.DEBUG_SHOW_TOAST_ON_EXCEPTION.getBoolean()) {
+            String toastMessageToDisplay = (userToastMessage != null)
+                    ? userToastMessage
+                    : outerClassSimpleName + ": " + messageString;
             ReVancedUtils.runOnMainThread(() -> {
-                String toastMessage = outerClassSimpleName + ": " + messageString;
-                Toast.makeText(ReVancedUtils.getContext(), toastMessage, Toast.LENGTH_LONG).show();
+                Toast.makeText(ReVancedUtils.getContext(), toastMessageToDisplay, Toast.LENGTH_LONG).show();
             });
         }
     }
