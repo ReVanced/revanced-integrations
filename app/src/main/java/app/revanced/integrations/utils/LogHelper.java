@@ -55,6 +55,8 @@ public class LogHelper {
 
     /**
      * Logs debug messages with the most outer class name of the code that is calling this method.
+     * Whenever possible, the log string should be constructed entirely inside {@link LogMessage#buildMessageString()}
+     * so the performance cost of building strings is paid only if {@link SettingsEnum#DEBUG} is enabled.
      */
     public static void printDebug(LogMessage message) {
         if (SettingsEnum.DEBUG.getBoolean()) {
