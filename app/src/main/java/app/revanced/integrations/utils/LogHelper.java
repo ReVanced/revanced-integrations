@@ -1,5 +1,6 @@
 package app.revanced.integrations.utils;
 
+import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -108,7 +109,10 @@ public class LogHelper {
                     ? userToastMessage
                     : outerClassSimpleName + ": " + messageString;
             ReVancedUtils.runOnMainThread(() -> {
-                Toast.makeText(ReVancedUtils.getContext(), toastMessageToDisplay, Toast.LENGTH_LONG).show();
+                Context context = ReVancedUtils.getContext();
+                if (context != null) {
+                    Toast.makeText(context, toastMessageToDisplay, Toast.LENGTH_LONG).show();
+                }
             });
         }
     }
