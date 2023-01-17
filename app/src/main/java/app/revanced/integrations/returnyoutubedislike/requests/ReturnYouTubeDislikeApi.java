@@ -256,8 +256,7 @@ public class ReturnYouTubeDislikeApi {
                     LogHelper.printDebug(() -> "Voting data fetched: " + votingData);
                     return votingData;
                 } catch (JSONException ex) {
-                    LogHelper.printException(() -> "Failed to parse video: " + videoId + " json: " + json,
-                            ex, str("revanced_ryd_failure_connection_timeout"));
+                    LogHelper.printException(() -> "Failed to parse video: " + videoId + " json: " + json, ex);
                     // fall thru to update statistics
                 }
             } else {
