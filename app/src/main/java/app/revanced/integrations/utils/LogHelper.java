@@ -117,40 +117,4 @@ public class LogHelper {
         }
     }
 
-    /**
-     * Deprecated. Instead call {@link #printDebug(LogMessage)},
-     * which does not cause log messages to be constructed unless logging is enabled.
-     */
-    @Deprecated
-    public static void debug(Class _clazz, String message) {
-        printDebug(() -> message); // this fails to show the correct calling class name, but it's deprecated who cares
-    }
-
-    /**
-     * Deprecated.  Instead call {@link #printException(LogMessage, Throwable)}
-     * or {@link #printException(LogMessage)}
-     * which does not cause log messages to be constructed unless logging is enabled.
-     */
-    @Deprecated
-    public static void printException(Class _clazz, String message, Throwable ex) {
-        printException(() -> message, ex);
-    }
-
-    /**
-     * Deprecated. Instead call {@link #printException(LogMessage)},
-     * which does not cause log messages to be constructed unless logging is enabled.
-     */
-    @Deprecated
-    public static void printException(Class _clazz, String message) {
-        printException(() -> message);
-    }
-
-    /**
-     * Deprecated. Instead call {@link #printInfo(LogMessage)},
-     * which does not cause log messages to be constructed unless logging is enabled.
-     */
-    @Deprecated
-    public static void info(Class _clazz, String message) {
-        printInfo(() -> message);
-    }
 }
