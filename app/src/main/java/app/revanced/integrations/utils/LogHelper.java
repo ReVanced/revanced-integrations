@@ -21,8 +21,8 @@ public class LogHelper {
         String buildMessageString();
 
         /**
-         * @return For non inner classes, this returns {@link Class#getSimpleName()}.
-         * For inner classes (static and anonymous), this returns the enclosing class simple name.<br>
+         * @return For non nested classes, this returns {@link Class#getSimpleName()}.
+         * For classes of inner, static, or anonymous, this returns the simple name of the enclosing class.<br>
          * <br>
          * For example, each of these classes return 'SomethingView':<br>
          * com.company.SomethingView<br>
@@ -37,8 +37,8 @@ public class LogHelper {
             if (dollarSignIndex == -1) {
                 return selfClass.getSimpleName(); // already an outer class
             }
-            // else, class is inner class (static or anonymous)
 
+            // class is inner, static, or anonymous
             // parse the simple name full name
             // a class with no package returns index of -1, but incrementing gives index zero which is correct
             final int simpleClassNameStartIndex = fullClassName.lastIndexOf('.') + 1;
