@@ -58,10 +58,6 @@ public class ReVancedUtils {
             // or some ReVanced code is submitting an unexpected number of background tasks.
             LogHelper.printException(() -> "Reached maximum background thread count of "
                     + SHARED_THREAD_POOL_MAXIMUM_BACKGROUND_THREADS + " threads");
-
-            // Because this condition will manifest as a slow running app or a memory leak,
-            // it might be best to show the user a toast or some other suggestion to restart the app.
-            // TODO? if debug is enabled, show a toast?
         }
     }
 
