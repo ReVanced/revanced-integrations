@@ -50,14 +50,14 @@ public class LogHelper {
     private static final String REVANCED_LOG_PREFIX = "revanced: ";
 
     /**
-     * Logs information messages with the most outer class name of the code that is calling this method.
+     * Logs information messages using the outer class name of the code calling this method.
      */
     public static void printInfo(@NonNull LogMessage message) {
         Log.i(REVANCED_LOG_PREFIX + message.findOuterClassSimpleName(), message.buildMessageString());
     }
 
     /**
-     * Logs debug messages with the most outer class name of the code that is calling this method.
+     * Logs debug messages under the outer class name of the code calling this method.
      * Whenever possible, the log string should be constructed entirely inside {@link LogMessage#buildMessageString()}
      * so the performance cost of building strings is paid only if {@link SettingsEnum#DEBUG} is enabled.
      */
@@ -79,22 +79,21 @@ public class LogHelper {
     }
 
     /**
-     * Logs messages with the most outer class name of the code that is calling this method.
+     * Logs exceptions under the outer class name of the code calling this method.
      */
     public static void printException(@NonNull LogMessage message) {
         printException(message, null, null);
     }
 
     /**
-     * Logs exceptions with the most outer class name of the code that is calling this method.
+     * Logs exceptions under the outer class name of the code calling this method.
      */
     public static void printException(@NonNull LogMessage message, @Nullable Throwable ex) {
         printException(message, ex, null);
     }
 
     /**
-     * If {@link SettingsEnum#DEBUG_SHOW_TOAST_ON_EXCEPTION} is enabled, this also shows a toast
-     * using the log message parameter or using an optional user specific message.
+     * Logs exceptions under the outer class name of the code calling this method.
      *
      * @param message          log message
      * @param ex               exception (optional)
@@ -110,17 +109,15 @@ public class LogHelper {
         } else {
             Log.e(logMessage, messageString, ex);
         }
-        if (SettingsEnum.DEBUG_SHOW_TOAST_ON_EXCEPTION.getBoolean()) {
-            String toastMessageToDisplay = (userToastMessage != null)
-                    ? userToastMessage
-                    : outerClassSimpleName + ": " + messageString;
-            ReVancedUtils.runOnMainThread(() -> {
-                Context context = ReVancedUtils.getContext();
-                if (context != null) {
-                    Toast.makeText(context, toastMessageToDisplay, Toast.LENGTH_LONG).show();
-                }
-            });
-        }
+        ReVancedUtils.runOnMainThread(() -> {
+            Context context = ReVancedUtils.getContext();
+            if (context != null) {
+                String toastMessageToDisplay = (userToastMessage != null)
+                        ? userToastMessage
+                        : outerClassSimpleName + ": " + messageString;
+                Toast.makeText(context, toastMessageToDisplay, Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
 }

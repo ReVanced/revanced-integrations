@@ -119,7 +119,6 @@ public enum SettingsEnum {
     // Debug settings
     DEBUG("revanced_debug_enabled", false, ReturnType.BOOLEAN),
     DEBUG_STACKTRACE("revanced_debug_stacktrace_enabled", false, ReturnType.BOOLEAN),
-    DEBUG_SHOW_TOAST_ON_EXCEPTION("revanced_debug_toast_on_exception_enabled", true, ReturnType.BOOLEAN),
 
     USE_DARK_THEME("app_theme_dark", false, ReturnType.BOOLEAN),
 
