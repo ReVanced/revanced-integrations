@@ -263,6 +263,7 @@ public class ReturnYouTubeDislikeApi {
                 LogHelper.printDebug(() -> "Failed to fetch votes for video: " + videoId
                         + " response code was: " + responseCode);
                 connection.disconnect(); // something went wrong, might as well disconnect
+                showToast("revanced_ryd_failure_connection_timeout");
             }
         } catch (Exception ex) { // connection timed out, response timeout, or some other network error
             LogHelper.printException(() -> "Failed to fetch votes", ex, str("revanced_ryd_failure_connection_timeout"));
