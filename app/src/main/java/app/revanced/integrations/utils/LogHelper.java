@@ -93,11 +93,12 @@ public class LogHelper {
     }
 
     /**
+     * If {@link SettingsEnum#DEBUG_SHOW_TOAST_ON_EXCEPTION} is enabled, this also shows a toast
+     * using the log message parameter or using an optional user specific message.
+     *
      * @param message          log message
-     * @param ex               optional exception
-     * @param userToastMessage optional toast message to display to user.
-     *                         If not null, the toast is displayed regardless of
-     *                         {@link SettingsEnum#DEBUG_SHOW_TOAST_ON_EXCEPTION} status.
+     * @param ex               exception (optional)
+     * @param userToastMessage user specific toast message to show instead of the log message (optional)
      */
     public static void printException(@NonNull LogMessage message, @Nullable Throwable ex,
                                       @Nullable String userToastMessage) {
@@ -109,7 +110,7 @@ public class LogHelper {
         } else {
             Log.e(logMessage, messageString, ex);
         }
-        if (userToastMessage != null || SettingsEnum.DEBUG_SHOW_TOAST_ON_EXCEPTION.getBoolean()) {
+        if (SettingsEnum.DEBUG_SHOW_TOAST_ON_EXCEPTION.getBoolean()) {
             String toastMessageToDisplay = (userToastMessage != null)
                     ? userToastMessage
                     : outerClassSimpleName + ": " + messageString;
