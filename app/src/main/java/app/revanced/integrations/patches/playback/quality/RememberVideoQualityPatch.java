@@ -29,7 +29,7 @@ public class RememberVideoQualityPatch {
                 LogHelper.printDebug(() -> "Changing default Wi-Fi quality to: " + defaultQuality);
                 Toast.makeText(context, "Changing default Wi-Fi quality to: " + defaultQuality, Toast.LENGTH_SHORT).show();
             } catch (Exception ex) {
-                LogHelper.printException(() -> "Failed to change default WI-FI quality", ex, "Failed to change default WI-FI quality");
+                LogHelper.printException(() -> "Failed to change default WI-FI quality", ex);
             }
         } else if (isConnectedMobile(context)) {
             try {
@@ -37,7 +37,7 @@ public class RememberVideoQualityPatch {
                 LogHelper.printDebug(() -> "Changing default mobile data quality to:" + defaultQuality);
                 Toast.makeText(context, "Changing default mobile data quality to:" + defaultQuality, Toast.LENGTH_SHORT).show();
             } catch (Exception ex) {
-                LogHelper.printException(() -> "Failed to change default mobile data quality", ex, "Failed to change default mobile data quality");
+                LogHelper.printException(() -> "Failed to change default mobile data quality", ex);
             }
         } else {
             LogHelper.printDebug(() -> "No internet connection.");
@@ -127,7 +127,7 @@ public class RememberVideoQualityPatch {
             LogHelper.printDebug(() -> "Quality changed to: " + qualityIndex);
             return qualityIndex;
         } catch (Exception ex) {
-            LogHelper.printException(() -> "Failed to set quality", ex, "Failed to set quality");
+            LogHelper.printException(() -> "Failed to set quality", ex);
             return qualityIndex;
         }
     }
