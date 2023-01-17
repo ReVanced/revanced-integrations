@@ -1,5 +1,6 @@
 package app.revanced.integrations.patches.playback.quality;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -144,6 +145,7 @@ public class RememberVideoQualityPatch {
         newVideo = true;
     }
 
+    @SuppressLint("MissingPermission")
     private static NetworkInfo getNetworkInfo(Context context) {
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         return cm.getActiveNetworkInfo();
