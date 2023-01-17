@@ -116,9 +116,10 @@ public enum SettingsEnum {
     PLAYBACK_MAX_BUFFER("revanced_pref_buffer_for_playback_ms", 2500, ReturnType.INTEGER),
     MAX_PLAYBACK_BUFFER_AFTER_REBUFFER("revanced_pref_buffer_for_playback_after_rebuffer_ms", 5000, ReturnType.INTEGER),
 
-    // ReVanced settings
+    // Debug settings
     DEBUG("revanced_debug_enabled", false, ReturnType.BOOLEAN),
     DEBUG_STACKTRACE("revanced_debug_stacktrace_enabled", false, ReturnType.BOOLEAN),
+    DEBUG_SHOW_TOAST_ON_EXCEPTION("revanced_debug_toast_enabled", false, ReturnType.BOOLEAN),
 
     USE_DARK_THEME("app_theme_dark", false, ReturnType.BOOLEAN),
 

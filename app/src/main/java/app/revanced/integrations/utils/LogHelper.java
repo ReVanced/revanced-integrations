@@ -1,6 +1,7 @@
 package app.revanced.integrations.utils;
 
 import android.util.Log;
+import android.widget.Toast;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -72,14 +73,29 @@ public class LogHelper {
      * Logs messages with the most outer class name of the code that is calling this method.
      */
     public static void printException(LogMessage message) {
-        Log.e("revanced: " + message.findOuterClassSimpleName(), message.buildMessageString());
+        String messageString = message.buildMessageString();
+        String outerClassSimpleName = message.findOuterClassSimpleName();
+        Log.e("revanced: " + outerClassSimpleName, messageString);
+        showExceptionToast(messageString, outerClassSimpleName);
     }
 
     /**
      * Logs exceptions with the most outer class name of the code that is calling this method.
      */
     public static void printException(LogMessage message, Throwable ex) {
-        Log.e("revanced: " + message.findOuterClassSimpleName(), message.buildMessageString(), ex);
+        String messageString = message.buildMessageString();
+        String outerClassSimpleName = message.findOuterClassSimpleName();
+        Log.e("revanced: " + outerClassSimpleName, messageString, ex);
+        showExceptionToast(messageString, outerClassSimpleName);
+    }
+
+    private static void showExceptionToast(String messageString, String outerClassSimpleName) {
+        if (SettingsEnum.DEBUG_SHOW_TOAST_ON_EXCEPTION.getBoolean()) {
+            ReVancedUtils.runOnMainThread(() -> {
+                String toastMessage = outerClassSimpleName + ": " + messageString;
+                Toast.makeText(ReVancedUtils.getContext(), toastMessage, Toast.LENGTH_LONG).show();
+            });
+        }
     }
 
     /**
