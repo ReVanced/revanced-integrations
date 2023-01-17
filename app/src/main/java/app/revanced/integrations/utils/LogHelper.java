@@ -88,11 +88,11 @@ public class LogHelper {
     }
 
     /**
-     * @param message log message
-     * @param ex optional exception
+     * @param message          log message
+     * @param ex               optional exception
      * @param userToastMessage optional toast message to display to user.
-     *                         If not null, the toast is displayed regardless
-     *                         if {@link SettingsEnum#DEBUG_SHOW_TOAST_ON_EXCEPTION} is enabled.
+     *                         If not null, the toast is displayed regardless of
+     *                         {@link SettingsEnum#DEBUG_SHOW_TOAST_ON_EXCEPTION} status.
      */
     public static void printException(@NonNull LogMessage message, @Nullable Throwable ex,
                                       @Nullable String userToastMessage) {
