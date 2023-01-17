@@ -27,22 +27,25 @@ public class RememberVideoQualityPatch {
         if (isConnectedWifi(context)) {
             try {
                 SharedPrefHelper.saveString(SharedPrefHelper.SharedPrefNames.REVANCED_PREFS, "wifi_quality", defaultQuality + "");
-                LogHelper.printDebug(() -> "Changing default Wi-Fi quality to: " + defaultQuality);
-                Toast.makeText(context, "Changing default Wi-Fi quality to: " + defaultQuality, Toast.LENGTH_SHORT).show();
+                String message = "Changing default Wi-Fi quality to: " + defaultQuality;
+                LogHelper.printDebug(() -> message);
+                Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
             } catch (Exception ex) {
                 LogHelper.printException(() -> "Failed to change default WI-FI quality", ex);
             }
         } else if (isConnectedMobile(context)) {
             try {
                 SharedPrefHelper.saveString(SharedPrefHelper.SharedPrefNames.REVANCED_PREFS, "mobile_quality", defaultQuality + "");
-                LogHelper.printDebug(() -> "Changing default mobile data quality to:" + defaultQuality);
-                Toast.makeText(context, "Changing default mobile data quality to:" + defaultQuality, Toast.LENGTH_SHORT).show();
+                String message = "Changing default mobile data quality to:" + defaultQuality;
+                LogHelper.printDebug(() -> message);
+                Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
             } catch (Exception ex) {
                 LogHelper.printException(() -> "Failed to change default mobile data quality", ex);
             }
         } else {
-            LogHelper.printDebug(() -> "No internet connection.");
-            Toast.makeText(context, "No internet connection.", Toast.LENGTH_SHORT).show();
+            String message = "No internet connection.";
+            LogHelper.printDebug(() -> message);
+            Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
         }
         userChangedQuality = false;
     }
