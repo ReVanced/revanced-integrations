@@ -18,6 +18,7 @@ public class LogHelper {
      * Log messages using lambdas.
      */
     public interface LogMessage {
+        @NonNull
         String buildMessageString();
 
         /**
@@ -51,7 +52,7 @@ public class LogHelper {
     /**
      * Logs information messages with the most outer class name of the code that is calling this method.
      */
-    public static void printInfo(LogMessage message) {
+    public static void printInfo(@NonNull LogMessage message) {
         Log.i(REVANCED_LOG_PREFIX + message.findOuterClassSimpleName(), message.buildMessageString());
     }
 
@@ -60,7 +61,7 @@ public class LogHelper {
      * Whenever possible, the log string should be constructed entirely inside {@link LogMessage#buildMessageString()}
      * so the performance cost of building strings is paid only if {@link SettingsEnum#DEBUG} is enabled.
      */
-    public static void printDebug(LogMessage message) {
+    public static void printDebug(@NonNull LogMessage message) {
         if (SettingsEnum.DEBUG.getBoolean()) {
             var messageString = message.buildMessageString();
 
@@ -80,14 +81,14 @@ public class LogHelper {
     /**
      * Logs messages with the most outer class name of the code that is calling this method.
      */
-    public static void printException(LogMessage message) {
+    public static void printException(@NonNull LogMessage message) {
         printException(message, null, null);
     }
 
     /**
      * Logs exceptions with the most outer class name of the code that is calling this method.
      */
-    public static void printException(LogMessage message, Throwable ex) {
+    public static void printException(@NonNull LogMessage message, @Nullable Throwable ex) {
         printException(message, ex, null);
     }
 
