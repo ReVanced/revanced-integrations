@@ -185,7 +185,9 @@ public class ReturnYouTubeDislikeApi {
             lastTimeRateLimitWasHit = System.currentTimeMillis();
             LogHelper.printDebug(() -> "API rate limit was hit. Stopping API calls for the next "
                     + RATE_LIMIT_BACKOFF_SECONDS + " seconds");
-            showToast("revanced_ryd_failure_client_rate_limit_requested");
+            ReVancedUtils.runOnMainThread(() -> { // must show toasts on main thread
+                Toast.makeText(ReVancedUtils.getContext(), str("revanced_ryd_failure_client_rate_limit_requested"), Toast.LENGTH_LONG).show();
+            });
             return true;
         }
         return false;
@@ -225,6 +227,7 @@ public class ReturnYouTubeDislikeApi {
         LogHelper.printDebug(() -> "Fetching votes for: " + videoId);
         final long timeNetworkCallStarted = System.currentTimeMillis();
 
+        String connectionErrorMessageStringKey = "revanced_ryd_failure_connection_timeout";
         try {
             HttpURLConnection connection = getRYDConnectionFromRoute(ReturnYouTubeDislikeRoutes.GET_DISLIKES, videoId);
             // request headers, as per https://returnyoutubedislike.com/docs/fetching
@@ -260,13 +263,12 @@ public class ReturnYouTubeDislikeApi {
                     // fall thru to update statistics
                 }
             } else {
-                LogHelper.printDebug(() -> "Failed to fetch votes for video: " + videoId
-                        + " response code was: " + responseCode);
+                LogHelper.printException(() -> "Failed to fetch votes for video: " + videoId
+                        + " response code was: " + responseCode, null, str(connectionErrorMessageStringKey));
                 connection.disconnect(); // something went wrong, might as well disconnect
-                showToast("revanced_ryd_failure_connection_timeout");
             }
         } catch (Exception ex) { // connection timed out, response timeout, or some other network error
-            LogHelper.printException(() -> "Failed to fetch votes", ex, str("revanced_ryd_failure_connection_timeout"));
+            LogHelper.printException(() -> "Failed to fetch votes", ex, str(connectionErrorMessageStringKey));
         }
 
         updateStatistics(timeNetworkCallStarted, System.currentTimeMillis(), true, false);
@@ -304,12 +306,11 @@ public class ReturnYouTubeDislikeApi {
                 String solution = solvePuzzle(challenge, difficulty);
                 return confirmRegistration(userId, solution);
             }
-            LogHelper.printDebug(() -> "Failed to register new user: " + userId
+            LogHelper.printException(() -> "Failed to register new user: " + userId
                     + " response code was: " + responseCode);
             connection.disconnect();
-            showToast("revanced_ryd_failure_register_user");
         } catch (Exception ex) {
-            LogHelper.printException(() -> "Failed to register user", ex, str("revanced_ryd_failure_register_user"));
+            LogHelper.printException(() -> "Failed to register user", ex);
         }
         return null;
     }
@@ -344,17 +345,16 @@ public class ReturnYouTubeDislikeApi {
                     LogHelper.printDebug(() -> "Registration confirmation successful for user: " + userId);
                     return userId;
                 }
-                LogHelper.printDebug(() -> "Failed to confirm registration for user: " + userId
+                LogHelper.printException(() -> "Failed to confirm registration for user: " + userId
                         + " solution: " + solution + " response string was: " + result);
             } else {
-                LogHelper.printDebug(() -> "Failed to confirm registration for user: " + userId
+                LogHelper.printException(() -> "Failed to confirm registration for user: " + userId
                         + " solution: " + solution + " response code was: " + responseCode);
             }
             connection.disconnect(); // something went wrong, might as well disconnect
-            showToast("revanced_ryd_failure_confirm_user");
         } catch (Exception ex) {
             LogHelper.printException(() -> "Failed to confirm registration for user: " + userId
-                    + "solution: " + solution, ex, str("revanced_ryd_failure_confirm_user"));
+                    + "solution: " + solution, ex);
         }
         return null;
     }
@@ -394,13 +394,12 @@ public class ReturnYouTubeDislikeApi {
                 String solution = solvePuzzle(challenge, difficulty);
                 return confirmVote(videoId, userId, solution);
             }
-            LogHelper.printDebug(() -> "Failed to send vote for video: " + videoId
+            LogHelper.printException(() -> "Failed to send vote for video: " + videoId
                     + " userId: " + userId + " vote: " + vote + " response code was: " + responseCode);
             connection.disconnect(); // something went wrong, might as well disconnect
-            showToast("revanced_ryd_failure_send_vote_failed");
         } catch (Exception ex) {
             LogHelper.printException(() -> "Failed to send vote for video: " + videoId
-                    + " user: " + userId + " vote: " + vote, ex, str("revanced_ryd_failure_send_vote_failed"));
+                    + " user: " + userId + " vote: " + vote, ex);
         }
         return false;
     }
@@ -437,25 +436,18 @@ public class ReturnYouTubeDislikeApi {
                     LogHelper.printDebug(() -> "Vote confirm successful for video: " + videoId);
                     return true;
                 }
-                LogHelper.printDebug(() -> "Failed to confirm vote for video: " + videoId
+                LogHelper.printException(() -> "Failed to confirm vote for video: " + videoId
                         + " user: " + userId + " solution: " + solution + " response string was: " + result);
             } else {
-                LogHelper.printDebug(() -> "Failed to confirm vote for video: " + videoId
+                LogHelper.printException(() -> "Failed to confirm vote for video: " + videoId
                         + " user: " + userId + " solution: " + solution + " response code was: " + responseCode);
             }
             connection.disconnect(); // something went wrong, might as well disconnect
-            showToast("revanced_ryd_failure_confirm_vote_failed");
         } catch (Exception ex) {
             LogHelper.printException(() -> "Failed to confirm vote for video: " + videoId
-                    + " user: " + userId + " solution: " + solution, ex, str("revanced_ryd_failure_confirm_vote_failed"));
+                    + " user: " + userId + " solution: " + solution, ex);
         }
         return false;
-    }
-
-    private static void showToast(String toastTextStringKey) {
-        ReVancedUtils.runOnMainThread(() -> { // must show toasts on main thread
-            Toast.makeText(ReVancedUtils.getContext(), str(toastTextStringKey), Toast.LENGTH_LONG).show();
-        });
     }
 
     private static void applyCommonPostRequestSettings(HttpURLConnection connection) throws ProtocolException {
