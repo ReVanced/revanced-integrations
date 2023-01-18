@@ -25,10 +25,12 @@ public class LogHelper {
          * @return For outer classes, this returns {@link Class#getSimpleName()}.
          * For inner, static, or anonymous classes, this returns the simple name of the enclosing class.<br>
          * <br>
-         * For example, each of these classes return 'SomethingView':<br>
-         * com.company.SomethingView<br>
-         * com.company.SomethingView$StaticClass<br>
-         * com.company.SomethingView$1<br>
+         * For example, each of these classes return 'SomethingView':
+         * <code>
+         * com.company.SomethingView
+         * com.company.SomethingView$StaticClass
+         * com.company.SomethingView$1
+         * </code>
          */
         private String findOuterClassSimpleName() {
             var selfClass = this.getClass();
