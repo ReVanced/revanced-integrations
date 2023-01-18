@@ -2,7 +2,6 @@ package app.revanced.integrations.returnyoutubedislike;
 
 import static app.revanced.integrations.sponsorblock.StringRef.str;
 
-import android.content.Context;
 import android.icu.text.CompactDecimalFormat;
 import android.os.Build;
 import android.text.Spannable;
@@ -13,7 +12,6 @@ import android.text.style.CharacterStyle;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
 import android.text.style.ScaleXSpan;
-import android.util.DisplayMetrics;
 
 import androidx.annotation.GuardedBy;
 import androidx.annotation.Nullable;
@@ -501,7 +499,9 @@ public class ReturnYouTubeDislike {
         final long timeUIWaitingTotal = System.currentTimeMillis() - timeUIWaitStarted;
         LogHelper.printDebug(() -> "UI thread waited for: " + timeUIWaitingTotal + "ms for vote fetch to complete");
 
+        //noinspection NonAtomicOperationOnVolatileField
         totalTimeUIWaitedOnNetworkCalls += timeUIWaitingTotal;
+        //noinspection NonAtomicOperationOnVolatileField
         numberOfTimesUIWaitedOnNetworkCalls++;
         final long averageTimeForcedToWait = totalTimeUIWaitedOnNetworkCalls / numberOfTimesUIWaitedOnNetworkCalls;
         LogHelper.printDebug(() -> "UI thread forced to wait: " + numberOfTimesUIWaitedOnNetworkCalls + " times, "
