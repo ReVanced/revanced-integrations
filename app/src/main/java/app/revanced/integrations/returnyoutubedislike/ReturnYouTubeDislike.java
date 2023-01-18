@@ -449,7 +449,6 @@ public class ReturnYouTubeDislike {
 
     private static String formatDislikeCount(long dislikeCount) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            String formatted;
             synchronized (ReturnYouTubeDislike.class) { // number formatter is not thread safe, must synchronize
                 if (dislikeCountFormatter == null) {
                     // Note: Java number formatters will use the locale specific number characters.
@@ -460,18 +459,15 @@ public class ReturnYouTubeDislike {
                     LogHelper.printDebug(() -> "Locale: " + locale);
                     dislikeCountFormatter = CompactDecimalFormat.getInstance(locale, CompactDecimalFormat.CompactStyle.SHORT);
                 }
-                formatted = dislikeCountFormatter.format(dislikeCount);
+                return dislikeCountFormatter.format(dislikeCount);
             }
-            LogHelper.printDebug(() -> "Dislike count: " + dislikeCount + " formatted as: " + formatted);
-            return formatted;
         }
 
-        // never will be reached, as the oldest supported YouTube app requires Android N or greater
+        // will never be reached, as the oldest supported YouTube app requires Android N or greater
         return String.valueOf(dislikeCount);
     }
 
     private static String formatDislikePercentage(float dislikePercentage) {
-        String formatted;
         synchronized (ReturnYouTubeDislike.class) { // number formatter is not thread safe, must synchronize
             if (dislikePercentageFormatter == null) {
                 Locale locale = ReVancedUtils.getContext().getResources().getConfiguration().locale;
@@ -483,10 +479,8 @@ public class ReturnYouTubeDislike {
             } else {
                 dislikePercentageFormatter.setMaximumFractionDigits(1); // show up to 1 digit precision
             }
-            formatted = dislikePercentageFormatter.format(dislikePercentage);
+            return dislikePercentageFormatter.format(dislikePercentage);
         }
-        LogHelper.printDebug(() -> "Dislike percentage: " + dislikePercentage + " formatted as: " + formatted);
-        return formatted;
     }
 
 
