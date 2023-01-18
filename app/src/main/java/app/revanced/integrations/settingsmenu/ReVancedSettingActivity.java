@@ -7,6 +7,8 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
+
 import com.google.android.libraries.social.licenses.LicenseActivity;
 
 import app.revanced.integrations.utils.LogHelper;
@@ -60,6 +62,7 @@ public class ReVancedSettingActivity {
     }
 
 
+    @Nullable
     public static <T extends View> T getView(Class<T> typeClass, ViewGroup viewGroup) {
         if (viewGroup == null) {
             return null;
@@ -74,10 +77,12 @@ public class ReVancedSettingActivity {
         return null;
     }
 
+    @Nullable
     public static ImageButton getImageButton(ViewGroup viewGroup) {
         return getView(ImageButton.class, viewGroup);
     }
 
+    @Nullable
     public static TextView getTextView(ViewGroup viewGroup) {
         return getView(TextView.class, viewGroup);
     }
