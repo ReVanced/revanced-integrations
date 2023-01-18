@@ -72,7 +72,7 @@ public class LogHelper {
                 var sw = new StringWriter();
                 new Throwable().printStackTrace(new PrintWriter(sw));
 
-                builder.append(String.format("\n%s", sw));
+                builder.append('\n').append(sw);
                 messageString = builder.toString();
             }
 
