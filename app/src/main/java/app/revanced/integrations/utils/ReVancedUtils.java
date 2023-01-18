@@ -158,24 +158,24 @@ public class ReVancedUtils {
     /**
      * @return if the calling thread is on the main thread
      */
-    public static boolean currentIsOnMainThread() {
+    public static boolean currentlyIsOnMainThread() {
         return Looper.getMainLooper().isCurrentThread();
     }
 
     /**
-     * @throws IllegalStateException if the calling thread is _not_ on the main thread
+     * @throws IllegalStateException if the calling thread is _off_ the main thread
      */
     public static void verifyOnMainThread() throws IllegalStateException {
-        if (!currentIsOnMainThread()) {
+        if (!currentlyIsOnMainThread()) {
             throw new IllegalStateException("Must call _on_ the main thread");
         }
     }
 
     /**
-     * @throws IllegalStateException if the calling thread _is_ on the main thread
+     * @throws IllegalStateException if the calling thread is _on_ the main thread
      */
     public static void verifyOffMainThread() throws IllegalStateException {
-        if (currentIsOnMainThread()) {
+        if (currentlyIsOnMainThread()) {
             throw new IllegalStateException("Must call _off_ the main thread");
         }
     }
