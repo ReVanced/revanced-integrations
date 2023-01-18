@@ -22,8 +22,8 @@ public class LogHelper {
         String buildMessageString();
 
         /**
-         * @return For non nested classes, this returns {@link Class#getSimpleName()}.
-         * For classes of inner, static, or anonymous, this returns the simple name of the enclosing class.<br>
+         * @return For outer classes, this returns {@link Class#getSimpleName()}.
+         * For inner, static, or anonymous classes, this returns the simple name of the enclosing class.<br>
          * <br>
          * For example, each of these classes return 'SomethingView':<br>
          * com.company.SomethingView<br>
