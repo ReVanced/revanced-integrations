@@ -489,6 +489,7 @@ public class ReturnYouTubeDislike {
      */
     private static volatile long totalTimeUIWaitedOnNetworkCalls;
 
+    @SuppressWarnings("NonAtomicOperationOnVolatileField")
     private static void recordTimeUISpentWaitingForNetworkCall(long timeUIWaitStarted) {
         if (timeUIWaitStarted == 0 || !SettingsEnum.DEBUG.getBoolean()) {
             return;
@@ -496,9 +497,7 @@ public class ReturnYouTubeDislike {
         final long timeUIWaitingTotal = System.currentTimeMillis() - timeUIWaitStarted;
         LogHelper.printDebug(() -> "UI thread waited for: " + timeUIWaitingTotal + "ms for vote fetch to complete");
 
-        //noinspection NonAtomicOperationOnVolatileField
         totalTimeUIWaitedOnNetworkCalls += timeUIWaitingTotal;
-        //noinspection NonAtomicOperationOnVolatileField
         numberOfTimesUIWaitedOnNetworkCalls++;
         final long averageTimeForcedToWait = totalTimeUIWaitedOnNetworkCalls / numberOfTimesUIWaitedOnNetworkCalls;
         LogHelper.printDebug(() -> "UI thread forced to wait: " + numberOfTimesUIWaitedOnNetworkCalls + " times, "

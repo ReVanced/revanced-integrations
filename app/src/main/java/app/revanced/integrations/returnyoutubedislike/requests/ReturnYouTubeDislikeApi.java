@@ -193,6 +193,7 @@ public class ReturnYouTubeDislikeApi {
         return false;
     }
 
+    @SuppressWarnings("NonAtomicOperationOnVolatileField") // do not want to pay performance cost of full synchronization for debug fields that are only estimates anyways
     private static void updateStatistics(long timeNetworkCallStarted, long timeNetworkCallEnded, boolean connectionError, boolean rateLimitHit) {
         if (connectionError && rateLimitHit) {
             throw new IllegalArgumentException("both connection error and rate limit parameter were true");
@@ -468,7 +469,7 @@ public class ReturnYouTubeDislikeApi {
         byte[] decodedChallenge = Base64.decode(challenge, Base64.NO_WRAP);
 
         byte[] buffer = new byte[20];
-        for (int i = 4; i < 20; i++) {
+        for (int i = 4; i < 20; i++) { // FIXME replace with System.arrayCopy
             buffer[i] = decodedChallenge[i - 4];
         }
 
