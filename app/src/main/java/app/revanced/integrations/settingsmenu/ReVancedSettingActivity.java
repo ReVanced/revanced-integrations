@@ -44,9 +44,16 @@ public class ReVancedSettingActivity {
         }
 
         try {
-            getTextView((ViewGroup) base.findViewById(getIdentifier("toolbar", "id"))).setText(preferenceIdentifier);
+            TextView toolbar = getTextView((ViewGroup) base.findViewById(getIdentifier("toolbar", "id")));
+            if (toolbar == null) {
+                // FIXME
+                // https://github.com/revanced/revanced-integrations/pull/293
+                LogHelper.printDebug(() -> "Could not find toolbar");
+            } else {
+                toolbar.setText(preferenceIdentifier);
+            }
         } catch (Exception e) {
-            LogHelper.printException(() -> "Couldn't set Toolbar title", e);
+            LogHelper.printException(() -> "Could not set Toolbar title", e);
         }
 
         base.getFragmentManager().beginTransaction().replace(getIdentifier("revanced_settings_fragments", "id"), preferenceFragment).commit();
