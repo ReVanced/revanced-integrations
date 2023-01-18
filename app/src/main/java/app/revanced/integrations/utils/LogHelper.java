@@ -109,15 +109,17 @@ public class LogHelper {
         } else {
             Log.e(logMessage, messageString, ex);
         }
-        ReVancedUtils.runOnMainThread(() -> {
-            Context context = ReVancedUtils.getContext();
-            if (context != null) {
-                String toastMessageToDisplay = (userToastMessage != null)
-                        ? userToastMessage
-                        : outerClassSimpleName + ": " + messageString;
-                Toast.makeText(context, toastMessageToDisplay, Toast.LENGTH_LONG).show();
-            }
-        });
+        if (SettingsEnum.DEBUG_SHOW_TOAST_ON_EXCEPTION.getBoolean()) {
+            String toastMessageToDisplay = (userToastMessage != null)
+                    ? userToastMessage
+                    : outerClassSimpleName + ": " + messageString;
+            ReVancedUtils.runOnMainThread(() -> {
+                Context context = ReVancedUtils.getContext();
+                if (context != null) {
+                    Toast.makeText(context, toastMessageToDisplay, Toast.LENGTH_LONG).show();
+                }
+            });
+        }
     }
 
 }
