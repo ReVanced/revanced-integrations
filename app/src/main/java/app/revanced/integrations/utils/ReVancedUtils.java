@@ -145,14 +145,14 @@ public class ReVancedUtils {
      * Automatically logs any exceptions the runnable throws
      */
     public static void runOnMainThread(Runnable runnable) {
-        Runnable exceptLoggingRunnable = () -> {
+        Runnable loggingRunnable = () -> {
             try {
                 runnable.run();
             } catch (Exception ex) {
                 LogHelper.printException(() -> "Exception on main thread from runnable: " + runnable.getClass(), ex);
             }
         };
-        new Handler(Looper.getMainLooper()).post(exceptLoggingRunnable);
+        new Handler(Looper.getMainLooper()).post(loggingRunnable);
     }
 
     /**
