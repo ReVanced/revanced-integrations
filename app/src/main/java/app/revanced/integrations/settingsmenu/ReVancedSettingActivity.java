@@ -49,7 +49,7 @@ public class ReVancedSettingActivity {
             TextView toolbar = getTextView((ViewGroup) base.findViewById(getIdentifier("toolbar", "id")));
             if (toolbar == null) {
                 // FIXME
-                // https://github.com/revanced/revanced-integrations/pull/293
+                // https://github.com/revanced/revanced-patches/issues/1384
                 LogHelper.printDebug(() -> "Could not find toolbar");
             } else {
                 toolbar.setText(preferenceIdentifier);
