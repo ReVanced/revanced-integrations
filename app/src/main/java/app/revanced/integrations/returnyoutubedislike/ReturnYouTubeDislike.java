@@ -94,7 +94,16 @@ public class ReturnYouTubeDislike {
     private static NumberFormat dislikePercentageFormatter;
 
     public static void onEnabledChange(boolean enabled) {
-        isEnabled = enabled;
+        synchronized (videoIdLockObject) {
+            isEnabled = enabled;
+            if (!enabled) {
+                // must clear old values, to protect against using stale data
+                // if the user re-enables RYD while watching a video
+                LogHelper.printDebug(() -> "Clearing previously fetched RYD vote data");
+                currentVideoId = null;
+                voteFetchFuture = null;
+            }
+        }
     }
 
     private static String getCurrentVideoId() {
@@ -155,6 +164,10 @@ public class ReturnYouTubeDislike {
             long fetchStartTime = 0;
             try {
                 Future<RYDVoteData> fetchFuture = getVoteFetchFuture();
+                if (fetchFuture == null) {
+                    LogHelper.printDebug(() -> "fetch future not available (user enabled RYD while video was playing?)");
+                    return;
+                }
                 if (SettingsEnum.DEBUG.getBoolean() && !fetchFuture.isDone()) {
                     fetchStartTime = System.currentTimeMillis();
                 }
@@ -191,6 +204,12 @@ public class ReturnYouTubeDislike {
 
             // Must make a local copy of videoId, since it may change between now and when the vote thread runs
             String videoIdToVoteFor = getCurrentVideoId();
+            if (videoIdToVoteFor == null) {
+                // user enabled RYD after opening a video
+                LogHelper.printException(() -> "Cannot vote, current video is is null (user enabled RYD while video was playing?)",
+                        null, str("revanced_ryd_failure_ryd_enabled_while_playing_video_then_user_voted"));
+                return;
+            }
 
             voteSerialExecutor.execute(() -> {
                 // must wrap in try/catch to properly log exceptions
