@@ -205,7 +205,7 @@ public class ReturnYouTubeDislike {
             // Must make a local copy of videoId, since it may change between now and when the vote thread runs
             String videoIdToVoteFor = getCurrentVideoId();
             if (videoIdToVoteFor == null) {
-                // user enabled RYD after opening a video
+                // user enabled RYD after starting playback of a video
                 LogHelper.printException(() -> "Cannot vote, current video is is null (user enabled RYD while video was playing?)",
                         null, str("revanced_ryd_failure_ryd_enabled_while_playing_video_then_user_voted"));
                 return;
