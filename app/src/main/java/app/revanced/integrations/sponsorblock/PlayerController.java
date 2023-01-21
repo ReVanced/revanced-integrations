@@ -106,8 +106,9 @@ public class PlayerController {
 
 
     public static void setVideoTime(long millis) {
-        LogHelper.printDebug(() -> "setCurrentVideoTime: current video time: " + millis);
         if (!SettingsEnum.SB_ENABLED.getBoolean()) return;
+        LogHelper.printDebug(() -> "setCurrentVideoTime: current video time: " + millis);
+        // fixme?  if (millis == lastKnownVideoTime), should it return here and not continue?
         lastKnownVideoTime = millis;
         if (millis <= 0) return;
         //findAndSkipSegment(false);
