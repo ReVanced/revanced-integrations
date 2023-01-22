@@ -541,12 +541,12 @@ public abstract class SponsorBlockUtils {
                 editor.putString(category.key, behaviour.key);
             }
 
+            SettingsEnum.SB_UUID.saveValue(settingsJson.getString("userID"));
+            SettingsEnum.SB_IS_VIP.saveValue(settingsJson.getBoolean("isVip"));
             SettingsEnum.SB_SHOW_TOAST_WHEN_SKIP.saveValue(!settingsJson.getBoolean("dontShowNotice"));
             SettingsEnum.SB_SHOW_TIME_WITHOUT_SEGMENTS.saveValue(settingsJson.getBoolean("showTimeWithSkips"));
-            SettingsEnum.SB_COUNT_SKIPS.saveValue(settingsJson.getBoolean("trackViewCount"));
-            SettingsEnum.SB_IS_VIP.saveValue(settingsJson.getBoolean("isVip"));
             SettingsEnum.SB_MIN_DURATION.saveValue(Float.valueOf(settingsJson.getString("minDuration")));
-            SettingsEnum.SB_UUID.saveValue(settingsJson.getString("userID"));
+            SettingsEnum.SB_COUNT_SKIPS.saveValue(settingsJson.getBoolean("trackViewCount"));
 
             String serverAddress = settingsJson.getString("serverAddress");
             if (serverAddress.equalsIgnoreCase("https://sponsor.ajay.app")) {
@@ -583,15 +583,15 @@ public abstract class SponsorBlockUtils {
                     categorySelectionsArray.put(behaviorObject);
                 }
             }
+            json.put("userID", SettingsEnum.SB_UUID.getString());
+            json.put("isVip", SettingsEnum.SB_IS_VIP.getBoolean());
+            json.put("serverAddress", SettingsEnum.SB_API_URL.getString());
             json.put("dontShowNotice", !SettingsEnum.SB_SHOW_TOAST_WHEN_SKIP.getBoolean());
-            json.put("barTypes", barTypesObject);
             json.put("showTimeWithSkips", SettingsEnum.SB_SHOW_TIME_WITHOUT_SEGMENTS.getBoolean());
             json.put("minDuration", SettingsEnum.SB_MIN_DURATION.getFloat());
             json.put("trackViewCount", SettingsEnum.SB_COUNT_SKIPS.getBoolean());
             json.put("categorySelections", categorySelectionsArray);
-            json.put("userID", SettingsEnum.SB_UUID.getString());
-            json.put("isVip", SettingsEnum.SB_IS_VIP.getBoolean());
-            json.put("serverAddress", SettingsEnum.SB_API_URL.getString());
+            json.put("barTypes", barTypesObject);
 
             return json.toString();
         } catch (Exception ex) {
