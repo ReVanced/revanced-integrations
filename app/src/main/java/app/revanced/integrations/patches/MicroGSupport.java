@@ -45,6 +45,5 @@ public class MicroGSupport {
             intent.setData(Uri.parse(VANCED_MICROG_DOWNLOAD_LINK));
             context.startActivity(intent);
         }
-
     }
 }
