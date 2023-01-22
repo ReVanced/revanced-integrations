@@ -3,7 +3,6 @@ package app.revanced.integrations.sponsorblock;
 import static app.revanced.integrations.sponsorblock.SponsorBlockUtils.timeWithoutSegments;
 import static app.revanced.integrations.sponsorblock.SponsorBlockUtils.videoHasSegments;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Canvas;
@@ -26,7 +25,6 @@ import app.revanced.integrations.sponsorblock.requests.SBRequester;
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedUtils;
 
-@SuppressLint({"LongLogTag"})
 public class PlayerController {
 
     private static final Timer sponsorTimer = new Timer("sponsor-skip-timer");
@@ -95,6 +93,7 @@ public class PlayerController {
         videoHasSegments = false;
         timeWithoutSegments = "";
         if (shorts_playing) {
+            LogHelper.printDebug(() -> "ignoring shorts video");
             return;
         }
         SponsorSegment[] segments = SBRequester.getSegments(videoId);
