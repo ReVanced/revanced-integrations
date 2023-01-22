@@ -547,12 +547,10 @@ public abstract class SponsorBlockUtils {
             SettingsEnum.SB_IS_VIP.saveValue(settingsJson.getBoolean("isVip"));
             SettingsEnum.SB_MIN_DURATION.saveValue(Float.valueOf(settingsJson.getString("minDuration")));
             SettingsEnum.SB_UUID.saveValue(settingsJson.getString("userID"));
-            SettingsEnum.SB_LAST_VIP_CHECK.saveValue(settingsJson.getLong("lastIsVipUpdate"));
-
 
             String serverAddress = settingsJson.getString("serverAddress");
             if (serverAddress.equalsIgnoreCase("https://sponsor.ajay.app")) {
-                serverAddress = (String) SettingsEnum.SB_API_URL.getDefaultValue();
+                serverAddress = (String) SettingsEnum.SB_API_URL.getDefaultValue(); // upgrade from old url
             }
             SettingsEnum.SB_API_URL.saveValue(serverAddress);
 
@@ -593,7 +591,6 @@ public abstract class SponsorBlockUtils {
             json.put("categorySelections", categorySelectionsArray);
             json.put("userID", SettingsEnum.SB_UUID.getString());
             json.put("isVip", SettingsEnum.SB_IS_VIP.getBoolean());
-            json.put("lastIsVipUpdate", SettingsEnum.SB_LAST_VIP_CHECK.getLong());
             json.put("serverAddress", SettingsEnum.SB_API_URL.getString());
 
             return json.toString();
