@@ -45,6 +45,10 @@ public class PlayerController {
 
     public static boolean shorts_playing = false;
 
+    public static void shortsOpened() {
+        shorts_playing = true;
+    }
+
     public static String getCurrentVideoId() {
         return currentVideoId;
     }
