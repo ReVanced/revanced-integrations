@@ -366,6 +366,7 @@ public enum SettingsEnum {
         value = newValue;
     }
 
+    // FIXME?  why does this return a primitive, when the other methods return objects?  Should this return an Integer?
     public int getInt() {
         return (int) value;
     }
