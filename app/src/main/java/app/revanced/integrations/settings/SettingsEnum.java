@@ -366,16 +366,12 @@ public enum SettingsEnum {
         value = newValue;
     }
 
-    public int getInt() {
-        return (Integer) value;
-    }
-
-    public String getString() {
-        return (String) value;
-    }
-
     public boolean getBoolean() {
         return (Boolean) value;
+    }
+
+    public int getInt() {
+        return (Integer) value;
     }
 
     public long getLong() {
@@ -384,6 +380,10 @@ public enum SettingsEnum {
 
     public float getFloat() {
         return (Float) value;
+    }
+
+    public String getString() {
+        return (String) value;
     }
 
     public Object getDefaultValue() {
