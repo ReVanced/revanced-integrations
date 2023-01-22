@@ -175,7 +175,7 @@ public class PlayerController {
                 SettingsEnum.SB_SKIPPED_SEGMENTS_TIME.saveValue(newSkippedTime);
             }
         }
-        new Thread(() -> {
+        new Thread(() -> { // fixme: use ReVancedUtils#runOnBackgroundThread
             if (SettingsEnum.SB_COUNT_SKIPS.getBoolean() &&
                     segment.category != SponsorBlockSettings.SegmentInfo.UNSUBMITTED &&
                     millis - segment.start < 2000) {

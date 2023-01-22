@@ -130,7 +130,7 @@ public class SBRequester {
     }
 
     public static void voteForSegment(SponsorSegment segment, VoteOption voteOption, Context context, String... args) {
-        new Thread(() -> {
+        new Thread(() -> { // fixme: use ReVancedUtils#runOnBackgroundThread
             try {
                 String segmentUuid = segment.UUID;
                 String uuid = SettingsEnum.SB_UUID.getString();

@@ -154,7 +154,7 @@ public abstract class SponsorBlockUtils {
             Toast.makeText(context, str("submit_started"), Toast.LENGTH_SHORT).show();
 
             appContext = new WeakReference<>(context);
-            new Thread(submitRunnable).start();
+            new Thread(submitRunnable).start(); // fixme: use ReVancedUtils#runOnBackgroundThread
         }
     };
     public static String messageToToast = "";
