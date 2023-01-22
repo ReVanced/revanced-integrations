@@ -366,9 +366,8 @@ public enum SettingsEnum {
         value = newValue;
     }
 
-    // FIXME?  why does this return a primitive, when the other methods return objects?  Should this return an Integer?
     public int getInt() {
-        return (int) value;
+        return (Integer) value;
     }
 
     public String getString() {
@@ -379,11 +378,11 @@ public enum SettingsEnum {
         return (Boolean) value;
     }
 
-    public Long getLong() {
+    public long getLong() {
         return (Long) value;
     }
 
-    public Float getFloat() {
+    public float getFloat() {
         return (Float) value;
     }
 
