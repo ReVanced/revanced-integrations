@@ -51,7 +51,6 @@ import app.revanced.integrations.sponsorblock.objects.SponsorSegment;
 import app.revanced.integrations.sponsorblock.objects.UserStats;
 import app.revanced.integrations.sponsorblock.requests.SBRequester;
 
-@SuppressWarnings({"LongLogTag"})
 public abstract class SponsorBlockUtils {
     public static final String DATE_FORMAT = "HH:mm:ss.SSS";
     @SuppressLint("SimpleDateFormat")
