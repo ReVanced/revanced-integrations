@@ -68,6 +68,11 @@ public class ReturnYouTubeDislike {
     @GuardedBy("videoIdLockObject")
     private static Future<RYDVoteData> voteFetchFuture;
 
+    /**
+     * if a shorts video is currently playing
+     */
+    private static volatile boolean shortsPlaying;
+
     public enum Vote {
         LIKE(1),
         DISLIKE(-1),
@@ -99,6 +104,11 @@ public class ReturnYouTubeDislike {
         isEnabled = enabled;
     }
 
+    public static void shortsOpened() {
+        LogHelper.printDebug(() -> "Shorts opened");
+        shortsPlaying = true;
+    }
+
     private static String getCurrentVideoId() {
         synchronized (videoIdLockObject) {
             return currentVideoId;
@@ -124,6 +134,7 @@ public class ReturnYouTubeDislike {
                 // no need to wrap the call in a try/catch,
                 // as any exceptions are propagated out in the later Future#Get call
                 voteFetchFuture = ReVancedUtils.submitOnBackgroundThread(() -> ReturnYouTubeDislikeApi.fetchVotes(videoId));
+                shortsPlaying = false;
             }
         } catch (Exception ex) {
             LogHelper.printException(() -> "Failed to load new video: " + videoId, ex);
@@ -137,7 +148,7 @@ public class ReturnYouTubeDislike {
      * This code should avoid needlessly replacing the same UI element with identical versions.
      */
     public static void onComponentCreated(Object conversionContext, AtomicReference<Object> textRef) {
-        if (!isEnabled) return;
+        if (!isEnabled || shortsPlaying) return;
 
         try {
             String conversionContextString = conversionContext.toString();
@@ -186,6 +197,10 @@ public class ReturnYouTubeDislike {
     public static void sendVote(Vote vote) {
         if (!isEnabled) return;
         try {
+            if (shortsPlaying) {
+                LogHelper.printDebug(() -> "Ignoring vote for shorts video (there is currently no hook to capture shorts video id)");
+                return;
+            }
             Objects.requireNonNull(vote);
             if (SharedPrefHelper.getBoolean(SharedPrefHelper.SharedPrefNames.YOUTUBE, "user_signed_out", true)) {
                 return;
