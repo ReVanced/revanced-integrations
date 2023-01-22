@@ -58,6 +58,8 @@ public class PlayerController {
             return;
         }
 
+        // currently this runs every time a video is loaded (regardless if sponsorblock is turned on or off)
+        // FIXME: change this so if sponsorblock is disabled, then run this method exactly once and once only
         SponsorBlockSettings.update(null);
 
         if (!SettingsEnum.SB_ENABLED.getBoolean()) {
