@@ -27,9 +27,6 @@ public class MicroGSupport {
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.setData(Uri.parse(uriString));
         context.startActivity(intent);
-
-        // if we don't exit now, the app will immediately crash and the phone OS may complain the app is broken
-        System.exit(0); // force app to close gracefully
     }
 
     public static void checkAvailability() {
@@ -40,7 +37,9 @@ public class MicroGSupport {
         } catch (PackageManager.NameNotFoundException exception) {
             LogHelper.printException(() -> ("Vanced MicroG was not found"), exception);
             startIntent(context, VANCED_MICROG_DOWNLOAD_LINK, str("microg_not_installed_warning"));
-            return;
+
+            // if we don't exit now, the app will immediately crash and the phone OS may complain the app is broken
+            System.exit(0); // force app to close gracefully
         }
 
         try (var client = context.getContentResolver().acquireContentProviderClient(VANCED_MICROG_PROVIDER)) {
