@@ -168,7 +168,7 @@ public class SBRequester {
             return;
         }
 
-        new Thread(() -> {
+        new Thread(() -> { // fixme: use ReVancedUtils#runOnBackgroundThread
             try {
                 JSONObject json = getJSONObject(SBRoutes.GET_USER_STATS, SettingsEnum.SB_UUID.getString());
                 UserStats stats = new UserStats(json.getString("userName"), json.getDouble("minutesSaved"), json.getInt("segmentCount"),
@@ -181,7 +181,7 @@ public class SBRequester {
     }
 
     public static void setUsername(String username, EditTextPreference preference, Runnable toastRunnable) {
-        new Thread(() -> {
+        new Thread(() -> { // fixme: use ReVancedUtils#runOnBackgroundThread
             try {
                 HttpURLConnection connection = getConnectionFromRoute(SBRoutes.CHANGE_USERNAME, SettingsEnum.SB_UUID.getString(), username);
                 int responseCode = connection.getResponseCode();
