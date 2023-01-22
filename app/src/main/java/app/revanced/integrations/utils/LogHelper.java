@@ -109,6 +109,9 @@ public class LogHelper {
 
     /**
      * Logs exceptions under the outer class name of the code calling this method.
+     * <p>
+     * If the calling code is showing it's own error toast,
+     * instead use {@link #printInfo(LogMessage, Exception)}
      *
      * @param message          log message
      * @param ex               exception (optional)
