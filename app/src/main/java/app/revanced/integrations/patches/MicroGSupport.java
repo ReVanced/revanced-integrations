@@ -35,13 +35,13 @@ public class MicroGSupport {
         try {
             context.getPackageManager().getPackageInfo(MICROG_PACKAGE_NAME, PackageManager.GET_ACTIVITIES);
         } catch (PackageManager.NameNotFoundException exception) {
-            LogHelper.printException(() -> ("Vanced MicroG was not found"), exception);
+            LogHelper.printDebug(() -> "Vanced MicroG was not found: " + exception);
             startIntent(context, VANCED_MICROG_DOWNLOAD_LINK, str("microg_not_installed_warning"));
         }
 
         try (var client = context.getContentResolver().acquireContentProviderClient(VANCED_MICROG_PROVIDER)) {
             if (client != null) return;
-            LogHelper.printException(() -> ("Vanced MicroG is not running in the background"));
+            LogHelper.printDebug(() -> "Vanced MicroG is not running in the background");
             startIntent(context, DONT_KILL_MY_APP_LINK, str("microg_not_running_warning"));
         }
     }
