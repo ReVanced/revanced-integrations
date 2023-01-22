@@ -550,7 +550,9 @@ public abstract class SponsorBlockUtils {
 
             String serverAddress = settingsJson.getString("serverAddress");
             if (serverAddress.equalsIgnoreCase("https://sponsor.ajay.app")) {
-                serverAddress = (String) SettingsEnum.SB_API_URL.getDefaultValue(); // upgrade from old url
+                // the browser extension exports only the server address
+                // but this code expects the full url (https://sponsor.ajay.app/api/)
+                serverAddress = (String) SettingsEnum.SB_API_URL.getDefaultValue();
             }
             SettingsEnum.SB_API_URL.saveValue(serverAddress);
 
