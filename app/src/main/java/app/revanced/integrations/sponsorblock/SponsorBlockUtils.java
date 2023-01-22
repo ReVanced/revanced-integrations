@@ -557,9 +557,8 @@ public abstract class SponsorBlockUtils {
 
             Toast.makeText(context, str("settings_import_successful"), Toast.LENGTH_SHORT).show();
         } catch (Exception ex) {
-            // instead could use LogHelper.printException, which also shows a toast
+            LogHelper.printInfo(() -> "failed to import settings", ex); // use info level, as we are showing our own toast
             Toast.makeText(context, str("settings_import_failed"), Toast.LENGTH_SHORT).show();
-            ex.printStackTrace(); // fixme: this will not record using revanced log prefix
         }
     }
 
@@ -598,9 +597,8 @@ public abstract class SponsorBlockUtils {
 
             return json.toString();
         } catch (Exception ex) {
-            // instead could use LogHelper.printException, which also shows a toast
+            LogHelper.printInfo(() -> "failed to export settings", ex); // use info level, as we are showing our own toast
             Toast.makeText(context, str("settings_export_failed"), Toast.LENGTH_SHORT).show();
-            ex.printStackTrace(); // fixme: this will not record using revanced log prefix
             return "";
         }
     }

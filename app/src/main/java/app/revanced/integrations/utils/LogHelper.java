@@ -52,13 +52,6 @@ public class LogHelper {
     private static final String REVANCED_LOG_PREFIX = "revanced: ";
 
     /**
-     * Logs information messages using the outer class name of the code calling this method.
-     */
-    public static void printInfo(@NonNull LogMessage message) {
-        Log.i(REVANCED_LOG_PREFIX + message.findOuterClassSimpleName(), message.buildMessageString());
-    }
-
-    /**
      * Logs debug messages under the outer class name of the code calling this method.
      * Whenever possible, the log string should be constructed entirely inside {@link LogMessage#buildMessageString()}
      * so the performance cost of building strings is paid only if {@link SettingsEnum#DEBUG} is enabled.
@@ -77,6 +70,26 @@ public class LogHelper {
             }
 
             Log.d(REVANCED_LOG_PREFIX + message.findOuterClassSimpleName(), messageString);
+        }
+    }
+
+    /**
+     * Logs information messages using the outer class name of the code calling this method.
+     */
+    public static void printInfo(@NonNull LogMessage message) {
+        printInfo(message, null);
+    }
+
+    /**
+     * Logs information messages using the outer class name of the code calling this method.
+     */
+    public static void printInfo(@NonNull LogMessage message, @Nullable Exception ex) {
+        String logTag = REVANCED_LOG_PREFIX + message.findOuterClassSimpleName();
+        String logMessage = message.buildMessageString();
+        if (ex == null) {
+            Log.i(logTag, logMessage);
+        } else {
+            Log.i(logTag, logMessage, ex);
         }
     }
 
