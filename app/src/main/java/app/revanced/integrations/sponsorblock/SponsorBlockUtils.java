@@ -470,6 +470,7 @@ public abstract class SponsorBlockUtils {
             category.addPreference(preference);
             String formatted = FORMATTER.format(stats.getSegmentCount());
             preference.setTitle(fromHtml(str("stats_submissions", formatted)));
+            preference.setSelectable(false);
         }
 
         {
@@ -503,6 +504,7 @@ public abstract class SponsorBlockUtils {
 
             preference.setTitle(fromHtml(str("stats_self_saved", formatted)));
             preference.setSummary(fromHtml(str("stats_self_saved_sum", formattedSaved)));
+            preference.setSelectable(false);
         }
     }
 

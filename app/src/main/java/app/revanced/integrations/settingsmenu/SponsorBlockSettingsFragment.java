@@ -171,6 +171,7 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment implements 
         screen.addPreference(colorPreference);
         colorPreference.setTitle(str("color_change"));
         colorPreference.setSummary(str("color_change_sum"));
+        colorPreference.setSelectable(false);
         preferencesToDisableWhenSBDisabled.add(colorPreference);
     }
 
@@ -184,6 +185,7 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment implements 
             Preference preference = new Preference(context);
             category.addPreference(preference);
             preference.setTitle(str("stats_loading"));
+            preference.setSelectable(false);
 
             SBRequester.retrieveUserStats(category, preference);
         }
@@ -211,6 +213,7 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment implements 
             Preference preference = new Preference(context);
             screen.addPreference(preference);
             preference.setTitle(str("about_madeby"));
+            preference.setSelectable(false);
         }
 
     }
