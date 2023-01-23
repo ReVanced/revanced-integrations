@@ -543,18 +543,11 @@ public abstract class SponsorBlockUtils {
 
             SettingsEnum.SB_UUID.saveValue(settingsJson.getString("userID"));
             SettingsEnum.SB_IS_VIP.saveValue(settingsJson.getBoolean("isVip"));
+            SettingsEnum.SB_API_URL.saveValue(settingsJson.getString("serverAddress"));
             SettingsEnum.SB_SHOW_TOAST_WHEN_SKIP.saveValue(!settingsJson.getBoolean("dontShowNotice"));
             SettingsEnum.SB_SHOW_TIME_WITHOUT_SEGMENTS.saveValue(settingsJson.getBoolean("showTimeWithSkips"));
             SettingsEnum.SB_MIN_DURATION.saveValue(Float.valueOf(settingsJson.getString("minDuration")));
             SettingsEnum.SB_COUNT_SKIPS.saveValue(settingsJson.getBoolean("trackViewCount"));
-
-            String serverAddress = settingsJson.getString("serverAddress");
-            if (serverAddress.equalsIgnoreCase("https://sponsor.ajay.app")) {
-                // the browser extension exports only the server address
-                // but this code expects the full url (https://sponsor.ajay.app/api/)
-                serverAddress = (String) SettingsEnum.SB_API_URL.getDefaultValue();
-            }
-            SettingsEnum.SB_API_URL.saveValue(serverAddress);
 
             Toast.makeText(context, str("settings_import_successful"), Toast.LENGTH_SHORT).show();
         } catch (Exception ex) {
