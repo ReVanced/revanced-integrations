@@ -46,6 +46,7 @@ import java.util.TimeZone;
 import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.sponsorblock.player.PlayerType;
 import app.revanced.integrations.utils.LogHelper;
+import app.revanced.integrations.utils.ReVancedUtils;
 import app.revanced.integrations.utils.SharedPrefHelper;
 import app.revanced.integrations.sponsorblock.objects.SponsorSegment;
 import app.revanced.integrations.sponsorblock.objects.UserStats;
@@ -154,7 +155,7 @@ public abstract class SponsorBlockUtils {
             Toast.makeText(context, str("submit_started"), Toast.LENGTH_SHORT).show();
 
             appContext = new WeakReference<>(context);
-            new Thread(submitRunnable).start();
+            ReVancedUtils.runOnBackgroundThread(submitRunnable);
         }
     };
     public static String messageToToast = "";
