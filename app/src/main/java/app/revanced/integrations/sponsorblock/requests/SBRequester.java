@@ -136,6 +136,7 @@ public class SBRequester {
                 String uuid = SettingsEnum.SB_UUID.getString();
                 String vote = Integer.toString(voteOption == VoteOption.UPVOTE ? 1 : 0);
 
+                // edit: could probably remove this toast, as another toast with the result is shown only a few seconds later
                 runOnMainThread(() -> Toast.makeText(context, str("vote_started"), Toast.LENGTH_SHORT).show());
 
                 HttpURLConnection connection = voteOption == VoteOption.CATEGORY_CHANGE
@@ -173,7 +174,9 @@ public class SBRequester {
                 JSONObject json = getJSONObject(SBRoutes.GET_USER_STATS, SettingsEnum.SB_UUID.getString());
                 UserStats stats = new UserStats(json.getString("userName"), json.getDouble("minutesSaved"), json.getInt("segmentCount"),
                         json.getInt("viewCount"));
-                SponsorBlockUtils.addUserStats(category, loadingPreference, stats);
+                runOnMainThread(() -> { // get back on main thread to modify UI elements
+                    SponsorBlockUtils.addUserStats(category, loadingPreference, stats);
+                });
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
