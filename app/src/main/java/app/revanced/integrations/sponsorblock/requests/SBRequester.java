@@ -31,6 +31,7 @@ import app.revanced.integrations.sponsorblock.SponsorBlockUtils;
 import app.revanced.integrations.sponsorblock.SponsorBlockUtils.VoteOption;
 import app.revanced.integrations.sponsorblock.objects.SponsorSegment;
 import app.revanced.integrations.sponsorblock.objects.UserStats;
+import app.revanced.integrations.utils.ReVancedUtils;
 
 public class SBRequester {
     private static final String TIME_TEMPLATE = "%.3f";
@@ -129,7 +130,7 @@ public class SBRequester {
     }
 
     public static void voteForSegment(SponsorSegment segment, VoteOption voteOption, Context context, String... args) {
-        new Thread(() -> {
+        ReVancedUtils.runOnBackgroundThread(() -> {
             try {
                 String segmentUuid = segment.UUID;
                 String uuid = SettingsEnum.SB_UUID.getString();
@@ -158,7 +159,7 @@ public class SBRequester {
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-        }).start();
+        });
     }
 
     public static void retrieveUserStats(PreferenceCategory category, Preference loadingPreference) {
@@ -167,7 +168,7 @@ public class SBRequester {
             return;
         }
 
-        new Thread(() -> {
+        ReVancedUtils.runOnBackgroundThread(() -> {
             try {
                 JSONObject json = getJSONObject(SBRoutes.GET_USER_STATS, SettingsEnum.SB_UUID.getString());
                 UserStats stats = new UserStats(json.getString("userName"), json.getDouble("minutesSaved"), json.getInt("segmentCount"),
@@ -176,11 +177,11 @@ public class SBRequester {
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-        }).start();
+        });
     }
 
     public static void setUsername(String username, EditTextPreference preference, Runnable toastRunnable) {
-        new Thread(() -> {
+        ReVancedUtils.runOnBackgroundThread(() -> {
             try {
                 HttpURLConnection connection = getConnectionFromRoute(SBRoutes.CHANGE_USERNAME, SettingsEnum.SB_UUID.getString(), username);
                 int responseCode = connection.getResponseCode();
@@ -199,7 +200,7 @@ public class SBRequester {
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-        }).start();
+        });
     }
 
     public static void runVipCheck() {
