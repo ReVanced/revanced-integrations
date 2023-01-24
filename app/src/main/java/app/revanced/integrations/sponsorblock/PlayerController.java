@@ -296,6 +296,7 @@ public class PlayerController {
         }
     }
 
+    // Edit: Is this method ever called?  Where is the patch code that calls this?
     public static void addSkipSponsorView14(final View view) {
         try {
             playerActivity = new WeakReference<>((Activity) view.getContext());
