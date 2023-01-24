@@ -402,11 +402,15 @@ public abstract class SponsorBlockUtils {
     }
 
     public static String appendTimeWithoutSegments(String totalTime) {
-        if (videoHasSegments && (SettingsEnum.SB_ENABLED.getBoolean() && SettingsEnum.SB_SHOW_TIME_WITHOUT_SEGMENTS.getBoolean()) && !TextUtils.isEmpty(totalTime) && getCurrentVideoLength() > 1) {
-            if (timeWithoutSegments.isEmpty()) {
-                timeWithoutSegments = getTimeWithoutSegments(sponsorSegmentsOfCurrentVideo);
+        try {
+            if (videoHasSegments && (SettingsEnum.SB_ENABLED.getBoolean() && SettingsEnum.SB_SHOW_TIME_WITHOUT_SEGMENTS.getBoolean()) && !TextUtils.isEmpty(totalTime) && getCurrentVideoLength() > 1) {
+                if (timeWithoutSegments.isEmpty()) {
+                    timeWithoutSegments = getTimeWithoutSegments(sponsorSegmentsOfCurrentVideo);
+                }
+                return totalTime + timeWithoutSegments;
             }
-            return totalTime + timeWithoutSegments;
+        } catch (Exception ex) {
+            LogHelper.printException(() -> "appendTimeWithoutSegments failure", ex);
         }
 
         return totalTime;
