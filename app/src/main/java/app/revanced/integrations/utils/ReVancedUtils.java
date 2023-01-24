@@ -149,7 +149,7 @@ public class ReVancedUtils {
             try {
                 runnable.run();
             } catch (Exception ex) {
-                LogHelper.printException(() -> "Exception on main thread from runnable: " + runnable.getClass(), ex);
+                LogHelper.printException(() -> runnable.getClass() + ": " + ex.getLocalizedMessage(), ex);
             }
         };
         new Handler(Looper.getMainLooper()).post(loggingRunnable);
