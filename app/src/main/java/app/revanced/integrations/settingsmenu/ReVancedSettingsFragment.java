@@ -71,7 +71,7 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
                 }
                 setting.setValue(value);
             } else {
-                LogHelper.printException(() -> "Setting cannot be handled! " + pref.toString());
+                LogHelper.printException(() -> "Setting cannot be handled: " +  pref.getClass() + " " + pref.toString());
             }
 
             if (ReVancedUtils.getContext() != null && settingsInitialized && setting.shouldRebootOnChange()) {
