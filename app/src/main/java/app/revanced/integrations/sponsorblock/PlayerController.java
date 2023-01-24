@@ -286,7 +286,7 @@ public class PlayerController {
             playerActivity = new WeakReference<>((Activity) view.getContext());
             LogHelper.printDebug(() -> "addSkipSponsorView15: view=" + view.toString());
 
-            new Handler(Looper.getMainLooper()).postDelayed(() -> {
+            ReVancedUtils.runOnMainThreadDelayed(() -> {
                 final ViewGroup viewGroup = (ViewGroup) ((ViewGroup) view).getChildAt(2);
                 Activity context = ((Activity) viewGroup.getContext());
                 NewSegmentHelperLayout.context = context;
@@ -301,7 +301,7 @@ public class PlayerController {
         try {
             playerActivity = new WeakReference<>((Activity) view.getContext());
             LogHelper.printDebug(() -> "addSkipSponsorView14: view=" + view.toString());
-            new Handler(Looper.getMainLooper()).postDelayed(() -> {
+            ReVancedUtils.runOnMainThreadDelayed(() -> {
                 final ViewGroup viewGroup = (ViewGroup) view.getParent();
                 Activity activity = (Activity) viewGroup.getContext();
                 NewSegmentHelperLayout.context = activity;

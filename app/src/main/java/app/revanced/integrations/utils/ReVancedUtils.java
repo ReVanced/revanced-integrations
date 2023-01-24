@@ -6,6 +6,8 @@ import android.content.res.Resources;
 import android.os.Handler;
 import android.os.Looper;
 
+import androidx.annotation.NonNull;
+
 import java.text.Bidi;
 import java.util.Locale;
 import java.util.concurrent.Callable;
@@ -145,14 +147,21 @@ public class ReVancedUtils {
      * Automatically logs any exceptions the runnable throws
      */
     public static void runOnMainThread(Runnable runnable) {
+        runOnMainThreadDelayed(runnable, 0);
+    }
+
+    /**
+     * Automatically logs any exceptions the runnable throws
+     */
+    public static void runOnMainThreadDelayed(Runnable runnable, long delayMillis) {
         Runnable loggingRunnable = () -> {
             try {
                 runnable.run();
             } catch (Exception ex) {
-                LogHelper.printException(() -> runnable.getClass() + ": " + ex.getLocalizedMessage(), ex);
+                LogHelper.printException(() -> runnable.getClass() + ": " + ex.getMessage(), ex);
             }
         };
-        new Handler(Looper.getMainLooper()).post(loggingRunnable);
+        new Handler(Looper.getMainLooper()).postDelayed(loggingRunnable, delayMillis);
     }
 
     /**
