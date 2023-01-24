@@ -245,8 +245,8 @@ public class PlayerController {
                 setSponsorBarAbsoluteLeft(rect.left);
                 setSponsorBarAbsoluteRight(rect.right);
             }
-        } catch (IllegalAccessException | NoSuchFieldException e) {
-            e.printStackTrace();
+        } catch (Exception ex) {
+            LogHelper.printException(() -> "setSponsorBarRect failure", ex);
         }
     }
 
