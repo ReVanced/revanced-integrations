@@ -190,9 +190,8 @@ public class ReturnYouTubeDislike {
         try {
             Objects.requireNonNull(vote);
 
-            PlayerType currentPlayerType = PlayerType.getCurrent();
-            if (currentPlayerType == PlayerType.NONE) { // should occur if shorts is playing
-                LogHelper.printDebug(() -> "Ignoring vote during PlayerType: " + currentPlayerType);
+            if (PlayerType.getCurrent() == PlayerType.NONE) { // should occur if shorts is playing
+                LogHelper.printDebug(() -> "Ignoring vote during Shorts playback");
                 return;
             }
             if (SharedPrefHelper.getBoolean(SharedPrefHelper.SharedPrefNames.YOUTUBE, "user_signed_out", true)) {
