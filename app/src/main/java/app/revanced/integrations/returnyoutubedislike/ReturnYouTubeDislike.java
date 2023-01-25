@@ -178,8 +178,7 @@ public class ReturnYouTubeDislike {
             if (updateDislike(textRef, isSegmentedButton, votingData)) {
                 LogHelper.printDebug(() -> "Updated dislike span to: " + textRef.get());
             } else {
-                LogHelper.printDebug(() -> "Ignoring dislike span: " + textRef.get()
-                        + " that appears to already show voting data: " + votingData);
+                LogHelper.printDebug(() -> "Ignoring already updated dislike span: " + textRef.get());
             }
         } catch (Exception ex) {
             LogHelper.printException(() -> "Error while trying to update dislikes", ex);
