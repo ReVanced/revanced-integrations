@@ -118,7 +118,7 @@ public class ReturnYouTubeDislike {
             Objects.requireNonNull(videoId);
             PlayerType currentPlayerType = PlayerType.getCurrent();
             if (currentPlayerType == PlayerType.INLINE_MINIMAL) {
-                LogHelper.printDebug(() -> "Ignoring playback of video: "+ videoId + " playerType: " + currentPlayerType);
+                LogHelper.printDebug(() -> "Ignoring inline playback of video: "+ videoId);
                 return;
             }
             LogHelper.printDebug(() -> " new video loaded: " + videoId + " playerType: " + currentPlayerType);
