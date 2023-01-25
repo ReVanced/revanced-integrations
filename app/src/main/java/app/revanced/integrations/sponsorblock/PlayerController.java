@@ -20,6 +20,7 @@ import java.util.TimerTask;
 
 import app.revanced.integrations.patches.VideoInformation;
 import app.revanced.integrations.settings.SettingsEnum;
+import app.revanced.integrations.shared.PlayerType;
 import app.revanced.integrations.sponsorblock.objects.SponsorSegment;
 import app.revanced.integrations.sponsorblock.requests.SBRequester;
 import app.revanced.integrations.utils.LogHelper;
@@ -41,12 +42,6 @@ public class PlayerController {
     private static float sponsorBarThickness = 2f;
     private static TimerTask skipSponsorTask = null;
 
-    public static boolean shorts_playing = false;
-
-    public static void shortsOpened() {
-        shorts_playing = true;
-    }
-
     public static String getCurrentVideoId() {
         return currentVideoId;
     }
@@ -66,7 +61,11 @@ public class PlayerController {
             currentVideoId = null;
             return;
         }
-
+        if (PlayerType.getCurrent() == PlayerType.NONE) {
+            LogHelper.printDebug(() -> "ignoring shorts video");
+            currentVideoId = null;
+            return;
+        }
         if (videoId.equals(currentVideoId))
             return;
 
@@ -94,10 +93,7 @@ public class PlayerController {
     public static void executeDownloadSegments(String videoId) {
         videoHasSegments = false;
         timeWithoutSegments = "";
-        if (shorts_playing) {
-            LogHelper.printDebug(() -> "ignoring shorts video");
-            return;
-        }
+
         SponsorSegment[] segments = SBRequester.getSegments(videoId);
         Arrays.sort(segments);
 

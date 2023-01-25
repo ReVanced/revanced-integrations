@@ -2,7 +2,6 @@ package app.revanced.integrations.returnyoutubedislike;
 
 import static app.revanced.integrations.sponsorblock.StringRef.str;
 
-import android.content.Context;
 import android.icu.text.CompactDecimalFormat;
 import android.os.Build;
 import android.text.Spannable;
@@ -13,7 +12,6 @@ import android.text.style.CharacterStyle;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
 import android.text.style.ScaleXSpan;
-import android.util.DisplayMetrics;
 
 import androidx.annotation.GuardedBy;
 import androidx.annotation.Nullable;
@@ -31,6 +29,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import app.revanced.integrations.returnyoutubedislike.requests.RYDVoteData;
 import app.revanced.integrations.returnyoutubedislike.requests.ReturnYouTubeDislikeApi;
 import app.revanced.integrations.settings.SettingsEnum;
+import app.revanced.integrations.shared.PlayerType;
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedUtils;
 import app.revanced.integrations.utils.SharedPrefHelper;
@@ -68,11 +67,6 @@ public class ReturnYouTubeDislike {
     @GuardedBy("videoIdLockObject")
     private static Future<RYDVoteData> voteFetchFuture;
 
-    /**
-     * if a shorts video is currently playing
-     */
-    private static volatile boolean shortsPlaying;
-
     public enum Vote {
         LIKE(1),
         DISLIKE(-1),
@@ -104,11 +98,6 @@ public class ReturnYouTubeDislike {
         isEnabled = enabled;
     }
 
-    public static void shortsOpened() {
-        LogHelper.printDebug(() -> "Shorts opened");
-        shortsPlaying = true;
-    }
-
     private static String getCurrentVideoId() {
         synchronized (videoIdLockObject) {
             return currentVideoId;
@@ -127,14 +116,17 @@ public class ReturnYouTubeDislike {
         if (!isEnabled) return;
         try {
             Objects.requireNonNull(videoId);
-            LogHelper.printDebug(() -> "New video loaded: " + videoId);
-
+            PlayerType currentPlayerType = PlayerType.getCurrent();
+            if (currentPlayerType == PlayerType.INLINE_MINIMAL) {
+                LogHelper.printDebug(() -> "Ignoring playback of video: "+ videoId + " playerType: " + currentPlayerType);
+                return;
+            }
+            LogHelper.printDebug(() -> " new video loaded: " + videoId + " playerType: " + currentPlayerType);
             synchronized (videoIdLockObject) {
                 currentVideoId = videoId;
                 // no need to wrap the call in a try/catch,
                 // as any exceptions are propagated out in the later Future#Get call
                 voteFetchFuture = ReVancedUtils.submitOnBackgroundThread(() -> ReturnYouTubeDislikeApi.fetchVotes(videoId));
-                shortsPlaying = false;
             }
         } catch (Exception ex) {
             LogHelper.printException(() -> "Failed to load new video: " + videoId, ex);
@@ -148,7 +140,7 @@ public class ReturnYouTubeDislike {
      * This code should avoid needlessly replacing the same UI element with identical versions.
      */
     public static void onComponentCreated(Object conversionContext, AtomicReference<Object> textRef) {
-        if (!isEnabled || shortsPlaying) return;
+        if (!isEnabled) return;
 
         try {
             String conversionContextString = conversionContext.toString();
@@ -197,11 +189,13 @@ public class ReturnYouTubeDislike {
     public static void sendVote(Vote vote) {
         if (!isEnabled) return;
         try {
-            if (shortsPlaying) {
-                LogHelper.printDebug(() -> "Ignoring vote for shorts video (there is currently no hook to capture shorts video id)");
+            Objects.requireNonNull(vote);
+
+            PlayerType currentPlayerType = PlayerType.getCurrent();
+            if (currentPlayerType == PlayerType.NONE) { // should occur if shorts is playing
+                LogHelper.printDebug(() -> "Ignoring vote during PlayerType: " + currentPlayerType);
                 return;
             }
-            Objects.requireNonNull(vote);
             if (SharedPrefHelper.getBoolean(SharedPrefHelper.SharedPrefNames.YOUTUBE, "user_signed_out", true)) {
                 return;
             }

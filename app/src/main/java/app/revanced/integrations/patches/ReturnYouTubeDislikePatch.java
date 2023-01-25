@@ -24,13 +24,6 @@ public class ReturnYouTubeDislikePatch {
     }
 
     /**
-     * Called when a shorts video is opened
-     */
-    public static void shortsOpened() {
-        ReturnYouTubeDislike.shortsOpened();
-    }
-
-    /**
      * Called when the like/dislike button is clicked
      *
      * @param vote -1 (dislike), 0 (none) or 1 (like)
