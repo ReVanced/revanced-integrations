@@ -196,6 +196,7 @@ public class ReturnYouTubeDislike {
                 return;
             }
             if (SharedPrefHelper.getBoolean(SharedPrefHelper.SharedPrefNames.YOUTUBE, "user_signed_out", true)) {
+                LogHelper.printDebug(() -> "User is logged out, ignoring voting");
                 return;
             }
 
