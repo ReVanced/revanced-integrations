@@ -92,7 +92,7 @@ public class SBRequester {
                 runVipCheckInBackgroundIfNeeded();
             } else if (responseCode == 404) {
                 // no segments are found.  a normal response
-                LogHelper.printException(() -> "no segments found for video: " + videoId);
+                LogHelper.printDebug(() -> "no segments found for video: " + videoId);
             } else {
                 LogHelper.printException(() -> "getSegments failed with response code: " + responseCode);
                 connection.disconnect(); // something went wrong, might as well disconnect
