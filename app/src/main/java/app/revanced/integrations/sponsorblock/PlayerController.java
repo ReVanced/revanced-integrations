@@ -1,16 +1,18 @@
 package app.revanced.integrations.sponsorblock;
 
-import static app.revanced.integrations.sponsorblock.SponsorBlockUtils.timeWithoutSegments;
-import static app.revanced.integrations.sponsorblock.SponsorBlockUtils.videoHasSegments;
-
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Rect;
-import android.os.Handler;
-import android.os.Looper;
 import android.view.View;
 import android.view.ViewGroup;
+import app.revanced.integrations.patches.VideoInformation;
+import app.revanced.integrations.settings.SettingsEnum;
+import app.revanced.integrations.shared.PlayerType;
+import app.revanced.integrations.sponsorblock.objects.SponsorSegment;
+import app.revanced.integrations.sponsorblock.requests.SBRequester;
+import app.revanced.integrations.utils.LogHelper;
+import app.revanced.integrations.utils.ReVancedUtils;
 
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
@@ -18,12 +20,8 @@ import java.util.Arrays;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import app.revanced.integrations.patches.VideoInformation;
-import app.revanced.integrations.settings.SettingsEnum;
-import app.revanced.integrations.sponsorblock.objects.SponsorSegment;
-import app.revanced.integrations.sponsorblock.requests.SBRequester;
-import app.revanced.integrations.utils.LogHelper;
-import app.revanced.integrations.utils.ReVancedUtils;
+import static app.revanced.integrations.sponsorblock.SponsorBlockUtils.timeWithoutSegments;
+import static app.revanced.integrations.sponsorblock.SponsorBlockUtils.videoHasSegments;
 
 public class PlayerController {
 
@@ -41,8 +39,6 @@ public class PlayerController {
     private static float sponsorBarThickness = 2f;
     private static TimerTask skipSponsorTask = null;
 
-    public static boolean shorts_playing = false;
-
     public static String getCurrentVideoId() {
         return currentVideoId;
     }
@@ -55,13 +51,19 @@ public class PlayerController {
                 return;
             }
 
+            // currently this runs every time a video is loaded (regardless if sponsorblock is turned on or off)
+            // FIXME: change this so if sponsorblock is disabled, then run this method exactly once and once only
             SponsorBlockSettings.update(null);
 
             if (!SettingsEnum.SB_ENABLED.getBoolean()) {
                 currentVideoId = null;
                 return;
             }
-
+            if (PlayerType.getCurrent() == PlayerType.NONE) {
+                LogHelper.printDebug(() -> "ignoring shorts video");
+                currentVideoId = null;
+                return;
+            }
             if (videoId.equals(currentVideoId))
                 return;
 
@@ -101,9 +103,7 @@ public class PlayerController {
         try {
             videoHasSegments = false;
             timeWithoutSegments = "";
-            if (shorts_playing) {
-                return;
-            }
+
             SponsorSegment[] segments = SBRequester.getSegments(videoId);
             Arrays.sort(segments);
 
