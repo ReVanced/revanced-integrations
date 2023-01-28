@@ -90,6 +90,9 @@ public class SBRequester {
                     SponsorBlockUtils.timeWithoutSegments = SponsorBlockUtils.getTimeWithoutSegments(segments.toArray(new SponsorSegment[0]));
                 }
                 runVipCheckInBackgroundIfNeeded();
+            } else if (responseCode == 404) {
+                // no segments are found.  a normal response
+                LogHelper.printException(() -> "no segments found for video: " + videoId);
             } else {
                 LogHelper.printException(() -> "getSegments failed with response code: " + responseCode,
                         null, str("sponsorblock_connection_timeout"));
