@@ -6,6 +6,13 @@ import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.view.View;
 import android.view.ViewGroup;
+
+import java.lang.ref.WeakReference;
+import java.lang.reflect.Field;
+import java.util.Arrays;
+import java.util.Timer;
+import java.util.TimerTask;
+
 import app.revanced.integrations.patches.VideoInformation;
 import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.shared.PlayerType;
@@ -14,30 +21,25 @@ import app.revanced.integrations.sponsorblock.requests.SBRequester;
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedUtils;
 
-import java.lang.ref.WeakReference;
-import java.lang.reflect.Field;
-import java.util.Arrays;
-import java.util.Timer;
-import java.util.TimerTask;
-
-import static app.revanced.integrations.sponsorblock.SponsorBlockUtils.timeWithoutSegments;
-import static app.revanced.integrations.sponsorblock.SponsorBlockUtils.videoHasSegments;
 
 public class PlayerController {
 
     private static final Timer sponsorTimer = new Timer("sponsor-skip-timer");
-    public static WeakReference<Activity> playerActivity = new WeakReference<>(null);
-    public static SponsorSegment[] sponsorSegmentsOfCurrentVideo;
-    private static long allowNextSkipRequestTime = 0L;
-    private static String currentVideoId;
-    private static long lastKnownVideoTime = -1L;
+    // fields must be volatile, as they are read/wright from different threads (timer thread and main thread)
+    public static volatile WeakReference<Activity> playerActivity = new WeakReference<>(null);
+    public static volatile SponsorSegment[] sponsorSegmentsOfCurrentVideo;
+    private static volatile long allowNextSkipRequestTime = 0L;
+    private static volatile String currentVideoId;
+    private static volatile long lastKnownVideoTime = -1L;
     private static final Runnable findAndSkipSegmentRunnable = () -> {
         findAndSkipSegment(false);
     };
+    private static volatile TimerTask skipSponsorTask = null;
+    private static volatile boolean settingsInitialized;
+    // UI fields should be accessed exclusively on a single thread (main thread). volatile is not needed
     private static float sponsorBarLeft = 1f;
     private static float sponsorBarRight = 1f;
     private static float sponsorBarThickness = 2f;
-    private static TimerTask skipSponsorTask = null;
 
     public static String getCurrentVideoId() {
         return currentVideoId;
@@ -51,10 +53,6 @@ public class PlayerController {
                 return;
             }
 
-            // currently this runs every time a video is loaded (regardless if sponsorblock is turned on or off)
-            // FIXME: change this so if sponsorblock is disabled, then run this method exactly once and once only
-            SponsorBlockSettings.update(null);
-
             if (!SettingsEnum.SB_ENABLED.getBoolean()) {
                 currentVideoId = null;
                 return;
@@ -66,6 +64,11 @@ public class PlayerController {
             }
             if (videoId.equals(currentVideoId))
                 return;
+
+            if (!settingsInitialized) {
+                SponsorBlockSettings.update(null);
+                settingsInitialized = true;
+            }
 
             currentVideoId = videoId;
             sponsorSegmentsOfCurrentVideo = null;
@@ -101,18 +104,24 @@ public class PlayerController {
 
     public static void executeDownloadSegments(String videoId) {
         try {
-            videoHasSegments = false;
-            timeWithoutSegments = "";
+            SponsorBlockUtils.videoHasSegments = false;
+            SponsorBlockUtils.timeWithoutSegments = "";
 
             SponsorSegment[] segments = SBRequester.getSegments(videoId);
             Arrays.sort(segments);
 
-            for (SponsorSegment segment : segments) {
-                LogHelper.printDebug(() -> "Detected segment: " + segment.toString());
+            if (SettingsEnum.DEBUG.getBoolean()) {
+                for (SponsorSegment segment : segments) {
+                    LogHelper.printDebug(() -> "Detected segment: " + segment.toString());
+                }
             }
 
-            sponsorSegmentsOfCurrentVideo = segments;
-            // new Handler(Looper.getMainLooper()).post(findAndSkipSegmentRunnable);
+            if (videoId.equals(currentVideoId)) {
+                sponsorSegmentsOfCurrentVideo = segments;
+                // new Handler(Looper.getMainLooper()).post(findAndSkipSegmentRunnable);
+            } else {
+                LogHelper.printDebug(() -> "ignoring stale segments for prior video: " + videoId);
+            }
         } catch (Exception ex) {
             LogHelper.printException(() -> "executeDownloadSegments failure", ex);
         }
@@ -122,8 +131,10 @@ public class PlayerController {
     public static void setVideoTime(long millis) {
         try {
             if (!SettingsEnum.SB_ENABLED.getBoolean()) return;
+            if (lastKnownVideoTime == millis) {
+                return; // nothing to do
+            }
             LogHelper.printDebug(() -> "setCurrentVideoTime: current video time: " + millis);
-            // fixme?  if (millis == lastKnownVideoTime), should it return here and not continue?
             lastKnownVideoTime = millis;
             if (millis <= 0) return;
             //findAndSkipSegment(false);
@@ -230,9 +241,10 @@ public class PlayerController {
     }
 
     public static void setSponsorBarAbsoluteLeft(final float left) {
-        LogHelper.printDebug(() -> String.format("setSponsorBarLeft: left=%.2f", left));
-
-        sponsorBarLeft = left;
+        if (sponsorBarLeft != left) {
+            LogHelper.printDebug(() -> String.format("setSponsorBarLeft: left=%.2f", left));
+            sponsorBarLeft = left;
+        }
     }
 
     public static void setSponsorBarRect(final Object self) {
@@ -254,9 +266,10 @@ public class PlayerController {
     }
 
     public static void setSponsorBarAbsoluteRight(final float right) {
-        LogHelper.printDebug(() -> String.format("setSponsorBarRight: right=%.2f", right));
-
-        sponsorBarRight = right;
+        if (sponsorBarRight != right) {
+            LogHelper.printDebug(() -> String.format("setSponsorBarRight: right=%.2f", right));
+            sponsorBarRight = right;
+        }
     }
 
     public static void setSponsorBarThickness(final int thickness) {
@@ -283,12 +296,11 @@ public class PlayerController {
     public static void addSkipSponsorView15(final View view) {
         try {
             playerActivity = new WeakReference<>((Activity) view.getContext());
-            LogHelper.printDebug(() -> "addSkipSponsorView15: view=" + view.toString());
+            LogHelper.printDebug(() -> "addSkipSponsorView15: view=" + view);
 
             ReVancedUtils.runOnMainThreadDelayed(() -> {
                 final ViewGroup viewGroup = (ViewGroup) ((ViewGroup) view).getChildAt(2);
-                Activity context = ((Activity) viewGroup.getContext());
-                NewSegmentHelperLayout.context = context;
+                NewSegmentHelperLayout.context = ((Activity) viewGroup.getContext());
             }, 500);
         } catch (Exception ex) {
             LogHelper.printException(() -> "addSkipSponsorView15 failure", ex);
@@ -299,11 +311,10 @@ public class PlayerController {
     public static void addSkipSponsorView14(final View view) {
         try {
             playerActivity = new WeakReference<>((Activity) view.getContext());
-            LogHelper.printDebug(() -> "addSkipSponsorView14: view=" + view.toString());
+            LogHelper.printDebug(() -> "addSkipSponsorView14: view=" + view);
             ReVancedUtils.runOnMainThreadDelayed(() -> {
                 final ViewGroup viewGroup = (ViewGroup) view.getParent();
-                Activity activity = (Activity) viewGroup.getContext();
-                NewSegmentHelperLayout.context = activity;
+                NewSegmentHelperLayout.context = (Activity) viewGroup.getContext();
             }, 500);
         } catch (Exception ex) {
             LogHelper.printException(() -> "addSkipSponsorView14 failure", ex);
@@ -356,7 +367,7 @@ public class PlayerController {
         }
         allowNextSkipRequestTime = now + 100;
 
-        LogHelper.printDebug(() -> String.format("Requesting skip to millis=%d on thread %s", millisecond, Thread.currentThread().toString()));
+        LogHelper.printDebug(() -> String.format("Requesting skip to millis=%d on thread %s", millisecond, Thread.currentThread()));
 
         final long finalMillisecond = millisecond;
 

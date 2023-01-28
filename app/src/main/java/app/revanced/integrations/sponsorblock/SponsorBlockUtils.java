@@ -56,8 +56,8 @@ public abstract class SponsorBlockUtils {
     public static final String DATE_FORMAT = "HH:mm:ss.SSS";
     @SuppressLint("SimpleDateFormat")
     public static final SimpleDateFormat dateFormatter = new SimpleDateFormat(DATE_FORMAT);
-    public static boolean videoHasSegments = false;
-    public static String timeWithoutSegments = "";
+    public static volatile boolean videoHasSegments = false; // read/wright from different threads
+    public static volatile String timeWithoutSegments = "";  // read/wright from different threads
     private static final int sponsorBtnId = 1234;
     private static final String LOCKED_COLOR = "#FFC83D";
     public static final View.OnClickListener sponsorBlockBtnListener = v -> {
@@ -391,6 +391,7 @@ public abstract class SponsorBlockUtils {
                 .show();
     }
 
+    // edit: this appears to be dead code
     public static void notifyShareBtnVisibilityChanged(View v) {
         if (v.getId() != shareBtnId || !/*SponsorBlockSettings.isAddNewSegmentEnabled*/false)
             return;
@@ -448,7 +449,6 @@ public abstract class SponsorBlockUtils {
         return String.format("#%06X", color);
     }
 
-    @SuppressWarnings("deprecation")
     public static void addUserStats(PreferenceCategory category, Preference loadingPreference, UserStats stats) {
         category.removePreference(loadingPreference);
 
@@ -546,6 +546,7 @@ public abstract class SponsorBlockUtils {
                 SponsorBlockSettings.SegmentBehaviour behaviour = SponsorBlockSettings.SegmentBehaviour.byDesktopKey(desktopKey);
                 editor.putString(category.key, behaviour.key);
             }
+            editor.apply();
 
             SettingsEnum.SB_UUID.saveValue(settingsJson.getString("userID"));
             SettingsEnum.SB_IS_VIP.saveValue(settingsJson.getBoolean("isVip"));
