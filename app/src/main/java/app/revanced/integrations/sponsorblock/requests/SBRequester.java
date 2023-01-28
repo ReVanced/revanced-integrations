@@ -94,8 +94,7 @@ public class SBRequester {
                 // no segments are found.  a normal response
                 LogHelper.printException(() -> "no segments found for video: " + videoId);
             } else {
-                LogHelper.printException(() -> "getSegments failed with response code: " + responseCode,
-                        null, str("sponsorblock_connection_timeout"));
+                LogHelper.printException(() -> "getSegments failed with response code: " + responseCode);
                 connection.disconnect(); // something went wrong, might as well disconnect
             }
         } catch (IOException ex) {
