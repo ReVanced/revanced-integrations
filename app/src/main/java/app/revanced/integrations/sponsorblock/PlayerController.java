@@ -108,20 +108,24 @@ public class PlayerController {
     public static void executeDownloadSegments(String videoId) {
         try {
             SponsorSegment[] segments = SBRequester.getSegments(videoId);
-            Arrays.sort(segments);
 
-            if (SettingsEnum.DEBUG.getBoolean()) {
-                for (SponsorSegment segment : segments) {
-                    LogHelper.printDebug(() -> "Detected segment: " + segment.toString());
-                }
-            }
-
-            if (videoId.equals(currentVideoId)) {
-                sponsorSegmentsOfCurrentVideo = segments;
-                // new Handler(Looper.getMainLooper()).post(findAndSkipSegmentRunnable);
-            } else {
+            if (!videoId.equals(currentVideoId)) {
+                // user changed videos before get segments network call could complete
                 LogHelper.printDebug(() -> "ignoring stale segments for prior video: " + videoId);
+                return;
             }
+
+            Arrays.sort(segments);
+            sponsorSegmentsOfCurrentVideo = segments;
+            // new Handler(Looper.getMainLooper()).post(findAndSkipSegmentRunnable);
+
+            LogHelper.printDebug(() -> {
+                StringBuilder builder = new StringBuilder("Downloaded segments:");
+                for (SponsorSegment segment : segments) {
+                    builder.append('\n').append(segment);
+                }
+                return builder.toString();
+            });
         } catch (Exception ex) {
             LogHelper.printException(() -> "executeDownloadSegments failure", ex);
         }
