@@ -1,3 +1,10 @@
+# [0.94.0-dev.8](https://github.com/revanced/revanced-integrations/compare/v0.94.0-dev.7...v0.94.0-dev.8) (2023-01-28)
+
+
+### Bug Fixes
+
+* **youtube:** resolve duplicate preference keys ([#307](https://github.com/revanced/revanced-integrations/issues/307)) ([923e4b9](https://github.com/revanced/revanced-integrations/commit/923e4b99e66f46fe4b4f57f616d718b2fb6baaca))
+
 # [0.94.0-dev.7](https://github.com/revanced/revanced-integrations/compare/v0.94.0-dev.6...v0.94.0-dev.7) (2023-01-28)
 
 
