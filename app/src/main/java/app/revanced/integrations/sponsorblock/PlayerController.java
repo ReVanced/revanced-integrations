@@ -30,10 +30,10 @@ public class PlayerController {
     // fields must be volatile, as they are read/wright from different threads (timer thread and main thread)
     public static volatile WeakReference<Activity> playerActivity = new WeakReference<>(null);
     @Nullable
+    private static volatile String currentVideoId;
+    @Nullable
     public static volatile SponsorSegment[] sponsorSegmentsOfCurrentVideo;
     private static volatile long allowNextSkipRequestTime = 0L;
-    @Nullable
-    private static volatile String currentVideoId;
     private static volatile long lastKnownVideoTime = -1L;
     private static final Runnable findAndSkipSegmentRunnable = () -> {
         findAndSkipSegment(false);
