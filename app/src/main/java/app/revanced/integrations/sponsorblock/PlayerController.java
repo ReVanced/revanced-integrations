@@ -73,7 +73,9 @@ public class PlayerController {
 
             currentVideoId = videoId;
             sponsorSegmentsOfCurrentVideo = null;
-            LogHelper.printDebug(() -> "setCurrentVideoId: videoId=" + videoId);
+            SponsorBlockUtils.videoHasSegments = false;
+            SponsorBlockUtils.timeWithoutSegments = "";
+            LogHelper.printDebug(() -> "setCurrentVideoId: " + videoId);
 
             sponsorTimer.schedule(new TimerTask() {
                 @Override
@@ -105,9 +107,6 @@ public class PlayerController {
 
     public static void executeDownloadSegments(String videoId) {
         try {
-            SponsorBlockUtils.videoHasSegments = false;
-            SponsorBlockUtils.timeWithoutSegments = "";
-
             SponsorSegment[] segments = SBRequester.getSegments(videoId);
             Arrays.sort(segments);
 
