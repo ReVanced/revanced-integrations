@@ -137,9 +137,6 @@ public class SBRequester {
                 String uuid = SettingsEnum.SB_UUID.getString();
                 String vote = Integer.toString(voteOption == VoteOption.UPVOTE ? 1 : 0);
 
-                // edit: could probably remove this toast, as another toast with the result is shown only a few seconds later
-                runOnMainThread(() -> Toast.makeText(context, str("vote_started"), Toast.LENGTH_SHORT).show());
-
                 HttpURLConnection connection = voteOption == VoteOption.CATEGORY_CHANGE
                         ? getConnectionFromRoute(SBRoutes.VOTE_ON_SEGMENT_CATEGORY, segmentUuid, uuid, args[0])
                         : getConnectionFromRoute(SBRoutes.VOTE_ON_SEGMENT_QUALITY, segmentUuid, uuid, vote);
