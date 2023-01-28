@@ -32,6 +32,7 @@ import app.revanced.integrations.sponsorblock.SponsorBlockUtils.VoteOption;
 import app.revanced.integrations.sponsorblock.objects.SponsorSegment;
 import app.revanced.integrations.sponsorblock.objects.UserStats;
 import app.revanced.integrations.utils.ReVancedUtils;
+import app.revanced.integrations.utils.LogHelper;
 
 public class SBRequester {
     private static final String TIME_TEMPLATE = "%.3f";
@@ -80,7 +81,7 @@ public class SBRequester {
             }
             connection.disconnect();
         } catch (Exception ex) {
-            ex.printStackTrace();
+            LogHelper.printException(() -> "failed to get segments", ex);
         }
         return segments.toArray(new SponsorSegment[0]);
     }
@@ -116,7 +117,7 @@ public class SBRequester {
             runOnMainThread(toastRunnable);
             connection.disconnect();
         } catch (Exception ex) {
-            ex.printStackTrace();
+            LogHelper.printException(() -> "failed to submit segments", ex);
         }
     }
 
@@ -125,7 +126,7 @@ public class SBRequester {
             HttpURLConnection connection = getConnectionFromRoute(SBRoutes.VIEWED_SEGMENT, segment.UUID);
             connection.disconnect();
         } catch (Exception ex) {
-            ex.printStackTrace();
+            LogHelper.printException(() -> "failed to send view count request", ex);
         }
     }
 
@@ -158,7 +159,7 @@ public class SBRequester {
                 runOnMainThread(() -> Toast.makeText(context, SponsorBlockUtils.messageToToast, Toast.LENGTH_LONG).show());
                 connection.disconnect();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                LogHelper.printException(() -> "failed to vote for segment", ex);
             }
         });
     }
@@ -178,7 +179,7 @@ public class SBRequester {
                     SponsorBlockUtils.addUserStats(category, loadingPreference, stats);
                 });
             } catch (Exception ex) {
-                ex.printStackTrace();
+                LogHelper.printException(() -> "failed to retrieve user stats", ex);
             }
         });
     }
@@ -201,7 +202,7 @@ public class SBRequester {
                 runOnMainThread(toastRunnable);
                 connection.disconnect();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                LogHelper.printException(() -> "failed to set username", ex);
             }
         });
     }
@@ -217,7 +218,7 @@ public class SBRequester {
             SettingsEnum.SB_IS_VIP.saveValue(vip);
             SettingsEnum.SB_LAST_VIP_CHECK.saveValue(now);
         } catch (Exception ex) {
-            ex.printStackTrace();
+            LogHelper.printException(() -> "failed to check VIP", ex);
         }
     }
 

@@ -1,13 +1,12 @@
 package app.revanced.integrations.settings;
 
 import android.content.Context;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedUtils;
 import app.revanced.integrations.utils.SharedPrefHelper;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public enum SettingsEnum {
     //Download Settings
@@ -47,7 +46,6 @@ public enum SettingsEnum {
     ADREMOVER_INFO_PANEL_REMOVAL("revanced_adremover_info_panel", true, ReturnType.BOOLEAN),
     ADREMOVER_MEDICAL_PANEL_REMOVAL("revanced_adremover_medical_panel", true, ReturnType.BOOLEAN),
     ADREMOVER_PAID_CONTENT_REMOVAL("revanced_adremover_paid_content", true, ReturnType.BOOLEAN),
-    ADREMOVER_SUGGESTIONS_REMOVAL("revanced_adremover_hide_suggestions", true, ReturnType.BOOLEAN),
     ADREMOVER_HIDE_LATEST_POSTS("revanced_adremover_hide_latest_posts", true, ReturnType.BOOLEAN),
     ADREMOVER_HIDE_CHANNEL_GUIDELINES("revanced_adremover_hide_channel_guidelines", true, ReturnType.BOOLEAN),
     ADREMOVER_SELF_SPONSOR_REMOVAL("revanced_adremover_self_sponsor", true, ReturnType.BOOLEAN),
@@ -117,9 +115,10 @@ public enum SettingsEnum {
     PLAYBACK_MAX_BUFFER("revanced_pref_buffer_for_playback_ms", 2500, ReturnType.INTEGER),
     MAX_PLAYBACK_BUFFER_AFTER_REBUFFER("revanced_pref_buffer_for_playback_after_rebuffer_ms", 5000, ReturnType.INTEGER),
 
-    // ReVanced settings
+    // Debug settings
     DEBUG("revanced_debug_enabled", false, ReturnType.BOOLEAN),
     DEBUG_STACKTRACE("revanced_debug_stacktrace_enabled", false, ReturnType.BOOLEAN),
+    DEBUG_SHOW_TOAST_ON_ERROR("revanced_debug_toast_on_error_enabled", true, ReturnType.BOOLEAN),
 
     USE_DARK_THEME("app_theme_dark", false, ReturnType.BOOLEAN),
 
@@ -224,7 +223,7 @@ public enum SettingsEnum {
         //
 
         // old/new settings where old is default off, and new has inverted value and is default on
-        SettingsEnum invertedSettingsToMigrate[][] = {
+        SettingsEnum[][] invertedSettingsToMigrate = {
                 {DEPRECATED_FULLSCREEN_PANELS_SHOWN, HIDE_FULLSCREEN_PANELS},
                 {DEPRECATED_CREATE_BUTTON_ENABLED, HIDE_CREATE_BUTTON},
                 {DEPRECATED_SHORTS_BUTTON_SHOWN, HIDE_SHORTS_BUTTON},
@@ -234,7 +233,7 @@ public enum SettingsEnum {
                 {DEPRECATED_BRANDING_SHOWN, HIDE_VIDEO_WATERMARK},
                 {DEPRECATED_REMEMBER_VIDEO_QUALITY, REMEMBER_VIDEO_QUALITY_LAST_SELECTED},
         };
-        for (SettingsEnum oldNewSetting[] : invertedSettingsToMigrate) {
+        for (SettingsEnum[] oldNewSetting : invertedSettingsToMigrate) {
             // by default, old setting was default off
             // migrate to new setting of default on
             SettingsEnum oldSetting = oldNewSetting[0];
@@ -253,7 +252,7 @@ public enum SettingsEnum {
         //
         // migrate preference of prior 'default off' settings, into replacement setting with different path name but otherwise is identical
         //
-        SettingsEnum renamedSettings[][] = {
+        SettingsEnum[][] renamedSettings = {
                 {DEPRECATED_HIDE_MIX_PLAYLISTS, HIDE_MIX_PLAYLISTS},
                 {DEPRECATED_HIDE_LIKE_BUTTON, HIDE_LIKE_BUTTON},
                 {DEPRECATED_HIDE_DISLIKE_BUTTON, HIDE_DISLIKE_BUTTON},
@@ -262,7 +261,7 @@ public enum SettingsEnum {
                 {DEPRECATED_HIDE_ACTION_BUTTON, HIDE_ACTION_BUTTON},
                 {DEPRECATED_HIDE_SHARE_BUTTON, HIDE_SHARE_BUTTON},
         };
-        for (SettingsEnum oldNewSetting[] : renamedSettings) {
+        for (SettingsEnum[] oldNewSetting : renamedSettings) {
             SettingsEnum oldSetting = oldNewSetting[0];
             SettingsEnum newSetting = oldNewSetting[1];
 
@@ -304,7 +303,7 @@ public enum SettingsEnum {
                     defaultValue = SharedPrefHelper.getString(setting.sharedPref, path, (String) defaultValue);
                     break;
                 default:
-                    LogHelper.printException(() -> ("Setting does not have a valid Type. Name is: " + setting.name()));
+                    LogHelper.printException(() -> "Setting does not have a valid Type. Name is: " + setting.name());
                     break;
             }
             setting.setValue(defaultValue);
@@ -337,7 +336,7 @@ public enum SettingsEnum {
         Context context = ReVancedUtils.getContext();
 
         if (context == null) {
-            LogHelper.printException(() -> ("Context on SaveValue is null!"));
+            LogHelper.printException(() -> "Context on SaveValue is null!");
             return;
         }
 
@@ -358,7 +357,7 @@ public enum SettingsEnum {
                 SharedPrefHelper.saveString(sharedPref, path, (String) newValue);
                 break;
             default:
-                LogHelper.printException(() -> ("Setting does not have a valid Type. Name is: " + name()));
+                LogHelper.printException(() -> "Setting does not have a valid Type. Name is: " + name());
                 break;
         }
 
