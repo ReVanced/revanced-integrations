@@ -7,6 +7,8 @@ import android.graphics.Rect;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.Nullable;
+
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
 import java.util.Arrays;
@@ -27,8 +29,10 @@ public class PlayerController {
     private static final Timer sponsorTimer = new Timer("sponsor-skip-timer");
     // fields must be volatile, as they are read/wright from different threads (timer thread and main thread)
     public static volatile WeakReference<Activity> playerActivity = new WeakReference<>(null);
+    @Nullable
     public static volatile SponsorSegment[] sponsorSegmentsOfCurrentVideo;
     private static volatile long allowNextSkipRequestTime = 0L;
+    @Nullable
     private static volatile String currentVideoId;
     private static volatile long lastKnownVideoTime = -1L;
     private static final Runnable findAndSkipSegmentRunnable = () -> {
@@ -41,11 +45,12 @@ public class PlayerController {
     private static float sponsorBarRight = 1f;
     private static float sponsorBarThickness = 2f;
 
-    public static String getCurrentVideoId() {
+    @Nullable
+    static String getCurrentVideoId() {
         return currentVideoId;
     }
 
-    public static void setCurrentVideoId(final String videoId) {
+    public static void setCurrentVideoId(@Nullable String videoId) {
         try {
             if (videoId == null || !SettingsEnum.SB_ENABLED.getBoolean()) {
                 currentVideoId = null;
