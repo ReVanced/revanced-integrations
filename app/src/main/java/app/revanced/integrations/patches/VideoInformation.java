@@ -46,7 +46,7 @@ public final class VideoInformation {
      * @param videoId The id of the video.
      */
     public static void setVideoId(String videoId) {
-        LogHelper.printDebug(() -> "Setting current video id to: " + videoId);
+        LogHelper.printDebug(() -> "current video id: " + videoId);
 
         VideoInformation.videoId = videoId;
     }
@@ -57,8 +57,10 @@ public final class VideoInformation {
      * @param length The length of the video in milliseconds.
      */
     public static void setVideoLength(final long length) {
-        LogHelper.printDebug(() -> "Setting current video length to " + length);
-        videoLength = length;
+        if (videoLength != length) {
+            LogHelper.printDebug(() -> "current video length: " + length);
+            videoLength = length;
+        }
     }
 
     /**
@@ -67,8 +69,10 @@ public final class VideoInformation {
      * @param time The time of the video in milliseconds.
      */
     public static void setVideoTime(final long time) {
-        LogHelper.printDebug(() -> "Current video time " + time);
-        videoTime = time;
+        if (videoTime != time) {
+            LogHelper.printDebug(() -> "current video time: " + time);
+            videoTime = time;
+        }
     }
 
     /**
