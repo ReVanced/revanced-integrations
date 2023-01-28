@@ -47,14 +47,9 @@ public class PlayerController {
 
     public static void setCurrentVideoId(final String videoId) {
         try {
-            if (videoId == null) {
+            if (videoId == null || !SettingsEnum.SB_ENABLED.getBoolean()) {
                 currentVideoId = null;
                 sponsorSegmentsOfCurrentVideo = null;
-                return;
-            }
-
-            if (!SettingsEnum.SB_ENABLED.getBoolean()) {
-                currentVideoId = null;
                 return;
             }
             if (PlayerType.getCurrent() == PlayerType.NONE) {
@@ -62,8 +57,9 @@ public class PlayerController {
                 currentVideoId = null;
                 return;
             }
-            if (videoId.equals(currentVideoId))
+            if (videoId.equals(currentVideoId)) {
                 return;
+            }
 
             if (!settingsInitialized) {
                 SponsorBlockSettings.update(null);
