@@ -471,6 +471,7 @@ public abstract class SponsorBlockUtils {
     }
 
     public static void importSettings(String json, Context context) {
+        ReVancedUtils.verifyOnMainThread();
         try {
             JSONObject settingsJson = new JSONObject(json);
 
@@ -522,6 +523,7 @@ public abstract class SponsorBlockUtils {
     }
 
     public static String exportSettings(Context context) {
+        ReVancedUtils.verifyOnMainThread();
         try {
             JSONObject json = new JSONObject();
 
