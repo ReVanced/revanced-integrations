@@ -211,7 +211,7 @@ public abstract class SponsorBlockUtils {
                     switch (voteOption) {
                         case UPVOTE:
                         case DOWNVOTE:
-                            SBRequester.voteForSegment(segment, voteOption, appContext.get());
+                            SBRequester.voteForSegmentOnBackgroundThread(segment, voteOption, appContext.get());
                             break;
                         case CATEGORY_CHANGE:
                             onNewCategorySelect(segment, context);
@@ -353,7 +353,7 @@ public abstract class SponsorBlockUtils {
 
         new AlertDialog.Builder(context)
                 .setTitle(str("new_segment_choose_category"))
-                .setItems(titles, (dialog, which) -> SBRequester.voteForSegment(segment, VoteOption.CATEGORY_CHANGE, appContext.get(), values[which].key))
+                .setItems(titles, (dialog, which) -> SBRequester.voteForSegmentOnBackgroundThread(segment, VoteOption.CATEGORY_CHANGE, appContext.get(), values[which].key))
                 .show();
     }
 

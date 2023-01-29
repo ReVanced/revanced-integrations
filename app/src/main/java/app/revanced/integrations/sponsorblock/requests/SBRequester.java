@@ -161,7 +161,7 @@ public class SBRequester {
         }
     }
 
-    public static void voteForSegment(SponsorSegment segment, VoteOption voteOption, Context context, String... args) {
+    public static void voteForSegmentOnBackgroundThread(SponsorSegment segment, VoteOption voteOption, Context context, String... args) {
         ReVancedUtils.runOnBackgroundThread(() -> {
             try {
                 String segmentUuid = segment.UUID;
