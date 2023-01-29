@@ -7,7 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
-import app.revanced.integrations.sponsorblock.player.PlayerType;
+import app.revanced.integrations.shared.PlayerType;
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedUtils;
 import app.revanced.integrations.utils.SharedPrefHelper;
@@ -67,10 +67,7 @@ public class SwipeHelper {
 
 
     private static boolean isWatchWhileFullScreen() {
-        if (ReVancedUtils.getPlayerType() == null) {
-            return false;
-        }
-        return ReVancedUtils.getPlayerType() == PlayerType.WATCH_WHILE_FULLSCREEN;
+        return PlayerType.getCurrent() == PlayerType.WATCH_WHILE_FULLSCREEN;
     }
 
     private static String getViewMessage(View view) {

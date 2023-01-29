@@ -372,18 +372,6 @@ public abstract class SponsorBlockUtils {
                 .show();
     }
 
-    // edit: this appears to be dead code
-    public static void notifyShareBtnVisibilityChanged(View v) {
-        if (v.getId() != shareBtnId || !/*SponsorBlockSettings.isAddNewSegmentEnabled*/false)
-            return;
-//        if (VERBOSE)
-//            LogH(TAG, "VISIBILITY CHANGED of view " + v);
-        ImageView sponsorBtn = ShieldButton._shieldBtn.get();
-        if (sponsorBtn != null) {
-            sponsorBtn.setVisibility(v.getVisibility());
-        }
-    }
-
     public static String formatColorString(int color) {
         return String.format("#%06X", color);
     }
