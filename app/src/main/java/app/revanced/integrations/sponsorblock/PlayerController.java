@@ -303,17 +303,16 @@ public class PlayerController {
     }
 
     public static void setSponsorBarThickness(final float thickness) {
-//        if (VERBOSE_DRAW_OPTIONS)
-//            LogH(PlayerController.class, String.format("setSponsorBarThickness: thickness=%.2f", thickness));
-
-        sponsorBarThickness = thickness;
+        if (sponsorBarThickness != thickness) {
+            LogHelper.printDebug(() -> String.format("setSponsorBarThickness: thickness=%.2f", thickness));
+            sponsorBarThickness = thickness;
+        }
     }
 
     public static void onSkipSponsorClicked() {
         LogHelper.printDebug(() -> "Skip segment clicked");
         findAndSkipSegment(true);
     }
-
 
     /**
      * Injection point
