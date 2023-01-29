@@ -20,7 +20,10 @@ public class SponsorBlockView {
     private static WeakReference<NewSegmentLayout> _newSegmentLayout = new WeakReference<>(null);
     private static boolean shouldShowOnPlayerType = true;
     static {
-        SponsorBlockKotlinHelper.registerSponsorBlockViewPlayerTypeChangeListener();
+        PlayerType.getOnChange().addObserver((PlayerType type) -> {
+            SponsorBlockView.playerTypeChanged(type);
+            return null;
+        });
     }
 
     public static void initialize(Object viewGroup) {
@@ -112,7 +115,9 @@ public class SponsorBlockView {
         visible &= shouldShowOnPlayerType;
 
         skipSponsorButton.setVisibility(visible ? View.VISIBLE : View.GONE);
-        bringLayoutToFront();
+        if (visible) {
+            bringLayoutToFront();
+        }
     }
 
     private static void setNewSegmentLayoutMargins(boolean fullScreen) {

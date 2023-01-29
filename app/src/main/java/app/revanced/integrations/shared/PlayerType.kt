@@ -47,6 +47,7 @@ enum class PlayerType {
         /**
          * player type change listener
          */
+        @JvmStatic
         val onChange = Event<PlayerType>()
     }
 }
