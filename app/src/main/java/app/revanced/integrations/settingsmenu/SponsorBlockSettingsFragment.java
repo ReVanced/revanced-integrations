@@ -52,7 +52,7 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment implements 
         PreferenceScreen preferenceScreen = getPreferenceManager().createPreferenceScreen(context);
         setPreferenceScreen(preferenceScreen);
 
-        SponsorBlockSettings.update(getActivity());
+        SponsorBlockSettings.update();
 
         {
             SwitchPreference preference = new SwitchPreference(context);
@@ -403,6 +403,6 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment implements 
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        SponsorBlockSettings.update(getActivity());
+        SponsorBlockSettings.update();
     }
 }

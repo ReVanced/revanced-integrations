@@ -25,7 +25,7 @@ public class SponsorBlockSettings {
     public static final SegmentBehaviour DefaultBehaviour = SegmentBehaviour.IGNORE;
     public static String sponsorBlockUrlCategories = "[]";
 
-    public static void update(Activity _activity) {
+    public static void update() {
         LogHelper.printDebug(() -> "updating SponsorBlockSettings");
         SharedPreferences preferences = SharedPrefHelper.getPreferences(SharedPrefHelper.SharedPrefNames.SPONSOR_BLOCK);
 

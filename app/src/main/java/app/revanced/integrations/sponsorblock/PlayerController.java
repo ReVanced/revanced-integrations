@@ -67,7 +67,7 @@ public class PlayerController {
             }
 
             if (!settingsInitialized) {
-                SponsorBlockSettings.update(null);
+                SponsorBlockSettings.update();
                 settingsInitialized = true;
             }
 
@@ -298,7 +298,7 @@ public class PlayerController {
 
             ReVancedUtils.runOnMainThreadDelayed(() -> {
                 final ViewGroup viewGroup = (ViewGroup) ((ViewGroup) view).getChildAt(2);
-                NewSegmentHelperLayout.context = ((Activity) viewGroup.getContext());
+                NewSegmentHelperLayout.context = viewGroup.getContext();
             }, 500);
         } catch (Exception ex) {
             LogHelper.printException(() -> "addSkipSponsorView15 failure", ex);
@@ -312,7 +312,7 @@ public class PlayerController {
             LogHelper.printDebug(() -> "addSkipSponsorView14: view=" + view);
             ReVancedUtils.runOnMainThreadDelayed(() -> {
                 final ViewGroup viewGroup = (ViewGroup) view.getParent();
-                NewSegmentHelperLayout.context = (Activity) viewGroup.getContext();
+                NewSegmentHelperLayout.context = viewGroup.getContext();
             }, 500);
         } catch (Exception ex) {
             LogHelper.printException(() -> "addSkipSponsorView14 failure", ex);
