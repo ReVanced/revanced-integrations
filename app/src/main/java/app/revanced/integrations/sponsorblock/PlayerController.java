@@ -185,8 +185,8 @@ public class PlayerController {
 
                 // we are in the segment!
                 if (segment.category.behaviour.skip && !(segment.category.behaviour.key.equals("skip-once") && segment.didAutoSkipped)) {
-                    sendViewRequestAsync(millis, segment);
                     skipSegment(segment, false);
+                    sendViewRequestAsync(millis, segment);
                     break;
                 } else {
                     SkipSegmentView.show();
