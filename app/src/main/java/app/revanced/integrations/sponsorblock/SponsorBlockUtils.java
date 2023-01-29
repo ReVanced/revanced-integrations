@@ -228,13 +228,13 @@ public abstract class SponsorBlockUtils {
                 .show();
     };
     private static final Runnable submitRunnable = () -> {
-        messageToToast = null;
-        final String uuid = SettingsEnum.SB_UUID.getString();
-        final long start = newSponsorSegmentStartMillis;
-        final long end = newSponsorSegmentEndMillis;
-        final String videoId = PlayerController.getCurrentVideoId();
-        final SponsorBlockSettings.SegmentInfo segmentType = SponsorBlockUtils.newSponsorBlockSegmentType;
         try {
+            messageToToast = null;
+            final String uuid = SettingsEnum.SB_UUID.getString();
+            final long start = newSponsorSegmentStartMillis;
+            final long end = newSponsorSegmentEndMillis;
+            final String videoId = PlayerController.getCurrentVideoId();
+            final SponsorBlockSettings.SegmentInfo segmentType = SponsorBlockUtils.newSponsorBlockSegmentType;
             if (start < 0 || end < 0 || start >= end || segmentType == null || videoId == null || uuid == null) {
                 LogHelper.printException(() -> "Unable to submit times, invalid parameters");
                 return;
