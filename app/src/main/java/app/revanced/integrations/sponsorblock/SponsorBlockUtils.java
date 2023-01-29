@@ -156,7 +156,7 @@ public abstract class SponsorBlockUtils {
             ReVancedUtils.runOnBackgroundThread(submitRunnable);
         }
     };
-    public static String messageToToast = "";
+    public static volatile String messageToToast = "";
     private static final EditByHandSaveDialogListener editByHandSaveDialogListener = new EditByHandSaveDialogListener();
     private static final DialogInterface.OnClickListener editByHandDialogListener = (dialog, which) -> {
         Context context = ((AlertDialog) dialog).getContext();
@@ -187,8 +187,9 @@ public abstract class SponsorBlockUtils {
     };
     private static final Runnable toastRunnable = () -> {
         Context context = appContext.get();
-        if (context != null && messageToToast != null)
-            Toast.makeText(context, messageToToast, Toast.LENGTH_LONG).show();
+        String messageToToastToUse = messageToToast;
+        if (context != null && messageToToastToUse != null)
+            Toast.makeText(context, messageToToastToUse, Toast.LENGTH_LONG).show();
     };
     private static final DialogInterface.OnClickListener segmentVoteClickListener = (dialog, which) -> {
         final Context context = ((AlertDialog) dialog).getContext();
