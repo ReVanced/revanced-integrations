@@ -406,8 +406,8 @@ public class PlayerController {
                         && segment.didAutoSkipped)) || wasClicked))
                     return;
 
-                sendViewRequestAsync(millis, segment);
                 skipSegment(segment, wasClicked);
+                sendViewRequestAsync(millis, segment);
                 break;
             }
 
