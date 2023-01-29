@@ -114,9 +114,12 @@ public class SponsorBlockView {
 
         visible &= shouldShowOnPlayerType;
 
-        skipSponsorButton.setVisibility(visible ? View.VISIBLE : View.GONE);
-        if (visible) {
-            bringLayoutToFront();
+        final int desiredVisibility = visible ? View.VISIBLE : View.GONE;
+        if (skipSponsorButton.getVisibility() != desiredVisibility) {
+            skipSponsorButton.setVisibility(desiredVisibility);
+            if (visible) {
+                bringLayoutToFront();
+            }
         }
     }
 
