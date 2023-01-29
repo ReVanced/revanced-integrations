@@ -474,13 +474,16 @@ public class PlayerController {
             }
             SkipSegmentView.hide();
             if (segment.category == SponsorBlockSettings.SegmentInfo.UNSUBMITTED) {
-                SponsorSegment[] newSegments = new SponsorSegment[sponsorSegmentsOfCurrentVideo.length - 1];
+                // skipped segment was a preview of unsubmitted segment
+                // remove the segment from the UI view
+                SponsorSegment[] currentSegments = sponsorSegmentsOfCurrentVideo;
+                SponsorSegment[] newSegments = new SponsorSegment[currentSegments.length - 1];
                 int i = 0;
-                for (SponsorSegment sponsorSegment : sponsorSegmentsOfCurrentVideo) {
+                for (SponsorSegment sponsorSegment : currentSegments) {
                     if (sponsorSegment != segment)
                         newSegments[i++] = sponsorSegment;
                 }
-                sponsorSegmentsOfCurrentVideo = newSegments;
+                setSponsorSegmentsOfCurrentVideo(newSegments);
             }
         } catch (Exception ex) {
             LogHelper.printException(() -> "skipSegment failure", ex);
