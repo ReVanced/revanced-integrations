@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.sponsorblock.PlayerController;
+import app.revanced.integrations.utils.ReVancedUtils;
 
 public class SkipSponsorButton extends FrameLayout {
     public CharSequence skipSponsorTextViewText;
@@ -119,6 +120,6 @@ public class SkipSponsorButton extends FrameLayout {
     }
 
     private int getIdentifier(Context context, String name, String defType) {
-        return context.getResources().getIdentifier(name, defType, context.getPackageName());
+        return ReVancedUtils.getResourceIdByName(context, name, defType);
     }
 }

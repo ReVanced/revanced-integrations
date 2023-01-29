@@ -1,6 +1,7 @@
 package app.revanced.integrations.sponsorblock;
 
-import android.content.Context;
+import static app.revanced.integrations.utils.ReVancedUtils.getIdentifier;
+
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -135,11 +136,6 @@ public class VotingButton {
     }
 
     //region Helpers
-    private static int getIdentifier(String name, String defType) {
-        Context context = ReVancedUtils.getContext();
-        return context.getResources().getIdentifier(name, defType, context.getPackageName());
-    }
-
     private static int getInteger(String name) {
         return ReVancedUtils.getContext().getResources().getInteger(getIdentifier(name, "integer"));
     }
