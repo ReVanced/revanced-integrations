@@ -199,19 +199,15 @@ public class PlayerController {
 
     private static void sendViewRequestAsync(final long millis, final SponsorSegment segment) {
         if (segment.category != SponsorBlockSettings.SegmentInfo.UNSUBMITTED) {
-            Context context = ReVancedUtils.getContext();
-            if (context != null) {
-                long newSkippedTime = SettingsEnum.SB_SKIPPED_SEGMENTS_TIME.getLong() + (segment.end - segment.start);
-                SettingsEnum.SB_SKIPPED_SEGMENTS.saveValue(SettingsEnum.SB_SKIPPED_SEGMENTS.getInt() + 1);
-                SettingsEnum.SB_SKIPPED_SEGMENTS_TIME.saveValue(newSkippedTime);
+            final long newSkippedTime = SettingsEnum.SB_SKIPPED_SEGMENTS_TIME.getLong() + (segment.end - segment.start);
+            SettingsEnum.SB_SKIPPED_SEGMENTS.saveValue(SettingsEnum.SB_SKIPPED_SEGMENTS.getInt() + 1);
+            SettingsEnum.SB_SKIPPED_SEGMENTS_TIME.saveValue(newSkippedTime);
+
+            if (SettingsEnum.SB_COUNT_SKIPS.getBoolean() && (millis - segment.start < 2000)) { // Only skips from the start should count as a view
+                ReVancedUtils.runOnBackgroundThread(() -> {
+                    SBRequester.sendViewCountRequest(segment);
+                });
             }
-        }
-        if (SettingsEnum.SB_COUNT_SKIPS.getBoolean()
-                && segment.category != SponsorBlockSettings.SegmentInfo.UNSUBMITTED
-                && millis - segment.start < 2000) { // Only skips from the start should count as a view
-            ReVancedUtils.runOnBackgroundThread(() -> {
-                SBRequester.sendViewCountRequest(segment);
-            });
         }
     }
 
