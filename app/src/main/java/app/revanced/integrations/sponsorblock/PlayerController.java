@@ -103,7 +103,7 @@ public class PlayerController {
                 @Override
                 public void run() {
                     try {
-                        executeDownloadSegments(currentVideoId);
+                        executeDownloadSegments(videoId);
                     } catch (Exception e) {
                         LogHelper.printException(() -> "Failed to download segments", e);
                     }
