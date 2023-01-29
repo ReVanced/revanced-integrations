@@ -135,9 +135,7 @@ public class PlayerController {
     public static void setVideoTime(long millis) {
         try {
             if (!SettingsEnum.SB_ENABLED.getBoolean()) return;
-            if (lastKnownVideoTime == millis) {
-                return; // nothing to do
-            }
+
             LogHelper.printDebug(() -> "setCurrentVideoTime: current video time: " + millis);
             lastKnownVideoTime = millis;
             if (millis <= 0) return;
