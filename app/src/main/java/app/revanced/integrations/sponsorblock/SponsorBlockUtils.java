@@ -243,8 +243,7 @@ public abstract class SponsorBlockUtils {
             SBRequester.submitSegments(videoId, uuid, ((float) start) / 1000f, ((float) end) / 1000f, segmentType.key, toastRunnable);
             newSponsorSegmentEndMillis = newSponsorSegmentStartMillis = -1;
 
-            if (videoId != null)
-                PlayerController.executeDownloadSegments(videoId);
+            PlayerController.executeDownloadSegments(videoId);
         } catch (Exception e) {
             LogHelper.printException(() -> "Unable to submit segment", e);
         }
