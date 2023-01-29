@@ -331,20 +331,6 @@ public class PlayerController {
         }
     }
 
-    // Edit: Is this method ever called?  Where is the patch code that calls this?
-    public static void addSkipSponsorView14(final View view) {
-        try {
-            playerActivity = new WeakReference<>((Activity) view.getContext());
-            LogHelper.printDebug(() -> "addSkipSponsorView14: view=" + view);
-            ReVancedUtils.runOnMainThreadDelayed(() -> {
-                final ViewGroup viewGroup = (ViewGroup) view.getParent();
-                NewSegmentHelperLayout.context = viewGroup.getContext();
-            }, 500);
-        } catch (Exception ex) {
-            LogHelper.printException(() -> "addSkipSponsorView14 failure", ex);
-        }
-    }
-
     /**
      * Injection point
      */
