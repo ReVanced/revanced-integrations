@@ -1,6 +1,5 @@
 package app.revanced.integrations.sponsorblock.player.ui;
 
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,17 +8,20 @@ import android.widget.RelativeLayout;
 import java.lang.ref.WeakReference;
 
 import app.revanced.integrations.shared.PlayerType;
+import app.revanced.integrations.sponsorblock.SwipeHelper;
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedUtils;
-import app.revanced.integrations.sponsorblock.SwipeHelper;
 
 public class SponsorBlockView {
 
-    static RelativeLayout inlineSponsorOverlay;
-    static ViewGroup _youtubeOverlaysLayout;
-    static WeakReference<SkipSponsorButton> _skipSponsorButton = new WeakReference<>(null);
-    static WeakReference<NewSegmentLayout> _newSegmentLayout = new WeakReference<>(null);
-    static boolean shouldShowOnPlayerType = true;
+    private static RelativeLayout inlineSponsorOverlay;
+    private static ViewGroup _youtubeOverlaysLayout;
+    private static WeakReference<SkipSponsorButton> _skipSponsorButton = new WeakReference<>(null);
+    private static WeakReference<NewSegmentLayout> _newSegmentLayout = new WeakReference<>(null);
+    private static boolean shouldShowOnPlayerType = true;
+    static {
+        SponsorBlockKotlinHelper.registerSponsorBlockViewPlayerTypeChangeListener();
+    }
 
     public static void initialize(Object viewGroup) {
         try {
@@ -49,7 +51,7 @@ public class SponsorBlockView {
         newSegmentLayoutVisibility(false);
     }
 
-    public static void playerTypeChanged(PlayerType playerType) {
+    static void playerTypeChanged(PlayerType playerType) {
         try {
             shouldShowOnPlayerType = (playerType == PlayerType.WATCH_WHILE_FULLSCREEN || playerType == PlayerType.WATCH_WHILE_MAXIMIZED);
 
@@ -69,14 +71,14 @@ public class SponsorBlockView {
     private static void addView() {
         inlineSponsorOverlay = new RelativeLayout(ReVancedUtils.getContext());
         setLayoutParams(inlineSponsorOverlay);
-        LayoutInflater.from(ReVancedUtils.getContext()).inflate(getIdentifier("inline_sponsor_overlay", "layout"), inlineSponsorOverlay);
+        LayoutInflater.from(ReVancedUtils.getContext()).inflate(ReVancedUtils.getIdentifier("inline_sponsor_overlay", "layout"), inlineSponsorOverlay);
 
         _youtubeOverlaysLayout.addView(inlineSponsorOverlay, _youtubeOverlaysLayout.getChildCount() - 2);
 
-        SkipSponsorButton skipSponsorButton = (SkipSponsorButton) inlineSponsorOverlay.findViewById(getIdentifier("skip_sponsor_button", "id"));
+        SkipSponsorButton skipSponsorButton = inlineSponsorOverlay.findViewById(ReVancedUtils.getIdentifier("skip_sponsor_button", "id"));
         _skipSponsorButton = new WeakReference<>(skipSponsorButton);
 
-        NewSegmentLayout newSegmentView = (NewSegmentLayout) inlineSponsorOverlay.findViewById(getIdentifier("new_segment_view", "id"));
+        NewSegmentLayout newSegmentView = inlineSponsorOverlay.findViewById(ReVancedUtils.getIdentifier("new_segment_view", "id"));
         _newSegmentLayout = new WeakReference<>(newSegmentView);
     }
 
@@ -156,7 +158,7 @@ public class SponsorBlockView {
                 LogHelper.printDebug(() -> "nextGenWatchLayout is null!");
                 return;
             }
-            View layout = watchLayout.findViewById(getIdentifier("player_overlays", "id"));
+            View layout = watchLayout.findViewById(ReVancedUtils.getIdentifier("player_overlays", "id"));
 
             if (layout == null) {
                 LogHelper.printDebug(() -> "player_overlays was not found for SB");
@@ -166,10 +168,5 @@ public class SponsorBlockView {
             initialize(layout);
             LogHelper.printDebug(() -> "player_overlays refreshed for SB");
         }
-    }
-
-    private static int getIdentifier(String name, String defType) {
-        Context context = ReVancedUtils.getContext();
-        return context.getResources().getIdentifier(name, defType, context.getPackageName());
     }
 }
