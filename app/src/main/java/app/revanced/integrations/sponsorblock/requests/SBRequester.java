@@ -55,6 +55,7 @@ public class SBRequester {
     }
 
     public static SponsorSegment[] getSegments(String videoId) {
+        ReVancedUtils.verifyOffMainThread();
         List<SponsorSegment> segments = new ArrayList<>();
         try {
             HttpURLConnection connection = getConnectionFromRoute(SBRoutes.GET_SEGMENTS, videoId, SponsorBlockSettings.sponsorBlockUrlCategories);
@@ -102,6 +103,7 @@ public class SBRequester {
     }
 
     public static void submitSegments(String videoId, String uuid, float startTime, float endTime, String category, Runnable toastRunnable) {
+        ReVancedUtils.verifyOffMainThread();
         try {
             String start = String.format(Locale.US, TIME_TEMPLATE, startTime);
             String end = String.format(Locale.US, TIME_TEMPLATE, endTime);
@@ -142,6 +144,7 @@ public class SBRequester {
     }
 
     public static void sendViewCountRequest(SponsorSegment segment) {
+        ReVancedUtils.verifyOffMainThread();
         try {
             HttpURLConnection connection = getConnectionFromRoute(SBRoutes.VIEWED_SEGMENT, segment.UUID);
             connection.setConnectTimeout(TIMEOUT_TCP_DEFAULT_MILLISECONDS);
@@ -197,7 +200,11 @@ public class SBRequester {
         });
     }
 
+    /**
+     * Must be called _on_ the main thread
+     */
     public static void retrieveUserStats(PreferenceCategory category, Preference loadingPreference) {
+        ReVancedUtils.verifyOnMainThread();
         if (!SettingsEnum.SB_ENABLED.getBoolean()) {
             loadingPreference.setTitle(str("stats_sb_disabled"));
             return;
