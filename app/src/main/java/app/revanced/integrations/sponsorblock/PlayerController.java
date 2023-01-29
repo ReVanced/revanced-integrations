@@ -72,6 +72,21 @@ public class PlayerController {
     }
 
     /**
+     * Injection point.
+     * Called when creating some kind of youtube internal player, every time when new video starts to play
+     */
+    public static void initialize(Object _o) {
+        try {
+            lastKnownVideoTime = 0;
+            SkipSegmentView.hide();
+            NewSegmentHelperLayout.hide();
+            LogHelper.printDebug(() -> "initialized");
+        } catch (Exception ex) {
+            LogHelper.printException(() -> "initialize failure", ex);
+        }
+    }
+
+    /**
      * Patch injection point
      */
     public static void setCurrentVideoId(@Nullable String videoId) {
@@ -111,20 +126,6 @@ public class PlayerController {
             }, 0);
         } catch (Exception ex) {
             LogHelper.printException(() -> "setCurrentVideoId failure", ex);
-        }
-    }
-
-    /**
-     * Called when creating some kind of youtube internal player controlled, every time when new video starts to play
-     */
-    public static void initialize(Object _o) {
-        try {
-            lastKnownVideoTime = 0;
-            SkipSegmentView.hide();
-            NewSegmentHelperLayout.hide();
-            LogHelper.printDebug(() -> "initialized");
-        } catch (Exception ex) {
-            LogHelper.printException(() -> "initialize failure", ex);
         }
     }
 
