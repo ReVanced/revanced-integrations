@@ -373,8 +373,8 @@ public class PlayerController {
     public static void drawSponsorTimeBars(final Canvas canvas, final float posY) {
         try {
             if (sponsorBarThickness < 0.1) return;
-            if (sponsorSegmentsOfCurrentVideo == null) return;
-
+            SponsorSegment[] currentSegments = PlayerController.sponsorSegmentsOfCurrentVideo;
+            if (currentSegments == null) return;
 
             final float thicknessDiv2 = sponsorBarThickness / 2;
             final float top = posY - thicknessDiv2;
@@ -383,7 +383,7 @@ public class PlayerController {
             final float absoluteRight = sponsorBarRight;
 
             final float tmp1 = 1f / (float) VideoInformation.getCurrentVideoLength() * (absoluteRight - absoluteLeft);
-            for (SponsorSegment segment : sponsorSegmentsOfCurrentVideo) {
+            for (SponsorSegment segment : currentSegments) {
                 float left = segment.start * tmp1 + absoluteLeft;
                 float right = segment.end * tmp1 + absoluteLeft;
                 canvas.drawRect(left, top, right, bottom, segment.category.paint);
