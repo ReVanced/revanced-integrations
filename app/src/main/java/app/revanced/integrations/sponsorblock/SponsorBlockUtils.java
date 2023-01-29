@@ -253,6 +253,7 @@ public abstract class SponsorBlockUtils {
     }
 
     public static void showShieldButton() {
+        ReVancedUtils.verifyOnMainThread();
         View i = ShieldButton._shieldBtn.get();
         if (i == null || !ShieldButton.shouldBeShown()) return;
         i.setVisibility(VISIBLE);
@@ -262,6 +263,7 @@ public abstract class SponsorBlockUtils {
     }
 
     public static void hideShieldButton() {
+        ReVancedUtils.verifyOnMainThread();
         View i = ShieldButton._shieldBtn.get();
         if (i != null)
             i.setVisibility(GONE);
@@ -284,6 +286,7 @@ public abstract class SponsorBlockUtils {
 
     @SuppressLint("DefaultLocale")
     public static void onMarkLocationClicked(Context context) {
+        ReVancedUtils.verifyOnMainThread();
         newSponsorSegmentDialogShownMillis = PlayerController.getLastKnownVideoTime();
 
         new AlertDialog.Builder(context)
@@ -300,6 +303,7 @@ public abstract class SponsorBlockUtils {
 
     @SuppressLint("DefaultLocale")
     public static void onPublishClicked(Context context) {
+        ReVancedUtils.verifyOnMainThread();
         if (newSponsorSegmentStartMillis >= 0 && newSponsorSegmentStartMillis < newSponsorSegmentEndMillis) {
             long length = (newSponsorSegmentEndMillis - newSponsorSegmentStartMillis) / 1000;
             long start = (newSponsorSegmentStartMillis) / 1000;
@@ -319,6 +323,7 @@ public abstract class SponsorBlockUtils {
     }
 
     public static void onVotingClicked(final Context context) {
+        ReVancedUtils.verifyOnMainThread();
         SponsorSegment[] currentSegments = PlayerController.getSponsorSegmentsOfCurrentVideo();
         if (currentSegments == null || currentSegments.length == 0) {
             Toast.makeText(context.getApplicationContext(), str("vote_no_segments"), Toast.LENGTH_SHORT).show();
@@ -348,6 +353,7 @@ public abstract class SponsorBlockUtils {
     }
 
     private static void onNewCategorySelect(final SponsorSegment segment, Context context) {
+        ReVancedUtils.verifyOnMainThread();
         final SponsorBlockSettings.SegmentInfo[] values = SponsorBlockSettings.SegmentInfo.valuesWithoutUnsubmitted();
         CharSequence[] titles = new CharSequence[values.length];
         for (int i = 0; i < values.length; i++) {
@@ -362,6 +368,7 @@ public abstract class SponsorBlockUtils {
 
     @SuppressLint("DefaultLocale")
     public static void onPreviewClicked(Context context) {
+        ReVancedUtils.verifyOnMainThread();
         if (newSponsorSegmentStartMillis >= 0 && newSponsorSegmentStartMillis < newSponsorSegmentEndMillis) {
 //            Toast t = Toast.makeText(context, "Preview", Toast.LENGTH_SHORT);
 //            t.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.TOP, t.getXOffset(), t.getYOffset());
@@ -397,6 +404,7 @@ public abstract class SponsorBlockUtils {
 
     @SuppressLint("DefaultLocale")
     public static void onEditByHandClicked(Context context) {
+        ReVancedUtils.verifyOnMainThread();
         new AlertDialog.Builder(context)
                 .setTitle(str("new_segment_edit_by_hand_title"))
                 .setMessage(str("new_segment_edit_by_hand_content"))
