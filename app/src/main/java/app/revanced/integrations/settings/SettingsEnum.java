@@ -1,12 +1,10 @@
 package app.revanced.integrations.settings;
 
-import android.content.Context;
-import app.revanced.integrations.utils.LogHelper;
-import app.revanced.integrations.utils.ReVancedUtils;
-import app.revanced.integrations.utils.SharedPrefHelper;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import app.revanced.integrations.utils.LogHelper;
+import app.revanced.integrations.utils.SharedPrefHelper;
 
 public enum SettingsEnum {
     //Download Settings
@@ -292,16 +290,16 @@ public enum SettingsEnum {
             var defaultValue = setting.getDefaultValue();
             switch (setting.getReturnType()) {
                 case FLOAT:
-                    defaultValue = SharedPrefHelper.getFloat(setting.sharedPref, path, (float) defaultValue);
+                    defaultValue = SharedPrefHelper.getFloat(setting.sharedPref, path, (Float) defaultValue);
                     break;
                 case LONG:
-                    defaultValue = SharedPrefHelper.getLong(setting.sharedPref, path, (long) defaultValue);
+                    defaultValue = SharedPrefHelper.getLong(setting.sharedPref, path, (Long) defaultValue);
                     break;
                 case BOOLEAN:
-                    defaultValue = SharedPrefHelper.getBoolean(setting.sharedPref, path, (boolean) defaultValue);
+                    defaultValue = SharedPrefHelper.getBoolean(setting.sharedPref, path, (Boolean) defaultValue);
                     break;
                 case INTEGER:
-                    defaultValue = SharedPrefHelper.getInt(setting.sharedPref, path, (int) defaultValue);
+                    defaultValue = SharedPrefHelper.getInt(setting.sharedPref, path, (Integer) defaultValue);
                     break;
                 case STRING:
                     defaultValue = SharedPrefHelper.getString(setting.sharedPref, path, (String) defaultValue);
