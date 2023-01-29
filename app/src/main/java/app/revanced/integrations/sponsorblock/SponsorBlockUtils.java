@@ -229,6 +229,7 @@ public abstract class SponsorBlockUtils {
     };
     private static final Runnable submitRunnable = () -> {
         try {
+            ReVancedUtils.verifyOffMainThread();
             messageToToast = null;
             final String uuid = SettingsEnum.SB_UUID.getString();
             final long start = newSponsorSegmentStartMillis;
