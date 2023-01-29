@@ -270,6 +270,7 @@ public abstract class SponsorBlockUtils {
     }
 
     public static void showVoteButton() {
+        ReVancedUtils.verifyOnMainThread();
         View i = VotingButton._votingButton.get();
         if (i == null || !VotingButton.shouldBeShown()) return;
         i.setVisibility(VISIBLE);
@@ -279,6 +280,7 @@ public abstract class SponsorBlockUtils {
     }
 
     public static void hideVoteButton() {
+        ReVancedUtils.verifyOnMainThread();
         View i = VotingButton._votingButton.get();
         if (i != null)
             i.setVisibility(GONE);
