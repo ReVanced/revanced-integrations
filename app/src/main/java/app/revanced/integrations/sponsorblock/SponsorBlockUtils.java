@@ -3,8 +3,6 @@ package app.revanced.integrations.sponsorblock;
 import static android.text.Html.fromHtml;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
-import static app.revanced.integrations.settingsmenu.SponsorBlockSettingsFragment.FORMATTER;
-import static app.revanced.integrations.settingsmenu.SponsorBlockSettingsFragment.SAVED_TEMPLATE;
 import static app.revanced.integrations.sponsorblock.StringRef.str;
 
 import android.annotation.SuppressLint;
@@ -27,6 +25,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.lang.ref.WeakReference;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -47,8 +46,16 @@ import app.revanced.integrations.utils.SharedPrefHelper;
 public abstract class SponsorBlockUtils {
     public static final String DATE_FORMAT = "HH:mm:ss.SSS";
     @SuppressLint("SimpleDateFormat")
+    // must be used exclusively on the main thread (not thread safe)
     public static final SimpleDateFormat dateFormatter = new SimpleDateFormat(DATE_FORMAT);
-    private static final int sponsorBtnId = 1234;
+    static {
+        dateFormatter.setTimeZone(TimeZone.getTimeZone("UTC"));
+    }
+    // must be used exclusively on the main thread (not thread safe)
+    private static final DecimalFormat statsFormatter = new DecimalFormat("#,###,###");
+    private static final String STATS_FORMAT_TEMPLATE = "%dh %.1f %s";
+
+    //    private static final int sponsorBtnId = 1234;
     private static final String LOCKED_COLOR = "#FFC83D";
     public static final View.OnClickListener sponsorBlockBtnListener = v -> {
         LogHelper.printDebug(() -> "Shield button clicked");
@@ -242,10 +249,6 @@ public abstract class SponsorBlockUtils {
             PlayerController.executeDownloadSegments(videoId);
     };
 
-    static {
-        dateFormatter.setTimeZone(TimeZone.getTimeZone("UTC"));
-    }
-
     private SponsorBlockUtils() {
     }
 
@@ -404,6 +407,7 @@ public abstract class SponsorBlockUtils {
     }
 
     public static void addUserStats(PreferenceCategory category, Preference loadingPreference, UserStats stats) {
+        ReVancedUtils.verifyOnMainThread();
         category.removePreference(loadingPreference);
 
         Context context = category.getContext();
@@ -426,7 +430,7 @@ public abstract class SponsorBlockUtils {
         {
             Preference preference = new Preference(context);
             category.addPreference(preference);
-            String formatted = FORMATTER.format(stats.getSegmentCount());
+            String formatted = statsFormatter.format(stats.getSegmentCount());
             preference.setTitle(fromHtml(str("stats_submissions", formatted)));
             preference.setSelectable(false);
         }
@@ -434,12 +438,12 @@ public abstract class SponsorBlockUtils {
         {
             Preference preference = new Preference(context);
             category.addPreference(preference);
-            String formatted = FORMATTER.format(stats.getViewCount());
+            String formatted = statsFormatter.format(stats.getViewCount());
 
             double saved = stats.getMinutesSaved();
             int hoursSaved = (int) (saved / 60);
             double minutesSaved = saved % 60;
-            String formattedSaved = String.format(SAVED_TEMPLATE, hoursSaved, minutesSaved, minutesStr);
+            String formattedSaved = String.format(STATS_FORMAT_TEMPLATE, hoursSaved, minutesSaved, minutesStr);
 
             preference.setTitle(fromHtml(str("stats_saved", formatted)));
             preference.setSummary(fromHtml(str("stats_saved_sum", formattedSaved)));
@@ -454,11 +458,11 @@ public abstract class SponsorBlockUtils {
         {
             Preference preference = new Preference(context);
             category.addPreference(preference);
-            String formatted = FORMATTER.format(SettingsEnum.SB_SKIPPED_SEGMENTS.getInt());
+            String formatted = statsFormatter.format(SettingsEnum.SB_SKIPPED_SEGMENTS.getInt());
 
             long hoursSaved = SettingsEnum.SB_SKIPPED_SEGMENTS_TIME.getLong() / 3600000;
             double minutesSaved = (SettingsEnum.SB_SKIPPED_SEGMENTS_TIME.getLong() / 60000d) % 60;
-            String formattedSaved = String.format(SAVED_TEMPLATE, hoursSaved, minutesSaved, minutesStr);
+            String formattedSaved = String.format(STATS_FORMAT_TEMPLATE, hoursSaved, minutesSaved, minutesStr);
 
             preference.setTitle(fromHtml(str("stats_self_saved", formatted)));
             preference.setSummary(fromHtml(str("stats_self_saved_sum", formattedSaved)));

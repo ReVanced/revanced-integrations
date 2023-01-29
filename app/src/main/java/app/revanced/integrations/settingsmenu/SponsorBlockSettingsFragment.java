@@ -24,19 +24,16 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import java.lang.ref.WeakReference;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.sponsorblock.SponsorBlockSettings;
 import app.revanced.integrations.sponsorblock.SponsorBlockUtils;
-import app.revanced.integrations.utils.SharedPrefHelper;
 import app.revanced.integrations.sponsorblock.objects.EditTextListPreference;
 import app.revanced.integrations.sponsorblock.requests.SBRequester;
+import app.revanced.integrations.utils.SharedPrefHelper;
 
 public class SponsorBlockSettingsFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
-    public static final DecimalFormat FORMATTER = new DecimalFormat("#,###,###");
-    public static final String SAVED_TEMPLATE = "%dh %.1f %s";
     private static final APIURLChangeListener API_URL_CHANGE_LISTENER = new APIURLChangeListener();
     private final ArrayList<Preference> preferencesToDisableWhenSBDisabled = new ArrayList<>();
 
