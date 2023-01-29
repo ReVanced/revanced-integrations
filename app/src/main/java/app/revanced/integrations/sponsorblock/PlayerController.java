@@ -390,11 +390,6 @@ public class PlayerController {
         }
     }
 
-    //    private final static Pattern videoIdRegex = Pattern.compile(".*\\.be\\/([A-Za-z0-9_\\-]{0,50}).*");
-    public static String substringVideoIdFromLink(String link) {
-        return link.substring(link.lastIndexOf('/') + 1);
-    }
-
     public static void skipRelativeMilliseconds(int millisRelative) {
         skipToMillisecond(lastKnownVideoTime + millisRelative);
     }
