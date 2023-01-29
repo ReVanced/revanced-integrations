@@ -85,10 +85,6 @@ public class SBRequester {
                         segments.add(sponsorSegment);
                     }
                 }
-                if (!segments.isEmpty()) {
-                    SponsorBlockUtils.videoHasSegments = true;
-                    SponsorBlockUtils.timeWithoutSegments = SponsorBlockUtils.getTimeWithoutSegments(segments.toArray(new SponsorSegment[0]));
-                }
                 runVipCheckInBackgroundIfNeeded();
             } else if (responseCode == 404) {
                 // no segments are found.  a normal response

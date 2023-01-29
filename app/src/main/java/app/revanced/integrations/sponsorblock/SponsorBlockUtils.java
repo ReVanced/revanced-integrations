@@ -5,12 +5,7 @@ import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 import static app.revanced.integrations.settingsmenu.SponsorBlockSettingsFragment.FORMATTER;
 import static app.revanced.integrations.settingsmenu.SponsorBlockSettingsFragment.SAVED_TEMPLATE;
-import static app.revanced.integrations.sponsorblock.PlayerController.getCurrentVideoId;
-import static app.revanced.integrations.sponsorblock.PlayerController.getCurrentVideoLength;
-import static app.revanced.integrations.sponsorblock.PlayerController.getLastKnownVideoTime;
-import static app.revanced.integrations.sponsorblock.PlayerController.sponsorSegmentsOfCurrentVideo;
 import static app.revanced.integrations.sponsorblock.StringRef.str;
-import static app.revanced.integrations.sponsorblock.requests.SBRequester.voteForSegment;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -23,7 +18,6 @@ import android.preference.EditTextPreference;
 import android.preference.Preference;
 import android.preference.PreferenceCategory;
 import android.text.Html;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -45,7 +39,6 @@ import java.util.TimeZone;
 import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.sponsorblock.objects.SponsorSegment;
 import app.revanced.integrations.sponsorblock.objects.UserStats;
-import app.revanced.integrations.sponsorblock.player.PlayerType;
 import app.revanced.integrations.sponsorblock.requests.SBRequester;
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedUtils;
@@ -55,8 +48,6 @@ public abstract class SponsorBlockUtils {
     public static final String DATE_FORMAT = "HH:mm:ss.SSS";
     @SuppressLint("SimpleDateFormat")
     public static final SimpleDateFormat dateFormatter = new SimpleDateFormat(DATE_FORMAT);
-    public static volatile boolean videoHasSegments = false; // read/wright from different threads
-    public static volatile String timeWithoutSegments = "";  // read/wright from different threads
     private static final int sponsorBtnId = 1234;
     private static final String LOCKED_COLOR = "#FFC83D";
     public static final View.OnClickListener sponsorBlockBtnListener = v -> {
@@ -193,7 +184,12 @@ public abstract class SponsorBlockUtils {
     };
     private static final DialogInterface.OnClickListener segmentVoteClickListener = (dialog, which) -> {
         final Context context = ((AlertDialog) dialog).getContext();
-        final SponsorSegment segment = sponsorSegmentsOfCurrentVideo[which];
+        SponsorSegment[] currentSegments = PlayerController.getSponsorSegmentsOfCurrentVideo();
+        if (currentSegments == null || currentSegments.length == 0) {
+            LogHelper.printException(() -> "Segment is no longer available on the client");
+            return;
+        }
+        SponsorSegment segment = currentSegments[which];
 
         final VoteOption[] voteOptions = VoteOption.values();
         CharSequence[] items = new CharSequence[voteOptions.length];
@@ -215,7 +211,7 @@ public abstract class SponsorBlockUtils {
                     switch (voteOption) {
                         case UPVOTE:
                         case DOWNVOTE:
-                            voteForSegment(segment, voteOption, appContext.get());
+                            SBRequester.voteForSegment(segment, voteOption, appContext.get());
                             break;
                         case CATEGORY_CHANGE:
                             onNewCategorySelect(segment, context);
@@ -229,7 +225,7 @@ public abstract class SponsorBlockUtils {
         final String uuid = SettingsEnum.SB_UUID.getString();
         final long start = newSponsorSegmentStartMillis;
         final long end = newSponsorSegmentEndMillis;
-        final String videoId = getCurrentVideoId();
+        final String videoId = PlayerController.getCurrentVideoId();
         final SponsorBlockSettings.SegmentInfo segmentType = SponsorBlockUtils.newSponsorBlockSegmentType;
         try {
             if (start < 0 || end < 0 || start >= end || segmentType == null || videoId == null || uuid == null) {
@@ -320,14 +316,15 @@ public abstract class SponsorBlockUtils {
     }
 
     public static void onVotingClicked(final Context context) {
-        if (sponsorSegmentsOfCurrentVideo == null || sponsorSegmentsOfCurrentVideo.length == 0) {
+        SponsorSegment[] currentSegments = PlayerController.getSponsorSegmentsOfCurrentVideo();
+        if (currentSegments == null || currentSegments.length == 0) {
             Toast.makeText(context.getApplicationContext(), str("vote_no_segments"), Toast.LENGTH_SHORT).show();
             return;
         }
-        int segmentAmount = sponsorSegmentsOfCurrentVideo.length;
+        int segmentAmount = currentSegments.length;
         List<CharSequence> titles = new ArrayList<>(segmentAmount); // I've replaced an array with a list to prevent null elements in the array as unsubmitted segments get filtered out
         for (int i = 0; i < segmentAmount; i++) {
-            SponsorSegment segment = sponsorSegmentsOfCurrentVideo[i];
+            SponsorSegment segment = currentSegments[i];
             if (segment.category == SponsorBlockSettings.SegmentInfo.UNSUBMITTED) {
                 continue;
             }
@@ -356,7 +353,7 @@ public abstract class SponsorBlockUtils {
 
         new AlertDialog.Builder(context)
                 .setTitle(str("new_segment_choose_category"))
-                .setItems(titles, (dialog, which) -> voteForSegment(segment, VoteOption.CATEGORY_CHANGE, appContext.get(), values[which].key))
+                .setItems(titles, (dialog, which) -> SBRequester.voteForSegment(segment, VoteOption.CATEGORY_CHANGE, appContext.get(), values[which].key))
                 .show();
     }
 
@@ -367,14 +364,13 @@ public abstract class SponsorBlockUtils {
 //            t.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.TOP, t.getXOffset(), t.getYOffset());
 //            t.show();
             PlayerController.skipToMillisecond(newSponsorSegmentStartMillis - 3000);
-            final SponsorSegment[] original = PlayerController.sponsorSegmentsOfCurrentVideo;
+            final SponsorSegment[] original = PlayerController.getSponsorSegmentsOfCurrentVideo();
             final SponsorSegment[] segments = original == null ? new SponsorSegment[1] : Arrays.copyOf(original, original.length + 1);
 
             segments[segments.length - 1] = new SponsorSegment(newSponsorSegmentStartMillis, newSponsorSegmentEndMillis,
                     SponsorBlockSettings.SegmentInfo.UNSUBMITTED, null, false);
 
-            Arrays.sort(segments);
-            sponsorSegmentsOfCurrentVideo = segments;
+            PlayerController.setSponsorSegmentsOfCurrentVideo(segments);
         } else {
             Toast.makeText(context, str("new_segment_mark_locations_first"), Toast.LENGTH_SHORT).show();
         }
@@ -400,48 +396,6 @@ public abstract class SponsorBlockUtils {
         ImageView sponsorBtn = ShieldButton._shieldBtn.get();
         if (sponsorBtn != null) {
             sponsorBtn.setVisibility(v.getVisibility());
-        }
-    }
-
-    public static String appendTimeWithoutSegments(String totalTime) {
-        try {
-            if (videoHasSegments && (SettingsEnum.SB_ENABLED.getBoolean() && SettingsEnum.SB_SHOW_TIME_WITHOUT_SEGMENTS.getBoolean()) && !TextUtils.isEmpty(totalTime) && getCurrentVideoLength() > 1) {
-                if (timeWithoutSegments.isEmpty()) {
-                    timeWithoutSegments = getTimeWithoutSegments(sponsorSegmentsOfCurrentVideo);
-                }
-                return totalTime + timeWithoutSegments;
-            }
-        } catch (Exception ex) {
-            LogHelper.printException(() -> "appendTimeWithoutSegments failure", ex);
-        }
-
-        return totalTime;
-    }
-
-    public static String getTimeWithoutSegments(SponsorSegment[] segments) {
-        long currentVideoLength = getCurrentVideoLength();
-        if (!(SettingsEnum.SB_ENABLED.getBoolean() && SettingsEnum.SB_SHOW_TIME_WITHOUT_SEGMENTS.getBoolean()) || segments == null || currentVideoLength <= 1) {
-            return "";
-        }
-        long timeWithoutSegments = currentVideoLength + 500; // YouTube:tm:
-        for (SponsorSegment segment : segments) {
-            timeWithoutSegments -= segment.end - segment.start;
-        }
-        long hours = timeWithoutSegments / 3600000;
-        long minutes = (timeWithoutSegments / 60000) % 60;
-        long seconds = (timeWithoutSegments / 1000) % 60;
-        String format = (hours > 0 ? "%d:%02" : "%") + "d:%02d"; // mmLul
-        String formatted = hours > 0 ? String.format(format, hours, minutes, seconds) : String.format(format, minutes, seconds);
-        return String.format(" (%s)", formatted);
-    }
-
-    public static void playerTypeChanged(PlayerType playerType) {
-        try {
-            if (videoHasSegments && (playerType == PlayerType.NONE)) {
-                PlayerController.setCurrentVideoId(null);
-            }
-        } catch (Exception ex) {
-            LogHelper.printException(() -> "Player type changed caused a crash.", ex);
         }
     }
 
@@ -635,7 +589,7 @@ public abstract class SponsorBlockUtils {
 
             try {
                 long time = (which == DialogInterface.BUTTON_NEUTRAL) ?
-                        getLastKnownVideoTime() :
+                        PlayerController.getLastKnownVideoTime() :
                         (Objects.requireNonNull(dateFormatter.parse(editText.getText().toString())).getTime());
 
                 if (settingStart)

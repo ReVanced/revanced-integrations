@@ -1,12 +1,13 @@
 package app.revanced.integrations.sponsorblock;
 
 import android.app.Activity;
-import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Rect;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import java.lang.ref.WeakReference;
@@ -23,7 +24,6 @@ import app.revanced.integrations.sponsorblock.requests.SBRequester;
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedUtils;
 
-
 public class PlayerController {
 
     private static final Timer sponsorTimer = new Timer("sponsor-skip-timer");
@@ -32,7 +32,8 @@ public class PlayerController {
     @Nullable
     private static volatile String currentVideoId;
     @Nullable
-    public static volatile SponsorSegment[] sponsorSegmentsOfCurrentVideo;
+    private static volatile SponsorSegment[] sponsorSegmentsOfCurrentVideo;
+    private static volatile String timeWithoutSegments = "";
     private static volatile long allowNextSkipRequestTime = 0L;
     private static volatile long lastKnownVideoTime = -1L;
     private static final Runnable findAndSkipSegmentRunnable = () -> {
@@ -46,20 +47,42 @@ public class PlayerController {
     private static float sponsorBarThickness = 2f;
 
     @Nullable
+    public static SponsorSegment[] getSponsorSegmentsOfCurrentVideo() {
+        return sponsorSegmentsOfCurrentVideo;
+    }
+
+    public static void setSponsorSegmentsOfCurrentVideo(@NonNull SponsorSegment[] segments) {
+        Arrays.sort(segments);
+        sponsorSegmentsOfCurrentVideo = segments;
+        calculateTimeWithoutSegments();
+    }
+
+    @Nullable
     static String getCurrentVideoId() {
         return currentVideoId;
     }
 
+    /**
+     * Clears all downloaded data
+     */
+    private static void clearDownloadedData() {
+        currentVideoId = null;
+        sponsorSegmentsOfCurrentVideo = null;
+        timeWithoutSegments = "";
+    }
+
+    /**
+     * Patch injection point
+     */
     public static void setCurrentVideoId(@Nullable String videoId) {
         try {
             if (videoId == null || !SettingsEnum.SB_ENABLED.getBoolean()) {
-                currentVideoId = null;
-                sponsorSegmentsOfCurrentVideo = null;
+                clearDownloadedData();
                 return;
             }
             if (PlayerType.getCurrent() == PlayerType.NONE) {
                 LogHelper.printDebug(() -> "ignoring shorts video");
-                currentVideoId = null;
+                clearDownloadedData();
                 return;
             }
             if (videoId.equals(currentVideoId)) {
@@ -73,8 +96,7 @@ public class PlayerController {
 
             currentVideoId = videoId;
             sponsorSegmentsOfCurrentVideo = null;
-            SponsorBlockUtils.videoHasSegments = false;
-            SponsorBlockUtils.timeWithoutSegments = "";
+            timeWithoutSegments = "";
             LogHelper.printDebug(() -> "setCurrentVideoId: " + videoId);
 
             sponsorTimer.schedule(new TimerTask() {
@@ -100,6 +122,7 @@ public class PlayerController {
             lastKnownVideoTime = 0;
             SkipSegmentView.hide();
             NewSegmentHelperLayout.hide();
+            LogHelper.printDebug(() -> "initialized");
         } catch (Exception ex) {
             LogHelper.printException(() -> "initialize failure", ex);
         }
@@ -115,8 +138,7 @@ public class PlayerController {
                 return;
             }
 
-            Arrays.sort(segments);
-            sponsorSegmentsOfCurrentVideo = segments;
+            setSponsorSegmentsOfCurrentVideo(segments);
             // new Handler(Looper.getMainLooper()).post(findAndSkipSegmentRunnable);
 
             LogHelper.printDebug(() -> {
@@ -136,19 +158,20 @@ public class PlayerController {
         try {
             if (!SettingsEnum.SB_ENABLED.getBoolean()) return;
 
-            LogHelper.printDebug(() -> "setCurrentVideoTime: current video time: " + millis);
             lastKnownVideoTime = millis;
             if (millis <= 0) return;
             //findAndSkipSegment(false);
+
+            SponsorSegment[] segments = sponsorSegmentsOfCurrentVideo;
+            if (segments == null || segments.length == 0) return;
+
+            LogHelper.printDebug(() -> "setCurrentVideoTime: current video time: " + millis);
 
             if (millis == VideoInformation.getCurrentVideoLength()) {
                 SponsorBlockUtils.hideShieldButton();
                 SponsorBlockUtils.hideVoteButton();
                 return;
             }
-
-            SponsorSegment[] segments = sponsorSegmentsOfCurrentVideo;
-            if (segments == null || segments.length == 0) return;
 
             final long START_TIMER_BEFORE_SEGMENT_MILLIS = 1200;
             final long startTimerAtMillis = millis + START_TIMER_BEFORE_SEGMENT_MILLIS;
@@ -321,6 +344,44 @@ public class PlayerController {
         }
     }
 
+    /**
+     * Patch injection point
+     */
+    public static String appendTimeWithoutSegments(String totalTime) {
+        try {
+            if (SettingsEnum.SB_ENABLED.getBoolean() && SettingsEnum.SB_SHOW_TIME_WITHOUT_SEGMENTS.getBoolean()
+                    && !TextUtils.isEmpty(totalTime) && getCurrentVideoLength() > 1) {
+                return totalTime + timeWithoutSegments;
+            }
+        } catch (Exception ex) {
+            LogHelper.printException(() -> "appendTimeWithoutSegments failure", ex);
+        }
+
+        return totalTime;
+    }
+
+    private static void calculateTimeWithoutSegments() {
+        final long currentVideoLength = getCurrentVideoLength();
+        SponsorSegment[] currentSegments = sponsorSegmentsOfCurrentVideo;
+        if (!SettingsEnum.SB_SHOW_TIME_WITHOUT_SEGMENTS.getBoolean() || currentVideoLength <= 1
+                || currentSegments == null || currentSegments.length == 0) {
+            timeWithoutSegments = "";
+            return;
+        }
+
+        long timeWithoutSegmentsValue = currentVideoLength + 500; // YouTube:tm:
+        for (SponsorSegment segment : currentSegments) {
+            timeWithoutSegmentsValue -= segment.end - segment.start;
+        }
+        final long hours = timeWithoutSegmentsValue / 3600000;
+        final long minutes = (timeWithoutSegmentsValue / 60000) % 60;
+        final long seconds = (timeWithoutSegmentsValue / 1000) % 60;
+        String format = (hours > 0 ? "%d:%02" : "%") + "d:%02d"; // mmLul
+        String formatted = hours > 0 ? String.format(format, hours, minutes, seconds) : String.format(format, minutes, seconds);
+
+        timeWithoutSegments = String.format(" (%s)", formatted);
+    }
+
 
     /**
      * Called when it's time to draw time bar
@@ -385,12 +446,13 @@ public class PlayerController {
 
     private static void findAndSkipSegment(boolean wasClicked) {
         try {
-            if (sponsorSegmentsOfCurrentVideo == null)
+            SponsorSegment[] currentSegments = sponsorSegmentsOfCurrentVideo;
+            if (currentSegments == null)
                 return;
 
             final long millis = lastKnownVideoTime;
 
-            for (SponsorSegment segment : sponsorSegmentsOfCurrentVideo) {
+            for (SponsorSegment segment : currentSegments) {
                 if (segment.start > millis)
                     break;
 

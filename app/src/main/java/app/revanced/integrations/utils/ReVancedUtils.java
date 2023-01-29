@@ -6,8 +6,6 @@ import android.content.res.Resources;
 import android.os.Handler;
 import android.os.Looper;
 
-import androidx.annotation.NonNull;
-
 import java.text.Bidi;
 import java.util.Locale;
 import java.util.concurrent.Callable;

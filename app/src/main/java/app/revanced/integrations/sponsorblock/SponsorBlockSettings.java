@@ -34,7 +34,7 @@ public class SponsorBlockSettings {
             NewSegmentHelperLayout.hide();
             SponsorBlockUtils.hideShieldButton();
             SponsorBlockUtils.hideVoteButton();
-            PlayerController.sponsorSegmentsOfCurrentVideo = null;
+            PlayerController.setCurrentVideoId(null);
         } else { /*isAddNewSegmentEnabled*/
             SponsorBlockUtils.showShieldButton();
         }
