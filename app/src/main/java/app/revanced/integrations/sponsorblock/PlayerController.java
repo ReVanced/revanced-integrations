@@ -128,7 +128,7 @@ public class PlayerController {
         }
     }
 
-    public static void executeDownloadSegments(String videoId) {
+    static void executeDownloadSegments(String videoId) {
         try {
             ReVancedUtils.verifyOffMainThread();
             SponsorSegment[] segments = SBRequester.getSegments(videoId);
