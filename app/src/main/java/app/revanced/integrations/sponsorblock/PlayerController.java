@@ -434,13 +434,14 @@ public class PlayerController {
                 if (segment.start > millis)
                     break;
 
-                if (segment.end < millis)
+                if (segment.end <= millis)
                     continue;
 
-                SkipSegmentView.show();
                 if (!((segment.category.behaviour.skip && !(segment.category.behaviour.key.equals("skip-once")
-                        && segment.didAutoSkipped)) || wasClicked))
+                        && segment.didAutoSkipped)) || wasClicked)) {
+                    SkipSegmentView.show();
                     return;
+                }
 
                 skipSegment(segment, wasClicked);
                 SponsorBlockUtils.sendViewRequestAsync(millis, segment);

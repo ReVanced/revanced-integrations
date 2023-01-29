@@ -99,6 +99,9 @@ public class SponsorBlockSettings {
         public final String key;
         public final int desktopKey;
         public final StringRef name;
+        /**
+         * If the segment should skip automatically
+         */
         public final boolean skip;
         public final boolean showOnTimeBar;
 
