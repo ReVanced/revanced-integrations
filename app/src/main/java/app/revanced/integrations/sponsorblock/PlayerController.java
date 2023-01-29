@@ -203,7 +203,9 @@ public class PlayerController {
             SettingsEnum.SB_SKIPPED_SEGMENTS.saveValue(SettingsEnum.SB_SKIPPED_SEGMENTS.getInt() + 1);
             SettingsEnum.SB_SKIPPED_SEGMENTS_TIME.saveValue(newSkippedTime);
 
-            if (SettingsEnum.SB_COUNT_SKIPS.getBoolean() && (millis - segment.start < 2000)) { // Only skips from the start should count as a view
+            // maximum time a segment can be watched and still considered a 'skipped view'
+            final int viewLengthThresholdToCountSkip = 2000; // count skip if user watches the segment less than 2 seconds
+            if (SettingsEnum.SB_COUNT_SKIPS.getBoolean() && (millis - segment.start < viewLengthThresholdToCountSkip)) {
                 ReVancedUtils.runOnBackgroundThread(() -> {
                     SBRequester.sendViewCountRequest(segment);
                 });
