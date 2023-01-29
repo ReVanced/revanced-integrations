@@ -379,6 +379,22 @@ public abstract class SponsorBlockUtils {
         }
     }
 
+    public static void sendViewRequestAsync(final long millis, final SponsorSegment segment) {
+        if (segment.category != SponsorBlockSettings.SegmentInfo.UNSUBMITTED) {
+            final long newSkippedTime = SettingsEnum.SB_SKIPPED_SEGMENTS_TIME.getLong() + (segment.end - segment.start);
+            SettingsEnum.SB_SKIPPED_SEGMENTS.saveValue(SettingsEnum.SB_SKIPPED_SEGMENTS.getInt() + 1);
+            SettingsEnum.SB_SKIPPED_SEGMENTS_TIME.saveValue(newSkippedTime);
+
+            // maximum time a segment can be watched and still considered a 'skipped view'
+            final int viewLengthThresholdToCountSkip = 2000; // count skip if user watches the segment less than 2 seconds
+            if (SettingsEnum.SB_COUNT_SKIPS.getBoolean() && (millis - segment.start < viewLengthThresholdToCountSkip)) {
+                ReVancedUtils.runOnBackgroundThread(() -> {
+                    SBRequester.sendViewCountRequest(segment);
+                });
+            }
+        }
+    }
+
     @SuppressLint("DefaultLocale")
     public static void onEditByHandClicked(Context context) {
         new AlertDialog.Builder(context)

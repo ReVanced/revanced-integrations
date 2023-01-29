@@ -207,7 +207,7 @@ public class PlayerController {
                 // we are in the segment!
                 if (segment.category.behaviour.skip && !(segment.category.behaviour.key.equals("skip-once") && segment.didAutoSkipped)) {
                     skipSegment(segment, false);
-                    sendViewRequestAsync(millis, segment);
+                    SponsorBlockUtils.sendViewRequestAsync(millis, segment);
                     break;
                 } else {
                     SkipSegmentView.show();
@@ -217,22 +217,6 @@ public class PlayerController {
             SkipSegmentView.hide();
         } catch (Exception e) {
             LogHelper.printException(() -> "setVideoTime failure", e);
-        }
-    }
-
-    private static void sendViewRequestAsync(final long millis, final SponsorSegment segment) {
-        if (segment.category != SponsorBlockSettings.SegmentInfo.UNSUBMITTED) {
-            final long newSkippedTime = SettingsEnum.SB_SKIPPED_SEGMENTS_TIME.getLong() + (segment.end - segment.start);
-            SettingsEnum.SB_SKIPPED_SEGMENTS.saveValue(SettingsEnum.SB_SKIPPED_SEGMENTS.getInt() + 1);
-            SettingsEnum.SB_SKIPPED_SEGMENTS_TIME.saveValue(newSkippedTime);
-
-            // maximum time a segment can be watched and still considered a 'skipped view'
-            final int viewLengthThresholdToCountSkip = 2000; // count skip if user watches the segment less than 2 seconds
-            if (SettingsEnum.SB_COUNT_SKIPS.getBoolean() && (millis - segment.start < viewLengthThresholdToCountSkip)) {
-                ReVancedUtils.runOnBackgroundThread(() -> {
-                    SBRequester.sendViewCountRequest(segment);
-                });
-            }
         }
     }
 
@@ -465,7 +449,7 @@ public class PlayerController {
                     return;
 
                 skipSegment(segment, wasClicked);
-                sendViewRequestAsync(millis, segment);
+                SponsorBlockUtils.sendViewRequestAsync(millis, segment);
                 break;
             }
 
