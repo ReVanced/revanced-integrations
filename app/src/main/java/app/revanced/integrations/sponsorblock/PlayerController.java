@@ -226,10 +226,7 @@ public class PlayerController {
                 SponsorBlockUtils.showShieldButton(); // skipping from end to the video will show the buttons again
                 SponsorBlockUtils.showVoteButton();
             }
-            if (lastKnownVideoTime > 0) {
-                lastKnownVideoTime = millis;
-            } else
-                setVideoTime(millis);
+            lastKnownVideoTime = millis;
         } catch (Exception ex) {
             LogHelper.printException(() -> "setHighPrecisionVideoTime failure", ex);
         }
