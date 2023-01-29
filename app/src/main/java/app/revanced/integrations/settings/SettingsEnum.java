@@ -287,11 +287,6 @@ public enum SettingsEnum {
     }
 
     private static void load() {
-        Context context = ReVancedUtils.getContext();
-        if (context == null) {
-            LogHelper.printException(() -> "SettingsEnum.load() called before ReVancedUtils.init()");
-            return;
-        }
         for (SettingsEnum setting : values()) {
             var path = setting.getPath();
             var defaultValue = setting.getDefaultValue();
@@ -342,13 +337,6 @@ public enum SettingsEnum {
      * Sets the value, and persistently saves it
      */
     public void saveValue(Object newValue) {
-        Context context = ReVancedUtils.getContext();
-
-        if (context == null) {
-            LogHelper.printException(() -> "Context on SaveValue is null!");
-            return;
-        }
-
         switch (getReturnType()) {
             case FLOAT:
                 SharedPrefHelper.saveFloat(sharedPref, path, (float) newValue);
