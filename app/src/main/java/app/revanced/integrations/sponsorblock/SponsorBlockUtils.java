@@ -67,8 +67,8 @@ public abstract class SponsorBlockUtils {
     };
     private static int shareBtnId = -1;
     private static long newSponsorSegmentDialogShownMillis;
-    private static long newSponsorSegmentStartMillis = -1;
-    private static long newSponsorSegmentEndMillis = -1;
+    private static volatile long newSponsorSegmentStartMillis = -1;
+    private static volatile long newSponsorSegmentEndMillis = -1;
     private static final DialogInterface.OnClickListener newSponsorSegmentDialogListener = new DialogInterface.OnClickListener() {
         @SuppressLint("DefaultLocale")
         @Override
