@@ -1,7 +1,6 @@
 package app.revanced.integrations.sponsorblock;
 
 import android.content.Context;
-
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -10,44 +9,43 @@ import android.widget.RelativeLayout;
 
 import java.lang.ref.WeakReference;
 
-import static app.revanced.integrations.sponsorblock.PlayerController.getCurrentVideoLength;
-import static app.revanced.integrations.sponsorblock.PlayerController.getLastKnownVideoTime;
-
 import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedUtils;
 
 public class VotingButton {
-    static RelativeLayout _youtubeControlsLayout;
-    static WeakReference<ImageView> _votingButton = new WeakReference<>(null);
-    static int fadeDurationFast;
-    static int fadeDurationScheduled;
-    static Animation fadeIn;
-    static Animation fadeOut;
-    static boolean isShowing;
+    private static WeakReference<ImageView> buttonReference = new WeakReference<>(null);
+    private static Animation fadeIn;
+    private static Animation fadeOut;
+    private static boolean isShowing;
+    private static final View.OnClickListener voteButtonListener = v -> {
+        LogHelper.printDebug(() -> "Vote button clicked");
+        SponsorBlockUtils.onVotingClicked(v.getContext());
+    };
 
+    /**
+     * injection point
+     */
     public static void initialize(Object viewStub) {
         try {
             LogHelper.printDebug(() -> "initializing voting button");
-            _youtubeControlsLayout = (RelativeLayout) viewStub;
-
-            ImageView imageView = (ImageView) _youtubeControlsLayout
-                    .findViewById(getIdentifier("voting_button", "id"));
-
+            RelativeLayout controlsLayout = (RelativeLayout) viewStub;
+            String buttonResourceName = "voting_button";
+            ImageView imageView = controlsLayout.findViewById(getIdentifier(buttonResourceName, "id"));
             if (imageView == null) {
-                LogHelper.printDebug(() -> "Couldn't find imageView with  \"voting_button\"");
+                LogHelper.printException(() -> "Couldn't find imageView with \"" + buttonResourceName + "\"");
+                return;
             }
-            if (imageView == null) return;
-            imageView.setOnClickListener(SponsorBlockUtils.voteButtonListener);
-            _votingButton = new WeakReference<>(imageView);
+            imageView.setOnClickListener(voteButtonListener);
+            buttonReference = new WeakReference<>(imageView);
 
             // Animations
-            fadeDurationFast = getInteger("fade_duration_fast");
-            fadeDurationScheduled = getInteger("fade_duration_scheduled");
-            fadeIn = getAnimation("fade_in");
-            fadeIn.setDuration(fadeDurationFast);
-            fadeOut = getAnimation("fade_out");
-            fadeOut.setDuration(fadeDurationScheduled);
+            if (fadeIn == null) {
+                fadeIn = getAnimation("fade_in");
+                fadeIn.setDuration(getInteger("fade_duration_fast"));
+                fadeOut = getAnimation("fade_out");
+                fadeOut.setDuration(getInteger("fade_duration_scheduled"));
+            }
             isShowing = true;
             changeVisibilityImmediate(false);
         } catch (Exception ex) {
@@ -59,10 +57,16 @@ public class VotingButton {
         changeVisibility(visible, true);
     }
 
+    /**
+     * injection point
+     */
     public static void changeVisibilityNegatedImmediate(boolean visible) {
         changeVisibility(!visible, true);
     }
 
+    /**
+     * injection point
+     */
     public static void changeVisibility(boolean visible) {
         changeVisibility(visible, false);
     }
@@ -72,11 +76,11 @@ public class VotingButton {
             if (isShowing == visible) return;
             isShowing = visible;
 
-            ImageView iView = _votingButton.get();
-            if (_youtubeControlsLayout == null || iView == null) return;
+            ImageView iView = buttonReference.get();
+            if (iView == null) return;
 
             if (visible && shouldBeShown()) {
-                if (getLastKnownVideoTime() >= getCurrentVideoLength()) {
+                if (PlayerController.getLastKnownVideoTime() >= PlayerController.getCurrentVideoLength()) {
                     return;
                 }
                 LogHelper.printDebug(() -> "Fading in");
@@ -90,7 +94,7 @@ public class VotingButton {
                 LogHelper.printDebug(() -> "Fading out");
                 if (!immediate)
                     iView.startAnimation(fadeOut);
-                iView.setVisibility(shouldBeShown() ? View.INVISIBLE : View.GONE);
+                iView.setVisibility(View.GONE);
             }
         } catch (Exception ex) {
             LogHelper.printException(() -> "changeVisibility failure", ex);
@@ -99,6 +103,35 @@ public class VotingButton {
 
     static boolean shouldBeShown() {
         return SettingsEnum.SB_ENABLED.getBoolean() && SettingsEnum.SB_VOTING_ENABLED.getBoolean();
+    }
+
+    public static void showIfShouldBeShown() {
+        if (isShowing || !shouldBeShown()) {
+            return;
+        }
+        ReVancedUtils.verifyOnMainThread();
+        View v = buttonReference.get();
+        if (v == null) {
+            return;
+        }
+        v.setVisibility(View.VISIBLE);
+        v.bringToFront();
+        v.requestLayout();
+        v.invalidate();
+        isShowing = true;
+    }
+
+    public static void hide() {
+        if (!isShowing) {
+            return;
+        }
+        ReVancedUtils.verifyOnMainThread();
+        View v = buttonReference.get();
+        if (v == null) {
+            return;
+        }
+        v.setVisibility(View.GONE);
+        isShowing = false;
     }
 
     //region Helpers

@@ -170,10 +170,12 @@ public class PlayerController {
 
             LogHelper.printDebug(() -> "setCurrentVideoTime: current video time: " + millis);
 
-            if (millis == VideoInformation.getCurrentVideoLength()) {
-                SponsorBlockUtils.hideShieldButton();
-                SponsorBlockUtils.hideVoteButton();
-                return;
+            if (millis >= VideoInformation.getCurrentVideoLength()) {
+                ShieldButton.hide(); // hide immediately, instead of letting it fade out
+                VotingButton.hide();
+            } else {
+                ShieldButton.showIfShouldBeShown();
+                VotingButton.showIfShouldBeShown();
             }
 
             final long START_TIMER_BEFORE_SEGMENT_MILLIS = 1200;
@@ -228,10 +230,6 @@ public class PlayerController {
      */
     public static void setHighPrecisionVideoTime(final long millis) {
         try {
-            if ((millis < lastKnownVideoTime && lastKnownVideoTime >= VideoInformation.getCurrentVideoLength()) || millis == 0) {
-                SponsorBlockUtils.showShieldButton(); // skipping from end to the video will show the buttons again
-                SponsorBlockUtils.showVoteButton();
-            }
             lastKnownVideoTime = millis;
         } catch (Exception ex) {
             LogHelper.printException(() -> "setHighPrecisionVideoTime failure", ex);
@@ -423,7 +421,6 @@ public class PlayerController {
 
         return true;
     }
-
 
     private static void findAndSkipSegment(boolean wasClicked) {
         try {

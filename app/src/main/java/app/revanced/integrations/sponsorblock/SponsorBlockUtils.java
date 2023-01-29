@@ -1,8 +1,6 @@
 package app.revanced.integrations.sponsorblock;
 
 import static android.text.Html.fromHtml;
-import static android.view.View.GONE;
-import static android.view.View.VISIBLE;
 import static app.revanced.integrations.sponsorblock.StringRef.str;
 
 import android.annotation.SuppressLint;
@@ -57,14 +55,6 @@ public abstract class SponsorBlockUtils {
 
     //    private static final int sponsorBtnId = 1234;
     private static final String LOCKED_COLOR = "#FFC83D";
-    public static final View.OnClickListener sponsorBlockBtnListener = v -> {
-        LogHelper.printDebug(() -> "Shield button clicked");
-        NewSegmentHelperLayout.toggle();
-    };
-    public static final View.OnClickListener voteButtonListener = v -> {
-        LogHelper.printDebug(() -> "Vote button clicked");
-        SponsorBlockUtils.onVotingClicked(v.getContext());
-    };
     private static int shareBtnId = -1;
     private static long newSponsorSegmentDialogShownMillis;
     private static volatile long newSponsorSegmentStartMillis = -1;
@@ -250,40 +240,6 @@ public abstract class SponsorBlockUtils {
     };
 
     private SponsorBlockUtils() {
-    }
-
-    public static void showShieldButton() {
-        ReVancedUtils.verifyOnMainThread();
-        View i = ShieldButton._shieldBtn.get();
-        if (i == null || !ShieldButton.shouldBeShown()) return;
-        i.setVisibility(VISIBLE);
-        i.bringToFront();
-        i.requestLayout();
-        i.invalidate();
-    }
-
-    public static void hideShieldButton() {
-        ReVancedUtils.verifyOnMainThread();
-        View i = ShieldButton._shieldBtn.get();
-        if (i != null)
-            i.setVisibility(GONE);
-    }
-
-    public static void showVoteButton() {
-        ReVancedUtils.verifyOnMainThread();
-        View i = VotingButton._votingButton.get();
-        if (i == null || !VotingButton.shouldBeShown()) return;
-        i.setVisibility(VISIBLE);
-        i.bringToFront();
-        i.requestLayout();
-        i.invalidate();
-    }
-
-    public static void hideVoteButton() {
-        ReVancedUtils.verifyOnMainThread();
-        View i = VotingButton._votingButton.get();
-        if (i != null)
-            i.setVisibility(GONE);
     }
 
     @SuppressLint("DefaultLocale")
