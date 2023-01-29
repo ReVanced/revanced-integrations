@@ -140,7 +140,7 @@ public class PlayerController {
             }
 
             setSponsorSegmentsOfCurrentVideo(segments);
-            // new Handler(Looper.getMainLooper()).post(findAndSkipSegmentRunnable);
+            ReVancedUtils.runOnMainThread(findAndSkipSegmentRunnable); // skip any segments currently in
 
             LogHelper.printDebug(() -> {
                 StringBuilder builder = new StringBuilder("Downloaded segments:");
@@ -162,7 +162,7 @@ public class PlayerController {
             if (!SettingsEnum.SB_ENABLED.getBoolean()) return;
 
             lastKnownVideoTime = millis;
-            if (millis <= 0) return;
+            //if (millis <= 0) return;
             //findAndSkipSegment(false);
 
             SponsorSegment[] segments = sponsorSegmentsOfCurrentVideo;
