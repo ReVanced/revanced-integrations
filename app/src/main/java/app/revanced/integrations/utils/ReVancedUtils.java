@@ -2,7 +2,6 @@ package app.revanced.integrations.utils;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.res.Resources;
 import android.os.Handler;
 import android.os.Looper;
 
@@ -75,19 +74,12 @@ public class ReVancedUtils {
         return false;
     }
 
-    public static Integer getResourceIdByName(Context context, String type, String name) {
-        try {
-            Resources res = context.getResources();
-            return res.getIdentifier(name, type, context.getPackageName());
-        } catch (Throwable exception) {
-            LogHelper.printException(() -> "Resource not found.", exception);
-            return null;
-        }
+    public static int getResourceIdByName(Context context, String name, String type) {
+        return context.getResources().getIdentifier(name, type, context.getPackageName());
     }
 
     public static int getIdentifier(String name, String defType) {
-        Context context = getContext();
-        return context.getResources().getIdentifier(name, defType, context.getPackageName());
+        return getResourceIdByName(getContext(), name, defType);
     }
 
     public static Context getContext() {
