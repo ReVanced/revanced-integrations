@@ -2,13 +2,11 @@ package app.revanced.integrations.sponsorblock;
 
 import static app.revanced.integrations.sponsorblock.StringRef.sf;
 
-import android.app.Activity;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.text.Html;
 import android.text.TextUtils;
-
 
 import java.util.ArrayList;
 import java.util.HashMap;

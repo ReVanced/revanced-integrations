@@ -47,11 +47,11 @@ public class PlayerController {
     private static float sponsorBarThickness = 2f;
 
     @Nullable
-    public static SponsorSegment[] getSponsorSegmentsOfCurrentVideo() {
+    static SponsorSegment[] getSponsorSegmentsOfCurrentVideo() {
         return sponsorSegmentsOfCurrentVideo;
     }
 
-    public static void setSponsorSegmentsOfCurrentVideo(@NonNull SponsorSegment[] segments) {
+    static void setSponsorSegmentsOfCurrentVideo(@NonNull SponsorSegment[] segments) {
         Arrays.sort(segments);
         sponsorSegmentsOfCurrentVideo = segments;
         calculateTimeWithoutSegments();
@@ -153,7 +153,9 @@ public class PlayerController {
         }
     }
 
-
+    /**
+     * Injection point
+     */
     public static void setVideoTime(long millis) {
         try {
             if (!SettingsEnum.SB_ENABLED.getBoolean()) return;
@@ -220,6 +222,9 @@ public class PlayerController {
         }
     }
 
+    /**
+     * Injection point
+     */
     public static void setHighPrecisionVideoTime(final long millis) {
         try {
             if ((millis < lastKnownVideoTime && lastKnownVideoTime >= VideoInformation.getCurrentVideoLength()) || millis == 0) {
@@ -240,6 +245,9 @@ public class PlayerController {
         return lastKnownVideoTime;
     }
 
+    /**
+     * Injection point
+     */
     public static void setSponsorBarAbsoluteLeft(final Rect rect) {
         setSponsorBarAbsoluteLeft(rect.left);
     }
@@ -251,6 +259,9 @@ public class PlayerController {
         }
     }
 
+    /**
+     * Injection point
+     */
     public static void setSponsorBarRect(final Object self) {
         try {
             Field field = self.getClass().getDeclaredField("replaceMeWithsetSponsorBarRect");
@@ -265,6 +276,9 @@ public class PlayerController {
         }
     }
 
+    /**
+     * Injection point
+     */
     public static void setSponsorBarAbsoluteRight(final Rect rect) {
         setSponsorBarAbsoluteRight(rect.right);
     }
@@ -276,6 +290,9 @@ public class PlayerController {
         }
     }
 
+    /**
+     * Injection point
+     */
     public static void setSponsorBarThickness(final int thickness) {
         try {
             setSponsorBarThickness((float) thickness);
@@ -297,6 +314,9 @@ public class PlayerController {
     }
 
 
+    /**
+     * Injection point
+     */
     public static void addSkipSponsorView15(final View view) {
         try {
             playerActivity = new WeakReference<>((Activity) view.getContext());
@@ -326,7 +346,7 @@ public class PlayerController {
     }
 
     /**
-     * Patch injection point
+     * Injection point
      */
     public static String appendTimeWithoutSegments(String totalTime) {
         try {
@@ -363,9 +383,8 @@ public class PlayerController {
         timeWithoutSegments = String.format(" (%s)", formatted);
     }
 
-
     /**
-     * Called when it's time to draw time bar
+     * Injection point
      */
     public static void drawSponsorTimeBars(final Canvas canvas, final float posY) {
         try {
