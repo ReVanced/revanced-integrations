@@ -199,6 +199,8 @@ public class PlayerController {
                             if (nextSegmentToAutoSkip != segment) {
                                 LogHelper.printDebug(() -> "ignoring stale autoskip: " + segment);
                             } else {
+                                // clear the field, so if user rewinds then timer can again be set for the same segment
+                                nextSegmentToAutoSkip = null;
                                 skipSegment(segment, false);
                             }
                         }, segment.start - millis);
@@ -221,7 +223,6 @@ public class PlayerController {
                 }
             }
             // nothing upcoming to skip and not in a segment. clear any old skip tasks and hide the skip segment view
-            nextSegmentToAutoSkip = null;
             segmentCurrentlyPlayingToManuallySkip = null;
             SkipSegmentView.hide();
         } catch (Exception e) {
