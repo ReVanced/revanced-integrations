@@ -224,6 +224,7 @@ public class PlayerController {
             }
             // nothing upcoming to skip and not in a segment. clear any old skip tasks and hide the skip segment view
             nextSegmentToAutoSkip = null;
+            segmentCurrentlyPlayingToManuallySkip = null;
             SkipSegmentView.hide();
         } catch (Exception e) {
             LogHelper.printException(() -> "setVideoTime failure", e);
