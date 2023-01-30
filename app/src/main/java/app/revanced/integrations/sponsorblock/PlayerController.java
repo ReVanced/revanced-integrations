@@ -435,18 +435,21 @@ public class PlayerController {
             final long millis = lastKnownVideoTime;
 
             for (SponsorSegment segment : currentSegments) {
-                if (segment.start > millis)
-                    break;
+                if (millis < segment.start)
+                    break; // this and all remaining segments are later
 
                 if (segment.end <= millis)
-                    continue;
+                    continue; // past this segment
 
-                if (!((segment.category.behaviour.skip && !(segment.category.behaviour.key.equals("skip-once")
-                        && segment.didAutoSkipped)) || userManuallySkipped)) {
+                if (!segment.category.behaviour.skip)
+                    continue; // not a segment to skip, but maybe other segments overlap
+
+                if (!userManuallySkipped && segment.didAutoSkipped && segment.category.behaviour.key.equals("skip-once")) {
                     SkipSegmentView.show();
                     return;
                 }
 
+                // inside the segment
                 skipSegment(segment, userManuallySkipped);
                 SponsorBlockUtils.sendViewRequestAsync(millis, segment);
                 break;
