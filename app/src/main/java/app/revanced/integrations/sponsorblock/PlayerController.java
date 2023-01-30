@@ -1,6 +1,5 @@
 package app.revanced.integrations.sponsorblock;
 
-import android.app.Activity;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.text.TextUtils;
@@ -10,7 +9,6 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Timer;
@@ -32,13 +30,19 @@ public class PlayerController {
     private static volatile String currentVideoId;
     @Nullable
     private static volatile SponsorSegment[] sponsorSegmentsOfCurrentVideo;
+    /**
+     * current segment that user can manually skip
+     */
+    @Nullable
+    private static volatile SponsorSegment segmentCurrentlyPlayingToManuallySkip;
+    /**
+     * Next segment that will autoskip using the timer.
+     */
+    @Nullable
+    private static volatile SponsorSegment nextSegmentToAutoSkip;
     private static volatile String timeWithoutSegments = "";
     private static volatile long allowNextSkipRequestTime = 0L;
     private static volatile long lastKnownVideoTime = -1L;
-    private static final Runnable findAndSkipSegmentRunnable = () -> {
-        findAndSkipSegment(false);
-    };
-    private static volatile SponsorSegment segmentToSkip;
     private static volatile boolean settingsInitialized;
     // UI fields should be accessed exclusively on a single thread (main thread). volatile is not needed
     private static float sponsorBarLeft = 1f;
@@ -68,7 +72,7 @@ public class PlayerController {
         currentVideoId = null;
         sponsorSegmentsOfCurrentVideo = null;
         timeWithoutSegments = "";
-        segmentToSkip = null; // prevent any existing scheduled skip from running
+        nextSegmentToAutoSkip = null; // prevent any existing scheduled skip from running
     }
 
     /**
@@ -139,7 +143,6 @@ public class PlayerController {
             }
 
             setSponsorSegmentsOfCurrentVideo(segments);
-            ReVancedUtils.runOnMainThread(findAndSkipSegmentRunnable); // skip any segments currently in
 
             LogHelper.printDebug(() -> {
                 StringBuilder builder = new StringBuilder("Downloaded segments:");
@@ -184,16 +187,19 @@ public class PlayerController {
                     if (startTimerAtMillis < segment.start)
                         break; // not inside any segments, and no upcoming segments are close enough to schedule a task
 
-                    if (segmentToSkip != segment) {
+                    if (!segment.category.behaviour.skip)
+                        break;
+
+                    if (nextSegmentToAutoSkip != segment) {
                         LogHelper.printDebug(() -> "scheduling segmentToSkip");
                         TimerTask skipSponsorTask = new TimerTask() {
                             @Override
                             public void run() {
-                                if (segmentToSkip != segment) {
+                                if (nextSegmentToAutoSkip != segment) {
                                     LogHelper.printDebug(() -> "ignoring stale segmentToSkip task");
                                 } else {
                                     lastKnownVideoTime = segment.start + 1;
-                                    ReVancedUtils.runOnMainThread(findAndSkipSegmentRunnable);
+                                    ReVancedUtils.runOnMainThread(() -> skipSegment(segment, false));
                                 }
                             }
                         };
@@ -211,15 +217,15 @@ public class PlayerController {
                 // we are in the segment!
                 if (segment.category.behaviour.skip && !(segment.category.behaviour.key.equals("skip-once") && segment.didAutoSkipped)) {
                     skipSegment(segment, false);
-                    SponsorBlockUtils.sendViewRequestAsync(millis, segment);
                     break;
                 } else {
+                    segmentCurrentlyPlayingToManuallySkip = segment;
                     SkipSegmentView.show();
                     return;
                 }
             }
             // nothing upcoming to skip and not in a segment. clear any old skip tasks and hide the skip segment view
-            segmentToSkip = null;
+            nextSegmentToAutoSkip = null;
             SkipSegmentView.hide();
         } catch (Exception e) {
             LogHelper.printException(() -> "setVideoTime failure", e);
@@ -313,8 +319,12 @@ public class PlayerController {
     }
 
     public static void onSkipSponsorClicked() {
-        LogHelper.printDebug(() -> "Skip segment clicked");
-        findAndSkipSegment(true);
+        SponsorSegment segment = segmentCurrentlyPlayingToManuallySkip;
+        if (segment != null) {
+            skipSegment(segment, true);
+        } else {
+            LogHelper.printDebug(() -> "No longer any segment to manually skip"); // should never happen
+        }
     }
 
     /**
@@ -422,45 +432,6 @@ public class PlayerController {
         return true;
     }
 
-    private static void findAndSkipSegment(boolean userManuallySkipped) {
-        try {
-            SponsorSegment[] currentSegments = sponsorSegmentsOfCurrentVideo;
-            if (currentSegments == null)
-                return;
-
-            final long millis = lastKnownVideoTime;
-
-            for (SponsorSegment segment : currentSegments) {
-                if (millis < segment.start)
-                    break; // this and all remaining segments are later
-
-                if (segment.end <= millis)
-                    continue; // past this segment
-
-                // inside the segment
-
-                if (!userManuallySkipped) {
-                    if (!segment.category.behaviour.skip)
-                        continue; // not a segment to skip, but maybe other segments overlap
-
-                    if (segment.category.behaviour.skip && segment.didAutoSkipped
-                            && segment.category.behaviour.key.equals("skip-once")) {
-                        SkipSegmentView.show();
-                        return;
-                    }
-                }
-
-                skipSegment(segment, userManuallySkipped);
-                SponsorBlockUtils.sendViewRequestAsync(millis, segment);
-                break;
-            }
-
-            SkipSegmentView.hide();
-        } catch (Exception ex) {
-            LogHelper.printException(() -> "findAndSkipSegment failure", ex);
-        }
-    }
-
     private static void skipSegment(SponsorSegment segment, boolean userManuallySkipped) {
         try {
             LogHelper.printDebug(() -> "Skipping segment: " + segment.toString());
@@ -484,6 +455,8 @@ public class PlayerController {
                         newSegments[i++] = sponsorSegment;
                 }
                 setSponsorSegmentsOfCurrentVideo(newSegments);
+            } else {
+                SponsorBlockUtils.sendViewRequestAsync(lastKnownVideoTime, segment);
             }
         } catch (Exception ex) {
             LogHelper.printException(() -> "skipSegment failure", ex);
