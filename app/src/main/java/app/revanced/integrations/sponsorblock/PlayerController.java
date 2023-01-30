@@ -405,21 +405,17 @@ public class PlayerController {
     public static boolean skipToMillisecond(long millisecond) {
         // in 15.x if sponsor clip hits the end, then it crashes the app, because of too many function invocations
         // I put this block so that skip can be made only once per some time
-        long now = System.currentTimeMillis();
-        if (now < allowNextSkipRequestTime) {
-            LogHelper.printDebug(() -> "skipToMillisecond: to fast, slow down, because you'll fail");
-            return false;
-        }
-        allowNextSkipRequestTime = now + 100;
-
-        LogHelper.printDebug(() -> String.format("Requesting skip to millis=%d on thread %s", millisecond, Thread.currentThread()));
-
-        final long finalMillisecond = millisecond;
-
         try {
-            LogHelper.printDebug(() -> "Skipping to millis=" + finalMillisecond);
-            lastKnownVideoTime = finalMillisecond;
-            VideoInformation.seekTo(finalMillisecond);
+            final long now = System.currentTimeMillis();
+            if (now < allowNextSkipRequestTime) {
+                LogHelper.printDebug(() -> "skipToMillisecond: to fast, slow down, because you'll fail");
+                return false;
+            }
+            allowNextSkipRequestTime = now + 100;
+
+            LogHelper.printDebug(() -> "Skipping to millis=" + millisecond);
+            lastKnownVideoTime = millisecond;
+            VideoInformation.seekTo(millisecond);
         } catch (Exception e) {
             LogHelper.printException(() -> "Cannot skip to millisecond", e);
         }
