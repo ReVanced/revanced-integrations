@@ -184,9 +184,9 @@ public class PlayerController {
             final long startTimerAtMillis = millis + START_TIMER_BEFORE_SEGMENT_MILLIS;
 
             for (final SponsorSegment segment : segments) {
-                if (segment.start > millis) {
-                    if (segment.start > startTimerAtMillis)
-                        break; // it's more then START_TIMER_BEFORE_SEGMENT_MILLIS far away
+                if (millis < segment.start) { // segment is upcoming
+                    if (startTimerAtMillis < segment.start)
+                        break; // not inside any segments, and no upcoming segments are close enough to schedule a task
                     if (!segment.category.behaviour.skip)
                         break;
 
