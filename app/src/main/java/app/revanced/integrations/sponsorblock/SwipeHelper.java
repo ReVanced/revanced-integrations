@@ -12,6 +12,7 @@ import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedUtils;
 import app.revanced.integrations.utils.SharedPrefHelper;
 
+// Edit: this is old code from Vanced, and is not currently integrated into ReVanced
 public class SwipeHelper {
     static FrameLayout _frameLayout;
     public static boolean isTabletMode;

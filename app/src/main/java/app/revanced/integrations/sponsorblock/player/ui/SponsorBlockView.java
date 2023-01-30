@@ -159,6 +159,7 @@ public class SponsorBlockView {
         inlineSponsorOverlay.invalidate();
     }
 
+    // Edit: this is old code from Vanced and is not fully integrated into ReVanced
     private static void checkLayout() {
         if (inlineSponsorOverlay.getHeight() == 0) {
             ViewGroup watchLayout = SwipeHelper.nextGenWatchLayout;
