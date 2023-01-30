@@ -219,7 +219,7 @@ public class PlayerController {
                     break;
                 } else {
                     segmentCurrentlyPlayingToManuallySkip = segment;
-                    continue; // keep looking, as there may be an autoskip segment coming up very soon
+                    break;
                 }
             }
             if (segmentCurrentlyPlayingToManuallySkip != null) {
@@ -313,6 +313,7 @@ public class PlayerController {
         } else {
             LogHelper.printException(() -> "error: segment not available to skip"); // should never happen
         }
+        SkipSegmentView.hide();
     }
 
     /**
@@ -408,7 +409,7 @@ public class PlayerController {
             }
             allowNextSkipRequestTime = now + 100;
 
-            LogHelper.printDebug(() -> "Skipping to millis=" + millisecond);
+            LogHelper.printDebug(() -> "Skipping to: " + millisecond);
             lastKnownVideoTime = millisecond;
             VideoInformation.seekTo(millisecond);
         } catch (Exception e) {
@@ -422,7 +423,7 @@ public class PlayerController {
         try {
             LogHelper.printDebug(() -> "Skipping segment: " + segment);
 
-            boolean didSucceed = skipToMillisecond(segment.end + 2);
+            boolean didSucceed = skipToMillisecond(segment.end);
             if (didSucceed && !userManuallySkipped) {
                 segment.didAutoSkipped = true;
             }
