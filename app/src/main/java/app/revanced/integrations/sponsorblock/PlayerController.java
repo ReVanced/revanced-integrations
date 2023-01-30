@@ -196,7 +196,7 @@ public class PlayerController {
                             @Override
                             public void run() {
                                 if (nextSegmentToAutoSkip != segment) {
-                                    LogHelper.printDebug(() -> "ignoring stale segmentToSkip task");
+                                    LogHelper.printDebug(() -> "ignoring stale autoskip: " + segment);
                                 } else {
                                     lastKnownVideoTime = segment.start + 1;
                                     ReVancedUtils.runOnMainThread(() -> skipSegment(segment, false));
@@ -204,8 +204,6 @@ public class PlayerController {
                             }
                         };
                         sponsorTimer.schedule(skipSponsorTask, segment.start - millis);
-                    } else {
-                        LogHelper.printDebug(() -> "skipSponsorTask is already scheduled...");
                     }
                     SkipSegmentView.hide();
                     return;
