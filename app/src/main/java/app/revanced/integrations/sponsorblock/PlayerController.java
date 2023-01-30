@@ -163,7 +163,7 @@ public class PlayerController {
     }
 
     /**
-     * Injection point
+     * Injection point.  This appears to be called once every 100ms
      */
     public static void setVideoTime(long millis) {
         try {
@@ -207,8 +207,7 @@ public class PlayerController {
                             }
                         }, segment.start - millis);
                     }
-                    SkipSegmentView.hide();
-                    return;
+                    break;
                 }
 
                 if (segment.end < millis)
@@ -309,11 +308,10 @@ public class PlayerController {
     }
 
     public static void onSkipSponsorClicked() {
-        SponsorSegment segment = segmentCurrentlyPlayingToManuallySkip;
-        if (segment != null) {
-            skipSegment(segment, true);
+        if (segmentCurrentlyPlayingToManuallySkip != null) {
+            skipSegment(segmentCurrentlyPlayingToManuallySkip, true);
         } else {
-            LogHelper.printDebug(() -> "No longer any segment to manually skip"); // should never happen
+            LogHelper.printException(() -> "error: segment not available to skip"); // should never happen
         }
     }
 
