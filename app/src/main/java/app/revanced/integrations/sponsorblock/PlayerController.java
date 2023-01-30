@@ -114,6 +114,10 @@ public class PlayerController {
 
             clearDownloadedData();
             currentVideoId = videoId;
+
+            // if opening new video in same player, then skip button may be showing from prior video
+            SkipSegmentView.hide();
+
             LogHelper.printDebug(() -> "setCurrentVideoId: " + videoId);
 
             String videoIdToDownload = videoId; // make a copy, to use off main thread
