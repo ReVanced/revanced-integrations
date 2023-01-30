@@ -156,9 +156,10 @@ public class SponsorBlockView {
 
     private static void bringLayoutToFront() {
         checkLayout();
-        inlineSponsorOverlay.bringToFront();
-        inlineSponsorOverlay.requestLayout();
-        inlineSponsorOverlay.invalidate();
+        // edit: it appears this is not needed
+//        inlineSponsorOverlay.bringToFront();
+//        inlineSponsorOverlay.requestLayout();
+//        inlineSponsorOverlay.invalidate();
     }
 
     // Edit: this is old code from Vanced and is not fully integrated into ReVanced
