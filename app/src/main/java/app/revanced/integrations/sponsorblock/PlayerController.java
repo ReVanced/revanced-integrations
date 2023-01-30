@@ -459,20 +459,18 @@ public class PlayerController {
         }
     }
 
-    private static void skipSegment(SponsorSegment segment, boolean wasClicked) {
+    private static void skipSegment(SponsorSegment segment, boolean userManuallySkipped) {
         try {
-//            if (lastSkippedSegment == segment) return;
-//            lastSkippedSegment = segment;
             LogHelper.printDebug(() -> "Skipping segment: " + segment.toString());
 
-            if (SettingsEnum.SB_SHOW_TOAST_WHEN_SKIP.getBoolean() && !wasClicked)
-                SkipSegmentView.notifySkipped(segment);
-
             boolean didSucceed = skipToMillisecond(segment.end + 2);
-            if (didSucceed && !wasClicked) {
+            if (didSucceed && !userManuallySkipped) {
                 segment.didAutoSkipped = true;
             }
+            if (SettingsEnum.SB_SHOW_TOAST_WHEN_SKIP.getBoolean() && !userManuallySkipped)
+                SkipSegmentView.notifySkipped(segment);
             SkipSegmentView.hide();
+
             if (segment.category == SponsorBlockSettings.SegmentInfo.UNSUBMITTED) {
                 // skipped segment was a preview of unsubmitted segment
                 // remove the segment from the UI view
