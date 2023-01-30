@@ -244,6 +244,11 @@ public class PlayerController {
         return lastKnownVideoTime;
     }
 
+    public static boolean isAtEndOfVideo() {
+        return getLastKnownVideoTime() >= getCurrentVideoLength();
+    }
+
+
     /**
      * Injection point
      */

@@ -83,7 +83,7 @@ public class ShieldButton {
             if (iView == null) return;
 
             if (visible && shouldBeShown()) {
-                if (PlayerController.getLastKnownVideoTime() >= PlayerController.getCurrentVideoLength()) {
+                if (PlayerController.isAtEndOfVideo()) {
                     return;
                 }
                 LogHelper.printDebug(() -> "Fading in");
