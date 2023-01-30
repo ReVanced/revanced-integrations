@@ -39,7 +39,7 @@ public class PlayerController {
     private static final Runnable findAndSkipSegmentRunnable = () -> {
         findAndSkipSegment(false);
     };
-    private static volatile TimerTask skipSponsorTask = null;
+    private static volatile SponsorSegment segmentToSkip;
     private static volatile boolean settingsInitialized;
     // UI fields should be accessed exclusively on a single thread (main thread). volatile is not needed
     private static float sponsorBarLeft = 1f;
@@ -69,6 +69,7 @@ public class PlayerController {
         currentVideoId = null;
         sponsorSegmentsOfCurrentVideo = null;
         timeWithoutSegments = "";
+        segmentToSkip = null; // prevent any existing scheduled skip from running
     }
 
     /**
@@ -109,9 +110,8 @@ public class PlayerController {
                 settingsInitialized = true;
             }
 
+            clearDownloadedData();
             currentVideoId = videoId;
-            sponsorSegmentsOfCurrentVideo = null;
-            timeWithoutSegments = "";
             LogHelper.printDebug(() -> "setCurrentVideoId: " + videoId);
 
             sponsorTimer.schedule(new TimerTask() {
@@ -178,6 +178,8 @@ public class PlayerController {
                 VotingButton.showIfShouldBeShown();
             }
 
+            // to debug the segmentToSkip stale detection, set this to a very large value (12,000 or more)
+            // then manually seek to a different location just before an autoskip segment starts
             final long START_TIMER_BEFORE_SEGMENT_MILLIS = 1200;
             final long startTimerAtMillis = millis + START_TIMER_BEFORE_SEGMENT_MILLIS;
 
@@ -188,22 +190,25 @@ public class PlayerController {
                     if (!segment.category.behaviour.skip)
                         break;
 
-                    if (skipSponsorTask == null) {
-                        LogHelper.printDebug(() -> "Scheduling skipSponsorTask");
-                        skipSponsorTask = new TimerTask() {
+                    if (segmentToSkip != segment) {
+                        LogHelper.printDebug(() -> "scheduling segmentToSkip");
+                        TimerTask skipSponsorTask = new TimerTask() {
                             @Override
                             public void run() {
-                                skipSponsorTask = null;
-                                lastKnownVideoTime = segment.start + 1;
-                                ReVancedUtils.runOnMainThread(findAndSkipSegmentRunnable);
+                                if (segmentToSkip != segment) {
+                                    LogHelper.printDebug(() -> "ignoring stale segmentToSkip task");
+                                } else {
+                                    lastKnownVideoTime = segment.start + 1;
+                                    ReVancedUtils.runOnMainThread(findAndSkipSegmentRunnable);
+                                }
                             }
                         };
                         sponsorTimer.schedule(skipSponsorTask, segment.start - millis);
                     } else {
                         LogHelper.printDebug(() -> "skipSponsorTask is already scheduled...");
                     }
-
-                    break;
+                    SkipSegmentView.hide();
+                    return;
                 }
 
                 if (segment.end < millis)
@@ -219,6 +224,8 @@ public class PlayerController {
                     return;
                 }
             }
+            // nothing upcoming to skip. clear any old skip tasks and hide the skip segment view
+            segmentToSkip = null;
             SkipSegmentView.hide();
         } catch (Exception e) {
             LogHelper.printException(() -> "setVideoTime failure", e);
