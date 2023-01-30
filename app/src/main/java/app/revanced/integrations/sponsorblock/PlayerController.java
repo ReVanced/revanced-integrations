@@ -210,7 +210,7 @@ public class PlayerController {
                     break;
                 }
 
-                if (segment.end < millis)
+                if (segment.end <= millis)
                     continue; // already past this segment
 
                 // we are in the segment!
