@@ -167,8 +167,7 @@ public class PlayerController {
 
             lastKnownVideoTime = millis;
 
-            SponsorSegment[] segments = sponsorSegmentsOfCurrentVideo;
-            if (segments == null || segments.length == 0) return;
+            if (sponsorSegmentsOfCurrentVideo == null || sponsorSegmentsOfCurrentVideo.length == 0) return;
 
             LogHelper.printDebug(() -> "setCurrentVideoTime: current video time: " + millis);
 
@@ -182,7 +181,7 @@ public class PlayerController {
             final long START_TIMER_BEFORE_SEGMENT_MILLIS = 1200;
             final long startTimerAtMillis = millis + START_TIMER_BEFORE_SEGMENT_MILLIS;
 
-            for (final SponsorSegment segment : segments) {
+            for (final SponsorSegment segment : sponsorSegmentsOfCurrentVideo) {
                 if (millis < segment.start) { // segment is upcoming
                     if (startTimerAtMillis < segment.start)
                         break; // not inside any segments, and no upcoming segments are close enough to schedule a task
@@ -344,15 +343,14 @@ public class PlayerController {
 
     private static void calculateTimeWithoutSegments() {
         final long currentVideoLength = getCurrentVideoLength();
-        SponsorSegment[] currentSegments = sponsorSegmentsOfCurrentVideo;
         if (!SettingsEnum.SB_SHOW_TIME_WITHOUT_SEGMENTS.getBoolean() || currentVideoLength <= 1
-                || currentSegments == null || currentSegments.length == 0) {
+                || sponsorSegmentsOfCurrentVideo == null || sponsorSegmentsOfCurrentVideo.length == 0) {
             timeWithoutSegments = "";
             return;
         }
 
         long timeWithoutSegmentsValue = currentVideoLength + 500; // YouTube:tm:
-        for (SponsorSegment segment : currentSegments) {
+        for (SponsorSegment segment : sponsorSegmentsOfCurrentVideo) {
             timeWithoutSegmentsValue -= segment.end - segment.start;
         }
         final long hours = timeWithoutSegmentsValue / 3600000;
@@ -370,8 +368,7 @@ public class PlayerController {
     public static void drawSponsorTimeBars(final Canvas canvas, final float posY) {
         try {
             if (sponsorBarThickness < 0.1) return;
-            SponsorSegment[] currentSegments = PlayerController.sponsorSegmentsOfCurrentVideo;
-            if (currentSegments == null) return;
+            if (sponsorSegmentsOfCurrentVideo == null) return;
 
             final float thicknessDiv2 = sponsorBarThickness / 2;
             final float top = posY - thicknessDiv2;
@@ -380,7 +377,7 @@ public class PlayerController {
             final float absoluteRight = sponsorBarRight;
 
             final float tmp1 = 1f / (float) VideoInformation.getCurrentVideoLength() * (absoluteRight - absoluteLeft);
-            for (SponsorSegment segment : currentSegments) {
+            for (SponsorSegment segment : sponsorSegmentsOfCurrentVideo) {
                 float left = segment.start * tmp1 + absoluteLeft;
                 float right = segment.end * tmp1 + absoluteLeft;
                 canvas.drawRect(left, top, right, bottom, segment.category.paint);
@@ -417,7 +414,7 @@ public class PlayerController {
 
     private static void skipSegment(SponsorSegment segment, boolean userManuallySkipped) {
         try {
-            LogHelper.printDebug(() -> "Skipping segment: " + segment.toString());
+            LogHelper.printDebug(() -> "Skipping segment: " + segment);
 
             boolean didSucceed = skipToMillisecond(segment.end + 2);
             if (didSucceed && !userManuallySkipped) {
@@ -430,10 +427,9 @@ public class PlayerController {
             if (segment.category == SponsorBlockSettings.SegmentInfo.UNSUBMITTED) {
                 // skipped segment was a preview of unsubmitted segment
                 // remove the segment from the UI view
-                SponsorSegment[] currentSegments = sponsorSegmentsOfCurrentVideo;
-                SponsorSegment[] newSegments = new SponsorSegment[currentSegments.length - 1];
+                SponsorSegment[] newSegments = new SponsorSegment[sponsorSegmentsOfCurrentVideo.length - 1];
                 int i = 0;
-                for (SponsorSegment sponsorSegment : currentSegments) {
+                for (SponsorSegment sponsorSegment : sponsorSegmentsOfCurrentVideo) {
                     if (sponsorSegment != segment)
                         newSegments[i++] = sponsorSegment;
                 }
