@@ -30,23 +30,13 @@ public class SponsorBlockSettings {
         if (!SettingsEnum.SB_ENABLED.getBoolean()) {
             SkipSegmentView.hide();
             NewSegmentHelperLayout.hide();
-            ShieldButton.hide();
-            VotingButton.hide();
             PlayerController.setCurrentVideoId(null);
         }
-
         if (!SettingsEnum.SB_NEW_SEGMENT_ENABLED.getBoolean()) {
             NewSegmentHelperLayout.hide();
-            ShieldButton.hide();
-        } else {
-            ShieldButton.showIfShouldBeShown();
         }
 
-        if (!SettingsEnum.SB_VOTING_ENABLED.getBoolean()) {
-            VotingButton.hide();
-        } else {
-            VotingButton.showIfShouldBeShown();
-        }
+        // shield and voting button automatically show/hide themselves if feature is turned off
 
         SegmentBehaviour[] possibleBehaviours = SegmentBehaviour.values();
         final ArrayList<String> enabledCategories = new ArrayList<>(possibleBehaviours.length);

@@ -170,12 +170,9 @@ public class PlayerController {
 
             LogHelper.printDebug(() -> "setCurrentVideoTime: current video time: " + millis);
 
-            if (millis >= VideoInformation.getCurrentVideoLength()) {
-                ShieldButton.hide(); // hide immediately, instead of letting it fade out
+            if (isAtEndOfVideo()) {
+                ShieldButton.hide();
                 VotingButton.hide();
-            } else {
-                ShieldButton.showIfShouldBeShown();
-                VotingButton.showIfShouldBeShown();
             }
 
             // to debug the segmentToSkip stale detection, set this to a very large value (12,000 or more)

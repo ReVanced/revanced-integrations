@@ -106,22 +106,6 @@ public class VotingButton {
         return SettingsEnum.SB_ENABLED.getBoolean() && SettingsEnum.SB_VOTING_ENABLED.getBoolean();
     }
 
-    public static void showIfShouldBeShown() {
-        if (isShowing || !shouldBeShown()) {
-            return;
-        }
-        ReVancedUtils.verifyOnMainThread();
-        View v = buttonReference.get();
-        if (v == null) {
-            return;
-        }
-        v.setVisibility(View.VISIBLE);
-        v.bringToFront();
-        v.requestLayout();
-        v.invalidate();
-        isShowing = true;
-    }
-
     public static void hide() {
         if (!isShowing) {
             return;
