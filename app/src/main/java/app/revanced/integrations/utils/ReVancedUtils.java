@@ -114,7 +114,9 @@ public class ReVancedUtils {
     }
 
     /**
-     * Automatically logs any exceptions the runnable throws
+     * Automatically logs any exceptions the runnable throws.
+     *
+     * @see #runOnMainThreadNowOrLater(Runnable)
      */
     public static void runOnMainThread(Runnable runnable) {
         runOnMainThreadDelayed(runnable, 0);
@@ -132,6 +134,18 @@ public class ReVancedUtils {
             }
         };
         new Handler(Looper.getMainLooper()).postDelayed(loggingRunnable, delayMillis);
+    }
+
+    /**
+     * If called from the main thread, the code is run immediately.<p>
+     * If called off the main thread, this is the same as {@link #runOnMainThread(Runnable)}.
+     */
+    public static void runOnMainThreadNowOrLater(Runnable runnable) {
+        if (currentlyIsOnMainThread()) {
+            runnable.run();
+        } else {
+            runOnMainThread(runnable);
+        }
     }
 
     /**

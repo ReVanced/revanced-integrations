@@ -2,6 +2,7 @@ package app.revanced.integrations.patches;
 
 import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.utils.LogHelper;
+import app.revanced.integrations.utils.ReVancedUtils;
 
 public final class FixPlaybackPatch {
     private static Thread currentThread = null;
@@ -23,8 +24,10 @@ public final class FixPlaybackPatch {
                     var currentVideoTime = VideoInformation.getVideoTime();
 
                     if (currentVideoTime > -1) {
-                        VideoInformation.seekTo(Integer.MAX_VALUE);
-                        VideoInformation.seekTo(currentVideoTime);
+                        ReVancedUtils.runOnMainThread(() -> {
+                            VideoInformation.seekTo(Integer.MAX_VALUE);
+                            VideoInformation.seekTo(currentVideoTime);
+                        });
                         return;
                     }
 

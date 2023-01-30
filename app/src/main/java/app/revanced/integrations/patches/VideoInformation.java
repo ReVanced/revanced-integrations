@@ -1,12 +1,10 @@
 package app.revanced.integrations.patches;
 
-import android.os.Handler;
-import android.os.Looper;
-
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Method;
 
 import app.revanced.integrations.utils.LogHelper;
+import app.revanced.integrations.utils.ReVancedUtils;
 
 /**
  * Hooking class for the current playing video.
@@ -81,19 +79,18 @@ public final class VideoInformation {
      * @param millisecond The millisecond to seek the video to.
      */
     public static void seekTo(final long millisecond) {
-        new Handler(Looper.getMainLooper()).post(() -> {
-            if (seekMethod == null) {
-                LogHelper.printDebug(() -> "seekMethod was null");
-                return;
-            }
+        ReVancedUtils.verifyOnMainThread();
+        if (seekMethod == null) {
+            LogHelper.printException(() -> "seekMethod was null");
+            return;
+        }
 
-            try {
-                LogHelper.printDebug(() -> "Seeking to " + millisecond);
-                seekMethod.invoke(playerController.get(), millisecond);
-            } catch (Exception ex) {
-                LogHelper.printException(() -> "Failed to seek", ex);
-            }
-        });
+        try {
+            LogHelper.printDebug(() -> "Seeking to " + millisecond);
+            seekMethod.invoke(playerController.get(), millisecond);
+        } catch (Exception ex) {
+            LogHelper.printException(() -> "Failed to seek", ex);
+        }
     }
 
     /**
