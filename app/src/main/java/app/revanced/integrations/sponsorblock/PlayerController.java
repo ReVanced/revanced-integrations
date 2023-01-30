@@ -183,8 +183,6 @@ public class PlayerController {
                 if (millis < segment.start) { // segment is upcoming
                     if (startTimerAtMillis < segment.start)
                         break; // not inside any segments, and no upcoming segments are close enough to schedule a task
-                    if (!segment.category.behaviour.skip)
-                        break;
 
                     if (segmentToSkip != segment) {
                         LogHelper.printDebug(() -> "scheduling segmentToSkip");
@@ -211,16 +209,14 @@ public class PlayerController {
                     continue; // already past this segment
 
                 // we are in the segment!
-                if (!segment.category.behaviour.skip) {
-                    continue; // this segment does not skip, but maybe another overlaps and does
-                }
-                if (segment.category.behaviour.key.equals("skip-once") && segment.didAutoSkipped) {
-                    SkipSegmentView.show(); // already auto skipped once
+                if (segment.category.behaviour.skip && !(segment.category.behaviour.key.equals("skip-once") && segment.didAutoSkipped)) {
+                    skipSegment(segment, false);
+                    SponsorBlockUtils.sendViewRequestAsync(millis, segment);
+                    break;
+                } else {
+                    SkipSegmentView.show();
                     return;
                 }
-                skipSegment(segment, false);
-                SponsorBlockUtils.sendViewRequestAsync(millis, segment);
-                break;
             }
             // nothing upcoming to skip and not in a segment. clear any old skip tasks and hide the skip segment view
             segmentToSkip = null;
@@ -441,15 +437,19 @@ public class PlayerController {
                 if (segment.end <= millis)
                     continue; // past this segment
 
-                if (!segment.category.behaviour.skip)
-                    continue; // not a segment to skip, but maybe other segments overlap
+                // inside the segment
 
-                if (!userManuallySkipped && segment.didAutoSkipped && segment.category.behaviour.key.equals("skip-once")) {
-                    SkipSegmentView.show();
-                    return;
+                if (!userManuallySkipped) {
+                    if (!segment.category.behaviour.skip)
+                        continue; // not a segment to skip, but maybe other segments overlap
+
+                    if (segment.category.behaviour.skip && segment.didAutoSkipped
+                            && segment.category.behaviour.key.equals("skip-once")) {
+                        SkipSegmentView.show();
+                        return;
+                    }
                 }
 
-                // inside the segment
                 skipSegment(segment, userManuallySkipped);
                 SponsorBlockUtils.sendViewRequestAsync(millis, segment);
                 break;
