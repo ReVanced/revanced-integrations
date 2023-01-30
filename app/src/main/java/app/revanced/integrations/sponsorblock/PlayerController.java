@@ -28,7 +28,6 @@ public class PlayerController {
 
     private static final Timer sponsorTimer = new Timer("sponsor-skip-timer");
     // fields must be volatile, as they are read/wright from different threads (timer thread and main thread)
-    public static volatile WeakReference<Activity> playerActivity = new WeakReference<>(null);
     @Nullable
     private static volatile String currentVideoId;
     @Nullable
@@ -223,7 +222,7 @@ public class PlayerController {
                 SponsorBlockUtils.sendViewRequestAsync(millis, segment);
                 break;
             }
-            // nothing upcoming to skip. clear any old skip tasks and hide the skip segment view
+            // nothing upcoming to skip and not in a segment. clear any old skip tasks and hide the skip segment view
             segmentToSkip = null;
             SkipSegmentView.hide();
         } catch (Exception e) {
@@ -253,7 +252,6 @@ public class PlayerController {
     public static boolean isAtEndOfVideo() {
         return getLastKnownVideoTime() >= getCurrentVideoLength();
     }
-
 
     /**
      * Injection point
@@ -328,7 +326,6 @@ public class PlayerController {
      */
     public static void addSkipSponsorView15(final View view) {
         try {
-            playerActivity = new WeakReference<>((Activity) view.getContext());
             LogHelper.printDebug(() -> "addSkipSponsorView15: view=" + view);
 
             ReVancedUtils.runOnMainThreadDelayed(() -> {
