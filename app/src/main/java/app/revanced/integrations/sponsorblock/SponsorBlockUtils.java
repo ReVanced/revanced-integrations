@@ -14,9 +14,7 @@ import android.preference.EditTextPreference;
 import android.preference.Preference;
 import android.preference.PreferenceCategory;
 import android.text.Html;
-import android.view.View;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -57,8 +55,8 @@ public abstract class SponsorBlockUtils {
     private static final String LOCKED_COLOR = "#FFC83D";
     private static int shareBtnId = -1;
     private static long newSponsorSegmentDialogShownMillis;
-    private static volatile long newSponsorSegmentStartMillis = -1;
-    private static volatile long newSponsorSegmentEndMillis = -1;
+    private static long newSponsorSegmentStartMillis = -1;
+    private static long newSponsorSegmentEndMillis = -1;
     private static final DialogInterface.OnClickListener newSponsorSegmentDialogListener = new DialogInterface.OnClickListener() {
         @SuppressLint("DefaultLocale")
         @Override
@@ -141,10 +139,10 @@ public abstract class SponsorBlockUtils {
             Toast.makeText(context, str("submit_started"), Toast.LENGTH_SHORT).show();
 
             appContext = new WeakReference<>(context);
-            ReVancedUtils.runOnBackgroundThread(submitRunnable);
+            submitNewSegment();
         }
     };
-    public static volatile String messageToToast = "";
+    public static String messageToToast = "";
     private static final EditByHandSaveDialogListener editByHandSaveDialogListener = new EditByHandSaveDialogListener();
     private static final DialogInterface.OnClickListener editByHandDialogListener = (dialog, which) -> {
         Context context = ((AlertDialog) dialog).getContext();
@@ -217,9 +215,10 @@ public abstract class SponsorBlockUtils {
                 })
                 .show();
     };
-    private static final Runnable submitRunnable = () -> {
+
+    private static void submitNewSegment() {
         try {
-            ReVancedUtils.verifyOffMainThread();
+            ReVancedUtils.verifyOnMainThread();
             messageToToast = null;
             final String uuid = SettingsEnum.SB_UUID.getString();
             final long start = newSponsorSegmentStartMillis;
@@ -230,10 +229,11 @@ public abstract class SponsorBlockUtils {
                 LogHelper.printException(() -> "Unable to submit times, invalid parameters");
                 return;
             }
-            SBRequester.submitSegments(videoId, uuid, ((float) start) / 1000f, ((float) end) / 1000f, segmentType.key, toastRunnable);
             newSponsorSegmentEndMillis = newSponsorSegmentStartMillis = -1;
-
-            PlayerController.executeDownloadSegments(videoId);
+            ReVancedUtils.runOnBackgroundThread(() -> {
+                SBRequester.submitSegments(videoId, uuid, ((float) start) / 1000f, ((float) end) / 1000f, segmentType.key, toastRunnable);
+                PlayerController.executeDownloadSegments(videoId);
+            });
         } catch (Exception e) {
             LogHelper.printException(() -> "Unable to submit segment", e);
         }

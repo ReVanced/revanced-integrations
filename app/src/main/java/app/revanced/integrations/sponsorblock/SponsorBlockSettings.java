@@ -15,6 +15,7 @@ import java.util.UUID;
 
 import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.utils.LogHelper;
+import app.revanced.integrations.utils.ReVancedUtils;
 import app.revanced.integrations.utils.SharedPrefHelper;
 
 public class SponsorBlockSettings {
@@ -24,6 +25,7 @@ public class SponsorBlockSettings {
     public static String sponsorBlockUrlCategories = "[]";
 
     public static void update() {
+        ReVancedUtils.verifyOnMainThread();
         LogHelper.printDebug(() -> "updating SponsorBlockSettings");
         SharedPreferences preferences = SharedPrefHelper.getPreferences(SharedPrefHelper.SharedPrefNames.SPONSOR_BLOCK);
 

@@ -11,8 +11,7 @@ import androidx.annotation.Nullable;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.Objects;
 
 import app.revanced.integrations.patches.VideoInformation;
 import app.revanced.integrations.settings.SettingsEnum;
@@ -22,29 +21,28 @@ import app.revanced.integrations.sponsorblock.requests.SBRequester;
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedUtils;
 
+/**
+ * Class is not thread safe. All methods must be called on the main thread unless otherwise specified.
+ */
 public class PlayerController {
-
-    private static final Timer sponsorTimer = new Timer("sponsor-skip-timer");
-    // fields must be volatile, as they are read/wright from different threads (timer thread and main thread)
     @Nullable
-    private static volatile String currentVideoId;
+    private static String currentVideoId;
     @Nullable
-    private static volatile SponsorSegment[] sponsorSegmentsOfCurrentVideo;
+    private static SponsorSegment[] sponsorSegmentsOfCurrentVideo;
     /**
      * current segment that user can manually skip
      */
     @Nullable
-    private static volatile SponsorSegment segmentCurrentlyPlayingToManuallySkip;
+    private static SponsorSegment segmentCurrentlyPlayingToManuallySkip;
     /**
-     * Next segment that will autoskip using the timer.
+     * Next segment that is scheduled to autoskip
      */
     @Nullable
-    private static volatile SponsorSegment nextSegmentToAutoSkip;
-    private static volatile String timeWithoutSegments = "";
-    private static volatile long allowNextSkipRequestTime = 0L;
-    private static volatile long lastKnownVideoTime = -1L;
-    private static volatile boolean settingsInitialized;
-    // UI fields should be accessed exclusively on a single thread (main thread). volatile is not needed
+    private static SponsorSegment nextSegmentToAutoSkip;
+    private static String timeWithoutSegments = "";
+    private static long allowNextSkipRequestTime = 0L;
+    private static long lastKnownVideoTime = -1L;
+    private static boolean settingsInitialized;
     private static float sponsorBarLeft = 1f;
     private static float sponsorBarRight = 1f;
     private static float sponsorBarThickness = 2f;
@@ -81,6 +79,7 @@ public class PlayerController {
      */
     public static void initialize(Object _o) {
         try {
+            ReVancedUtils.verifyOnMainThread();
             lastKnownVideoTime = 0;
             SkipSegmentView.hide();
             NewSegmentHelperLayout.hide();
@@ -117,32 +116,26 @@ public class PlayerController {
             currentVideoId = videoId;
             LogHelper.printDebug(() -> "setCurrentVideoId: " + videoId);
 
-            sponsorTimer.schedule(new TimerTask() {
-                @Override
-                public void run() {
-                    try {
-                        executeDownloadSegments(videoId);
-                    } catch (Exception e) {
-                        LogHelper.printException(() -> "Failed to download segments", e);
-                    }
+            String videoIdToDownload = videoId; // make a copy, to use off main thread
+            ReVancedUtils.runOnBackgroundThread(() -> {
+                try {
+                    executeDownloadSegments(videoIdToDownload);
+                } catch (Exception e) {
+                    LogHelper.printException(() -> "Failed to download segments", e);
                 }
-            }, 0);
+            });
         } catch (Exception ex) {
             LogHelper.printException(() -> "setCurrentVideoId failure", ex);
         }
     }
 
+    /**
+     * Must be called off main thread
+     */
     static void executeDownloadSegments(String videoId) {
+        Objects.requireNonNull(videoId);
         try {
             SponsorSegment[] segments = SBRequester.getSegments(videoId);
-
-            if (!videoId.equals(currentVideoId)) {
-                // user changed videos before get segments network call could complete
-                LogHelper.printDebug(() -> "ignoring stale segments for prior video: " + videoId);
-                return;
-            }
-
-            setSponsorSegmentsOfCurrentVideo(segments);
 
             LogHelper.printDebug(() -> {
                 StringBuilder builder = new StringBuilder("Downloaded segments:");
@@ -150,6 +143,15 @@ public class PlayerController {
                     builder.append('\n').append(segment);
                 }
                 return builder.toString();
+            });
+
+            ReVancedUtils.runOnMainThread(()-> {
+                if (!videoId.equals(currentVideoId)) {
+                    // user changed videos before get segments network call could complete
+                    LogHelper.printDebug(() -> "ignoring stale segments for prior video: " + videoId);
+                    return;
+                }
+                setSponsorSegmentsOfCurrentVideo(segments);
             });
         } catch (Exception ex) {
             LogHelper.printException(() -> "executeDownloadSegments failure", ex);
@@ -164,8 +166,6 @@ public class PlayerController {
             if (!SettingsEnum.SB_ENABLED.getBoolean()) return;
 
             lastKnownVideoTime = millis;
-            //if (millis <= 0) return;
-            //findAndSkipSegment(false);
 
             SponsorSegment[] segments = sponsorSegmentsOfCurrentVideo;
             if (segments == null || segments.length == 0) return;
@@ -192,18 +192,13 @@ public class PlayerController {
 
                     if (nextSegmentToAutoSkip != segment) {
                         LogHelper.printDebug(() -> "scheduling segmentToSkip");
-                        TimerTask skipSponsorTask = new TimerTask() {
-                            @Override
-                            public void run() {
-                                if (nextSegmentToAutoSkip != segment) {
-                                    LogHelper.printDebug(() -> "ignoring stale autoskip: " + segment);
-                                } else {
-                                    lastKnownVideoTime = segment.start + 1;
-                                    ReVancedUtils.runOnMainThread(() -> skipSegment(segment, false));
-                                }
+                        ReVancedUtils.runOnMainThreadDelayed(() -> {
+                            if (nextSegmentToAutoSkip != segment) {
+                                LogHelper.printDebug(() -> "ignoring stale autoskip: " + segment);
+                            } else {
+                                skipSegment(segment, false);
                             }
-                        };
-                        sponsorTimer.schedule(skipSponsorTask, segment.start - millis);
+                        }, segment.start - millis);
                     }
                     SkipSegmentView.hide();
                     return;
@@ -228,17 +223,6 @@ public class PlayerController {
             SkipSegmentView.hide();
         } catch (Exception e) {
             LogHelper.printException(() -> "setVideoTime failure", e);
-        }
-    }
-
-    /**
-     * Injection point
-     */
-    public static void setHighPrecisionVideoTime(final long millis) {
-        try {
-            lastKnownVideoTime = millis;
-        } catch (Exception ex) {
-            LogHelper.printException(() -> "setHighPrecisionVideoTime failure", ex);
         }
     }
 
