@@ -156,13 +156,12 @@ public class SponsorBlockView {
 
     private static void bringLayoutToFront() {
         checkLayout();
-        // edit: it appears this is not needed
-//        inlineSponsorOverlay.bringToFront();
-//        inlineSponsorOverlay.requestLayout();
-//        inlineSponsorOverlay.invalidate();
+        // needed to keep skip button overtop end screen cards
+        inlineSponsorOverlay.bringToFront();
+        inlineSponsorOverlay.requestLayout();
+        inlineSponsorOverlay.invalidate();
     }
 
-    // Edit: this is old code from Vanced and is not fully integrated into ReVanced
     private static void checkLayout() {
         if (inlineSponsorOverlay.getHeight() == 0) {
             ViewGroup watchLayout = SwipeHelper.nextGenWatchLayout;
