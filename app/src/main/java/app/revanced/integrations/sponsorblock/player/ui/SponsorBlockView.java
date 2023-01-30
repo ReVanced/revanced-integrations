@@ -1,5 +1,7 @@
 package app.revanced.integrations.sponsorblock.player.ui;
 
+import static app.revanced.integrations.utils.ReVancedUtils.getIdentifier;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -74,14 +76,14 @@ public class SponsorBlockView {
     private static void addView() {
         inlineSponsorOverlay = new RelativeLayout(ReVancedUtils.getContext());
         setLayoutParams(inlineSponsorOverlay);
-        LayoutInflater.from(ReVancedUtils.getContext()).inflate(ReVancedUtils.getIdentifier("inline_sponsor_overlay", "layout"), inlineSponsorOverlay);
+        LayoutInflater.from(ReVancedUtils.getContext()).inflate(getIdentifier("inline_sponsor_overlay", "layout"), inlineSponsorOverlay);
 
         _youtubeOverlaysLayout.addView(inlineSponsorOverlay, _youtubeOverlaysLayout.getChildCount() - 2);
 
-        SkipSponsorButton skipSponsorButton = inlineSponsorOverlay.findViewById(ReVancedUtils.getIdentifier("skip_sponsor_button", "id"));
+        SkipSponsorButton skipSponsorButton = inlineSponsorOverlay.findViewById(getIdentifier("skip_sponsor_button", "id"));
         _skipSponsorButton = new WeakReference<>(skipSponsorButton);
 
-        NewSegmentLayout newSegmentView = inlineSponsorOverlay.findViewById(ReVancedUtils.getIdentifier("new_segment_view", "id"));
+        NewSegmentLayout newSegmentView = inlineSponsorOverlay.findViewById(getIdentifier("new_segment_view", "id"));
         _newSegmentLayout = new WeakReference<>(newSegmentView);
     }
 
@@ -167,7 +169,7 @@ public class SponsorBlockView {
                 LogHelper.printDebug(() -> "nextGenWatchLayout is null!");
                 return;
             }
-            View layout = watchLayout.findViewById(ReVancedUtils.getIdentifier("player_overlays", "id"));
+            View layout = watchLayout.findViewById(getIdentifier("player_overlays", "id"));
 
             if (layout == null) {
                 LogHelper.printDebug(() -> "player_overlays was not found for SB");
