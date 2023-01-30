@@ -212,17 +212,19 @@ public class PlayerController {
                 }
 
                 if (segment.end < millis)
-                    continue;
+                    continue; // already past this segment
 
                 // we are in the segment!
-                if (segment.category.behaviour.skip && !(segment.category.behaviour.key.equals("skip-once") && segment.didAutoSkipped)) {
-                    skipSegment(segment, false);
-                    SponsorBlockUtils.sendViewRequestAsync(millis, segment);
-                    break;
-                } else {
-                    SkipSegmentView.show();
+                if (!segment.category.behaviour.skip) {
+                    continue; // this segment does not skip, but maybe another overlaps and does
+                }
+                if (segment.category.behaviour.key.equals("skip-once") && segment.didAutoSkipped) {
+                    SkipSegmentView.show(); // already auto skipped once
                     return;
                 }
+                skipSegment(segment, false);
+                SponsorBlockUtils.sendViewRequestAsync(millis, segment);
+                break;
             }
             // nothing upcoming to skip. clear any old skip tasks and hide the skip segment view
             segmentToSkip = null;
