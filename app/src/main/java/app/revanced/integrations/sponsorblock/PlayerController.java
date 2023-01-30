@@ -427,7 +427,7 @@ public class PlayerController {
         return true;
     }
 
-    private static void findAndSkipSegment(boolean wasClicked) {
+    private static void findAndSkipSegment(boolean userManuallySkipped) {
         try {
             SponsorSegment[] currentSegments = sponsorSegmentsOfCurrentVideo;
             if (currentSegments == null)
@@ -443,12 +443,12 @@ public class PlayerController {
                     continue;
 
                 if (!((segment.category.behaviour.skip && !(segment.category.behaviour.key.equals("skip-once")
-                        && segment.didAutoSkipped)) || wasClicked)) {
+                        && segment.didAutoSkipped)) || userManuallySkipped)) {
                     SkipSegmentView.show();
                     return;
                 }
 
-                skipSegment(segment, wasClicked);
+                skipSegment(segment, userManuallySkipped);
                 SponsorBlockUtils.sendViewRequestAsync(millis, segment);
                 break;
             }
