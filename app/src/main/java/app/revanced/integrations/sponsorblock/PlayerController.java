@@ -41,7 +41,7 @@ public class PlayerController {
     private static SponsorSegment nextSegmentToAutoSkip;
     private static String timeWithoutSegments = "";
     private static long allowNextSkipRequestTime = 0L;
-    private static long lastKnownVideoTime = -1L;
+    private static volatile long lastKnownVideoTime = -1L; // updated by high precision timer of the main thread
     private static boolean settingsInitialized;
     private static float sponsorBarLeft = 1f;
     private static float sponsorBarRight = 1f;
@@ -169,11 +169,11 @@ public class PlayerController {
         try {
             if (!SettingsEnum.SB_ENABLED.getBoolean()) return;
 
-            lastKnownVideoTime = millis;
+//            lastKnownVideoTime = millis;
 
             if (sponsorSegmentsOfCurrentVideo == null || sponsorSegmentsOfCurrentVideo.length == 0) return;
 
-            LogHelper.printDebug(() -> "setCurrentVideoTime: current video time: " + millis);
+            LogHelper.printDebug(() -> "setVideoTime: " + millis);
 
             if (isAtEndOfVideo()) {
                 ShieldButton.hide();
@@ -197,6 +197,7 @@ public class PlayerController {
 
                     if (nextSegmentToAutoSkip != segment) {
                         LogHelper.printDebug(() -> "scheduling segmentToSkip");
+                        nextSegmentToAutoSkip = segment;
                         ReVancedUtils.runOnMainThreadDelayed(() -> {
                             if (nextSegmentToAutoSkip != segment) {
                                 LogHelper.printDebug(() -> "ignoring stale autoskip: " + segment);
