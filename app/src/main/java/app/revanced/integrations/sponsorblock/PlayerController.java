@@ -163,7 +163,7 @@ public class PlayerController {
     }
 
     /**
-     * Injection point.  This appears to be called once every 1000 ms
+     * Injection point.  This appears to be called rougly every 1000 ms
      */
     public static void setVideoTime(long millis) {
         try {
@@ -198,7 +198,7 @@ public class PlayerController {
 
                     foundUpcomingAutoSkipSegment = true;
                     if (nextSegmentToAutoSkip != segment) {
-                        LogHelper.printDebug(() -> "scheduling segmentToSkip");
+                        LogHelper.printDebug(() -> "scheduling autoskip");
                         nextSegmentToAutoSkip = segment;
                         ReVancedUtils.runOnMainThreadDelayed(() -> {
                             if (nextSegmentToAutoSkip != segment) {
@@ -227,7 +227,7 @@ public class PlayerController {
                 }
             }
             if (!foundUpcomingAutoSkipSegment && nextSegmentToAutoSkip != null) {
-                LogHelper.printDebug(() -> "clearing scheduled upcoming autoskip");
+                LogHelper.printDebug(() -> "clearing scheduled autoskip");
                 nextSegmentToAutoSkip = null;
             }
             if (segmentCurrentlyPlayingToManuallySkip != null) {
