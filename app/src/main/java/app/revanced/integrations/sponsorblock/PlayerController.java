@@ -189,10 +189,8 @@ public class PlayerController {
                     if (startTimerAtMillis < segment.start)
                         break; // not inside any segments, and no upcoming segments are close enough to schedule a task
 
-                    if (!segment.category.behaviour.skip)
-                        break; // not an autoskip segment
-                    if (segment.category.behaviour.key.equals("skip-once") && segment.didAutoSkipped)
-                        break; // already autoskipped once
+                    if (!segment.shouldAutoSkip())
+                        break; // not an autoskip segment, or it's a skip once and has already gone
 
                     foundUpcomingAutoSkipSegment = true;
                     if (nextSegmentToAutoSkip != segment) {
@@ -216,7 +214,7 @@ public class PlayerController {
                     continue; // already past this segment
 
                 // we are in the segment!
-                if (segment.category.behaviour.skip && !(segment.category.behaviour.key.equals("skip-once") && segment.didAutoSkipped)) {
+                if (segment.shouldAutoSkip()) {
                     skipSegment(segment, false);
                     break;
                 } else {

@@ -22,6 +22,10 @@ public class SponsorSegment implements Comparable<SponsorSegment> {
         this.isLocked = isLocked;
     }
 
+    public boolean shouldAutoSkip() {
+        return category.behaviour.skip && !(didAutoSkipped && category.behaviour.key.equals("skip-once"));
+    }
+
     @NonNull
     @Override
     public String toString() {
