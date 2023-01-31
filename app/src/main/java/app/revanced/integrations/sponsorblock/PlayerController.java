@@ -330,7 +330,7 @@ public class PlayerController {
     public static String appendTimeWithoutSegments(String totalTime) {
         try {
             if (SettingsEnum.SB_ENABLED.getBoolean() && SettingsEnum.SB_SHOW_TIME_WITHOUT_SEGMENTS.getBoolean()
-                    && !TextUtils.isEmpty(totalTime) && VideoInformation.getVideoTime() > 1) {
+                    && !TextUtils.isEmpty(totalTime) && VideoInformation.getCurrentVideoLength() > 1) {
                 return totalTime + timeWithoutSegments;
             }
         } catch (Exception ex) {

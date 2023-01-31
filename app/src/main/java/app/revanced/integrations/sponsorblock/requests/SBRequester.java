@@ -107,7 +107,7 @@ public class SBRequester {
         try {
             String start = String.format(Locale.US, TIME_TEMPLATE, startTime);
             String end = String.format(Locale.US, TIME_TEMPLATE, endTime);
-            String duration = String.valueOf(VideoInformation.getVideoTime() / 1000);
+            String duration = String.valueOf(VideoInformation.getCurrentVideoLength() / 1000);
             HttpURLConnection connection = getConnectionFromRoute(SBRoutes.SUBMIT_SEGMENTS, videoId, uuid, start, end, category, duration);
             connection.setConnectTimeout(TIMEOUT_TCP_DEFAULT_MILLISECONDS);
             connection.setReadTimeout(TIMEOUT_HTTP_DEFAULT_MILLISECONDS);
