@@ -163,7 +163,7 @@ public class PlayerController {
     }
 
     /**
-     * Injection point.  This appears to be called rougly every 1000 ms
+     * Injection point.  This appears to be called roughly every 1000 ms
      */
     public static void setVideoTime(long millis) {
         try {
@@ -261,7 +261,7 @@ public class PlayerController {
 
     public static void setSponsorBarAbsoluteLeft(final float left) {
         if (sponsorBarLeft != left) {
-            LogHelper.printDebug(() -> String.format("setSponsorBarLeft: left=%.2f", left));
+            LogHelper.printDebug(() -> String.format("setSponsorBarAbsoluteLeft: left=%.2f", left));
             sponsorBarLeft = left;
         }
     }
@@ -292,7 +292,7 @@ public class PlayerController {
 
     public static void setSponsorBarAbsoluteRight(final float right) {
         if (sponsorBarRight != right) {
-            LogHelper.printDebug(() -> String.format("setSponsorBarRight: right=%.2f", right));
+            LogHelper.printDebug(() -> String.format("setSponsorBarAbsoluteRight: right=%.2f", right));
             sponsorBarRight = right;
         }
     }
@@ -310,7 +310,7 @@ public class PlayerController {
 
     public static void setSponsorBarThickness(final float thickness) {
         if (sponsorBarThickness != thickness) {
-            LogHelper.printDebug(() -> String.format("setSponsorBarThickness: thickness=%.2f", thickness));
+            LogHelper.printDebug(() -> String.format("setSponsorBarThickness: %.2f", thickness));
             sponsorBarThickness = thickness;
         }
     }
@@ -329,7 +329,7 @@ public class PlayerController {
      */
     public static void addSkipSponsorView15(final View view) {
         try {
-            LogHelper.printDebug(() -> "addSkipSponsorView15: view=" + view);
+            LogHelper.printDebug(() -> "addSkipSponsorView15: " + view);
 
             ReVancedUtils.runOnMainThreadDelayed(() -> {
                 final ViewGroup viewGroup = (ViewGroup) ((ViewGroup) view).getChildAt(2);
