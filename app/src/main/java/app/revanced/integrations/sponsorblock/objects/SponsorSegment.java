@@ -1,20 +1,23 @@
 package app.revanced.integrations.sponsorblock.objects;
 
+import static app.revanced.integrations.sponsorblock.SponsorBlockSettings.SegmentBehaviour;
+import static app.revanced.integrations.sponsorblock.SponsorBlockSettings.SegmentInfo;
+
 import androidx.annotation.NonNull;
 
 import java.text.MessageFormat;
 
-import app.revanced.integrations.sponsorblock.SponsorBlockSettings;
-
 public class SponsorSegment implements Comparable<SponsorSegment> {
     public final long start;
     public final long end;
-    public final SponsorBlockSettings.SegmentInfo category;
+    @NonNull
+    public final SegmentInfo category;
+    @NonNull
     public final String UUID;
     public final boolean isLocked;
     public boolean didAutoSkipped = false;
 
-    public SponsorSegment(long start, long end, SponsorBlockSettings.SegmentInfo category, String UUID, boolean isLocked) {
+    public SponsorSegment(long start, long end, @NonNull SegmentInfo category, @NonNull String UUID, boolean isLocked) {
         this.start = start;
         this.end = end;
         this.category = category;
@@ -23,7 +26,7 @@ public class SponsorSegment implements Comparable<SponsorSegment> {
     }
 
     public boolean shouldAutoSkip() {
-        return category.behaviour.skip && !(didAutoSkipped && category.behaviour.key.equals("skip-once"));
+        return category.behaviour.skip && !(didAutoSkipped && category.behaviour == SegmentBehaviour.SKIP_AUTOMATICALLY_ONCE);
     }
 
     @NonNull
