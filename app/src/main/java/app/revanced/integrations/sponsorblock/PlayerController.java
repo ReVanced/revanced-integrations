@@ -41,7 +41,6 @@ public class PlayerController {
     private static SponsorSegment nextSegmentToAutoSkip;
     private static String timeWithoutSegments = "";
     private static long allowNextSkipRequestTime = 0L;
-    private static long lastKnownVideoTime = -1L;
     private static boolean settingsInitialized;
     private static float sponsorBarLeft = 1f;
     private static float sponsorBarRight = 1f;
@@ -80,7 +79,6 @@ public class PlayerController {
     public static void initialize(Object _o) {
         try {
             ReVancedUtils.verifyOnMainThread();
-            lastKnownVideoTime = 0;
             SkipSegmentView.hide();
             NewSegmentHelperLayout.hide();
             LogHelper.printDebug(() -> "initialized");
@@ -169,13 +167,11 @@ public class PlayerController {
         try {
             if (!SettingsEnum.SB_ENABLED.getBoolean()) return;
 
-            lastKnownVideoTime = millis;
-
             if (sponsorSegmentsOfCurrentVideo == null || sponsorSegmentsOfCurrentVideo.length == 0) return;
 
             LogHelper.printDebug(() -> "setVideoTime: " + millis);
 
-            if (isAtEndOfVideo()) {
+            if (VideoInformation.isAtEndOfVideo()) {
                 ShieldButton.hide();
                 VotingButton.hide();
             }
@@ -238,18 +234,6 @@ public class PlayerController {
         } catch (Exception e) {
             LogHelper.printException(() -> "setVideoTime failure", e);
         }
-    }
-
-    public static long getCurrentVideoLength() {
-        return VideoInformation.getCurrentVideoLength();
-    }
-
-    public static long getLastKnownVideoTime() {
-        return lastKnownVideoTime;
-    }
-
-    public static boolean isAtEndOfVideo() {
-        return getLastKnownVideoTime() >= getCurrentVideoLength();
     }
 
     /**
@@ -346,7 +330,7 @@ public class PlayerController {
     public static String appendTimeWithoutSegments(String totalTime) {
         try {
             if (SettingsEnum.SB_ENABLED.getBoolean() && SettingsEnum.SB_SHOW_TIME_WITHOUT_SEGMENTS.getBoolean()
-                    && !TextUtils.isEmpty(totalTime) && getCurrentVideoLength() > 1) {
+                    && !TextUtils.isEmpty(totalTime) && VideoInformation.getVideoTime() > 1) {
                 return totalTime + timeWithoutSegments;
             }
         } catch (Exception ex) {
@@ -357,7 +341,7 @@ public class PlayerController {
     }
 
     private static void calculateTimeWithoutSegments() {
-        final long currentVideoLength = getCurrentVideoLength();
+        final long currentVideoLength = VideoInformation.getCurrentVideoLength();
         if (!SettingsEnum.SB_SHOW_TIME_WITHOUT_SEGMENTS.getBoolean() || currentVideoLength <= 1
                 || sponsorSegmentsOfCurrentVideo == null || sponsorSegmentsOfCurrentVideo.length == 0) {
             timeWithoutSegments = "";
@@ -403,7 +387,7 @@ public class PlayerController {
     }
 
     public static void skipRelativeMilliseconds(int millisRelative) {
-        skipToMillisecond(lastKnownVideoTime + millisRelative);
+        skipToMillisecond(VideoInformation.getVideoTime() + millisRelative);
     }
 
     public static boolean skipToMillisecond(long millisecond) {
@@ -418,7 +402,6 @@ public class PlayerController {
             allowNextSkipRequestTime = now + 100;
 
             LogHelper.printDebug(() -> "Skipping to: " + millisecond);
-            lastKnownVideoTime = millisecond;
             VideoInformation.seekTo(millisecond);
         } catch (Exception e) {
             LogHelper.printException(() -> "Cannot skip to millisecond", e);
@@ -450,7 +433,7 @@ public class PlayerController {
                 }
                 setSponsorSegmentsOfCurrentVideo(newSegments);
             } else {
-                SponsorBlockUtils.sendViewRequestAsync(lastKnownVideoTime, segment);
+                SponsorBlockUtils.sendViewRequestAsync(VideoInformation.getVideoTime(), segment);
             }
         } catch (Exception ex) {
             LogHelper.printException(() -> "skipSegment failure", ex);

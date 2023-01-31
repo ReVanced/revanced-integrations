@@ -21,10 +21,10 @@ import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
+import app.revanced.integrations.patches.VideoInformation;
 import app.revanced.integrations.requests.Requester;
 import app.revanced.integrations.requests.Route;
 import app.revanced.integrations.settings.SettingsEnum;
-import app.revanced.integrations.sponsorblock.PlayerController;
 import app.revanced.integrations.sponsorblock.SponsorBlockSettings;
 import app.revanced.integrations.sponsorblock.SponsorBlockUtils;
 import app.revanced.integrations.sponsorblock.SponsorBlockUtils.VoteOption;
@@ -107,7 +107,7 @@ public class SBRequester {
         try {
             String start = String.format(Locale.US, TIME_TEMPLATE, startTime);
             String end = String.format(Locale.US, TIME_TEMPLATE, endTime);
-            String duration = String.valueOf(PlayerController.getCurrentVideoLength() / 1000);
+            String duration = String.valueOf(VideoInformation.getVideoTime() / 1000);
             HttpURLConnection connection = getConnectionFromRoute(SBRoutes.SUBMIT_SEGMENTS, videoId, uuid, start, end, category, duration);
             connection.setConnectTimeout(TIMEOUT_TCP_DEFAULT_MILLISECONDS);
             connection.setReadTimeout(TIMEOUT_HTTP_DEFAULT_MILLISECONDS);

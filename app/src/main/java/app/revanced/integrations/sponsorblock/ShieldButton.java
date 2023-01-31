@@ -10,6 +10,7 @@ import android.widget.RelativeLayout;
 
 import java.lang.ref.WeakReference;
 
+import app.revanced.integrations.patches.VideoInformation;
 import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedUtils;
@@ -83,7 +84,7 @@ public class ShieldButton {
             if (iView == null) return;
 
             if (visible && shouldBeShown()) {
-                if (PlayerController.isAtEndOfVideo()) {
+                if (VideoInformation.isAtEndOfVideo()) {
                     return;
                 }
                 LogHelper.printDebug(() -> "Fading in");

@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.TimeZone;
 
+import app.revanced.integrations.patches.VideoInformation;
 import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.sponsorblock.objects.SponsorSegment;
 import app.revanced.integrations.sponsorblock.objects.UserStats;
@@ -237,7 +238,7 @@ public abstract class SponsorBlockUtils {
         } catch (Exception e) {
             LogHelper.printException(() -> "Unable to submit segment", e);
         }
-    };
+    }
 
     private SponsorBlockUtils() {
     }
@@ -245,7 +246,7 @@ public abstract class SponsorBlockUtils {
     @SuppressLint("DefaultLocale")
     public static void onMarkLocationClicked(Context context) {
         ReVancedUtils.verifyOnMainThread();
-        newSponsorSegmentDialogShownMillis = PlayerController.getLastKnownVideoTime();
+        newSponsorSegmentDialogShownMillis = VideoInformation.getVideoTime();
 
         new AlertDialog.Builder(context)
                 .setTitle(str("new_segment_title"))
@@ -565,7 +566,7 @@ public abstract class SponsorBlockUtils {
 
             try {
                 long time = (which == DialogInterface.BUTTON_NEUTRAL) ?
-                        PlayerController.getLastKnownVideoTime() :
+                        VideoInformation.getVideoTime() :
                         (Objects.requireNonNull(dateFormatter.parse(editText.getText().toString())).getTime());
 
                 if (settingStart)

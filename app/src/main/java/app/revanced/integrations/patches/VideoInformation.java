@@ -119,4 +119,12 @@ public final class VideoInformation {
     public static long getVideoTime() {
         return videoTime;
     }
+
+    /**
+     * @return If the playback is at the end of the video
+     */
+    public static boolean isAtEndOfVideo() {
+        return videoTime > 0 && videoTime >= videoLength;
+    }
+
 }
