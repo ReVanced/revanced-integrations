@@ -169,7 +169,7 @@ public class PlayerController {
         try {
             if (!SettingsEnum.SB_ENABLED.getBoolean()) return;
 
-//            lastKnownVideoTime = millis;
+            lastKnownVideoTime = millis;
 
             if (sponsorSegmentsOfCurrentVideo == null || sponsorSegmentsOfCurrentVideo.length == 0) return;
 
