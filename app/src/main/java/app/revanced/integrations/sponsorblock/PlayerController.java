@@ -202,7 +202,7 @@ public class PlayerController {
                         nextSegmentToAutoSkip = segment;
                         ReVancedUtils.runOnMainThreadDelayed(() -> {
                             if (nextSegmentToAutoSkip != segment) {
-                                LogHelper.printDebug(() -> "ignoring stale autoskip: " + segment);
+                                LogHelper.printDebug(() -> "ignoring stale scheduled autoskip: " + segment);
                             } else {
                                 LogHelper.printDebug(() -> "running scheduled autoskip");
                                 // clear the field, so if user rewinds then timer can again be set for the same segment
