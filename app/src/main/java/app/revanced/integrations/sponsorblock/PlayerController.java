@@ -41,7 +41,7 @@ public class PlayerController {
     private static SponsorSegment nextSegmentToAutoSkip;
     private static String timeWithoutSegments = "";
     private static long allowNextSkipRequestTime = 0L;
-    private static volatile long lastKnownVideoTime = -1L; // updated by high precision timer of the main thread
+    private static long lastKnownVideoTime = -1L;
     private static boolean settingsInitialized;
     private static float sponsorBarLeft = 1f;
     private static float sponsorBarRight = 1f;
