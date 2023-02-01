@@ -57,9 +57,6 @@ public class SBRequester {
         List<SponsorSegment> segments = new ArrayList<>();
         try {
             HttpURLConnection connection = getConnectionFromRoute(SBRoutes.GET_SEGMENTS, videoId, SponsorBlockSettings.sponsorBlockUrlCategories);
-            connection.setConnectTimeout(TIMEOUT_TCP_DEFAULT_MILLISECONDS);
-            connection.setReadTimeout(TIMEOUT_HTTP_DEFAULT_MILLISECONDS);
-
             final int responseCode = connection.getResponseCode();
 
             if (responseCode == SUCCESS_HTTP_STATUS_CODE) {
@@ -106,11 +103,9 @@ public class SBRequester {
             String start = String.format(Locale.US, TIME_TEMPLATE, startTime);
             String end = String.format(Locale.US, TIME_TEMPLATE, endTime);
             String duration = String.valueOf(VideoInformation.getCurrentVideoLength() / 1000);
-            HttpURLConnection connection = getConnectionFromRoute(SBRoutes.SUBMIT_SEGMENTS, videoId, uuid, start, end, category, duration);
-            connection.setConnectTimeout(TIMEOUT_TCP_DEFAULT_MILLISECONDS);
-            connection.setReadTimeout(TIMEOUT_HTTP_DEFAULT_MILLISECONDS);
 
-            int responseCode = connection.getResponseCode();
+            HttpURLConnection connection = getConnectionFromRoute(SBRoutes.SUBMIT_SEGMENTS, videoId, uuid, start, end, category, duration);
+            final int responseCode = connection.getResponseCode();
 
             switch (responseCode) {
                 case SUCCESS_HTTP_STATUS_CODE:
@@ -145,8 +140,6 @@ public class SBRequester {
         ReVancedUtils.verifyOffMainThread();
         try {
             HttpURLConnection connection = getConnectionFromRoute(SBRoutes.VIEWED_SEGMENT, segment.UUID);
-            connection.setConnectTimeout(TIMEOUT_TCP_DEFAULT_MILLISECONDS);
-            connection.setReadTimeout(TIMEOUT_HTTP_DEFAULT_MILLISECONDS);
             final int responseCode = connection.getResponseCode();
 
             if (responseCode == SUCCESS_HTTP_STATUS_CODE) {
@@ -172,9 +165,6 @@ public class SBRequester {
                 HttpURLConnection connection = voteOption == VoteOption.CATEGORY_CHANGE
                         ? getConnectionFromRoute(SBRoutes.VOTE_ON_SEGMENT_CATEGORY, segmentUuid, uuid, args[0])
                         : getConnectionFromRoute(SBRoutes.VOTE_ON_SEGMENT_QUALITY, segmentUuid, uuid, vote);
-                connection.setConnectTimeout(TIMEOUT_TCP_DEFAULT_MILLISECONDS);
-                connection.setReadTimeout(TIMEOUT_HTTP_DEFAULT_MILLISECONDS);
-
                 final int responseCode = connection.getResponseCode();
 
                 switch (responseCode) {
@@ -226,9 +216,7 @@ public class SBRequester {
         ReVancedUtils.runOnBackgroundThread(() -> {
             try {
                 HttpURLConnection connection = getConnectionFromRoute(SBRoutes.CHANGE_USERNAME, SettingsEnum.SB_UUID.getString(), username);
-                connection.setConnectTimeout(TIMEOUT_TCP_DEFAULT_MILLISECONDS);
-                connection.setReadTimeout(TIMEOUT_HTTP_DEFAULT_MILLISECONDS);
-                int responseCode = connection.getResponseCode();
+                final int responseCode = connection.getResponseCode();
 
                 if (responseCode == SUCCESS_HTTP_STATUS_CODE) {
                     SponsorBlockUtils.messageToToast = str("stats_username_changed");
@@ -268,7 +256,10 @@ public class SBRequester {
     // helpers
 
     private static HttpURLConnection getConnectionFromRoute(Route route, String... params) throws IOException {
-        return Requester.getConnectionFromRoute(SettingsEnum.SB_API_URL.getString(), route, params);
+        HttpURLConnection connection = Requester.getConnectionFromRoute(SettingsEnum.SB_API_URL.getString(), route, params);
+        connection.setConnectTimeout(TIMEOUT_TCP_DEFAULT_MILLISECONDS);
+        connection.setReadTimeout(TIMEOUT_HTTP_DEFAULT_MILLISECONDS);
+        return connection;
     }
 
     private static JSONObject getJSONObject(Route route, String... params) throws IOException, JSONException {
