@@ -53,8 +53,8 @@ public abstract class SponsorBlockUtils {
     private static final String STATS_FORMAT_TEMPLATE = "%dh %.1f %s";
 
     //    private static final int sponsorBtnId = 1234;
+    //    private static int shareBtnId = -1;
     private static final String LOCKED_COLOR = "#FFC83D";
-    private static int shareBtnId = -1;
     private static long newSponsorSegmentDialogShownMillis;
     private static long newSponsorSegmentStartMillis = -1;
     private static long newSponsorSegmentEndMillis = -1;
@@ -131,17 +131,13 @@ public abstract class SponsorBlockUtils {
         }
     };
     private static WeakReference<Context> appContext = new WeakReference<>(null);
-    private static final DialogInterface.OnClickListener segmentCategorySelectedDialogListener = new DialogInterface.OnClickListener() {
-        @SuppressLint("DefaultLocale")
-        @Override
-        public void onClick(DialogInterface dialog, int which) {
-            dialog.dismiss();
-            Context context = ((AlertDialog) dialog).getContext().getApplicationContext();
-            Toast.makeText(context, str("submit_started"), Toast.LENGTH_SHORT).show();
+    private static final DialogInterface.OnClickListener segmentCategorySelectedDialogListener = (dialog, which) -> {
+        dialog.dismiss();
+        Context context = ((AlertDialog) dialog).getContext().getApplicationContext();
+        Toast.makeText(context, str("submit_started"), Toast.LENGTH_SHORT).show();
 
-            appContext = new WeakReference<>(context);
-            submitNewSegment();
-        }
+        appContext = new WeakReference<>(context);
+        submitNewSegment();
     };
     public static String messageToToast = "";
     private static final EditByHandSaveDialogListener editByHandSaveDialogListener = new EditByHandSaveDialogListener();
@@ -354,9 +350,7 @@ public abstract class SponsorBlockUtils {
             // maximum time a segment can be watched and still considered a 'skipped view'
             final int viewLengthThresholdToCountSkip = 2000; // count skip if user watches the segment less than 2 seconds
             if (SettingsEnum.SB_COUNT_SKIPS.getBoolean() && (millis - segment.start < viewLengthThresholdToCountSkip)) {
-                ReVancedUtils.runOnBackgroundThread(() -> {
-                    SBRequester.sendViewCountRequest(segment);
-                });
+                ReVancedUtils.runOnBackgroundThread(() -> SBRequester.sendViewCountRequest(segment));
             }
         }
     }
@@ -387,7 +381,7 @@ public abstract class SponsorBlockUtils {
         {
             EditTextPreference preference = new EditTextPreference(context);
             category.addPreference(preference);
-            String userName = stats.getUserName();
+            String userName = stats.userName;
             preference.setTitle(fromHtml(str("stats_username", userName)));
             preference.setSummary(str("stats_username_change"));
             preference.setText(userName);
@@ -401,7 +395,7 @@ public abstract class SponsorBlockUtils {
         {
             Preference preference = new Preference(context);
             category.addPreference(preference);
-            String formatted = statsFormatter.format(stats.getSegmentCount());
+            String formatted = statsFormatter.format(stats.segmentCount);
             preference.setTitle(fromHtml(str("stats_submissions", formatted)));
             preference.setSelectable(false);
         }
@@ -409,9 +403,9 @@ public abstract class SponsorBlockUtils {
         {
             Preference preference = new Preference(context);
             category.addPreference(preference);
-            String formatted = statsFormatter.format(stats.getViewCount());
+            String formatted = statsFormatter.format(stats.viewCount);
 
-            double saved = stats.getMinutesSaved();
+            double saved = stats.minutesSaved;
             int hoursSaved = (int) (saved / 60);
             double minutesSaved = saved % 60;
             String formattedSaved = String.format(STATS_FORMAT_TEMPLATE, hoursSaved, minutesSaved, minutesStr);

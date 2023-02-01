@@ -4,6 +4,7 @@ import static app.revanced.integrations.sponsorblock.SponsorBlockSettings.Segmen
 import static app.revanced.integrations.sponsorblock.SponsorBlockSettings.SegmentInfo;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import java.text.MessageFormat;
 
@@ -12,12 +13,15 @@ public class SponsorSegment implements Comparable<SponsorSegment> {
     public final long end;
     @NonNull
     public final SegmentInfo category;
-    @NonNull
+    /**
+     * Can be NULL if segment is unsubmitted.
+     */
+    @Nullable
     public final String UUID;
     public final boolean isLocked;
     public boolean didAutoSkipped = false;
 
-    public SponsorSegment(long start, long end, @NonNull SegmentInfo category, @NonNull String UUID, boolean isLocked) {
+    public SponsorSegment(long start, long end, @NonNull SegmentInfo category, @Nullable String UUID, boolean isLocked) {
         this.start = start;
         this.end = end;
         this.category = category;
