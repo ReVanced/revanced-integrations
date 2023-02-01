@@ -290,16 +290,16 @@ public enum SettingsEnum {
             var defaultValue = setting.getDefaultValue();
             switch (setting.getReturnType()) {
                 case FLOAT:
-                    defaultValue = SharedPrefHelper.getFloat(setting.sharedPref, path, (Float) defaultValue);
+                    defaultValue = SharedPrefHelper.getFloat(setting.sharedPref, path, (float) defaultValue);
                     break;
                 case LONG:
-                    defaultValue = SharedPrefHelper.getLong(setting.sharedPref, path, (Long) defaultValue);
+                    defaultValue = SharedPrefHelper.getLong(setting.sharedPref, path, (long) defaultValue);
                     break;
                 case BOOLEAN:
-                    defaultValue = SharedPrefHelper.getBoolean(setting.sharedPref, path, (Boolean) defaultValue);
+                    defaultValue = SharedPrefHelper.getBoolean(setting.sharedPref, path, (boolean) defaultValue);
                     break;
                 case INTEGER:
-                    defaultValue = SharedPrefHelper.getInt(setting.sharedPref, path, (Integer) defaultValue);
+                    defaultValue = SharedPrefHelper.getInt(setting.sharedPref, path, (int) defaultValue);
                     break;
                 case STRING:
                     defaultValue = SharedPrefHelper.getString(setting.sharedPref, path, (String) defaultValue);
