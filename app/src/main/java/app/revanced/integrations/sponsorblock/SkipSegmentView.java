@@ -1,19 +1,16 @@
 package app.revanced.integrations.sponsorblock;
 
-import android.annotation.SuppressLint;
-import android.content.Context;
-import android.util.DisplayMetrics;
-
-import android.widget.Toast;
-
-import app.revanced.integrations.utils.LogHelper;
-import app.revanced.integrations.sponsorblock.objects.SponsorSegment;
-import app.revanced.integrations.utils.ReVancedUtils;
-
 import static app.revanced.integrations.sponsorblock.player.ui.SponsorBlockView.hideSkipButton;
 import static app.revanced.integrations.sponsorblock.player.ui.SponsorBlockView.showSkipButton;
 
-@SuppressLint({"RtlHardcoded", "SetTextI18n", "AppCompatCustomView"})
+import android.content.Context;
+import android.util.DisplayMetrics;
+import android.widget.Toast;
+
+import app.revanced.integrations.sponsorblock.objects.SponsorSegment;
+import app.revanced.integrations.utils.LogHelper;
+import app.revanced.integrations.utils.ReVancedUtils;
+
 public class SkipSegmentView {
 
     private static SponsorSegment lastNotifiedSegment;

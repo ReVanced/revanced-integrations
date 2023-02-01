@@ -1,7 +1,5 @@
 package app.revanced.integrations.sponsorblock.player.ui;
 
-import android.content.Context;
-
 import app.revanced.integrations.utils.SharedPrefHelper;
 
 public class ButtonVisibility {

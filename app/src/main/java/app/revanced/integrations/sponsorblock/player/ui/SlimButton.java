@@ -12,7 +12,7 @@ import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedUtils;
 
 public abstract class SlimButton implements View.OnClickListener {
-    public static int SLIM_METADATA_BUTTON_ID;
+    public static final int SLIM_METADATA_BUTTON_ID;
     public final View view;
     public final Context context;
     private final ViewGroup container;
@@ -29,8 +29,8 @@ public abstract class SlimButton implements View.OnClickListener {
         this.context = context;
         this.container = container;
         view = LayoutInflater.from(context).inflate(id, container, false);
-        button_icon = (ImageView) view.findViewById(ReVancedUtils.getIdentifier("button_icon", "id"));
-        button_text = (TextView) view.findViewById(ReVancedUtils.getIdentifier("button_text", "id"));
+        button_icon = view.findViewById(ReVancedUtils.getIdentifier("button_icon", "id"));
+        button_text = view.findViewById(ReVancedUtils.getIdentifier("button_text", "id"));
 
         view.setOnClickListener(this);
 

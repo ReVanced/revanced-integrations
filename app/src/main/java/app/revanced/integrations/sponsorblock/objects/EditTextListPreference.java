@@ -18,7 +18,6 @@ import android.widget.Toast;
 
 import app.revanced.integrations.sponsorblock.SponsorBlockSettings;
 
-@SuppressWarnings("deprecation")
 public class EditTextListPreference extends ListPreference {
 
     private EditText mEditText;

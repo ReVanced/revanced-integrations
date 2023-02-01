@@ -43,10 +43,6 @@ public class SwipeHelper {
         if (isTabletMode || (frameLayout = _frameLayout) == null || frameLayout.getVisibility() != View.VISIBLE) {
             return false;
         }
-        try {
-        } catch (Exception e) {
-            LogHelper.printException(() -> "Unable to get related_endscreen_results visibility", e);
-        }
         if (_frameLayout.getChildCount() > 0) {
             return _frameLayout.getChildAt(0).getVisibility() == View.VISIBLE;
         }

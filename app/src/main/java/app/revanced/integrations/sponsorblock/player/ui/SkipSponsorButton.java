@@ -7,14 +7,13 @@ import android.graphics.Paint;
 import android.graphics.drawable.ColorDrawable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.sponsorblock.PlayerController;
+import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedUtils;
 
 public class SkipSponsorButton extends FrameLayout {
@@ -32,7 +31,7 @@ public class SkipSponsorButton extends FrameLayout {
     private LinearLayout skipSponsorBtnContainer;
     private final Paint background;
     private final Paint border;
-    private boolean highContrast = true;
+    private final boolean highContrast = true;
 
     public SkipSponsorButton(Context context) {
         super(context);
@@ -62,11 +61,11 @@ public class SkipSponsorButton extends FrameLayout {
         this.initialize(context);
     }
 
-    private final void initialize(Context context) {
+    private void initialize(Context context) {
         LayoutInflater.from(context).inflate(getIdentifier(context, "skip_sponsor_button", "layout"), this, true);  // layout:skip_ad_button
         this.setMinimumHeight(this.getResources().getDimensionPixelSize(getIdentifier(context, "ad_skip_ad_button_min_height", "dimen")));  // dimen:ad_skip_ad_button_min_height
-        this.skipSponsorBtnContainer = (LinearLayout) this.findViewById(getIdentifier(context, "skip_sponsor_button_container", "id"));  // id:skip_ad_button_container
-        this.skipSponsorButtonIcon = (ImageView) this.findViewById(getIdentifier(context, "skip_sponsor_button_icon", "id"));  // id:skip_ad_button_icon
+        this.skipSponsorBtnContainer = this.findViewById(getIdentifier(context, "skip_sponsor_button_container", "id"));  // id:skip_ad_button_container
+        this.skipSponsorButtonIcon = this.findViewById(getIdentifier(context, "skip_sponsor_button_icon", "id"));  // id:skip_ad_button_icon
         this.backgroundColor = getColor(context, getIdentifier(context, "skip_ad_button_background_color", "color"));  // color:skip_ad_button_background_color
         this.invertedBackgroundColor = getColor(context, getIdentifier(context, "skip_ad_button_inverted_background_color", "color"));  // color:skip_ad_button_inverted_background_color
         this.background.setColor(this.backgroundColor);
@@ -76,7 +75,7 @@ public class SkipSponsorButton extends FrameLayout {
         float borderWidth = this.getResources().getDimension(getIdentifier(context, "ad_skip_ad_button_border_width", "dimen"));  // dimen:ad_skip_ad_button_border_width
         this.border.setStrokeWidth(borderWidth);
         this.border.setStyle(Paint.Style.STROKE);
-        TextView skipSponsorText = (TextView) this.findViewById(getIdentifier(context, "skip_sponsor_button_text", "id"));  // id:skip_ad_button_text
+        TextView skipSponsorText = this.findViewById(getIdentifier(context, "skip_sponsor_button_text", "id"));  // id:skip_ad_button_text
         this.skipSponsorTextView = skipSponsorText;
         this.skipSponsorTextViewText = skipSponsorText.getText();
         this.currentTextColor = this.skipSponsorTextView.getCurrentTextColor();
@@ -87,12 +86,9 @@ public class SkipSponsorButton extends FrameLayout {
         this.ctaBottomMargin = resources.getDimensionPixelSize(getIdentifier(context, "skip_button_cta_bottom_margin", "dimen"));  // dimen:skip_button_cta_bottom_margin
         this.skipSponsorText = resources.getText(getIdentifier(context, "skip_sponsor", "string"));  // string:skip_ads "Skip ads"
 
-        this.skipSponsorBtnContainer.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                LogHelper.printDebug(() -> "Skip button clicked");
-                PlayerController.onSkipSponsorClicked();
-            }
+        this.skipSponsorBtnContainer.setOnClickListener(v -> {
+            LogHelper.printDebug(() -> "Skip button clicked");
+            PlayerController.onSkipSponsorClicked();
         });
     }
 
