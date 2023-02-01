@@ -5,14 +5,8 @@ import android.graphics.Rect;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
-import java.lang.reflect.Field;
-import java.util.Arrays;
-import java.util.Objects;
-
 import app.revanced.integrations.patches.VideoInformation;
 import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.shared.PlayerType;
@@ -20,6 +14,10 @@ import app.revanced.integrations.sponsorblock.objects.SponsorSegment;
 import app.revanced.integrations.sponsorblock.requests.SBRequester;
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedUtils;
+
+import java.lang.reflect.Field;
+import java.util.Arrays;
+import java.util.Objects;
 
 /**
  * Class is not thread safe. All methods must be called on the main thread unless otherwise specified.
@@ -74,21 +72,21 @@ public class PlayerController {
 
     /**
      * Injection point.
-     * Called when creating some kind of youtube internal player, every time when new video starts to play
+     * Initializes SponsorBlock when the video player starts playing a new video.
      */
     public static void initialize(Object _o) {
         try {
             ReVancedUtils.verifyOnMainThread();
             SkipSegmentView.hide();
             NewSegmentHelperLayout.hide();
-            LogHelper.printDebug(() -> "initialized");
+            LogHelper.printDebug(() -> "Initialized SponsorBlock");
         } catch (Exception ex) {
-            LogHelper.printException(() -> "initialize failure", ex);
+            LogHelper.printException(() -> "Failed to initialize SponsorBlock", ex);
         }
     }
 
     /**
-     * Patch injection point
+     * Injection point.
      */
     public static void setCurrentVideoId(@Nullable String videoId) {
         try {
@@ -150,7 +148,7 @@ public class PlayerController {
             ReVancedUtils.runOnMainThread(()-> {
                 if (!videoId.equals(currentVideoId)) {
                     // user changed videos before get segments network call could complete
-                    LogHelper.printDebug(() -> "ignoring stale segments for prior video: " + videoId);
+                    LogHelper.printDebug(() -> "Ignoring stale segments for prior video: " + videoId);
                     return;
                 }
                 setSponsorSegmentsOfCurrentVideo(segments);
@@ -161,7 +159,8 @@ public class PlayerController {
     }
 
     /**
-     * Injection point.  This appears to be called roughly every 1000 ms
+     * Injection point.
+     * Updates SponsorBlock every 1000ms.
      */
     public static void setVideoTime(long millis) {
         try {
@@ -194,14 +193,13 @@ public class PlayerController {
 
                     foundUpcomingAutoSkipSegment = true;
                     if (nextSegmentToAutoSkip != segment) {
-                        LogHelper.printDebug(() -> "scheduling autoskip");
+                        LogHelper.printDebug(() -> "Scheduling skipping segment automatically");
                         nextSegmentToAutoSkip = segment;
                         ReVancedUtils.runOnMainThreadDelayed(() -> {
                             if (nextSegmentToAutoSkip != segment) {
-                                LogHelper.printDebug(() -> "ignoring stale scheduled autoskip: " + segment);
+                                LogHelper.printDebug(() -> "Ignoring stale scheduled skip: " + segment);
                             } else {
-                                LogHelper.printDebug(() -> "running scheduled autoskip");
-                                // clear the field, so if user rewinds then timer can again be set for the same segment
+                                LogHelper.printDebug(() -> "Running scheduled skip");
                                 nextSegmentToAutoSkip = null;
                                 skipSegment(segment, false);
                             }
@@ -223,7 +221,7 @@ public class PlayerController {
                 }
             }
             if (!foundUpcomingAutoSkipSegment && nextSegmentToAutoSkip != null) {
-                LogHelper.printDebug(() -> "clearing scheduled autoskip");
+                LogHelper.printDebug(() -> "Clearing scheduled autoskip");
                 nextSegmentToAutoSkip = null;
             }
             if (segmentCurrentlyPlayingToManuallySkip != null) {

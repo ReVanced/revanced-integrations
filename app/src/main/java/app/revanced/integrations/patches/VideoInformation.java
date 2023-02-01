@@ -1,10 +1,10 @@
 package app.revanced.integrations.patches;
 
-import java.lang.ref.WeakReference;
-import java.lang.reflect.Method;
-
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedUtils;
+
+import java.lang.ref.WeakReference;
+import java.lang.reflect.Method;
 
 /**
  * Hooking class for the current playing video.
@@ -44,7 +44,7 @@ public final class VideoInformation {
      * @param videoId The id of the video.
      */
     public static void setVideoId(String videoId) {
-        LogHelper.printDebug(() -> "current video id: " + videoId);
+        LogHelper.printDebug(() -> "Current video id: " + videoId);
 
         VideoInformation.videoId = videoId;
     }
@@ -56,7 +56,7 @@ public final class VideoInformation {
      */
     public static void setVideoLength(final long length) {
         if (videoLength != length) {
-            LogHelper.printDebug(() -> "current video length: " + length);
+            LogHelper.printDebug(() -> "Current video length: " + length);
             videoLength = length;
         }
     }
@@ -68,7 +68,7 @@ public final class VideoInformation {
      */
     public static void setVideoTime(final long time) {
         if (videoTime != time) {
-            LogHelper.printDebug(() -> "current video time: " + time);
+            LogHelper.printDebug(() -> "Current video time: " + time);
             videoTime = time;
         }
     }

@@ -1,26 +1,10 @@
 package app.revanced.integrations.sponsorblock.requests;
 
-import static android.text.Html.fromHtml;
-import static app.revanced.integrations.sponsorblock.StringRef.str;
-import static app.revanced.integrations.utils.ReVancedUtils.runOnMainThread;
-
 import android.content.Context;
 import android.preference.EditTextPreference;
 import android.preference.Preference;
 import android.preference.PreferenceCategory;
 import android.widget.Toast;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.concurrent.TimeUnit;
-
 import app.revanced.integrations.patches.VideoInformation;
 import app.revanced.integrations.requests.Requester;
 import app.revanced.integrations.requests.Route;
@@ -32,6 +16,20 @@ import app.revanced.integrations.sponsorblock.objects.SponsorSegment;
 import app.revanced.integrations.sponsorblock.objects.UserStats;
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedUtils;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.concurrent.TimeUnit;
+
+import static android.text.Html.fromHtml;
+import static app.revanced.integrations.sponsorblock.StringRef.str;
+import static app.revanced.integrations.utils.ReVancedUtils.runOnMainThread;
 
 public class SBRequester {
     private static final String TIME_TEMPLATE = "%.3f";
@@ -89,15 +87,15 @@ public class SBRequester {
                 runVipCheckInBackgroundIfNeeded();
             } else if (responseCode == 404) {
                 // no segments are found.  a normal response
-                LogHelper.printDebug(() -> "no segments found for video: " + videoId);
+                LogHelper.printDebug(() -> "No segments found for video: " + videoId);
             } else {
                 LogHelper.printException(() -> "getSegments failed with response code: " + responseCode);
                 connection.disconnect(); // something went wrong, might as well disconnect
             }
         } catch (IOException ex) {
-            LogHelper.printException(() -> "failed to get segments", ex, str("sponsorblock_connection_timeout"));
+            LogHelper.printException(() -> "Failed to get segments", ex, str("sponsorblock_connection_timeout"));
         } catch (Exception ex) {
-            LogHelper.printException(() -> "failed to get segments", ex);
+            LogHelper.printException(() -> "Failed to get segments", ex);
         }
         return segments.toArray(new SponsorSegment[0]);
     }
@@ -152,15 +150,15 @@ public class SBRequester {
             final int responseCode = connection.getResponseCode();
 
             if (responseCode == SUCCESS_HTTP_STATUS_CODE) {
-                LogHelper.printDebug(() -> "successfully sent view count for segment: " + segment.UUID);
+                LogHelper.printDebug(() -> "Successfully sent view count for segment: " + segment.UUID);
             } else {
-                LogHelper.printDebug(() -> "failed to sent view count for segment: " + segment.UUID
+                LogHelper.printDebug(() -> "Failed to sent view count for segment: " + segment.UUID
                         + " responseCode: " + responseCode); // debug level, no toast is shown
             }
         } catch (IOException ex) {
-            LogHelper.printDebug(() -> "could not send view count: " + ex); // do not show a toast
+            LogHelper.printDebug(() -> "Could not send view count: " + ex); // do not show a toast
         } catch (Exception ex) {
-            LogHelper.printException(() -> "failed to send view count request", ex); // should never happen
+            LogHelper.printException(() -> "Failed to send view count request", ex); // should never happen
         }
     }
 
@@ -201,7 +199,7 @@ public class SBRequester {
     }
 
     /**
-     * Must be called _on_ the main thread
+     * Must be called _on_ the main thread.
      */
     public static void retrieveUserStats(PreferenceCategory category, Preference loadingPreference) {
         ReVancedUtils.verifyOnMainThread();
@@ -260,9 +258,9 @@ public class SBRequester {
                 SettingsEnum.SB_IS_VIP.saveValue(vip);
                 SettingsEnum.SB_LAST_VIP_CHECK.saveValue(now);
             } catch (IOException ex) {
-                LogHelper.printInfo(() -> "failed to check VIP (network error)", ex); // info, so no error toast is shown
+                LogHelper.printInfo(() -> "Failed to check VIP (network error)", ex); // info, so no error toast is shown
             } catch (Exception ex) {
-                LogHelper.printException(() -> "failed to check VIP", ex); // should never happen
+                LogHelper.printException(() -> "Failed to check VIP", ex); // should never happen
             }
         });
     }
