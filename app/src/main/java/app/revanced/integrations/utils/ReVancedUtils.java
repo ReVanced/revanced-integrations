@@ -4,6 +4,8 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 
 import java.text.Bidi;
 import java.util.Locale;
@@ -80,6 +82,14 @@ public class ReVancedUtils {
 
     public static int getIdentifier(String name, String defType) {
         return getResourceIdByName(getContext(), name, defType);
+    }
+
+    public static int getResourceInteger(String resourceIdentifierName) {
+        return getContext().getResources().getInteger(getIdentifier(resourceIdentifierName, "integer"));
+    }
+
+    public static Animation getResourceAnimation(String resourceIdentifierName) {
+        return AnimationUtils.loadAnimation(getContext(), getIdentifier(resourceIdentifierName, "anim"));
     }
 
     public static Context getContext() {

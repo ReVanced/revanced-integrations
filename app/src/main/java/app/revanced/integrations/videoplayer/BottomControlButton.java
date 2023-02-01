@@ -3,7 +3,6 @@ package app.revanced.integrations.videoplayer;
 import android.support.constraint.ConstraintLayout;
 import android.view.View;
 import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
 import java.lang.ref.WeakReference;
@@ -35,13 +34,11 @@ public abstract class BottomControlButton {
             imageView.setOnClickListener(onClickListener);
 
             button = new WeakReference<>(imageView);
-            fadeIn = getAnimation("fade_in");
-            fadeOut = getAnimation("fade_out");
+            fadeIn = ReVancedUtils.getResourceAnimation("fade_in");
+            fadeOut = ReVancedUtils.getResourceAnimation("fade_out");
 
-            int fadeDurationFast = getInteger("fade_duration_fast");
-            int fadeDurationScheduled = getInteger("fade_duration_scheduled");
-            fadeIn.setDuration(fadeDurationFast);
-            fadeOut.setDuration(fadeDurationScheduled);
+            fadeIn.setDuration(ReVancedUtils.getResourceInteger("fade_duration_fast"));
+            fadeOut.setDuration(ReVancedUtils.getResourceInteger("fade_duration_scheduled"));
             isShowing = true;
             setVisibility(false);
         } catch (Exception e) {
@@ -68,12 +65,5 @@ public abstract class BottomControlButton {
             imageView.startAnimation(fadeOut);
             imageView.setVisibility(View.GONE);
         }
-    }
-    private static int getInteger(String str) {
-        return ReVancedUtils.getContext().getResources().getInteger(ReVancedUtils.getIdentifier(str, "integer"));
-    }
-
-    private static Animation getAnimation(String str) {
-        return AnimationUtils.loadAnimation(ReVancedUtils.getContext(), ReVancedUtils.getIdentifier(str, "anim"));
     }
 }

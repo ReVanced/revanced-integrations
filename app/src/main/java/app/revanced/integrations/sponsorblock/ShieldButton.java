@@ -4,7 +4,6 @@ import static app.revanced.integrations.utils.ReVancedUtils.getIdentifier;
 
 import android.view.View;
 import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
@@ -45,10 +44,10 @@ public class ShieldButton {
 
             // Animations
             if (fadeIn == null) {
-                fadeIn = getAnimation("fade_in");
-                fadeIn.setDuration(getInteger("fade_duration_fast"));
-                fadeOut = getAnimation("fade_out");
-                fadeOut.setDuration(getInteger("fade_duration_scheduled"));
+                fadeIn = ReVancedUtils.getResourceAnimation("fade_in");
+                fadeIn.setDuration(ReVancedUtils.getResourceInteger("fade_duration_fast"));
+                fadeOut = ReVancedUtils.getResourceAnimation("fade_out");
+                fadeOut.setDuration(ReVancedUtils.getResourceInteger("fade_duration_scheduled"));
             }
             isShowing = true;
             changeVisibilityImmediate(false);
@@ -122,15 +121,4 @@ public class ShieldButton {
         v.setVisibility(View.GONE);
         isShowing = false;
     }
-
-    //region Helpers
-
-    private static int getInteger(String name) {
-        return ReVancedUtils.getContext().getResources().getInteger(getIdentifier(name, "integer"));
-    }
-
-    private static Animation getAnimation(String name) {
-        return AnimationUtils.loadAnimation(ReVancedUtils.getContext(), getIdentifier(name, "anim"));
-    }
-    //endregion
 }
