@@ -3,6 +3,7 @@ package app.revanced.integrations.patches;
 import java.util.concurrent.atomic.AtomicReference;
 
 import app.revanced.integrations.returnyoutubedislike.ReturnYouTubeDislike;
+import app.revanced.integrations.utils.LogHelper;
 
 /**
  * Used by app.revanced.patches.youtube.layout.returnyoutubedislike.patch.ReturnYouTubeDislikePatch
@@ -29,11 +30,15 @@ public class ReturnYouTubeDislikePatch {
      * @param vote -1 (dislike), 0 (none) or 1 (like)
      */
     public static void sendVote(int vote) {
-        for (ReturnYouTubeDislike.Vote v : ReturnYouTubeDislike.Vote.values()) {
-            if (v.value == vote) {
-                ReturnYouTubeDislike.sendVote(v);
-                return;
+        try {
+            for (ReturnYouTubeDislike.Vote v : ReturnYouTubeDislike.Vote.values()) {
+                if (v.value == vote) {
+                    ReturnYouTubeDislike.sendVote(v);
+                    return;
+                }
             }
+        } catch (Exception ex) {
+            LogHelper.printException(() -> "sendVote failure", ex);
         }
     }
 }
