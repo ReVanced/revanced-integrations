@@ -50,7 +50,7 @@ public abstract class SponsorBlockUtils {
     }
     // must be used exclusively on the main thread (not thread safe)
     private static final DecimalFormat statsFormatter = new DecimalFormat("#,###,###");
-    private static final String STATS_FORMAT_TEMPLATE = "%dh %.1f %s";
+    private static final String STATS_FORMAT_TEMPLATE = "%dh %d %s";
 
     //    private static final int sponsorBtnId = 1234;
     //    private static int shareBtnId = -1;
@@ -405,9 +405,9 @@ public abstract class SponsorBlockUtils {
             category.addPreference(preference);
             String formatted = statsFormatter.format(stats.viewCount);
 
-            double saved = stats.minutesSaved;
-            int hoursSaved = (int) (saved / 60);
-            double minutesSaved = saved % 60;
+            final double totalSaved = stats.minutesSaved;
+            final int hoursSaved = (int) (totalSaved / 60);
+            final int minutesSaved = (int) (totalSaved % 60);
             String formattedSaved = String.format(STATS_FORMAT_TEMPLATE, hoursSaved, minutesSaved, minutesStr);
 
             preference.setTitle(fromHtml(str("stats_saved", formatted)));
@@ -425,8 +425,9 @@ public abstract class SponsorBlockUtils {
             category.addPreference(preference);
             String formatted = statsFormatter.format(SettingsEnum.SB_SKIPPED_SEGMENTS.getInt());
 
-            long hoursSaved = SettingsEnum.SB_SKIPPED_SEGMENTS_TIME.getLong() / 3600000;
-            double minutesSaved = (SettingsEnum.SB_SKIPPED_SEGMENTS_TIME.getLong() / 60000d) % 60;
+            final long totalSkippedTime = SettingsEnum.SB_SKIPPED_SEGMENTS_TIME.getLong();
+            final int hoursSaved = (int) (totalSkippedTime / (60 * 60 * 1000));
+            final int minutesSaved = (int) ((totalSkippedTime / (60 * 1000)) % 60);
             String formattedSaved = String.format(STATS_FORMAT_TEMPLATE, hoursSaved, minutesSaved, minutesStr);
 
             preference.setTitle(fromHtml(str("stats_self_saved", formatted)));
