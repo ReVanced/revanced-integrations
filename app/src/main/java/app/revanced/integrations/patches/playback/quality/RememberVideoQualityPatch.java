@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.widget.Toast;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -27,25 +26,19 @@ public class RememberVideoQualityPatch {
         if (isConnectedWifi(context)) {
             try {
                 SharedPrefHelper.saveString(SharedPrefHelper.SharedPrefNames.REVANCED_PREFS, "wifi_quality", defaultQuality + "");
-                String message = "Changing default Wi-Fi quality to: " + defaultQuality;
-                LogHelper.printDebug(() -> message);
-                Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+                ReVancedUtils.showToastShort("Changing default Wi-Fi quality to: " + defaultQuality);
             } catch (Exception ex) {
                 LogHelper.printException(() -> "Failed to change default WI-FI quality", ex);
             }
         } else if (isConnectedMobile(context)) {
             try {
                 SharedPrefHelper.saveString(SharedPrefHelper.SharedPrefNames.REVANCED_PREFS, "mobile_quality", defaultQuality + "");
-                String message = "Changing default mobile data quality to:" + defaultQuality;
-                LogHelper.printDebug(() -> message);
-                Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+                ReVancedUtils.showToastShort("Changing default mobile data quality to:" + defaultQuality);
             } catch (Exception ex) {
                 LogHelper.printException(() -> "Failed to change default mobile data quality", ex);
             }
         } else {
-            String message = "No internet connection.";
-            LogHelper.printDebug(() -> message);
-            Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+            ReVancedUtils.showToastShort("No internet connection.");
         }
         userChangedQuality = false;
     }

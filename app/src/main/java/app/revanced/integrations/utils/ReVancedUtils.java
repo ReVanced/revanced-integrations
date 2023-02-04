@@ -140,6 +140,7 @@ public class ReVancedUtils {
     private static void showToast(String messageToToast, int toastDuration) {
         Objects.requireNonNull(messageToToast);
         runOnMainThreadNowOrLater(() -> {
+                    LogHelper.printDebug(() -> "Showing toast: " + messageToToast);
                     Context context = getContext();
                     if (context != null) {
                         Toast.makeText(context, messageToToast, toastDuration).show();

@@ -17,7 +17,7 @@ public final class RememberPlaybackRatePatch {
     public static void rememberPlaybackRate(final float selectedPlaybackRate) {
         if (!SettingsEnum.REMEMBER_PLAYBACK_RATE_SELECTED.getBoolean()) return;
 
-        Toast.makeText(ReVancedUtils.getContext(), "Playback rate will be remembered", Toast.LENGTH_SHORT).show();
+        ReVancedUtils.showToastShort("Playback rate will be remembered");
 
         LogHelper.printDebug(() -> "Remembering playback rate: " + selectedPlaybackRate);
         saveFloat(REVANCED_PREFS, REMEMBERED_PLAYBACK_RATE_PREFERENCE_KEY, selectedPlaybackRate);

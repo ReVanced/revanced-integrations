@@ -31,6 +31,7 @@ import app.revanced.integrations.sponsorblock.SponsorBlockSettings;
 import app.revanced.integrations.sponsorblock.SponsorBlockUtils;
 import app.revanced.integrations.sponsorblock.objects.EditTextListPreference;
 import app.revanced.integrations.sponsorblock.requests.SBRequester;
+import app.revanced.integrations.utils.ReVancedUtils;
 import app.revanced.integrations.utils.SharedPrefHelper;
 
 public class SponsorBlockSettingsFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
@@ -242,7 +243,7 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment implements 
                 return true;
             });
             preference.setOnPreferenceClickListener(preference12 -> {
-                Toast.makeText(preference12.getContext(), str("skipped_sponsor"), Toast.LENGTH_SHORT).show();
+                ReVancedUtils.showToastShort(str("skipped_sponsor"));
                 return false;
             });
             preferencesToDisableWhenSBDisabled.add(preference);
@@ -349,9 +350,9 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment implements 
 
             preference.setTitle(str("settings_ie"));
             preference.setSummary(str("settings_ie_sum"));
-            preference.setText(SponsorBlockUtils.exportSettings(applicationContext));
+            preference.setText(SponsorBlockUtils.exportSettings());
             preference.setOnPreferenceChangeListener((preference1, newValue) -> {
-                SponsorBlockUtils.importSettings((String) newValue, applicationContext);
+                SponsorBlockUtils.importSettings((String) newValue);
                 return false;
             });
             screen.addPreference(preference);
@@ -367,26 +368,24 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment implements 
             EditText editText = editTextRef.get();
             if (editText == null)
                 return;
-            Context context = ((AlertDialog) dialog).getContext();
-            Context applicationContext = context.getApplicationContext();
 
             switch (which) {
                 case DialogInterface.BUTTON_NEUTRAL:
                     SettingsEnum.SB_API_URL.saveValue(SettingsEnum.SB_API_URL.getDefaultValue());
-                    Toast.makeText(applicationContext, str("api_url_reset"), Toast.LENGTH_SHORT).show();
+                    ReVancedUtils.showToastLong(str("api_url_reset"));
                     break;
                 case DialogInterface.BUTTON_POSITIVE:
                     Editable text = editText.getText();
-                    Toast invalidToast = Toast.makeText(applicationContext, str("api_url_invalid"), Toast.LENGTH_SHORT);
+                    String invalidText = str("api_url_invalid");
                     if (text == null) {
-                        invalidToast.show();
+                        ReVancedUtils.showToastLong(invalidText);
                     } else {
                         String textAsString = text.toString();
                         if (textAsString.isEmpty() || !Patterns.WEB_URL.matcher(textAsString).matches()) {
-                            invalidToast.show();
+                            ReVancedUtils.showToastLong(invalidText);
                         } else {
                             SettingsEnum.SB_API_URL.saveValue(textAsString);
-                            Toast.makeText(applicationContext, str("api_url_changed"), Toast.LENGTH_SHORT).show();
+                            ReVancedUtils.showToastLong(str("api_url_changed"));
                         }
                     }
                     break;

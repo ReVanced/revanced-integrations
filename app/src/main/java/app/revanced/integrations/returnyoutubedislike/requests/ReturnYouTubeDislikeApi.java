@@ -185,9 +185,7 @@ public class ReturnYouTubeDislikeApi {
             lastTimeRateLimitWasHit = System.currentTimeMillis();
             LogHelper.printDebug(() -> "API rate limit was hit. Stopping API calls for the next "
                     + RATE_LIMIT_BACKOFF_SECONDS + " seconds");
-            ReVancedUtils.runOnMainThread(() -> { // must show toasts on main thread
-                Toast.makeText(ReVancedUtils.getContext(), str("revanced_ryd_failure_client_rate_limit_requested"), Toast.LENGTH_LONG).show();
-            });
+            ReVancedUtils.showToastLong(str("revanced_ryd_failure_client_rate_limit_requested"));
             return true;
         }
         return false;

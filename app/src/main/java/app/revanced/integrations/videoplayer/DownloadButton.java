@@ -9,6 +9,7 @@ import app.revanced.integrations.patches.VideoInformation;
 import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.sponsorblock.StringRef;
 import app.revanced.integrations.utils.LogHelper;
+import app.revanced.integrations.utils.ReVancedUtils;
 
 public class DownloadButton extends BottomControlButton {
     public static DownloadButton instance;
@@ -46,7 +47,7 @@ public class DownloadButton extends BottomControlButton {
 
         // If the package is not installed, show the toast
         if (!packageEnabled) {
-            Toast.makeText(context, downloaderPackageName + " " + StringRef.str("downloader_not_installed_warning"), Toast.LENGTH_LONG).show();
+            ReVancedUtils.showToastLong(downloaderPackageName + " " + StringRef.str("downloader_not_installed_warning"));
             return;
         }
 

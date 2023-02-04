@@ -21,7 +21,7 @@ public class MicroGSupport {
     private static final Uri VANCED_MICROG_PROVIDER = Uri.parse("content://com.mgoogle.android.gsf.gservices/prefix");
 
     private static void startIntent(Context context, String uriString, String message) {
-        Toast.makeText(context, message, Toast.LENGTH_LONG).show();
+        Toast.makeText(context, message, Toast.LENGTH_LONG).show(); // cannot use ReVancedUtils.showTast, as it's not yet initialized
 
         var intent = new Intent(Intent.ACTION_VIEW);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
