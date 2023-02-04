@@ -391,14 +391,15 @@ public class PlayerController {
         try {
             LogHelper.printDebug(() -> "Skipping segment: " + segment);
 
+            SkipSegmentView.hide();
             VideoInformation.seekTo(segment.end);
+
             if (!userManuallySkipped) {
                 segment.didAutoSkipped = true;
                 if (SettingsEnum.SB_SHOW_TOAST_WHEN_SKIP.getBoolean()) {
                     SkipSegmentView.notifySkipped(segment);
                 }
             }
-            SkipSegmentView.hide();
 
             if (segment.category == SponsorBlockSettings.SegmentInfo.UNSUBMITTED) {
                 // skipped segment was a preview of unsubmitted segment
