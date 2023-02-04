@@ -136,11 +136,7 @@ public class ReVancedUtils {
         showToast(messageToToast, Toast.LENGTH_LONG);
     }
 
-    /**
-     * Safe to call from any thread
-     * @param  toastDuration either {@link Toast#LENGTH_SHORT} or {@link Toast#LENGTH_LONG}
-     */
-    public static void showToast(String messageToToast, int toastDuration) {
+    private static void showToast(String messageToToast, int toastDuration) {
         runOnMainThreadNowOrLater(() -> {
                     Context context = getContext();
                     if (context != null) {
