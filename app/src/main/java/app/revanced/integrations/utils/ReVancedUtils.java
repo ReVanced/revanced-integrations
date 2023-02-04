@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Toast;
 
 import java.text.Bidi;
 import java.util.Locale;
@@ -121,6 +122,33 @@ public class ReVancedUtils {
         return isRightToLeftTextLayout;
     }
 
+    /**
+     * Safe to call from any thread
+     */
+    public static void showToastShort(String messageToToast) {
+        showToast(messageToToast, Toast.LENGTH_SHORT);
+    }
+
+    /**
+     * Safe to call from any thread
+     */
+    public static void showToastLong(String messageToToast) {
+        showToast(messageToToast, Toast.LENGTH_LONG);
+    }
+
+    /**
+     * Safe to call from any thread
+     * @param  toastDuration either {@link Toast#LENGTH_SHORT} or {@link Toast#LENGTH_LONG}
+     */
+    public static void showToast(String messageToToast, int toastDuration) {
+        runOnMainThreadNowOrLater(() -> {
+                    Context context = getContext();
+                    if (context != null) {
+                        Toast.makeText(context, messageToToast, toastDuration).show();
+                    }
+                }
+        );
+    }
 
     /**
      * Automatically logs any exceptions the runnable throws.

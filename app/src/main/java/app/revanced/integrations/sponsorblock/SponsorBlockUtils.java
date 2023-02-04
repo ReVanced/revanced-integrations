@@ -200,20 +200,6 @@ public abstract class SponsorBlockUtils {
                 .show();
     };
 
-    /**
-     * Safe to call from any thread
-     */
-    public static void showToast(String messageToToast) {
-        // must use run later and not runNowOrLater, otherwise skipping multiple segments will show multiple toasts
-        ReVancedUtils.runOnMainThread(() -> {
-                    Context context = ReVancedUtils.getContext();
-                    if (context != null) {
-                        Toast.makeText(context, messageToToast, Toast.LENGTH_LONG).show();
-                    }
-                }
-        );
-    }
-
     private static void submitNewSegment() {
         try {
             ReVancedUtils.verifyOnMainThread();

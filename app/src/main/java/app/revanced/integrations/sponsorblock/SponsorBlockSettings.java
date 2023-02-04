@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import app.revanced.integrations.settings.SettingsEnum;
+import app.revanced.integrations.sponsorblock.player.ui.SponsorBlockView;
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedUtils;
 import app.revanced.integrations.utils.SharedPrefHelper;
@@ -30,7 +31,7 @@ public class SponsorBlockSettings {
         SharedPreferences preferences = SharedPrefHelper.getPreferences(SharedPrefHelper.SharedPrefNames.SPONSOR_BLOCK);
 
         if (!SettingsEnum.SB_ENABLED.getBoolean()) {
-            SkipSegmentView.hide();
+            SponsorBlockView.hideSkipButton();
             NewSegmentHelperLayout.hide();
             PlayerController.setCurrentVideoId(null);
         }

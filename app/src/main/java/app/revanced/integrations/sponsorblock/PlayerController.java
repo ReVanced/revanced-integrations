@@ -1,5 +1,7 @@
 package app.revanced.integrations.sponsorblock;
 
+import static app.revanced.integrations.sponsorblock.StringRef.str;
+
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.text.TextUtils;
@@ -17,6 +19,7 @@ import app.revanced.integrations.patches.VideoInformation;
 import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.shared.PlayerType;
 import app.revanced.integrations.sponsorblock.objects.SponsorSegment;
+import app.revanced.integrations.sponsorblock.player.ui.SponsorBlockView;
 import app.revanced.integrations.sponsorblock.requests.SBRequester;
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedUtils;
@@ -78,7 +81,7 @@ public class PlayerController {
     public static void initialize(Object _o) {
         try {
             ReVancedUtils.verifyOnMainThread();
-            SkipSegmentView.hide();
+            SponsorBlockView.hideSkipButton();
             NewSegmentHelperLayout.hide();
             LogHelper.printDebug(() -> "Initialized SponsorBlock");
         } catch (Exception ex) {
@@ -113,7 +116,7 @@ public class PlayerController {
             currentVideoId = videoId;
 
             // if opening new video in same player, then skip button may be showing from prior video
-            SkipSegmentView.hide();
+            SponsorBlockView.hideSkipButton();
 
             LogHelper.printDebug(() -> "setCurrentVideoId: " + videoId);
 
@@ -228,9 +231,9 @@ public class PlayerController {
                 nextSegmentToAutoSkip = null;
             }
             if (segmentCurrentlyPlayingToManuallySkip != null) {
-                SkipSegmentView.show();
+                SponsorBlockView.showSkipButton();
             } else {
-                SkipSegmentView.hide();
+                SponsorBlockView.hideSkipButton();
             }
         } catch (Exception e) {
             LogHelper.printException(() -> "setVideoTime failure", e);
@@ -304,7 +307,7 @@ public class PlayerController {
         if (segmentCurrentlyPlayingToManuallySkip != null) {
             skipSegment(segmentCurrentlyPlayingToManuallySkip, true);
         } else {
-            SkipSegmentView.hide();
+            SponsorBlockView.hideSkipButton();
             LogHelper.printException(() -> "error: segment not available to skip"); // should never happen
         }
     }
@@ -391,13 +394,13 @@ public class PlayerController {
         try {
             LogHelper.printDebug(() -> "Skipping segment: " + segment);
 
-            SkipSegmentView.hide();
+            SponsorBlockView.hideSkipButton();
             VideoInformation.seekTo(segment.end);
 
             if (!userManuallySkipped) {
                 segment.didAutoSkipped = true;
                 if (SettingsEnum.SB_SHOW_TOAST_WHEN_SKIP.getBoolean()) {
-                    SkipSegmentView.notifySkipped(segment);
+                    showSkippedSegmentToast(segment);
                 }
             }
 
@@ -418,4 +421,36 @@ public class PlayerController {
             LogHelper.printException(() -> "skipSegment failure", ex);
         }
     }
+
+
+    private static int numberOfSegmentsSkipped;
+    private static String segmentSkipMessage;
+
+    private static void showSkippedSegmentToast(SponsorSegment segment) {
+        ReVancedUtils.verifyOnMainThread();
+        numberOfSegmentsSkipped++;
+        if (numberOfSegmentsSkipped > 1) {
+            return; // toast already scheduled
+        }
+        segmentSkipMessage = segment.category.skipMessage.toString();
+
+        final long delayToToastMilliseconds = 200; // also the maximum time between skips to be considered skipping multiple segments
+        ReVancedUtils.runOnMainThreadDelayed(() -> {
+            try {
+                if (segmentSkipMessage == null) {
+                    LogHelper.printException(() -> "No skip message to display"); // should never happen
+                    return;
+                }
+                ReVancedUtils.showToastShort(numberOfSegmentsSkipped == 1
+                        ? segmentSkipMessage
+                        : str("skipped_multiple_segments"));
+            } catch (Exception ex) {
+                LogHelper.printException(() -> "notifySkipped failure", ex);
+            } finally {
+                numberOfSegmentsSkipped = 0;
+                segmentSkipMessage = null;
+            }
+        }, delayToToastMilliseconds);
+    }
+
 }

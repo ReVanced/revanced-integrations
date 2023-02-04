@@ -128,9 +128,9 @@ public class SBRequester {
                     messageToToast = str("submit_failed_unknown_error", responseCode, connection.getResponseMessage());
                     break;
             }
-            SponsorBlockUtils.showToast(messageToToast);
+            ReVancedUtils.showToastLong(messageToToast);
         } catch (IOException ex) {
-            SponsorBlockUtils.showToast(str("submit_failed_timeout", ex.getMessage()));
+            ReVancedUtils.showToastLong(str("submit_failed_timeout", ex.getMessage()));
         } catch (Exception ex) {
             LogHelper.printException(() -> "failed to submit segments", ex);
         }
@@ -171,11 +171,11 @@ public class SBRequester {
                     case SUCCESS_HTTP_STATUS_CODE:
                         break;
                     case 403:
-                        SponsorBlockUtils.showToast(
+                        ReVancedUtils.showToastLong(
                                 str("vote_failed_forbidden", Requester.parseErrorJsonAndDisconnect(connection)));
                         break;
                     default:
-                        SponsorBlockUtils.showToast(
+                        ReVancedUtils.showToastLong(
                                 str("vote_failed_unknown_error", responseCode, connection.getResponseMessage()));
                         break;
                 }
@@ -219,11 +219,11 @@ public class SBRequester {
                 String responseMessage = connection.getResponseMessage();
                 runOnMainThread(() -> {
                     if (responseCode == SUCCESS_HTTP_STATUS_CODE) {
-                        SponsorBlockUtils.showToast(str("stats_username_changed"));
+                        ReVancedUtils.showToastLong(str("stats_username_changed"));
                         preference.setTitle(fromHtml(str("stats_username", username)));
                         preference.setText(username);
                     } else {
-                        SponsorBlockUtils.showToast(str("stats_username_change_unknown_error", responseCode, responseMessage));
+                        ReVancedUtils.showToastLong(str("stats_username_change_unknown_error", responseCode, responseMessage));
                     }
                 });
             } catch (Exception ex) {
