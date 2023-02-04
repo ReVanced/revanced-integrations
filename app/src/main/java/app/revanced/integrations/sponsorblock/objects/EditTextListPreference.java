@@ -17,6 +17,8 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import app.revanced.integrations.sponsorblock.SponsorBlockSettings;
+import app.revanced.integrations.utils.LogHelper;
+import app.revanced.integrations.utils.ReVancedUtils;
 
 public class EditTextListPreference extends ListPreference {
 
@@ -86,26 +88,29 @@ public class EditTextListPreference extends ListPreference {
 
     @Override
     protected void onDialogClosed(boolean positiveResult) {
-        if (positiveResult && mClickedDialogEntryIndex >= 0 && getEntryValues() != null) {
-            String value = getEntryValues()[mClickedDialogEntryIndex].toString();
-            if (callChangeListener(value)) {
-                setValue(value);
+        try {
+            if (positiveResult && mClickedDialogEntryIndex >= 0 && getEntryValues() != null) {
+                String value = getEntryValues()[mClickedDialogEntryIndex].toString();
+                if (callChangeListener(value)) {
+                    setValue(value);
+                }
+                String colorString = mEditText.getText().toString();
+                SponsorBlockSettings.SegmentInfo category = getCategoryBySelf();
+                if (colorString.equals(formatColorString(category.color))) {
+                    return;
+                }
+                try {
+                    int color = Color.parseColor(colorString);
+                    category.setColor(color);
+                    getSharedPreferences().edit().putString(getColorPreferenceKey(), formatColorString(color)).apply();
+                    reformatTitle();
+                    ReVancedUtils.showToastShort(str("color_changed"));
+                } catch (IllegalArgumentException ex) {
+                    ReVancedUtils.showToastShort(str("color_invalid"));
+                }
             }
-            String colorString = mEditText.getText().toString();
-            SponsorBlockSettings.SegmentInfo category = getCategoryBySelf();
-            if (colorString.equals(formatColorString(category.color))) {
-                return;
-            }
-            Context applicationContext = getContext().getApplicationContext();
-            try {
-                int color = Color.parseColor(colorString);
-                category.setColor(color);
-                Toast.makeText(applicationContext, str("color_changed"), Toast.LENGTH_SHORT).show();
-                getSharedPreferences().edit().putString(getColorPreferenceKey(), formatColorString(color)).apply();
-                reformatTitle();
-            } catch (Exception ex) {
-                Toast.makeText(applicationContext, str("color_invalid"), Toast.LENGTH_SHORT).show();
-            }
+        } catch (Exception ex) {
+            LogHelper.printException(() -> ex.getMessage(), ex);
         }
     }
 
