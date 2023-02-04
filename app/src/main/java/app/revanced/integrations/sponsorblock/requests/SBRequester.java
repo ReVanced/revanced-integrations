@@ -1,21 +1,13 @@
 package app.revanced.integrations.sponsorblock.requests;
 
-import android.content.Context;
+import static android.text.Html.fromHtml;
+import static app.revanced.integrations.sponsorblock.StringRef.str;
+import static app.revanced.integrations.utils.ReVancedUtils.runOnMainThread;
+
 import android.preference.EditTextPreference;
 import android.preference.Preference;
 import android.preference.PreferenceCategory;
-import android.widget.Toast;
-import app.revanced.integrations.patches.VideoInformation;
-import app.revanced.integrations.requests.Requester;
-import app.revanced.integrations.requests.Route;
-import app.revanced.integrations.settings.SettingsEnum;
-import app.revanced.integrations.sponsorblock.SponsorBlockSettings;
-import app.revanced.integrations.sponsorblock.SponsorBlockUtils;
-import app.revanced.integrations.sponsorblock.SponsorBlockUtils.VoteOption;
-import app.revanced.integrations.sponsorblock.objects.SponsorSegment;
-import app.revanced.integrations.sponsorblock.objects.UserStats;
-import app.revanced.integrations.utils.LogHelper;
-import app.revanced.integrations.utils.ReVancedUtils;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -27,9 +19,17 @@ import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
-import static android.text.Html.fromHtml;
-import static app.revanced.integrations.sponsorblock.StringRef.str;
-import static app.revanced.integrations.utils.ReVancedUtils.runOnMainThread;
+import app.revanced.integrations.patches.VideoInformation;
+import app.revanced.integrations.requests.Requester;
+import app.revanced.integrations.requests.Route;
+import app.revanced.integrations.settings.SettingsEnum;
+import app.revanced.integrations.sponsorblock.SponsorBlockSettings;
+import app.revanced.integrations.sponsorblock.SponsorBlockUtils;
+import app.revanced.integrations.sponsorblock.SponsorBlockUtils.VoteOption;
+import app.revanced.integrations.sponsorblock.objects.SponsorSegment;
+import app.revanced.integrations.sponsorblock.objects.UserStats;
+import app.revanced.integrations.utils.LogHelper;
+import app.revanced.integrations.utils.ReVancedUtils;
 
 public class SBRequester {
     private static final String TIME_TEMPLATE = "%.3f";
@@ -97,7 +97,7 @@ public class SBRequester {
         return segments.toArray(new SponsorSegment[0]);
     }
 
-    public static void submitSegments(String videoId, String uuid, float startTime, float endTime, String category, Runnable toastRunnable) {
+    public static void submitSegments(String videoId, String uuid, float startTime, float endTime, String category) {
         ReVancedUtils.verifyOffMainThread();
         try {
             String start = String.format(Locale.US, TIME_TEMPLATE, startTime);
@@ -107,30 +107,30 @@ public class SBRequester {
             HttpURLConnection connection = getConnectionFromRoute(SBRoutes.SUBMIT_SEGMENTS, videoId, uuid, start, end, category, duration);
             final int responseCode = connection.getResponseCode();
 
+            final String messageToToast;
             switch (responseCode) {
                 case SUCCESS_HTTP_STATUS_CODE:
-                    SponsorBlockUtils.messageToToast = str("submit_succeeded");
+                    messageToToast = str("submit_succeeded");
                     break;
                 case 409:
-                    SponsorBlockUtils.messageToToast = str("submit_failed_duplicate");
+                    messageToToast = str("submit_failed_duplicate");
                     break;
                 case 403:
-                    SponsorBlockUtils.messageToToast = str("submit_failed_forbidden", Requester.parseErrorJsonAndDisconnect(connection));
+                    messageToToast = str("submit_failed_forbidden", Requester.parseErrorJsonAndDisconnect(connection));
                     break;
                 case 429:
-                    SponsorBlockUtils.messageToToast = str("submit_failed_rate_limit");
+                    messageToToast = str("submit_failed_rate_limit");
                     break;
                 case 400:
-                    SponsorBlockUtils.messageToToast = str("submit_failed_invalid", Requester.parseErrorJsonAndDisconnect(connection));
+                    messageToToast = str("submit_failed_invalid", Requester.parseErrorJsonAndDisconnect(connection));
                     break;
                 default:
-                    SponsorBlockUtils.messageToToast = str("submit_failed_unknown_error", responseCode, connection.getResponseMessage());
+                    messageToToast = str("submit_failed_unknown_error", responseCode, connection.getResponseMessage());
                     break;
             }
-            runOnMainThread(toastRunnable);
+            SponsorBlockUtils.showToast(messageToToast);
         } catch (IOException ex) {
-            SponsorBlockUtils.messageToToast = str("submit_failed_timeout", ex.getMessage());
-            runOnMainThread(toastRunnable);
+            SponsorBlockUtils.showToast(str("submit_failed_timeout", ex.getMessage()));
         } catch (Exception ex) {
             LogHelper.printException(() -> "failed to submit segments", ex);
         }
@@ -155,7 +155,7 @@ public class SBRequester {
         }
     }
 
-    public static void voteForSegmentOnBackgroundThread(SponsorSegment segment, VoteOption voteOption, Context context, String... args) {
+    public static void voteForSegmentOnBackgroundThread(SponsorSegment segment, VoteOption voteOption, String... args) {
         ReVancedUtils.runOnBackgroundThread(() -> {
             try {
                 String segmentUuid = segment.UUID;
@@ -169,21 +169,20 @@ public class SBRequester {
 
                 switch (responseCode) {
                     case SUCCESS_HTTP_STATUS_CODE:
-                        SponsorBlockUtils.messageToToast = str("vote_succeeded");
                         break;
                     case 403:
-                        SponsorBlockUtils.messageToToast = str("vote_failed_forbidden", Requester.parseErrorJsonAndDisconnect(connection));
+                        SponsorBlockUtils.showToast(
+                                str("vote_failed_forbidden", Requester.parseErrorJsonAndDisconnect(connection)));
                         break;
                     default:
-                        SponsorBlockUtils.messageToToast = str("vote_failed_unknown_error", responseCode, connection.getResponseMessage());
+                        SponsorBlockUtils.showToast(
+                                str("vote_failed_unknown_error", responseCode, connection.getResponseMessage()));
                         break;
                 }
-                runOnMainThread(() -> Toast.makeText(context, SponsorBlockUtils.messageToToast, Toast.LENGTH_LONG).show());
             } catch (IOException ex) {
-                SponsorBlockUtils.messageToToast = str("vote_failed_timeout", ex.getMessage());
-                runOnMainThread(() -> Toast.makeText(context, SponsorBlockUtils.messageToToast, Toast.LENGTH_LONG).show());
+                LogHelper.printException(() -> "failed to vote for segment", ex, str("vote_failed_timeout", ex.getMessage()));
             } catch (Exception ex) {
-                LogHelper.printException(() -> "failed to vote for segment", ex);
+                LogHelper.printException(() -> "failed to vote for segment", ex); // should never happen
             }
         });
     }
@@ -212,22 +211,21 @@ public class SBRequester {
         });
     }
 
-    public static void setUsername(String username, EditTextPreference preference, Runnable toastRunnable) {
+    public static void setUsername(String username, EditTextPreference preference) {
         ReVancedUtils.runOnBackgroundThread(() -> {
             try {
                 HttpURLConnection connection = getConnectionFromRoute(SBRoutes.CHANGE_USERNAME, SettingsEnum.SB_UUID.getString(), username);
                 final int responseCode = connection.getResponseCode();
-
-                if (responseCode == SUCCESS_HTTP_STATUS_CODE) {
-                    SponsorBlockUtils.messageToToast = str("stats_username_changed");
-                    runOnMainThread(() -> {
+                String responseMessage = connection.getResponseMessage();
+                runOnMainThread(() -> {
+                    if (responseCode == SUCCESS_HTTP_STATUS_CODE) {
+                        SponsorBlockUtils.showToast(str("stats_username_changed"));
                         preference.setTitle(fromHtml(str("stats_username", username)));
                         preference.setText(username);
-                    });
-                } else {
-                    SponsorBlockUtils.messageToToast = str("stats_username_change_unknown_error", responseCode, connection.getResponseMessage());
-                }
-                runOnMainThread(toastRunnable);
+                    } else {
+                        SponsorBlockUtils.showToast(str("stats_username_change_unknown_error", responseCode, responseMessage));
+                    }
+                });
             } catch (Exception ex) {
                 LogHelper.printException(() -> "failed to set username", ex);
             }

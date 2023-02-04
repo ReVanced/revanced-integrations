@@ -130,16 +130,10 @@ public abstract class SponsorBlockUtils {
                     .setEnabled(false);
         }
     };
-    private static WeakReference<Context> appContext = new WeakReference<>(null);
     private static final DialogInterface.OnClickListener segmentCategorySelectedDialogListener = (dialog, which) -> {
         dialog.dismiss();
-        Context context = ((AlertDialog) dialog).getContext().getApplicationContext();
-        Toast.makeText(context, str("submit_started"), Toast.LENGTH_SHORT).show();
-
-        appContext = new WeakReference<>(context);
         submitNewSegment();
     };
-    public static String messageToToast = "";
     private static final EditByHandSaveDialogListener editByHandSaveDialogListener = new EditByHandSaveDialogListener();
     private static final DialogInterface.OnClickListener editByHandDialogListener = (dialog, which) -> {
         Context context = ((AlertDialog) dialog).getContext();
@@ -168,12 +162,6 @@ public abstract class SponsorBlockUtils {
 
         dialog.dismiss();
     };
-    private static final Runnable toastRunnable = () -> {
-        Context context = appContext.get();
-        String messageToToastToUse = messageToToast;
-        if (context != null && messageToToastToUse != null)
-            Toast.makeText(context, messageToToastToUse, Toast.LENGTH_LONG).show();
-    };
     private static final DialogInterface.OnClickListener segmentVoteClickListener = (dialog, which) -> {
         final Context context = ((AlertDialog) dialog).getContext();
         SponsorSegment[] currentSegments = PlayerController.getSponsorSegmentsOfCurrentVideo();
@@ -198,12 +186,11 @@ public abstract class SponsorBlockUtils {
 
         new AlertDialog.Builder(context)
                 .setItems(items, (dialog1, which1) -> {
-                    appContext = new WeakReference<>(context.getApplicationContext());
                     VoteOption voteOption = voteOptions[which1];
                     switch (voteOption) {
                         case UPVOTE:
                         case DOWNVOTE:
-                            SBRequester.voteForSegmentOnBackgroundThread(segment, voteOption, appContext.get());
+                            SBRequester.voteForSegmentOnBackgroundThread(segment, voteOption);
                             break;
                         case CATEGORY_CHANGE:
                             onNewCategorySelect(segment, context);
@@ -213,10 +200,23 @@ public abstract class SponsorBlockUtils {
                 .show();
     };
 
+    /**
+     * Safe to call from any thread
+     */
+    public static void showToast(String messageToToast) {
+        // must use run later and not runNowOrLater, otherwise skipping multiple segments will show multiple toasts
+        ReVancedUtils.runOnMainThread(() -> {
+                    Context context = ReVancedUtils.getContext();
+                    if (context != null) {
+                        Toast.makeText(context, messageToToast, Toast.LENGTH_LONG).show();
+                    }
+                }
+        );
+    }
+
     private static void submitNewSegment() {
         try {
             ReVancedUtils.verifyOnMainThread();
-            messageToToast = null;
             final String uuid = SettingsEnum.SB_UUID.getString();
             final long start = newSponsorSegmentStartMillis;
             final long end = newSponsorSegmentEndMillis;
@@ -228,7 +228,7 @@ public abstract class SponsorBlockUtils {
             }
             newSponsorSegmentEndMillis = newSponsorSegmentStartMillis = -1;
             ReVancedUtils.runOnBackgroundThread(() -> {
-                SBRequester.submitSegments(videoId, uuid, ((float) start) / 1000f, ((float) end) / 1000f, segmentType.key, toastRunnable);
+                SBRequester.submitSegments(videoId, uuid, start / 1000f, end / 1000f, segmentType.key);
                 PlayerController.executeDownloadSegments(videoId);
             });
         } catch (Exception e) {
@@ -317,7 +317,7 @@ public abstract class SponsorBlockUtils {
 
         new AlertDialog.Builder(context)
                 .setTitle(str("new_segment_choose_category"))
-                .setItems(titles, (dialog, which) -> SBRequester.voteForSegmentOnBackgroundThread(segment, VoteOption.CATEGORY_CHANGE, appContext.get(), values[which].key))
+                .setItems(titles, (dialog, which) -> SBRequester.voteForSegmentOnBackgroundThread(segment, VoteOption.CATEGORY_CHANGE, values[which].key))
                 .show();
     }
 
@@ -383,8 +383,7 @@ public abstract class SponsorBlockUtils {
             preference.setSummary(str("stats_username_change"));
             preference.setText(userName);
             preference.setOnPreferenceChangeListener((preference1, newUsername) -> {
-                appContext = new WeakReference<>(context.getApplicationContext());
-                SBRequester.setUsername((String) newUsername, preference, toastRunnable);
+                SBRequester.setUsername((String) newUsername, preference);
                 return false;
             });
         }

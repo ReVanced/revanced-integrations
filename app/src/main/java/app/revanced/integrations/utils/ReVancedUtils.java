@@ -18,8 +18,6 @@ import java.util.concurrent.TimeUnit;
 
 public class ReVancedUtils {
 
-    private static boolean newVideo = false;
-
     @SuppressLint("StaticFieldLeak")
     public static Context context;
 
@@ -122,6 +120,7 @@ public class ReVancedUtils {
         }
         return isRightToLeftTextLayout;
     }
+
 
     /**
      * Automatically logs any exceptions the runnable throws.
