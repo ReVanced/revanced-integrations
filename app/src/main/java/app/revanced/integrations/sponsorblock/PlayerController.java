@@ -218,7 +218,9 @@ public class PlayerController {
                     break;
                 } else {
                     segmentCurrentlyPlayingToManuallySkip = segment;
-                    break;
+                    // keep looking. there may be an upcoming autoskip,
+                    // or there may be another manual skip section nested inside this segment
+                    continue;
                 }
             }
             if (!foundUpcomingAutoSkipSegment && nextSegmentToAutoSkip != null) {
