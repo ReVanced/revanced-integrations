@@ -93,6 +93,10 @@ public final class VideoInformation {
         }
     }
 
+    public static void seekToRelative(long millisecondsRelative) {
+        seekTo(videoTime + millisecondsRelative);
+    }
+
     /**
      * Get the id of the current video playing.
      *

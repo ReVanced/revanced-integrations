@@ -10,9 +10,9 @@ import android.view.LayoutInflater;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 
+import app.revanced.integrations.patches.VideoInformation;
 import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.sponsorblock.NewSegmentHelperLayout;
-import app.revanced.integrations.sponsorblock.PlayerController;
 import app.revanced.integrations.sponsorblock.SponsorBlockUtils;
 import app.revanced.integrations.utils.LogHelper;
 
@@ -62,7 +62,7 @@ public class NewSegmentLayout extends FrameLayout {
             setClickEffect(this.rewindButton);
             this.rewindButton.setOnClickListener(v -> {
                 LogHelper.printDebug(() -> "Rewind button clicked");
-                PlayerController.skipRelativeMilliseconds(-SettingsEnum.SB_ADJUST_NEW_SEGMENT_STEP.getInt());
+                VideoInformation.seekToRelative(-SettingsEnum.SB_ADJUST_NEW_SEGMENT_STEP.getInt());
             });
         }
         this.forwardButton = this.findViewById(getIdentifier(context, "new_segment_forward", "id"));
@@ -70,7 +70,7 @@ public class NewSegmentLayout extends FrameLayout {
             setClickEffect(this.forwardButton);
             this.forwardButton.setOnClickListener(v -> {
                 LogHelper.printDebug(() -> "Forward button clicked");
-                PlayerController.skipRelativeMilliseconds(SettingsEnum.SB_ADJUST_NEW_SEGMENT_STEP.getInt());
+                VideoInformation.seekToRelative(SettingsEnum.SB_ADJUST_NEW_SEGMENT_STEP.getInt());
             });
         }
         this.adjustButton = this.findViewById(getIdentifier(context, "new_segment_adjust", "id"));
