@@ -384,40 +384,17 @@ public class PlayerController {
         }
     }
 
-    public static void skipRelativeMilliseconds(int millisRelative) {
-        skipToMillisecond(VideoInformation.getVideoTime() + millisRelative);
-    }
-
-    public static boolean skipToMillisecond(long millisecond) {
-        // in 15.x if sponsor clip hits the end, then it crashes the app, because of too many function invocations
-        // I put this block so that skip can be made only once per some time
-        try {
-            final long now = System.currentTimeMillis();
-            if (now < allowNextSkipRequestTime) {
-                LogHelper.printDebug(() -> "skipToMillisecond: to fast, slow down, because you'll fail");
-                return false;
-            }
-            allowNextSkipRequestTime = now + 100;
-
-            LogHelper.printDebug(() -> "Skipping to: " + millisecond);
-            VideoInformation.seekTo(millisecond);
-        } catch (Exception e) {
-            LogHelper.printException(() -> "Cannot skip to millisecond", e);
-        }
-
-        return true;
-    }
-
     private static void skipSegment(SponsorSegment segment, boolean userManuallySkipped) {
         try {
             LogHelper.printDebug(() -> "Skipping segment: " + segment);
 
-            boolean didSucceed = skipToMillisecond(segment.end);
-            if (didSucceed && !userManuallySkipped) {
+            VideoInformation.seekTo(segment.end);
+            if (!userManuallySkipped) {
                 segment.didAutoSkipped = true;
+                if (SettingsEnum.SB_SHOW_TOAST_WHEN_SKIP.getBoolean()) {
+                    SkipSegmentView.notifySkipped(segment);
+                }
             }
-            if (SettingsEnum.SB_SHOW_TOAST_WHEN_SKIP.getBoolean() && !userManuallySkipped)
-                SkipSegmentView.notifySkipped(segment);
             SkipSegmentView.hide();
 
             if (segment.category == SponsorBlockSettings.SegmentInfo.UNSUBMITTED) {
