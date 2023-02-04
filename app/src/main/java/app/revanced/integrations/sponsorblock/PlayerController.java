@@ -304,9 +304,9 @@ public class PlayerController {
         if (segmentCurrentlyPlayingToManuallySkip != null) {
             skipSegment(segmentCurrentlyPlayingToManuallySkip, true);
         } else {
+            SkipSegmentView.hide();
             LogHelper.printException(() -> "error: segment not available to skip"); // should never happen
         }
-        SkipSegmentView.hide();
     }
 
     /**
