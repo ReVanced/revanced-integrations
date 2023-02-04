@@ -399,10 +399,12 @@ public class PlayerController {
         try {
             // If trying to seek to end of the video, YouTube will seek just short of the actual end.
             // This causes additional segment skip attempts, even though it cannot seek any closer to the desired time.
-            // Check for and ignore repeated skip attempts of the same segment in a short time period
+            //
+            // Check for and ignore repeated skip attempts of the same segment in a short time period.
+            // But allow multiple intro skip attempts, as setTime:0 can be called multiple times immediately after a new video open.
             final long now = System.currentTimeMillis();
             final long minimumMillisecondsBetweenSkippingSameSegment = 1000;
-            if (lastSegmentSkipped == segment
+            if ((lastSegmentSkipped == segment) && (segment.start != 0)
                     && (now - lastSegmentSkippedTime < minimumMillisecondsBetweenSkippingSameSegment)) {
                 LogHelper.printDebug(() -> "Ignoring skip segment request (already skipped as close as possible): " + segment);
                 return;
@@ -440,28 +442,34 @@ public class PlayerController {
     }
 
 
-    private static int numberOfSegmentsSkipped;
-    private static String segmentSkipMessage;
+    private static int toastNumberOfSegmentsSkipped;
+    private static SponsorSegment toastSegmentSkipped;
 
     private static void showSkippedSegmentToast(SponsorSegment segment) {
         ReVancedUtils.verifyOnMainThread();
-        numberOfSegmentsSkipped++;
-        if (numberOfSegmentsSkipped > 1) {
+        if (toastSegmentSkipped == segment) {
+            // Already counted, and toast is showing soon.
+            // Can occur when opening a new video,
+            // and due to multiple setTime:0 calls the same intro skips multiple times
+            return;
+        }
+        toastNumberOfSegmentsSkipped++;
+        if (toastNumberOfSegmentsSkipped > 1) {
             return; // toast already scheduled
         }
-        segmentSkipMessage = segment.category.skipMessage.toString();
+        toastSegmentSkipped = segment;
 
         final long delayToToastMilliseconds = 200; // also the maximum time between skips to be considered skipping multiple segments
         ReVancedUtils.runOnMainThreadDelayed(() -> {
             try {
-                ReVancedUtils.showToastShort(numberOfSegmentsSkipped == 1
-                        ? segmentSkipMessage
+                ReVancedUtils.showToastShort(toastNumberOfSegmentsSkipped == 1
+                        ? segment.category.skipMessage.toString()
                         : str("skipped_multiple_segments"));
             } catch (Exception ex) {
                 LogHelper.printException(() -> "showSkippedSegmentToast failure", ex);
             } finally {
-                numberOfSegmentsSkipped = 0;
-                segmentSkipMessage = null;
+                toastNumberOfSegmentsSkipped = 0;
+                toastSegmentSkipped = null;
             }
         }, delayToToastMilliseconds);
     }
