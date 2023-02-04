@@ -218,6 +218,7 @@ public class PlayerController {
 
                 // we are in the segment!
                 if (segment.shouldAutoSkip()) {
+                    nextSegmentToAutoSkip = null; // in case autoskip has not run yet
                     skipSegment(segment, false);
                     break;
                 } else {
