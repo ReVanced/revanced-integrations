@@ -198,7 +198,7 @@ public class PlayerController {
 
                     foundUpcomingAutoSkipSegment = true;
                     if (nextSegmentToAutoSkip != segment) {
-                        LogHelper.printDebug(() -> "Scheduling skipping segment automatically");
+                        LogHelper.printDebug(() -> "Scheduling automatic segment skip");
                         nextSegmentToAutoSkip = segment;
                         ReVancedUtils.runOnMainThreadDelayed(() -> {
                             if (nextSegmentToAutoSkip != segment) {
@@ -392,8 +392,23 @@ public class PlayerController {
         }
     }
 
+    private static SponsorSegment lastSegmentSkipped;
+    private static long lastSegmentSkippedTime;
+
     private static void skipSegment(SponsorSegment segment, boolean userManuallySkipped) {
         try {
+            // If trying to seek to end of the video, YouTube will seek just short of the actual end.
+            // This causes additional segment skip attempts, even though it cannot seek any closer to the desired time.
+            // Check for and ignore repeated skip attempts of the same segment in a short time period
+            final long now = System.currentTimeMillis();
+            final long minimumMillisecondsBetweenSkippingSameSegment = 1000;
+            if (lastSegmentSkipped == segment
+                    && (now - lastSegmentSkippedTime < minimumMillisecondsBetweenSkippingSameSegment)) {
+                LogHelper.printDebug(() -> "Ignoring skip segment request (already skipped as close as possible): " + segment);
+                return;
+            }
+            lastSegmentSkipped = segment;
+            lastSegmentSkippedTime = now;
             LogHelper.printDebug(() -> "Skipping segment: " + segment);
 
             SponsorBlockView.hideSkipButton();
