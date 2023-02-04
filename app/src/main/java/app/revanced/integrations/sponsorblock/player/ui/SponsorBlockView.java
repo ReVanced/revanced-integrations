@@ -56,6 +56,15 @@ public class SponsorBlockView {
         newSegmentLayoutVisibility(false);
     }
 
+    public static void toggleNewSegmentLayout() {
+        NewSegmentLayout newSegmentLayout = _newSegmentLayout.get();
+        if (newSegmentLayout == null) {
+            LogHelper.printException(() -> "Unable to newSegmentLayoutVisibility");
+            return;
+        }
+        newSegmentLayoutVisibility(newSegmentLayout.getVisibility() == View.VISIBLE ? false : true);
+    }
+
     static void playerTypeChanged(PlayerType playerType) {
         try {
             shouldShowOnPlayerType = (playerType == PlayerType.WATCH_WHILE_FULLSCREEN || playerType == PlayerType.WATCH_WHILE_MAXIMIZED);
@@ -150,8 +159,13 @@ public class SponsorBlockView {
 
         visible &= shouldShowOnPlayerType;
 
-        newSegmentLayout.setVisibility(visible ? View.VISIBLE : View.GONE);
-        bringLayoutToFront();
+        final int desiredVisibility = visible ? View.VISIBLE : View.GONE;
+        if (newSegmentLayout.getVisibility() != desiredVisibility) {
+            newSegmentLayout.setVisibility(desiredVisibility);
+            if (visible) {
+                bringLayoutToFront();
+            }
+        }
     }
 
     private static void bringLayoutToFront() {
