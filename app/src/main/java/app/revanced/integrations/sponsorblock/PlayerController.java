@@ -191,7 +191,7 @@ public class PlayerController {
             for (final SponsorSegment segment : sponsorSegmentsOfCurrentVideo) {
                 if (millis < segment.start) { // segment is upcoming
                     if (startTimerAtMillis < segment.start)
-                        break; // no upcoming segments are close enough to schedule a task
+                        break; // no upcoming segments are close enough to schedule a skip
 
                     if (!segment.shouldAutoSkip())
                         break; // not an autoskip segment, or it's a skip once and has already gone
