@@ -198,7 +198,7 @@ public class PlayerController {
 
                     foundUpcomingAutoSkipSegment = true;
                     if (nextSegmentToAutoSkip != segment) {
-                        LogHelper.printDebug(() -> "Scheduling automatic segment skip");
+                        LogHelper.printDebug(() -> "Scheduling segment skip");
                         nextSegmentToAutoSkip = segment;
                         ReVancedUtils.runOnMainThreadDelayed(() -> {
                             if (nextSegmentToAutoSkip != segment) {
@@ -218,7 +218,7 @@ public class PlayerController {
 
                 // we are in the segment!
                 if (segment.shouldAutoSkip()) {
-                    nextSegmentToAutoSkip = null; // in case autoskip has not run yet
+                    nextSegmentToAutoSkip = null; // if a scheduled skip has not run yet
                     skipSegment(segment, false);
                     break;
                 } else {
@@ -229,7 +229,7 @@ public class PlayerController {
                 }
             }
             if (!foundUpcomingAutoSkipSegment && nextSegmentToAutoSkip != null) {
-                LogHelper.printDebug(() -> "Clearing scheduled autoskip");
+                LogHelper.printDebug(() -> "Clearing scheduled segment skip");
                 nextSegmentToAutoSkip = null;
             }
             if (segmentCurrentlyPlayingToManuallySkip != null) {
