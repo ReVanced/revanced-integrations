@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 import java.text.Bidi;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -137,6 +138,7 @@ public class ReVancedUtils {
     }
 
     private static void showToast(String messageToToast, int toastDuration) {
+        Objects.requireNonNull(messageToToast);
         runOnMainThreadNowOrLater(() -> {
                     Context context = getContext();
                     if (context != null) {

@@ -44,6 +44,7 @@ public class PlayerController {
     private static SponsorSegment nextSegmentToAutoSkip;
     private static String timeWithoutSegments = "";
     private static boolean settingsInitialized;
+
     private static float sponsorBarLeft = 1f;
     private static float sponsorBarRight = 1f;
     private static float sponsorBarThickness = 2f;
@@ -437,10 +438,6 @@ public class PlayerController {
         final long delayToToastMilliseconds = 200; // also the maximum time between skips to be considered skipping multiple segments
         ReVancedUtils.runOnMainThreadDelayed(() -> {
             try {
-                if (segmentSkipMessage == null) {
-                    LogHelper.printException(() -> "No skip message to display"); // should never happen
-                    return;
-                }
                 ReVancedUtils.showToastShort(numberOfSegmentsSkipped == 1
                         ? segmentSkipMessage
                         : str("skipped_multiple_segments"));
