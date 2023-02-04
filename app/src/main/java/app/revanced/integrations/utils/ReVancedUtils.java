@@ -140,9 +140,11 @@ public class ReVancedUtils {
     private static void showToast(String messageToToast, int toastDuration) {
         Objects.requireNonNull(messageToToast);
         runOnMainThreadNowOrLater(() -> {
-                    LogHelper.printDebug(() -> "Showing toast: " + messageToToast);
-                    Context context = getContext();
-                    if (context != null) {
+                    // cannot use getContext(), otherwise if context is null it will cause infinite recursion of error logging
+                    if (context == null) {
+                        LogHelper.printDebug(() -> "Cannot show toast (context is null)");
+                    } else {
+                        LogHelper.printDebug(() -> "Showing toast: " + messageToToast);
                         Toast.makeText(context, messageToToast, toastDuration).show();
                     }
                 }
