@@ -83,7 +83,7 @@ public class PlayerController {
         try {
             ReVancedUtils.verifyOnMainThread();
             SponsorBlockView.hideSkipButton();
-            NewSegmentHelperLayout.hide();
+            SponsorBlockView.hideNewSegmentLayout();
             LogHelper.printDebug(() -> "Initialized SponsorBlock");
         } catch (Exception ex) {
             LogHelper.printException(() -> "Failed to initialize SponsorBlock", ex);
@@ -323,7 +323,7 @@ public class PlayerController {
 
             ReVancedUtils.runOnMainThreadDelayed(() -> {
                 final ViewGroup viewGroup = (ViewGroup) ((ViewGroup) view).getChildAt(2);
-                NewSegmentHelperLayout.context = viewGroup.getContext();
+                SponsorBlockUtils.setPlayerViewGroupContext(viewGroup.getContext());
             }, 500);
         } catch (Exception ex) {
             LogHelper.printException(() -> "addSkipSponsorView15 failure", ex);

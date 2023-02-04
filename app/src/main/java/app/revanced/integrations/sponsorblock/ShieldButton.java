@@ -11,6 +11,7 @@ import java.lang.ref.WeakReference;
 
 import app.revanced.integrations.patches.VideoInformation;
 import app.revanced.integrations.settings.SettingsEnum;
+import app.revanced.integrations.sponsorblock.player.ui.SponsorBlockView;
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedUtils;
 
@@ -22,7 +23,7 @@ public class ShieldButton {
 
     private static final View.OnClickListener sponsorBlockBtnListener = v -> {
         LogHelper.printDebug(() -> "Shield button clicked");
-        NewSegmentHelperLayout.toggle();
+        SponsorBlockView.toggleNewSegmentLayout();
     };
 
     /**

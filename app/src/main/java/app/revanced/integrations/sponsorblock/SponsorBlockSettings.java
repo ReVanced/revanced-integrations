@@ -32,11 +32,11 @@ public class SponsorBlockSettings {
 
         if (!SettingsEnum.SB_ENABLED.getBoolean()) {
             SponsorBlockView.hideSkipButton();
-            NewSegmentHelperLayout.hide();
+            SponsorBlockView.hideNewSegmentLayout();
             PlayerController.setCurrentVideoId(null);
         }
         if (!SettingsEnum.SB_NEW_SEGMENT_ENABLED.getBoolean()) {
-            NewSegmentHelperLayout.hide();
+            SponsorBlockView.hideNewSegmentLayout();
         }
 
         // shield and voting button automatically show/hide themselves if feature is turned off

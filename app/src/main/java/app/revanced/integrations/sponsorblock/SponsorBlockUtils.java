@@ -34,6 +34,7 @@ import app.revanced.integrations.patches.VideoInformation;
 import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.sponsorblock.objects.SponsorSegment;
 import app.revanced.integrations.sponsorblock.objects.UserStats;
+import app.revanced.integrations.sponsorblock.player.ui.SponsorBlockView;
 import app.revanced.integrations.sponsorblock.requests.SBRequester;
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedUtils;
@@ -50,8 +51,10 @@ public abstract class SponsorBlockUtils {
     // must be used exclusively on the main thread (not thread safe)
     private static final DecimalFormat statsFormatter = new DecimalFormat("#,###,###");
     private static final String STATS_FORMAT_TEMPLATE = "%dh %d %s";
-
     private static final String LOCKED_COLOR = "#FFC83D";
+
+    private static Context playerViewGroupContext;
+
     private static long newSponsorSegmentDialogShownMillis;
     private static long newSponsorSegmentStartMillis = -1;
     private static long newSponsorSegmentEndMillis = -1;
@@ -101,7 +104,7 @@ public abstract class SponsorBlockUtils {
         @Override
         public void onClick(DialogInterface dialog, int which) {
             try {
-                NewSegmentHelperLayout.hide();
+                SponsorBlockView.hideNewSegmentLayout();
                 Context context = ((AlertDialog) dialog).getContext();
                 dialog.dismiss();
 
@@ -229,12 +232,16 @@ public abstract class SponsorBlockUtils {
     private SponsorBlockUtils() {
     }
 
-    public static void onMarkLocationClicked(Context context) {
+    static void setPlayerViewGroupContext(Context context) {
+        playerViewGroupContext = Objects.requireNonNull(context);
+    }
+
+    public static void onMarkLocationClicked() {
         try {
             ReVancedUtils.verifyOnMainThread();
             newSponsorSegmentDialogShownMillis = VideoInformation.getVideoTime();
 
-            new AlertDialog.Builder(context)
+            new AlertDialog.Builder(playerViewGroupContext)
                     .setTitle(str("new_segment_title"))
                     .setMessage(str("new_segment_mark_time_as_question",
                             newSponsorSegmentDialogShownMillis / 60000,
@@ -249,14 +256,14 @@ public abstract class SponsorBlockUtils {
         }
     }
 
-    public static void onPublishClicked(Context context) {
+    public static void onPublishClicked() {
         try {
             ReVancedUtils.verifyOnMainThread();
             if (newSponsorSegmentStartMillis >= 0 && newSponsorSegmentStartMillis < newSponsorSegmentEndMillis) {
                 long length = (newSponsorSegmentEndMillis - newSponsorSegmentStartMillis) / 1000;
                 long start = (newSponsorSegmentStartMillis) / 1000;
                 long end = (newSponsorSegmentEndMillis) / 1000;
-                new AlertDialog.Builder(context)
+                new AlertDialog.Builder(playerViewGroupContext)
                         .setTitle(str("new_segment_confirm_title"))
                         .setMessage(str("new_segment_confirm_content",
                                 start / 60, start % 60,
@@ -325,7 +332,7 @@ public abstract class SponsorBlockUtils {
         }
     }
 
-    public static void onPreviewClicked(Context context) {
+    public static void onPreviewClicked() {
         try {
             ReVancedUtils.verifyOnMainThread();
             if (newSponsorSegmentStartMillis >= 0 && newSponsorSegmentStartMillis < newSponsorSegmentEndMillis) {
@@ -360,10 +367,10 @@ public abstract class SponsorBlockUtils {
         }
     }
 
-    public static void onEditByHandClicked(Context context) {
+    public static void onEditByHandClicked() {
         try {
             ReVancedUtils.verifyOnMainThread();
-            new AlertDialog.Builder(context)
+            new AlertDialog.Builder(playerViewGroupContext)
                     .setTitle(str("new_segment_edit_by_hand_title"))
                     .setMessage(str("new_segment_edit_by_hand_content"))
                     .setNeutralButton(android.R.string.cancel, null)

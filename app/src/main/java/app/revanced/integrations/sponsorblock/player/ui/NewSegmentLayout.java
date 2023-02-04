@@ -12,7 +12,6 @@ import android.widget.ImageButton;
 
 import app.revanced.integrations.patches.VideoInformation;
 import app.revanced.integrations.settings.SettingsEnum;
-import app.revanced.integrations.sponsorblock.NewSegmentHelperLayout;
 import app.revanced.integrations.sponsorblock.SponsorBlockUtils;
 import app.revanced.integrations.utils.LogHelper;
 
@@ -78,7 +77,7 @@ public class NewSegmentLayout extends FrameLayout {
             setClickEffect(this.adjustButton);
             this.adjustButton.setOnClickListener(v -> {
                 LogHelper.printDebug(() -> "Adjust button clicked");
-                SponsorBlockUtils.onMarkLocationClicked(NewSegmentHelperLayout.context);
+                SponsorBlockUtils.onMarkLocationClicked();
             });
         }
         this.compareButton = this.findViewById(getIdentifier(context, "new_segment_compare", "id"));
@@ -86,7 +85,7 @@ public class NewSegmentLayout extends FrameLayout {
             setClickEffect(this.compareButton);
             this.compareButton.setOnClickListener(v -> {
                 LogHelper.printDebug(() -> "Compare button clicked");
-                SponsorBlockUtils.onPreviewClicked(NewSegmentHelperLayout.context);
+                SponsorBlockUtils.onPreviewClicked();
             });
         }
         this.editButton = this.findViewById(getIdentifier(context, "new_segment_edit", "id"));
@@ -94,7 +93,7 @@ public class NewSegmentLayout extends FrameLayout {
             setClickEffect(this.editButton);
             this.editButton.setOnClickListener(v -> {
                 LogHelper.printDebug(() -> "Edit button clicked");
-                SponsorBlockUtils.onEditByHandClicked(NewSegmentHelperLayout.context);
+                SponsorBlockUtils.onEditByHandClicked();
             });
         }
         this.publishButton = this.findViewById(getIdentifier(context, "new_segment_publish", "id"));
@@ -102,7 +101,7 @@ public class NewSegmentLayout extends FrameLayout {
             setClickEffect(this.publishButton);
             this.publishButton.setOnClickListener(v -> {
                 LogHelper.printDebug(() -> "Publish button clicked");
-                SponsorBlockUtils.onPublishClicked(NewSegmentHelperLayout.context);
+                SponsorBlockUtils.onPublishClicked();
             });
         }
 
