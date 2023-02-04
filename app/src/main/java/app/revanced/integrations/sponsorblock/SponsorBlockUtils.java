@@ -294,17 +294,21 @@ public abstract class SponsorBlockUtils {
     }
 
     private static void onNewCategorySelect(final SponsorSegment segment, Context context) {
-        ReVancedUtils.verifyOnMainThread();
-        final SponsorBlockSettings.SegmentInfo[] values = SponsorBlockSettings.SegmentInfo.valuesWithoutUnsubmitted();
-        CharSequence[] titles = new CharSequence[values.length];
-        for (int i = 0; i < values.length; i++) {
-            titles[i] = values[i].getTitleWithDot();
-        }
+        try {
+            ReVancedUtils.verifyOnMainThread();
+            final SponsorBlockSettings.SegmentInfo[] values = SponsorBlockSettings.SegmentInfo.valuesWithoutUnsubmitted();
+            CharSequence[] titles = new CharSequence[values.length];
+            for (int i = 0; i < values.length; i++) {
+                titles[i] = values[i].getTitleWithDot();
+            }
 
-        new AlertDialog.Builder(context)
-                .setTitle(str("new_segment_choose_category"))
-                .setItems(titles, (dialog, which) -> SBRequester.voteForSegmentOnBackgroundThread(segment, VoteOption.CATEGORY_CHANGE, values[which].key))
-                .show();
+            new AlertDialog.Builder(context)
+                    .setTitle(str("new_segment_choose_category"))
+                    .setItems(titles, (dialog, which) -> SBRequester.voteForSegmentOnBackgroundThread(segment, VoteOption.CATEGORY_CHANGE, values[which].key))
+                    .show();
+        } catch (Exception ex) {
+            LogHelper.printException(() -> "onNewCategorySelect failure", ex);
+        }
     }
 
     @SuppressLint("DefaultLocale")
