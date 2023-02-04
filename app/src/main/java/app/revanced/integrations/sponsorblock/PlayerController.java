@@ -5,8 +5,14 @@ import android.graphics.Rect;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
+import java.lang.reflect.Field;
+import java.util.Arrays;
+import java.util.Objects;
+
 import app.revanced.integrations.patches.VideoInformation;
 import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.shared.PlayerType;
@@ -14,10 +20,6 @@ import app.revanced.integrations.sponsorblock.objects.SponsorSegment;
 import app.revanced.integrations.sponsorblock.requests.SBRequester;
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedUtils;
-
-import java.lang.reflect.Field;
-import java.util.Arrays;
-import java.util.Objects;
 
 /**
  * Class is not thread safe. All methods must be called on the main thread unless otherwise specified.
@@ -38,7 +40,6 @@ public class PlayerController {
     @Nullable
     private static SponsorSegment nextSegmentToAutoSkip;
     private static String timeWithoutSegments = "";
-    private static long allowNextSkipRequestTime = 0L;
     private static boolean settingsInitialized;
     private static float sponsorBarLeft = 1f;
     private static float sponsorBarRight = 1f;
