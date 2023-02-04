@@ -166,12 +166,19 @@ public class PlayerController {
     /**
      * Injection point.
      * Updates SponsorBlock every 1000ms.
+     * When changing videos, this is first called with value 0 and then the video is changed.
      */
     public static void setVideoTime(long millis) {
         try {
             if (!SettingsEnum.SB_ENABLED.getBoolean()) return;
 
             if (sponsorSegmentsOfCurrentVideo == null || sponsorSegmentsOfCurrentVideo.length == 0) return;
+
+            if (VideoInformation.getCurrentVideoLength() == 0) {
+                LogHelper.printDebug(() -> "Video is not yet loaded (video length is 0)."
+                        + "  Ignoring setVideoTime call of time: " + millis);
+                return;
+            }
 
             LogHelper.printDebug(() -> "setVideoTime: " + millis);
 
@@ -399,13 +406,10 @@ public class PlayerController {
         try {
             // If trying to seek to end of the video, YouTube will seek just short of the actual end.
             // This causes additional segment skip attempts, even though it cannot seek any closer to the desired time.
-            //
             // Check for and ignore repeated skip attempts of the same segment in a short time period.
-            // But allow multiple intro skip attempts, as setTime:0 can be called multiple times immediately after a new video open.
             final long now = System.currentTimeMillis();
-            final long minimumMillisecondsBetweenSkippingSameSegment = 1000;
-            if ((lastSegmentSkipped == segment) && (segment.start != 0)
-                    && (now - lastSegmentSkippedTime < minimumMillisecondsBetweenSkippingSameSegment)) {
+            final long minimumMillisecondsBetweenSkippingSameSegment = 500;
+            if ((lastSegmentSkipped == segment) && (now - lastSegmentSkippedTime < minimumMillisecondsBetweenSkippingSameSegment)) {
                 LogHelper.printDebug(() -> "Ignoring skip segment request (already skipped as close as possible): " + segment);
                 return;
             }
