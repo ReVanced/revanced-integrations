@@ -187,7 +187,7 @@ public class PlayerController {
             for (final SponsorSegment segment : sponsorSegmentsOfCurrentVideo) {
                 if (millis < segment.start) { // segment is upcoming
                     if (startTimerAtMillis < segment.start)
-                        break; // not inside any segments, and no upcoming segments are close enough to schedule a task
+                        break; // no upcoming segments are close enough to schedule a task
 
                     if (!segment.shouldAutoSkip())
                         break; // not an autoskip segment, or it's a skip once and has already gone
@@ -219,7 +219,7 @@ public class PlayerController {
                 } else {
                     segmentCurrentlyPlayingToManuallySkip = segment;
                     // keep looking. there may be an upcoming autoskip,
-                    // or there may be another manual skip section nested inside this segment
+                    // or there may be a smaller manual skip section nested inside this segment
                     continue;
                 }
             }
