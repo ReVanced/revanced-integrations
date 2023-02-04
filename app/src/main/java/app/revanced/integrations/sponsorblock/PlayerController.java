@@ -445,7 +445,7 @@ public class PlayerController {
                         ? segmentSkipMessage
                         : str("skipped_multiple_segments"));
             } catch (Exception ex) {
-                LogHelper.printException(() -> "notifySkipped failure", ex);
+                LogHelper.printException(() -> "showSkippedSegmentToast failure", ex);
             } finally {
                 numberOfSegmentsSkipped = 0;
                 segmentSkipMessage = null;
