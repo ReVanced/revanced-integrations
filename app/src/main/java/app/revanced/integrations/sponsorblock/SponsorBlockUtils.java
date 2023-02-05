@@ -411,7 +411,16 @@ public abstract class SponsorBlockUtils {
             category.addPreference(preference);
             String formatted = statsFormatter.format(stats.segmentCount);
             preference.setTitle(fromHtml(str("stats_submissions", formatted)));
-            preference.setSelectable(false);
+            if (stats.segmentCount == 0) {
+                preference.setSelectable(false);
+            } else {
+                preference.setOnPreferenceClickListener(preference1 -> {
+                    Intent i = new Intent(Intent.ACTION_VIEW);
+                    i.setData(Uri.parse("https://sb.ltn.fi/userid/" + stats.userId));
+                    preference1.getContext().startActivity(i);
+                    return true;
+                });
+            }
         }
 
         {

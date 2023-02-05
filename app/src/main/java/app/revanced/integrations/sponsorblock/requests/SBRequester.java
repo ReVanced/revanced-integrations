@@ -207,8 +207,8 @@ public class SBRequester {
         ReVancedUtils.runOnBackgroundThread(() -> {
             try {
                 JSONObject json = getJSONObject(SBRoutes.GET_USER_STATS, SettingsEnum.SB_UUID.getString());
-                UserStats stats = new UserStats(json.getString("userName"), json.getDouble("minutesSaved"), json.getInt("segmentCount"),
-                        json.getInt("viewCount"));
+                UserStats stats = new UserStats(json.getString("userID"), json.getString("userName"),
+                        json.getDouble("minutesSaved"), json.getInt("segmentCount"), json.getInt("viewCount"));
                 runOnMainThread(() -> { // get back on main thread to modify UI elements
                     SponsorBlockUtils.addUserStats(category, loadingPreference, stats);
                 });
