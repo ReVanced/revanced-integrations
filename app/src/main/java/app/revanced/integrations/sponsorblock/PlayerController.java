@@ -102,6 +102,7 @@ public class PlayerController {
                 return;
             }
             if (PlayerType.getCurrent() == PlayerType.NONE) {
+                // VideoIdPatch does not yet support shorts. So currently this code will never run
                 LogHelper.printDebug(() -> "ignoring shorts video");
                 clearDownloadedData();
                 return;
@@ -165,9 +166,15 @@ public class PlayerController {
      */
     public static void setVideoTime(long millis) {
         try {
-            if (!SettingsEnum.SB_ENABLED.getBoolean()) return;
-
-            if (sponsorSegmentsOfCurrentVideo == null || sponsorSegmentsOfCurrentVideo.length == 0) return;
+            if (!SettingsEnum.SB_ENABLED.getBoolean()) {
+                return;
+            }
+            if (PlayerType.getCurrent().isNoneOrHidden()) {
+                return; // shorts playback
+            }
+            if (sponsorSegmentsOfCurrentVideo == null || sponsorSegmentsOfCurrentVideo.length == 0) {
+                return;
+            }
 
             if (VideoInformation.getCurrentVideoLength() == 0) {
                 LogHelper.printDebug(() -> "Video is not yet loaded (video length is 0)."

@@ -75,6 +75,7 @@ public final class VideoInformation {
 
     /**
      * Seek on the current video.
+     * Currently this does not function for Shorts playback.
      *
      * @param millisecond The millisecond to seek the video to.
      * @return if the seek was successful
@@ -101,6 +102,7 @@ public final class VideoInformation {
 
     /**
      * Get the id of the current video playing.
+     * Currently this does not function for Shorts playback.
      *
      * @return The id of the video. Empty string if not set yet.
      */
@@ -110,6 +112,7 @@ public final class VideoInformation {
 
     /**
      * Get the length of the current video playing.
+     * Currently this does not function for Shorts playback.
      *
      * @return The length of the video in milliseconds. 1 if not set yet.
      */
@@ -119,6 +122,7 @@ public final class VideoInformation {
 
     /**
      * Get the time of the current video playing.
+     * Currently this does not function for Shorts playback.
      *
      * @return The time of the video in milliseconds. -1 if not set yet.
      */

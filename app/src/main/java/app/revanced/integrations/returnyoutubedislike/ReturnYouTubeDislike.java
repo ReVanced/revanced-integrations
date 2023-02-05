@@ -203,7 +203,7 @@ public class ReturnYouTubeDislike {
         try {
             Objects.requireNonNull(vote);
 
-            if (PlayerType.getCurrent() == PlayerType.NONE) { // should occur if shorts is playing
+            if (PlayerType.getCurrent().isNoneOrHidden()) { // shorts is playing
                 LogHelper.printDebug(() -> "Ignoring vote during Shorts playback");
                 return;
             }
