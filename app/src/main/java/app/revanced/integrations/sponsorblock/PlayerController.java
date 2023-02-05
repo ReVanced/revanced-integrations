@@ -101,7 +101,7 @@ public class PlayerController {
                 clearDownloadedData();
                 return;
             }
-            if (PlayerType.getCurrent() == PlayerType.NONE) {
+            if (PlayerType.getCurrent().isNoneOrHidden()) {
                 // VideoIdPatch does not yet support shorts. So currently this code will never run
                 LogHelper.printDebug(() -> "ignoring shorts video");
                 clearDownloadedData();
