@@ -73,6 +73,8 @@ public class PlayerController {
         sponsorSegmentsOfCurrentVideo = null;
         timeWithoutSegments = "";
         nextSegmentToAutoSkip = null; // prevent any existing scheduled skip from running
+        toastSegmentSkipped = null; // prevent any scheduled skip toasts from showing
+        toastNumberOfSegmentsSkipped = 0;
     }
 
     /**
@@ -410,8 +412,13 @@ public class PlayerController {
             LogHelper.printDebug(() -> "Skipping segment: " + segment);
 
             SponsorBlockView.hideSkipButton();
-            VideoInformation.seekTo(segment.end);
 
+            final boolean seekSuccessful = VideoInformation.seekTo(segment.end);
+            if (!seekSuccessful) {
+                // can happen when switching videos and is normal
+                LogHelper.printDebug(() -> "Could not skip segment (seek unsuccessful): " + segment);
+                return;
+            }
             if (!userManuallySkipped) {
                 segment.didAutoSkipped = true;
                 if (SettingsEnum.SB_SHOW_TOAST_WHEN_SKIP.getBoolean()) {
@@ -444,10 +451,7 @@ public class PlayerController {
     private static void showSkippedSegmentToast(SponsorSegment segment) {
         ReVancedUtils.verifyOnMainThread();
         if (toastSegmentSkipped == segment) {
-            // Already counted, and toast is showing soon.
-            // Can occur when opening a new video,
-            // and due to multiple setTime:0 calls the same intro skips multiple times
-            return;
+            return; // already counted, and the toast is showing soon
         }
         toastNumberOfSegmentsSkipped++;
         if (toastNumberOfSegmentsSkipped > 1) {
@@ -458,6 +462,10 @@ public class PlayerController {
         final long delayToToastMilliseconds = 200; // also the maximum time between skips to be considered skipping multiple segments
         ReVancedUtils.runOnMainThreadDelayed(() -> {
             try {
+                if (toastSegmentSkipped == null) { // video was changed just after skipping segment
+                    LogHelper.printDebug(() -> "Ignoring stale scheduled show toast");
+                    return;
+                }
                 ReVancedUtils.showToastShort(toastNumberOfSegmentsSkipped == 1
                         ? segment.category.skipMessage.toString()
                         : str("skipped_multiple_segments"));

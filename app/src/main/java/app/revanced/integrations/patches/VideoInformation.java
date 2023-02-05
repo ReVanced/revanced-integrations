@@ -77,24 +77,26 @@ public final class VideoInformation {
      * Seek on the current video.
      *
      * @param millisecond The millisecond to seek the video to.
+     * @return if the seek was successful
      */
-    public static void seekTo(final long millisecond) {
+    public static boolean seekTo(final long millisecond) {
         ReVancedUtils.verifyOnMainThread();
         if (seekMethod == null) {
             LogHelper.printException(() -> "seekMethod was null");
-            return;
+            return false;
         }
 
         try {
             LogHelper.printDebug(() -> "Seeking to " + millisecond);
-            seekMethod.invoke(playerController.get(), millisecond);
+            return (Boolean) seekMethod.invoke(playerController.get(), millisecond);
         } catch (Exception ex) {
             LogHelper.printException(() -> "Failed to seek", ex);
+            return false;
         }
     }
 
-    public static void seekToRelative(long millisecondsRelative) {
-        seekTo(videoTime + millisecondsRelative);
+    public static boolean seekToRelative(long millisecondsRelative) {
+        return seekTo(videoTime + millisecondsRelative);
     }
 
     /**
