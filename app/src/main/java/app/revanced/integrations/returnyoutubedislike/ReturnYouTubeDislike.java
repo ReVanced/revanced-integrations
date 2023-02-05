@@ -184,7 +184,8 @@ public class ReturnYouTubeDislike {
             try {
                 Future<RYDVoteData> fetchFuture = getVoteFetchFuture();
                 if (fetchFuture == null) {
-                    LogHelper.printDebug(() -> "fetch future not available (user enabled RYD while video was playing?)");
+                    LogHelper.printDebug(() -> "fetch future not available (user is offline watching downloaded videos," +
+                            " or user enabled RYD while video was playing?)");
                     return;
                 }
                 if (SettingsEnum.DEBUG.getBoolean() && !fetchFuture.isDone()) {
