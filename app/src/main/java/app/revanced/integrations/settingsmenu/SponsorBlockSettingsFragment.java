@@ -9,6 +9,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.EditTextPreference;
 import android.preference.Preference;
@@ -211,6 +212,9 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment implements 
             Preference preference = new Preference(context);
             screen.addPreference(preference);
             preference.setTitle(str("about_madeby"));
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                preference.setSingleLineTitle(false);
+            }
             preference.setSelectable(false);
         }
 
