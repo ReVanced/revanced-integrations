@@ -437,16 +437,28 @@ public abstract class SponsorBlockUtils {
         {
             Preference preference = new Preference(context);
             category.addPreference(preference);
-            String formatted = statsFormatter.format(SettingsEnum.SB_SKIPPED_SEGMENTS.getInt());
 
-            final long totalSkippedTime = SettingsEnum.SB_SKIPPED_SEGMENTS_TIME.getLong();
-            final int hoursSaved = (int) (totalSkippedTime / (60 * 60 * 1000));
-            final int minutesSaved = (int) ((totalSkippedTime / (60 * 1000)) % 60);
-            String formattedSaved = String.format(STATS_FORMAT_TEMPLATE, hoursSaved, minutesSaved, minutesStr);
-
-            preference.setTitle(fromHtml(str("stats_self_saved", formatted)));
-            preference.setSummary(fromHtml(str("stats_self_saved_sum", formattedSaved)));
-            preference.setSelectable(false);
+            Runnable updateStatsSelfSaved = () -> {
+                final long totalSkippedTime = SettingsEnum.SB_SKIPPED_SEGMENTS_TIME.getLong();
+                final int hoursSaved = (int) (totalSkippedTime / (60 * 60 * 1000));
+                final int minutesSaved = (int) ((totalSkippedTime / (60 * 1000)) % 60);
+                String formatted = statsFormatter.format(SettingsEnum.SB_SKIPPED_SEGMENTS.getInt());
+                preference.setTitle(fromHtml(str("stats_self_saved", formatted)));
+                String formattedSaved = String.format(STATS_FORMAT_TEMPLATE, hoursSaved, minutesSaved, minutesStr);
+                preference.setSummary(fromHtml(str("stats_self_saved_sum", formattedSaved)));
+            };
+            updateStatsSelfSaved.run();
+            preference.setOnPreferenceClickListener(preference1 -> {
+                new AlertDialog.Builder(preference1.getContext())
+                        .setTitle(str("stats_self_saved_reset_title"))
+                        .setPositiveButton(android.R.string.yes, (dialog, whichButton) -> {
+                            SettingsEnum.SB_SKIPPED_SEGMENTS.setValue(SettingsEnum.SB_SKIPPED_SEGMENTS.getDefaultValue());
+                            SettingsEnum.SB_SKIPPED_SEGMENTS_TIME.setValue(SettingsEnum.SB_SKIPPED_SEGMENTS_TIME.getDefaultValue());
+                            updateStatsSelfSaved.run();
+                        })
+                        .setNegativeButton(android.R.string.no, null).show();
+                return true;
+            });
         }
     }
 
