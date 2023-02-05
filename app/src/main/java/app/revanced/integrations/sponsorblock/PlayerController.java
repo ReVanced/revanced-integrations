@@ -151,6 +151,7 @@ public class PlayerController {
                     return;
                 }
                 setSponsorSegmentsOfCurrentVideo(segments);
+                setVideoTime(VideoInformation.getVideoTime()); // check for any skips now, instead of waiting for the next update
             });
         } catch (Exception ex) {
             LogHelper.printException(() -> "executeDownloadSegments failure", ex);
