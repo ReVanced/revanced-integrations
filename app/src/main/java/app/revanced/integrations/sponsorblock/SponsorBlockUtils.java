@@ -417,15 +417,22 @@ public abstract class SponsorBlockUtils {
         {
             Preference preference = new Preference(context);
             category.addPreference(preference);
-            String formatted = statsFormatter.format(stats.viewCount);
 
-            final double totalSaved = stats.minutesSaved;
-            final int hoursSaved = (int) (totalSaved / 60);
-            final int minutesSaved = (int) (totalSaved % 60);
-            String formattedSaved = String.format(STATS_FORMAT_TEMPLATE, hoursSaved, minutesSaved, minutesStr);
-
-            preference.setTitle(fromHtml(str("stats_saved", formatted)));
-            preference.setSummary(fromHtml(str("stats_saved_sum", formattedSaved)));
+            String stats_saved;
+            String stats_saved_sum;
+            if (stats.segmentCount == 0) {
+                stats_saved = str("stats_saved_zero");
+                stats_saved_sum = str("stats_saved_sum_zero");
+            } else {
+                stats_saved = str("stats_saved", statsFormatter.format(stats.viewCount));
+                final double totalSaved = stats.minutesSaved;
+                final int hoursSaved = (int) (totalSaved / 60);
+                final int minutesSaved = (int) (totalSaved % 60);
+                String formattedSaved = String.format(STATS_FORMAT_TEMPLATE, hoursSaved, minutesSaved, minutesStr);
+                stats_saved_sum = str("stats_saved_sum", formattedSaved);
+            }
+            preference.setTitle(fromHtml(stats_saved));
+            preference.setSummary(fromHtml(stats_saved_sum));
             preference.setOnPreferenceClickListener(preference1 -> {
                 Intent i = new Intent(Intent.ACTION_VIEW);
                 i.setData(Uri.parse("https://sponsor.ajay.app/stats/"));
