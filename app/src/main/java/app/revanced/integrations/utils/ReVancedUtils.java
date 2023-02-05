@@ -14,8 +14,7 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -28,47 +27,27 @@ public class ReVancedUtils {
     } // utility class
 
     /**
-     * Maximum number of background threads run concurrently
-     */
-    private static final int SHARED_THREAD_POOL_MAXIMUM_BACKGROUND_THREADS = 20;
-
-    /**
      * General purpose pool for network calls and other background tasks.
      * All tasks run at max thread priority.
      */
     private static final ThreadPoolExecutor backgroundThreadPool = new ThreadPoolExecutor(
-            2, // minimum 2 threads always ready to be used
+            2, // 2 threads always ready to go
+            Integer.MAX_VALUE,
             10, // For any threads over the minimum, keep them alive 10 seconds after they go idle
-            SHARED_THREAD_POOL_MAXIMUM_BACKGROUND_THREADS,
             TimeUnit.SECONDS,
-            new LinkedBlockingQueue<Runnable>(),
-            new ThreadFactory() {
-                @Override
-                public Thread newThread(Runnable r) {
-                    Thread t = new Thread(r);
-                    t.setPriority(Thread.MAX_PRIORITY); // run at max priority
-                    return t;
-                }
+            new SynchronousQueue<>(),
+            r -> { // ThreadFactory
+                Thread t = new Thread(r);
+                t.setPriority(Thread.MAX_PRIORITY); // run at max priority
+                return t;
             });
-
-    private static void checkIfPoolHasReachedLimit() {
-        if (backgroundThreadPool.getActiveCount() >= SHARED_THREAD_POOL_MAXIMUM_BACKGROUND_THREADS) {
-            // Something is wrong. Background threads are piling up and not completing as expected,
-            // or some ReVanced code is submitting an unexpected number of background tasks.
-            LogHelper.printException(() -> "Reached maximum background thread count of "
-                    + SHARED_THREAD_POOL_MAXIMUM_BACKGROUND_THREADS + " threads");
-        }
-    }
 
     public static void runOnBackgroundThread(Runnable task) {
         backgroundThreadPool.execute(task);
-        checkIfPoolHasReachedLimit();
     }
 
     public static <T> Future<T> submitOnBackgroundThread(Callable<T> call) {
-        Future<T> future = backgroundThreadPool.submit(call);
-        checkIfPoolHasReachedLimit();
-        return future;
+        return backgroundThreadPool.submit(call);
     }
 
     public static boolean containsAny(final String value, final String... targets) {
