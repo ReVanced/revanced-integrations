@@ -14,6 +14,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -93,13 +94,14 @@ public class SBRequester {
                 // no segments are found.  a normal response
                 LogHelper.printDebug(() -> "No segments found for video: " + videoId);
             } else {
-                LogHelper.printException(() -> "getSegments failed with response code: " + responseCode);
+                LogHelper.printException(() -> "getSegments failed with response code: " + responseCode,
+                        null, str("sponsorblock_connection_failure_generic", responseCode));
                 connection.disconnect(); // something went wrong, might as well disconnect
             }
-        } catch (IOException ex) {
-            LogHelper.printException(() -> "Failed to get segments", ex, str("sponsorblock_connection_timeout"));
+        } catch (SocketTimeoutException ex) {
+            LogHelper.printException(() -> "Failed to get segments", ex, str("sponsorblock_connection_failure_timeout"));
         } catch (Exception ex) {
-            LogHelper.printException(() -> "Failed to get segments", ex);
+            LogHelper.printException(() -> "Failed to get segments", ex); // should never happen
         }
         return segments.toArray(new SponsorSegment[0]);
     }
@@ -136,8 +138,8 @@ public class SBRequester {
                     break;
             }
             ReVancedUtils.showToastLong(messageToToast);
-        } catch (IOException ex) {
-            ReVancedUtils.showToastLong(str("submit_failed_timeout", ex.getMessage()));
+        } catch (SocketTimeoutException ex) {
+            ReVancedUtils.showToastLong(str("submit_failed_timeout"));
         } catch (Exception ex) {
             LogHelper.printException(() -> "failed to submit segments", ex);
         }
@@ -156,7 +158,7 @@ public class SBRequester {
                         + " responseCode: " + responseCode); // debug level, no toast is shown
             }
         } catch (IOException ex) {
-            LogHelper.printDebug(() -> "Could not send view count: " + ex); // do not show a toast
+            LogHelper.printInfo(() -> "Could not send view count: connection timeout", ex); // do not show a toast
         } catch (Exception ex) {
             LogHelper.printException(() -> "Failed to send view count request", ex); // should never happen
         }
@@ -186,8 +188,8 @@ public class SBRequester {
                                 str("vote_failed_unknown_error", responseCode, connection.getResponseMessage()));
                         break;
                 }
-            } catch (IOException ex) {
-                LogHelper.printException(() -> "failed to vote for segment", ex, str("vote_failed_timeout", ex.getMessage()));
+            } catch (SocketTimeoutException ex) {
+                LogHelper.printException(() -> "failed to vote for segment", ex, str("vote_failed_timeout"));
             } catch (Exception ex) {
                 LogHelper.printException(() -> "failed to vote for segment", ex); // should never happen
             }
@@ -216,7 +218,7 @@ public class SBRequester {
                 runOnMainThread(() -> loadingPreference.setTitle(str("stats_connection_failure")));
                 LogHelper.printInfo(() -> "failed to retrieve user stats", ex); // info, to not show a toast
             } catch (Exception ex) {
-                LogHelper.printException(() -> "failed to retrieve user stats", ex);
+                LogHelper.printException(() -> "failed to retrieve user stats", ex); // should never happen
             }
         });
     }
