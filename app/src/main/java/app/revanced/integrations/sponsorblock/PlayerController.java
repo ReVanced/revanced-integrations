@@ -107,6 +107,11 @@ public class PlayerController {
                 clearDownloadedData();
                 return;
             }
+            if (!ReVancedUtils.isNetworkConnected()) {
+                LogHelper.printDebug(() -> "Network not connected, ignoring video");
+                clearDownloadedData();
+                return;
+            }
             if (videoId.equals(currentVideoId)) {
                 return;
             }

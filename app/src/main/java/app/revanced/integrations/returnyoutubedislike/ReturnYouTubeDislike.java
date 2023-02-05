@@ -101,9 +101,18 @@ public class ReturnYouTubeDislike {
                 // must clear old values, to protect against using stale data
                 // if the user re-enables RYD while watching a video
                 LogHelper.printDebug(() -> "Clearing previously fetched RYD vote data");
-                currentVideoId = null;
-                voteFetchFuture = null;
+                clearDownloadedData();
             }
+        }
+    }
+
+    /**
+     * Clears all downloaded data
+     */
+    private static void clearDownloadedData() {
+        synchronized (videoIdLockObject) {
+            currentVideoId = null;
+            voteFetchFuture = null;
         }
     }
 
@@ -125,6 +134,11 @@ public class ReturnYouTubeDislike {
         if (!isEnabled) return;
         try {
             Objects.requireNonNull(videoId);
+            if (!ReVancedUtils.isNetworkConnected()) {
+                LogHelper.printDebug(() -> "Network not connected, ignoring video");
+                clearDownloadedData();
+                return;
+            }
             PlayerType currentPlayerType = PlayerType.getCurrent();
             if (currentPlayerType == PlayerType.INLINE_MINIMAL) {
                 LogHelper.printDebug(() -> "Ignoring inline playback of video: "+ videoId);
