@@ -1,10 +1,10 @@
 package app.revanced.integrations.patches;
 
-import app.revanced.integrations.utils.LogHelper;
-import app.revanced.integrations.utils.ReVancedUtils;
-
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Method;
+
+import app.revanced.integrations.utils.LogHelper;
+import app.revanced.integrations.utils.ReVancedUtils;
 
 /**
  * Hooking class for the current playing video.
@@ -18,7 +18,6 @@ public final class VideoInformation {
     private static String videoId = "";
     private static long videoLength = 1;
     private static long videoTime = -1;
-
 
     /**
      * Hook into PlayerController.onCreate() method.
@@ -75,7 +74,7 @@ public final class VideoInformation {
 
     /**
      * Seek on the current video.
-     * Currently this does not function for Shorts playback.
+     * <b>Currently this does not function for Shorts playback.</b>
      *
      * @param millisecond The millisecond to seek the video to.
      * @return if the seek was successful
@@ -102,7 +101,7 @@ public final class VideoInformation {
 
     /**
      * Get the id of the current video playing.
-     * Currently this does not function for Shorts playback.
+     * <b>Currently this does not function for Shorts playback.</b>
      *
      * @return The id of the video. Empty string if not set yet.
      */
@@ -112,7 +111,7 @@ public final class VideoInformation {
 
     /**
      * Get the length of the current video playing.
-     * Currently this does not function for Shorts playback.
+     * Includes Shorts playback.
      *
      * @return The length of the video in milliseconds. 1 if not set yet.
      */
@@ -122,7 +121,7 @@ public final class VideoInformation {
 
     /**
      * Get the time of the current video playing.
-     * Currently this does not function for Shorts playback.
+     * Includes Shorts playback.
      *
      * @return The time of the video in milliseconds. -1 if not set yet.
      */
