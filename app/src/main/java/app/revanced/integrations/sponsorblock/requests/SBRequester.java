@@ -212,6 +212,9 @@ public class SBRequester {
                 runOnMainThread(() -> { // get back on main thread to modify UI elements
                     SponsorBlockUtils.addUserStats(category, loadingPreference, stats);
                 });
+            } catch (IOException ex) {
+                runOnMainThread(() -> loadingPreference.setTitle(str("stats_connection_failure")));
+                LogHelper.printInfo(() -> "failed to retrieve user stats", ex); // info, to not show a toast
             } catch (Exception ex) {
                 LogHelper.printException(() -> "failed to retrieve user stats", ex);
             }
