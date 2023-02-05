@@ -95,13 +95,13 @@ public class SBRequester {
                 LogHelper.printDebug(() -> "No segments found for video: " + videoId);
             } else {
                 LogHelper.printException(() -> "getSegments failed with response code: " + responseCode,
-                        null, str("sponsorblock_connection_failure_generic", responseCode));
+                        null, str("sponsorblock_connection_failure_status", responseCode));
                 connection.disconnect(); // something went wrong, might as well disconnect
             }
         } catch (SocketTimeoutException ex) {
             LogHelper.printException(() -> "Failed to get segments", ex, str("sponsorblock_connection_failure_timeout"));
         } catch (Exception ex) {
-            LogHelper.printException(() -> "Failed to get segments", ex); // should never happen
+            LogHelper.printException(() -> "Failed to get segments", ex, str("sponsorblock_connection_failure_generic"));
         }
         return segments.toArray(new SponsorSegment[0]);
     }
