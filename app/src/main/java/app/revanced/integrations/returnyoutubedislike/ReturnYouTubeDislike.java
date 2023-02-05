@@ -216,13 +216,8 @@ public class ReturnYouTubeDislike {
         if (!isEnabled) return;
         try {
             Objects.requireNonNull(vote);
-
             if (PlayerType.getCurrent().isNoneOrHidden()) { // shorts is playing
                 LogHelper.printDebug(() -> "Ignoring vote during Shorts playback");
-                return;
-            }
-            if (SharedPrefHelper.getBoolean(SharedPrefHelper.SharedPrefNames.YOUTUBE, "user_signed_out", true)) {
-                LogHelper.printDebug(() -> "User is logged out, ignoring voting");
                 return;
             }
 
