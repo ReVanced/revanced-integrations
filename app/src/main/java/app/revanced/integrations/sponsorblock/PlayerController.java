@@ -142,14 +142,6 @@ public class PlayerController {
         try {
             SponsorSegment[] segments = SBRequester.getSegments(videoId);
 
-            LogHelper.printDebug(() -> {
-                StringBuilder builder = new StringBuilder("Downloaded segments:");
-                for (SponsorSegment segment : segments) {
-                    builder.append('\n').append(segment);
-                }
-                return builder.toString();
-            });
-
             ReVancedUtils.runOnMainThread(()-> {
                 if (!videoId.equals(currentVideoId)) {
                     // user changed videos before get segments network call could complete

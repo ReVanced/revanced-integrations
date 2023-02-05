@@ -81,6 +81,13 @@ public class SBRequester {
                         segments.add(sponsorSegment);
                     }
                 }
+                LogHelper.printDebug(() -> {
+                    StringBuilder builder = new StringBuilder("Downloaded segments:");
+                    for (SponsorSegment segment : segments) {
+                        builder.append('\n').append(segment);
+                    }
+                    return builder.toString();
+                });
                 runVipCheckInBackgroundIfNeeded();
             } else if (responseCode == 404) {
                 // no segments are found.  a normal response
