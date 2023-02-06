@@ -73,7 +73,7 @@ public class PlayerController {
         sponsorSegmentsOfCurrentVideo = null;
         timeWithoutSegments = "";
         nextSegmentToAutoSkip = null; // prevent any existing scheduled skip from running
-        toastSegmentSkipped = null; // prevent any scheduled skip toasts from showing
+        toastSkipMessageToDisplay = null; // prevent any scheduled skip toasts from showing
         toastNumberOfSegmentsSkipped = 0;
     }
 
@@ -472,34 +472,31 @@ public class PlayerController {
 
 
     private static int toastNumberOfSegmentsSkipped;
-    private static SponsorSegment toastSegmentSkipped;
+    private static String toastSkipMessageToDisplay;
 
     private static void showSkippedSegmentToast(SponsorSegment segment) {
         ReVancedUtils.verifyOnMainThread();
-        if (toastSegmentSkipped == segment) {
-            return; // already counted, and the toast is showing soon
-        }
         toastNumberOfSegmentsSkipped++;
         if (toastNumberOfSegmentsSkipped > 1) {
             return; // toast already scheduled
         }
-        toastSegmentSkipped = segment;
+        toastSkipMessageToDisplay = segment.category.skipMessage.toString();
 
         final long delayToToastMilliseconds = 200; // also the maximum time between skips to be considered skipping multiple segments
         ReVancedUtils.runOnMainThreadDelayed(() -> {
             try {
-                if (toastSegmentSkipped == null) { // video was changed just after skipping segment
+                if (toastSkipMessageToDisplay == null) { // video was changed just after skipping segment
                     LogHelper.printDebug(() -> "Ignoring stale scheduled show toast");
                     return;
                 }
                 ReVancedUtils.showToastShort(toastNumberOfSegmentsSkipped == 1
-                        ? segment.category.skipMessage.toString()
+                        ? toastSkipMessageToDisplay
                         : str("skipped_multiple_segments"));
             } catch (Exception ex) {
                 LogHelper.printException(() -> "showSkippedSegmentToast failure", ex);
             } finally {
                 toastNumberOfSegmentsSkipped = 0;
-                toastSegmentSkipped = null;
+                toastSkipMessageToDisplay = null;
             }
         }, delayToToastMilliseconds);
     }
