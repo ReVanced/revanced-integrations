@@ -121,11 +121,11 @@ public final class VideoInformation {
 
     /**
      * Playback time of the current video playing.
-     * Value can lag up to 100ms behind the actual current video playback time.
+     * Value can lag up to approximately 100ms behind the actual current video playback time.
      *
      * Note: Code inside a videoTimeHook patch callback
      * should use the callback video time and avoid using this method
-     * (in rare situations this method may not yet be updated).
+     * (in rare recursive situations this method may not yet be updated).
      *
      * Includes Shorts playback.
      *
