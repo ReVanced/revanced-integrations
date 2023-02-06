@@ -33,14 +33,21 @@ public class SponsorSegment implements Comparable<SponsorSegment> {
         return category.behaviour.skip && !(didAutoSkipped && category.behaviour == SegmentBehaviour.SKIP_AUTOMATICALLY_ONCE);
     }
 
-    @NonNull
-    @Override
-    public String toString() {
-        return MessageFormat.format("SegmentInfo'{'start={0}, end={1}, category=''{2}'', locked={3}'}'", start, end, category, isLocked);
+    /**
+     * @return if the video time falls within this segment
+     */
+    public boolean containsTime(long videoTime) {
+        return start <= videoTime && videoTime < end;
     }
 
     @Override
     public int compareTo(SponsorSegment o) {
         return (int) (this.start - o.start);
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return MessageFormat.format("SegmentInfo'{'start={0}, end={1}, category=''{2}'', locked={3}'}'", start, end, category, isLocked);
     }
 }

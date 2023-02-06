@@ -217,6 +217,9 @@ public class PlayerController {
                                 nextSegmentToAutoSkip = null;
                                 skipSegment(segment, false);
                             }
+                            // This does not adjust the timing if playback speed is not 1.0x.
+                            // If playback speed is not 1.0x, then this autoskip will be ignored in skipSegment()
+                            // and autoskip will happen after playback enters the segment.
                         }, segment.start - millis);
                     }
                     break;
@@ -416,6 +419,12 @@ public class PlayerController {
                 LogHelper.printDebug(() -> "Ignoring skip segment request (already skipped as close as possible): " + segment);
                 return;
             }
+            final long currentVideoTime = VideoInformation.getVideoTime();
+            if (!segment.containsTime(currentVideoTime)) { // happens to scheduled autoskips if video playback speed is not 1.0x
+                LogHelper.printDebug(() -> "Ignoring skip. Current video time: " + currentVideoTime + " is outside segment bounds: " + segment);
+                return;
+            }
+
             lastSegmentSkipped = segment;
             lastSegmentSkippedTime = now;
             LogHelper.printDebug(() -> "Skipping segment: " + segment);
@@ -446,7 +455,7 @@ public class PlayerController {
                 }
                 setSponsorSegmentsOfCurrentVideo(newSegments);
             } else {
-                SponsorBlockUtils.sendViewRequestAsync(VideoInformation.getVideoTime(), segment);
+                SponsorBlockUtils.sendViewRequestAsync(currentVideoTime, segment);
             }
         } catch (Exception ex) {
             LogHelper.printException(() -> "skipSegment failure", ex);
