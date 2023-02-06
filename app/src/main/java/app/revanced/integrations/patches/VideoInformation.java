@@ -20,7 +20,8 @@ public final class VideoInformation {
     private static volatile long videoTime = -1; // must be volatile. Value is set off main thread from high precision patch hook
 
     /**
-     * Hook into PlayerController.onCreate() method.
+     * Injection point.
+     * Sets a reference to the YouTube playback controller.
      *
      * @param thisRef Reference to the player controller object.
      */
@@ -62,14 +63,12 @@ public final class VideoInformation {
 
     /**
      * Injection point.
+     * Called off the main thread approximately every 50ms to 100ms
      *
-     * @param time The playback time of the video in milliseconds.
+     * @param currentPlaybackTime The current playback time of the video in milliseconds.
      */
-    public static void setVideoTime(final long time) {
-        if (videoTime != time) {
-            LogHelper.printDebug(() -> "Current video time: " + time);
-            videoTime = time;
-        }
+    public static void setVideoTime(final long currentPlaybackTime) {
+        videoTime = currentPlaybackTime;
     }
 
     /**
