@@ -176,8 +176,8 @@ public class PlayerController {
                 || sponsorSegmentsOfCurrentVideo == null || sponsorSegmentsOfCurrentVideo.length == 0) {
                 return;
             }
-            if (VideoInformation.getCurrentVideoLength() == 0) {
-                LogHelper.printDebug(() -> "Video is not yet loaded (video length is 0)."
+            if (VideoInformation.getCurrentVideoLength() <= 0) {
+                LogHelper.printDebug(() -> "Video is not yet loaded (video has no length)."
                         + "  Ignoring setVideoTime call of time: " + millis);
                 return;
             }
