@@ -17,7 +17,7 @@ public final class VideoInformation {
 
     private static String videoId = "";
     private static long videoLength = 1;
-    private static long videoTime = -1;
+    private static volatile long videoTime = -1; // must be volatile. Value is set off main thread from high precision patch hook
 
     /**
      * Hook into PlayerController.onCreate() method.
@@ -38,9 +38,9 @@ public final class VideoInformation {
     }
 
     /**
-     * Set the video id.
+     * Injection point.
      *
-     * @param videoId The id of the video.
+     * @param videoId The id of the current video.
      */
     public static void setVideoId(String videoId) {
         LogHelper.printDebug(() -> "Current video id: " + videoId);
@@ -49,7 +49,7 @@ public final class VideoInformation {
     }
 
     /**
-     * Set the video length.
+     * Injection point.
      *
      * @param length The length of the video in milliseconds.
      */
@@ -61,9 +61,9 @@ public final class VideoInformation {
     }
 
     /**
-     * Set the video time.
+     * Injection point.
      *
-     * @param time The time of the video in milliseconds.
+     * @param time The playback time of the video in milliseconds.
      */
     public static void setVideoTime(final long time) {
         if (videoTime != time) {
@@ -100,7 +100,7 @@ public final class VideoInformation {
     }
 
     /**
-     * Get the id of the current video playing.
+     * Id of the current video playing.
      * <b>Currently this does not function for Shorts playback.</b>
      *
      * @return The id of the video. Empty string if not set yet.
@@ -110,7 +110,7 @@ public final class VideoInformation {
     }
 
     /**
-     * Get the length of the current video playing.
+     * Length of the current video playing.
      * Includes Shorts playback.
      *
      * @return The length of the video in milliseconds. 1 if not set yet.
@@ -120,7 +120,13 @@ public final class VideoInformation {
     }
 
     /**
-     * Get the time of the current video playing.
+     * Playback time of the current video playing.
+     * Value can lag up to 100ms behind the actual current video playback time.
+     *
+     * Note: Code inside a videoTimeHook patch callback
+     * should use the callback video time and avoid using this method
+     * (in rare situations this method may not yet be updated).
+     *
      * Includes Shorts playback.
      *
      * @return The time of the video in milliseconds. -1 if not set yet.
