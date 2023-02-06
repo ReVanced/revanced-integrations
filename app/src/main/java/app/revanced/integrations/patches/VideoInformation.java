@@ -45,7 +45,6 @@ public final class VideoInformation {
      */
     public static void setVideoId(String videoId) {
         LogHelper.printDebug(() -> "Current video id: " + videoId);
-
         VideoInformation.videoId = videoId;
     }
 
@@ -67,7 +66,7 @@ public final class VideoInformation {
      *
      * @param currentPlaybackTime The current playback time of the video in milliseconds.
      */
-    public static void setVideoTime(final long currentPlaybackTime) {
+    public static void setVideoTimeHighPrecision(final long currentPlaybackTime) {
         videoTime = currentPlaybackTime;
     }
 
@@ -110,6 +109,7 @@ public final class VideoInformation {
 
     /**
      * Length of the current video playing.
+     * During changing of videos this can return a length of zero.
      * Includes Shorts playback.
      *
      * @return The length of the video in milliseconds. 1 if not set yet.
