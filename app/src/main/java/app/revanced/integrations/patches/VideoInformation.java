@@ -74,6 +74,9 @@ public final class VideoInformation {
      * Seek on the current video.
      * <b>Currently this does not function for Shorts playback.</b>
      *
+     * Caution: If called from a videoTimeHook() callback,
+     * this will cause a recursive call into the same videoTimeHook() callback.
+     *
      * @param millisecond The millisecond to seek the video to.
      * @return if the seek was successful
      */
