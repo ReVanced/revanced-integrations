@@ -207,19 +207,37 @@ public class PlayerController {
 
                     foundUpcomingAutoSkipSegment = true;
                     if (nextSegmentToAutoSkip != segment) {
-                        LogHelper.printDebug(() -> "Scheduling segment skip");
+                        LogHelper.printDebug(() -> "Scheduling segment skip: " + segment);
                         nextSegmentToAutoSkip = segment;
+
+                        // This schedule timing does not account if playback speed is not 1.0x.
+                        // If playback speed is not 1.0x, then this scheduled autoskip will later be ignored.
+                        // Instead autoskip will happen after playback enters the segment.
+                        //
+                        // Ideally, this scheduled timing would include the video playback speed,
+                        // but getting the playback speed is presently not easily accessible.
                         ReVancedUtils.runOnMainThreadDelayed(() -> {
                             if (nextSegmentToAutoSkip != segment) {
                                 LogHelper.printDebug(() -> "Ignoring stale scheduled skip: " + segment);
-                            } else {
-                                LogHelper.printDebug(() -> "Running scheduled skip");
-                                nextSegmentToAutoSkip = null;
-                                skipSegment(segment, false);
+                                return;
                             }
-                            // This does not adjust the timing if playback speed is not 1.0x.
-                            // If playback speed is not 1.0x, then this autoskip will be ignored in skipSegment()
-                            // and autoskip will happen after playback enters the segment.
+                            nextSegmentToAutoSkip = null;
+
+                            // If video playback speed is less than 1.0x, then the timer runs too early (at least 250ms too early)
+                            // Check if the current playback time is what's expected, and ignore this skip if needed.
+                            final long currentVideoTime = VideoInformation.getVideoTime();
+                            // use some padding in the time boundary check,
+                            // as the scheduled timer might have run a few milliseconds earlier than scheduled
+                            // and VideoInformation.getVideoTime() is not exact.
+                            final long currentVideoTimeInaccuracyPadding = 120;
+                            // Must do this time boundary check here and not in skipSegments(),
+                            // otherwise autoskipping multiple segments at once may not appear smoothly
+                            if (!segment.timeIsInsideOrNear(currentVideoTime, currentVideoTimeInaccuracyPadding)) {
+                                LogHelper.printDebug(() -> "Ignoring skip. Current video time: " + currentVideoTime + " is not close enough to segment: " + segment);
+                                return;
+                            }
+                            LogHelper.printDebug(() -> "Running scheduled skip: " + segment);
+                            skipSegment(segment, false);
                         }, segment.start - millis);
                     }
                     break;
@@ -419,11 +437,6 @@ public class PlayerController {
                 LogHelper.printDebug(() -> "Ignoring skip segment request (already skipped as close as possible): " + segment);
                 return;
             }
-            final long currentVideoTime = VideoInformation.getVideoTime();
-            if (!segment.containsTime(currentVideoTime)) { // happens to scheduled autoskips if video playback speed is not 1.0x
-                LogHelper.printDebug(() -> "Ignoring skip. Current video time: " + currentVideoTime + " is outside segment bounds: " + segment);
-                return;
-            }
 
             lastSegmentSkipped = segment;
             lastSegmentSkippedTime = now;
@@ -455,7 +468,7 @@ public class PlayerController {
                 }
                 setSponsorSegmentsOfCurrentVideo(newSegments);
             } else {
-                SponsorBlockUtils.sendViewRequestAsync(currentVideoTime, segment);
+                SponsorBlockUtils.sendViewRequestAsync(VideoInformation.getVideoTime(), segment);
             }
         } catch (Exception ex) {
             LogHelper.printException(() -> "skipSegment failure", ex);
