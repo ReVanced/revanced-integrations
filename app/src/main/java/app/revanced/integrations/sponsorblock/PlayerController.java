@@ -229,7 +229,7 @@ public class PlayerController {
                             // use some padding in the time boundary check,
                             // as the scheduled timer might have run a few milliseconds earlier than scheduled
                             // and VideoInformation.getVideoTime() is not exact.
-                            final long currentVideoTimeInaccuracyPadding = 120;
+                            final long currentVideoTimeInaccuracyPadding = 150;
                             // Must do this time boundary check here and not in skipSegments(),
                             // otherwise autoskipping multiple segments at once may not appear smoothly
                             if (!segment.timeIsInsideOrNear(currentVideoTime, currentVideoTimeInaccuracyPadding)) {
