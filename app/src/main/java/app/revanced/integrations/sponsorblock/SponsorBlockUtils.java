@@ -416,7 +416,7 @@ public abstract class SponsorBlockUtils {
             } else {
                 preference.setOnPreferenceClickListener(preference1 -> {
                     Intent i = new Intent(Intent.ACTION_VIEW);
-                    i.setData(Uri.parse("https://sb.ltn.fi/userid/" + stats.userId));
+                    i.setData(Uri.parse("https://sb.ltn.fi/userid/" + stats.publicUserId));
                     preference1.getContext().startActivity(i);
                     return true;
                 });
