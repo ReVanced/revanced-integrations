@@ -241,8 +241,9 @@ public class PlayerController {
                 // we are in the segment!
                 if (segment.shouldAutoSkip()) {
                     nextSegmentToAutoSkip = null; // if a scheduled skip has not run yet
+                    SponsorBlockView.hideSkipButton();
                     skipSegment(segment, millis, false);
-                    break;
+                    return; // must return, as skipping will cause a recursive call into this method
                 } else {
                     segmentCurrentlyPlayingToManuallySkip = segment;
                     // keep looking. there may be an upcoming autoskip,
