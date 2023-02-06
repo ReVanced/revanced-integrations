@@ -237,7 +237,7 @@ public class PlayerController {
                                 return;
                             }
                             LogHelper.printDebug(() -> "Running scheduled skip: " + segment);
-                            skipSegment(segment, false);
+                            skipSegment(segment, currentVideoTime, false);
                         }, segment.start - millis);
                     }
                     break;
@@ -249,7 +249,7 @@ public class PlayerController {
                 // we are in the segment!
                 if (segment.shouldAutoSkip()) {
                     nextSegmentToAutoSkip = null; // if a scheduled skip has not run yet
-                    skipSegment(segment, false);
+                    skipSegment(segment, millis, false);
                     break;
                 } else {
                     segmentCurrentlyPlayingToManuallySkip = segment;
@@ -337,7 +337,7 @@ public class PlayerController {
 
     public static void onSkipSponsorClicked() {
         if (segmentCurrentlyPlayingToManuallySkip != null) {
-            skipSegment(segmentCurrentlyPlayingToManuallySkip, true);
+            skipSegment(segmentCurrentlyPlayingToManuallySkip, VideoInformation.getVideoTime(), true);
         } else {
             SponsorBlockView.hideSkipButton();
             LogHelper.printException(() -> "error: segment not available to skip"); // should never happen
@@ -425,7 +425,7 @@ public class PlayerController {
     private static SponsorSegment lastSegmentSkipped;
     private static long lastSegmentSkippedTime;
 
-    private static void skipSegment(SponsorSegment segment, boolean userManuallySkipped) {
+    private static void skipSegment(SponsorSegment segment, long currentVideoTime, boolean userManuallySkipped) {
         try {
             // If trying to seek to end of the video, YouTube can seek just short of the actual end.
             // (especially if the video does not end on a whole second bound).
@@ -468,7 +468,7 @@ public class PlayerController {
                 }
                 setSponsorSegmentsOfCurrentVideo(newSegments);
             } else {
-                SponsorBlockUtils.sendViewRequestAsync(VideoInformation.getVideoTime(), segment);
+                SponsorBlockUtils.sendViewRequestAsync(currentVideoTime, segment);
             }
         } catch (Exception ex) {
             LogHelper.printException(() -> "skipSegment failure", ex);
