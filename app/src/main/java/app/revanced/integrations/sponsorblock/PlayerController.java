@@ -184,11 +184,6 @@ public class PlayerController {
 
             LogHelper.printDebug(() -> "setVideoTime: " + millis);
 
-            if (VideoInformation.isAtEndOfVideo()) {
-                ShieldButton.hide();
-                VotingButton.hide();
-            }
-
             // to debug the segmentToSkip stale detection, set this to a very large value (12,000 or more)
             // then manually seek to a different location just before an autoskip segment starts
             final long START_TIMER_BEFORE_SEGMENT_MILLIS = 2000; // must be larger than the average time between calls to this method
