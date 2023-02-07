@@ -34,7 +34,7 @@ public class PlayerController {
     @Nullable
     private static SponsorSegment[] sponsorSegmentsOfCurrentVideo;
     /**
-     * current segment that user can manually skip
+     * Current segment that user can manually skip
      */
     @Nullable
     private static SponsorSegment segmentCurrentlyPlayingToManuallySkip;
@@ -74,7 +74,7 @@ public class PlayerController {
         sponsorSegmentsOfCurrentVideo = null;
         timeWithoutSegments = "";
         nextSegmentToAutoSkip = null; // prevent any existing scheduled skip from running
-        toastSkipMessageToDisplay = null; // prevent any scheduled skip toasts from showing
+        toastSegmentSkipped = null; // prevent any scheduled skip toasts from showing
         toastNumberOfSegmentsSkipped = 0;
     }
 
@@ -204,7 +204,7 @@ public class PlayerController {
                     foundUpcomingAutoSkipSegment = true;
                     if (nextSegmentToAutoSkip != segment) {
                         nextSegmentToAutoSkip = segment;
-                        float playbackRate = RememberPlaybackRatePatch.getCurrentPlaybackRate();
+                        final float playbackRate = RememberPlaybackRatePatch.getCurrentPlaybackRate();
                         final long delayUntilSkip = (long) ((segment.start - millis) / playbackRate);
                         LogHelper.printDebug(() -> "Scheduling segment skip: " + segment + " playbackRate: " + playbackRate);
 
@@ -408,9 +408,9 @@ public class PlayerController {
     private static void skipSegment(SponsorSegment segment, long currentVideoTime, boolean userManuallySkipped) {
         try {
             // If trying to seek to end of the video, YouTube can seek just short of the actual end.
-            // (especially if the video does not end on a whole second bound).
+            // (especially if the video does not end on a whole second boundary).
             // This causes additional segment skip attempts, even though it cannot seek any closer to the desired time.
-            // Check for and ignore repeated skip attempts of the same segment in a short time period.
+            // Check for and ignore repeated skip attempts of the same segment over a short time period.
             final long now = System.currentTimeMillis();
             final long minimumMillisecondsBetweenSkippingSameSegment = 500;
             if ((lastSegmentSkipped == segment) && (now - lastSegmentSkippedTime < minimumMillisecondsBetweenSkippingSameSegment)) {
@@ -457,7 +457,7 @@ public class PlayerController {
 
 
     private static int toastNumberOfSegmentsSkipped;
-    private static String toastSkipMessageToDisplay;
+    private static SponsorSegment toastSegmentSkipped;
 
     private static void showSkippedSegmentToast(SponsorSegment segment) {
         ReVancedUtils.verifyOnMainThread();
@@ -465,23 +465,23 @@ public class PlayerController {
         if (toastNumberOfSegmentsSkipped > 1) {
             return; // toast already scheduled
         }
-        toastSkipMessageToDisplay = segment.category.skipMessage.toString();
+        toastSegmentSkipped = segment;
 
         final long delayToToastMilliseconds = 200; // also the maximum time between skips to be considered skipping multiple segments
         ReVancedUtils.runOnMainThreadDelayed(() -> {
             try {
-                if (toastSkipMessageToDisplay == null) { // video was changed just after skipping segment
+                if (toastSegmentSkipped == null) { // video was changed just after skipping segment
                     LogHelper.printDebug(() -> "Ignoring stale scheduled show toast");
                     return;
                 }
                 ReVancedUtils.showToastShort(toastNumberOfSegmentsSkipped == 1
-                        ? toastSkipMessageToDisplay
+                        ? toastSegmentSkipped.category.skipMessage.toString()
                         : str("skipped_multiple_segments"));
             } catch (Exception ex) {
                 LogHelper.printException(() -> "showSkippedSegmentToast failure", ex);
             } finally {
                 toastNumberOfSegmentsSkipped = 0;
-                toastSkipMessageToDisplay = null;
+                toastSegmentSkipped = null;
             }
         }, delayToToastMilliseconds);
     }
