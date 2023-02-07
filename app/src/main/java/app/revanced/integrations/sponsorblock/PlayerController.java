@@ -187,8 +187,9 @@ public class PlayerController {
 
             // to debug the segmentToSkip stale detection, set this to a very large value (12,000 or more)
             // then manually seek to a different location just before an autoskip segment starts
-            final long START_TIMER_BEFORE_SEGMENT_MILLIS = 2500; // must be larger than the average time between calls to this method
-            final long startTimerAtMillis = millis + START_TIMER_BEFORE_SEGMENT_MILLIS;
+            final float playbackRate = RememberPlaybackRatePatch.getCurrentPlaybackRate();
+            final long START_TIMER_BEFORE_SEGMENT_MILLIS = 2000; // must be larger than the average time between calls to this method
+            final long startTimerAtMillis = millis + (long)(playbackRate * START_TIMER_BEFORE_SEGMENT_MILLIS);
 
             segmentCurrentlyPlayingToManuallySkip = null;
             boolean foundUpcomingAutoSkipSegment = false;
@@ -204,7 +205,6 @@ public class PlayerController {
                     foundUpcomingAutoSkipSegment = true;
                     if (nextSegmentToAutoSkip != segment) {
                         nextSegmentToAutoSkip = segment;
-                        final float playbackRate = RememberPlaybackRatePatch.getCurrentPlaybackRate();
                         final long delayUntilSkip = (long) ((segment.start - millis) / playbackRate);
                         LogHelper.printDebug(() -> "Scheduling segment skip: " + segment + " playbackRate: " + playbackRate);
 
