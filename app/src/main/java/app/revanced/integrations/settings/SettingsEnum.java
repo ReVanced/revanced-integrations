@@ -228,59 +228,62 @@ public enum SettingsEnum {
         // temporary code to migrate user configuration of old settings into current settings
         // FIXME: eventually delete this code
         //
+        try {
+            // old/new settings where old is default off, and new has inverted value and is default on
+            SettingsEnum[][] invertedSettingsToMigrate = {
+                    {DEPRECATED_FULLSCREEN_PANELS_SHOWN, HIDE_FULLSCREEN_PANELS},
+                    {DEPRECATED_CREATE_BUTTON_ENABLED, HIDE_CREATE_BUTTON},
+                    {DEPRECATED_SHORTS_BUTTON_SHOWN, HIDE_SHORTS_BUTTON},
+                    {DEPRECATED_REEL_BUTTON_SHOWN, HIDE_REEL_BUTTON},
+                    {DEPRECATED_AUTOPLAY_BUTTON_SHOWN, HIDE_AUTOPLAY_BUTTON},
+                    {DEPRECATED_CAST_BUTTON_SHOWN, HIDE_CAST_BUTTON},
+                    {DEPRECATED_BRANDING_SHOWN, HIDE_VIDEO_WATERMARK},
+                    {DEPRECATED_REMEMBER_VIDEO_QUALITY, REMEMBER_VIDEO_QUALITY_LAST_SELECTED},
+            };
+            for (SettingsEnum[] oldNewSetting : invertedSettingsToMigrate) {
+                // by default, old setting was default off
+                // migrate to new setting of default on
+                SettingsEnum oldSetting = oldNewSetting[0];
+                SettingsEnum newSetting = oldNewSetting[1];
 
-        // old/new settings where old is default off, and new has inverted value and is default on
-        SettingsEnum[][] invertedSettingsToMigrate = {
-                {DEPRECATED_FULLSCREEN_PANELS_SHOWN, HIDE_FULLSCREEN_PANELS},
-                {DEPRECATED_CREATE_BUTTON_ENABLED, HIDE_CREATE_BUTTON},
-                {DEPRECATED_SHORTS_BUTTON_SHOWN, HIDE_SHORTS_BUTTON},
-                {DEPRECATED_REEL_BUTTON_SHOWN, HIDE_REEL_BUTTON},
-                {DEPRECATED_AUTOPLAY_BUTTON_SHOWN, HIDE_AUTOPLAY_BUTTON},
-                {DEPRECATED_CAST_BUTTON_SHOWN, HIDE_CAST_BUTTON},
-                {DEPRECATED_BRANDING_SHOWN, HIDE_VIDEO_WATERMARK},
-                {DEPRECATED_REMEMBER_VIDEO_QUALITY, REMEMBER_VIDEO_QUALITY_LAST_SELECTED},
-        };
-        for (SettingsEnum[] oldNewSetting : invertedSettingsToMigrate) {
-            // by default, old setting was default off
-            // migrate to new setting of default on
-            SettingsEnum oldSetting = oldNewSetting[0];
-            SettingsEnum newSetting = oldNewSetting[1];
-
-            // only need to check if old setting was turned on
-            if (oldSetting.getBoolean()) {
-                // this code will only run once
-                LogHelper.printInfo(() -> "Migrating setting: " + oldSetting + " of 'true' to new setting: "
-                        + newSetting + " of 'false'");
-                newSetting.saveValue(false); // set opposite of old value
-                oldSetting.saveValue(false); // clear old value
+                // only need to check if old setting was turned on
+                if (oldSetting.getBoolean()) {
+                    // this code will only run once
+                    LogHelper.printInfo(() -> "Migrating setting: " + oldSetting + " of 'true' to new setting: "
+                            + newSetting + " of 'false'");
+                    newSetting.saveValue(false); // set opposite of old value
+                    oldSetting.saveValue(false); // clear old value
+                }
             }
-        }
 
-        //
-        // renamed settings with new path names, but otherwise the new and old settings are identical
-        //
-        SettingsEnum[][] renamedSettings = {
-                {DEPRECATED_HIDE_MIX_PLAYLISTS, HIDE_MIX_PLAYLISTS},
-                {DEPRECATED_HIDE_LIKE_BUTTON, HIDE_LIKE_BUTTON},
-                {DEPRECATED_HIDE_DISLIKE_BUTTON, HIDE_DISLIKE_BUTTON},
-                {DEPRECATED_HIDE_DOWNLOAD_BUTTON, HIDE_DOWNLOAD_BUTTON},
-                {DEPRECATED_HIDE_PLAYLIST_BUTTON, HIDE_PLAYLIST_BUTTON},
-                {DEPRECATED_HIDE_ACTION_BUTTON, HIDE_ACTION_BUTTON},
-                {DEPRECATED_HIDE_SHARE_BUTTON, HIDE_SHARE_BUTTON},
-                {DEPRECATED_DOWNLOADS_BUTTON_SHOWN, DOWNLOADS_BUTTON_SHOWN},
-                {DEPRECATED_COPY_VIDEO_URL_BUTTON_SHOWN, COPY_VIDEO_URL_BUTTON_SHOWN},
-                {DEPRECATED_COPY_VIDEO_URL_TIMESTAMP_BUTTON_SHOWN, COPY_VIDEO_URL_TIMESTAMP_BUTTON_SHOWN},
-        };
-        for (SettingsEnum[] oldNewSetting : renamedSettings) {
-            SettingsEnum oldSetting = oldNewSetting[0];
-            SettingsEnum newSetting = oldNewSetting[1];
+            //
+            // renamed settings with new path names, but otherwise the new and old settings are identical
+            //
+            SettingsEnum[][] renamedSettings = {
+                    {DEPRECATED_HIDE_MIX_PLAYLISTS, HIDE_MIX_PLAYLISTS},
+                    {DEPRECATED_HIDE_LIKE_BUTTON, HIDE_LIKE_BUTTON},
+                    {DEPRECATED_HIDE_DISLIKE_BUTTON, HIDE_DISLIKE_BUTTON},
+                    {DEPRECATED_HIDE_DOWNLOAD_BUTTON, HIDE_DOWNLOAD_BUTTON},
+                    {DEPRECATED_HIDE_PLAYLIST_BUTTON, HIDE_PLAYLIST_BUTTON},
+                    {DEPRECATED_HIDE_ACTION_BUTTON, HIDE_ACTION_BUTTON},
+                    {DEPRECATED_HIDE_SHARE_BUTTON, HIDE_SHARE_BUTTON},
+                    {DEPRECATED_DOWNLOADS_BUTTON_SHOWN, DOWNLOADS_BUTTON_SHOWN},
+                    {DEPRECATED_COPY_VIDEO_URL_BUTTON_SHOWN, COPY_VIDEO_URL_BUTTON_SHOWN},
+                    {DEPRECATED_COPY_VIDEO_URL_TIMESTAMP_BUTTON_SHOWN, COPY_VIDEO_URL_TIMESTAMP_BUTTON_SHOWN},
+            };
+            for (SettingsEnum[] oldNewSetting : renamedSettings) {
+                SettingsEnum oldSetting = oldNewSetting[0];
+                SettingsEnum newSetting = oldNewSetting[1];
 
-            if (!oldSetting.value.equals(oldSetting.defaultValue)) {
-                LogHelper.printInfo(() -> "Migrating old setting of '" + oldSetting.value
-                        + "' from: " + oldSetting + " into replacement setting: " + newSetting);
-                newSetting.saveValue(oldSetting.value);
-                oldSetting.saveValue(oldSetting.getDefaultValue()); // reset old value
+                if (!oldSetting.value.equals(oldSetting.defaultValue)) {
+                    LogHelper.printInfo(() -> "Migrating old setting of '" + oldSetting.value
+                            + "' from: " + oldSetting + " into replacement setting: " + newSetting);
+                    newSetting.saveValue(oldSetting.value);
+                    oldSetting.saveValue(oldSetting.getDefaultValue()); // reset old value
+                }
             }
+        } catch (Exception ex) {
+            LogHelper.printException(() -> "Could not migrate old settings", ex);
         }
         //
         // end temporary code
@@ -288,35 +291,34 @@ public enum SettingsEnum {
     }
 
     private static void load() {
-        Context context = ReVancedUtils.getContext();
-        if (context == null) {
-            LogHelper.printException(() -> "SettingsEnum.load() called before ReVancedUtils.init()");
-            return;
-        }
-        for (SettingsEnum setting : values()) {
-            var path = setting.getPath();
-            var defaultValue = setting.getDefaultValue();
-            switch (setting.getReturnType()) {
-                case FLOAT:
-                    defaultValue = SharedPrefHelper.getFloat(setting.sharedPref, path, (float) defaultValue);
-                    break;
-                case LONG:
-                    defaultValue = SharedPrefHelper.getLong(setting.sharedPref, path, (long) defaultValue);
-                    break;
-                case BOOLEAN:
-                    defaultValue = SharedPrefHelper.getBoolean(setting.sharedPref, path, (boolean) defaultValue);
-                    break;
-                case INTEGER:
-                    defaultValue = SharedPrefHelper.getInt(setting.sharedPref, path, (int) defaultValue);
-                    break;
-                case STRING:
-                    defaultValue = SharedPrefHelper.getString(setting.sharedPref, path, (String) defaultValue);
-                    break;
-                default:
-                    LogHelper.printException(() -> "Setting does not have a valid Type. Name is: " + setting.name());
-                    break;
+        try {
+            for (SettingsEnum setting : values()) {
+                var path = setting.getPath();
+                var defaultValue = setting.getDefaultValue();
+                switch (setting.getReturnType()) {
+                    case FLOAT:
+                        defaultValue = SharedPrefHelper.getFloat(setting.sharedPref, path, (float) defaultValue);
+                        break;
+                    case LONG:
+                        defaultValue = SharedPrefHelper.getLong(setting.sharedPref, path, (long) defaultValue);
+                        break;
+                    case BOOLEAN:
+                        defaultValue = SharedPrefHelper.getBoolean(setting.sharedPref, path, (boolean) defaultValue);
+                        break;
+                    case INTEGER:
+                        defaultValue = SharedPrefHelper.getInt(setting.sharedPref, path, (int) defaultValue);
+                        break;
+                    case STRING:
+                        defaultValue = SharedPrefHelper.getString(setting.sharedPref, path, (String) defaultValue);
+                        break;
+                    default:
+                        LogHelper.printException(() -> "Setting does not have a valid Type. Name is: " + setting.name());
+                        break;
+                }
+                setting.setValue(defaultValue);
             }
-            setting.setValue(defaultValue);
+        } catch (Exception ex) {
+            LogHelper.printException(() -> "Could not load settings", ex);
         }
     }
 
