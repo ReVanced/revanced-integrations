@@ -128,9 +128,18 @@ public class LogHelper {
             Log.e(logMessage, messageString, ex);
         }
         if (SettingsEnum.DEBUG_SHOW_TOAST_ON_ERROR.getBoolean()) {
-            String toastMessageToDisplay = (userToastMessage != null)
-                    ? userToastMessage
-                    : outerClassSimpleName + ": " + messageString;
+            final String toastMessageToDisplay;
+            if (userToastMessage != null) {
+                toastMessageToDisplay = userToastMessage;
+            } else {
+                StringBuilder builder = new StringBuilder(outerClassSimpleName);
+                if (ex != null) {
+                    builder.append('(').append(ex.getStackTrace()[0].getLineNumber()).append("): ");
+                    builder.append(ex.getClass().getSimpleName());
+                }
+                builder.append(": ").append(messageString);
+                toastMessageToDisplay = builder.toString();
+            }
             ReVancedUtils.runOnMainThread(() -> {
                 Context context = ReVancedUtils.getContext();
                 if (context != null) {
