@@ -16,6 +16,7 @@ import java.util.Arrays;
 import java.util.Objects;
 
 import app.revanced.integrations.patches.VideoInformation;
+import app.revanced.integrations.patches.playback.speed.RememberPlaybackRatePatch;
 import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.shared.PlayerType;
 import app.revanced.integrations.sponsorblock.objects.SponsorSegment;
@@ -186,7 +187,7 @@ public class PlayerController {
 
             // to debug the segmentToSkip stale detection, set this to a very large value (12,000 or more)
             // then manually seek to a different location just before an autoskip segment starts
-            final long START_TIMER_BEFORE_SEGMENT_MILLIS = 3000; // must be larger than the average time between calls to this method
+            final long START_TIMER_BEFORE_SEGMENT_MILLIS = 2500; // must be larger than the average time between calls to this method
             final long startTimerAtMillis = millis + START_TIMER_BEFORE_SEGMENT_MILLIS;
 
             segmentCurrentlyPlayingToManuallySkip = null;
@@ -202,15 +203,11 @@ public class PlayerController {
 
                     foundUpcomingAutoSkipSegment = true;
                     if (nextSegmentToAutoSkip != segment) {
-                        LogHelper.printDebug(() -> "Scheduling segment skip: " + segment);
                         nextSegmentToAutoSkip = segment;
+                        float playbackRate = RememberPlaybackRatePatch.getCurrentPlaybackRate();
+                        final long delayUntilSkip = (long) ((segment.start - millis) / playbackRate);
+                        LogHelper.printDebug(() -> "Scheduling segment skip: " + segment + " playbackRate: " + playbackRate);
 
-                        // This schedule timing does not account if playback speed is not 1.0x.
-                        // If playback speed is not 1.0x, then this scheduled autoskip will later be ignored.
-                        // Instead autoskip will happen after playback enters the segment.
-                        //
-                        // Ideally, this scheduled timing would include the video playback speed,
-                        // but getting the playback speed is presently not easily accessible.
                         ReVancedUtils.runOnMainThreadDelayed(() -> {
                             if (nextSegmentToAutoSkip != segment) {
                                 LogHelper.printDebug(() -> "Ignoring stale scheduled skip: " + segment);
@@ -218,19 +215,9 @@ public class PlayerController {
                             }
                             nextSegmentToAutoSkip = null;
 
-                            // If video playback speed is less than 1.0x, then the scheduled skip runs too early
-                            // (with 0.75x playback and 3000ms look ahead, the scheduled call is at least 750ms too early)
-                            // Check if the current playback time is within expectations
-                            final long currentVideoTime = VideoInformation.getVideoTime();
-                            final long nearThreshold = 500;
-                            if (!segment.timeIsInsideOrNear(currentVideoTime, nearThreshold)) {
-                                LogHelper.printDebug(() -> "Ignoring skip. Current video time: " + currentVideoTime
-                                        + " is not close enough to segment: " + segment);
-                                return;
-                            }
                             LogHelper.printDebug(() -> "Running scheduled skip: " + segment);
-                            skipSegment(segment, currentVideoTime, false);
-                        }, segment.start - millis);
+                            skipSegment(segment, VideoInformation.getVideoTime(), false);
+                        }, delayUntilSkip);
                     }
                     break;
                 }
@@ -243,7 +230,7 @@ public class PlayerController {
                     nextSegmentToAutoSkip = null; // if a scheduled skip has not run yet
                     SponsorBlockView.hideSkipButton();
                     skipSegment(segment, millis, false);
-                    return; // must return, as skipping will cause a recursive call into this method
+                    return; // must return, as skipping causes a recursive call back into this method
                 } else {
                     segmentCurrentlyPlayingToManuallySkip = segment;
                     // keep looking. there may be an upcoming autoskip,
