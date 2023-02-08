@@ -1,5 +1,6 @@
 package app.revanced.integrations.sponsorblock.player.ui;
 
+import static app.revanced.integrations.sponsorblock.SponsorBlockSettings.SegmentInfo;
 import static app.revanced.integrations.utils.ReVancedUtils.getIdentifier;
 
 import android.view.LayoutInflater;
@@ -23,7 +24,7 @@ public class SponsorBlockView {
     private static boolean shouldShowOnPlayerType = true;
     static {
         PlayerType.getOnChange().addObserver((PlayerType type) -> {
-            SponsorBlockView.playerTypeChanged(type);
+            playerTypeChanged(type);
             return null;
         });
     }
@@ -40,7 +41,14 @@ public class SponsorBlockView {
         }
     }
 
-    public static void showSkipButton() {
+    public static void showSkipButton(SegmentInfo info) {
+        SkipSponsorButton skipSponsorButton = _skipSponsorButton.get();
+        if (skipSponsorButton != null) {
+            final boolean layoutNeedsUpdating = skipSponsorButton.updateSkipButtonText(info);
+            if (layoutNeedsUpdating) {
+                bringLayoutToFront();
+            }
+        }
         skipSponsorButtonVisibility(true);
     }
 

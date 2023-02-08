@@ -1,5 +1,7 @@
 package app.revanced.integrations.sponsorblock;
 
+import static app.revanced.integrations.sponsorblock.SponsorBlockSettings.SegmentBehaviour.MANUAL_SKIP;
+import static app.revanced.integrations.sponsorblock.SponsorBlockSettings.SegmentBehaviour.SKIP_AUTOMATICALLY;
 import static app.revanced.integrations.sponsorblock.StringRef.sf;
 
 import android.content.SharedPreferences;
@@ -121,15 +123,24 @@ public class SponsorBlockSettings {
     }
 
     public enum SegmentInfo {
-        SPONSOR("sponsor", sf("segments_sponsor"), sf("skipped_sponsor"), sf("segments_sponsor_sum"), SegmentBehaviour.SKIP_AUTOMATICALLY, 0xFF00d400),
-        INTRO("intro", sf("segments_intermission"), sf("skipped_intermission"), sf("segments_intermission_sum"), SegmentBehaviour.MANUAL_SKIP, 0xFF00ffff),
-        OUTRO("outro", sf("segments_endcards"), sf("skipped_endcard"), sf("segments_endcards_sum"), SegmentBehaviour.MANUAL_SKIP, 0xFF0202ed),
-        INTERACTION("interaction", sf("segments_subscribe"), sf("skipped_subscribe"), sf("segments_subscribe_sum"), SegmentBehaviour.SKIP_AUTOMATICALLY, 0xFFcc00ff),
-        SELF_PROMO("selfpromo", sf("segments_selfpromo"), sf("skipped_selfpromo"), sf("segments_selfpromo_sum"), SegmentBehaviour.SKIP_AUTOMATICALLY, 0xFFffff00),
-        MUSIC_OFFTOPIC("music_offtopic", sf("segments_nomusic"), sf("skipped_nomusic"), sf("segments_nomusic_sum"), SegmentBehaviour.MANUAL_SKIP, 0xFFff9900),
-        PREVIEW("preview", sf("segments_preview"), sf("skipped_preview"), sf("segments_preview_sum"), DefaultBehaviour, 0xFF008fd6),
-        FILLER("filler", sf("segments_filler"), sf("skipped_filler"), sf("segments_filler_sum"), DefaultBehaviour, 0xFF7300FF),
-        UNSUBMITTED("unsubmitted", StringRef.empty, sf("skipped_unsubmitted"), StringRef.empty, SegmentBehaviour.SKIP_AUTOMATICALLY, 0xFFFFFFFF);
+        SPONSOR("sponsor", sf("segments_sponsor"), sf("skip_button_text_sponsor"), sf("skipped_sponsor"), sf("segments_sponsor_sum"),
+                SKIP_AUTOMATICALLY, 0xFF00d400),
+        INTRO("intro", sf("segments_intermission"), sf("skip_button_text_intermission"), sf("skipped_intermission"), sf("segments_intermission_sum"),
+                MANUAL_SKIP, 0xFF00ffff),
+        OUTRO("outro", sf("segments_endcards"), sf("skip_button_text_endcard"), sf("skipped_endcard"), sf("segments_endcards_sum"),
+                MANUAL_SKIP, 0xFF0202ed),
+        INTERACTION("interaction", sf("segments_subscribe"), sf("skip_button_text_subscribe"), sf("skipped_subscribe"), sf("segments_subscribe_sum"),
+                SKIP_AUTOMATICALLY, 0xFFcc00ff),
+        SELF_PROMO("selfpromo", sf("segments_selfpromo"), sf("skip_button_text_selfpromo"), sf("skipped_selfpromo"), sf("segments_selfpromo_sum"),
+                SKIP_AUTOMATICALLY, 0xFFffff00),
+        MUSIC_OFFTOPIC("music_offtopic", sf("segments_nomusic"), sf("skip_button_text_nomusic"), sf("skipped_nomusic"), sf("segments_nomusic_sum"),
+                MANUAL_SKIP, 0xFFff9900),
+        PREVIEW("preview", sf("segments_preview"), sf("skip_button_text_preview"), sf("skipped_preview"), sf("segments_preview_sum"),
+                DefaultBehaviour, 0xFF008fd6),
+        FILLER("filler", sf("segments_filler"), sf("skip_button_text_filler"), sf("skipped_filler"), sf("segments_filler_sum"),
+                DefaultBehaviour, 0xFF7300FF),
+        UNSUBMITTED("unsubmitted", StringRef.empty, sf("skip_button_text_unsubmitted"), sf("skipped_unsubmitted"), StringRef.empty,
+                SKIP_AUTOMATICALLY, 0xFFFFFFFF);
 
         private static final SegmentInfo[] mValuesWithoutUnsubmitted = new SegmentInfo[]{
                 SPONSOR,
@@ -141,7 +152,7 @@ public class SponsorBlockSettings {
                 PREVIEW,
                 FILLER
         };
-        private static final Map<String, SegmentInfo> mValuesMap = new HashMap<>(values().length);
+        private static final Map<String, SegmentInfo> mValuesMap = new HashMap<>(2 * values().length);
 
         static {
             for (SegmentInfo value : valuesWithoutUnsubmitted())
@@ -150,6 +161,7 @@ public class SponsorBlockSettings {
 
         public final String key;
         public final StringRef title;
+        public final StringRef skipButtonText;
         public final StringRef skipMessage;
         public final StringRef description;
         public final Paint paint;
@@ -159,13 +171,14 @@ public class SponsorBlockSettings {
 
         SegmentInfo(String key,
                     StringRef title,
+                    StringRef skipButtonText,
                     StringRef skipMessage,
                     StringRef description,
                     SegmentBehaviour behaviour,
                     int defaultColor) {
-
             this.key = key;
             this.title = title;
+            this.skipButtonText = skipButtonText;
             this.skipMessage = skipMessage;
             this.description = description;
             this.behaviour = behaviour;

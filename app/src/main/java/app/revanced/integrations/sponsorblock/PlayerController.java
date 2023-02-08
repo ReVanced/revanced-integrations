@@ -243,7 +243,7 @@ public class PlayerController {
                 nextSegmentToAutoSkip = null;
             }
             if (segmentCurrentlyPlayingToManuallySkip != null) {
-                SponsorBlockView.showSkipButton();
+                SponsorBlockView.showSkipButton(segmentCurrentlyPlayingToManuallySkip.category);
             } else {
                 SponsorBlockView.hideSkipButton();
             }
