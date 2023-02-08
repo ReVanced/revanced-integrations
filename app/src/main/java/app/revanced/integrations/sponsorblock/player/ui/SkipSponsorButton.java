@@ -1,5 +1,6 @@
 package app.revanced.integrations.sponsorblock.player.ui;
 
+import static app.revanced.integrations.sponsorblock.SponsorBlockSettings.SegmentInfo;
 import static app.revanced.integrations.sponsorblock.StringRef.str;
 import static app.revanced.integrations.utils.ReVancedUtils.getResourceIdByName;
 
@@ -15,7 +16,6 @@ import android.widget.TextView;
 
 import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.sponsorblock.PlayerController;
-import app.revanced.integrations.sponsorblock.SponsorBlockSettings;
 import app.revanced.integrations.utils.LogHelper;
 
 public class SkipSponsorButton extends FrameLayout {
@@ -97,13 +97,13 @@ public class SkipSponsorButton extends FrameLayout {
         super.dispatchDraw(canvas);
     }
 
-    public boolean updateSkipButtonText(SponsorBlockSettings.SegmentInfo info) {
-        final CharSequence newText;
-        if (SettingsEnum.SB_USE_COMACT_SKIPBUTTON.getBoolean()) {
-            newText = skipSponsorTextCompact;
-        } else {
-            newText = info.skipButtonText.toString();
-        }
+    /**
+     * @return true, if this button state was changed
+     */
+    public boolean updateSkipButtonText(SegmentInfo info) {
+        CharSequence newText = SettingsEnum.SB_USE_COMACT_SKIPBUTTON.getBoolean()
+                ? skipSponsorTextCompact
+                : info.skipButtonText.toString();
         if (newText.equals(skipSponsorTextView.getText())) {
             return false;
         }
