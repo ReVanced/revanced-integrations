@@ -324,7 +324,8 @@ public class ReturnYouTubeDislike {
 
             Future<RYDVoteData> future = getVoteFetchFuture();
             if (future == null) {
-                LogHelper.printException(() -> "Cannot update UI dislike count (vote fetch is null)"); // should never happen
+                LogHelper.printDebug(() -> "Cannot update UI dislike count - vote fetch is null" +
+                        " (user enabled RYD while video was playing?)"); // do not show a toast
                 return;
             }
             // the future should always be completed before user can like/dislike, but use a timeout just in case
