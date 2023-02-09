@@ -57,9 +57,9 @@ public class ReturnYouTubeDislikeApi {
 
     /**
      * How long to wait until API calls are resumed, if a rate limit is hit.
-     * No clear guideline of how long to backoff.  Using 60 seconds for now.
+     * No clear guideline of how long to backoff.  Using 2 minutes for now.
      */
-    private static final int RATE_LIMIT_BACKOFF_SECONDS = 60;
+    private static final int RATE_LIMIT_BACKOFF_SECONDS = 120;
 
     /**
      * Last time a {@link #RATE_LIMIT_HTTP_STATUS_CODE} was reached.
