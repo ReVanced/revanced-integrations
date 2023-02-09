@@ -46,6 +46,11 @@ public class ReturnYouTubeDislike {
     private static final long MAX_MILLISECONDS_TO_BLOCK_UI_WHILE_WAITING_FOR_FETCH_VOTES_TO_COMPLETE = 4000;
 
     /**
+     * Separator character to use for segmented like/dislike
+     */
+    private static final char middleSeparatorCharacter = '•';
+
+    /**
      * Used to send votes, one by one, in the same order the user created them
      */
     private static final ExecutorService voteSerialExecutor = Executors.newSingleThreadExecutor();
@@ -66,6 +71,14 @@ public class ReturnYouTubeDislike {
     @Nullable
     @GuardedBy("videoIdLockObject")
     private static Future<RYDVoteData> voteFetchFuture;
+
+    /**
+     * Original dislike span, before modifications.
+     * Required for segmented layout
+     */
+    @Nullable
+    @GuardedBy("videoIdLockObject")
+    private static Spanned originalDislikeSpan;
 
     /**
      * Replacement like/dislike span that includes formatted dislikes and is ready to display
@@ -116,6 +129,7 @@ public class ReturnYouTubeDislike {
             }
             currentVideoId = null;
             voteFetchFuture = null;
+            originalDislikeSpan = null;
             replacementLikeDislikeSpan = null;
         }
     }
@@ -151,6 +165,7 @@ public class ReturnYouTubeDislike {
                 }
                 LogHelper.printDebug(() -> " new video loaded: " + videoId + " playerType: " + currentPlayerType);
                 currentVideoId = videoId;
+                originalDislikeSpan = null;
                 replacementLikeDislikeSpan = null;
                 // no need to wrap the call in a try/catch,
                 // as any exceptions are propagated out in the later Future#Get call
@@ -202,6 +217,10 @@ public class ReturnYouTubeDislike {
         return span;
     }
 
+    private static boolean isPreviouslyCreatedSegmentedSpan(Spanned span) {
+        return span.toString().indexOf(middleSeparatorCharacter) != -1;
+    }
+
     /**
      * @return NULL if the span does not need changing or if RYD is not available
      */
@@ -216,7 +235,16 @@ public class ReturnYouTubeDislike {
                     LogHelper.printDebug(() -> "Ignoring previously created dislike span");
                     return null;
                 }
+                if (isSegmentedButton) {
+                    if (isPreviouslyCreatedSegmentedSpan(oldSpannable)) {
+                        // need to recreate using original, as oldSpannable already has prior outdated dislike values
+                        oldSpannable = originalDislikeSpan;
+                    } else {
+                        originalDislikeSpan = oldSpannable; // most up to date original
+                    }
+                }
             }
+
             Future<RYDVoteData> fetchFuture = getVoteFetchFuture();
             if (fetchFuture == null) {
                 LogHelper.printDebug(() -> "fetch future not available (user enabled RYD while video was playing?)");
@@ -235,7 +263,8 @@ public class ReturnYouTubeDislike {
             synchronized (videoIdLockObject) {
                 replacementLikeDislikeSpan = replacement;
             }
-            LogHelper.printDebug(() -> "Replaced: '" + oldSpannable + "' with: '" + replacement + "'");
+            final Spanned oldSpannableLogging = oldSpannable;
+            LogHelper.printDebug(() -> "Replaced: '" + oldSpannableLogging + "' with: '" + replacement + "'");
             return replacement;
         } catch (TimeoutException e) {
             LogHelper.printDebug(() -> "UI timed out while waiting for fetch votes to complete"); // show no toast
@@ -248,6 +277,7 @@ public class ReturnYouTubeDislike {
     }
 
     public static void sendVote(@NonNull Vote vote) {
+        ReVancedUtils.verifyOnMainThread();
         Objects.requireNonNull(vote);
         try {
             if (!SettingsEnum.RYD_ENABLED.getBoolean()) return;
@@ -271,8 +301,34 @@ public class ReturnYouTubeDislike {
                     LogHelper.printException(() -> "Failed to send vote", ex);
                 }
             });
+
+            // update the downloaded vote data
+            synchronized (videoIdLockObject) {
+                replacementLikeDislikeSpan = null; // ui values need updating
+            }
+
+            Future<RYDVoteData> future = getVoteFetchFuture();
+            if (future == null) {
+                LogHelper.printException(() -> "Cannot update UI dislike count (vote fetch is null)"); // should never happen
+                return;
+            }
+
+            // the future should always be completed before user can like/dislike, but use a timeout just in case
+            RYDVoteData voteData = future.get(MAX_MILLISECONDS_TO_BLOCK_UI_WHILE_WAITING_FOR_FETCH_VOTES_TO_COMPLETE, TimeUnit.MILLISECONDS);
+
+            if (vote == Vote.DISLIKE) {
+                LogHelper.printDebug(() -> "Increasing dislike count");
+                voteData.incrementDislikeCount();
+            } else if (vote == Vote.LIKE) {
+                LogHelper.printDebug(() -> "Increasing like count");
+                // UI shows the like count from YouTube, but still need to increment so like/dislike percentages are updated
+                voteData.incrementLikeCount();
+            } else {
+                LogHelper.printDebug(() -> "Resetting like/dislike to fetched values");
+                voteData.resetToFetchedValue();
+            }
         } catch (Exception ex) {
-            LogHelper.printException(() -> "Error while trying to send vote", ex);
+            LogHelper.printException(() -> "Error trying to send vote", ex);
         }
     }
 
@@ -337,7 +393,9 @@ public class ReturnYouTubeDislike {
 
         // middle separator
         final boolean useCompactLayout = SettingsEnum.RYD_USE_COMPACT_LAYOUT.getBoolean();
-        String middleSegmentedSeparatorString = useCompactLayout ? "\u2009 • \u2009" : "  •  "; // u2009 = "half space" character
+        String middleSegmentedSeparatorString = useCompactLayout
+                ? "\u2009 " + middleSeparatorCharacter + " \u2009"  // u2009 = "half space" character
+                : "  " + middleSeparatorCharacter + "  ";
         Spannable middleSeparatorSpan = newSpanUsingStylingOfAnotherSpan(oldSpannable, middleSegmentedSeparatorString);
         final int separatorColor = ThemeHelper.isDarkTheme()
                 ? 0x29AAAAAA  // transparent dark gray
@@ -476,8 +534,8 @@ public class ReturnYouTubeDislike {
     private static Spannable newSpannableWithDislikes(Spanned sourceStyling, RYDVoteData voteData) {
         return newSpanUsingStylingOfAnotherSpan(sourceStyling,
                 SettingsEnum.RYD_SHOW_DISLIKE_PERCENTAGE.getBoolean()
-                        ? formatDislikePercentage(voteData.dislikePercentage)
-                        : formatDislikeCount(voteData.dislikeCount));
+                        ? formatDislikePercentage(voteData.getDislikePercentage())
+                        : formatDislikeCount(voteData.getDislikeCount()));
     }
 
     private static Spannable newSpanUsingStylingOfAnotherSpan(Spanned sourceStyle, String newSpanText) {
