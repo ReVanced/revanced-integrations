@@ -65,6 +65,12 @@ public class ReturnYouTubeDislike {
     @GuardedBy("videoIdLockObject")
     private static String currentVideoId;
 
+
+    /**
+     * If {@link #currentVideoId} and the RYD data is for the last shorts loaded
+     */
+    private static volatile boolean lastVideoLoadedWasShort;
+
     /**
      * Stores the results of the vote api fetch, and used as a barrier to wait until fetch completes
      */
@@ -118,16 +124,17 @@ public class ReturnYouTubeDislike {
         if (!enabled) {
             // must clear old values, to protect against using stale data
             // if the user re-enables RYD while watching a video
-            clearData();
+            setCurrentVideoId(null);
         }
     }
 
-    private static void clearData() {
+    private static void setCurrentVideoId(@Nullable String videoId) {
         synchronized (videoIdLockObject) {
-            if (currentVideoId != null) {
-                LogHelper.printDebug(() -> "Clearing RYD data");
+            if (videoId == null && currentVideoId != null) {
+                LogHelper.printDebug(() -> "Clearing data");
             }
-            currentVideoId = null;
+            currentVideoId = videoId;
+            lastVideoLoadedWasShort = false;
             voteFetchFuture = null;
             originalDislikeSpan = null;
             replacementLikeDislikeSpan = null;
@@ -148,7 +155,7 @@ public class ReturnYouTubeDislike {
         }
     }
 
-    public static void newVideoLoaded(String videoId) {
+    public static void newVideoLoaded(@NonNull String videoId) {
         try {
             if (!SettingsEnum.RYD_ENABLED.getBoolean()) return;
             Objects.requireNonNull(videoId);
@@ -156,7 +163,7 @@ public class ReturnYouTubeDislike {
             PlayerType currentPlayerType = PlayerType.getCurrent();
             if (currentPlayerType == PlayerType.INLINE_MINIMAL) {
                 LogHelper.printDebug(() -> "Ignoring inline playback of video: "+ videoId);
-                clearData();
+                setCurrentVideoId(null);
                 return;
             }
             synchronized (videoIdLockObject) {
@@ -164,9 +171,7 @@ public class ReturnYouTubeDislike {
                     return; // already loaded
                 }
                 LogHelper.printDebug(() -> " new video loaded: " + videoId + " playerType: " + currentPlayerType);
-                currentVideoId = videoId;
-                originalDislikeSpan = null;
-                replacementLikeDislikeSpan = null;
+                setCurrentVideoId(videoId);
                 // no need to wrap the call in a try/catch,
                 // as any exceptions are propagated out in the later Future#Get call
                 voteFetchFuture = ReVancedUtils.submitOnBackgroundThread(() -> ReturnYouTubeDislikeApi.fetchVotes(videoId));
@@ -184,8 +189,11 @@ public class ReturnYouTubeDislike {
         try {
             if (!SettingsEnum.RYD_ENABLED.getBoolean()) return;
 
-            PlayerType currentPlayerType = PlayerType.getCurrent();
-            if (currentPlayerType == PlayerType.NONE || currentPlayerType == PlayerType.HIDDEN) {
+            // do not set videoLoadedIsShort to false.  it will be cleared when the next regular video is loaded
+            if (lastVideoLoadedWasShort) {
+                return;
+            }
+            if (PlayerType.getCurrent().isNoneOrHidden()) {
                 return;
             }
 
@@ -211,6 +219,7 @@ public class ReturnYouTubeDislike {
     public static Spanned onShortsComponentCreated(Spanned span) {
         try {
             if (SettingsEnum.RYD_ENABLED.getBoolean()) {
+                lastVideoLoadedWasShort = true;
                 Spanned replacement = waitForFetchAndUpdateReplacementSpan(span, false);
                 if (replacement != null) {
                     return replacement;
@@ -242,17 +251,6 @@ public class ReturnYouTubeDislike {
                 }
                 if (isSegmentedButton) {
                     if (isPreviouslyCreatedSegmentedSpan(oldSpannable)) {
-                        if (originalDislikeSpan == null) {
-                            // User was watching regular video, then opened a short, then closed the short.
-                            // Now the original video player is showing again.
-                            // Cannot update the dislike until a new video is loaded,
-                            // as the current data is for the now closed short.
-                            // Instead, do nothing and leave the like/dislike values as-is.
-                            Spanned oldSpannableLogging = oldSpannable;
-                            LogHelper.printDebug(() -> "Cannot update '" + oldSpannableLogging + "' as original span is not set" +
-                                    " (user opened a shorts while a regular video was open?)");
-                            return null;
-                        }
                         // need to recreate using original, as oldSpannable already has prior outdated dislike values
                         oldSpannable = originalDislikeSpan;
                     } else {
@@ -300,8 +298,9 @@ public class ReturnYouTubeDislike {
 
             // Must make a local copy of videoId, since it may change between now and when the vote thread runs
             String videoIdToVoteFor = getCurrentVideoId();
-            if (videoIdToVoteFor == null) {
-                // user enabled RYD after starting playback of a video
+            if (videoIdToVoteFor == null || (lastVideoLoadedWasShort && !PlayerType.getCurrent().isNoneOrHidden())) {
+                // user enabled RYD after starting playback of a video.
+                // Or shorts was loaded with regular video present, and then shorts was closed, leaving the original video
                 LogHelper.printException(() -> "Cannot vote, current video is is null (user enabled RYD while video was playing?)",
                         null, str("revanced_ryd_failure_ryd_enabled_while_playing_video_then_user_voted"));
                 return;

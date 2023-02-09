@@ -7,8 +7,8 @@ import app.revanced.integrations.utils.Event
  */
 @Suppress("unused")
 enum class PlayerType {
-    NONE, // this also includes when shorts are playing
-    HIDDEN,
+    NONE, // includes Shorts playback
+    HIDDEN, // also includes Shorts playback, if regular video is minimized and a Short is then opened
     WATCH_WHILE_MINIMIZED,
     WATCH_WHILE_MAXIMIZED,
     WATCH_WHILE_FULLSCREEN,
@@ -48,5 +48,12 @@ enum class PlayerType {
          * player type change listener
          */
         val onChange = Event<PlayerType>()
+    }
+
+    /**
+     * Useful to check for Shorts playback
+     */
+    fun isNoneOrHidden(): Boolean {
+        return this == NONE || this == HIDDEN
     }
 }
