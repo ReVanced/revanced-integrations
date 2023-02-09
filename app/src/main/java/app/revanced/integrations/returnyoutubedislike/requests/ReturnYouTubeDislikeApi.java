@@ -183,6 +183,7 @@ public class ReturnYouTubeDislikeApi {
 
         if (httpResponseCode == RATE_LIMIT_HTTP_STATUS_CODE) {
             lastTimeRateLimitWasHit = System.currentTimeMillis();
+            numberOfRateLimitRequestsEncountered++;
             LogHelper.printDebug(() -> "API rate limit was hit. Stopping API calls for the next "
                     + RATE_LIMIT_BACKOFF_SECONDS + " seconds");
             ReVancedUtils.runOnMainThread(() -> { // must show toasts on main thread
@@ -208,7 +209,6 @@ public class ReturnYouTubeDislikeApi {
             fetchCallNumberOfFailures++;
         } else if (rateLimitHit) {
             fetchCallResponseTimeLast = FETCH_CALL_RESPONSE_TIME_VALUE_RATE_LIMIT;
-            numberOfRateLimitRequestsEncountered++;
         } else {
             fetchCallResponseTimeLast = responseTimeOfFetchCall;
         }
