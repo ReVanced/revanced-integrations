@@ -299,9 +299,9 @@ public class ReturnYouTubeDislike {
             // Must make a local copy of videoId, since it may change between now and when the vote thread runs
             String videoIdToVoteFor = getCurrentVideoId();
             if (videoIdToVoteFor == null || (lastVideoLoadedWasShort && !PlayerType.getCurrent().isNoneOrHidden())) {
-                // user enabled RYD after starting playback of a video.
-                // Or shorts was loaded with regular video present, and then shorts was closed, leaving the original video
-                LogHelper.printException(() -> "Cannot vote, current video is is null (user enabled RYD while video was playing?)",
+                // User enabled RYD after starting playback of a video.
+                // Or shorts was loaded with regular video present, then shorts was closed, and then user voted on the now visible original video
+                LogHelper.printException(() -> "Cannot send vote",
                         null, str("revanced_ryd_failure_ryd_enabled_while_playing_video_then_user_voted"));
                 return;
             }
@@ -327,21 +327,9 @@ public class ReturnYouTubeDislike {
                 LogHelper.printException(() -> "Cannot update UI dislike count (vote fetch is null)"); // should never happen
                 return;
             }
-
             // the future should always be completed before user can like/dislike, but use a timeout just in case
             RYDVoteData voteData = future.get(MAX_MILLISECONDS_TO_BLOCK_UI_WHILE_WAITING_FOR_FETCH_VOTES_TO_COMPLETE, TimeUnit.MILLISECONDS);
-
-            if (vote == Vote.DISLIKE) {
-                LogHelper.printDebug(() -> "Increasing dislike count");
-                voteData.incrementDislikeCount();
-            } else if (vote == Vote.LIKE) {
-                LogHelper.printDebug(() -> "Increasing like count");
-                // UI shows the like count from YouTube, but still need to increment so like/dislike percentages are updated
-                voteData.incrementLikeCount();
-            } else {
-                LogHelper.printDebug(() -> "Resetting like/dislike to fetched values");
-                voteData.resetToFetchedValue();
-            }
+            voteData.updateUsingVote(vote);
         } catch (Exception ex) {
             LogHelper.printException(() -> "Error trying to send vote", ex);
         }
