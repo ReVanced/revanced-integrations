@@ -329,6 +329,11 @@ public class ReturnYouTubeDislike {
             }
             // the future should always be completed before user can like/dislike, but use a timeout just in case
             RYDVoteData voteData = future.get(MAX_MILLISECONDS_TO_BLOCK_UI_WHILE_WAITING_FOR_FETCH_VOTES_TO_COMPLETE, TimeUnit.MILLISECONDS);
+            if (voteData == null) {
+                // RYD fetch failed
+                LogHelper.printDebug(() -> "Cannot update UI (vote data not available)");
+                return;
+            }
             voteData.updateUsingVote(vote);
         } catch (Exception ex) {
             LogHelper.printException(() -> "Error trying to send vote", ex);
