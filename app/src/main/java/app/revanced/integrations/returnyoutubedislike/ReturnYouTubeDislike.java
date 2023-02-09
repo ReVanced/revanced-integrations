@@ -240,18 +240,18 @@ public class ReturnYouTubeDislike {
      */
     @Nullable
     private static Spanned waitForFetchAndUpdateReplacementSpan(@NonNull Spanned oldSpannable, boolean isSegmentedButton) {
-        // Have to block the current thread until fetching is done
+        // Must block the current thread until fetching is done
         // There's no known way to edit the text after creation yet
         long fetchStartTime = 0;
         try {
             synchronized (videoIdLockObject) {
-                if (oldSpannable.equals(replacementLikeDislikeSpan)) {
+                if (oldSpannable == replacementLikeDislikeSpan) {
                     LogHelper.printDebug(() -> "Ignoring previously created dislike span");
                     return null;
                 }
                 if (isSegmentedButton) {
                     if (isPreviouslyCreatedSegmentedSpan(oldSpannable)) {
-                        // need to recreate using original, as oldSpannable already has prior outdated dislike values
+                        // need to recreate using original, as oldSpannable has prior outdated dislike values
                         oldSpannable = originalDislikeSpan;
                     } else {
                         originalDislikeSpan = oldSpannable; // most up to date original
