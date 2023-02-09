@@ -7,6 +7,7 @@ import android.os.Build;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
+import android.text.Spanned;
 import android.text.TextPaint;
 import android.text.style.CharacterStyle;
 import android.text.style.ForegroundColorSpan;
@@ -33,7 +34,6 @@ import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.shared.PlayerType;
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedUtils;
-import app.revanced.integrations.utils.SharedPrefHelper;
 import app.revanced.integrations.utils.ThemeHelper;
 
 public class ReturnYouTubeDislike {
@@ -43,7 +43,7 @@ public class ReturnYouTubeDislike {
      * Must be less than 5 seconds, as per:
      * https://developer.android.com/topic/performance/vitals/anr
      */
-    private static final long MILLISECONDS_TO_BLOCK_UI_WHILE_WAITING_FOR_FETCH_VOTES_TO_COMPLETE = 4000;
+    private static final long MAX_MILLISECONDS_TO_BLOCK_UI_WHILE_WAITING_FOR_FETCH_VOTES_TO_COMPLETE = 4000;
 
     /**
      * Used to send votes, one by one, in the same order the user created them
@@ -72,7 +72,7 @@ public class ReturnYouTubeDislike {
      */
     @Nullable
     @GuardedBy("videoIdLockObject")
-    private static Spannable replacementLikeDislikeSpan;
+    private static Spanned replacementLikeDislikeSpan;
 
     public enum Vote {
         LIKE(1),
@@ -110,8 +110,10 @@ public class ReturnYouTubeDislike {
     }
 
     private static void clearData() {
-        LogHelper.printDebug(() -> "Clearing previously fetched RYD vote data");
         synchronized (videoIdLockObject) {
+            if (currentVideoId != null) {
+                LogHelper.printDebug(() -> "Clearing RYD data");
+            }
             currentVideoId = null;
             voteFetchFuture = null;
             replacementLikeDislikeSpan = null;
@@ -132,20 +134,6 @@ public class ReturnYouTubeDislike {
         }
     }
 
-    @Nullable
-    private static Spannable getReplacementLikeDislikeSpan() {
-        synchronized (videoIdLockObject) {
-            return replacementLikeDislikeSpan;
-        }
-    }
-
-    private static void setReplacementLikeDislikeSpan(@NonNull Spannable span) {
-        Objects.requireNonNull(span);
-        synchronized (videoIdLockObject) {
-            replacementLikeDislikeSpan = span;
-        }
-    }
-
     public static void newVideoLoaded(String videoId) {
         try {
             if (!SettingsEnum.RYD_ENABLED.getBoolean()) return;
@@ -157,8 +145,11 @@ public class ReturnYouTubeDislike {
                 clearData();
                 return;
             }
-            LogHelper.printDebug(() -> " new video loaded: " + videoId + " playerType: " + currentPlayerType);
             synchronized (videoIdLockObject) {
+                if (videoId.equals(currentVideoId)) {
+                    return; // already loaded
+                }
+                LogHelper.printDebug(() -> " new video loaded: " + videoId + " playerType: " + currentPlayerType);
                 currentVideoId = videoId;
                 replacementLikeDislikeSpan = null;
                 // no need to wrap the call in a try/catch,
@@ -175,11 +166,10 @@ public class ReturnYouTubeDislike {
      * This method can be called multiple times for the same UI element (including after dislikes was added)
      */
     public static void onComponentCreated(Object conversionContext, AtomicReference<Object> textRef) {
-        if (!SettingsEnum.RYD_ENABLED.getBoolean()) return;
-
         try {
-            String conversionContextString = conversionContext.toString();
+            if (!SettingsEnum.RYD_ENABLED.getBoolean()) return;
 
+            String conversionContextString = conversionContext.toString();
             final boolean isSegmentedButton;
             if (conversionContextString.contains("|segmented_like_dislike_button.eml|")) {
                 isSegmentedButton = true;
@@ -189,64 +179,78 @@ public class ReturnYouTubeDislike {
                 return;
             }
 
-            Spannable replacementSpanToUse = getReplacementLikeDislikeSpan();
-            if (replacementSpanToUse != null) {
-                replaceReferenceValue(textRef, replacementSpanToUse);
-                return;
+            Spanned replacement = waitForFetchAndUpdateReplacementSpan((Spanned) textRef.get(), isSegmentedButton);
+            if (replacement != null) {
+                textRef.set(replacement);
             }
-
-            // Have to block the current thread until fetching is done
-            // There's no known way to edit the text after creation yet
-            RYDVoteData votingData;
-            long fetchStartTime = 0;
-            try {
-                Future<RYDVoteData> fetchFuture = getVoteFetchFuture();
-                if (fetchFuture == null) {
-                    LogHelper.printDebug(() -> "fetch future not available (user enabled RYD while video was playing?)");
-                    return;
-                }
-                if (SettingsEnum.DEBUG.getBoolean() && !fetchFuture.isDone()) {
-                    fetchStartTime = System.currentTimeMillis();
-                }
-                votingData = fetchFuture.get(MILLISECONDS_TO_BLOCK_UI_WHILE_WAITING_FOR_FETCH_VOTES_TO_COMPLETE, TimeUnit.MILLISECONDS);
-            } catch (TimeoutException e) {
-                LogHelper.printDebug(() -> "UI timed out waiting for fetch votes to complete");
-                return;
-            } finally {
-                recordTimeUISpentWaitingForNetworkCall(fetchStartTime);
-            }
-            if (votingData == null) {
-                LogHelper.printDebug(() -> "Cannot add dislike to UI (RYD data not available)");
-                return;
-            }
-
-            replacementSpanToUse = createDislikeSpan((Spannable) textRef.get(), isSegmentedButton, votingData);
-            setReplacementLikeDislikeSpan(replacementSpanToUse);
-            replaceReferenceValue(textRef, replacementSpanToUse);
         } catch (Exception ex) {
             LogHelper.printException(() -> "Error while trying to update dislikes", ex);
         }
     }
 
-    private static void replaceReferenceValue(AtomicReference<Object> textRef, Object span) {
-        Object existing = textRef.getAndSet(span);
-        if (existing != span) {
-            LogHelper.printDebug(() -> "Replaced: " + textRef.get() + " with: " + span);
+    public static Spanned onShortsComponentCreated(Spanned span) {
+        try {
+            if (SettingsEnum.RYD_ENABLED.getBoolean()) {
+                Spanned replacement = waitForFetchAndUpdateReplacementSpan(span, false);
+                if (replacement != null) {
+                    return replacement;
+                }
+            }
+        } catch (Exception ex) {
+            LogHelper.printException(() -> "onShortsComponentCreated failure", ex);
         }
+        return span;
+    }
+
+    /**
+     * @return NULL if the span does not need changing or if RYD is not available
+     */
+    @Nullable
+    private static Spanned waitForFetchAndUpdateReplacementSpan(Spanned oldSpannable, boolean isSegmentedButton) {
+        // Have to block the current thread until fetching is done
+        // There's no known way to edit the text after creation yet
+        long fetchStartTime = 0;
+        try {
+            synchronized (videoIdLockObject) {
+                if (oldSpannable.equals(replacementLikeDislikeSpan)) {
+                    LogHelper.printDebug(() -> "Ignoring previously created dislike span");
+                    return null;
+                }
+            }
+            Future<RYDVoteData> fetchFuture = getVoteFetchFuture();
+            if (fetchFuture == null) {
+                LogHelper.printDebug(() -> "fetch future not available (user enabled RYD while video was playing?)");
+                return null;
+            }
+            if (SettingsEnum.DEBUG.getBoolean() && !fetchFuture.isDone()) {
+                fetchStartTime = System.currentTimeMillis();
+            }
+            RYDVoteData votingData = fetchFuture.get(MAX_MILLISECONDS_TO_BLOCK_UI_WHILE_WAITING_FOR_FETCH_VOTES_TO_COMPLETE, TimeUnit.MILLISECONDS);
+            if (votingData == null) {
+                LogHelper.printDebug(() -> "Cannot add dislike to UI (RYD data not available)");
+                return null;
+            }
+
+            Spanned replacement = createDislikeSpan(oldSpannable, isSegmentedButton, votingData);
+            synchronized (videoIdLockObject) {
+                replacementLikeDislikeSpan = replacement;
+            }
+            LogHelper.printDebug(() -> "Replaced: '" + oldSpannable + "' with: '" + replacement + "'");
+            return replacement;
+        } catch (TimeoutException e) {
+            LogHelper.printDebug(() -> "UI timed out while waiting for fetch votes to complete"); // show no toast
+        } catch (Exception e) {
+            LogHelper.printException(() -> "createReplacementSpan failure", e); // should never happen
+        } finally {
+            recordTimeUISpentWaitingForNetworkCall(fetchStartTime);
+        }
+        return null;
     }
 
     public static void sendVote(@NonNull Vote vote) {
         Objects.requireNonNull(vote);
         try {
             if (!SettingsEnum.RYD_ENABLED.getBoolean()) return;
-            if (PlayerType.getCurrent() == PlayerType.NONE) { // should occur if shorts is playing
-                LogHelper.printDebug(() -> "Ignoring vote during Shorts playback");
-                return;
-            }
-            if (SharedPrefHelper.getBoolean(SharedPrefHelper.SharedPrefNames.YOUTUBE, "user_signed_out", true)) {
-                LogHelper.printDebug(() -> "User is logged out, ignoring voting");
-                return;
-            }
 
             // Must make a local copy of videoId, since it may change between now and when the vote thread runs
             String videoIdToVoteFor = getCurrentVideoId();
@@ -297,7 +301,7 @@ public class ReturnYouTubeDislike {
     /**
      * @param isSegmentedButton if UI is using the segmented single UI component for both like and dislike
      */
-    private static Spannable createDislikeSpan(Spannable oldSpannable, boolean isSegmentedButton, RYDVoteData voteData) {
+    private static Spanned createDislikeSpan(Spanned oldSpannable, boolean isSegmentedButton, RYDVoteData voteData) {
         if (!isSegmentedButton) {
             // simple replacement of 'dislike' with a number/percentage
             return newSpannableWithDislikes(oldSpannable, voteData);
@@ -469,14 +473,14 @@ public class ReturnYouTubeDislike {
         destination.setSpan(styling, 0, destination.length(), 0);
     }
 
-    private static Spannable newSpannableWithDislikes(Spannable sourceStyling, RYDVoteData voteData) {
+    private static Spannable newSpannableWithDislikes(Spanned sourceStyling, RYDVoteData voteData) {
         return newSpanUsingStylingOfAnotherSpan(sourceStyling,
                 SettingsEnum.RYD_SHOW_DISLIKE_PERCENTAGE.getBoolean()
                         ? formatDislikePercentage(voteData.dislikePercentage)
                         : formatDislikeCount(voteData.dislikeCount));
     }
 
-    private static Spannable newSpanUsingStylingOfAnotherSpan(Spannable sourceStyle, String newSpanText) {
+    private static Spannable newSpanUsingStylingOfAnotherSpan(Spanned sourceStyle, String newSpanText) {
         SpannableString destination = new SpannableString(newSpanText);
         Object[] spans = sourceStyle.getSpans(0, sourceStyle.length(), Object.class);
         for (Object span : spans) {
