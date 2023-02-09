@@ -225,7 +225,7 @@ public class ReturnYouTubeDislike {
      * @return NULL if the span does not need changing or if RYD is not available
      */
     @Nullable
-    private static Spanned waitForFetchAndUpdateReplacementSpan(Spanned oldSpannable, boolean isSegmentedButton) {
+    private static Spanned waitForFetchAndUpdateReplacementSpan(@NonNull Spanned oldSpannable, boolean isSegmentedButton) {
         // Have to block the current thread until fetching is done
         // There's no known way to edit the text after creation yet
         long fetchStartTime = 0;
@@ -237,6 +237,17 @@ public class ReturnYouTubeDislike {
                 }
                 if (isSegmentedButton) {
                     if (isPreviouslyCreatedSegmentedSpan(oldSpannable)) {
+                        if (originalDislikeSpan == null) {
+                            // User was watching regular video, then opened a short, then closed the short.
+                            // Now the original video player is showing again.
+                            // Cannot update the dislike until a new video is loaded,
+                            // as the current data is for the now closed short.
+                            // Instead, do nothing and leave the like/dislike values as-is.
+                            Spanned oldSpannableLogging = oldSpannable;
+                            LogHelper.printDebug(() -> "Cannot update '" + oldSpannableLogging + "' as original span is not set" +
+                                    " (user opened a shorts while a regular video was open?)");
+                            return null;
+                        }
                         // need to recreate using original, as oldSpannable already has prior outdated dislike values
                         oldSpannable = originalDislikeSpan;
                     } else {
