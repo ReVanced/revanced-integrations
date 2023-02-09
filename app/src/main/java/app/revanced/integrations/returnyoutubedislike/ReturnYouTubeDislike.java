@@ -170,7 +170,7 @@ public class ReturnYouTubeDislike {
                 if (videoId.equals(currentVideoId)) {
                     return; // already loaded
                 }
-                LogHelper.printDebug(() -> " new video loaded: " + videoId + " playerType: " + currentPlayerType);
+                LogHelper.printDebug(() -> "New video loaded: " + videoId + " playerType: " + currentPlayerType);
                 setCurrentVideoId(videoId);
                 // no need to wrap the call in a try/catch,
                 // as any exceptions are propagated out in the later Future#Get call
@@ -324,8 +324,7 @@ public class ReturnYouTubeDislike {
 
             Future<RYDVoteData> future = getVoteFetchFuture();
             if (future == null) {
-                LogHelper.printDebug(() -> "Cannot update UI dislike count - vote fetch is null" +
-                        " (user enabled RYD while video was playing?)"); // do not show a toast
+                LogHelper.printException(() -> "Cannot update UI dislike count - vote fetch is null");
                 return;
             }
             // the future should always be completed before user can like/dislike, but use a timeout just in case
