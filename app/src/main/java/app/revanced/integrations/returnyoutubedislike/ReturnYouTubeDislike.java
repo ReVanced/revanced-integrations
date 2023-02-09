@@ -184,6 +184,11 @@ public class ReturnYouTubeDislike {
         try {
             if (!SettingsEnum.RYD_ENABLED.getBoolean()) return;
 
+            PlayerType currentPlayerType = PlayerType.getCurrent();
+            if (currentPlayerType == PlayerType.NONE || currentPlayerType == PlayerType.HIDDEN) {
+                return;
+            }
+
             String conversionContextString = conversionContext.toString();
             final boolean isSegmentedButton;
             if (conversionContextString.contains("|segmented_like_dislike_button.eml|")) {
