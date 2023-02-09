@@ -42,6 +42,7 @@ enum class PlayerType {
                 currentPlayerType = value
                 onChange(currentPlayerType)
             }
+        @Volatile // value is read/write from different threads
         private var currentPlayerType = NONE
 
         /**
