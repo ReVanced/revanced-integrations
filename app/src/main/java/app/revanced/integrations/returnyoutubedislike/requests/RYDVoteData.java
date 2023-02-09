@@ -82,11 +82,11 @@ public final class RYDVoteData {
 
     public void updateUsingVote(Vote vote) {
         if (vote == Vote.LIKE) {
-            LogHelper.printDebug(() -> "Increasing dislike count");
+            LogHelper.printDebug(() -> "Increasing like count");
             likeCount = fetchedLikeCount + 1;
             dislikeCount = fetchedDislikeCount;
         } else if (vote == Vote.DISLIKE) {
-            LogHelper.printDebug(() -> "Increasing like count");
+            LogHelper.printDebug(() -> "Increasing dislike count");
             likeCount = fetchedLikeCount;
             dislikeCount = fetchedDislikeCount + 1;
         } else if (vote == Vote.LIKE_REMOVE) {
@@ -94,7 +94,7 @@ public final class RYDVoteData {
             likeCount = fetchedLikeCount;
             dislikeCount = fetchedDislikeCount;
         } else {
-            throw new IllegalArgumentException();
+            throw new IllegalStateException();
         }
         updatePercentages();
     }
