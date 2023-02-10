@@ -216,8 +216,8 @@ public class PlayerController {
                             // only schedule showing a manual skip, if currently not in another manual skip
                             && segmentCurrentlyPlayingToManuallySkip == null) {
                         foundUpcomingSegment = segment;
-                        continue; // keep looking, an autoskip may be coming up
                     }
+                    continue; // keep looking, an autoskip may be coming up
                 }
 
                 // we are in the segment!
