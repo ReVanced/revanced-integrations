@@ -208,7 +208,8 @@ public class PlayerController {
                         foundUpcomingSegment = segment;
                         break; // must stop here
                     }
-                    if (foundUpcomingSegment == null // upcoming manual skip
+                    // upcoming manual skip
+                    if (foundUpcomingSegment == null
                             // only schedule showing a manual skip, if currently not in another manual skip
                             && segmentCurrentlyPlayingToManuallySkip == null) {
                         foundUpcomingSegment = segment;
@@ -467,7 +468,7 @@ public class PlayerController {
                     if (segment.end <= otherSegment.start) {
                         break; // no other segments can be contained
                     }
-                    if (segment.containsSegment(otherSegment)) {
+                    if (segment.containsSegment(otherSegment)) { // includes checking the segment against itself
                         otherSegment.didAutoSkipped = true; // skipped this segment as well
                         if (showSkipToast) {
                             showSkippedSegmentToast(otherSegment);
