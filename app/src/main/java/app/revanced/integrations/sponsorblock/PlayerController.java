@@ -196,6 +196,9 @@ public class PlayerController {
             SponsorSegment foundManualSkipSegment = null;
 
             for (final SponsorSegment segment : sponsorSegmentsOfCurrentVideo) {
+                if (!segment.category.behaviour.skip) {
+                    continue; // an ignored segment
+                }
                 if (segment.end <= millis) {
                     continue; // past this segment
                 }
