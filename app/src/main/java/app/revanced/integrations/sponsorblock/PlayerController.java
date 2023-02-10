@@ -189,7 +189,7 @@ public class PlayerController {
             // to debug the segmentToSkip stale detection, set this to a very large value (12,000 or more)
             // then manually seek to a different location just before an autoskip segment starts
             final float playbackRate = RememberPlaybackRatePatch.getCurrentPlaybackRate();
-            final long START_TIMER_BEFORE_SEGMENT_MILLIS = 2000; // must be larger than the average time between calls to this method
+            final long START_TIMER_BEFORE_SEGMENT_MILLIS = 2500; // must be larger than the average time between calls to this method
             final long startTimerAtMillis = millis + (long)(playbackRate * START_TIMER_BEFORE_SEGMENT_MILLIS);
 
             SponsorSegment foundUpcomingSegment = null;
@@ -211,12 +211,14 @@ public class PlayerController {
                         foundUpcomingSegment = segment;
                         break; // must stop here
                     }
+
                     // upcoming manual skip
-                    if (foundUpcomingSegment == null
-                            // only schedule showing a manual skip, if currently not in another manual skip
-                            && segmentCurrentlyPlayingToManuallySkip == null) {
+                    if (foundUpcomingSegment == null // first upcoming manual segment found
+                            // or segment is fully contained inside the prior found upcoming segment
+                            || foundUpcomingSegment.containsSegment(segment)) {
                         foundUpcomingSegment = segment;
                     }
+
                     continue; // keep looking, an autoskip may be coming up
                 }
 
@@ -224,15 +226,15 @@ public class PlayerController {
                 if (segment.shouldAutoSkip()) {
                     skipSegment(segment, millis, false);
                     return; // must return, as skipping causes a recursive call back into this method
-                } else {
-                    if (foundManualSkipSegment == null // first manual segment found
-                            || segment.end <= foundManualSkipSegment.end) { // or segment is contained inside the prior found segment
-                        foundManualSkipSegment = segment;
-                    }
-                    // keep looking. there may be an upcoming autoskip,
-                    // or there may be another smaller segment nested inside this segment
-                    continue;
                 }
+
+                // inside a manual skip segment
+                if (foundManualSkipSegment == null
+                        || foundManualSkipSegment.containsSegment(segment)) {
+                    foundManualSkipSegment = segment;
+                }
+                // Keep iterating and looking. There may be an upcoming autoskip,
+                // or there may be another smaller segment nested inside this segment
             }
 
             if (foundUpcomingSegment == null) {
@@ -241,11 +243,11 @@ public class PlayerController {
                     scheduledSegmentToAutoSkipOrShowSkipButton = null;
                 }
             } else if (scheduledSegmentToAutoSkipOrShowSkipButton != foundUpcomingSegment) {
+                scheduledSegmentToAutoSkipOrShowSkipButton = foundUpcomingSegment;
                 final SponsorSegment segmentToSkip = foundUpcomingSegment;
-                scheduledSegmentToAutoSkipOrShowSkipButton = segmentToSkip;
 
                 final long delayUntilSkip = (long) ((segmentToSkip.start - millis) / playbackRate);
-                LogHelper.printDebug(() -> "Scheduling segment: " + scheduledSegmentToAutoSkipOrShowSkipButton + " playbackRate: " + playbackRate);
+                LogHelper.printDebug(() -> "Scheduling segment: " + segmentToSkip + " playbackRate: " + playbackRate);
 
                 ReVancedUtils.runOnMainThreadDelayed(() -> {
                     if (scheduledSegmentToAutoSkipOrShowSkipButton != segmentToSkip) {
