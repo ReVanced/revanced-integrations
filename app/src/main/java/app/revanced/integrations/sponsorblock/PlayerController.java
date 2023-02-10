@@ -272,12 +272,16 @@ public class PlayerController {
                 }, delayUntilSkip);
             }
 
-            if (foundManualSkipSegment == null) {
-                segmentCurrentlyPlayingToManuallySkip = null;
-                SponsorBlockView.hideSkipButton();
-            } else {
-                segmentCurrentlyPlayingToManuallySkip = foundManualSkipSegment;
-                SponsorBlockView.showSkipButton(foundManualSkipSegment.category);
+            if (segmentCurrentlyPlayingToManuallySkip != foundManualSkipSegment) {
+                if (foundManualSkipSegment == null) {
+                    segmentCurrentlyPlayingToManuallySkip = null;
+                    LogHelper.printDebug(() -> "Hiding skip button");
+                    SponsorBlockView.hideSkipButton();
+                }  else {
+                    segmentCurrentlyPlayingToManuallySkip = foundManualSkipSegment;
+                    LogHelper.printDebug(() -> "Showing skip button for segment: " + segmentCurrentlyPlayingToManuallySkip);
+                    SponsorBlockView.showSkipButton(foundManualSkipSegment.category);
+                }
             }
         } catch (Exception e) {
             LogHelper.printException(() -> "setVideoTime failure", e);
