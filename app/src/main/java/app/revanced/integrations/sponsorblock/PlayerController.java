@@ -430,10 +430,20 @@ public class PlayerController {
                 LogHelper.printDebug(() -> "Could not skip segment (seek unsuccessful): " + segment);
                 return;
             }
+
             if (!userManuallySkipped) {
-                segment.didAutoSkipped = true;
-                if (SettingsEnum.SB_SHOW_TOAST_WHEN_SKIP.getBoolean()) {
-                    showSkippedSegmentToast(segment);
+                // check for any smaller embedded segments, and count those as autoskipped
+                final boolean showSkipToast = SettingsEnum.SB_SHOW_TOAST_WHEN_SKIP.getBoolean();
+                for (final SponsorSegment otherSegment : sponsorSegmentsOfCurrentVideo) {
+                    if (segment.end <= otherSegment.start) {
+                        break; // no other segments can be contained
+                    }
+                    if (segment.containsSegment(otherSegment)) {
+                        otherSegment.didAutoSkipped = true; // skipped this segment as well
+                        if (showSkipToast) {
+                            showSkippedSegmentToast(otherSegment);
+                        }
+                    }
                 }
             }
 

@@ -41,6 +41,20 @@ public class SponsorSegment implements Comparable<SponsorSegment> {
         return (start - nearThreshold) <= videoTime && videoTime < (end + nearThreshold);
     }
 
+    /**
+     * @return if the video time falls outside this segment
+     */
+    public boolean timeIsOutside(long videoTime) {
+        return start < videoTime || end <= videoTime;
+    }
+
+    /**
+     * @return if the segment is completely contained inside this segment
+     */
+    public boolean containsSegment(SponsorSegment other) {
+        return start <= other.start && other.end <= end;
+    }
+
     @Override
     public int compareTo(SponsorSegment o) {
         return (int) (this.start - o.start);
