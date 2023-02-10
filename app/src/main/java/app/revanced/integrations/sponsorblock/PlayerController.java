@@ -33,16 +33,18 @@ public class PlayerController {
     private static String currentVideoId;
     @Nullable
     private static SponsorSegment[] sponsorSegmentsOfCurrentVideo;
+
     /**
      * Current segment that user can manually skip
      */
     @Nullable
     private static SponsorSegment segmentCurrentlyPlayingToManuallySkip;
     /**
-     * Next segment that is scheduled to autoskip
+     * Next segment that is scheduled to autoskip to show manual skip button
      */
     @Nullable
-    private static SponsorSegment nextSegmentToAutoSkip;
+    private static SponsorSegment scheduledSegmentToAutoSkipOrShowSkipButton;
+
     private static String timeWithoutSegments = "";
     private static boolean settingsInitialized;
 
@@ -69,11 +71,12 @@ public class PlayerController {
     /**
      * Clears all downloaded data
      */
-    private static void clearDownloadedData() {
+    private static void clearData() {
         currentVideoId = null;
         sponsorSegmentsOfCurrentVideo = null;
         timeWithoutSegments = "";
-        nextSegmentToAutoSkip = null; // prevent any existing scheduled skip from running
+        segmentCurrentlyPlayingToManuallySkip = null;
+        scheduledSegmentToAutoSkipOrShowSkipButton = null; // prevent any existing scheduled skip from running
         toastSegmentSkipped = null; // prevent any scheduled skip toasts from showing
         toastNumberOfSegmentsSkipped = 0;
     }
@@ -99,18 +102,17 @@ public class PlayerController {
     public static void setCurrentVideoId(@Nullable String videoId) {
         try {
             if (videoId == null || !SettingsEnum.SB_ENABLED.getBoolean()) {
-                clearDownloadedData();
+                clearData();
                 return;
             }
             if (PlayerType.getCurrent().isNoneOrHidden()) {
-                // VideoIdPatch does not yet support shorts. So currently this code will never run
                 LogHelper.printDebug(() -> "ignoring shorts video");
-                clearDownloadedData();
+                clearData();
                 return;
             }
             if (!ReVancedUtils.isNetworkConnected()) {
                 LogHelper.printDebug(() -> "Network not connected, ignoring video");
-                clearDownloadedData();
+                clearData();
                 return;
             }
             if (videoId.equals(currentVideoId)) {
@@ -122,7 +124,7 @@ public class PlayerController {
                 settingsInitialized = true;
             }
 
-            clearDownloadedData();
+            clearData();
             currentVideoId = videoId;
 
             // if opening new video in same player, then skip button may be showing from prior video
@@ -182,7 +184,6 @@ public class PlayerController {
                         + "  Ignoring setVideoTime call of time: " + millis);
                 return;
             }
-
             LogHelper.printDebug(() -> "setVideoTime: " + millis);
 
             // to debug the segmentToSkip stale detection, set this to a very large value (12,000 or more)
@@ -191,61 +192,88 @@ public class PlayerController {
             final long START_TIMER_BEFORE_SEGMENT_MILLIS = 2000; // must be larger than the average time between calls to this method
             final long startTimerAtMillis = millis + (long)(playbackRate * START_TIMER_BEFORE_SEGMENT_MILLIS);
 
-            segmentCurrentlyPlayingToManuallySkip = null;
-            boolean foundUpcomingAutoSkipSegment = false;
+            SponsorSegment foundUpcomingSegment = null;
+            SponsorSegment foundManualSkipSegment = null;
 
             for (final SponsorSegment segment : sponsorSegmentsOfCurrentVideo) {
-                if (millis < segment.start) { // segment is upcoming
-                    if (startTimerAtMillis < segment.start)
-                        break; // no upcoming segments are close enough to schedule a skip
-
-                    if (!segment.shouldAutoSkip())
-                        break; // not an autoskip segment, or it's a skip once and has already gone
-
-                    foundUpcomingAutoSkipSegment = true;
-                    if (nextSegmentToAutoSkip != segment) {
-                        nextSegmentToAutoSkip = segment;
-                        final long delayUntilSkip = (long) ((segment.start - millis) / playbackRate);
-                        LogHelper.printDebug(() -> "Scheduling segment skip: " + segment + " playbackRate: " + playbackRate);
-
-                        ReVancedUtils.runOnMainThreadDelayed(() -> {
-                            if (nextSegmentToAutoSkip != segment) {
-                                LogHelper.printDebug(() -> "Ignoring stale scheduled skip: " + segment);
-                                return;
-                            }
-                            nextSegmentToAutoSkip = null;
-
-                            LogHelper.printDebug(() -> "Running scheduled skip: " + segment);
-                            skipSegment(segment, VideoInformation.getVideoTime(), false);
-                        }, delayUntilSkip);
-                    }
-                    break;
+                if (segment.end <= millis) {
+                    continue; // past this segment
                 }
 
-                if (segment.end <= millis)
-                    continue; // already past this segment
+                if (millis < segment.start) { // segment is upcoming
+                    if (startTimerAtMillis < segment.start) {
+                        break; // no upcoming segments are close enough to schedule a skip
+                    }
+                    if (segment.shouldAutoSkip()) { // upcoming autoskip
+                        foundUpcomingSegment = segment;
+                        break; // must stop here
+                    }
+                    if (foundUpcomingSegment == null // upcoming manual skip
+                            // only schedule showing a manual skip, if currently not in another manual skip
+                            && segmentCurrentlyPlayingToManuallySkip == null) {
+                        foundUpcomingSegment = segment;
+                        continue; // keep looking, an autoskip may be coming up
+                    }
+                }
 
                 // we are in the segment!
                 if (segment.shouldAutoSkip()) {
-                    nextSegmentToAutoSkip = null; // if a scheduled skip has not run yet
-                    SponsorBlockView.hideSkipButton();
                     skipSegment(segment, millis, false);
                     return; // must return, as skipping causes a recursive call back into this method
                 } else {
-                    segmentCurrentlyPlayingToManuallySkip = segment;
+                    if (foundManualSkipSegment == null // first manual segment found
+                            || segment.end <= foundManualSkipSegment.end) { // or segment is contained inside the prior found segment
+                        foundManualSkipSegment = segment;
+                    }
                     // keep looking. there may be an upcoming autoskip,
                     // or there may be another smaller segment nested inside this segment
                     continue;
                 }
             }
-            if (!foundUpcomingAutoSkipSegment && nextSegmentToAutoSkip != null) {
-                LogHelper.printDebug(() -> "Clearing scheduled segment skip");
-                nextSegmentToAutoSkip = null;
+
+            if (foundUpcomingSegment == null) {
+                if (scheduledSegmentToAutoSkipOrShowSkipButton != null) {
+                    LogHelper.printDebug(() -> "Clearing scheduled segment skip");
+                    scheduledSegmentToAutoSkipOrShowSkipButton = null;
+                }
+            } else if (scheduledSegmentToAutoSkipOrShowSkipButton != foundUpcomingSegment) {
+                final SponsorSegment segmentToSkip = foundUpcomingSegment;
+                scheduledSegmentToAutoSkipOrShowSkipButton = segmentToSkip;
+
+                final long delayUntilSkip = (long) ((segmentToSkip.start - millis) / playbackRate);
+                LogHelper.printDebug(() -> "Scheduling segment: " + scheduledSegmentToAutoSkipOrShowSkipButton + " playbackRate: " + playbackRate);
+
+                ReVancedUtils.runOnMainThreadDelayed(() -> {
+                    if (scheduledSegmentToAutoSkipOrShowSkipButton != segmentToSkip) {
+                        LogHelper.printDebug(() -> "Ignoring stale scheduled segment: " + segmentToSkip);
+                        return;
+                    }
+                    scheduledSegmentToAutoSkipOrShowSkipButton = null;
+
+                    final long videoTime = VideoInformation.getVideoTime();
+                    final long nearThreshold = 250; // must be at least 2x the average time between updates to VideoInformation time
+                    if (!segmentToSkip.timeIsInsideOrNear(videoTime, nearThreshold)) {
+                        // user paused playback just before the autoskip
+                        LogHelper.printDebug(() -> "Ignoring outdated scheduled segment: " + segmentToSkip);
+                        return;
+                    }
+                    if (segmentToSkip.shouldAutoSkip()) {
+                        LogHelper.printDebug(() -> "Running scheduled autoskip: " + segmentToSkip);
+                        skipSegment(segmentToSkip, videoTime, false);
+                    } else {
+                        LogHelper.printDebug(() -> "Running scheduled show skip button: " + segmentToSkip);
+                        segmentCurrentlyPlayingToManuallySkip = segmentToSkip;
+                        SponsorBlockView.showSkipButton(segmentToSkip.category);
+                    }
+                }, delayUntilSkip);
             }
-            if (segmentCurrentlyPlayingToManuallySkip != null) {
-                SponsorBlockView.showSkipButton(segmentCurrentlyPlayingToManuallySkip.category);
-            } else {
+
+            if (foundManualSkipSegment == null) {
+                segmentCurrentlyPlayingToManuallySkip = null;
                 SponsorBlockView.hideSkipButton();
+            } else {
+                segmentCurrentlyPlayingToManuallySkip = foundManualSkipSegment;
+                SponsorBlockView.showSkipButton(foundManualSkipSegment.category);
             }
         } catch (Exception e) {
             LogHelper.printException(() -> "setVideoTime failure", e);
@@ -418,10 +446,11 @@ public class PlayerController {
                 return;
             }
 
+            LogHelper.printDebug(() -> "Skipping segment: " + segment);
             lastSegmentSkipped = segment;
             lastSegmentSkippedTime = now;
-            LogHelper.printDebug(() -> "Skipping segment: " + segment);
-
+            scheduledSegmentToAutoSkipOrShowSkipButton = null; // if a scheduled skip has not run yet
+            segmentCurrentlyPlayingToManuallySkip = null;
             SponsorBlockView.hideSkipButton();
 
             final boolean seekSuccessful = VideoInformation.seekTo(segment.end);
