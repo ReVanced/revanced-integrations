@@ -16,7 +16,7 @@ public final class VideoInformation {
     private static Method seekMethod;
 
     private static String videoId = "";
-    private static long videoLength = 1;
+    private static long videoLength = 0;
     private static volatile long videoTime = -1; // must be volatile. Value is set off main thread from high precision patch hook
 
     /**
@@ -27,7 +27,7 @@ public final class VideoInformation {
      */
     public static void playerController_onCreateHook(final Object thisRef) {
         playerController = new WeakReference<>(thisRef);
-        videoLength = 1;
+        videoLength = 0;
         videoTime = -1;
 
         try {
@@ -112,10 +112,9 @@ public final class VideoInformation {
 
     /**
      * Length of the current video playing.
-     * During changing of videos this can return a length of zero.
      * Includes Shorts playback.
      *
-     * @return The length of the video in milliseconds. 1 if not set yet.
+     * @return The length of the video in milliseconds, or zero  if video is not yet loaded.
      */
     public static long getCurrentVideoLength() {
        return videoLength;
@@ -141,7 +140,7 @@ public final class VideoInformation {
      * @return If the playback is at the end of the video
      */
     public static boolean isAtEndOfVideo() {
-        return videoTime > 0 && videoTime >= videoLength;
+        return videoTime > 0 && videoLength > 0 && videoTime >= videoLength;
     }
 
 }
