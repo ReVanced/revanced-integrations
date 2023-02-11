@@ -201,7 +201,7 @@ public class PlayerController {
             final long startTimerLookAheadThreshold = millis + (long)(playbackRate * lookAheadMilliseconds);
 
             SponsorSegment foundUpcomingSegment = null;
-            SponsorSegment foundManualSkipSegment = null;
+            SponsorSegment foundCurrentSegment = null;
 
             for (final SponsorSegment segment : segmentsOfCurrentVideo) {
                 if (segment.category.behaviour == SponsorBlockSettings.SegmentBehaviour.IGNORE) {
@@ -219,10 +219,10 @@ public class PlayerController {
                     }
 
                     // inside a manual skip segment
-                    if (foundManualSkipSegment == null
+                    if (foundCurrentSegment == null
                             // show the embedded segment if it's fully inside the outer segment
-                            || foundManualSkipSegment.containsSegment(segment)) {
-                        foundManualSkipSegment = segment;
+                            || foundCurrentSegment.containsSegment(segment)) {
+                        foundCurrentSegment = segment;
                     }
                     // Keep iterating and looking. There may be an upcoming autoskip,
                     // or there may be another smaller segment nested inside this segment
@@ -238,7 +238,7 @@ public class PlayerController {
                     break; // must stop here
                 }
                 // upcoming manual skip
-                if (foundManualSkipSegment == null // schedule displaying the segment only if not currently in a manual skip segment,
+                if (foundCurrentSegment == null // schedule displaying the segment only if not currently in a manual skip segment,
                         // and it's the first upcoming manual skip found or the segment is fully contained inside the prior found upcoming segment
                         && (foundUpcomingSegment == null || foundUpcomingSegment.containsSegment(segment))) {
                     foundUpcomingSegment = segment;
@@ -285,28 +285,28 @@ public class PlayerController {
                 }
             }
 
-            if (segmentCurrentlyPlaying != foundManualSkipSegment) {
-                if (foundManualSkipSegment == null) {
+            if (segmentCurrentlyPlaying != foundCurrentSegment) {
+                if (foundCurrentSegment == null) {
                     LogHelper.printDebug(() -> "Hiding segment: " + segmentCurrentlyPlaying);
                     segmentCurrentlyPlaying = null;
                     SponsorBlockView.hideSkipButton();
                 }  else {
-                    segmentCurrentlyPlaying = foundManualSkipSegment;
+                    segmentCurrentlyPlaying = foundCurrentSegment;
                     LogHelper.printDebug(() -> "Showing segment: " + segmentCurrentlyPlaying);
-                    SponsorBlockView.showSkipButton(foundManualSkipSegment.category);
+                    SponsorBlockView.showSkipButton(foundCurrentSegment.category);
                 }
             }
 
-            if (scheduledHideSegment != foundManualSkipSegment) {
-                if (foundManualSkipSegment == null || !foundManualSkipSegment.timeIsNearEnd(millis, lookAheadMilliseconds)) {
-                    // nothing to schedule, or it's a different segment but it's too far away to schedule a hide
+            if (scheduledHideSegment != foundCurrentSegment) {
+                if (foundCurrentSegment == null || !foundCurrentSegment.timeIsNearEnd(millis, lookAheadMilliseconds)) {
+                    // nothing to schedule, or segment is too far away to schedule a hide
                     if (scheduledHideSegment != null) {
                         LogHelper.printDebug(() -> "Clearing scheduled hide: " + scheduledHideSegment);
                         scheduledHideSegment = null;
                     }
                 } else {
-                    scheduledHideSegment = foundManualSkipSegment;
-                    final SponsorSegment segmentToHide = foundManualSkipSegment;
+                    scheduledHideSegment = foundCurrentSegment;
+                    final SponsorSegment segmentToHide = foundCurrentSegment;
 
                     LogHelper.printDebug(() -> "Scheduling hide segment: " + segmentToHide + " playbackRate: " + playbackRate);
                     final long delayUntilHide = (long) ((segmentToHide.end - millis) / playbackRate);
