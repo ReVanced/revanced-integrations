@@ -40,16 +40,16 @@ public class PlayerController {
     @Nullable
     private static SponsorSegment segmentCurrentlyPlaying;
     /**
-     * Upcoming segment that is scheduled to either autoskip or show the manual skip button
-     */
-    @Nullable
-    private static SponsorSegment scheduledUpcomingSegment;
-    /**
      * Currently playing manual skip segment, that is scheduled to hide.
      * This will always be NULL or equal to {@link #segmentCurrentlyPlaying}
      */
     @Nullable
     private static SponsorSegment scheduledHideSegment;
+    /**
+     * Upcoming segment that is scheduled to either autoskip or show the manual skip button
+     */
+    @Nullable
+    private static SponsorSegment scheduledUpcomingSegment;
 
     private static String timeWithoutSegments = "";
     private static boolean settingsInitialized;
@@ -196,8 +196,8 @@ public class PlayerController {
 
             // to debug the timing logic, set this to a very large value (5000 or more)
             // then try manually seeking just playback reaches a skip/hide of different segments
-            final float playbackRate = RememberPlaybackRatePatch.getCurrentPlaybackRate();
             final long lookAheadMilliseconds = 2500; // must be larger than the average time between calls to this method
+            final float playbackRate = RememberPlaybackRatePatch.getCurrentPlaybackRate();
             final long startTimerLookAheadThreshold = millis + (long)(playbackRate * lookAheadMilliseconds);
 
             SponsorSegment foundCurrentSegment = null;
