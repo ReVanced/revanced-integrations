@@ -194,8 +194,8 @@ public class PlayerController {
             }
             LogHelper.printDebug(() -> "setVideoTime: " + millis);
 
-            // to debug the segmentToSkip stale detection, set this to a very large value (12,000 or more)
-            // then manually seek to a different location just before an autoskip segment starts
+            // to debug the timing logic, set this to a very large value (5000 or more)
+            // then try manually seeking just playback reaches a skip/hide of different segments
             final float playbackRate = RememberPlaybackRatePatch.getCurrentPlaybackRate();
             final long START_TIMER_BEFORE_SEGMENT_MILLIS = 2500; // must be larger than the average time between calls to this method
             final long startTimerAtMillis = millis + (long)(playbackRate * START_TIMER_BEFORE_SEGMENT_MILLIS);
