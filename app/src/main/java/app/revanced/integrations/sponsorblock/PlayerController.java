@@ -86,7 +86,6 @@ public class PlayerController {
         scheduledHideSegment = null;
         toastSegmentSkipped = null; // prevent any scheduled skip toasts from showing
         toastNumberOfSegmentsSkipped = 0;
-        SponsorBlockView.hideSkipButton();
     }
 
     /**
