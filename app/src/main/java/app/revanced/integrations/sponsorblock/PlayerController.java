@@ -221,9 +221,9 @@ public class PlayerController {
                     }
 
                     // upcoming manual skip
-                    if (foundUpcomingSegment == null // first upcoming manual segment found
-                            // or segment is fully contained inside the prior found upcoming segment
-                            || foundUpcomingSegment.containsSegment(segment)) {
+                    if (segmentCurrentlyPlaying == null // schedule displaying the segment only if not currently showing a manual skip segment,
+                            // and it's the first manual skip found or the segment is fully contained inside the prior found upcoming segment
+                            && (foundUpcomingSegment == null || foundUpcomingSegment.containsSegment(segment))) {
                         foundUpcomingSegment = segment;
                     }
 
@@ -297,10 +297,13 @@ public class PlayerController {
             }
 
             if (scheduledHideSegment != foundManualSkipSegment) {
-                if (foundManualSkipSegment == null) {
-                    LogHelper.printDebug(() -> "Clearing scheduled hide segment");
-                    scheduledHideSegment = null;
-                } else if (foundManualSkipSegment.timeIsNearEnd(millis, START_TIMER_BEFORE_SEGMENT_MILLIS)) {
+                if (foundManualSkipSegment == null || !foundManualSkipSegment.timeIsNearEnd(millis, START_TIMER_BEFORE_SEGMENT_MILLIS)) {
+                    // nothing to schedule, or it's a different segment but it's too far away to schedule a hide
+                    if (scheduledHideSegment != null) {
+                        LogHelper.printDebug(() -> "Clearing scheduled hide: " + scheduledHideSegment);
+                        scheduledHideSegment = null;
+                    }
+                } else {
                     scheduledHideSegment = foundManualSkipSegment;
                     final SponsorSegment segmentToHide = foundManualSkipSegment;
 
