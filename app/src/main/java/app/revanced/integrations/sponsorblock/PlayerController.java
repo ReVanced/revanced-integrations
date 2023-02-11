@@ -32,7 +32,7 @@ public class PlayerController {
     @Nullable
     private static String currentVideoId;
     @Nullable
-    private static SponsorSegment[] sponsorSegmentsOfCurrentVideo;
+    private static SponsorSegment[] segmentsOfCurrentVideo;
 
     /**
      * Current segment that user can manually skip
@@ -44,7 +44,6 @@ public class PlayerController {
      */
     @Nullable
     private static SponsorSegment scheduledUpcomingSegment;
-
     /**
      * Currently playing manual skip segment, that is scheduled to hide.
      * This will always be NULL or equal to {@link #segmentCurrentlyPlaying}
@@ -60,13 +59,13 @@ public class PlayerController {
     private static float sponsorBarThickness = 2f;
 
     @Nullable
-    static SponsorSegment[] getSponsorSegmentsOfCurrentVideo() {
-        return sponsorSegmentsOfCurrentVideo;
+    static SponsorSegment[] getSegmentsOfCurrentVideo() {
+        return segmentsOfCurrentVideo;
     }
 
-    static void setSponsorSegmentsOfCurrentVideo(@NonNull SponsorSegment[] segments) {
+    static void setSegmentsOfCurrentVideo(@NonNull SponsorSegment[] segments) {
         Arrays.sort(segments);
-        sponsorSegmentsOfCurrentVideo = segments;
+        segmentsOfCurrentVideo = segments;
         calculateTimeWithoutSegments();
     }
 
@@ -80,7 +79,7 @@ public class PlayerController {
      */
     private static void clearData() {
         currentVideoId = null;
-        sponsorSegmentsOfCurrentVideo = null;
+        segmentsOfCurrentVideo = null;
         timeWithoutSegments = "";
         segmentCurrentlyPlaying = null;
         scheduledUpcomingSegment = null; // prevent any existing scheduled skip from running
@@ -168,7 +167,7 @@ public class PlayerController {
                     LogHelper.printDebug(() -> "Ignoring stale segments for prior video: " + videoId);
                     return;
                 }
-                setSponsorSegmentsOfCurrentVideo(segments);
+                setSegmentsOfCurrentVideo(segments);
                 setVideoTime(VideoInformation.getVideoTime()); // check for any skips now, instead of waiting for the next update
             });
         } catch (Exception ex) {
@@ -185,7 +184,7 @@ public class PlayerController {
         try {
             if (!SettingsEnum.SB_ENABLED.getBoolean()
                 || PlayerType.getCurrent().isNoneOrHidden() // shorts playback
-                || sponsorSegmentsOfCurrentVideo == null || sponsorSegmentsOfCurrentVideo.length == 0) {
+                || segmentsOfCurrentVideo == null || segmentsOfCurrentVideo.length == 0) {
                 return;
             }
             if (VideoInformation.getCurrentVideoLength() <= 0) {
@@ -204,7 +203,7 @@ public class PlayerController {
             SponsorSegment foundUpcomingSegment = null;
             SponsorSegment foundManualSkipSegment = null;
 
-            for (final SponsorSegment segment : sponsorSegmentsOfCurrentVideo) {
+            for (final SponsorSegment segment : segmentsOfCurrentVideo) {
                 if (segment.category.behaviour == SponsorBlockSettings.SegmentBehaviour.IGNORE) {
                     continue; // while video is opened, user changed a category behavior to ignore
                 }
@@ -445,13 +444,13 @@ public class PlayerController {
     private static void calculateTimeWithoutSegments() {
         final long currentVideoLength = VideoInformation.getCurrentVideoLength();
         if (!SettingsEnum.SB_SHOW_TIME_WITHOUT_SEGMENTS.getBoolean() || currentVideoLength <= 1
-                || sponsorSegmentsOfCurrentVideo == null || sponsorSegmentsOfCurrentVideo.length == 0) {
+                || segmentsOfCurrentVideo == null || segmentsOfCurrentVideo.length == 0) {
             timeWithoutSegments = "";
             return;
         }
 
         long timeWithoutSegmentsValue = currentVideoLength + 500; // YouTube:tm:
-        for (SponsorSegment segment : sponsorSegmentsOfCurrentVideo) {
+        for (SponsorSegment segment : segmentsOfCurrentVideo) {
             timeWithoutSegmentsValue -= segment.end - segment.start;
         }
         final long hours = timeWithoutSegmentsValue / 3600000;
@@ -469,7 +468,7 @@ public class PlayerController {
     public static void drawSponsorTimeBars(final Canvas canvas, final float posY) {
         try {
             if (sponsorBarThickness < 0.1) return;
-            if (sponsorSegmentsOfCurrentVideo == null) return;
+            if (segmentsOfCurrentVideo == null) return;
 
             final float thicknessDiv2 = sponsorBarThickness / 2;
             final float top = posY - thicknessDiv2;
@@ -478,7 +477,7 @@ public class PlayerController {
             final float absoluteRight = sponsorBarRight;
 
             final float tmp1 = 1f / (float) VideoInformation.getCurrentVideoLength() * (absoluteRight - absoluteLeft);
-            for (SponsorSegment segment : sponsorSegmentsOfCurrentVideo) {
+            for (SponsorSegment segment : segmentsOfCurrentVideo) {
                 float left = segment.start * tmp1 + absoluteLeft;
                 float right = segment.end * tmp1 + absoluteLeft;
                 canvas.drawRect(left, top, right, bottom, segment.category.paint);
@@ -522,7 +521,7 @@ public class PlayerController {
             if (!userManuallySkipped) {
                 // check for any smaller embedded segments, and count those as autoskipped
                 final boolean showSkipToast = SettingsEnum.SB_SHOW_TOAST_WHEN_SKIP.getBoolean();
-                for (final SponsorSegment otherSegment : sponsorSegmentsOfCurrentVideo) {
+                for (final SponsorSegment otherSegment : segmentsOfCurrentVideo) {
                     if (segment.end <= otherSegment.start) {
                         break; // no other segments can be contained
                     }
@@ -538,13 +537,13 @@ public class PlayerController {
             if (segment.category == SponsorBlockSettings.SegmentInfo.UNSUBMITTED) {
                 // skipped segment was a preview of unsubmitted segment
                 // remove the segment from the UI view
-                SponsorSegment[] newSegments = new SponsorSegment[sponsorSegmentsOfCurrentVideo.length - 1];
+                SponsorSegment[] newSegments = new SponsorSegment[segmentsOfCurrentVideo.length - 1];
                 int i = 0;
-                for (SponsorSegment sponsorSegment : sponsorSegmentsOfCurrentVideo) {
+                for (SponsorSegment sponsorSegment : segmentsOfCurrentVideo) {
                     if (sponsorSegment != segment)
                         newSegments[i++] = sponsorSegment;
                 }
-                setSponsorSegmentsOfCurrentVideo(newSegments);
+                setSegmentsOfCurrentVideo(newSegments);
             } else {
                 SponsorBlockUtils.sendViewRequestAsync(currentVideoTime, segment);
             }

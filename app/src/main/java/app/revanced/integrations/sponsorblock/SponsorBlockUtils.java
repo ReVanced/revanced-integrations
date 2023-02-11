@@ -168,7 +168,7 @@ public abstract class SponsorBlockUtils {
     private static final DialogInterface.OnClickListener segmentVoteClickListener = (dialog, which) -> {
         try {
             final Context context = ((AlertDialog) dialog).getContext();
-            SponsorSegment[] currentSegments = PlayerController.getSponsorSegmentsOfCurrentVideo();
+            SponsorSegment[] currentSegments = PlayerController.getSegmentsOfCurrentVideo();
             if (currentSegments == null || currentSegments.length == 0) {
                 LogHelper.printException(() -> "Segment is no longer available on the client");
                 return;
@@ -283,7 +283,7 @@ public abstract class SponsorBlockUtils {
     public static void onVotingClicked(final Context context) {
         try {
             ReVancedUtils.verifyOnMainThread();
-            SponsorSegment[] currentSegments = PlayerController.getSponsorSegmentsOfCurrentVideo();
+            SponsorSegment[] currentSegments = PlayerController.getSegmentsOfCurrentVideo();
             if (currentSegments == null || currentSegments.length == 0) {
                 ReVancedUtils.showToastShort(str("vote_no_segments"));
                 return;
@@ -337,13 +337,13 @@ public abstract class SponsorBlockUtils {
             ReVancedUtils.verifyOnMainThread();
             if (newSponsorSegmentStartMillis >= 0 && newSponsorSegmentStartMillis < newSponsorSegmentEndMillis) {
                 VideoInformation.seekTo(newSponsorSegmentStartMillis - 3000);
-                final SponsorSegment[] original = PlayerController.getSponsorSegmentsOfCurrentVideo();
+                final SponsorSegment[] original = PlayerController.getSegmentsOfCurrentVideo();
                 final SponsorSegment[] segments = original == null ? new SponsorSegment[1] : Arrays.copyOf(original, original.length + 1);
 
                 segments[segments.length - 1] = new SponsorSegment(newSponsorSegmentStartMillis, newSponsorSegmentEndMillis,
                         SponsorBlockSettings.SegmentInfo.UNSUBMITTED, null, false);
 
-                PlayerController.setSponsorSegmentsOfCurrentVideo(segments);
+                PlayerController.setSegmentsOfCurrentVideo(segments);
             } else {
                 ReVancedUtils.showToastShort(str("new_segment_mark_locations_first"));
             }
