@@ -45,6 +45,13 @@ public class PlayerController {
     @Nullable
     private static SponsorSegment scheduledUpcomingSegment;
 
+    /**
+     * Currently playing manual skip segment, that is scheduled to hide.
+     * This will always be NULL or equal to {@link #segmentCurrentlyPlaying}
+     */
+    @Nullable
+    private static SponsorSegment scheduledHideSegment;
+
     private static String timeWithoutSegments = "";
     private static boolean settingsInitialized;
 
@@ -77,6 +84,7 @@ public class PlayerController {
         timeWithoutSegments = "";
         segmentCurrentlyPlaying = null;
         scheduledUpcomingSegment = null; // prevent any existing scheduled skip from running
+        scheduledHideSegment = null;
         toastSegmentSkipped = null; // prevent any scheduled skip toasts from showing
         toastNumberOfSegmentsSkipped = 0;
     }
@@ -237,6 +245,9 @@ public class PlayerController {
                 // or there may be another smaller segment nested inside this segment
             }
 
+            // must be at least 2x the average time between updates to VideoInformation time
+            final long videoInformationTimeUpdateThresholdMilliseconds = 250;
+
             if (foundUpcomingSegment == null) {
                 if (scheduledUpcomingSegment != null) {
                     LogHelper.printDebug(() -> "Clearing scheduled segment skip");
@@ -246,9 +257,8 @@ public class PlayerController {
                 scheduledUpcomingSegment = foundUpcomingSegment;
                 final SponsorSegment segmentToSkip = foundUpcomingSegment;
 
-                final long delayUntilSkip = (long) ((segmentToSkip.start - millis) / playbackRate);
                 LogHelper.printDebug(() -> "Scheduling segment: " + segmentToSkip + " playbackRate: " + playbackRate);
-
+                final long delayUntilSkip = (long) ((segmentToSkip.start - millis) / playbackRate);
                 ReVancedUtils.runOnMainThreadDelayed(() -> {
                     if (scheduledUpcomingSegment != segmentToSkip) {
                         LogHelper.printDebug(() -> "Ignoring stale scheduled segment: " + segmentToSkip);
@@ -257,8 +267,7 @@ public class PlayerController {
                     scheduledUpcomingSegment = null;
 
                     final long videoTime = VideoInformation.getVideoTime();
-                    final long nearThreshold = 250; // must be at least 2x the average time between updates to VideoInformation time
-                    if (!segmentToSkip.timeIsInsideOrNear(videoTime, nearThreshold)) {
+                    if (!segmentToSkip.timeIsNearStart(videoTime, videoInformationTimeUpdateThresholdMilliseconds)) {
                         // user paused playback just before the autoskip
                         LogHelper.printDebug(() -> "Ignoring outdated scheduled segment: " + segmentToSkip);
                         return;
@@ -283,6 +292,39 @@ public class PlayerController {
                     segmentCurrentlyPlaying = foundManualSkipSegment;
                     LogHelper.printDebug(() -> "Showing skip button for segment: " + segmentCurrentlyPlaying);
                     SponsorBlockView.showSkipButton(foundManualSkipSegment.category);
+                }
+            }
+
+            if (scheduledHideSegment != foundManualSkipSegment) {
+                if (foundManualSkipSegment == null) {
+                    LogHelper.printDebug(() -> "Clearing scheduled hide segment");
+                    scheduledUpcomingSegment = null;
+                } else if (foundManualSkipSegment.timeIsNearEnd(millis, START_TIMER_BEFORE_SEGMENT_MILLIS)) {
+                    scheduledHideSegment = foundManualSkipSegment;
+                    final SponsorSegment segmentToHide = foundManualSkipSegment;
+
+                    LogHelper.printDebug(() -> "Scheduling hide of segment: " + segmentToHide + " playbackRate: " + playbackRate);
+                    final long delayUntilHide = (long) ((segmentToHide.end - millis) / playbackRate);
+                    ReVancedUtils.runOnMainThreadDelayed(() -> {
+                        if (scheduledHideSegment != segmentToHide) {
+                            LogHelper.printDebug(() -> "Ignoring stale hide segment: " + segmentToHide);
+                            return;
+                        }
+                        scheduledHideSegment = null;
+
+                        final long videoTime = VideoInformation.getVideoTime();
+                        if (!segmentToHide.timeIsNearEnd(videoTime, videoInformationTimeUpdateThresholdMilliseconds)) {
+                            // user paused playback just before the autoskip
+                            LogHelper.printDebug(() -> "Ignoring outdated scheduled segment: " + segmentToHide);
+                            return;
+                        }
+                        LogHelper.printDebug(() -> "Running scheduled hide of segment: " + segmentToHide);
+                        // Cannot just hide the skip button, as this may have been an embedded segment
+                        // and must call back into setVideoTime to check again.
+                        // Should not use VideoInformation time as it is less accurate,
+                        // but this scheduled handler was scheduled precisely so we can just use the segment end time
+                        setVideoTime(segmentToHide.end);
+                    }, delayUntilHide);
                 }
             }
         } catch (Exception e) {
@@ -459,8 +501,9 @@ public class PlayerController {
             LogHelper.printDebug(() -> "Skipping segment: " + segment);
             lastSegmentSkipped = segment;
             lastSegmentSkippedTime = now;
-            scheduledUpcomingSegment = null; // if a scheduled skip has not run yet
             segmentCurrentlyPlaying = null;
+            scheduledUpcomingSegment = null; // if a scheduled skip has not run yet
+            scheduledHideSegment = null;
             SponsorBlockView.hideSkipButton();
 
             final boolean seekSuccessful = VideoInformation.seekTo(segment.end);
