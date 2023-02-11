@@ -8,7 +8,7 @@ import app.revanced.integrations.utils.Event
 @Suppress("unused")
 enum class PlayerType {
     NONE, // includes Shorts playback
-    HIDDEN, // also includes Shorts playback, if regular video is minimized and a Short is then opened
+    HIDDEN, // also includes YouTube Shorts and Stories, if a regular video is minimized and a Short/Story is then opened
     WATCH_WHILE_MINIMIZED,
     WATCH_WHILE_MAXIMIZED,
     WATCH_WHILE_FULLSCREEN,
