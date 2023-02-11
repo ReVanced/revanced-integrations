@@ -1,5 +1,7 @@
 package app.revanced.integrations.patches;
 
+import androidx.annotation.NonNull;
+
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Method;
 
@@ -15,6 +17,7 @@ public final class VideoInformation {
     private static WeakReference<Object> playerController;
     private static Method seekMethod;
 
+    @NonNull
     private static String videoId = "";
     private static long videoLength = 0;
     private static volatile long videoTime = -1; // must be volatile. Value is set off main thread from high precision patch hook
@@ -41,11 +44,13 @@ public final class VideoInformation {
     /**
      * Injection point.
      *
-     * @param videoId The id of the current video.
+     * @param newlyLoadedVideoId id of the current video
      */
-    public static void setVideoId(String videoId) {
-        LogHelper.printDebug(() -> "Current video id: " + videoId);
-        VideoInformation.videoId = videoId;
+    public static void setVideoId(@NonNull String newlyLoadedVideoId) {
+        if (!videoId.equals(newlyLoadedVideoId)) {
+            LogHelper.printDebug(() -> "New video id: " + newlyLoadedVideoId);
+            videoId = newlyLoadedVideoId;
+        }
     }
 
     /**
@@ -106,6 +111,7 @@ public final class VideoInformation {
      *
      * @return The id of the video. Empty string if not set yet.
      */
+    @NonNull
     public static String getCurrentVideoId() {
         return videoId;
     }
