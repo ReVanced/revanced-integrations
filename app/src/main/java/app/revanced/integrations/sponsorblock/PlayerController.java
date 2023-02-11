@@ -246,7 +246,7 @@ public class PlayerController {
                 // or there may be another smaller segment nested inside this segment
             }
 
-            // must be at least 2x the average time between updates to VideoInformation time
+            // must be greater than the average time between updates to VideoInformation time
             final long videoInformationTimeUpdateThresholdMilliseconds = 250;
 
             if (scheduledUpcomingSegment != foundUpcomingSegment) {
@@ -316,15 +316,14 @@ public class PlayerController {
                         }
                         scheduledHideSegment = null;
 
-                        final long videoTime = VideoInformation.getVideoTime();
-                        if (!segmentToHide.timeIsNearEnd(videoTime, videoInformationTimeUpdateThresholdMilliseconds)) {
+                        if (!segmentToHide.timeIsNearEnd(VideoInformation.getVideoTime(), videoInformationTimeUpdateThresholdMilliseconds)) {
                             // current video time is not what's expected.  User paused playback
                             LogHelper.printDebug(() -> "Ignoring outdated scheduled hide: " + segmentToHide);
                             return;
                         }
                         LogHelper.printDebug(() -> "Running scheduled hide of segment: " + segmentToHide);
                         // Cannot just hide the skip button, as this may have been an embedded segment
-                        // and must call back into setVideoTime to check again.
+                        // Instead call back into setVideoTime to check everything again.
                         // Should not use VideoInformation time as it is less accurate,
                         // but this scheduled handler was scheduled precisely so we can just use the segment end time
                         segmentCurrentlyPlaying = null;
