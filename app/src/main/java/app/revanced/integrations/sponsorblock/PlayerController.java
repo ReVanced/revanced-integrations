@@ -322,11 +322,12 @@ public class PlayerController {
                             return;
                         }
                         LogHelper.printDebug(() -> "Running scheduled hide of segment: " + segmentToHide);
-                        // Cannot just hide the skip button, as this may have been an embedded segment
+                        // Need more than just hide the skip button, as this may have been an embedded segment
                         // Instead call back into setVideoTime to check everything again.
                         // Should not use VideoInformation time as it is less accurate,
                         // but this scheduled handler was scheduled precisely so we can just use the segment end time
                         segmentCurrentlyPlaying = null;
+                        SponsorBlockView.hideSkipButton();
                         setVideoTime(segmentToHide.end);
                     }, delayUntilHide);
                 }
