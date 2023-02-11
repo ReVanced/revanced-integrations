@@ -52,8 +52,9 @@ enum class PlayerType {
     }
 
     /**
-     * Check if the current player type is ˋNONEˋ or ˋHIDDENˋ.
-     * @return True, if nothing or Shorts are being played.
+     * Check if the current player type is [NONE] or [HIDDEN]
+     *
+     * @return True, if nothing is playing or a Shorts or YouTube Story is playing.
      */
     fun isNoneOrHidden(): Boolean {
         return this == NONE || this == HIDDEN
