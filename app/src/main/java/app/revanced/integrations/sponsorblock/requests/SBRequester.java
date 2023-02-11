@@ -78,7 +78,7 @@ public class SBRequester {
 
                     SponsorBlockSettings.SegmentInfo segmentCategory = SponsorBlockSettings.SegmentInfo.byCategoryKey(category);
                     if (segmentCategory != null && segmentCategory.behaviour.showOnTimeBar) {
-                        SponsorSegment sponsorSegment = new SponsorSegment(start, end, segmentCategory, uuid, locked);
+                        SponsorSegment sponsorSegment = new SponsorSegment(segmentCategory, uuid, start, end, locked);
                         segments.add(sponsorSegment);
                     }
                 }

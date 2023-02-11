@@ -340,8 +340,8 @@ public abstract class SponsorBlockUtils {
                 final SponsorSegment[] original = PlayerController.getSegmentsOfCurrentVideo();
                 final SponsorSegment[] segments = original == null ? new SponsorSegment[1] : Arrays.copyOf(original, original.length + 1);
 
-                segments[segments.length - 1] = new SponsorSegment(newSponsorSegmentStartMillis, newSponsorSegmentEndMillis,
-                        SponsorBlockSettings.SegmentInfo.UNSUBMITTED, null, false);
+                segments[segments.length - 1] = new SponsorSegment(SponsorBlockSettings.SegmentInfo.UNSUBMITTED, null,
+                        newSponsorSegmentStartMillis, newSponsorSegmentEndMillis, false);
 
                 PlayerController.setSegmentsOfCurrentVideo(segments);
             } else {

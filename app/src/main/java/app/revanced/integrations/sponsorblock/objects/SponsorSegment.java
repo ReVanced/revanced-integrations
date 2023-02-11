@@ -9,23 +9,23 @@ import androidx.annotation.Nullable;
 import java.text.MessageFormat;
 
 public class SponsorSegment implements Comparable<SponsorSegment> {
-    public final long start;
-    public final long end;
     @NonNull
     public final SegmentInfo category;
     /**
-     * Can be NULL if segment is unsubmitted.
+     * NULL if segment is unsubmitted
      */
     @Nullable
     public final String UUID;
+    public final long start;
+    public final long end;
     public final boolean isLocked;
     public boolean didAutoSkipped = false;
 
-    public SponsorSegment(long start, long end, @NonNull SegmentInfo category, @Nullable String UUID, boolean isLocked) {
-        this.start = start;
-        this.end = end;
+    public SponsorSegment(@NonNull SegmentInfo category, @Nullable String UUID, long start, long end, boolean isLocked) {
         this.category = category;
         this.UUID = UUID;
+        this.start = start;
+        this.end = end;
         this.isLocked = isLocked;
     }
 
@@ -77,6 +77,6 @@ public class SponsorSegment implements Comparable<SponsorSegment> {
     @NonNull
     @Override
     public String toString() {
-        return MessageFormat.format("SegmentInfo'{'start={0}, end={1}, category=''{2}'', locked={3}'}'", start, end, category, isLocked);
+        return MessageFormat.format("SegmentInfo'{'category=''{0}'', start={1}, end={2}, locked={3}'}'", category, start, end, isLocked);
     }
 }
