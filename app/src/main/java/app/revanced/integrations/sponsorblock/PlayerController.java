@@ -337,155 +337,6 @@ public class PlayerController {
         }
     }
 
-    /**
-     * Injection point
-     */
-    public static void setSponsorBarAbsoluteLeft(final Rect rect) {
-        setSponsorBarAbsoluteLeft(rect.left);
-    }
-
-    public static void setSponsorBarAbsoluteLeft(final float left) {
-        if (sponsorBarLeft != left) {
-            LogHelper.printDebug(() -> String.format("setSponsorBarAbsoluteLeft: left=%.2f", left));
-            sponsorBarLeft = left;
-        }
-    }
-
-    /**
-     * Injection point
-     */
-    public static void setSponsorBarRect(final Object self) {
-        try {
-            Field field = self.getClass().getDeclaredField("replaceMeWithsetSponsorBarRect");
-            field.setAccessible(true);
-            Rect rect = (Rect) field.get(self);
-            if (rect != null) {
-                setSponsorBarAbsoluteLeft(rect.left);
-                setSponsorBarAbsoluteRight(rect.right);
-            }
-        } catch (Exception ex) {
-            LogHelper.printException(() -> "setSponsorBarRect failure", ex);
-        }
-    }
-
-    /**
-     * Injection point
-     */
-    public static void setSponsorBarAbsoluteRight(final Rect rect) {
-        setSponsorBarAbsoluteRight(rect.right);
-    }
-
-    public static void setSponsorBarAbsoluteRight(final float right) {
-        if (sponsorBarRight != right) {
-            LogHelper.printDebug(() -> String.format("setSponsorBarAbsoluteRight: right=%.2f", right));
-            sponsorBarRight = right;
-        }
-    }
-
-    /**
-     * Injection point
-     */
-    public static void setSponsorBarThickness(final int thickness) {
-        try {
-            setSponsorBarThickness((float) thickness);
-        } catch (Exception ex) {
-            LogHelper.printException(() -> "setSponsorBarThickness failure", ex);
-        }
-    }
-
-    public static void setSponsorBarThickness(final float thickness) {
-        if (sponsorBarThickness != thickness) {
-            LogHelper.printDebug(() -> String.format("setSponsorBarThickness: %.2f", thickness));
-            sponsorBarThickness = thickness;
-        }
-    }
-
-    public static void onSkipSponsorClicked() {
-        if (segmentCurrentlyPlaying != null) {
-            skipSegment(segmentCurrentlyPlaying, VideoInformation.getVideoTime(), true);
-        } else {
-            SponsorBlockView.hideSkipButton();
-            LogHelper.printException(() -> "error: segment not available to skip"); // should never happen
-        }
-    }
-
-    /**
-     * Injection point
-     */
-    public static void addSkipSponsorView15(final View view) {
-        try {
-            LogHelper.printDebug(() -> "addSkipSponsorView15: " + view);
-
-            ReVancedUtils.runOnMainThreadDelayed(() -> {
-                final ViewGroup viewGroup = (ViewGroup) ((ViewGroup) view).getChildAt(2);
-                SponsorBlockUtils.setPlayerViewGroupContext(viewGroup.getContext());
-            }, 500);
-        } catch (Exception ex) {
-            LogHelper.printException(() -> "addSkipSponsorView15 failure", ex);
-        }
-    }
-
-    /**
-     * Injection point
-     */
-    public static String appendTimeWithoutSegments(String totalTime) {
-        try {
-            if (SettingsEnum.SB_ENABLED.getBoolean() && SettingsEnum.SB_SHOW_TIME_WITHOUT_SEGMENTS.getBoolean()
-                    && !TextUtils.isEmpty(totalTime) && VideoInformation.getCurrentVideoLength() > 1) {
-                return totalTime + timeWithoutSegments;
-            }
-        } catch (Exception ex) {
-            LogHelper.printException(() -> "appendTimeWithoutSegments failure", ex);
-        }
-
-        return totalTime;
-    }
-
-    private static void calculateTimeWithoutSegments() {
-        final long currentVideoLength = VideoInformation.getCurrentVideoLength();
-        if (!SettingsEnum.SB_SHOW_TIME_WITHOUT_SEGMENTS.getBoolean() || currentVideoLength <= 1
-                || segmentsOfCurrentVideo == null || segmentsOfCurrentVideo.length == 0) {
-            timeWithoutSegments = "";
-            return;
-        }
-
-        long timeWithoutSegmentsValue = currentVideoLength + 500; // YouTube:tm:
-        for (SponsorSegment segment : segmentsOfCurrentVideo) {
-            timeWithoutSegmentsValue -= segment.end - segment.start;
-        }
-        final long hours = timeWithoutSegmentsValue / 3600000;
-        final long minutes = (timeWithoutSegmentsValue / 60000) % 60;
-        final long seconds = (timeWithoutSegmentsValue / 1000) % 60;
-        String format = (hours > 0 ? "%d:%02" : "%") + "d:%02d"; // mmLul
-        String formatted = hours > 0 ? String.format(format, hours, minutes, seconds) : String.format(format, minutes, seconds);
-
-        timeWithoutSegments = String.format(" (%s)", formatted);
-    }
-
-    /**
-     * Injection point
-     */
-    public static void drawSponsorTimeBars(final Canvas canvas, final float posY) {
-        try {
-            if (sponsorBarThickness < 0.1) return;
-            if (segmentsOfCurrentVideo == null) return;
-
-            final float thicknessDiv2 = sponsorBarThickness / 2;
-            final float top = posY - thicknessDiv2;
-            final float bottom = posY + thicknessDiv2;
-            final float absoluteLeft = sponsorBarLeft;
-            final float absoluteRight = sponsorBarRight;
-
-            final float tmp1 = 1f / (float) VideoInformation.getCurrentVideoLength() * (absoluteRight - absoluteLeft);
-            for (SponsorSegment segment : segmentsOfCurrentVideo) {
-                float left = segment.start * tmp1 + absoluteLeft;
-                float right = segment.end * tmp1 + absoluteLeft;
-                canvas.drawRect(left, top, right, bottom, segment.category.paint);
-            }
-        } catch (Exception ex) {
-            LogHelper.printException(() -> "drawSponsorTimeBars failure", ex);
-        }
-    }
 
     private static SponsorSegment lastSegmentSkipped;
     private static long lastSegmentSkippedTime;
@@ -581,6 +432,156 @@ public class PlayerController {
                 toastSegmentSkipped = null;
             }
         }, delayToToastMilliseconds);
+    }
+
+    public static void onSkipSponsorClicked() {
+        if (segmentCurrentlyPlaying != null) {
+            skipSegment(segmentCurrentlyPlaying, VideoInformation.getVideoTime(), true);
+        } else {
+            SponsorBlockView.hideSkipButton();
+            LogHelper.printException(() -> "error: segment not available to skip"); // should never happen
+        }
+    }
+
+    /**
+     * Injection point
+     */
+    public static void setSponsorBarAbsoluteLeft(final Rect rect) {
+        setSponsorBarAbsoluteLeft(rect.left);
+    }
+
+    public static void setSponsorBarAbsoluteLeft(final float left) {
+        if (sponsorBarLeft != left) {
+            LogHelper.printDebug(() -> String.format("setSponsorBarAbsoluteLeft: left=%.2f", left));
+            sponsorBarLeft = left;
+        }
+    }
+
+    /**
+     * Injection point
+     */
+    public static void setSponsorBarRect(final Object self) {
+        try {
+            Field field = self.getClass().getDeclaredField("replaceMeWithsetSponsorBarRect");
+            field.setAccessible(true);
+            Rect rect = (Rect) field.get(self);
+            if (rect != null) {
+                setSponsorBarAbsoluteLeft(rect.left);
+                setSponsorBarAbsoluteRight(rect.right);
+            }
+        } catch (Exception ex) {
+            LogHelper.printException(() -> "setSponsorBarRect failure", ex);
+        }
+    }
+
+    /**
+     * Injection point
+     */
+    public static void setSponsorBarAbsoluteRight(final Rect rect) {
+        setSponsorBarAbsoluteRight(rect.right);
+    }
+
+    public static void setSponsorBarAbsoluteRight(final float right) {
+        if (sponsorBarRight != right) {
+            LogHelper.printDebug(() -> String.format("setSponsorBarAbsoluteRight: right=%.2f", right));
+            sponsorBarRight = right;
+        }
+    }
+
+    /**
+     * Injection point
+     */
+    public static void setSponsorBarThickness(final int thickness) {
+        try {
+            setSponsorBarThickness((float) thickness);
+        } catch (Exception ex) {
+            LogHelper.printException(() -> "setSponsorBarThickness failure", ex);
+        }
+    }
+
+    public static void setSponsorBarThickness(final float thickness) {
+        if (sponsorBarThickness != thickness) {
+            LogHelper.printDebug(() -> String.format("setSponsorBarThickness: %.2f", thickness));
+            sponsorBarThickness = thickness;
+        }
+    }
+
+    /**
+     * Injection point
+     */
+    public static void addSkipSponsorView15(final View view) {
+        try {
+            LogHelper.printDebug(() -> "addSkipSponsorView15: " + view);
+
+            ReVancedUtils.runOnMainThreadDelayed(() -> {
+                final ViewGroup viewGroup = (ViewGroup) ((ViewGroup) view).getChildAt(2);
+                SponsorBlockUtils.setPlayerViewGroupContext(viewGroup.getContext());
+            }, 500);
+        } catch (Exception ex) {
+            LogHelper.printException(() -> "addSkipSponsorView15 failure", ex);
+        }
+    }
+
+    /**
+     * Injection point
+     */
+    public static String appendTimeWithoutSegments(String totalTime) {
+        try {
+            if (SettingsEnum.SB_ENABLED.getBoolean() && SettingsEnum.SB_SHOW_TIME_WITHOUT_SEGMENTS.getBoolean()
+                    && !TextUtils.isEmpty(totalTime) && VideoInformation.getCurrentVideoLength() > 1) {
+                return totalTime + timeWithoutSegments;
+            }
+        } catch (Exception ex) {
+            LogHelper.printException(() -> "appendTimeWithoutSegments failure", ex);
+        }
+
+        return totalTime;
+    }
+
+    private static void calculateTimeWithoutSegments() {
+        final long currentVideoLength = VideoInformation.getCurrentVideoLength();
+        if (!SettingsEnum.SB_SHOW_TIME_WITHOUT_SEGMENTS.getBoolean() || currentVideoLength <= 1
+                || segmentsOfCurrentVideo == null || segmentsOfCurrentVideo.length == 0) {
+            timeWithoutSegments = "";
+            return;
+        }
+
+        long timeWithoutSegmentsValue = currentVideoLength + 500; // YouTube:tm:
+        for (SponsorSegment segment : segmentsOfCurrentVideo) {
+            timeWithoutSegmentsValue -= segment.end - segment.start;
+        }
+        final long hours = timeWithoutSegmentsValue / 3600000;
+        final long minutes = (timeWithoutSegmentsValue / 60000) % 60;
+        final long seconds = (timeWithoutSegmentsValue / 1000) % 60;
+        String format = (hours > 0 ? "%d:%02" : "%") + "d:%02d"; // mmLul
+        String formatted = hours > 0 ? String.format(format, hours, minutes, seconds) : String.format(format, minutes, seconds);
+
+        timeWithoutSegments = String.format(" (%s)", formatted);
+    }
+
+    /**
+     * Injection point
+     */
+    public static void drawSponsorTimeBars(final Canvas canvas, final float posY) {
+        try {
+            if (sponsorBarThickness < 0.1) return;
+            if (segmentsOfCurrentVideo == null) return;
+
+            final float thicknessDiv2 = sponsorBarThickness / 2;
+            final float top = posY - thicknessDiv2;
+            final float bottom = posY + thicknessDiv2;
+            final float absoluteLeft = sponsorBarLeft;
+            final float absoluteRight = sponsorBarRight;
+
+            final float tmp1 = 1f / (float) VideoInformation.getCurrentVideoLength() * (absoluteRight - absoluteLeft);
+            for (SponsorSegment segment : segmentsOfCurrentVideo) {
+                float left = segment.start * tmp1 + absoluteLeft;
+                float right = segment.end * tmp1 + absoluteLeft;
+                canvas.drawRect(left, top, right, bottom, segment.category.paint);
+            }
+        } catch (Exception ex) {
+            LogHelper.printException(() -> "drawSponsorTimeBars failure", ex);
+        }
     }
 
 }
