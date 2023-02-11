@@ -267,7 +267,7 @@ public class PlayerController {
 
                         final long videoTime = VideoInformation.getVideoTime();
                         if (!segmentToSkip.timeIsNearStart(videoTime, videoInformationTimeUpdateThresholdMilliseconds)) {
-                            // user paused playback just before the autoskip
+                            // current video time is not what's expected.  User paused playback
                             LogHelper.printDebug(() -> "Ignoring outdated scheduled segment: " + segmentToSkip);
                             return;
                         }
@@ -298,7 +298,7 @@ public class PlayerController {
             if (scheduledHideSegment != foundManualSkipSegment) {
                 if (foundManualSkipSegment == null) {
                     LogHelper.printDebug(() -> "Clearing scheduled hide segment");
-                    scheduledUpcomingSegment = null;
+                    scheduledHideSegment = null;
                 } else if (foundManualSkipSegment.timeIsNearEnd(millis, START_TIMER_BEFORE_SEGMENT_MILLIS)) {
                     scheduledHideSegment = foundManualSkipSegment;
                     final SponsorSegment segmentToHide = foundManualSkipSegment;
@@ -314,7 +314,7 @@ public class PlayerController {
 
                         final long videoTime = VideoInformation.getVideoTime();
                         if (!segmentToHide.timeIsNearEnd(videoTime, videoInformationTimeUpdateThresholdMilliseconds)) {
-                            // user paused playback just before the autoskip
+                            // current video time is not what's expected.  User paused playback
                             LogHelper.printDebug(() -> "Ignoring outdated scheduled segment: " + segmentToHide);
                             return;
                         }
