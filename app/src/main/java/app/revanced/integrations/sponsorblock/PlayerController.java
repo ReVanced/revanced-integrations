@@ -200,8 +200,8 @@ public class PlayerController {
             final long lookAheadMilliseconds = 2500; // must be larger than the average time between calls to this method
             final long startTimerLookAheadThreshold = millis + (long)(playbackRate * lookAheadMilliseconds);
 
-            SponsorSegment foundUpcomingSegment = null;
             SponsorSegment foundCurrentSegment = null;
+            SponsorSegment foundUpcomingSegment = null;
 
             for (final SponsorSegment segment : segmentsOfCurrentVideo) {
                 if (segment.category.behaviour == SponsorBlockSettings.SegmentBehaviour.IGNORE) {
@@ -230,7 +230,7 @@ public class PlayerController {
                 }
 
                 // segment is upcoming
-                if (startTimerLookAheadThreshold <= segment.start) {
+                if (startTimerLookAheadThreshold < segment.start) {
                     break; // segment is not close enough to schedule, and no segments after this are of interest
                 }
                 if (segment.shouldAutoSkip()) { // upcoming autoskip
