@@ -327,6 +327,7 @@ public class PlayerController {
                         // and must call back into setVideoTime to check again.
                         // Should not use VideoInformation time as it is less accurate,
                         // but this scheduled handler was scheduled precisely so we can just use the segment end time
+                        segmentCurrentlyPlaying = null;
                         setVideoTime(segmentToHide.end);
                     }, delayUntilHide);
                 }
