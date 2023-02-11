@@ -3,6 +3,7 @@ package app.revanced.integrations.sponsorblock.player.ui;
 import static app.revanced.integrations.sponsorblock.SponsorBlockSettings.SegmentInfo;
 import static app.revanced.integrations.utils.ReVancedUtils.getIdentifier;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +28,13 @@ public class SponsorBlockView {
             playerTypeChanged(type);
             return null;
         });
+    }
+
+    public static Context getOverLaysViewGroupContext() {
+        if (_youtubeOverlaysLayout == null) {
+            return null;
+        }
+        return _youtubeOverlaysLayout.getContext();
     }
 
     public static void initialize(Object viewGroup) {

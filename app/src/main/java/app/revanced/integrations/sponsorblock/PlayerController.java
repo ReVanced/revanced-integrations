@@ -5,8 +5,6 @@ import static app.revanced.integrations.sponsorblock.StringRef.str;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.text.TextUtils;
-import android.view.View;
-import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -504,22 +502,6 @@ public class PlayerController {
         if (sponsorBarThickness != thickness) {
             LogHelper.printDebug(() -> String.format("setSponsorBarThickness: %.2f", thickness));
             sponsorBarThickness = thickness;
-        }
-    }
-
-    /**
-     * Injection point
-     */
-    public static void addSkipSponsorView15(final View view) {
-        try {
-            LogHelper.printDebug(() -> "addSkipSponsorView15: " + view);
-
-            ReVancedUtils.runOnMainThreadDelayed(() -> {
-                final ViewGroup viewGroup = (ViewGroup) ((ViewGroup) view).getChildAt(2);
-                SponsorBlockUtils.setPlayerViewGroupContext(viewGroup.getContext());
-            }, 500);
-        } catch (Exception ex) {
-            LogHelper.printException(() -> "addSkipSponsorView15 failure", ex);
         }
     }
 

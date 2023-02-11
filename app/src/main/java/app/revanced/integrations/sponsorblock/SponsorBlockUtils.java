@@ -53,8 +53,6 @@ public abstract class SponsorBlockUtils {
     private static final String STATS_FORMAT_TEMPLATE = "%dh %d %s";
     private static final String LOCKED_COLOR = "#FFC83D";
 
-    private static Context playerViewGroupContext;
-
     private static long newSponsorSegmentDialogShownMillis;
     private static long newSponsorSegmentStartMillis = -1;
     private static long newSponsorSegmentEndMillis = -1;
@@ -242,16 +240,12 @@ public abstract class SponsorBlockUtils {
     private SponsorBlockUtils() {
     }
 
-    static void setPlayerViewGroupContext(Context context) {
-        playerViewGroupContext = Objects.requireNonNull(context);
-    }
-
     public static void onMarkLocationClicked() {
         try {
             ReVancedUtils.verifyOnMainThread();
             newSponsorSegmentDialogShownMillis = VideoInformation.getVideoTime();
 
-            new AlertDialog.Builder(playerViewGroupContext)
+            new AlertDialog.Builder(SponsorBlockView.getOverLaysViewGroupContext())
                     .setTitle(str("new_segment_title"))
                     .setMessage(str("new_segment_mark_time_as_question",
                             newSponsorSegmentDialogShownMillis / 60000,
@@ -275,7 +269,7 @@ public abstract class SponsorBlockUtils {
                 long length = (newSponsorSegmentEndMillis - newSponsorSegmentStartMillis) / 1000;
                 long start = (newSponsorSegmentStartMillis) / 1000;
                 long end = (newSponsorSegmentEndMillis) / 1000;
-                new AlertDialog.Builder(playerViewGroupContext)
+                new AlertDialog.Builder(SponsorBlockView.getOverLaysViewGroupContext())
                         .setTitle(str("new_segment_confirm_title"))
                         .setMessage(str("new_segment_confirm_content",
                                 start / 60, start % 60,
@@ -382,7 +376,7 @@ public abstract class SponsorBlockUtils {
     public static void onEditByHandClicked() {
         try {
             ReVancedUtils.verifyOnMainThread();
-            new AlertDialog.Builder(playerViewGroupContext)
+            new AlertDialog.Builder(SponsorBlockView.getOverLaysViewGroupContext())
                     .setTitle(str("new_segment_edit_by_hand_title"))
                     .setMessage(str("new_segment_edit_by_hand_content"))
                     .setNeutralButton(android.R.string.cancel, null)
