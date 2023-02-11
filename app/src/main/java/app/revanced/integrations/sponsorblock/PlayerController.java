@@ -243,47 +243,8 @@ public class PlayerController {
                         && (foundUpcomingSegment == null || foundUpcomingSegment.containsSegment(segment))) {
                     foundUpcomingSegment = segment;
                 }
-
-                // Keep iterating and looking. There may be an upcoming autoskip,
             }
 
-            // must be greater than the average time between updates to VideoInformation time
-            final long videoInformationTimeUpdateThresholdMilliseconds = 250;
-
-            if (scheduledUpcomingSegment != foundUpcomingSegment) {
-                if (foundUpcomingSegment == null) {
-                    LogHelper.printDebug(() -> "Clearing scheduled segment: " + scheduledUpcomingSegment);
-                    scheduledUpcomingSegment = null;
-                } else {
-                    scheduledUpcomingSegment = foundUpcomingSegment;
-                    final SponsorSegment segmentToSkip = foundUpcomingSegment;
-
-                    LogHelper.printDebug(() -> "Scheduling segment: " + segmentToSkip + " playbackRate: " + playbackRate);
-                    final long delayUntilSkip = (long) ((segmentToSkip.start - millis) / playbackRate);
-                    ReVancedUtils.runOnMainThreadDelayed(() -> {
-                        if (scheduledUpcomingSegment != segmentToSkip) {
-                            LogHelper.printDebug(() -> "Ignoring old scheduled segment: " + segmentToSkip);
-                            return;
-                        }
-                        scheduledUpcomingSegment = null;
-
-                        final long videoTime = VideoInformation.getVideoTime();
-                        if (!segmentToSkip.timeIsNearStart(videoTime, videoInformationTimeUpdateThresholdMilliseconds)) {
-                            // current video time is not what's expected.  User paused playback
-                            LogHelper.printDebug(() -> "Ignoring outdated scheduled segment: " + segmentToSkip);
-                            return;
-                        }
-                        if (segmentToSkip.shouldAutoSkip()) {
-                            LogHelper.printDebug(() -> "Running scheduled autoskip segment: " + segmentToSkip);
-                            skipSegment(segmentToSkip, videoTime, false);
-                        } else {
-                            LogHelper.printDebug(() -> "Running scheduled show segment: " + segmentToSkip);
-                            segmentCurrentlyPlaying = segmentToSkip;
-                            SponsorBlockView.showSkipButton(segmentToSkip.category);
-                        }
-                    }, delayUntilSkip);
-                }
-            }
 
             if (segmentCurrentlyPlaying != foundCurrentSegment) {
                 if (foundCurrentSegment == null) {
@@ -296,6 +257,9 @@ public class PlayerController {
                     SponsorBlockView.showSkipButton(foundCurrentSegment.category);
                 }
             }
+
+            // must be greater than the average time between updates to VideoInformation time
+            final long videoInformationTimeUpdateThresholdMilliseconds = 250;
 
             if (scheduledHideSegment != foundCurrentSegment) {
                 if (foundCurrentSegment == null || !foundCurrentSegment.timeIsNearEnd(millis, lookAheadMilliseconds)) {
@@ -331,6 +295,41 @@ public class PlayerController {
                         SponsorBlockView.hideSkipButton();
                         setVideoTime(segmentToHide.end);
                     }, delayUntilHide);
+                }
+            }
+
+            if (scheduledUpcomingSegment != foundUpcomingSegment) {
+                if (foundUpcomingSegment == null) {
+                    LogHelper.printDebug(() -> "Clearing scheduled segment: " + scheduledUpcomingSegment);
+                    scheduledUpcomingSegment = null;
+                } else {
+                    scheduledUpcomingSegment = foundUpcomingSegment;
+                    final SponsorSegment segmentToSkip = foundUpcomingSegment;
+
+                    LogHelper.printDebug(() -> "Scheduling segment: " + segmentToSkip + " playbackRate: " + playbackRate);
+                    final long delayUntilSkip = (long) ((segmentToSkip.start - millis) / playbackRate);
+                    ReVancedUtils.runOnMainThreadDelayed(() -> {
+                        if (scheduledUpcomingSegment != segmentToSkip) {
+                            LogHelper.printDebug(() -> "Ignoring old scheduled segment: " + segmentToSkip);
+                            return;
+                        }
+                        scheduledUpcomingSegment = null;
+
+                        final long videoTime = VideoInformation.getVideoTime();
+                        if (!segmentToSkip.timeIsNearStart(videoTime, videoInformationTimeUpdateThresholdMilliseconds)) {
+                            // current video time is not what's expected.  User paused playback
+                            LogHelper.printDebug(() -> "Ignoring outdated scheduled segment: " + segmentToSkip);
+                            return;
+                        }
+                        if (segmentToSkip.shouldAutoSkip()) {
+                            LogHelper.printDebug(() -> "Running scheduled autoskip segment: " + segmentToSkip);
+                            skipSegment(segmentToSkip, videoTime, false);
+                        } else {
+                            LogHelper.printDebug(() -> "Running scheduled show segment: " + segmentToSkip);
+                            segmentCurrentlyPlaying = segmentToSkip;
+                            SponsorBlockView.showSkipButton(segmentToSkip.category);
+                        }
+                    }, delayUntilSkip);
                 }
             }
         } catch (Exception e) {
