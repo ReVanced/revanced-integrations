@@ -113,7 +113,7 @@ public class SBRequester {
             String end = String.format(Locale.US, TIME_TEMPLATE, endTime);
             String duration = String.valueOf(VideoInformation.getCurrentVideoLength() / 1000);
 
-            HttpURLConnection connection = getConnectionFromRoute(SBRoutes.SUBMIT_SEGMENTS, videoId, uuid, start, end, category, duration);
+            HttpURLConnection connection = getConnectionFromRoute(SBRoutes.SUBMIT_SEGMENTS, uuid, videoId, category, start, end, duration);
             final int responseCode = connection.getResponseCode();
 
             final String messageToToast;
@@ -172,8 +172,8 @@ public class SBRequester {
                 String vote = Integer.toString(voteOption == VoteOption.UPVOTE ? 1 : 0);
 
                 HttpURLConnection connection = voteOption == VoteOption.CATEGORY_CHANGE
-                        ? getConnectionFromRoute(SBRoutes.VOTE_ON_SEGMENT_CATEGORY, segmentUuid, uuid, args[0])
-                        : getConnectionFromRoute(SBRoutes.VOTE_ON_SEGMENT_QUALITY, segmentUuid, uuid, vote);
+                        ? getConnectionFromRoute(SBRoutes.VOTE_ON_SEGMENT_CATEGORY, uuid, segmentUuid, args[0])
+                        : getConnectionFromRoute(SBRoutes.VOTE_ON_SEGMENT_QUALITY, uuid, segmentUuid, vote);
                 final int responseCode = connection.getResponseCode();
 
                 switch (responseCode) {
