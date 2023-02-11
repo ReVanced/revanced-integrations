@@ -1,33 +1,15 @@
 package app.revanced.integrations.returnyoutubedislike;
 
-import static app.revanced.integrations.sponsorblock.StringRef.str;
-
 import android.icu.text.CompactDecimalFormat;
 import android.os.Build;
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.SpannableStringBuilder;
-import android.text.Spanned;
-import android.text.TextPaint;
+import android.text.*;
 import android.text.style.CharacterStyle;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
 import android.text.style.ScaleXSpan;
-
 import androidx.annotation.GuardedBy;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
-import java.text.NumberFormat;
-import java.util.Locale;
-import java.util.Objects;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
-import java.util.concurrent.atomic.AtomicReference;
-
 import app.revanced.integrations.returnyoutubedislike.requests.RYDVoteData;
 import app.revanced.integrations.returnyoutubedislike.requests.ReturnYouTubeDislikeApi;
 import app.revanced.integrations.settings.SettingsEnum;
@@ -35,6 +17,14 @@ import app.revanced.integrations.shared.PlayerType;
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedUtils;
 import app.revanced.integrations.utils.ThemeHelper;
+
+import java.text.NumberFormat;
+import java.util.Locale;
+import java.util.Objects;
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicReference;
+
+import static app.revanced.integrations.sponsorblock.StringRef.str;
 
 public class ReturnYouTubeDislike {
     /**
@@ -122,8 +112,8 @@ public class ReturnYouTubeDislike {
 
     public static void onEnabledChange(boolean enabled) {
         if (!enabled) {
-            // must clear old values, to protect against using stale data
-            // if the user re-enables RYD while watching a video
+            // Must clear old values, to protect against using stale data
+            // if the user re-enables RYD while watching a video.
             setCurrentVideoId(null);
         }
     }
