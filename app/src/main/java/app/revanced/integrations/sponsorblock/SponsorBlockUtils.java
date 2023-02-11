@@ -210,6 +210,12 @@ public abstract class SponsorBlockUtils {
         newSponsorSegmentPreviewed = true;
     }
 
+    static void clearUnsubmittedSegmentTimes() {
+        newSponsorSegmentDialogShownMillis = 0;
+        newSponsorSegmentEndMillis = newSponsorSegmentStartMillis = -1;
+        newSponsorSegmentPreviewed = false;
+    }
+
     private static void submitNewSegment() {
         try {
             ReVancedUtils.verifyOnMainThread();
@@ -223,8 +229,7 @@ public abstract class SponsorBlockUtils {
                 LogHelper.printException(() -> "Unable to submit times, invalid parameters");
                 return;
             }
-            newSponsorSegmentEndMillis = newSponsorSegmentStartMillis = -1;
-            newSponsorSegmentPreviewed = false;
+            clearUnsubmittedSegmentTimes();
             ReVancedUtils.runOnBackgroundThread(() -> {
                 SBRequester.submitSegments(uuid, videoId, segmentType.key, start, end, videoLength);
                 PlayerController.executeDownloadSegments(videoId);

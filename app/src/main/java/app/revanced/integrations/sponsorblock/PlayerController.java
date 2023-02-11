@@ -98,6 +98,7 @@ public class PlayerController {
             ReVancedUtils.verifyOnMainThread();
             SponsorBlockView.hideSkipButton();
             SponsorBlockView.hideNewSegmentLayout();
+            SponsorBlockUtils.clearUnsubmittedSegmentTimes();
             LogHelper.printDebug(() -> "Initialized SponsorBlock");
         } catch (Exception ex) {
             LogHelper.printException(() -> "Failed to initialize SponsorBlock", ex);
