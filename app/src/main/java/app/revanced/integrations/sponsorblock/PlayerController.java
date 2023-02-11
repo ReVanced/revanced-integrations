@@ -221,8 +221,8 @@ public class PlayerController {
                     }
 
                     // upcoming manual skip
-                    if (segmentCurrentlyPlaying == null // schedule displaying the segment only if not currently showing a manual skip segment,
-                            // and it's the first manual skip found or the segment is fully contained inside the prior found upcoming segment
+                    if (foundManualSkipSegment == null // schedule displaying the segment only if not currently in a manual skip segment,
+                            // and it's the first upcoming manual skip found or the segment is fully contained inside the prior found upcoming segment
                             && (foundUpcomingSegment == null || foundUpcomingSegment.containsSegment(segment))) {
                         foundUpcomingSegment = segment;
                     }
