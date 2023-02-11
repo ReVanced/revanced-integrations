@@ -66,12 +66,10 @@ public abstract class SponsorBlockUtils {
                 case DialogInterface.BUTTON_NEGATIVE:
                     // start
                     newSponsorSegmentStartMillis = newSponsorSegmentDialogShownMillis;
-                    ReVancedUtils.showToastLong(str("new_segment_time_start_set"));
                     break;
                 case DialogInterface.BUTTON_POSITIVE:
                     // end
                     newSponsorSegmentEndMillis = newSponsorSegmentDialogShownMillis;
-                    ReVancedUtils.showToastShort(str("new_segment_time_end_set"));
                     break;
             }
             dialog.dismiss();
