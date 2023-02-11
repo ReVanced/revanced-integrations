@@ -197,8 +197,8 @@ public class PlayerController {
             // to debug the timing logic, set this to a very large value (5000 or more)
             // then try manually seeking just playback reaches a skip/hide of different segments
             final float playbackRate = RememberPlaybackRatePatch.getCurrentPlaybackRate();
-            final long START_TIMER_BEFORE_SEGMENT_MILLIS = 2500; // must be larger than the average time between calls to this method
-            final long startTimerAtMillis = millis + (long)(playbackRate * START_TIMER_BEFORE_SEGMENT_MILLIS);
+            final long lookAheadMilliseconds = 2500; // must be larger than the average time between calls to this method
+            final long startTimerLookAheadThreshold = millis + (long)(playbackRate * lookAheadMilliseconds);
 
             SponsorSegment foundUpcomingSegment = null;
             SponsorSegment foundManualSkipSegment = null;
@@ -211,39 +211,40 @@ public class PlayerController {
                     continue; // past this segment
                 }
 
-                if (millis < segment.start) { // segment is upcoming
-                    if (startTimerAtMillis < segment.start) {
-                        break; // no upcoming segments are close enough to schedule a skip
-                    }
-                    if (segment.shouldAutoSkip()) { // upcoming autoskip
-                        foundUpcomingSegment = segment;
-                        break; // must stop here
+                if (segment.start <= millis) {
+                    // we are in the segment!
+                    if (segment.shouldAutoSkip()) {
+                        skipSegment(segment, millis, false);
+                        return; // must return, as skipping causes a recursive call back into this method
                     }
 
-                    // upcoming manual skip
-                    if (foundManualSkipSegment == null // schedule displaying the segment only if not currently in a manual skip segment,
-                            // and it's the first upcoming manual skip found or the segment is fully contained inside the prior found upcoming segment
-                            && (foundUpcomingSegment == null || foundUpcomingSegment.containsSegment(segment))) {
-                        foundUpcomingSegment = segment;
+                    // inside a manual skip segment
+                    if (foundManualSkipSegment == null
+                            // show the embedded segment if it's fully inside the outer segment
+                            || foundManualSkipSegment.containsSegment(segment)) {
+                        foundManualSkipSegment = segment;
                     }
-
-                    continue; // keep looking, an autoskip may be coming up
+                    // Keep iterating and looking. There may be an upcoming autoskip,
+                    // or there may be another smaller segment nested inside this segment
+                    continue;
                 }
 
-                // we are in the segment!
-                if (segment.shouldAutoSkip()) {
-                    skipSegment(segment, millis, false);
-                    return; // must return, as skipping causes a recursive call back into this method
+                // segment is upcoming
+                if (startTimerLookAheadThreshold <= segment.start) {
+                    break; // segment is not close enough to schedule, and no segments after this are of interest
+                }
+                if (segment.shouldAutoSkip()) { // upcoming autoskip
+                    foundUpcomingSegment = segment;
+                    break; // must stop here
+                }
+                // upcoming manual skip
+                if (foundManualSkipSegment == null // schedule displaying the segment only if not currently in a manual skip segment,
+                        // and it's the first upcoming manual skip found or the segment is fully contained inside the prior found upcoming segment
+                        && (foundUpcomingSegment == null || foundUpcomingSegment.containsSegment(segment))) {
+                    foundUpcomingSegment = segment;
                 }
 
-                // inside a manual skip segment
-                if (foundManualSkipSegment == null
-                        // show the embedded segment if it's fully inside the outer segment
-                        || foundManualSkipSegment.containsSegment(segment)) {
-                    foundManualSkipSegment = segment;
-                }
                 // Keep iterating and looking. There may be an upcoming autoskip,
-                // or there may be another smaller segment nested inside this segment
             }
 
             // must be greater than the average time between updates to VideoInformation time
@@ -297,7 +298,7 @@ public class PlayerController {
             }
 
             if (scheduledHideSegment != foundManualSkipSegment) {
-                if (foundManualSkipSegment == null || !foundManualSkipSegment.timeIsNearEnd(millis, START_TIMER_BEFORE_SEGMENT_MILLIS)) {
+                if (foundManualSkipSegment == null || !foundManualSkipSegment.timeIsNearEnd(millis, lookAheadMilliseconds)) {
                     // nothing to schedule, or it's a different segment but it's too far away to schedule a hide
                     if (scheduledHideSegment != null) {
                         LogHelper.printDebug(() -> "Clearing scheduled hide: " + scheduledHideSegment);
