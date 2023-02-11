@@ -388,6 +388,7 @@ public class PlayerController {
             if (segment.category == SponsorBlockSettings.SegmentInfo.UNSUBMITTED) {
                 // skipped segment was a preview of unsubmitted segment
                 // remove the segment from the UI view
+                SponsorBlockUtils.setNewSponsorSegmentPreviewed();
                 SponsorSegment[] newSegments = new SponsorSegment[segmentsOfCurrentVideo.length - 1];
                 int i = 0;
                 for (SponsorSegment sponsorSegment : segmentsOfCurrentVideo) {

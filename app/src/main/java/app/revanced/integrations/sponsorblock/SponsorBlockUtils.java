@@ -58,6 +58,7 @@ public abstract class SponsorBlockUtils {
     private static long newSponsorSegmentDialogShownMillis;
     private static long newSponsorSegmentStartMillis = -1;
     private static long newSponsorSegmentEndMillis = -1;
+    private static boolean newSponsorSegmentPreviewed;
     private static final DialogInterface.OnClickListener newSponsorSegmentDialogListener = new DialogInterface.OnClickListener() {
         @Override
         public void onClick(DialogInterface dialog, int which) {
@@ -207,6 +208,10 @@ public abstract class SponsorBlockUtils {
         }
     };
 
+    static void setNewSponsorSegmentPreviewed() {
+        newSponsorSegmentPreviewed = true;
+    }
+
     private static void submitNewSegment() {
         try {
             ReVancedUtils.verifyOnMainThread();
@@ -214,12 +219,13 @@ public abstract class SponsorBlockUtils {
             final long start = newSponsorSegmentStartMillis;
             final long end = newSponsorSegmentEndMillis;
             final String videoId = PlayerController.getCurrentVideoId();
-            final SponsorBlockSettings.SegmentInfo segmentType = SponsorBlockUtils.newSponsorBlockSegmentType;
+            final SponsorBlockSettings.SegmentInfo segmentType = newSponsorBlockSegmentType;
             if (start < 0 || end < 0 || start >= end || segmentType == null || videoId == null || uuid == null) {
                 LogHelper.printException(() -> "Unable to submit times, invalid parameters");
                 return;
             }
             newSponsorSegmentEndMillis = newSponsorSegmentStartMillis = -1;
+            newSponsorSegmentPreviewed = false;
             ReVancedUtils.runOnBackgroundThread(() -> {
                 SBRequester.submitSegments(videoId, uuid, start / 1000f, end / 1000f, segmentType.key);
                 PlayerController.executeDownloadSegments(videoId);
@@ -259,7 +265,9 @@ public abstract class SponsorBlockUtils {
     public static void onPublishClicked() {
         try {
             ReVancedUtils.verifyOnMainThread();
-            if (newSponsorSegmentStartMillis >= 0 && newSponsorSegmentStartMillis < newSponsorSegmentEndMillis) {
+            if (!newSponsorSegmentPreviewed) {
+                ReVancedUtils.showToastLong(str("new_segment_preview_segment_first"));
+            } else if (newSponsorSegmentStartMillis >= 0 && newSponsorSegmentStartMillis < newSponsorSegmentEndMillis) {
                 long length = (newSponsorSegmentEndMillis - newSponsorSegmentStartMillis) / 1000;
                 long start = (newSponsorSegmentStartMillis) / 1000;
                 long end = (newSponsorSegmentEndMillis) / 1000;
