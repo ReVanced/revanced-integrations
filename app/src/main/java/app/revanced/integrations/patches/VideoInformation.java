@@ -132,7 +132,7 @@ public final class VideoInformation {
      *
      * Note: Code inside a videoTimeHook patch callback
      * should use the callback video time and avoid using this method
-     * (in rare situations of recursive hook callbacks, the value returned here may be outed).
+     * (in situations of recursive hook callbacks, the value returned here may be outdated).
      *
      * Includes Shorts playback.
      *
