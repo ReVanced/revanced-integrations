@@ -1,13 +1,12 @@
 package app.revanced.integrations.returnyoutubedislike.requests;
 
-import static app.revanced.integrations.returnyoutubedislike.requests.ReturnYouTubeDislikeRoutes.getRYDConnectionFromRoute;
-import static app.revanced.integrations.sponsorblock.StringRef.str;
-
 import android.util.Base64;
 import android.widget.Toast;
-
 import androidx.annotation.Nullable;
-
+import app.revanced.integrations.requests.Requester;
+import app.revanced.integrations.returnyoutubedislike.ReturnYouTubeDislike;
+import app.revanced.integrations.utils.LogHelper;
+import app.revanced.integrations.utils.ReVancedUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -20,10 +19,8 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.Objects;
 
-import app.revanced.integrations.requests.Requester;
-import app.revanced.integrations.returnyoutubedislike.ReturnYouTubeDislike;
-import app.revanced.integrations.utils.LogHelper;
-import app.revanced.integrations.utils.ReVancedUtils;
+import static app.revanced.integrations.returnyoutubedislike.requests.ReturnYouTubeDislikeRoutes.getRYDConnectionFromRoute;
+import static app.revanced.integrations.sponsorblock.StringRef.str;
 
 public class ReturnYouTubeDislikeApi {
     /**
@@ -57,7 +54,7 @@ public class ReturnYouTubeDislikeApi {
 
     /**
      * How long to wait until API calls are resumed, if a rate limit is hit.
-     * No clear guideline of how long to backoff.  Using 2 minutes for now.
+     * No clear guideline of how long to backoff. Using 2 minutes for now.
      */
     private static final int RATE_LIMIT_BACKOFF_SECONDS = 120;
 
@@ -469,9 +466,8 @@ public class ReturnYouTubeDislikeApi {
         byte[] decodedChallenge = Base64.decode(challenge, Base64.NO_WRAP);
 
         byte[] buffer = new byte[20];
-        for (int i = 4; i < 20; i++) { // FIXME replace with System.arrayCopy
-            buffer[i] = decodedChallenge[i - 4];
-        }
+        // FIXME replace with System.arrayCopy
+        System.arraycopy(decodedChallenge, 0, buffer, 4, 16);
 
         MessageDigest md;
         try {
