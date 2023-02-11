@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
-import app.revanced.integrations.patches.VideoInformation;
 import app.revanced.integrations.requests.Requester;
 import app.revanced.integrations.requests.Route;
 import app.revanced.integrations.settings.SettingsEnum;
@@ -106,14 +105,14 @@ public class SBRequester {
         return segments.toArray(new SponsorSegment[0]);
     }
 
-    public static void submitSegments(String videoId, String uuid, float startTime, float endTime, String category) {
+    public static void submitSegments(String userPrivateId, String videoId, String category, long startTime, long endTime, long videoLength) {
         ReVancedUtils.verifyOffMainThread();
         try {
-            String start = String.format(Locale.US, TIME_TEMPLATE, startTime);
-            String end = String.format(Locale.US, TIME_TEMPLATE, endTime);
-            String duration = String.valueOf(VideoInformation.getCurrentVideoLength() / 1000);
+            String start = String.format(Locale.US, TIME_TEMPLATE, startTime / 1000f);
+            String end = String.format(Locale.US, TIME_TEMPLATE, endTime / 1000f);
+            String duration = String.format(Locale.US, TIME_TEMPLATE, videoLength / 1000f);
 
-            HttpURLConnection connection = getConnectionFromRoute(SBRoutes.SUBMIT_SEGMENTS, uuid, videoId, category, start, end, duration);
+            HttpURLConnection connection = getConnectionFromRoute(SBRoutes.SUBMIT_SEGMENTS, userPrivateId, videoId, category, start, end, duration);
             final int responseCode = connection.getResponseCode();
 
             final String messageToToast;

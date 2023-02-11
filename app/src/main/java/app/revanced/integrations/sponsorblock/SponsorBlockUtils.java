@@ -219,6 +219,7 @@ public abstract class SponsorBlockUtils {
             final long start = newSponsorSegmentStartMillis;
             final long end = newSponsorSegmentEndMillis;
             final String videoId = PlayerController.getCurrentVideoId();
+            final long videoLength = VideoInformation.getCurrentVideoLength();
             final SponsorBlockSettings.SegmentInfo segmentType = newSponsorBlockSegmentType;
             if (start < 0 || end < 0 || start >= end || segmentType == null || videoId == null || uuid == null) {
                 LogHelper.printException(() -> "Unable to submit times, invalid parameters");
@@ -227,7 +228,7 @@ public abstract class SponsorBlockUtils {
             newSponsorSegmentEndMillis = newSponsorSegmentStartMillis = -1;
             newSponsorSegmentPreviewed = false;
             ReVancedUtils.runOnBackgroundThread(() -> {
-                SBRequester.submitSegments(videoId, uuid, start / 1000f, end / 1000f, segmentType.key);
+                SBRequester.submitSegments(uuid, videoId, segmentType.key, start, end, videoLength);
                 PlayerController.executeDownloadSegments(videoId);
             });
         } catch (Exception e) {
@@ -344,7 +345,7 @@ public abstract class SponsorBlockUtils {
         try {
             ReVancedUtils.verifyOnMainThread();
             if (newSponsorSegmentStartMillis >= 0 && newSponsorSegmentStartMillis < newSponsorSegmentEndMillis) {
-                VideoInformation.seekTo(newSponsorSegmentStartMillis - 3000);
+                VideoInformation.seekTo(newSponsorSegmentStartMillis - 2500);
                 final SponsorSegment[] original = PlayerController.getSegmentsOfCurrentVideo();
                 final SponsorSegment[] segments = original == null ? new SponsorSegment[1] : Arrays.copyOf(original, original.length + 1);
 
