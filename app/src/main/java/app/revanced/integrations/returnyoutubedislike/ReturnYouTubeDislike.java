@@ -288,8 +288,6 @@ public class ReturnYouTubeDislike {
         ReVancedUtils.verifyOnMainThread();
         Objects.requireNonNull(vote);
         try {
-            if (!SettingsEnum.RYD_ENABLED.getBoolean()) return;
-
             // Must make a local copy of videoId, since it may change between now and when the vote thread runs
             String videoIdToVoteFor = getCurrentVideoId();
             if (videoIdToVoteFor == null || (lastVideoLoadedWasShort && !PlayerType.getCurrent().isNoneOrHidden())) {
