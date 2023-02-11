@@ -239,7 +239,11 @@ public class ReturnYouTubeDislike {
      * @return NULL if the span does not need changing or if RYD is not available
      */
     @Nullable
-    private static Spanned waitForFetchAndUpdateReplacementSpan(@NonNull Spanned oldSpannable, boolean isSegmentedButton) {
+    private static Spanned waitForFetchAndUpdateReplacementSpan(Spanned oldSpannable, boolean isSegmentedButton) {
+        if (oldSpannable == null) {
+            LogHelper.printDebug(() -> "Cannot add dislikes (injection code was called with null Span)");
+            return null;
+        }
         // Must block the current thread until fetching is done
         // There's no known way to edit the text after creation yet
         long fetchStartTime = 0;
