@@ -609,8 +609,6 @@ public abstract class SponsorBlockUtils {
                     editByHandDialogListener.onClick(dialog, settingStart ?
                             DialogInterface.BUTTON_NEGATIVE :
                             DialogInterface.BUTTON_POSITIVE);
-                else
-                    ReVancedUtils.showToastShort(str("new_segment_edit_by_hand_saved"));
             } catch (ParseException e) {
                 ReVancedUtils.showToastLong(str("new_segment_edit_by_hand_parse_error"));
             } catch (Exception ex) {
