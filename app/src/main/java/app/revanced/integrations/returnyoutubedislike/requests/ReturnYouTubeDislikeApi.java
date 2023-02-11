@@ -13,6 +13,7 @@ import org.json.JSONObject;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.ProtocolException;
+import java.net.SocketTimeoutException;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -45,7 +46,13 @@ public class ReturnYouTubeDislikeApi {
     /**
      * Response code of a successful API call
      */
-    private static final int SUCCESS_HTTP_STATUS_CODE = 200;
+    private static final int HTTP_STATUS_CODE_SUCCESS = 200;
+
+    /**
+     * Response code indicating the video id is not for a video that can be voted for.
+     * (it's not a Short or a regular video, and it's likely a YouTube Story)
+     */
+    private static final int HTTP_STATUS_CODE_NOT_FOUND = 404;
 
     /**
      * Indicates a client rate limit has been reached
@@ -225,7 +232,6 @@ public class ReturnYouTubeDislikeApi {
         LogHelper.printDebug(() -> "Fetching votes for: " + videoId);
         final long timeNetworkCallStarted = System.currentTimeMillis();
 
-        String connectionErrorMessageStringKey = "revanced_ryd_failure_connection_timeout";
         try {
             HttpURLConnection connection = getRYDConnectionFromRoute(ReturnYouTubeDislikeRoutes.GET_DISLIKES, videoId);
             // request headers, as per https://returnyoutubedislike.com/docs/fetching
@@ -247,7 +253,7 @@ public class ReturnYouTubeDislikeApi {
                 return null;
             }
 
-            if (responseCode == SUCCESS_HTTP_STATUS_CODE) {
+            if (responseCode == HTTP_STATUS_CODE_SUCCESS) {
                 final long timeNetworkCallEnded = System.currentTimeMillis(); // record end time before parsing
                 // do not disconnect, the same server connection will likely be used again soon
                 JSONObject json = Requester.parseJSONObject(connection);
@@ -260,13 +266,20 @@ public class ReturnYouTubeDislikeApi {
                     LogHelper.printException(() -> "Failed to parse video: " + videoId + " json: " + json, ex);
                     // fall thru to update statistics
                 }
+            } else if (responseCode == HTTP_STATUS_CODE_NOT_FOUND) {
+                // normal response when viewing YouTube Stories (cannot vote for these)
+                LogHelper.printDebug(() -> "Video has no like/dislikes (video is a YouTube Story?): " + videoId);
+                return null; // do not updated connection statistics
             } else {
-                LogHelper.printException(() -> "Failed to fetch votes for video: " + videoId
-                        + " response code was: " + responseCode, null, str(connectionErrorMessageStringKey));
+                LogHelper.printException(() -> "Failed to fetch votes for video: " + videoId + " response code was: " + responseCode,
+                        null, str("revanced_ryd_failure_connection_status_code", responseCode));
                 connection.disconnect(); // something went wrong, might as well disconnect
             }
-        } catch (Exception ex) { // connection timed out, response timeout, or some other network error
-            LogHelper.printException(() -> "Failed to fetch votes", ex, str(connectionErrorMessageStringKey));
+        } catch (SocketTimeoutException ex) { // connection timed out, response timeout, or some other network error
+            LogHelper.printException(() -> "Failed to fetch votes", ex, str("revanced_ryd_failure_connection_timeout"));
+        } catch (Exception ex) {
+            // should never happen
+            LogHelper.printException(() -> "Failed to fetch votes", ex, str("revanced_ryd_failure_generic", ex.getMessage()));
         }
 
         updateStatistics(timeNetworkCallStarted, System.currentTimeMillis(), true, false);
@@ -296,7 +309,7 @@ public class ReturnYouTubeDislikeApi {
                 connection.disconnect(); // disconnect, as no more connections will be made for a little while
                 return null;
             }
-            if (responseCode == SUCCESS_HTTP_STATUS_CODE) {
+            if (responseCode == HTTP_STATUS_CODE_SUCCESS) {
                 JSONObject json = Requester.parseJSONObject(connection);
                 String challenge = json.getString("challenge");
                 int difficulty = json.getInt("difficulty");
@@ -337,7 +350,7 @@ public class ReturnYouTubeDislikeApi {
                 connection.disconnect(); // disconnect, as no more connections will be made for a little while
                 return null;
             }
-            if (responseCode == SUCCESS_HTTP_STATUS_CODE) {
+            if (responseCode == HTTP_STATUS_CODE_SUCCESS) {
                 String result = Requester.parseJson(connection);
                 if (result.equalsIgnoreCase("true")) {
                     LogHelper.printDebug(() -> "Registration confirmation successful for user: " + userId);
@@ -384,7 +397,7 @@ public class ReturnYouTubeDislikeApi {
                 connection.disconnect(); // disconnect, as no more connections will be made for a little while
                 return false;
             }
-            if (responseCode == SUCCESS_HTTP_STATUS_CODE) {
+            if (responseCode == HTTP_STATUS_CODE_SUCCESS) {
                 JSONObject json = Requester.parseJSONObject(connection);
                 String challenge = json.getString("challenge");
                 int difficulty = json.getInt("difficulty");
@@ -428,7 +441,7 @@ public class ReturnYouTubeDislikeApi {
                 return false;
             }
 
-            if (responseCode == SUCCESS_HTTP_STATUS_CODE) {
+            if (responseCode == HTTP_STATUS_CODE_SUCCESS) {
                 String result = Requester.parseJson(connection);
                 if (result.equalsIgnoreCase("true")) {
                     LogHelper.printDebug(() -> "Vote confirm successful for video: " + videoId);
