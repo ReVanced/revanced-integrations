@@ -67,6 +67,10 @@ public class PlayerController {
         calculateTimeWithoutSegments();
     }
 
+    public static boolean currentVideoHasSegments() {
+        return segmentsOfCurrentVideo != null && segmentsOfCurrentVideo.length > 0;
+    }
+
     @Nullable
     static String getCurrentVideoId() {
         return currentVideoId;

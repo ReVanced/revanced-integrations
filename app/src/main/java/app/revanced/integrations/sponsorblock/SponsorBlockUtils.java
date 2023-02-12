@@ -167,6 +167,7 @@ public abstract class SponsorBlockUtils {
             final Context context = ((AlertDialog) dialog).getContext();
             SponsorSegment[] currentSegments = PlayerController.getSegmentsOfCurrentVideo();
             if (currentSegments == null || currentSegments.length == 0) {
+                // should never be reached
                 LogHelper.printException(() -> "Segment is no longer available on the client");
                 return;
             }
@@ -291,6 +292,7 @@ public abstract class SponsorBlockUtils {
             ReVancedUtils.verifyOnMainThread();
             SponsorSegment[] currentSegments = PlayerController.getSegmentsOfCurrentVideo();
             if (currentSegments == null || currentSegments.length == 0) {
+                // should never be reached.  button is hidden if no segments exist.
                 ReVancedUtils.showToastShort(str("vote_no_segments"));
                 return;
             }

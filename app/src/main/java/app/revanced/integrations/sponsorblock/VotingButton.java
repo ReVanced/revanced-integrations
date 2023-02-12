@@ -81,7 +81,7 @@ public class VotingButton {
             if (iView == null) return;
 
             if (visible && shouldBeShown()) {
-                if (VideoInformation.isAtEndOfVideo()) {
+                if (!PlayerController.currentVideoHasSegments() || VideoInformation.isAtEndOfVideo()) {
                     return;
                 }
                 LogHelper.printDebug(() -> "Fading in");
