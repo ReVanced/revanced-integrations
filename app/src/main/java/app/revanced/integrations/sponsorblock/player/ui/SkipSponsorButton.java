@@ -25,8 +25,8 @@ public class SkipSponsorButton extends FrameLayout {
     private final CharSequence skipSponsorTextCompact;
     private final Paint background;
     private final Paint border;
-    public final int defaultBottomMargin;
-    public final int ctaBottomMargin;
+    final int defaultBottomMargin;
+    final int ctaBottomMargin;
 
     public SkipSponsorButton(Context context) {
         this(context, null);
