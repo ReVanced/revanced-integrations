@@ -19,49 +19,37 @@ import app.revanced.integrations.sponsorblock.PlayerController;
 import app.revanced.integrations.utils.LogHelper;
 
 public class SkipSponsorButton extends FrameLayout {
-    private LinearLayout skipSponsorBtnContainer;
-    private TextView skipSponsorTextView;
-    private CharSequence skipSponsorTextCompact;
-    public int defaultBottomMargin;
-    public int ctaBottomMargin;
+    private static final boolean highContrast = true;
+    private final LinearLayout skipSponsorBtnContainer;
+    private final TextView skipSponsorTextView;
+    private final CharSequence skipSponsorTextCompact;
     private final Paint background;
     private final Paint border;
-    private static final boolean highContrast = true;
+    public final int defaultBottomMargin;
+    public final int ctaBottomMargin;
 
     public SkipSponsorButton(Context context) {
-        super(context);
-        background = new Paint();
-        border = new Paint();
-        initialize(context);
+        this(context, null);
     }
 
     public SkipSponsorButton(Context context, AttributeSet attributeSet) {
-        super(context, attributeSet);
-        background = new Paint();
-        border = new Paint();
-        initialize(context);
+        this(context, attributeSet, 0);
     }
 
     public SkipSponsorButton(Context context, AttributeSet attributeSet, int defStyleAttr) {
-        super(context, attributeSet, defStyleAttr);
-        background = new Paint();
-        border = new Paint();
-        initialize(context);
+        this(context, attributeSet, defStyleAttr, 0);
     }
 
     public SkipSponsorButton(Context context, AttributeSet attributeSet, int defStyleAttr, int defStyleRes) {
         super(context, attributeSet, defStyleAttr, defStyleRes);
-        background = new Paint();
-        border = new Paint();
-        initialize(context);
-    }
 
-    private void initialize(Context context) {
         LayoutInflater.from(context).inflate(getResourceIdByName(context, "skip_sponsor_button", "layout"), this, true);  // layout:skip_ad_button
         setMinimumHeight(getResources().getDimensionPixelSize(getResourceIdByName(context, "ad_skip_ad_button_min_height", "dimen")));  // dimen:ad_skip_ad_button_min_height
         skipSponsorBtnContainer = findViewById(getResourceIdByName(context, "skip_sponsor_button_container", "id"));  // id:skip_ad_button_container
+        background = new Paint();
         background.setColor(context.getColor(getResourceIdByName(context, "skip_ad_button_background_color", "color")));  // color:skip_ad_button_background_color);
         background.setStyle(Paint.Style.FILL);
+        border = new Paint();
         border.setColor(context.getColor(getResourceIdByName(context, "skip_ad_button_border_color", "color")));  // color:skip_ad_button_border_color);
         border.setStrokeWidth(getResources().getDimension(getResourceIdByName(context, "ad_skip_ad_button_border_width", "dimen")));  // dimen:ad_skip_ad_button_border_width);
         border.setStyle(Paint.Style.STROKE);
@@ -86,12 +74,10 @@ public class SkipSponsorButton extends FrameLayout {
         canvas.drawRect(left, top, leftPlusWidth, topPlusHeight, background);
         if (!highContrast) {
             canvas.drawLines(new float[]{
-                            leftPlusWidth, top,
-                            left, top,
-                            left, top,
-                            left, topPlusHeight,
-                            left, topPlusHeight,
-                            leftPlusWidth, topPlusHeight}, border);
+                            leftPlusWidth, top, left, top,
+                            left, top, left, topPlusHeight,
+                            left, topPlusHeight, leftPlusWidth, topPlusHeight},
+                    border);
         }
 
         super.dispatchDraw(canvas);
