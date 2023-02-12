@@ -177,6 +177,7 @@ public class SBRequester {
 
                 switch (responseCode) {
                     case SUCCESS_HTTP_STATUS_CODE:
+                        LogHelper.printDebug(() -> "Vote success for segment: " + segment);
                         break;
                     case 403:
                         ReVancedUtils.showToastLong(
