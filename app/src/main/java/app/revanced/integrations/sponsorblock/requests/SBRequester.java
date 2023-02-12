@@ -8,6 +8,8 @@ import android.preference.EditTextPreference;
 import android.preference.Preference;
 import android.preference.PreferenceCategory;
 
+import androidx.annotation.NonNull;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -52,7 +54,8 @@ public class SBRequester {
     private SBRequester() {
     }
 
-    public static SponsorSegment[] getSegments(String videoId) {
+    @NonNull
+    public static SponsorSegment[] getSegments(@NonNull String videoId) {
         ReVancedUtils.verifyOffMainThread();
         List<SponsorSegment> segments = new ArrayList<>();
         try {
@@ -144,26 +147,26 @@ public class SBRequester {
         }
     }
 
-    public static void sendViewCountRequest(SponsorSegment segment) {
+    public static void sendViewCountRequest(@NonNull SponsorSegment segment) {
         ReVancedUtils.verifyOffMainThread();
         try {
             HttpURLConnection connection = getConnectionFromRoute(SBRoutes.VIEWED_SEGMENT, segment.UUID);
             final int responseCode = connection.getResponseCode();
 
             if (responseCode == SUCCESS_HTTP_STATUS_CODE) {
-                LogHelper.printDebug(() -> "Successfully sent view count for segment: " + segment.UUID);
+                LogHelper.printDebug(() -> "Successfully sent view count for segment: " + segment);
             } else {
                 LogHelper.printDebug(() -> "Failed to sent view count for segment: " + segment.UUID
                         + " responseCode: " + responseCode); // debug level, no toast is shown
             }
         } catch (IOException ex) {
-            LogHelper.printInfo(() -> "Could not send view count: connection timeout", ex); // do not show a toast
+            LogHelper.printInfo(() -> "Failed to send view count", ex); // do not show a toast
         } catch (Exception ex) {
             LogHelper.printException(() -> "Failed to send view count request", ex); // should never happen
         }
     }
 
-    public static void voteForSegmentOnBackgroundThread(SponsorSegment segment, VoteOption voteOption, String... args) {
+    public static void voteForSegmentOnBackgroundThread(@NonNull SponsorSegment segment, @NonNull VoteOption voteOption, String... args) {
         ReVancedUtils.runOnBackgroundThread(() -> {
             try {
                 String segmentUuid = segment.UUID;
@@ -199,7 +202,7 @@ public class SBRequester {
     /**
      * Must be called _on_ the main thread.
      */
-    public static void retrieveUserStats(PreferenceCategory category, Preference loadingPreference) {
+    public static void retrieveUserStats(@NonNull PreferenceCategory category, @NonNull Preference loadingPreference) {
         ReVancedUtils.verifyOnMainThread();
         if (!SettingsEnum.SB_ENABLED.getBoolean()) {
             loadingPreference.setTitle(str("stats_sb_disabled"));
@@ -223,7 +226,7 @@ public class SBRequester {
         });
     }
 
-    public static void setUsername(String username, EditTextPreference preference) {
+    public static void setUsername(@NonNull String username, @NonNull EditTextPreference preference) {
         ReVancedUtils.runOnBackgroundThread(() -> {
             try {
                 HttpURLConnection connection = getConnectionFromRoute(SBRoutes.CHANGE_USERNAME, SettingsEnum.SB_UUID.getString(), username);

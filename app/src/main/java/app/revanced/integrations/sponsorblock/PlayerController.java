@@ -397,7 +397,7 @@ public class PlayerController {
                 }
                 setSegmentsOfCurrentVideo(newSegments);
             } else {
-                SponsorBlockUtils.sendViewRequestAsync(currentVideoTime, segment);
+                SponsorBlockUtils.sendViewRequestAsync(segment, currentVideoTime);
             }
         } catch (Exception ex) {
             LogHelper.printException(() -> "skipSegment failure", ex);

@@ -16,6 +16,8 @@ import android.preference.PreferenceCategory;
 import android.text.Html;
 import android.widget.EditText;
 
+import androidx.annotation.NonNull;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -287,7 +289,7 @@ public abstract class SponsorBlockUtils {
         }
     }
 
-    public static void onVotingClicked(final Context context) {
+    static void onVotingClicked(@NonNull Context context) {
         try {
             ReVancedUtils.verifyOnMainThread();
             SponsorSegment[] currentSegments = PlayerController.getSegmentsOfCurrentVideo();
@@ -299,7 +301,7 @@ public abstract class SponsorBlockUtils {
                 return;
             }
             int segmentAmount = currentSegments.length;
-            List<CharSequence> titles = new ArrayList<>(segmentAmount); // I've replaced an array with a list to prevent null elements in the array as unsubmitted segments get filtered out
+            List<CharSequence> titles = new ArrayList<>(segmentAmount);
             for (int i = 0; i < segmentAmount; i++) {
                 SponsorSegment segment = currentSegments[i];
                 if (segment.category == SponsorBlockSettings.SegmentInfo.UNSUBMITTED) {
@@ -324,7 +326,7 @@ public abstract class SponsorBlockUtils {
         }
     }
 
-    private static void onNewCategorySelect(final SponsorSegment segment, Context context) {
+    private static void onNewCategorySelect(@NonNull SponsorSegment segment, @NonNull Context context) {
         try {
             ReVancedUtils.verifyOnMainThread();
             final SponsorBlockSettings.SegmentInfo[] values = SponsorBlockSettings.SegmentInfo.valuesWithoutUnsubmitted();
@@ -363,7 +365,7 @@ public abstract class SponsorBlockUtils {
     }
 
 
-    public static void sendViewRequestAsync(final long millis, final SponsorSegment segment) {
+    static void sendViewRequestAsync(@NonNull SponsorSegment segment, long videoTimeWhenSkipped) {
         if (segment.category != SponsorBlockSettings.SegmentInfo.UNSUBMITTED) {
             final long newSkippedTime = SettingsEnum.SB_SKIPPED_SEGMENTS_TIME.getLong() + (segment.end - segment.start);
             SettingsEnum.SB_SKIPPED_SEGMENTS.saveValue(SettingsEnum.SB_SKIPPED_SEGMENTS.getInt() + 1);
@@ -396,7 +398,8 @@ public abstract class SponsorBlockUtils {
         return String.format("#%06X", color);
     }
 
-    public static void addUserStats(PreferenceCategory category, Preference loadingPreference, UserStats stats) {
+    public static void addUserStats(@NonNull PreferenceCategory category, @NonNull Preference loadingPreference,
+                                    @NonNull  UserStats stats) {
         ReVancedUtils.verifyOnMainThread();
         category.removePreference(loadingPreference);
 
@@ -488,7 +491,7 @@ public abstract class SponsorBlockUtils {
         }
     }
 
-    public static void importSettings(String json) {
+    public static void importSettings(@NonNull String json) {
         ReVancedUtils.verifyOnMainThread();
         try {
             JSONObject settingsJson = new JSONObject(json);
@@ -540,6 +543,7 @@ public abstract class SponsorBlockUtils {
         }
     }
 
+    @NonNull
     public static String exportSettings() {
         ReVancedUtils.verifyOnMainThread();
         try {
@@ -586,6 +590,7 @@ public abstract class SponsorBlockUtils {
         DOWNVOTE(str("vote_downvote"), true),
         CATEGORY_CHANGE(str("vote_category"), true);
 
+        @NonNull
         public final String title;
         public final boolean shouldHighlight;
 
