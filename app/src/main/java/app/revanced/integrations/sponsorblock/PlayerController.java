@@ -97,6 +97,7 @@ public class PlayerController {
     public static void initialize(Object _o) {
         try {
             ReVancedUtils.verifyOnMainThread();
+            clearData();
             SponsorBlockView.hideSkipButton();
             SponsorBlockView.hideNewSegmentLayout();
             SponsorBlockUtils.clearUnsubmittedSegmentTimes();
@@ -136,9 +137,6 @@ public class PlayerController {
 
             clearData();
             currentVideoId = videoId;
-
-            // if opening new video in same player, then skip button may be showing from prior video
-            SponsorBlockView.hideSkipButton();
 
             LogHelper.printDebug(() -> "setCurrentVideoId: " + videoId);
 
