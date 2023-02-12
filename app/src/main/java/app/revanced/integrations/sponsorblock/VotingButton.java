@@ -81,10 +81,6 @@ public class VotingButton {
             if (iView == null) return;
 
             if (visible && shouldBeShown()) {
-                if (!PlayerController.currentVideoHasSegments() || VideoInformation.isAtEndOfVideo()) {
-                    return;
-                }
-                LogHelper.printDebug(() -> "Fading in");
                 iView.setVisibility(View.VISIBLE);
                 if (!immediate)
                     iView.startAnimation(fadeIn);
@@ -92,7 +88,6 @@ public class VotingButton {
             }
 
             if (iView.getVisibility() == View.VISIBLE) {
-                LogHelper.printDebug(() -> "Fading out");
                 if (!immediate)
                     iView.startAnimation(fadeOut);
                 iView.setVisibility(View.GONE);
@@ -102,17 +97,16 @@ public class VotingButton {
         }
     }
 
-    static boolean shouldBeShown() {
-        return SettingsEnum.SB_ENABLED.getBoolean() && SettingsEnum.SB_VOTING_ENABLED.getBoolean();
+    private static boolean shouldBeShown() {
+        return SettingsEnum.SB_ENABLED.getBoolean() && SettingsEnum.SB_VOTING_ENABLED.getBoolean()
+                && PlayerController.currentVideoHasSegments() && !VideoInformation.isAtEndOfVideo();
     }
 
     public static void hide() {
-        if (!isShowing) {
-            return;
-        }
         ReVancedUtils.verifyOnMainThread();
         View v = buttonReference.get();
         if (v == null) {
+            LogHelper.printDebug(() -> "Cannot hide voting button (value is null)");
             return;
         }
         v.setVisibility(View.GONE);

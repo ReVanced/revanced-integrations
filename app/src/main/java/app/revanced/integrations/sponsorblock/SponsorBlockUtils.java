@@ -292,7 +292,9 @@ public abstract class SponsorBlockUtils {
             ReVancedUtils.verifyOnMainThread();
             SponsorSegment[] currentSegments = PlayerController.getSegmentsOfCurrentVideo();
             if (currentSegments == null || currentSegments.length == 0) {
-                // should never be reached.  button is hidden if no segments exist.
+                // button is hidden if no segments exist.
+                // But if prior video had segments, and current video does not,
+                // then the button persists until the overlay fades out (this is intentional, as abruptly hiding the button is jaring)
                 ReVancedUtils.showToastShort(str("vote_no_segments"));
                 return;
             }
