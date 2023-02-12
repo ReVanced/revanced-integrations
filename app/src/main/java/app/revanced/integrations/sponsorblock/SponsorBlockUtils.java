@@ -372,8 +372,10 @@ public abstract class SponsorBlockUtils {
             SettingsEnum.SB_SKIPPED_SEGMENTS_TIME.saveValue(newSkippedTime);
 
             // maximum time a segment can be watched and still considered a 'skipped view'
-            final int viewLengthThresholdToCountSkip = 2000; // count skip if user watches the segment less than 2 seconds
-            if (SettingsEnum.SB_COUNT_SKIPS.getBoolean() && (millis - segment.start < viewLengthThresholdToCountSkip)) {
+            final int viewLengthThresholdToCountSkip = 2000; // count the skip if it occurred in the first 2 seconds
+            if (SettingsEnum.SB_COUNT_SKIPS.getBoolean() && !segment.didSubmitSkipTracking
+                    && (videoTimeWhenSkipped - segment.start < viewLengthThresholdToCountSkip)) {
+                segment.didSubmitSkipTracking = true;
                 ReVancedUtils.runOnBackgroundThread(() -> SBRequester.sendViewCountRequest(segment));
             }
         }
@@ -595,7 +597,7 @@ public abstract class SponsorBlockUtils {
         public final boolean shouldHighlight;
 
 
-        VoteOption(String title, boolean shouldHighlight) {
+        VoteOption(@NonNull String title, boolean shouldHighlight) {
             this.title = title;
             this.shouldHighlight = shouldHighlight;
         }

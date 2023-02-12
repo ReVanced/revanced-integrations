@@ -20,6 +20,10 @@ public class SponsorSegment implements Comparable<SponsorSegment> {
     public final long end;
     public final boolean isLocked;
     public boolean didAutoSkipped = false;
+    /**
+     * If this segment has been recorded to the API as skipped
+     */
+    public boolean didSubmitSkipTracking = false;
 
     public SponsorSegment(@NonNull SegmentInfo category, @Nullable String UUID, long start, long end, boolean isLocked) {
         this.category = category;
