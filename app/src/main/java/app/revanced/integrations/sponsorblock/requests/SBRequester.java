@@ -108,7 +108,8 @@ public class SBRequester {
         return segments.toArray(new SponsorSegment[0]);
     }
 
-    public static void submitSegments(String userPrivateId, String videoId, String category, long startTime, long endTime, long videoLength) {
+    public static void submitSegments(@NonNull String userPrivateId, @NonNull String videoId, @NonNull String category,
+                                      long startTime, long endTime, long videoLength) {
         ReVancedUtils.verifyOffMainThread();
         try {
             String start = String.format(Locale.US, TIME_TEMPLATE, startTime / 1000f);
@@ -268,14 +269,14 @@ public class SBRequester {
 
     // helpers
 
-    private static HttpURLConnection getConnectionFromRoute(Route route, String... params) throws IOException {
+    private static HttpURLConnection getConnectionFromRoute(@NonNull Route route, String... params) throws IOException {
         HttpURLConnection connection = Requester.getConnectionFromRoute(SettingsEnum.SB_API_URL.getString(), route, params);
         connection.setConnectTimeout(TIMEOUT_TCP_DEFAULT_MILLISECONDS);
         connection.setReadTimeout(TIMEOUT_HTTP_DEFAULT_MILLISECONDS);
         return connection;
     }
 
-    private static JSONObject getJSONObject(Route route, String... params) throws IOException, JSONException {
+    private static JSONObject getJSONObject(@NonNull Route route, String... params) throws IOException, JSONException {
         return Requester.parseJSONObject(getConnectionFromRoute(route, params));
     }
 }

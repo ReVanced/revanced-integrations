@@ -18,7 +18,7 @@ public class StringRef {
     private static String packageName;
 
     // must use a thread safe map, as this class is used both on and off the main thread
-    private static final Map<String, StringRef> strings = Collections.synchronizedMap(new HashMap());
+    private static final Map<String, StringRef> strings = Collections.synchronizedMap(new HashMap<>());
 
     /**
      * Gets strings reference from shared collection or creates if not exists yet,
