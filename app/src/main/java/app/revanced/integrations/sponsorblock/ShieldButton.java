@@ -83,22 +83,23 @@ public class ShieldButton {
             ImageView iView = buttonReference.get();
             if (iView == null) return;
 
-            if (visible && shouldBeShown()) {
-                if (VideoInformation.isAtEndOfVideo()) {
+            if (visible) {
+                iView.clearAnimation();
+                if (!shouldBeShown()) {
                     return;
                 }
-                LogHelper.printDebug(() -> "Fading in");
-
-                iView.setVisibility(View.VISIBLE);
-                if (!immediate)
+                if (!immediate) {
                     iView.startAnimation(fadeIn);
+                }
+                iView.setVisibility(View.VISIBLE);
                 return;
             }
 
             if (iView.getVisibility() == View.VISIBLE) {
-                LogHelper.printDebug(() -> "Fading out");
-                if (!immediate)
+                iView.clearAnimation();
+                if (!immediate) {
                     iView.startAnimation(fadeOut);
+                }
                 iView.setVisibility(View.GONE);
             }
         } catch (Exception ex) {
@@ -107,7 +108,8 @@ public class ShieldButton {
     }
 
     private static boolean shouldBeShown() {
-        return SettingsEnum.SB_ENABLED.getBoolean() && SettingsEnum.SB_NEW_SEGMENT_ENABLED.getBoolean();
+        return SettingsEnum.SB_ENABLED.getBoolean() && SettingsEnum.SB_NEW_SEGMENT_ENABLED.getBoolean()
+                && !VideoInformation.isAtEndOfVideo();
     }
 
     public static void hide() {

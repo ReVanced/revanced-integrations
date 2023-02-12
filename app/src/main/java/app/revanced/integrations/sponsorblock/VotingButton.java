@@ -80,16 +80,23 @@ public class VotingButton {
             ImageView iView = buttonReference.get();
             if (iView == null) return;
 
-            if (visible && shouldBeShown()) {
-                iView.setVisibility(View.VISIBLE);
-                if (!immediate)
+            if (visible) {
+                iView.clearAnimation();
+                if (!shouldBeShown()) {
+                    return;
+                }
+                if (!immediate) {
                     iView.startAnimation(fadeIn);
+                }
+                iView.setVisibility(View.VISIBLE);
                 return;
             }
 
             if (iView.getVisibility() == View.VISIBLE) {
-                if (!immediate)
+                iView.clearAnimation();
+                if (!immediate) {
                     iView.startAnimation(fadeOut);
+                }
                 iView.setVisibility(View.GONE);
             }
         } catch (Exception ex) {
@@ -103,6 +110,9 @@ public class VotingButton {
     }
 
     public static void hide() {
+        if (!isShowing) {
+            return;
+        }
         ReVancedUtils.verifyOnMainThread();
         View v = buttonReference.get();
         if (v == null) {
