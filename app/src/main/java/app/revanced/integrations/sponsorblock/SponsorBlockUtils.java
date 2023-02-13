@@ -305,14 +305,18 @@ public class SponsorBlockUtils {
                 ReVancedUtils.showToastShort(str("vote_no_segments"));
                 return;
             }
+
+            // use same time formatting as shown in the video player
             final long currentVideoLength = VideoInformation.getCurrentVideoLength();
             final String formatPattern;
-            if (currentVideoLength < (60 * 1000)) {
-                formatPattern = "s"; // less than 1 minute
-            } else  if (currentVideoLength < (60 * 60 * 1000)) {
-                formatPattern = "m:ss"; // less than 1 hour
+            if (currentVideoLength < (10 * 60 * 1000)) {
+                formatPattern = "m:ss"; // less than 10 minutes
+            } else if (currentVideoLength < (60 * 60 * 1000)) {
+                formatPattern = "mm:ss"; // less than 1 hour
+            } else if (currentVideoLength < (10 * 60 * 60 * 1000)) {
+                formatPattern = "H:mm:ss"; // less than 10 hours
             } else {
-                formatPattern = "H:mm:ss";
+                formatPattern = "HH:mm:ss";  // why is this on YouTube
             }
             voteSegmentTimeFormatter.applyPattern(formatPattern);
 
