@@ -513,7 +513,7 @@ public class PlayerController {
     public static String appendTimeWithoutSegments(String totalTime) {
         try {
             if (SettingsEnum.SB_ENABLED.getBoolean() && SettingsEnum.SB_SHOW_TIME_WITHOUT_SEGMENTS.getBoolean()
-                    && !TextUtils.isEmpty(totalTime) && VideoInformation.getCurrentVideoLength() > 1) {
+                    && !TextUtils.isEmpty(totalTime) && VideoInformation.getCurrentVideoLength() > 0) {
                 return totalTime + timeWithoutSegments;
             }
         } catch (Exception ex) {
@@ -525,7 +525,7 @@ public class PlayerController {
 
     private static void calculateTimeWithoutSegments() {
         final long currentVideoLength = VideoInformation.getCurrentVideoLength();
-        if (!SettingsEnum.SB_SHOW_TIME_WITHOUT_SEGMENTS.getBoolean() || currentVideoLength <= 1
+        if (!SettingsEnum.SB_SHOW_TIME_WITHOUT_SEGMENTS.getBoolean() || currentVideoLength <= 0
                 || segmentsOfCurrentVideo == null || segmentsOfCurrentVideo.length == 0) {
             timeWithoutSegments = "";
             return;
@@ -552,6 +552,8 @@ public class PlayerController {
         try {
             if (sponsorBarThickness < 0.1) return;
             if (segmentsOfCurrentVideo == null) return;
+            final long currentVideoLength = VideoInformation.getCurrentVideoLength();
+            if (currentVideoLength <= 0) return;
 
             final float thicknessDiv2 = sponsorBarThickness / 2;
             final float top = posY - thicknessDiv2;
@@ -559,7 +561,7 @@ public class PlayerController {
             final float absoluteLeft = sponsorBarLeft;
             final float absoluteRight = sponsorBarRight;
 
-            final float tmp1 = 1f / (float) VideoInformation.getCurrentVideoLength() * (absoluteRight - absoluteLeft);
+            final float tmp1 = (1f / currentVideoLength) * (absoluteRight - absoluteLeft);
             for (SponsorSegment segment : segmentsOfCurrentVideo) {
                 float left = segment.start * tmp1 + absoluteLeft;
                 float right = segment.end * tmp1 + absoluteLeft;

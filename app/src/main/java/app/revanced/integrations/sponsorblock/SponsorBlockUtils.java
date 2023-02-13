@@ -226,7 +226,7 @@ public abstract class SponsorBlockUtils {
             final String videoId = PlayerController.getCurrentVideoId();
             final long videoLength = VideoInformation.getCurrentVideoLength();
             final SponsorBlockSettings.SegmentInfo segmentType = newSponsorBlockSegmentType;
-            if (start < 0 || end < 0 || start >= end || segmentType == null || videoId == null || uuid == null) {
+            if (start < 0 || end < 0 || start >= end || videoLength <= 0 || segmentType == null || videoId == null || uuid == null) {
                 LogHelper.printException(() -> "Unable to submit times, invalid parameters");
                 return;
             }
