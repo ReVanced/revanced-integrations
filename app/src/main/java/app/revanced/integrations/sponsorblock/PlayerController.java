@@ -218,11 +218,18 @@ public class PlayerController {
                         return; // must return, as skipping causes a recursive call back into this method
                     }
 
-                    // inside a manual skip segment
-                    if (foundCurrentSegment == null
-                            // show the embedded segment if it's fully inside the outer segment
-                            || foundCurrentSegment.containsSegment(segment)) {
-                        foundCurrentSegment = segment;
+                    // first found segment, or it's an embedded segment and fully inside the outer segment
+                    if (foundCurrentSegment == null || foundCurrentSegment.containsSegment(segment)) {
+                        // If the found segment is not currently displayed, then do not show if the segment is nearly over.
+                        // This check prevents the skip button text from rapidly changing when multiple segments end at nearly the same time,
+                        // and prevents showing the skip button if user seeks into the last half second of it.
+                        final long minMillisOfSegmentRemainingThreshold = 500;
+                        if (segmentCurrentlyPlaying == segment
+                                || !segment.timeIsNearEnd(millis, minMillisOfSegmentRemainingThreshold)) {
+                            foundCurrentSegment = segment;
+                        } else {
+                            LogHelper.printDebug(() -> "Ignoring segment that ends very soon: " + segment);
+                        }
                     }
                     // Keep iterating and looking. There may be an upcoming autoskip,
                     // or there may be another smaller segment nested inside this segment
@@ -358,8 +365,8 @@ public class PlayerController {
             lastSegmentSkipped = segment;
             lastSegmentSkippedTime = now;
             segmentCurrentlyPlaying = null;
-            scheduledUpcomingSegment = null; // if a scheduled skip has not run yet
-            scheduledHideSegment = null;
+            scheduledHideSegment = null; // if a scheduled has not run yet
+            scheduledUpcomingSegment = null;
             SponsorBlockView.hideSkipButton();
 
             final boolean seekSuccessful = VideoInformation.seekTo(segment.end);
