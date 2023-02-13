@@ -116,17 +116,17 @@ public class PlayerController {
                 clearData();
                 return;
             }
+            if (videoId.equals(currentVideoId)) {
+                return;
+            }
             if (PlayerType.getCurrent().isNoneOrHidden()) {
-                LogHelper.printDebug(() -> "ignoring shorts video");
+                LogHelper.printDebug(() -> "ignoring short or story");
                 clearData();
                 return;
             }
             if (!ReVancedUtils.isNetworkConnected()) {
                 LogHelper.printDebug(() -> "Network not connected, ignoring video");
                 clearData();
-                return;
-            }
-            if (videoId.equals(currentVideoId)) {
                 return;
             }
 
