@@ -538,10 +538,11 @@ public class PlayerController {
         final long hours = timeWithoutSegmentsValue / 3600000;
         final long minutes = (timeWithoutSegmentsValue / 60000) % 60;
         final long seconds = (timeWithoutSegmentsValue / 1000) % 60;
-        String format = (hours > 0 ? "%d:%02" : "%") + "d:%02d"; // mmLul
-        String formatted = hours > 0 ? String.format(format, hours, minutes, seconds) : String.format(format, minutes, seconds);
-
-        timeWithoutSegments = String.format(" (%s)", formatted);
+        if (hours > 0) {
+            timeWithoutSegments = String.format(" (%d:%02d:%02d)", hours, minutes, seconds);
+        } else {
+            timeWithoutSegments = String.format(" (%d:%02d)", minutes, seconds);
+        }
     }
 
     /**
