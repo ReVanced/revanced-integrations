@@ -42,15 +42,23 @@ import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedUtils;
 import app.revanced.integrations.utils.SharedPrefHelper;
 
-public abstract class SponsorBlockUtils {
-    public static final String DATE_FORMAT = "HH:mm:ss.SSS";
+/**
+ * Not thread safe. All fields/methods must be accessed from the main thread.
+ */
+public class SponsorBlockUtils {
+    private static final String MANUAL_EDIT_TIME_FORMAT = "HH:mm:ss.SSS";
     @SuppressLint("SimpleDateFormat")
-    // must be used exclusively on the main thread (not thread safe)
-    public static final SimpleDateFormat dateFormatter = new SimpleDateFormat(DATE_FORMAT);
+    private static final SimpleDateFormat manualEditTimeFormatter = new SimpleDateFormat(MANUAL_EDIT_TIME_FORMAT);
+    @SuppressLint("SimpleDateFormat")
+    private static final SimpleDateFormat voteSegmentShortVideoFormatter = new SimpleDateFormat("mm:ss");
+    @SuppressLint("SimpleDateFormat")
+    private static final SimpleDateFormat voteSegmentLongVideoFormatter = new SimpleDateFormat("HH:mm:ss");
     static {
-        dateFormatter.setTimeZone(TimeZone.getTimeZone("UTC"));
+        TimeZone utc = TimeZone.getTimeZone("UTC");
+        manualEditTimeFormatter.setTimeZone(utc);
+        voteSegmentShortVideoFormatter.setTimeZone(utc);
+        voteSegmentLongVideoFormatter.setTimeZone(utc);
     }
-    // must be used exclusively on the main thread (not thread safe)
     private static final DecimalFormat statsFormatter = new DecimalFormat("#,###,###");
     private static final String STATS_FORMAT_TEMPLATE = "%dh %d %s";
     private static final String LOCKED_COLOR = "#FFC83D";
@@ -140,13 +148,13 @@ public abstract class SponsorBlockUtils {
             final boolean isStart = DialogInterface.BUTTON_NEGATIVE == which;
 
             final EditText textView = new EditText(context);
-            textView.setHint(DATE_FORMAT);
+            textView.setHint(MANUAL_EDIT_TIME_FORMAT);
             if (isStart) {
                 if (newSponsorSegmentStartMillis >= 0)
-                    textView.setText(dateFormatter.format(new Date(newSponsorSegmentStartMillis)));
+                    textView.setText(manualEditTimeFormatter.format(new Date(newSponsorSegmentStartMillis)));
             } else {
                 if (newSponsorSegmentEndMillis >= 0)
-                    textView.setText(dateFormatter.format(new Date(newSponsorSegmentEndMillis)));
+                    textView.setText(manualEditTimeFormatter.format(new Date(newSponsorSegmentEndMillis)));
             }
 
             editByHandSaveDialogListener.settingStart = isStart;
@@ -207,6 +215,9 @@ public abstract class SponsorBlockUtils {
         }
     };
 
+    private SponsorBlockUtils() {
+    }
+
     static void setNewSponsorSegmentPreviewed() {
         newSponsorSegmentPreviewed = true;
     }
@@ -238,9 +249,6 @@ public abstract class SponsorBlockUtils {
         } catch (Exception e) {
             LogHelper.printException(() -> "Unable to submit segment", e);
         }
-    }
-
-    private SponsorBlockUtils() {
     }
 
     public static void onMarkLocationClicked() {
@@ -300,20 +308,22 @@ public abstract class SponsorBlockUtils {
                 ReVancedUtils.showToastShort(str("vote_no_segments"));
                 return;
             }
-            int segmentAmount = currentSegments.length;
-            List<CharSequence> titles = new ArrayList<>(segmentAmount);
-            for (int i = 0; i < segmentAmount; i++) {
+            final boolean videoIsLessThanOneHour = VideoInformation.getCurrentVideoLength() < (60*60*1000);
+            final int numberOfSegments = currentSegments.length;
+            List<CharSequence> titles = new ArrayList<>(numberOfSegments);
+            for (int i = 0; i < numberOfSegments; i++) {
                 SponsorSegment segment = currentSegments[i];
                 if (segment.category == SponsorBlockSettings.SegmentInfo.UNSUBMITTED) {
                     continue;
                 }
 
-                String start = dateFormatter.format(new Date(segment.start));
-                String end = dateFormatter.format(new Date(segment.end));
+                SimpleDateFormat formatter = videoIsLessThanOneHour ? voteSegmentShortVideoFormatter : voteSegmentLongVideoFormatter;
+                String start = formatter.format(new Date(segment.start));
+                String end = formatter.format(new Date(segment.end));
                 StringBuilder htmlBuilder = new StringBuilder();
                 htmlBuilder.append(String.format("<b><font color=\"#%06X\">⬤</font> %s<br> %s to %s",
                         segment.category.color, segment.category.title, start, end));
-                if (i + 1 != segmentAmount) // prevents trailing new line after last segment
+                if (i + 1 != numberOfSegments) // prevents trailing new line after last segment
                     htmlBuilder.append("<br>");
                 titles.add(Html.fromHtml(htmlBuilder.toString()));
             }
@@ -604,8 +614,8 @@ public abstract class SponsorBlockUtils {
     }
 
     private static class EditByHandSaveDialogListener implements DialogInterface.OnClickListener {
-        public boolean settingStart;
-        public WeakReference<EditText> editText;
+        boolean settingStart;
+        WeakReference<EditText> editText;
 
         @Override
         public void onClick(DialogInterface dialog, int which) {
@@ -615,7 +625,7 @@ public abstract class SponsorBlockUtils {
 
                 long time = (which == DialogInterface.BUTTON_NEUTRAL) ?
                         VideoInformation.getVideoTime() :
-                        (Objects.requireNonNull(dateFormatter.parse(editText.getText().toString())).getTime());
+                        (Objects.requireNonNull(manualEditTimeFormatter.parse(editText.getText().toString())).getTime());
 
                 if (settingStart)
                     newSponsorSegmentStartMillis = Math.max(time, 0);
