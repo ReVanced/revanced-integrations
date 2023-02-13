@@ -50,14 +50,11 @@ public class SponsorBlockUtils {
     @SuppressLint("SimpleDateFormat")
     private static final SimpleDateFormat manualEditTimeFormatter = new SimpleDateFormat(MANUAL_EDIT_TIME_FORMAT);
     @SuppressLint("SimpleDateFormat")
-    private static final SimpleDateFormat voteSegmentShortVideoFormatter = new SimpleDateFormat("mm:ss");
-    @SuppressLint("SimpleDateFormat")
-    private static final SimpleDateFormat voteSegmentLongVideoFormatter = new SimpleDateFormat("HH:mm:ss");
+    private static final SimpleDateFormat voteSegmentTimeFormatter = new SimpleDateFormat();
     static {
         TimeZone utc = TimeZone.getTimeZone("UTC");
         manualEditTimeFormatter.setTimeZone(utc);
-        voteSegmentShortVideoFormatter.setTimeZone(utc);
-        voteSegmentLongVideoFormatter.setTimeZone(utc);
+        voteSegmentTimeFormatter.setTimeZone(utc);
     }
     private static final DecimalFormat statsFormatter = new DecimalFormat("#,###,###");
     private static final String STATS_FORMAT_TEMPLATE = "%dh %d %s";
@@ -308,7 +305,17 @@ public class SponsorBlockUtils {
                 ReVancedUtils.showToastShort(str("vote_no_segments"));
                 return;
             }
-            final boolean videoIsLessThanOneHour = VideoInformation.getCurrentVideoLength() < (60*60*1000);
+            final long currentVideoLength = VideoInformation.getCurrentVideoLength();
+            final String formatPattern;
+            if (currentVideoLength < (60 * 1000)) {
+                formatPattern = "s"; // less than 1 minute
+            } else  if (currentVideoLength < (60 * 60 * 1000)) {
+                formatPattern = "m:ss"; // less than 1 hour
+            } else {
+                formatPattern = "H:mm:ss";
+            }
+            voteSegmentTimeFormatter.applyPattern(formatPattern);
+
             final int numberOfSegments = currentSegments.length;
             List<CharSequence> titles = new ArrayList<>(numberOfSegments);
             for (int i = 0; i < numberOfSegments; i++) {
@@ -316,10 +323,8 @@ public class SponsorBlockUtils {
                 if (segment.category == SponsorBlockSettings.SegmentInfo.UNSUBMITTED) {
                     continue;
                 }
-
-                SimpleDateFormat formatter = videoIsLessThanOneHour ? voteSegmentShortVideoFormatter : voteSegmentLongVideoFormatter;
-                String start = formatter.format(new Date(segment.start));
-                String end = formatter.format(new Date(segment.end));
+                String start = voteSegmentTimeFormatter.format(new Date(segment.start));
+                String end = voteSegmentTimeFormatter.format(new Date(segment.end));
                 StringBuilder htmlBuilder = new StringBuilder();
                 htmlBuilder.append(String.format("<b><font color=\"#%06X\">⬤</font> %s<br> %s to %s",
                         segment.category.color, segment.category.title, start, end));
