@@ -1,3 +1,10 @@
+## [0.96.2-dev.3](https://github.com/revanced/revanced-integrations/compare/v0.96.2-dev.2...v0.96.2-dev.3) (2023-02-14)
+
+
+### Bug Fixes
+
+* **youtube/general-ads:** block other kind of survey ([39ac47c](https://github.com/revanced/revanced-integrations/commit/39ac47cb8fccb1003a5cbba951fa77d25b0a2a96))
+
 ## [0.96.2-dev.2](https://github.com/revanced/revanced-integrations/compare/v0.96.2-dev.1...v0.96.2-dev.2) (2023-02-13)
 
 
