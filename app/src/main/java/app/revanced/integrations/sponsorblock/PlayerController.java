@@ -164,7 +164,7 @@ public class PlayerController {
             ReVancedUtils.runOnMainThread(()-> {
                 if (!videoId.equals(currentVideoId)) {
                     // user changed videos before get segments network call could complete
-                    LogHelper.printDebug(() -> "Ignoring stale segments for prior video: " + videoId);
+                    LogHelper.printDebug(() -> "Ignoring segments for prior video: " + videoId);
                     return;
                 }
                 setSegmentsOfCurrentVideo(segments);
@@ -196,7 +196,7 @@ public class PlayerController {
 
             // to debug the timing logic, set this to a very large value (5000 or more)
             // then try manually seeking just playback reaches a skip/hide of different segments
-            final long lookAheadMilliseconds = 2500; // must be larger than the average time between calls to this method
+            final long lookAheadMilliseconds = 1500; // must be larger than the average time between calls to this method
             final float playbackRate = RememberPlaybackRatePatch.getCurrentPlaybackRate();
             final long startTimerLookAheadThreshold = millis + (long)(playbackRate * lookAheadMilliseconds);
 
@@ -256,7 +256,7 @@ public class PlayerController {
                             || !foundCurrentSegment.timeIsNearEnd(segment.start, minTimeBetweenStartEndOfSegments)) {
                         foundUpcomingSegment = segment;
                     } else {
-                        LogHelper.printDebug(() -> "Not scheduling segment (start time is near existing current segment): " + segment);
+                        LogHelper.printDebug(() -> "Not scheduling segment (start time is near end of current segment): " + segment);
                     }
                 }
             }
@@ -436,7 +436,7 @@ public class PlayerController {
         ReVancedUtils.runOnMainThreadDelayed(() -> {
             try {
                 if (toastSegmentSkipped == null) { // video was changed just after skipping segment
-                    LogHelper.printDebug(() -> "Ignoring stale scheduled show toast");
+                    LogHelper.printDebug(() -> "Ignoring old scheduled show toast");
                     return;
                 }
                 ReVancedUtils.showToastShort(toastNumberOfSegmentsSkipped == 1
