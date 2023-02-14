@@ -221,8 +221,8 @@ public class PlayerController {
                     // first found segment, or it's an embedded segment and fully inside the outer segment
                     if (foundCurrentSegment == null || foundCurrentSegment.containsSegment(segment)) {
                         // If the found segment is not currently displayed, then do not show if the segment is nearly over.
-                        // This check prevents the skip button text from rapidly changing when multiple segments end at nearly the same time,
-                        // and prevents showing the skip button if user seeks into the last half second of it.
+                        // This check prevents the skip button text from rapidly changing when multiple segments end at nearly the same time.
+                        // Also prevents showing the skip button if user seeks into the last half second of the segment.
                         final long minMillisOfSegmentRemainingThreshold = 500;
                         if (segmentCurrentlyPlaying == segment
                                 || !segment.timeIsNearEnd(millis, minMillisOfSegmentRemainingThreshold)) {
@@ -244,11 +244,20 @@ public class PlayerController {
                     foundUpcomingSegment = segment;
                     break; // must stop here
                 }
+
                 // upcoming manual skip
-                if (foundCurrentSegment == null // schedule displaying the segment only if not currently in a manual skip segment,
-                        // and it's the first upcoming manual skip found or the segment is fully contained inside the prior found upcoming segment
-                        && (foundUpcomingSegment == null || foundUpcomingSegment.containsSegment(segment))) {
-                    foundUpcomingSegment = segment;
+
+                // it's the first upcoming manual skip found, or the segment is fully contained inside the prior found upcoming segment
+                if (foundUpcomingSegment == null || foundUpcomingSegment.containsSegment(segment)) {
+                    // Only schedule, if the segment start time is not near the end time of the current segment.
+                    // This check is needed to prevent scheduled hide and show from clashing with each other.
+                    final long minTimeBetweenStartEndOfSegments = 1000;
+                    if (foundCurrentSegment == null
+                            || !foundCurrentSegment.timeIsNearEnd(segment.start, minTimeBetweenStartEndOfSegments)) {
+                        foundUpcomingSegment = segment;
+                    } else {
+                        LogHelper.printDebug(() -> "Not scheduling segment (start time is near existing current segment): " + segment);
+                    }
                 }
             }
 
