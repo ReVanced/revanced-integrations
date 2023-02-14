@@ -87,7 +87,7 @@ public class SkipSponsorButton extends FrameLayout {
      * @return true, if this button state was changed
      */
     public boolean updateSkipButtonText(SegmentInfo info) {
-        CharSequence newText = SettingsEnum.SB_USE_COMACT_SKIPBUTTON.getBoolean()
+        CharSequence newText = SettingsEnum.SB_USE_COMPACT_SKIPBUTTON.getBoolean()
                 ? skipSponsorTextCompact
                 : info.skipButtonText.toString();
         if (newText.equals(skipSponsorTextView.getText())) {

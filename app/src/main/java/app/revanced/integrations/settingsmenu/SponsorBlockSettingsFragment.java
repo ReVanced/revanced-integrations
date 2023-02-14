@@ -284,9 +284,9 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment implements 
             SwitchPreference preference = new SwitchPreference(context);
             preference.setTitle(str("general_compact_skip_button"));
             preference.setSummary(str("general_compact_skip_button_sum"));
-            preference.setChecked(SettingsEnum.SB_USE_COMACT_SKIPBUTTON.getBoolean());
+            preference.setChecked(SettingsEnum.SB_USE_COMPACT_SKIPBUTTON.getBoolean());
             preference.setOnPreferenceChangeListener((preference1, newValue) -> {
-                SettingsEnum.SB_USE_COMACT_SKIPBUTTON.saveValue(newValue);
+                SettingsEnum.SB_USE_COMPACT_SKIPBUTTON.saveValue(newValue);
                 return true;
             });
 
