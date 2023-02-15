@@ -1,9 +1,29 @@
-## [0.96.2-dev.3](https://github.com/revanced/revanced-integrations/compare/v0.96.2-dev.2...v0.96.2-dev.3) (2023-02-14)
+# [0.97.0-dev.2](https://github.com/revanced/revanced-integrations/compare/v0.97.0-dev.1...v0.97.0-dev.2) (2023-02-15)
+
+
+### Features
+
+* **youtube/general-ads:** hide full-screen feed banner ([0cbcf41](https://github.com/revanced/revanced-integrations/commit/0cbcf41aefb7df6836b8f44f093de6e30eac937e))
+
+# [0.97.0-dev.1](https://github.com/revanced/revanced-integrations/compare/v0.96.2...v0.97.0-dev.1) (2023-02-14)
 
 
 ### Bug Fixes
 
-* **youtube/general-ads:** block other kind of survey ([39ac47c](https://github.com/revanced/revanced-integrations/commit/39ac47cb8fccb1003a5cbba951fa77d25b0a2a96))
+* **youtube/general-ads:** block other kind of survey ([cdf43ef](https://github.com/revanced/revanced-integrations/commit/cdf43efcf29a04b354313749057119e3de030cb1))
+
+
+### Features
+
+* **youtube/general-ads:** hide web search results ([9df1e46](https://github.com/revanced/revanced-integrations/commit/9df1e460c56bf0d5cb3c9d04853d07b22cef35bb))
+
+## [0.96.2](https://github.com/revanced/revanced-integrations/compare/v0.96.1...v0.96.2) (2023-02-13)
+
+
+### Bug Fixes
+
+* **youtube/general-ads:** do not hide chapters when hiding preview comments ([cfb7aab](https://github.com/revanced/revanced-integrations/commit/cfb7aab77991e8a123fb6956e699df8ad53bf59d))
+* **youtube/general-ads:** use correct setting for `BlockRule` ([#316](https://github.com/revanced/revanced-integrations/issues/316)) ([7225bc3](https://github.com/revanced/revanced-integrations/commit/7225bc3c48b2d8f94d21b5481e37d78a26f49544))
 
 ## [0.96.2-dev.2](https://github.com/revanced/revanced-integrations/compare/v0.96.2-dev.1...v0.96.2-dev.2) (2023-02-13)
 
