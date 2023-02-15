@@ -137,6 +137,7 @@ public class ReturnYouTubeDislikeApi {
      *
      * @param maximumTimeToWait maximum time to wait
      */
+    @SuppressWarnings("UnusedReturnValue")
     private static long randomlyWaitIfLocallyDebugging(long maximumTimeToWait) {
         final boolean DEBUG_RANDOMLY_DELAY_NETWORK_CALLS = false; // set true to debug UI
         if (DEBUG_RANDOMLY_DELAY_NETWORK_CALLS) {
@@ -187,6 +188,7 @@ public class ReturnYouTubeDislikeApi {
 
         if (httpResponseCode == RATE_LIMIT_HTTP_STATUS_CODE) {
             lastTimeRateLimitWasHit = System.currentTimeMillis();
+            //noinspection NonAtomicOperationOnVolatileField // don't care, field is used only as an estimate
             numberOfRateLimitRequestsEncountered++;
             LogHelper.printDebug(() -> "API rate limit was hit. Stopping API calls for the next "
                     + RATE_LIMIT_BACKOFF_SECONDS + " seconds");
@@ -479,7 +481,6 @@ public class ReturnYouTubeDislikeApi {
         byte[] decodedChallenge = Base64.decode(challenge, Base64.NO_WRAP);
 
         byte[] buffer = new byte[20];
-        // FIXME replace with System.arrayCopy
         System.arraycopy(decodedChallenge, 0, buffer, 4, 16);
 
         MessageDigest md;
@@ -522,9 +523,9 @@ public class ReturnYouTubeDislikeApi {
 
     private static int countLeadingZeroes(byte[] uInt8View) {
         int zeroes = 0;
-        int value = 0;
-        for (int i = 0; i < uInt8View.length; i++) {
-            value = uInt8View[i] & 0xFF;
+        int value;
+        for (byte b : uInt8View) {
+            value = b & 0xFF;
             if (value == 0) {
                 zeroes += 8;
             } else {
