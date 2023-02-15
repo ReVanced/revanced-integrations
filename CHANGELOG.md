@@ -1,3 +1,10 @@
+# [0.97.0-dev.2](https://github.com/revanced/revanced-integrations/compare/v0.97.0-dev.1...v0.97.0-dev.2) (2023-02-15)
+
+
+### Features
+
+* **youtube/general-ads:** hide full-screen feed banner ([0cbcf41](https://github.com/revanced/revanced-integrations/commit/0cbcf41aefb7df6836b8f44f093de6e30eac937e))
+
 # [0.97.0-dev.1](https://github.com/revanced/revanced-integrations/compare/v0.96.2...v0.97.0-dev.1) (2023-02-14)
 
 
