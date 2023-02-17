@@ -297,12 +297,14 @@ public class PlayerController {
                         }
                         scheduledHideSegment = null;
 
-                        if (!segmentToHide.timeIsNearEnd(VideoInformation.getVideoTime(), videoInformationTimeUpdateThresholdMilliseconds)) {
+                        final long videoTime = VideoInformation.getVideoTime();
+                        if (!segmentToHide.timeIsNearEnd(videoTime, videoInformationTimeUpdateThresholdMilliseconds)) {
                             // current video time is not what's expected.  User paused playback
-                            LogHelper.printDebug(() -> "Ignoring outdated scheduled hide: " + segmentToHide);
+                            LogHelper.printDebug(() -> "Ignoring outdated scheduled hide: " + segmentToHide
+                                    + " videoInformation time: " + videoTime);
                             return;
                         }
-                        LogHelper.printDebug(() -> "Running scheduled hide of segment: " + segmentToHide);
+                        LogHelper.printDebug(() -> "Running scheduled hide segment: " + segmentToHide);
                         // Need more than just hide the skip button, as this may have been an embedded segment
                         // Instead call back into setVideoTime to check everything again.
                         // Should not use VideoInformation time as it is less accurate,
@@ -331,14 +333,16 @@ public class PlayerController {
                         }
                         scheduledUpcomingSegment = null;
 
-                        if (!segmentToSkip.timeIsNearStart(VideoInformation.getVideoTime(),
+                        final long videoTime = VideoInformation.getVideoTime();
+                        if (!segmentToSkip.timeIsNearStart(videoTime,
                                 videoInformationTimeUpdateThresholdMilliseconds)) {
                             // current video time is not what's expected.  User paused playback
-                            LogHelper.printDebug(() -> "Ignoring outdated scheduled segment: " + segmentToSkip);
+                            LogHelper.printDebug(() -> "Ignoring outdated scheduled segment: " + segmentToSkip
+                                    + " videoInformation time: " + videoTime);
                             return;
                         }
                         if (segmentToSkip.shouldAutoSkip()) {
-                            LogHelper.printDebug(() -> "Running scheduled autoskip segment: " + segmentToSkip);
+                            LogHelper.printDebug(() -> "Running scheduled skip segment: " + segmentToSkip);
                             skipSegment(segmentToSkip, segmentToSkip.start, false);
                         } else {
                             LogHelper.printDebug(() -> "Running scheduled show segment: " + segmentToSkip);
