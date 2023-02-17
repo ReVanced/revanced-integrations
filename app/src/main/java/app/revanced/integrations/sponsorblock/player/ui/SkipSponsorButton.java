@@ -57,7 +57,7 @@ public class SkipSponsorButton extends FrameLayout {
         Resources resources = context.getResources();
         defaultBottomMargin = resources.getDimensionPixelSize(getResourceIdByName(context, "skip_button_default_bottom_margin", "dimen"));  // dimen:skip_button_default_bottom_margin
         ctaBottomMargin = resources.getDimensionPixelSize(getResourceIdByName(context, "skip_button_cta_bottom_margin", "dimen"));  // dimen:skip_button_cta_bottom_margin
-        skipSponsorTextCompact = str("skip_button_text_compact");  // string:skip_ads "Skip ads"
+        skipSponsorTextCompact = str("skip_button_compact");  // string:skip_ads "Skip ads"
 
         skipSponsorBtnContainer.setOnClickListener(v -> {
             LogHelper.printDebug(() -> "Skip button clicked");
