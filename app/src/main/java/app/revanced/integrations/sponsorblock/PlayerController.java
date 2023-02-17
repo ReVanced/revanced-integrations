@@ -447,7 +447,7 @@ public class PlayerController {
                     return;
                 }
                 ReVancedUtils.showToastShort(toastNumberOfSegmentsSkipped == 1
-                        ? toastSegmentSkipped.category.skipMessage.toString()
+                        ? toastSegmentSkipped.category.getSkippedMessage()
                         : str("skipped_multiple_segments"));
             } catch (Exception ex) {
                 LogHelper.printException(() -> "showSkippedSegmentToast failure", ex);
