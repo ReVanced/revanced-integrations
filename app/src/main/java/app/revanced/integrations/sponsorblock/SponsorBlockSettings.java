@@ -135,7 +135,7 @@ public class SponsorBlockSettings {
                 MANUAL_SKIP, 0xFF00ffff),
         OUTRO("outro", sf("segments_endcards"), sf("segments_endcards_sum"), sf("skip_button_text_endcard"), sf("skipped_endcard"),
                 MANUAL_SKIP, 0xFF0202ed),
-        INTERACTION("interaction", sf("segments_subscribe"), sf("segments_subscribe_sum"), sf("skip_button_text_subscribe"), sf("skipped_subscribe"),
+        INTERACTION("interaction", sf("segments_interaction"), sf("segments_interaction_sum"), sf("skip_button_text_interaction"), sf("skipped_interaction"),
                 SKIP_AUTOMATICALLY, 0xFFcc00ff),
         SELF_PROMO("selfpromo", sf("segments_selfpromo"), sf("segments_selfpromo_sum"), sf("skip_button_text_selfpromo"), sf("skipped_selfpromo"),
                 SKIP_AUTOMATICALLY, 0xFFffff00),
