@@ -9,6 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
+import androidx.annotation.Nullable;
+
 import java.lang.ref.WeakReference;
 
 import app.revanced.integrations.shared.PlayerType;
@@ -23,6 +25,9 @@ public class SponsorBlockView {
     private static WeakReference<SkipSponsorButton> _skipSponsorButton = new WeakReference<>(null);
     private static WeakReference<NewSegmentLayout> _newSegmentLayout = new WeakReference<>(null);
     private static boolean shouldShowOnPlayerType = true;
+    @Nullable
+    private static SegmentInfo skipSegmentInfo;
+
     static {
         PlayerType.getOnChange().addObserver((PlayerType type) -> {
             playerTypeChanged(type);
@@ -49,19 +54,29 @@ public class SponsorBlockView {
         }
     }
 
-    public static void showSkipButton(SegmentInfo info) {
-        SkipSponsorButton skipSponsorButton = _skipSponsorButton.get();
-        if (skipSponsorButton != null) {
-            final boolean layoutNeedsUpdating = skipSponsorButton.updateSkipButtonText(info);
-            if (layoutNeedsUpdating) {
-                bringLayoutToFront();
-            }
-        }
-        skipSponsorButtonVisibility(true);
+    public static void showSkipButton(@Nullable SegmentInfo info) {
+        skipSegmentInfo = info;
+        updateSkipButton();
     }
 
     public static void hideSkipButton() {
-        skipSponsorButtonVisibility(false);
+        showSkipButton(null);
+    }
+
+    private static void updateSkipButton() {
+        SkipSponsorButton skipSponsorButton = _skipSponsorButton.get();
+        if (skipSponsorButton == null) {
+            return;
+        }
+        if (skipSegmentInfo == null) {
+            skipSponsorButtonVisibility(false);
+        } else {
+            final boolean layoutNeedsUpdating = skipSponsorButton.updateSkipButtonText(skipSegmentInfo);
+            if (layoutNeedsUpdating) {
+                bringLayoutToFront();
+            }
+            skipSponsorButtonVisibility(true);
+        }
     }
 
     public static void showNewSegmentLayout() {
@@ -83,16 +98,12 @@ public class SponsorBlockView {
 
     static void playerTypeChanged(PlayerType playerType) {
         try {
-            shouldShowOnPlayerType = (playerType == PlayerType.WATCH_WHILE_FULLSCREEN || playerType == PlayerType.WATCH_WHILE_MAXIMIZED);
+            final boolean isWatchFullScreen = playerType == PlayerType.WATCH_WHILE_FULLSCREEN;
+            shouldShowOnPlayerType = (isWatchFullScreen || playerType == PlayerType.WATCH_WHILE_MAXIMIZED);
 
-            if (playerType == PlayerType.WATCH_WHILE_FULLSCREEN) {
-                setSkipBtnMargins(true);
-                setNewSegmentLayoutMargins(true);
-                return;
-            }
-
-            setSkipBtnMargins(false);
-            setNewSegmentLayoutMargins(false);
+            setSkipBtnMargins(isWatchFullScreen);
+            setNewSegmentLayoutMargins(isWatchFullScreen);
+            updateSkipButton();
         } catch (Exception ex) {
             LogHelper.printException(() -> "Player type changed caused a crash.", ex);
         }
