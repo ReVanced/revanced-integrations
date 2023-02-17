@@ -9,9 +9,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import java.lang.ref.WeakReference;
+import java.util.Objects;
 
 import app.revanced.integrations.shared.PlayerType;
 import app.revanced.integrations.sponsorblock.SwipeHelper;
@@ -54,13 +56,14 @@ public class SponsorBlockView {
         }
     }
 
-    public static void showSkipButton(@Nullable SegmentInfo info) {
-        skipSegmentInfo = info;
+    public static void showSkipButton(@NonNull SegmentInfo info) {
+        skipSegmentInfo = Objects.requireNonNull(info);
         updateSkipButton();
     }
 
     public static void hideSkipButton() {
-        showSkipButton(null);
+        skipSegmentInfo = null;
+        updateSkipButton();
     }
 
     private static void updateSkipButton() {
@@ -96,7 +99,7 @@ public class SponsorBlockView {
         newSegmentLayoutVisibility(newSegmentLayout.getVisibility() == View.VISIBLE ? false : true);
     }
 
-    static void playerTypeChanged(PlayerType playerType) {
+    private static void playerTypeChanged(PlayerType playerType) {
         try {
             final boolean isWatchFullScreen = playerType == PlayerType.WATCH_WHILE_FULLSCREEN;
             shouldShowOnPlayerType = (isWatchFullScreen || playerType == PlayerType.WATCH_WHILE_MAXIMIZED);
