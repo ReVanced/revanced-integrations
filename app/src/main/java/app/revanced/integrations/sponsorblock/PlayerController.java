@@ -247,8 +247,11 @@ public class PlayerController {
 
                 // upcoming manual skip
 
-                // it's the first upcoming manual skip found, or the segment is fully contained inside the prior found upcoming segment
-                if (foundUpcomingSegment == null || foundUpcomingSegment.containsSegment(segment)) {
+                // do not schedule upcoming segment, if it is not fully contained inside the current segment
+                if ((foundCurrentSegment == null || foundCurrentSegment.containsSegment(segment))
+                     // use the most inner upcoming segment
+                     && (foundUpcomingSegment == null || foundUpcomingSegment.containsSegment(segment))) {
+
                     // Only schedule, if the segment start time is not near the end time of the current segment.
                     // This check is needed to prevent scheduled hide and show from clashing with each other.
                     final long minTimeBetweenStartEndOfSegments = 1000;
