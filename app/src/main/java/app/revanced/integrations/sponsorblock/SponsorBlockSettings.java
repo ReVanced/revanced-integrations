@@ -270,7 +270,7 @@ public class SponsorBlockSettings {
             if (position < 0.25f) {
                 return skipButtonBeginning.toString();
             } else if (position < 0.75f) {
-                return skipButtonBeginning.toString();
+                return skipButtonMiddle.toString();
             }
             return skipButtonEnd.toString();
         }
