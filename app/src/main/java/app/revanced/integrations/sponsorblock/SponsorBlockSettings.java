@@ -129,36 +129,36 @@ public class SponsorBlockSettings {
     public enum SegmentInfo {
         SPONSOR("sponsor", sf("segments_sponsor"), sf("segments_sponsor_sum"), sf("skip_button_text_sponsor"), sf("skipped_sponsor"),
                 SKIP_AUTOMATICALLY, 0xFF00d400),
+        SELF_PROMO("selfpromo", sf("segments_selfpromo"), sf("segments_selfpromo_sum"), sf("skip_button_text_selfpromo"), sf("skipped_selfpromo"),
+                SKIP_AUTOMATICALLY, 0xFFffff00),
+        INTERACTION("interaction", sf("segments_interaction"), sf("segments_interaction_sum"), sf("skip_button_text_interaction"), sf("skipped_interaction"),
+                SKIP_AUTOMATICALLY, 0xFFcc00ff),
         INTRO("intro", sf("segments_intro"), sf("segments_intro_sum"),
                 sf("skip_button_text_intro_beginning"), sf("skip_button_text_intro_middle"), sf("skip_button_text_intro_end"),
                 sf("skipped_intro_beginning"), sf("skipped_intro_middle"), sf("skipped_intro_end"),
                 MANUAL_SKIP, 0xFF00ffff),
         OUTRO("outro", sf("segments_endcards"), sf("segments_endcards_sum"), sf("skip_button_text_endcard"), sf("skipped_endcard"),
                 MANUAL_SKIP, 0xFF0202ed),
-        INTERACTION("interaction", sf("segments_interaction"), sf("segments_interaction_sum"), sf("skip_button_text_interaction"), sf("skipped_interaction"),
-                SKIP_AUTOMATICALLY, 0xFFcc00ff),
-        SELF_PROMO("selfpromo", sf("segments_selfpromo"), sf("segments_selfpromo_sum"), sf("skip_button_text_selfpromo"), sf("skipped_selfpromo"),
-                SKIP_AUTOMATICALLY, 0xFFffff00),
-        MUSIC_OFFTOPIC("music_offtopic", sf("segments_nomusic"), sf("segments_nomusic_sum"), sf("skip_button_text_nomusic"), sf("skipped_nomusic"),
-                MANUAL_SKIP, 0xFFff9900),
         PREVIEW("preview", sf("segments_preview"), sf("segments_preview_sum"),
                 sf("skip_button_text_preview_beginning"), sf("skip_button_text_preview_middle"), sf("skip_button_text_preview_end"),
                 sf("skipped_preview_beginning"), sf("skipped_preview_middle"), sf("skipped_preview_end"),
                 DefaultBehaviour, 0xFF008fd6),
         FILLER("filler", sf("segments_filler"), sf("segments_filler_sum"), sf("skip_button_text_filler"), sf("skipped_filler"),
                 DefaultBehaviour, 0xFF7300FF),
+        MUSIC_OFFTOPIC("music_offtopic", sf("segments_nomusic"), sf("segments_nomusic_sum"), sf("skip_button_text_nomusic"), sf("skipped_nomusic"),
+                MANUAL_SKIP, 0xFFff9900),
         UNSUBMITTED("unsubmitted", StringRef.empty, StringRef.empty, sf("skip_button_text_unsubmitted"), sf("skipped_unsubmitted"),
                 SKIP_AUTOMATICALLY, 0xFFFFFFFF);
 
         private static final SegmentInfo[] mValuesWithoutUnsubmitted = new SegmentInfo[]{
                 SPONSOR,
+                SELF_PROMO,
+                INTERACTION,
                 INTRO,
                 OUTRO,
-                INTERACTION,
-                SELF_PROMO,
-                MUSIC_OFFTOPIC,
                 PREVIEW,
-                FILLER
+                FILLER,
+                MUSIC_OFFTOPIC,
         };
         private static final Map<String, SegmentInfo> mValuesMap = new HashMap<>(2 * values().length);
 
