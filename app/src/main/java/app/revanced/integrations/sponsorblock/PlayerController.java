@@ -331,15 +331,15 @@ public class PlayerController {
                         }
                         scheduledUpcomingSegment = null;
 
-                        final long videoTime = VideoInformation.getVideoTime();
-                        if (!segmentToSkip.timeIsNearStart(videoTime, videoInformationTimeUpdateThresholdMilliseconds)) {
+                        if (!segmentToSkip.timeIsNearStart(VideoInformation.getVideoTime(),
+                                videoInformationTimeUpdateThresholdMilliseconds)) {
                             // current video time is not what's expected.  User paused playback
                             LogHelper.printDebug(() -> "Ignoring outdated scheduled segment: " + segmentToSkip);
                             return;
                         }
                         if (segmentToSkip.shouldAutoSkip()) {
                             LogHelper.printDebug(() -> "Running scheduled autoskip segment: " + segmentToSkip);
-                            skipSegment(segmentToSkip, videoTime, false);
+                            skipSegment(segmentToSkip, segmentToSkip.start, false);
                         } else {
                             LogHelper.printDebug(() -> "Running scheduled show segment: " + segmentToSkip);
                             segmentCurrentlyPlaying = segmentToSkip;
