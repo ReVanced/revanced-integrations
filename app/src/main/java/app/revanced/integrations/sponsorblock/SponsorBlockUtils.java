@@ -543,9 +543,13 @@ public class SponsorBlockUtils {
                     continue;
                 }
 
-                int desktopKey = categorySelectionObject.getInt("option");
+                final int desktopKey = categorySelectionObject.getInt("option");
                 SponsorBlockSettings.SegmentBehaviour behaviour = SponsorBlockSettings.SegmentBehaviour.byDesktopKey(desktopKey);
-                editor.putString(category.key, behaviour.key);
+                if (behaviour != null) {
+                    editor.putString(category.key, behaviour.key);
+                } else {
+                    LogHelper.printException(() -> "Unknown segment category key: " + desktopKey);
+                }
             }
             editor.apply();
 

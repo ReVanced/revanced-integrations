@@ -11,6 +11,7 @@ import android.text.Html;
 import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -95,8 +96,10 @@ public class SponsorBlockSettings {
         MANUAL_SKIP("manual-skip", 1, sf("skip_showbutton"), false, true),
         IGNORE("ignore", -1, sf("skip_ignore"), false, false);
 
+        @NonNull
         public final String key;
         public final int desktopKey;
+        @NonNull
         public final StringRef name;
         /**
          * If the segment should skip automatically
@@ -109,13 +112,14 @@ public class SponsorBlockSettings {
                          StringRef name,
                          boolean skip,
                          boolean showOnTimeBar) {
-            this.key = key;
+            this.key = Objects.requireNonNull(key);
             this.desktopKey = desktopKey;
-            this.name = name;
+            this.name = Objects.requireNonNull(name);
             this.skip = skip;
             this.showOnTimeBar = showOnTimeBar;
         }
 
+        @Nullable
         public static SegmentBehaviour byDesktopKey(int desktopKey) {
             for (SegmentBehaviour behaviour : values()) {
                 if (behaviour.desktopKey == desktopKey) {
