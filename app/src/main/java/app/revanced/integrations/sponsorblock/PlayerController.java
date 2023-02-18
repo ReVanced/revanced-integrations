@@ -283,17 +283,18 @@ public class PlayerController {
             // must be greater than the average time between updates to VideoInformation time
             final long videoInformationTimeUpdateThresholdMilliseconds = 250;
 
-            if (scheduledHideSegment != foundCurrentSegment) {
-                if (foundCurrentSegment == null || !foundCurrentSegment.timeIsNearEnd(millis, lookAheadMilliseconds)) {
-                    // nothing to schedule, or segment is too far away to schedule a hide
-                    if (scheduledHideSegment != null) {
-                        LogHelper.printDebug(() -> "Clearing scheduled hide: " + scheduledHideSegment);
-                        scheduledHideSegment = null;
-                    }
-                } else {
-                    scheduledHideSegment = foundCurrentSegment;
-                    final SponsorSegment segmentToHide = foundCurrentSegment;
+            // schedule a hide, only if the segment end is near
+            final SponsorSegment segmentToHide =
+                    (foundCurrentSegment != null && foundCurrentSegment.timeIsNearEnd(millis, lookAheadMilliseconds))
+                    ? foundCurrentSegment
+                    : null;
 
+            if (scheduledHideSegment != segmentToHide) {
+                if (segmentToHide == null) {
+                    LogHelper.printDebug(() -> "Clearing scheduled hide: " + scheduledHideSegment);
+                    scheduledHideSegment = null;
+                } else {
+                    scheduledHideSegment = segmentToHide;
                     LogHelper.printDebug(() -> "Scheduling hide segment: " + segmentToHide + " playbackRate: " + playbackRate);
                     final long delayUntilHide = (long) ((segmentToHide.end - millis) / playbackRate);
                     ReVancedUtils.runOnMainThreadDelayed(() -> {
