@@ -196,17 +196,17 @@ public class SponsorBlockSettings {
         @NonNull
         public final StringRef skipButtonEnd;
         /**
-         * Skip segment toast, if the skip occurred in the first quarer of the vide
+         * Skipped segment toast, if the skip occurred in the first quarter of the vide
          */
         @NonNull
         public final StringRef skipMessageBeginning;
         /**
-         * Skip segment toast, if the skip occurred in the middle half of the vide
+         * Skipped segment toast, if the skip occurred in the middle half of the vide
          */
         @NonNull
         public final StringRef skipMessageMiddle;
         /**
-         * Skip segment toast, if the skip occurred in the last quarer of the vide
+         * Skipped segment toast, if the skip occurred in the last quarter of the vide
          */
         @NonNull
         public final StringRef skipMessageEnd;
@@ -219,7 +219,8 @@ public class SponsorBlockSettings {
         public SegmentBehaviour behaviour;
 
         SegmentInfo(String key, StringRef title, StringRef description,
-                    StringRef skipButtonText, StringRef skipMessage,
+                    StringRef skipButtonText,
+                    StringRef skipMessage,
                     SegmentBehaviour behaviour, int defaultColor) {
             this(key, title, description,
                     skipButtonText, skipButtonText, skipButtonText,
