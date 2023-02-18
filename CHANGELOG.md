@@ -1,9 +1,21 @@
-# [0.97.0-dev.2](https://github.com/revanced/revanced-integrations/compare/v0.97.0-dev.1...v0.97.0-dev.2) (2023-02-15)
+# [0.98.0-dev.1](https://github.com/revanced/revanced-integrations/compare/v0.97.0...v0.98.0-dev.1) (2023-02-18)
 
 
 ### Features
 
-* **youtube/general-ads:** hide full-screen feed banner ([0cbcf41](https://github.com/revanced/revanced-integrations/commit/0cbcf41aefb7df6836b8f44f093de6e30eac937e))
+* **youtube/general-ads:** hide full-screen feed banner ([da1572c](https://github.com/revanced/revanced-integrations/commit/da1572c28d20e2549d0e2a68591f23bb68d8cc9c))
+
+# [0.97.0](https://github.com/revanced/revanced-integrations/compare/v0.96.2...v0.97.0) (2023-02-14)
+
+
+### Bug Fixes
+
+* **youtube/general-ads:** block other kind of survey ([cdf43ef](https://github.com/revanced/revanced-integrations/commit/cdf43efcf29a04b354313749057119e3de030cb1))
+
+
+### Features
+
+* **youtube/general-ads:** hide web search results ([9df1e46](https://github.com/revanced/revanced-integrations/commit/9df1e460c56bf0d5cb3c9d04853d07b22cef35bb))
 
 # [0.97.0-dev.1](https://github.com/revanced/revanced-integrations/compare/v0.96.2...v0.97.0-dev.1) (2023-02-14)
 
