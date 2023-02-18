@@ -38,7 +38,7 @@ public class ReturnYouTubeDislike {
     /**
      * Separator character to use for segmented like/dislike
      */
-    private static final char middleSeparatorCharacter = '•';
+    private static final char MIDDLE_SEPARATOR_CHARACTER = '•';
 
     /**
      * Used to send votes, one by one, in the same order the user created them
@@ -222,7 +222,7 @@ public class ReturnYouTubeDislike {
     }
 
     private static boolean isPreviouslyCreatedSegmentedSpan(Spanned span) {
-        return span.toString().indexOf(middleSeparatorCharacter) != -1;
+        return span.toString().indexOf(MIDDLE_SEPARATOR_CHARACTER) != -1;
     }
 
     /**
@@ -394,8 +394,8 @@ public class ReturnYouTubeDislike {
         // middle separator
         final boolean useCompactLayout = SettingsEnum.RYD_USE_COMPACT_LAYOUT.getBoolean();
         String middleSegmentedSeparatorString = useCompactLayout
-                ? "\u2009 " + middleSeparatorCharacter + " \u2009"  // u2009 = "half space" character
-                : "  " + middleSeparatorCharacter + "  ";
+                ? "\u2009 " + MIDDLE_SEPARATOR_CHARACTER + " \u2009"  // u2009 = "half space" character
+                : "  " + MIDDLE_SEPARATOR_CHARACTER + "  ";
         Spannable middleSeparatorSpan = newSpanUsingStylingOfAnotherSpan(oldSpannable, middleSegmentedSeparatorString);
         final int separatorColor = ThemeHelper.isDarkTheme()
                 ? 0x29AAAAAA  // transparent dark gray
