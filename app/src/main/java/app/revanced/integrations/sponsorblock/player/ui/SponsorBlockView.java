@@ -16,7 +16,6 @@ import java.lang.ref.WeakReference;
 import java.util.Objects;
 
 import app.revanced.integrations.shared.PlayerType;
-import app.revanced.integrations.sponsorblock.SwipeHelper;
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedUtils;
 
@@ -195,29 +194,9 @@ public class SponsorBlockView {
     }
 
     private static void bringLayoutToFront() {
-        checkLayout();
         // needed to keep skip button overtop end screen cards
         inlineSponsorOverlay.bringToFront();
         inlineSponsorOverlay.requestLayout();
         inlineSponsorOverlay.invalidate();
-    }
-
-    private static void checkLayout() {
-        if (inlineSponsorOverlay.getHeight() == 0) {
-            ViewGroup watchLayout = SwipeHelper.nextGenWatchLayout;
-            if (watchLayout == null) {
-                LogHelper.printDebug(() -> "nextGenWatchLayout is null!");
-                return;
-            }
-            View layout = watchLayout.findViewById(getIdentifier("player_overlays", "id"));
-
-            if (layout == null) {
-                LogHelper.printDebug(() -> "player_overlays was not found for SB");
-                return;
-            }
-
-            initialize(layout);
-            LogHelper.printDebug(() -> "player_overlays refreshed for SB");
-        }
     }
 }
