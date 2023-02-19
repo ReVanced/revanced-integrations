@@ -2,12 +2,16 @@ package app.revanced.integrations.utils;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.res.Resources;
 import android.net.ConnectivityManager;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import java.text.Bidi;
 import java.util.Locale;
@@ -42,55 +46,64 @@ public class ReVancedUtils {
                 return t;
             });
 
-    public static void runOnBackgroundThread(Runnable task) {
+    public static void runOnBackgroundThread(@NonNull Runnable task) {
         backgroundThreadPool.execute(task);
     }
 
-    public static <T> Future<T> submitOnBackgroundThread(Callable<T> call) {
+    @NonNull
+    public static <T> Future<T> submitOnBackgroundThread(@NonNull Callable<T> call) {
         return backgroundThreadPool.submit(call);
     }
 
-    public static boolean containsAny(final String value, final String... targets) {
+    public static boolean containsAny(@NonNull String value, @NonNull String... targets) {
         for (String string : targets)
             if (!string.isEmpty() && value.contains(string)) return true;
         return false;
     }
 
-    public static int getResourceIdByName(Context context, String name, String type) {
+    /**
+     * @return zero, if the resource is not found
+     */
+    @SuppressLint("DiscouragedApi")
+    public static int getResourceIdByName(@NonNull Context context, @NonNull String name, @NonNull String type) {
         return context.getResources().getIdentifier(name, type, context.getPackageName());
     }
 
-    public static int getIdentifier(String name, String defType) {
+    /**
+     * @return zero, if the resource is not found
+     */
+    public static int getIdentifier(@NonNull String name, @NonNull String defType) {
         return getResourceIdByName(getContext(), name, defType);
     }
 
-    public static int getResourceInteger(String resourceIdentifierName) {
+    public static int getResourceInteger(@NonNull String resourceIdentifierName) throws Resources.NotFoundException {
         return getContext().getResources().getInteger(getIdentifier(resourceIdentifierName, "integer"));
     }
 
-    public static Animation getResourceAnimation(String resourceIdentifierName) {
+    @NonNull
+    public static Animation getResourceAnimation(@NonNull String resourceIdentifierName) throws Resources.NotFoundException {
         return AnimationUtils.loadAnimation(getContext(), getIdentifier(resourceIdentifierName, "anim"));
     }
 
     public static Context getContext() {
         if (context != null) {
             return context;
-        } else {
-            LogHelper.printException(() -> "Context is null, returning null!");
-            return null;
         }
+        LogHelper.printException(() -> "Context is null, returning null!");
+        return null;
     }
 
-    public static void setClipboard(String text) {
+    public static void setClipboard(@NonNull String text) {
         android.content.ClipboardManager clipboard = (android.content.ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
         android.content.ClipData clip = android.content.ClipData.newPlainText("ReVanced", text);
         clipboard.setPrimaryClip(clip);
     }
 
-    public static boolean isTablet(Context context) {
+    public static boolean isTablet(@NonNull Context context) {
         return context.getResources().getConfiguration().smallestScreenWidthDp >= 600;
     }
 
+    @Nullable
     private static Boolean isRightToLeftTextLayout;
     /**
      * If the device language uses right to left text layout (hebrew, arabic, etc)
@@ -106,18 +119,18 @@ public class ReVancedUtils {
     /**
      * Safe to call from any thread
      */
-    public static void showToastShort(String messageToToast) {
+    public static void showToastShort(@NonNull String messageToToast) {
         showToast(messageToToast, Toast.LENGTH_SHORT);
     }
 
     /**
      * Safe to call from any thread
      */
-    public static void showToastLong(String messageToToast) {
+    public static void showToastLong(@NonNull String messageToToast) {
         showToast(messageToToast, Toast.LENGTH_LONG);
     }
 
-    private static void showToast(String messageToToast, int toastDuration) {
+    private static void showToast(@NonNull String messageToToast, int toastDuration) {
         Objects.requireNonNull(messageToToast);
         runOnMainThreadNowOrLater(() -> {
                     // cannot use getContext(), otherwise if context is null it will cause infinite recursion of error logging
@@ -136,14 +149,14 @@ public class ReVancedUtils {
      *
      * @see #runOnMainThreadNowOrLater(Runnable)
      */
-    public static void runOnMainThread(Runnable runnable) {
+    public static void runOnMainThread(@NonNull Runnable runnable) {
         runOnMainThreadDelayed(runnable, 0);
     }
 
     /**
      * Automatically logs any exceptions the runnable throws
      */
-    public static void runOnMainThreadDelayed(Runnable runnable, long delayMillis) {
+    public static void runOnMainThreadDelayed(@NonNull Runnable runnable, long delayMillis) {
         Runnable loggingRunnable = () -> {
             try {
                 runnable.run();
@@ -158,7 +171,7 @@ public class ReVancedUtils {
      * If called from the main thread, the code is run immediately.<p>
      * If called off the main thread, this is the same as {@link #runOnMainThread(Runnable)}.
      */
-    public static void runOnMainThreadNowOrLater(Runnable runnable) {
+    public static void runOnMainThreadNowOrLater(@NonNull Runnable runnable) {
         if (currentlyIsOnMainThread()) {
             runnable.run();
         } else {
