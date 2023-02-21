@@ -560,7 +560,7 @@ public class PlayerController {
 
         long timeWithoutSegmentsValue = currentVideoLength + 500; // YouTube:tm:
         for (SponsorSegment segment : segmentsOfCurrentVideo) {
-            timeWithoutSegmentsValue -= segment.end - segment.start;
+            timeWithoutSegmentsValue -= segment.length();
         }
         final long hours = timeWithoutSegmentsValue / 3600000;
         final long minutes = (timeWithoutSegmentsValue / 60000) % 60;
