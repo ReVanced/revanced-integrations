@@ -276,7 +276,7 @@ public class PlayerController {
                 }  else {
                     segmentCurrentlyPlaying = foundCurrentSegment;
                     LogHelper.printDebug(() -> "Showing segment: " + segmentCurrentlyPlaying);
-                    SponsorBlockView.showSkipButton(foundCurrentSegment.category);
+                    SponsorBlockView.showSkipButton(foundCurrentSegment);
                 }
             }
 
@@ -354,7 +354,7 @@ public class PlayerController {
                         } else {
                             LogHelper.printDebug(() -> "Running scheduled show segment: " + segmentToSkip);
                             segmentCurrentlyPlaying = segmentToSkip;
-                            SponsorBlockView.showSkipButton(segmentToSkip.category);
+                            SponsorBlockView.showSkipButton(segmentToSkip);
                         }
                     }, delayUntilSkip);
                 }
@@ -451,7 +451,7 @@ public class PlayerController {
                     return;
                 }
                 ReVancedUtils.showToastShort(toastNumberOfSegmentsSkipped == 1
-                        ? toastSegmentSkipped.category.getSkippedMessage()
+                        ? toastSegmentSkipped.getSkippedToastText()
                         : str("skipped_multiple_segments"));
             } catch (Exception ex) {
                 LogHelper.printException(() -> "showSkippedSegmentToast failure", ex);

@@ -19,7 +19,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
-import app.revanced.integrations.patches.VideoInformation;
 import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.sponsorblock.player.ui.SponsorBlockView;
 import app.revanced.integrations.utils.LogHelper;
@@ -184,32 +183,32 @@ public class SponsorBlockSettings {
          * Skip button text, if the skip occurs in the first quarter of the video
          */
         @NonNull
-        public final StringRef skipButtonBeginning;
+        public final StringRef skipButtonTextBeginning;
         /**
          * Skip button text, if the skip occurs in the middle half of the video
          */
         @NonNull
-        public final StringRef skipButtonMiddle;
+        public final StringRef skipButtonTextMiddle;
         /**
          * Skip button text, if the skip occurs in the last quarter of the video
          */
         @NonNull
-        public final StringRef skipButtonEnd;
+        public final StringRef skipButtonTextEnd;
         /**
-         * Skipped segment toast, if the skip occurred in the first quarter of the vide
+         * Skipped segment toast, if the skip occurred in the first quarter of the video
          */
         @NonNull
-        public final StringRef skipMessageBeginning;
+        public final StringRef skippedToastBeginning;
         /**
-         * Skipped segment toast, if the skip occurred in the middle half of the vide
+         * Skipped segment toast, if the skip occurred in the middle half of the video
          */
         @NonNull
-        public final StringRef skipMessageMiddle;
+        public final StringRef skippedToastMiddle;
         /**
-         * Skipped segment toast, if the skip occurred in the last quarter of the vide
+         * Skipped segment toast, if the skip occurred in the last quarter of the video
          */
         @NonNull
-        public final StringRef skipMessageEnd;
+        public final StringRef skippedToastEnd;
 
         @NonNull
         public final Paint paint;
@@ -220,26 +219,26 @@ public class SponsorBlockSettings {
 
         SegmentInfo(String key, StringRef title, StringRef description,
                     StringRef skipButtonText,
-                    StringRef skipMessage,
+                    StringRef skippedToastText,
                     SegmentBehaviour behaviour, int defaultColor) {
             this(key, title, description,
                     skipButtonText, skipButtonText, skipButtonText,
-                    skipMessage, skipMessage, skipMessage,
+                    skippedToastText, skippedToastText, skippedToastText,
                     behaviour, defaultColor);
         }
         SegmentInfo(String key, StringRef title, StringRef description,
-                    StringRef skipButtonBeginning, StringRef skipButtonTextMiddle, StringRef skipButtonTextEnd,
-                    StringRef skipMessageBeginning, StringRef skipMessageMiddle, StringRef skipMessageEnd,
+                    StringRef skipButtonTextBeginning, StringRef skipButtonTextMiddle, StringRef skipButtonTextEnd,
+                    StringRef skippedToastBeginning, StringRef skippedToastMiddle, StringRef skippedToastEnd,
                     SegmentBehaviour behaviour, int defaultColor) {
             this.key = Objects.requireNonNull(key);
             this.title = Objects.requireNonNull(title);
             this.description = Objects.requireNonNull(description);
-            this.skipButtonBeginning = Objects.requireNonNull(skipButtonBeginning);
-            this.skipButtonMiddle = Objects.requireNonNull(skipButtonTextMiddle);
-            this.skipButtonEnd = Objects.requireNonNull(skipButtonTextEnd);
-            this.skipMessageBeginning = Objects.requireNonNull(skipMessageBeginning);
-            this.skipMessageMiddle = Objects.requireNonNull(skipMessageMiddle);
-            this.skipMessageEnd = Objects.requireNonNull(skipMessageEnd);
+            this.skipButtonTextBeginning = Objects.requireNonNull(skipButtonTextBeginning);
+            this.skipButtonTextMiddle = Objects.requireNonNull(skipButtonTextMiddle);
+            this.skipButtonTextEnd = Objects.requireNonNull(skipButtonTextEnd);
+            this.skippedToastBeginning = Objects.requireNonNull(skippedToastBeginning);
+            this.skippedToastMiddle = Objects.requireNonNull(skippedToastMiddle);
+            this.skippedToastEnd = Objects.requireNonNull(skippedToastEnd);
             this.behaviour = Objects.requireNonNull(behaviour);
             this.defaultColor = defaultColor;
             this.color = defaultColor;
@@ -266,37 +265,41 @@ public class SponsorBlockSettings {
         }
 
         /**
-         * @return the skip button text, based on the current video playback time
+         * @param segmentStartTime video time the segment category started
+         * @param videoLength length of the video
+         * @return the skip button text
          */
-        public String getSkipButtonText() {
-            final long videoLength = VideoInformation.getCurrentVideoLength();
+        @NonNull
+        public String getSkipButtonText(long segmentStartTime, long videoLength) {
             if (videoLength == 0) {
-                return skipButtonBeginning.toString(); // video is still loading.  Assume it's the beginning
+                return skipButtonTextBeginning.toString(); // video is still loading.  Assume it's the beginning
             }
-            final float position = VideoInformation.getVideoTime() / (float) videoLength;
+            final float position = segmentStartTime / (float) videoLength;
             if (position < 0.25f) {
-                return skipButtonBeginning.toString();
+                return skipButtonTextBeginning.toString();
             } else if (position < 0.75f) {
-                return skipButtonMiddle.toString();
+                return skipButtonTextMiddle.toString();
             }
-            return skipButtonEnd.toString();
+            return skipButtonTextEnd.toString();
         }
 
         /**
-         * @return the skipped text, based on the current video playback time
+         * @param segmentStartTime video time the segment category started
+         * @param videoLength length of the video
+         * @return 'skipped segment' toast message
          */
-        public String getSkippedMessage() {
-            final long videoLength = VideoInformation.getCurrentVideoLength();
+        @NonNull
+        public String getSkippedToastText(long segmentStartTime, long videoLength) {
             if (videoLength == 0) {
-                return skipMessageBeginning.toString(); // video is still loading.  Assume it's the beginning
+                return skippedToastBeginning.toString(); // video is still loading.  Assume it's the beginning
             }
-            final float position = VideoInformation.getVideoTime() / (float) videoLength;
+            final float position = segmentStartTime / (float) videoLength;
             if (position < 0.25f) {
-                return skipMessageBeginning.toString();
+                return skippedToastBeginning.toString();
             } else if (position < 0.75f) {
-                return skipMessageMiddle.toString();
+                return skippedToastMiddle.toString();
             }
-            return skipMessageEnd.toString();
+            return skippedToastEnd.toString();
         }
     }
 }

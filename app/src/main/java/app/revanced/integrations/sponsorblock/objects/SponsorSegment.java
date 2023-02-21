@@ -8,6 +8,8 @@ import androidx.annotation.Nullable;
 
 import java.text.MessageFormat;
 
+import app.revanced.integrations.patches.VideoInformation;
+
 public class SponsorSegment implements Comparable<SponsorSegment> {
     @NonNull
     public final SegmentInfo category;
@@ -71,6 +73,22 @@ public class SponsorSegment implements Comparable<SponsorSegment> {
      */
     public boolean containsSegment(SponsorSegment other) {
         return start <= other.start && other.end <= end;
+    }
+
+    /**
+     * @return 'skip segment' UI overlay button text
+     */
+    @NonNull
+    public String getSkipButtonText() {
+        return category.getSkipButtonText(start, VideoInformation.getCurrentVideoLength());
+    }
+
+    /**
+     * @return 'skipped segment' toast message
+     */
+    @NonNull
+    public String getSkippedToastText() {
+        return category.getSkippedToastText(start, VideoInformation.getCurrentVideoLength());
     }
 
     @Override

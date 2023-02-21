@@ -1,6 +1,5 @@
 package app.revanced.integrations.sponsorblock.player.ui;
 
-import static app.revanced.integrations.sponsorblock.SponsorBlockSettings.SegmentInfo;
 import static app.revanced.integrations.utils.ReVancedUtils.getIdentifier;
 
 import android.content.Context;
@@ -16,18 +15,18 @@ import java.lang.ref.WeakReference;
 import java.util.Objects;
 
 import app.revanced.integrations.shared.PlayerType;
+import app.revanced.integrations.sponsorblock.objects.SponsorSegment;
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedUtils;
 
 public class SponsorBlockView {
-
     private static RelativeLayout inlineSponsorOverlay;
     private static ViewGroup _youtubeOverlaysLayout;
     private static WeakReference<SkipSponsorButton> _skipSponsorButton = new WeakReference<>(null);
     private static WeakReference<NewSegmentLayout> _newSegmentLayout = new WeakReference<>(null);
     private static boolean shouldShowOnPlayerType = true;
     @Nullable
-    private static SegmentInfo skipSegmentInfo;
+    private static SponsorSegment skipSegment;
 
     static {
         PlayerType.getOnChange().addObserver((PlayerType type) -> {
@@ -55,13 +54,13 @@ public class SponsorBlockView {
         }
     }
 
-    public static void showSkipButton(@NonNull SegmentInfo info) {
-        skipSegmentInfo = Objects.requireNonNull(info);
+    public static void showSkipButton(@NonNull SponsorSegment info) {
+        skipSegment = Objects.requireNonNull(info);
         updateSkipButton();
     }
 
     public static void hideSkipButton() {
-        skipSegmentInfo = null;
+        skipSegment = null;
         updateSkipButton();
     }
 
@@ -70,10 +69,10 @@ public class SponsorBlockView {
         if (skipSponsorButton == null) {
             return;
         }
-        if (skipSegmentInfo == null) {
+        if (skipSegment == null) {
             skipSponsorButtonVisibility(false);
         } else {
-            final boolean layoutNeedsUpdating = skipSponsorButton.updateSkipButtonText(skipSegmentInfo);
+            final boolean layoutNeedsUpdating = skipSponsorButton.updateSkipButtonText(skipSegment);
             if (layoutNeedsUpdating) {
                 bringLayoutToFront();
             }
