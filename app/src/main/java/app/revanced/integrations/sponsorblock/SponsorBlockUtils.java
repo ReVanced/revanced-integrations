@@ -385,18 +385,19 @@ public class SponsorBlockUtils {
 
 
     static void sendViewRequestAsync(@NonNull SponsorSegment segment, long videoTimeWhenSkipped) {
-        if (segment.category != SponsorBlockSettings.SegmentInfo.UNSUBMITTED) {
-            final long newSkippedTime = SettingsEnum.SB_SKIPPED_SEGMENTS_TIME.getLong() + (segment.end - segment.start);
-            SettingsEnum.SB_SKIPPED_SEGMENTS.saveValue(SettingsEnum.SB_SKIPPED_SEGMENTS.getInt() + 1);
-            SettingsEnum.SB_SKIPPED_SEGMENTS_TIME.saveValue(newSkippedTime);
+        if (segment.recordedAsSkipped || segment.category == SponsorBlockSettings.SegmentInfo.UNSUBMITTED) {
+            return;
+        }
+        segment.recordedAsSkipped = true;
+        final long totalTimeSkipped = SettingsEnum.SB_SKIPPED_SEGMENTS_TIME.getLong() + segment.length();
+        SettingsEnum.SB_SKIPPED_SEGMENTS_TIME.saveValue(totalTimeSkipped);
+        SettingsEnum.SB_SKIPPED_SEGMENTS.saveValue(SettingsEnum.SB_SKIPPED_SEGMENTS.getInt() + 1);
 
-            // maximum time a segment can be watched and still considered a 'skipped view'
-            final int viewLengthThresholdToCountSkip = 2000; // count the skip if it occurred in the first 2 seconds
-            if (SettingsEnum.SB_COUNT_SKIPS.getBoolean() && !segment.didSubmitSkipTracking
-                    && (videoTimeWhenSkipped - segment.start < viewLengthThresholdToCountSkip)) {
-                segment.didSubmitSkipTracking = true;
-                ReVancedUtils.runOnBackgroundThread(() -> SBRequester.sendViewCountRequest(segment));
-            }
+        // maximum time a segment can be watched and still considered a 'skipped view'
+        final int viewLengthThresholdToCountSkip = 2000; // count the skip if it occurred in the first 2 seconds
+        if (SettingsEnum.SB_COUNT_SKIPS.getBoolean()
+                && (videoTimeWhenSkipped - segment.start < viewLengthThresholdToCountSkip)){
+            ReVancedUtils.runOnBackgroundThread(() -> SBRequester.sendViewCountRequest(segment));
         }
     }
 

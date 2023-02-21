@@ -23,9 +23,9 @@ public class SponsorSegment implements Comparable<SponsorSegment> {
     public final boolean isLocked;
     public boolean didAutoSkipped = false;
     /**
-     * If this segment has been recorded to the API as skipped
+     * If this segment has been counted as 'skipped'
      */
-    public boolean didSubmitSkipTracking = false;
+    public boolean recordedAsSkipped = false;
 
     public SponsorSegment(@NonNull SegmentInfo category, @Nullable String UUID, long start, long end, boolean isLocked) {
         this.category = category;
@@ -73,6 +73,13 @@ public class SponsorSegment implements Comparable<SponsorSegment> {
      */
     public boolean containsSegment(SponsorSegment other) {
         return start <= other.start && other.end <= end;
+    }
+
+    /**
+     * @return the length of this segment, in milliseconds.  Always a positive number.
+     */
+    public long length() {
+        return end - start;
     }
 
     /**
