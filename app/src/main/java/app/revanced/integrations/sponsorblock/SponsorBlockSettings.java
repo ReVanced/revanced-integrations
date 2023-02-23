@@ -45,7 +45,7 @@ public class SponsorBlockSettings {
             SponsorBlockView.hideNewSegmentLayout();
         }
 
-        // shield and voting button automatically show/hide themselves if feature is turned off
+        // shield and voting button automatically show/hide themselves if feature is turned on/off
 
         SegmentBehaviour[] possibleBehaviours = SegmentBehaviour.values();
         final ArrayList<String> enabledCategories = new ArrayList<>(possibleBehaviours.length);

@@ -55,8 +55,6 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment implements 
         {
             SwitchPreference preference = new SwitchPreference(context);
             preferenceScreen.addPreference(preference);
-            preference.setKey(SettingsEnum.SB_ENABLED.getPath());
-            preference.setDefaultValue(SettingsEnum.SB_ENABLED.getDefaultValue());
             preference.setChecked(SettingsEnum.SB_ENABLED.getBoolean());
             preference.setTitle(str("enable_sb"));
             preference.setSummary(str("enable_sb_sum"));
@@ -71,8 +69,6 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment implements 
         {
             SwitchPreference preference = new SwitchPreference(context);
             preferenceScreen.addPreference(preference);
-            preference.setKey(SettingsEnum.SB_NEW_SEGMENT_ENABLED.getPath());
-            preference.setDefaultValue(SettingsEnum.SB_NEW_SEGMENT_ENABLED.getDefaultValue());
             preference.setChecked(SettingsEnum.SB_NEW_SEGMENT_ENABLED.getBoolean());
             preference.setTitle(str("enable_segmadding"));
             preference.setSummary(str("enable_segmadding_sum"));
@@ -97,8 +93,6 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment implements 
             preferenceScreen.addPreference(preference);
             preference.setTitle(str("enable_voting"));
             preference.setSummary(str("enable_voting_sum"));
-            preference.setKey(SettingsEnum.SB_VOTING_ENABLED.getPath());
-            preference.setDefaultValue(SettingsEnum.SB_VOTING_ENABLED.getDefaultValue());
             preference.setChecked(SettingsEnum.SB_VOTING_ENABLED.getBoolean());
             preferencesToDisableWhenSBDisabled.add(preference);
             preference.setOnPreferenceChangeListener((preference12, o) -> {
