@@ -108,6 +108,19 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment implements 
             });
         }
 
+        {
+            SwitchPreference preference = new SwitchPreference(context);
+            preferenceScreen.addPreference(preference);
+            preference.setTitle(str("general_compact_skip_button"));
+            preference.setSummary(str("general_compact_skip_button_sum"));
+            preference.setChecked(SettingsEnum.SB_USE_COMPACT_SKIPBUTTON.getBoolean());
+            preferencesToDisableWhenSBDisabled.add(preference);
+            preference.setOnPreferenceChangeListener((preference1, newValue) -> {
+                SettingsEnum.SB_USE_COMPACT_SKIPBUTTON.saveValue(newValue);
+                return true;
+            });
+        }
+
         addGeneralCategory(context, preferenceScreen);
         addSegmentsCategory(context, preferenceScreen);
         addStatsCategory(context, preferenceScreen);
@@ -273,20 +286,6 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment implements 
             preference.setChecked(SettingsEnum.SB_SHOW_TIME_WITHOUT_SEGMENTS.getBoolean());
             preference.setOnPreferenceChangeListener((preference1, newValue) -> {
                 SettingsEnum.SB_SHOW_TIME_WITHOUT_SEGMENTS.saveValue(newValue);
-                return true;
-            });
-
-            preferencesToDisableWhenSBDisabled.add(preference);
-            screen.addPreference(preference);
-        }
-
-        {
-            SwitchPreference preference = new SwitchPreference(context);
-            preference.setTitle(str("general_compact_skip_button"));
-            preference.setSummary(str("general_compact_skip_button_sum"));
-            preference.setChecked(SettingsEnum.SB_USE_COMPACT_SKIPBUTTON.getBoolean());
-            preference.setOnPreferenceChangeListener((preference1, newValue) -> {
-                SettingsEnum.SB_USE_COMPACT_SKIPBUTTON.saveValue(newValue);
                 return true;
             });
 
