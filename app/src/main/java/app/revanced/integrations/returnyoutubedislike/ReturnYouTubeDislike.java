@@ -214,7 +214,7 @@ public class ReturnYouTubeDislike {
                 textRef.set(replacement);
             }
         } catch (Exception ex) {
-            LogHelper.printException(() -> "Error while trying to update dislikes", ex);
+            LogHelper.printException(() -> "onComponentCreated failure", ex);
         }
     }
 
