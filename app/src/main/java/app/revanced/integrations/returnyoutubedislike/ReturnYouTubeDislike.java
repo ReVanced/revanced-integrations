@@ -179,7 +179,7 @@ public class ReturnYouTubeDislike {
     public static void onComponentCreated(@NonNull Object conversionContext, @NonNull AtomicReference<Object> textRef) {
         if (!SettingsEnum.RYD_ENABLED.getBoolean()) return;
 
-        // do not set videoLoadedIsShort to false. It will be cleared when the next regular video is loaded.
+        // do not set lastVideoLoadedWasShort to false. It will be cleared when the next regular video is loaded.
         if (lastVideoLoadedWasShort) {
             return;
         }
