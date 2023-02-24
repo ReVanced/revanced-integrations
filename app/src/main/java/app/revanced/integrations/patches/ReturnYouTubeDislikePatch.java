@@ -1,12 +1,9 @@
 package app.revanced.integrations.patches;
 
 import android.text.Spanned;
+import app.revanced.integrations.returnyoutubedislike.ReturnYouTubeDislike;
 
 import java.util.concurrent.atomic.AtomicReference;
-
-import app.revanced.integrations.returnyoutubedislike.ReturnYouTubeDislike;
-import app.revanced.integrations.settings.SettingsEnum;
-import app.revanced.integrations.utils.LogHelper;
 
 /**
  * Used by app.revanced.patches.youtube.layout.returnyoutubedislike.patch.ReturnYouTubeDislikePatch
@@ -46,18 +43,6 @@ public class ReturnYouTubeDislikePatch {
      * @param vote -1 (dislike), 0 (none) or 1 (like)
      */
     public static void sendVote(int vote) {
-        try {
-            if (!SettingsEnum.RYD_ENABLED.getBoolean()) return;
-
-            for (ReturnYouTubeDislike.Vote v : ReturnYouTubeDislike.Vote.values()) {
-                if (v.value == vote) {
-                    ReturnYouTubeDislike.sendVote(v);
-                    return;
-                }
-            }
-            LogHelper.printException(() -> "Unknown vote type: " + vote);
-        } catch (Exception ex) {
-            LogHelper.printException(() -> "sendVote failure", ex);
-        }
+        ReturnYouTubeDislike.sendVote(vote);
     }
 }

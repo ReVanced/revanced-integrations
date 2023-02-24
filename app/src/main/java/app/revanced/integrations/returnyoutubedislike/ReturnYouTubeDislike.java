@@ -152,7 +152,7 @@ public class ReturnYouTubeDislike {
 
             PlayerType currentPlayerType = PlayerType.getCurrent();
             if (currentPlayerType == PlayerType.INLINE_MINIMAL) {
-                LogHelper.printDebug(() -> "Ignoring inline playback of video: "+ videoId);
+                LogHelper.printDebug(() -> "Ignoring inline playback of video: " + videoId);
                 setCurrentVideoId(null);
                 return;
             }
@@ -203,6 +203,22 @@ public class ReturnYouTubeDislike {
             }
         } catch (Exception ex) {
             LogHelper.printException(() -> "Error while trying to update dislikes", ex);
+        }
+    }
+
+    public static void sendVote(int vote) {
+        if (!SettingsEnum.RYD_ENABLED.getBoolean()) return;
+
+        try {
+            for (ReturnYouTubeDislike.Vote v : ReturnYouTubeDislike.Vote.values()) {
+                if (v.value == vote) {
+                    ReturnYouTubeDislike.sendVote(v);
+                    return;
+                }
+            }
+            LogHelper.printException(() -> "Unknown vote type: " + vote);
+        } catch (Exception ex) {
+            LogHelper.printException(() -> "sendVote failure", ex);
         }
     }
 
