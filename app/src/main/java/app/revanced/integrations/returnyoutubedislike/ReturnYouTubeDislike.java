@@ -7,6 +7,7 @@ import android.os.Build;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
+import android.text.Spanned;
 import android.text.TextPaint;
 import android.text.style.CharacterStyle;
 import android.text.style.ForegroundColorSpan;
@@ -14,6 +15,7 @@ import android.text.style.RelativeSizeSpan;
 import android.text.style.ScaleXSpan;
 
 import androidx.annotation.GuardedBy;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import java.text.NumberFormat;
@@ -158,7 +160,11 @@ public class ReturnYouTubeDislike {
 
         try {
             Objects.requireNonNull(videoId);
-
+            if (!ReVancedUtils.isNetworkConnected()) {
+                LogHelper.printDebug(() -> "Network not connected, ignoring video");
+                setCurrentVideoId(null);
+                return;
+            }
             PlayerType currentPlayerType = PlayerType.getCurrent();
             if (currentPlayerType == PlayerType.INLINE_MINIMAL) {
                 LogHelper.printDebug(() -> "Ignoring inline playback of video: " + videoId);
@@ -212,22 +218,6 @@ public class ReturnYouTubeDislike {
             }
         } catch (Exception ex) {
             LogHelper.printException(() -> "Error while trying to update dislikes", ex);
-        }
-    }
-
-    public static void sendVote(int vote) {
-        if (!SettingsEnum.RYD_ENABLED.getBoolean()) return;
-
-        try {
-            for (ReturnYouTubeDislike.Vote v : ReturnYouTubeDislike.Vote.values()) {
-                if (v.value == vote) {
-                    ReturnYouTubeDislike.sendVote(v);
-                    return;
-                }
-            }
-            LogHelper.printException(() -> "Unknown vote type: " + vote);
-        } catch (Exception ex) {
-            LogHelper.printException(() -> "sendVote failure", ex);
         }
     }
 
@@ -309,7 +299,23 @@ public class ReturnYouTubeDislike {
         return null;
     }
 
-    public static void sendVote(@NonNull Vote vote) {
+    public static void sendVote(int vote) {
+        if (!SettingsEnum.RYD_ENABLED.getBoolean()) return;
+
+        try {
+            for (Vote v : Vote.values()) {
+                if (v.value == vote) {
+                    sendVote(v);
+                    return;
+                }
+            }
+            LogHelper.printException(() -> "Unknown vote type: " + vote);
+        } catch (Exception ex) {
+            LogHelper.printException(() -> "sendVote failure", ex);
+        }
+    }
+
+    private static void sendVote(@NonNull Vote vote) {
         ReVancedUtils.verifyOnMainThread();
         Objects.requireNonNull(vote);
         try {
