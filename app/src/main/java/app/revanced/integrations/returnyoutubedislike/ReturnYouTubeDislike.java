@@ -446,14 +446,14 @@ public class ReturnYouTubeDislike {
         // middle separator
         String middleSeparatorString = compactLayout
                 ? "  " + MIDDLE_SEPARATOR_CHARACTER + "  "
-                : "   " + MIDDLE_SEPARATOR_CHARACTER + "   ";
+                : "  \u2009" + MIDDLE_SEPARATOR_CHARACTER + "\u2009  "; // u2009 = 'narrow space' character
+        final int shapeInsertionIndex = middleSeparatorString.length() / 2;
         final Rect middleSeparatorBounds = new Rect(0, 0, 10, 10);
-        final int middleIndex = middleSeparatorString.length() / 2;
         Spannable middleSeparatorSpan = new SpannableString(middleSeparatorString);
         ShapeDrawable shapeDrawable = new ShapeDrawable(new OvalShape());
         shapeDrawable.getPaint().setColor(separatorColor);
         shapeDrawable.setBounds(middleSeparatorBounds);
-        middleSeparatorSpan.setSpan(new VerticallyCenteredImageSpan(shapeDrawable), middleIndex, middleIndex + 1,
+        middleSeparatorSpan.setSpan(new VerticallyCenteredImageSpan(shapeDrawable), shapeInsertionIndex, shapeInsertionIndex + 1,
                 Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
         builder.append(middleSeparatorSpan);
 
