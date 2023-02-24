@@ -259,6 +259,10 @@ public class ReturnYouTubeDislike {
                     if (isPreviouslyCreatedSegmentedSpan(oldSpannable)) {
                         // need to recreate using original, as oldSpannable has prior outdated dislike values
                         oldSpannable = originalDislikeSpan;
+                        if (oldSpannable == null) { // should never happen
+                            LogHelper.printException(() -> "Cannot add dislikes (original span is null)");
+                            return null;
+                        }
                     } else {
                         originalDislikeSpan = oldSpannable; // most up to date original
                     }
