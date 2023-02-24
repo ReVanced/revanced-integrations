@@ -176,28 +176,28 @@ public class ReturnYouTubeDislike {
      * This method is sometimes called on the main thread, but it usually is called _off_ the main thread.
      * This method can be called multiple times for the same UI element (including after dislikes was added)
      */
-    public static void onComponentCreated(Object conversionContext, AtomicReference<Object> textRef) {
+    public static void onComponentCreated(@NonNull Object conversionContext, @NonNull AtomicReference<Object> textRef) {
         if (!SettingsEnum.RYD_ENABLED.getBoolean()) return;
 
+        // do not set videoLoadedIsShort to false. It will be cleared when the next regular video is loaded.
+        if (lastVideoLoadedWasShort) {
+            return;
+        }
+        if (PlayerType.getCurrent().isNoneOrHidden()) {
+            return;
+        }
+
+        String conversionContextString = conversionContext.toString();
+        final boolean isSegmentedButton;
+        if (conversionContextString.contains("|segmented_like_dislike_button.eml|")) {
+            isSegmentedButton = true;
+        } else if (conversionContextString.contains("|dislike_button.eml|")) {
+            isSegmentedButton = false;
+        } else {
+            return;
+        }
+
         try {
-            // do not set videoLoadedIsShort to false. It will be cleared when the next regular video is loaded.
-            if (lastVideoLoadedWasShort) {
-                return;
-            }
-            if (PlayerType.getCurrent().isNoneOrHidden()) {
-                return;
-            }
-
-            String conversionContextString = conversionContext.toString();
-            final boolean isSegmentedButton;
-            if (conversionContextString.contains("|segmented_like_dislike_button.eml|")) {
-                isSegmentedButton = true;
-            } else if (conversionContextString.contains("|dislike_button.eml|")) {
-                isSegmentedButton = false;
-            } else {
-                return;
-            }
-
             Spanned replacement = waitForFetchAndUpdateReplacementSpan((Spanned) textRef.get(), isSegmentedButton);
             if (replacement != null) {
                 textRef.set(replacement);
