@@ -410,13 +410,14 @@ public class ReturnYouTubeDislike {
 
         // middle separator
         final boolean useCompactLayout = SettingsEnum.RYD_USE_COMPACT_LAYOUT.getBoolean();
+        final int separatorColor = ThemeHelper.isDarkTheme()
+                ? 0x29AAAAAA  // transparent dark gray
+                : 0xFFD9D9D9; // light gray
+
         String middleSegmentedSeparatorString = useCompactLayout
                 ? "\u2009 " + MIDDLE_SEPARATOR_CHARACTER + " \u2009"  // u2009 = "half space" character
                 : "  " + MIDDLE_SEPARATOR_CHARACTER + "  ";
         Spannable middleSeparatorSpan = newSpanUsingStylingOfAnotherSpan(oldSpannable, middleSegmentedSeparatorString);
-        final int separatorColor = ThemeHelper.isDarkTheme()
-                ? 0x29AAAAAA  // transparent dark gray
-                : 0xFFD9D9D9; // light gray
         addSpanStyling(middleSeparatorSpan, new ForegroundColorSpan(separatorColor));
         CharacterStyle noAntiAliasingStyle = new CharacterStyle() {
             @Override
