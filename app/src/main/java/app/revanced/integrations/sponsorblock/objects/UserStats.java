@@ -2,23 +2,32 @@ package app.revanced.integrations.sponsorblock.objects;
 
 import androidx.annotation.NonNull;
 
-import java.util.Objects;
+import org.json.JSONException;
+import org.json.JSONObject;
 
+/**
+ * SponsorBlock user stats
+ */
 public class UserStats {
     @NonNull
     public final String publicUserId;
     @NonNull
     public final String userName;
-    public final double minutesSaved;
+    /**
+     * "User reputation".  Unclear how SB determines this value.
+     */
+    public final float reputation;
     public final int segmentCount;
     public final int viewCount;
+    public final double minutesSaved;
 
-    public UserStats(@NonNull String publicUserId, @NonNull String userName, double minutesSaved, int segmentCount, int viewCount) {
-        this.publicUserId = Objects.requireNonNull(publicUserId);
-        this.userName = Objects.requireNonNull(userName);
-        this.minutesSaved = minutesSaved;
-        this.segmentCount = segmentCount;
-        this.viewCount = viewCount;
+    public UserStats(@NonNull JSONObject json) throws JSONException {
+        publicUserId = json.getString("userID");
+        userName = json.getString("userName");
+        reputation = (float)json.getDouble("reputation");
+        segmentCount = json.getInt("segmentCount");
+        viewCount = json.getInt("viewCount");
+        minutesSaved = json.getDouble("minutesSaved");
     }
 
     @NonNull
@@ -27,9 +36,10 @@ public class UserStats {
         return "UserStats{"
                 + "publicUserId='" + publicUserId + '\''
                 + ", userName='" + userName + '\''
-                + ", minutesSaved=" + minutesSaved
+                + ", reputation=" + reputation
                 + ", segmentCount=" + segmentCount
                 + ", viewCount=" + viewCount
+                + ", minutesSaved=" + minutesSaved
                 + '}';
     }
 }

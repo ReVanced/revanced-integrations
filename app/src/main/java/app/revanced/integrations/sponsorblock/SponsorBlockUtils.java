@@ -438,6 +438,7 @@ public class SponsorBlockUtils {
         }
 
         {
+            // number of segment submissions (does not include ignored segments)
             Preference preference = new Preference(context);
             category.addPreference(preference);
             String formatted = statsFormatter.format(stats.segmentCount);
@@ -454,7 +455,17 @@ public class SponsorBlockUtils {
             }
         }
 
+        // "user reputation".  Usually not useful, since it appears most users have zero reputation.
+        // But if there is a reputation, then show it here
+        if (stats.reputation != 0) {
+            Preference preference = new Preference(context);
+            category.addPreference(preference);
+            preference.setTitle(fromHtml(str("stats_reputation", stats.reputation)));
+            preference.setSelectable(false);
+        }
+
         {
+            // time saved for other users
             Preference preference = new Preference(context);
             category.addPreference(preference);
 
@@ -478,6 +489,7 @@ public class SponsorBlockUtils {
         }
 
         {
+            // time the user saved by using SB
             Preference preference = new Preference(context);
             category.addPreference(preference);
 
@@ -526,7 +538,6 @@ public class SponsorBlockUtils {
 
             JSONObject barTypesObject = settingsJson.getJSONObject("barTypes");
             JSONArray categorySelectionsArray = settingsJson.getJSONArray("categorySelections");
-
 
             SharedPreferences.Editor editor = SharedPrefHelper.getPreferences(SharedPrefHelper.SharedPrefNames.SPONSOR_BLOCK).edit();
 
@@ -625,7 +636,6 @@ public class SponsorBlockUtils {
         @NonNull
         public final String title;
         public final boolean shouldHighlight;
-
 
         VoteOption(@NonNull String title, boolean shouldHighlight) {
             this.title = title;
