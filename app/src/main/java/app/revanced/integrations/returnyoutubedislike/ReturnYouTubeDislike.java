@@ -160,11 +160,6 @@ public class ReturnYouTubeDislike {
 
         try {
             Objects.requireNonNull(videoId);
-            if (!ReVancedUtils.isNetworkConnected()) {
-                LogHelper.printDebug(() -> "Network not connected, ignoring video");
-                setCurrentVideoId(null);
-                return;
-            }
             PlayerType currentPlayerType = PlayerType.getCurrent();
             if (currentPlayerType == PlayerType.INLINE_MINIMAL) {
                 LogHelper.printDebug(() -> "Ignoring inline playback of video: " + videoId);
@@ -174,6 +169,11 @@ public class ReturnYouTubeDislike {
             synchronized (videoIdLockObject) {
                 if (videoId.equals(currentVideoId)) {
                     return; // already loaded
+                }
+                if (!ReVancedUtils.isNetworkConnected()) { // must do network check after verifying it's a new video id
+                    LogHelper.printDebug(() -> "Network not connected, ignoring video: " + videoId);
+                    setCurrentVideoId(null);
+                    return;
                 }
                 LogHelper.printDebug(() -> "New video loaded: " + videoId + " playerType: " + currentPlayerType);
                 setCurrentVideoId(videoId);
