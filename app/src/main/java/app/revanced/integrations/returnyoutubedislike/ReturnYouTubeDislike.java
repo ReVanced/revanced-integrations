@@ -207,22 +207,6 @@ public class ReturnYouTubeDislike {
         }
     }
 
-    public static void sendVote(int vote) {
-        if (!SettingsEnum.RYD_ENABLED.getBoolean()) return;
-
-        try {
-            for (ReturnYouTubeDislike.Vote v : ReturnYouTubeDislike.Vote.values()) {
-                if (v.value == vote) {
-                    ReturnYouTubeDislike.sendVote(v);
-                    return;
-                }
-            }
-            LogHelper.printException(() -> "Unknown vote type: " + vote);
-        } catch (Exception ex) {
-            LogHelper.printException(() -> "sendVote failure", ex);
-        }
-    }
-
     public static Spanned onShortsComponentCreated(Spanned span) {
         try {
             if (SettingsEnum.RYD_ENABLED.getBoolean()) {
@@ -301,7 +285,23 @@ public class ReturnYouTubeDislike {
         return null;
     }
 
-    public static void sendVote(@NonNull Vote vote) {
+    public static void sendVote(int vote) {
+        if (!SettingsEnum.RYD_ENABLED.getBoolean()) return;
+
+        try {
+            for (Vote v : Vote.values()) {
+                if (v.value == vote) {
+                    sendVote(v);
+                    return;
+                }
+            }
+            LogHelper.printException(() -> "Unknown vote type: " + vote);
+        } catch (Exception ex) {
+            LogHelper.printException(() -> "sendVote failure", ex);
+        }
+    }
+
+    private static void sendVote(@NonNull Vote vote) {
         ReVancedUtils.verifyOnMainThread();
         Objects.requireNonNull(vote);
         try {
