@@ -180,7 +180,7 @@ public class ReturnYouTubeDislike {
         if (!SettingsEnum.RYD_ENABLED.getBoolean()) return;
 
         try {
-            // do not set videoLoadedIsShort to false.  it will be cleared when the next regular video is loaded
+            // do not set videoLoadedIsShort to false. It will be cleared when the next regular video is loaded.
             if (lastVideoLoadedWasShort) {
                 return;
             }
