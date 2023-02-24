@@ -233,7 +233,7 @@ public class ReturnYouTubeDislike {
     }
 
     // alternatively, this could check if the span contains one of the custom created spans, but this is simple and quick
-    private static boolean isPreviouslyCreatedSegmentedSpan(Spanned span) {
+    private static boolean isPreviouslyCreatedSegmentedSpan(@NonNull Spanned span) {
         return span.toString().indexOf(MIDDLE_SEPARATOR_CHARACTER) != -1;
     }
 
@@ -241,7 +241,7 @@ public class ReturnYouTubeDislike {
      * @return NULL if the span does not need changing or if RYD is not available
      */
     @Nullable
-    private static Spanned waitForFetchAndUpdateReplacementSpan(Spanned oldSpannable, boolean isSegmentedButton) {
+    private static Spanned waitForFetchAndUpdateReplacementSpan(@Nullable Spanned oldSpannable, boolean isSegmentedButton) {
         if (oldSpannable == null) {
             LogHelper.printDebug(() -> "Cannot add dislikes (injection code was called with null Span)");
             return null;
@@ -385,7 +385,7 @@ public class ReturnYouTubeDislike {
     /**
      * @param isSegmentedButton if UI is using the segmented single UI component for both like and dislike
      */
-    private static Spanned createDislikeSpan(Spanned oldSpannable, boolean isSegmentedButton, RYDVoteData voteData) {
+    private static Spanned createDislikeSpan(@NonNull Spanned oldSpannable, boolean isSegmentedButton, @NonNull RYDVoteData voteData) {
         if (!isSegmentedButton) {
             // simple replacement of 'dislike' with a number/percentage
             return newSpannableWithDislikes(oldSpannable, voteData);
@@ -463,7 +463,7 @@ public class ReturnYouTubeDislike {
      *
      * @return if the string contains at least 1 number
      */
-    private static boolean stringContainsNumber(String text) {
+    private static boolean stringContainsNumber(@NonNull String text) {
         for (int index = 0, length = text.length(); index < length; index++) {
             if (Character.isDigit(text.codePointAt(index))) {
                 return true;
@@ -472,14 +472,14 @@ public class ReturnYouTubeDislike {
         return false;
     }
 
-    private static Spannable newSpannableWithDislikes(Spanned sourceStyling, RYDVoteData voteData) {
+    private static Spannable newSpannableWithDislikes(@NonNull Spanned sourceStyling, @NonNull RYDVoteData voteData) {
         return newSpanUsingStylingOfAnotherSpan(sourceStyling,
                 SettingsEnum.RYD_SHOW_DISLIKE_PERCENTAGE.getBoolean()
                         ? formatDislikePercentage(voteData.getDislikePercentage())
                         : formatDislikeCount(voteData.getDislikeCount()));
     }
 
-    private static Spannable newSpanUsingStylingOfAnotherSpan(Spanned sourceStyle, String newSpanText) {
+    private static Spannable newSpanUsingStylingOfAnotherSpan(@NonNull Spanned sourceStyle, @NonNull String newSpanText) {
         SpannableString destination = new SpannableString(newSpanText);
         Object[] spans = sourceStyle.getSpans(0, sourceStyle.length(), Object.class);
         for (Object span : spans) {
