@@ -50,8 +50,9 @@ public class ReturnYouTubeDislike {
 
     /**
      * Unique placeholder character, used to detect if a segmented span already has dislikes added to it.
+     * Can be any almost any non-visible character
      */
-    private static final char MIDDLE_SEPARATOR_CHARACTER = '\u2009'; // can be any almost any non-visible character
+    private static final char MIDDLE_SEPARATOR_CHARACTER = '\u2009'; // 'narrow space' character
 
     /**
      * Used to send votes, one by one, in the same order the user created them
