@@ -146,8 +146,9 @@ public class ReturnYouTubeDislike {
     }
 
     public static void newVideoLoaded(@NonNull String videoId) {
+        if (!SettingsEnum.RYD_ENABLED.getBoolean()) return;
+
         try {
-            if (!SettingsEnum.RYD_ENABLED.getBoolean()) return;
             Objects.requireNonNull(videoId);
 
             PlayerType currentPlayerType = PlayerType.getCurrent();
@@ -176,9 +177,9 @@ public class ReturnYouTubeDislike {
      * This method can be called multiple times for the same UI element (including after dislikes was added)
      */
     public static void onComponentCreated(Object conversionContext, AtomicReference<Object> textRef) {
-        try {
-            if (!SettingsEnum.RYD_ENABLED.getBoolean()) return;
+        if (!SettingsEnum.RYD_ENABLED.getBoolean()) return;
 
+        try {
             // do not set videoLoadedIsShort to false.  it will be cleared when the next regular video is loaded
             if (lastVideoLoadedWasShort) {
                 return;
