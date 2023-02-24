@@ -25,6 +25,7 @@ import java.lang.ref.WeakReference;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -57,7 +58,6 @@ public class SponsorBlockUtils {
         voteSegmentTimeFormatter.setTimeZone(utc);
     }
     private static final DecimalFormat statsFormatter = new DecimalFormat("#,###,###");
-    private static final String STATS_FORMAT_TEMPLATE = "%dh %d %s";
     private static final String LOCKED_COLOR = "#FFC83D";
 
     private static long newSponsorSegmentDialogShownMillis;
@@ -423,7 +423,6 @@ public class SponsorBlockUtils {
         category.removePreference(loadingPreference);
 
         Context context = category.getContext();
-        String minutesStr = str("minutes");
 
         {
             EditTextPreference preference = new EditTextPreference(context);
@@ -466,11 +465,7 @@ public class SponsorBlockUtils {
                 stats_saved_sum = str("stats_saved_sum_zero");
             } else {
                 stats_saved = str("stats_saved", statsFormatter.format(stats.viewCount));
-                final double totalSaved = stats.minutesSaved;
-                final int hoursSaved = (int) (totalSaved / 60);
-                final int minutesSaved = (int) (totalSaved % 60);
-                String formattedSaved = String.format(STATS_FORMAT_TEMPLATE, hoursSaved, minutesSaved, minutesStr);
-                stats_saved_sum = str("stats_saved_sum", formattedSaved);
+                stats_saved_sum = str("stats_saved_sum", getTimeSavedString((long) (60 * stats.minutesSaved)));
             }
             preference.setTitle(fromHtml(stats_saved));
             preference.setSummary(fromHtml(stats_saved_sum));
@@ -487,12 +482,9 @@ public class SponsorBlockUtils {
             category.addPreference(preference);
 
             Runnable updateStatsSelfSaved = () -> {
-                final long totalSkippedTime = SettingsEnum.SB_SKIPPED_SEGMENTS_TIME.getLong();
-                final int hoursSaved = (int) (totalSkippedTime / (60 * 60 * 1000));
-                final int minutesSaved = (int) ((totalSkippedTime / (60 * 1000)) % 60);
                 String formatted = statsFormatter.format(SettingsEnum.SB_SKIPPED_SEGMENTS.getInt());
                 preference.setTitle(fromHtml(str("stats_self_saved", formatted)));
-                String formattedSaved = String.format(STATS_FORMAT_TEMPLATE, hoursSaved, minutesSaved, minutesStr);
+                String formattedSaved = getTimeSavedString(SettingsEnum.SB_SKIPPED_SEGMENTS_TIME.getLong() / 1000);
                 preference.setSummary(fromHtml(str("stats_self_saved_sum", formattedSaved)));
             };
             updateStatsSelfSaved.run();
@@ -508,6 +500,23 @@ public class SponsorBlockUtils {
                 return true;
             });
         }
+    }
+
+    private static String getTimeSavedString(long totalSecondsSaved) {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            Duration duration = Duration.ofSeconds(totalSecondsSaved);
+            final long hoursSaved = duration.toHours();
+            final long minutesSaved = duration.toMinutes() % 60;
+            if (hoursSaved > 0) {
+                return str("stats_saved_hour_format", hoursSaved, minutesSaved);
+            }
+            final long secondsSaved = duration.getSeconds() % 60;
+            if (minutesSaved > 0) {
+                return str("stats_saved_minute_format", minutesSaved, secondsSaved);
+            }
+            return str("stats_saved_second_format", secondsSaved);
+        }
+        return "error"; // will never be reached.  YouTube requires Android O or greater
     }
 
     public static void importSettings(@NonNull String json) {

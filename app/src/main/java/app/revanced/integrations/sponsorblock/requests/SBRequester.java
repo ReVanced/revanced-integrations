@@ -201,30 +201,24 @@ public class SBRequester {
     }
 
     /**
-     * Must be called _on_ the main thread.
+     * Must be called off the main thread.
      */
     public static void retrieveUserStats(@NonNull PreferenceCategory category, @NonNull Preference loadingPreference) {
-        ReVancedUtils.verifyOnMainThread();
-        if (!SettingsEnum.SB_ENABLED.getBoolean()) {
-            loadingPreference.setTitle(str("stats_sb_disabled"));
-            return;
+        ReVancedUtils.verifyOffMainThread();
+        try {
+            JSONObject json = getJSONObject(SBRoutes.GET_USER_STATS, SettingsEnum.SB_UUID.getString());
+            UserStats stats = new UserStats(json.getString("userID"), json.getString("userName"),
+                    json.getDouble("minutesSaved"), json.getInt("segmentCount"), json.getInt("viewCount"));
+            LogHelper.printDebug(() -> "user stats: " + stats);
+            runOnMainThread(() -> { // get back on main thread to modify UI elements
+                SponsorBlockUtils.addUserStats(category, loadingPreference, stats);
+            });
+        } catch (IOException ex) {
+            runOnMainThread(() -> loadingPreference.setTitle(str("stats_connection_failure")));
+            LogHelper.printInfo(() -> "failed to retrieve user stats", ex); // info, to not show a toast
+        } catch (Exception ex) {
+            LogHelper.printException(() -> "failed to retrieve user stats", ex); // should never happen
         }
-
-        ReVancedUtils.runOnBackgroundThread(() -> {
-            try {
-                JSONObject json = getJSONObject(SBRoutes.GET_USER_STATS, SettingsEnum.SB_UUID.getString());
-                UserStats stats = new UserStats(json.getString("userID"), json.getString("userName"),
-                        json.getDouble("minutesSaved"), json.getInt("segmentCount"), json.getInt("viewCount"));
-                runOnMainThread(() -> { // get back on main thread to modify UI elements
-                    SponsorBlockUtils.addUserStats(category, loadingPreference, stats);
-                });
-            } catch (IOException ex) {
-                runOnMainThread(() -> loadingPreference.setTitle(str("stats_connection_failure")));
-                LogHelper.printInfo(() -> "failed to retrieve user stats", ex); // info, to not show a toast
-            } catch (Exception ex) {
-                LogHelper.printException(() -> "failed to retrieve user stats", ex); // should never happen
-            }
-        });
     }
 
     public static void setUsername(@NonNull String username, @NonNull EditTextPreference preference) {

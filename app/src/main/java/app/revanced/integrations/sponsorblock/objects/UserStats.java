@@ -20,4 +20,16 @@ public class UserStats {
         this.segmentCount = segmentCount;
         this.viewCount = viewCount;
     }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return "UserStats{"
+                + "publicUserId='" + publicUserId + '\''
+                + ", userName='" + userName + '\''
+                + ", minutesSaved=" + minutesSaved
+                + ", segmentCount=" + segmentCount
+                + ", viewCount=" + viewCount
+                + '}';
+    }
 }

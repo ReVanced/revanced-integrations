@@ -186,13 +186,14 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment implements 
         category.setTitle(str("stats"));
         preferencesToDisableWhenSBDisabled.add(category);
 
-        {
-            Preference preference = new Preference(context);
-            category.addPreference(preference);
+        Preference preference = new Preference(context);
+        preference.setSelectable(false);
+        category.addPreference(preference);
+        if (SettingsEnum.SB_ENABLED.getBoolean()) {
             preference.setTitle(str("stats_loading"));
-            preference.setSelectable(false);
-
-            SBRequester.retrieveUserStats(category, preference);
+            ReVancedUtils.runOnBackgroundThread(() -> SBRequester.retrieveUserStats(category, preference));
+        } else {
+            preference.setTitle(str("stats_sb_disabled"));
         }
     }
 
