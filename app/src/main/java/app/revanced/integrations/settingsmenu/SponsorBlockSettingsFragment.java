@@ -15,16 +15,17 @@ import android.preference.EditTextPreference;
 import android.preference.Preference;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
+import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
 import android.preference.SwitchPreference;
-import android.text.Editable;
 import android.text.Html;
 import android.text.InputType;
 import android.util.Patterns;
 import android.widget.EditText;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.sponsorblock.SponsorBlockSettings;
@@ -35,19 +36,17 @@ import app.revanced.integrations.utils.ReVancedUtils;
 import app.revanced.integrations.utils.SharedPrefHelper;
 
 public class SponsorBlockSettingsFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
-    private static final APIURLChangeListener API_URL_CHANGE_LISTENER = new APIURLChangeListener();
-    private final ArrayList<Preference> preferencesToDisableWhenSBDisabled = new ArrayList<>();
+    private final List<Preference> preferencesToDisableWhenSBDisabled = new ArrayList<>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getPreferenceManager().setSharedPreferencesName(SharedPrefHelper.SharedPrefNames.SPONSOR_BLOCK.getName());
+        PreferenceManager preferenceManager = getPreferenceManager();
+        preferenceManager.setSharedPreferencesName(SharedPrefHelper.SharedPrefNames.SPONSOR_BLOCK.getName());
+        preferenceManager.getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
 
-        getPreferenceManager().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
-
-        final Activity context = this.getActivity();
-
-        PreferenceScreen preferenceScreen = getPreferenceManager().createPreferenceScreen(context);
+        Activity context = this.getActivity();
+        PreferenceScreen preferenceScreen = preferenceManager.createPreferenceScreen(context);
         setPreferenceScreen(preferenceScreen);
 
         SponsorBlockSettings.update();
@@ -58,9 +57,9 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment implements 
             preference.setChecked(SettingsEnum.SB_ENABLED.getBoolean());
             preference.setTitle(str("enable_sb"));
             preference.setSummary(str("enable_sb_sum"));
-            preference.setOnPreferenceChangeListener((preference1, newValue) -> {
-                final boolean value = (Boolean) newValue;
-                enableCategoriesIfNeeded(value);
+            preference.setOnPreferenceChangeListener((preference1, o) -> {
+                Boolean newValue = (Boolean) o;
+                enableCategoriesIfNeeded(newValue);
                 SettingsEnum.SB_ENABLED.saveValue(newValue);
                 return true;
             });
@@ -73,17 +72,17 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment implements 
             preference.setTitle(str("enable_segmadding"));
             preference.setSummary(str("enable_segmadding_sum"));
             preferencesToDisableWhenSBDisabled.add(preference);
-            preference.setOnPreferenceChangeListener((preference12, o) -> {
-                final boolean value = (Boolean) o;
-                if (value && !SettingsEnum.SB_SEEN_GUIDELINES.getBoolean()) {
-                    new AlertDialog.Builder(preference12.getContext())
+            preference.setOnPreferenceChangeListener((preference1, o) -> {
+                Boolean newValue = (Boolean) o;
+                if (newValue && !SettingsEnum.SB_SEEN_GUIDELINES.getBoolean()) {
+                    new AlertDialog.Builder(preference1.getContext())
                             .setTitle(str("sb_guidelines_popup_title"))
                             .setMessage(str("sb_guidelines_popup_content"))
                             .setNegativeButton(str("sb_guidelines_popup_already_read"), null)
                             .setPositiveButton(str("sb_guidelines_popup_open"), (dialogInterface, i) -> openGuidelines())
                             .show();
                 }
-                SettingsEnum.SB_NEW_SEGMENT_ENABLED.saveValue(value);
+                SettingsEnum.SB_NEW_SEGMENT_ENABLED.saveValue(newValue);
                 return true;
             });
         }
@@ -95,9 +94,8 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment implements 
             preference.setSummary(str("enable_voting_sum"));
             preference.setChecked(SettingsEnum.SB_VOTING_ENABLED.getBoolean());
             preferencesToDisableWhenSBDisabled.add(preference);
-            preference.setOnPreferenceChangeListener((preference12, o) -> {
-                final boolean value = (Boolean) o;
-                SettingsEnum.SB_VOTING_ENABLED.saveValue(value);
+            preference.setOnPreferenceChangeListener((preference1, newValue) -> {
+                SettingsEnum.SB_VOTING_ENABLED.saveValue(newValue);
                 return true;
             });
         }
@@ -124,12 +122,11 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment implements 
     }
 
     private void openGuidelines() {
-        final Context context = getActivity();
         SettingsEnum.SB_SEEN_GUIDELINES.saveValue(true);
 
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setData(Uri.parse("https://wiki.sponsor.ajay.app/w/Guidelines"));
-        context.startActivity(intent);
+        getActivity().startActivity(intent);
     }
 
     private void enableCategoriesIfNeeded(boolean value) {
@@ -340,13 +337,13 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment implements 
                 editText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_URI);
                 editText.setText(SettingsEnum.SB_API_URL.getString());
 
-                API_URL_CHANGE_LISTENER.setEditTextRef(editText);
+                APIURLChangeListener urlListener = new APIURLChangeListener(editText);
                 new AlertDialog.Builder(context)
                         .setTitle(title)
                         .setView(editText)
                         .setNegativeButton(android.R.string.cancel, null)
-                        .setNeutralButton(str("reset"), API_URL_CHANGE_LISTENER)
-                        .setPositiveButton(android.R.string.ok, API_URL_CHANGE_LISTENER)
+                        .setNeutralButton(str("reset"), urlListener)
+                        .setPositiveButton(android.R.string.ok, urlListener)
                         .show();
                 return true;
             });
@@ -357,7 +354,6 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment implements 
 
         {
             EditTextPreference preference = new EditTextPreference(context);
-            Context applicationContext = context.getApplicationContext();
 
             preference.setTitle(str("settings_ie"));
             preference.setSummary(str("settings_ie_sum"));
@@ -371,45 +367,33 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment implements 
         }
     }
 
-    private static class APIURLChangeListener implements DialogInterface.OnClickListener {
-        private WeakReference<EditText> editTextRef;
-
-        @Override
-        public void onClick(DialogInterface dialog, int which) {
-            EditText editText = editTextRef.get();
-            if (editText == null)
-                return;
-
-            switch (which) {
-                case DialogInterface.BUTTON_NEUTRAL:
-                    SettingsEnum.SB_API_URL.saveValue(SettingsEnum.SB_API_URL.getDefaultValue());
-                    ReVancedUtils.showToastLong(str("api_url_reset"));
-                    break;
-                case DialogInterface.BUTTON_POSITIVE:
-                    Editable text = editText.getText();
-                    String invalidText = str("api_url_invalid");
-                    if (text == null) {
-                        ReVancedUtils.showToastLong(invalidText);
-                    } else {
-                        String textAsString = text.toString();
-                        if (textAsString.isEmpty() || !Patterns.WEB_URL.matcher(textAsString).matches()) {
-                            ReVancedUtils.showToastLong(invalidText);
-                        } else {
-                            SettingsEnum.SB_API_URL.saveValue(textAsString);
-                            ReVancedUtils.showToastLong(str("api_url_changed"));
-                        }
-                    }
-                    break;
-            }
-        }
-
-        public void setEditTextRef(EditText editText) {
-            editTextRef = new WeakReference<>(editText);
-        }
-    }
-
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         SponsorBlockSettings.update();
     }
+
+    private static class APIURLChangeListener implements DialogInterface.OnClickListener {
+        private final EditText editText;
+
+        public APIURLChangeListener(EditText editText) {
+            this.editText = Objects.requireNonNull(editText);
+        }
+
+        @Override
+        public void onClick(DialogInterface dialog, int buttonPressed) {
+            if (buttonPressed == DialogInterface.BUTTON_NEUTRAL) {
+                SettingsEnum.SB_API_URL.saveValue(SettingsEnum.SB_API_URL.getDefaultValue());
+                ReVancedUtils.showToastLong(str("api_url_reset"));
+            } else if (buttonPressed == DialogInterface.BUTTON_POSITIVE) {
+                String textAsString = editText.getText().toString();
+                if (!Patterns.WEB_URL.matcher(textAsString).matches()) {
+                    ReVancedUtils.showToastLong(str("api_url_invalid"));
+                } else if (!textAsString.equals(SettingsEnum.SB_API_URL.getString())) {
+                    SettingsEnum.SB_API_URL.saveValue(textAsString);
+                    ReVancedUtils.showToastLong(str("api_url_changed"));
+                }
+            }
+        }
+    }
+
 }
