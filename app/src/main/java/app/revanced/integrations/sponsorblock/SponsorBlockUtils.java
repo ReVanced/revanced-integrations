@@ -592,6 +592,7 @@ public class SponsorBlockUtils {
     public static String exportSettings() {
         ReVancedUtils.verifyOnMainThread();
         try {
+            LogHelper.printDebug(() -> "Creating SponsorBlock export settings string");
             JSONObject json = new JSONObject();
 
             JSONObject barTypesObject = new JSONObject(); // categories' colors
@@ -622,7 +623,7 @@ public class SponsorBlockUtils {
             json.put("categorySelections", categorySelectionsArray);
             json.put("barTypes", barTypesObject);
 
-            return json.toString();
+            return json.toString(2);
         } catch (Exception ex) {
             LogHelper.printInfo(() -> "failed to export settings", ex); // use info level, as we are showing our own toast
             ReVancedUtils.showToastLong(str("sb_settings_export_failed"));

@@ -354,10 +354,12 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment implements 
 
         {
             EditTextPreference preference = new EditTextPreference(context);
-
             preference.setTitle(str("sb_settings_ie"));
             preference.setSummary(str("sb_settings_ie_sum"));
-            preference.setText(SponsorBlockUtils.exportSettings());
+            preference.setOnPreferenceClickListener(preference1 -> {
+                preference.getEditText().setText(SponsorBlockUtils.exportSettings());
+                return false;
+            });
             preference.setOnPreferenceChangeListener((preference1, newValue) -> {
                 SponsorBlockUtils.importSettings((String) newValue);
                 return false;
