@@ -88,7 +88,7 @@ public class SponsorBlockUtils {
                 SponsorBlockSettings.SegmentInfo segmentType = SponsorBlockSettings.SegmentInfo.valuesWithoutUnsubmitted()[which];
                 boolean enableButton;
                 if (!segmentType.behaviour.showOnTimeBar) {
-                    ReVancedUtils.showToastLong(str("new_segment_disabled_category"));
+                    ReVancedUtils.showToastLong(str("sb_new_segment_disabled_category"));
                     enableButton = false;
                 } else {
                     ReVancedUtils.showToastShort(segmentType.description.toString());
@@ -121,7 +121,7 @@ public class SponsorBlockUtils {
 
                 newSponsorBlockSegmentType = null;
                 new AlertDialog.Builder(context)
-                        .setTitle(str("new_segment_choose_category"))
+                        .setTitle(str("sb_new_segment_choose_category"))
                         .setSingleChoiceItems(titles, -1, segmentTypeListener)
                         .setNegativeButton(android.R.string.cancel, null)
                         .setPositiveButton(android.R.string.ok, segmentCategorySelectedDialogListener)
@@ -157,10 +157,10 @@ public class SponsorBlockUtils {
             editByHandSaveDialogListener.settingStart = isStart;
             editByHandSaveDialogListener.editText = new WeakReference<>(textView);
             new AlertDialog.Builder(context)
-                    .setTitle(str(isStart ? "new_segment_time_start" : "new_segment_time_end"))
+                    .setTitle(str(isStart ? "sb_new_segment_time_start" : "sb_new_segment_time_end"))
                     .setView(textView)
                     .setNegativeButton(android.R.string.cancel, null)
-                    .setNeutralButton(str("new_segment_now"), editByHandSaveDialogListener)
+                    .setNeutralButton(str("sb_new_segment_now"), editByHandSaveDialogListener)
                     .setPositiveButton(android.R.string.ok, editByHandSaveDialogListener)
                     .show();
 
@@ -254,14 +254,14 @@ public class SponsorBlockUtils {
             newSponsorSegmentDialogShownMillis = VideoInformation.getVideoTime();
 
             new AlertDialog.Builder(SponsorBlockView.getOverLaysViewGroupContext())
-                    .setTitle(str("new_segment_title"))
-                    .setMessage(str("new_segment_mark_time_as_question",
+                    .setTitle(str("sb_new_segment_title"))
+                    .setMessage(str("sb_new_segment_mark_time_as_question",
                             newSponsorSegmentDialogShownMillis / 60000,
                             newSponsorSegmentDialogShownMillis / 1000 % 60,
                             newSponsorSegmentDialogShownMillis % 1000))
                     .setNeutralButton(android.R.string.cancel, null)
-                    .setNegativeButton(str("new_segment_mark_start"), newSponsorSegmentDialogListener)
-                    .setPositiveButton(str("new_segment_mark_end"), newSponsorSegmentDialogListener)
+                    .setNegativeButton(str("sb_new_segment_mark_start"), newSponsorSegmentDialogListener)
+                    .setPositiveButton(str("sb_new_segment_mark_end"), newSponsorSegmentDialogListener)
                     .show();
         } catch (Exception ex) {
             LogHelper.printException(() -> "onMarkLocationClicked failure", ex);
@@ -272,14 +272,14 @@ public class SponsorBlockUtils {
         try {
             ReVancedUtils.verifyOnMainThread();
             if (!newSponsorSegmentPreviewed) {
-                ReVancedUtils.showToastLong(str("new_segment_preview_segment_first"));
+                ReVancedUtils.showToastLong(str("sb_new_segment_preview_segment_first"));
             } else if (newSponsorSegmentStartMillis >= 0 && newSponsorSegmentStartMillis < newSponsorSegmentEndMillis) {
                 long length = (newSponsorSegmentEndMillis - newSponsorSegmentStartMillis) / 1000;
                 long start = (newSponsorSegmentStartMillis) / 1000;
                 long end = (newSponsorSegmentEndMillis) / 1000;
                 new AlertDialog.Builder(SponsorBlockView.getOverLaysViewGroupContext())
-                        .setTitle(str("new_segment_confirm_title"))
-                        .setMessage(str("new_segment_confirm_content",
+                        .setTitle(str("sb_new_segment_confirm_title"))
+                        .setMessage(str("sb_new_segment_confirm_content",
                                 start / 60, start % 60,
                                 end / 60, end % 60,
                                 length / 60, length % 60))
@@ -287,7 +287,7 @@ public class SponsorBlockUtils {
                         .setPositiveButton(android.R.string.yes, segmentReadyDialogButtonListener)
                         .show();
             } else {
-                ReVancedUtils.showToastShort(str("new_segment_mark_locations_first"));
+                ReVancedUtils.showToastShort(str("sb_new_segment_mark_locations_first"));
             }
         } catch (Exception ex) {
             LogHelper.printException(() -> "onPublishClicked failure", ex);
@@ -302,7 +302,7 @@ public class SponsorBlockUtils {
                 // button is hidden if no segments exist.
                 // But if prior video had segments, and current video does not,
                 // then the button persists until the overlay fades out (this is intentional, as abruptly hiding the button is jaring)
-                ReVancedUtils.showToastShort(str("vote_no_segments"));
+                ReVancedUtils.showToastShort(str("sb_vote_no_segments"));
                 return;
             }
 
@@ -355,7 +355,7 @@ public class SponsorBlockUtils {
             }
 
             new AlertDialog.Builder(context)
-                    .setTitle(str("new_segment_choose_category"))
+                    .setTitle(str("sb_new_segment_choose_category"))
                     .setItems(titles, (dialog, which) -> SBRequester.voteForSegmentOnBackgroundThread(segment, VoteOption.CATEGORY_CHANGE, values[which].key))
                     .show();
         } catch (Exception ex) {
@@ -376,7 +376,7 @@ public class SponsorBlockUtils {
 
                 PlayerController.setSegmentsOfCurrentVideo(segments);
             } else {
-                ReVancedUtils.showToastShort(str("new_segment_mark_locations_first"));
+                ReVancedUtils.showToastShort(str("sb_new_segment_mark_locations_first"));
             }
         } catch (Exception ex) {
             LogHelper.printException(() -> "onPreviewClicked failure", ex);
@@ -402,11 +402,11 @@ public class SponsorBlockUtils {
         try {
             ReVancedUtils.verifyOnMainThread();
             new AlertDialog.Builder(SponsorBlockView.getOverLaysViewGroupContext())
-                    .setTitle(str("new_segment_edit_by_hand_title"))
-                    .setMessage(str("new_segment_edit_by_hand_content"))
+                    .setTitle(str("sb_new_segment_edit_by_hand_title"))
+                    .setMessage(str("sb_new_segment_edit_by_hand_content"))
                     .setNeutralButton(android.R.string.cancel, null)
-                    .setNegativeButton(str("new_segment_mark_start"), editByHandDialogListener)
-                    .setPositiveButton(str("new_segment_mark_end"), editByHandDialogListener)
+                    .setNegativeButton(str("sb_new_segment_mark_start"), editByHandDialogListener)
+                    .setPositiveButton(str("sb_new_segment_mark_end"), editByHandDialogListener)
                     .show();
         } catch (Exception ex) {
             LogHelper.printException(() -> "onEditByHandClicked failure", ex);
@@ -428,8 +428,8 @@ public class SponsorBlockUtils {
             EditTextPreference preference = new EditTextPreference(context);
             category.addPreference(preference);
             String userName = stats.userName;
-            preference.setTitle(fromHtml(str("stats_username", userName)));
-            preference.setSummary(str("stats_username_change"));
+            preference.setTitle(fromHtml(str("sb_stats_username", userName)));
+            preference.setSummary(str("sb_stats_username_change"));
             preference.setText(userName);
             preference.setOnPreferenceChangeListener((preference1, newUsername) -> {
                 SBRequester.setUsername((String) newUsername, preference);
@@ -442,7 +442,7 @@ public class SponsorBlockUtils {
             Preference preference = new Preference(context);
             category.addPreference(preference);
             String formatted = statsFormatter.format(stats.segmentCount);
-            preference.setTitle(fromHtml(str("stats_submissions", formatted)));
+            preference.setTitle(fromHtml(str("sb_stats_submissions", formatted)));
             if (stats.segmentCount == 0) {
                 preference.setSelectable(false);
             } else {
@@ -459,7 +459,7 @@ public class SponsorBlockUtils {
         // But if there is a reputation, then show it here
         {
             Preference preference = new Preference(context);
-            preference.setTitle(fromHtml(str("stats_reputation", stats.reputation)));
+            preference.setTitle(fromHtml(str("sb_stats_reputation", stats.reputation)));
             preference.setSelectable(false);
             if (stats.reputation != 0) {
                 category.addPreference(preference);
@@ -474,11 +474,11 @@ public class SponsorBlockUtils {
             String stats_saved;
             String stats_saved_sum;
             if (stats.segmentCount == 0) {
-                stats_saved = str("stats_saved_zero");
-                stats_saved_sum = str("stats_saved_sum_zero");
+                stats_saved = str("sb_stats_saved_zero");
+                stats_saved_sum = str("sb_stats_saved_sum_zero");
             } else {
-                stats_saved = str("stats_saved", statsFormatter.format(stats.viewCount));
-                stats_saved_sum = str("stats_saved_sum", getTimeSavedString((long) (60 * stats.minutesSaved)));
+                stats_saved = str("sb_stats_saved", statsFormatter.format(stats.viewCount));
+                stats_saved_sum = str("sb_stats_saved_sum", getTimeSavedString((long) (60 * stats.minutesSaved)));
             }
             preference.setTitle(fromHtml(stats_saved));
             preference.setSummary(fromHtml(stats_saved_sum));
@@ -497,14 +497,14 @@ public class SponsorBlockUtils {
 
             Runnable updateStatsSelfSaved = () -> {
                 String formatted = statsFormatter.format(SettingsEnum.SB_SKIPPED_SEGMENTS.getInt());
-                preference.setTitle(fromHtml(str("stats_self_saved", formatted)));
+                preference.setTitle(fromHtml(str("sb_stats_self_saved", formatted)));
                 String formattedSaved = getTimeSavedString(SettingsEnum.SB_SKIPPED_SEGMENTS_TIME.getLong() / 1000);
-                preference.setSummary(fromHtml(str("stats_self_saved_sum", formattedSaved)));
+                preference.setSummary(fromHtml(str("sb_stats_self_saved_sum", formattedSaved)));
             };
             updateStatsSelfSaved.run();
             preference.setOnPreferenceClickListener(preference1 -> {
                 new AlertDialog.Builder(preference1.getContext())
-                        .setTitle(str("stats_self_saved_reset_title"))
+                        .setTitle(str("sb_stats_self_saved_reset_title"))
                         .setPositiveButton(android.R.string.yes, (dialog, whichButton) -> {
                             SettingsEnum.SB_SKIPPED_SEGMENTS.setValue(SettingsEnum.SB_SKIPPED_SEGMENTS.getDefaultValue());
                             SettingsEnum.SB_SKIPPED_SEGMENTS_TIME.setValue(SettingsEnum.SB_SKIPPED_SEGMENTS_TIME.getDefaultValue());
@@ -522,13 +522,13 @@ public class SponsorBlockUtils {
             final long hoursSaved = duration.toHours();
             final long minutesSaved = duration.toMinutes() % 60;
             if (hoursSaved > 0) {
-                return str("stats_saved_hour_format", hoursSaved, minutesSaved);
+                return str("sb_stats_saved_hour_format", hoursSaved, minutesSaved);
             }
             final long secondsSaved = duration.getSeconds() % 60;
             if (minutesSaved > 0) {
-                return str("stats_saved_minute_format", minutesSaved, secondsSaved);
+                return str("sb_stats_saved_minute_format", minutesSaved, secondsSaved);
             }
-            return str("stats_saved_second_format", secondsSaved);
+            return str("sb_stats_saved_second_format", secondsSaved);
         }
         return "error"; // will never be reached.  YouTube requires Android O or greater
     }
@@ -581,10 +581,10 @@ public class SponsorBlockUtils {
             SettingsEnum.SB_MIN_DURATION.saveValue(Float.valueOf(settingsJson.getString("minDuration")));
             SettingsEnum.SB_COUNT_SKIPS.saveValue(settingsJson.getBoolean("trackViewCount"));
 
-            ReVancedUtils.showToastLong(str("settings_import_successful"));
+            ReVancedUtils.showToastLong(str("sb_settings_import_successful"));
         } catch (Exception ex) {
             LogHelper.printInfo(() -> "failed to import settings", ex); // use info level, as we are showing our own toast
-            ReVancedUtils.showToastLong(str("settings_import_failed"));
+            ReVancedUtils.showToastLong(str("sb_settings_import_failed"));
         }
     }
 
@@ -625,15 +625,15 @@ public class SponsorBlockUtils {
             return json.toString();
         } catch (Exception ex) {
             LogHelper.printInfo(() -> "failed to export settings", ex); // use info level, as we are showing our own toast
-            ReVancedUtils.showToastLong(str("settings_export_failed"));
+            ReVancedUtils.showToastLong(str("sb_settings_export_failed"));
             return "";
         }
     }
 
     public enum VoteOption {
-        UPVOTE(str("vote_upvote"), false),
-        DOWNVOTE(str("vote_downvote"), true),
-        CATEGORY_CHANGE(str("vote_category"), true);
+        UPVOTE(str("sb_vote_upvote"), false),
+        DOWNVOTE(str("sb_vote_downvote"), true),
+        CATEGORY_CHANGE(str("sb_vote_category"), true);
 
         @NonNull
         public final String title;
@@ -669,7 +669,7 @@ public class SponsorBlockUtils {
                             DialogInterface.BUTTON_NEGATIVE :
                             DialogInterface.BUTTON_POSITIVE);
             } catch (ParseException e) {
-                ReVancedUtils.showToastLong(str("new_segment_edit_by_hand_parse_error"));
+                ReVancedUtils.showToastLong(str("sb_new_segment_edit_by_hand_parse_error"));
             } catch (Exception ex) {
                 LogHelper.printException(() -> "EditByHandSaveDialogListener failure", ex);
             }

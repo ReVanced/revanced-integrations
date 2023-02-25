@@ -97,13 +97,13 @@ public class SBRequester {
                 LogHelper.printDebug(() -> "No segments found for video: " + videoId);
             } else {
                 LogHelper.printException(() -> "getSegments failed with response code: " + responseCode,
-                        null, str("sponsorblock_connection_failure_status", responseCode));
+                        null, str("sb_sponsorblock_connection_failure_status", responseCode));
                 connection.disconnect(); // something went wrong, might as well disconnect
             }
         } catch (SocketTimeoutException ex) {
-            LogHelper.printException(() -> "Failed to get segments", ex, str("sponsorblock_connection_failure_timeout"));
+            LogHelper.printException(() -> "Failed to get segments", ex, str("sb_sponsorblock_connection_failure_timeout"));
         } catch (Exception ex) {
-            LogHelper.printException(() -> "Failed to get segments", ex, str("sponsorblock_connection_failure_generic"));
+            LogHelper.printException(() -> "Failed to get segments", ex, str("sb_sponsorblock_connection_failure_generic"));
         }
         return segments.toArray(new SponsorSegment[0]);
     }
@@ -122,27 +122,27 @@ public class SBRequester {
             final String messageToToast;
             switch (responseCode) {
                 case SUCCESS_HTTP_STATUS_CODE:
-                    messageToToast = str("submit_succeeded");
+                    messageToToast = str("sb_submit_succeeded");
                     break;
                 case 409:
-                    messageToToast = str("submit_failed_duplicate");
+                    messageToToast = str("sb_submit_failed_duplicate");
                     break;
                 case 403:
-                    messageToToast = str("submit_failed_forbidden", Requester.parseErrorJsonAndDisconnect(connection));
+                    messageToToast = str("sb_submit_failed_forbidden", Requester.parseErrorJsonAndDisconnect(connection));
                     break;
                 case 429:
-                    messageToToast = str("submit_failed_rate_limit");
+                    messageToToast = str("sb_submit_failed_rate_limit");
                     break;
                 case 400:
-                    messageToToast = str("submit_failed_invalid", Requester.parseErrorJsonAndDisconnect(connection));
+                    messageToToast = str("sb_submit_failed_invalid", Requester.parseErrorJsonAndDisconnect(connection));
                     break;
                 default:
-                    messageToToast = str("submit_failed_unknown_error", responseCode, connection.getResponseMessage());
+                    messageToToast = str("sb_submit_failed_unknown_error", responseCode, connection.getResponseMessage());
                     break;
             }
             ReVancedUtils.showToastLong(messageToToast);
         } catch (SocketTimeoutException ex) {
-            ReVancedUtils.showToastLong(str("submit_failed_timeout"));
+            ReVancedUtils.showToastLong(str("sb_submit_failed_timeout"));
         } catch (Exception ex) {
             LogHelper.printException(() -> "failed to submit segments", ex);
         }
@@ -185,15 +185,15 @@ public class SBRequester {
                         break;
                     case 403:
                         ReVancedUtils.showToastLong(
-                                str("vote_failed_forbidden", Requester.parseErrorJsonAndDisconnect(connection)));
+                                str("sb_vote_failed_forbidden", Requester.parseErrorJsonAndDisconnect(connection)));
                         break;
                     default:
                         ReVancedUtils.showToastLong(
-                                str("vote_failed_unknown_error", responseCode, connection.getResponseMessage()));
+                                str("sb_vote_failed_unknown_error", responseCode, connection.getResponseMessage()));
                         break;
                 }
             } catch (SocketTimeoutException ex) {
-                LogHelper.printException(() -> "failed to vote for segment", ex, str("vote_failed_timeout"));
+                LogHelper.printException(() -> "failed to vote for segment", ex, str("sb_vote_failed_timeout"));
             } catch (Exception ex) {
                 LogHelper.printException(() -> "failed to vote for segment", ex); // should never happen
             }
@@ -213,7 +213,7 @@ public class SBRequester {
                 SponsorBlockUtils.addUserStats(category, loadingPreference, stats);
             });
         } catch (IOException ex) {
-            runOnMainThread(() -> loadingPreference.setTitle(str("stats_connection_failure")));
+            runOnMainThread(() -> loadingPreference.setTitle(str("sb_stats_connection_failure")));
             LogHelper.printInfo(() -> "failed to retrieve user stats", ex); // info, to not show a toast
         } catch (Exception ex) {
             LogHelper.printException(() -> "failed to retrieve user stats", ex); // should never happen
@@ -228,11 +228,11 @@ public class SBRequester {
                 String responseMessage = connection.getResponseMessage();
                 runOnMainThread(() -> {
                     if (responseCode == SUCCESS_HTTP_STATUS_CODE) {
-                        ReVancedUtils.showToastLong(str("stats_username_changed"));
-                        preference.setTitle(fromHtml(str("stats_username", username)));
+                        ReVancedUtils.showToastLong(str("sb_stats_username_changed"));
+                        preference.setTitle(fromHtml(str("sb_stats_username", username)));
                         preference.setText(username);
                     } else {
-                        ReVancedUtils.showToastLong(str("stats_username_change_unknown_error", responseCode, responseMessage));
+                        ReVancedUtils.showToastLong(str("sb_stats_username_change_unknown_error", responseCode, responseMessage));
                     }
                 });
             } catch (Exception ex) {

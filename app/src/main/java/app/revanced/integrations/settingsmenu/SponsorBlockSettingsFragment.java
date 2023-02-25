@@ -55,8 +55,8 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment implements 
             SwitchPreference preference = new SwitchPreference(context);
             preferenceScreen.addPreference(preference);
             preference.setChecked(SettingsEnum.SB_ENABLED.getBoolean());
-            preference.setTitle(str("enable_sb"));
-            preference.setSummary(str("enable_sb_sum"));
+            preference.setTitle(str("sb_enable_sb"));
+            preference.setSummary(str("sb_enable_sb_sum"));
             preference.setOnPreferenceChangeListener((preference1, o) -> {
                 Boolean newValue = (Boolean) o;
                 enableCategoriesIfNeeded(newValue);
@@ -69,8 +69,8 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment implements 
             SwitchPreference preference = new SwitchPreference(context);
             preferenceScreen.addPreference(preference);
             preference.setChecked(SettingsEnum.SB_NEW_SEGMENT_ENABLED.getBoolean());
-            preference.setTitle(str("enable_segmadding"));
-            preference.setSummary(str("enable_segmadding_sum"));
+            preference.setTitle(str("sb_enable_add_segment"));
+            preference.setSummary(str("sb_enable_add_segment_sum"));
             preferencesToDisableWhenSBDisabled.add(preference);
             preference.setOnPreferenceChangeListener((preference1, o) -> {
                 Boolean newValue = (Boolean) o;
@@ -90,8 +90,8 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment implements 
         {
             SwitchPreference preference = new SwitchPreference(context);
             preferenceScreen.addPreference(preference);
-            preference.setTitle(str("enable_voting"));
-            preference.setSummary(str("enable_voting_sum"));
+            preference.setTitle(str("sb_enable_voting"));
+            preference.setSummary(str("sb_enable_voting_sum"));
             preference.setChecked(SettingsEnum.SB_VOTING_ENABLED.getBoolean());
             preferencesToDisableWhenSBDisabled.add(preference);
             preference.setOnPreferenceChangeListener((preference1, newValue) -> {
@@ -103,8 +103,8 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment implements 
         {
             SwitchPreference preference = new SwitchPreference(context);
             preferenceScreen.addPreference(preference);
-            preference.setTitle(str("general_compact_skip_button"));
-            preference.setSummary(str("general_compact_skip_button_sum"));
+            preference.setTitle(str("sb_enable_compact_skip_button"));
+            preference.setSummary(str("sb_enable_compact_skip_button_sum"));
             preference.setChecked(SettingsEnum.SB_USE_COMPACT_SKIPBUTTON.getBoolean());
             preferencesToDisableWhenSBDisabled.add(preference);
             preference.setOnPreferenceChangeListener((preference1, newValue) -> {
@@ -144,7 +144,7 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment implements 
         PreferenceCategory category = new PreferenceCategory(context);
         screen.addPreference(category);
         preferencesToDisableWhenSBDisabled.add(category);
-        category.setTitle(str("diff_segments"));
+        category.setTitle(str("sb_diff_segments"));
 
         SponsorBlockSettings.SegmentBehaviour[] segmentBehaviours = SponsorBlockSettings.SegmentBehaviour.values();
         String[] entries = new String[segmentBehaviours.length];
@@ -171,8 +171,8 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment implements 
 
         Preference colorPreference = new Preference(context); // TODO remove this after the next major update
         screen.addPreference(colorPreference);
-        colorPreference.setTitle(str("color_change"));
-        colorPreference.setSummary(str("color_change_sum"));
+        colorPreference.setTitle(str("sb_color_change"));
+        colorPreference.setSummary(str("sb_color_change_sum"));
         colorPreference.setSelectable(false);
         preferencesToDisableWhenSBDisabled.add(colorPreference);
     }
@@ -180,30 +180,30 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment implements 
     private void addStatsCategory(Context context, PreferenceScreen screen) {
         PreferenceCategory category = new PreferenceCategory(context);
         screen.addPreference(category);
-        category.setTitle(str("stats"));
+        category.setTitle(str("sb_stats"));
         preferencesToDisableWhenSBDisabled.add(category);
 
         Preference preference = new Preference(context);
         preference.setSelectable(false);
         category.addPreference(preference);
         if (SettingsEnum.SB_ENABLED.getBoolean()) {
-            preference.setTitle(str("stats_loading"));
+            preference.setTitle(str("sb_stats_loading"));
             ReVancedUtils.runOnBackgroundThread(() -> SBRequester.retrieveUserStats(category, preference));
         } else {
-            preference.setTitle(str("stats_sb_disabled"));
+            preference.setTitle(str("sb_stats_sb_disabled"));
         }
     }
 
     private void addAboutCategory(Context context, PreferenceScreen screen) {
         PreferenceCategory category = new PreferenceCategory(context);
         screen.addPreference(category);
-        category.setTitle(str("about"));
+        category.setTitle(str("sb_about"));
 
         {
             Preference preference = new Preference(context);
             screen.addPreference(preference);
-            preference.setTitle(str("about_api"));
-            preference.setSummary(str("about_api_sum"));
+            preference.setTitle(str("sb_about_api"));
+            preference.setSummary(str("sb_about_api_sum"));
             preference.setOnPreferenceClickListener(preference1 -> {
                 Intent i = new Intent(Intent.ACTION_VIEW);
                 i.setData(Uri.parse("https://sponsor.ajay.app"));
@@ -215,7 +215,7 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment implements 
         {
             Preference preference = new Preference(context);
             screen.addPreference(preference);
-            preference.setTitle(str("about_madeby"));
+            preference.setTitle(str("sb_about_madeby"));
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 preference.setSingleLineTitle(false);
             }
@@ -228,7 +228,7 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment implements 
         final PreferenceCategory category = new PreferenceCategory(context);
         preferencesToDisableWhenSBDisabled.add(category);
         screen.addPreference(category);
-        category.setTitle(str("general"));
+        category.setTitle(str("sb_general"));
 
         {
             Preference preference = new Preference(context);
@@ -243,8 +243,8 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment implements 
 
         {
             SwitchPreference preference = new SwitchPreference(context);
-            preference.setTitle(str("general_skiptoast"));
-            preference.setSummary(str("general_skiptoast_sum"));
+            preference.setTitle(str("sb_general_skiptoast"));
+            preference.setSummary(str("sb_general_skiptoast_sum"));
             preference.setChecked(SettingsEnum.SB_SHOW_TOAST_WHEN_SKIP.getBoolean());
             preference.setOnPreferenceChangeListener((preference1, newValue) -> {
                 SettingsEnum.SB_SHOW_TOAST_WHEN_SKIP.saveValue(newValue);
@@ -260,8 +260,8 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment implements 
 
         {
             SwitchPreference preference = new SwitchPreference(context);
-            preference.setTitle(str("general_skipcount"));
-            preference.setSummary(str("general_skipcount_sum"));
+            preference.setTitle(str("sb_general_skipcount"));
+            preference.setSummary(str("sb_general_skipcount_sum"));
             preference.setChecked(SettingsEnum.SB_COUNT_SKIPS.getBoolean());
             preference.setOnPreferenceChangeListener((preference1, newValue) -> {
                 SettingsEnum.SB_COUNT_SKIPS.saveValue(newValue);
@@ -273,8 +273,8 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment implements 
 
         {
             SwitchPreference preference = new SwitchPreference(context);
-            preference.setTitle(str("general_time_without_sb"));
-            preference.setSummary(str("general_time_without_sb_sum"));
+            preference.setTitle(str("sb_general_time_without"));
+            preference.setSummary(str("sb_general_time_without_sum"));
             preference.setChecked(SettingsEnum.SB_SHOW_TIME_WITHOUT_SEGMENTS.getBoolean());
             preference.setOnPreferenceChangeListener((preference1, newValue) -> {
                 SettingsEnum.SB_SHOW_TIME_WITHOUT_SEGMENTS.saveValue(newValue);
@@ -288,8 +288,8 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment implements 
         {
             EditTextPreference preference = new EditTextPreference(context);
             preference.getEditText().setInputType(InputType.TYPE_CLASS_NUMBER);
-            preference.setTitle(str("general_adjusting"));
-            preference.setSummary(str("general_adjusting_sum"));
+            preference.setTitle(str("sb_general_adjusting"));
+            preference.setSummary(str("sb_general_adjusting_sum"));
             preference.setText(String.valueOf(SettingsEnum.SB_ADJUST_NEW_SEGMENT_STEP.getInt()));
             preference.setOnPreferenceChangeListener((preference1, newValue) -> {
                 SettingsEnum.SB_ADJUST_NEW_SEGMENT_STEP.saveValue(Integer.valueOf(newValue.toString()));
@@ -302,8 +302,8 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment implements 
         {
             EditTextPreference preference = new EditTextPreference(context);
             preference.getEditText().setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
-            preference.setTitle(str("general_min_duration"));
-            preference.setSummary(str("general_min_duration_sum"));
+            preference.setTitle(str("sb_general_min_duration"));
+            preference.setSummary(str("sb_general_min_duration_sum"));
             preference.setText(String.valueOf(SettingsEnum.SB_MIN_DURATION.getFloat()));
             preference.setOnPreferenceChangeListener((preference1, newValue) -> {
                 SettingsEnum.SB_MIN_DURATION.saveValue(Float.valueOf(newValue.toString()));
@@ -315,8 +315,8 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment implements 
 
         {
             EditTextPreference preference = new EditTextPreference(context);
-            preference.setTitle(str("general_uuid"));
-            preference.setSummary(str("general_uuid_sum"));
+            preference.setTitle(str("sb_general_uuid"));
+            preference.setSummary(str("sb_general_uuid_sum"));
             preference.setText(SettingsEnum.SB_UUID.getString());
             preference.setOnPreferenceChangeListener((preference1, newValue) -> {
                 SettingsEnum.SB_UUID.saveValue(newValue.toString());
@@ -329,9 +329,9 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment implements 
 
         {
             Preference preference = new Preference(context);
-            String title = str("general_api_url");
+            String title = str("sb_general_api_url");
             preference.setTitle(title);
-            preference.setSummary(Html.fromHtml(str("general_api_url_sum")));
+            preference.setSummary(Html.fromHtml(str("sb_general_api_url_sum")));
             preference.setOnPreferenceClickListener(preference1 -> {
                 EditText editText = new EditText(context);
                 editText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_URI);
@@ -355,8 +355,8 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment implements 
         {
             EditTextPreference preference = new EditTextPreference(context);
 
-            preference.setTitle(str("settings_ie"));
-            preference.setSummary(str("settings_ie_sum"));
+            preference.setTitle(str("sb_settings_ie"));
+            preference.setSummary(str("sb_settings_ie_sum"));
             preference.setText(SponsorBlockUtils.exportSettings());
             preference.setOnPreferenceChangeListener((preference1, newValue) -> {
                 SponsorBlockUtils.importSettings((String) newValue);
@@ -383,14 +383,14 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment implements 
         public void onClick(DialogInterface dialog, int buttonPressed) {
             if (buttonPressed == DialogInterface.BUTTON_NEUTRAL) {
                 SettingsEnum.SB_API_URL.saveValue(SettingsEnum.SB_API_URL.getDefaultValue());
-                ReVancedUtils.showToastLong(str("api_url_reset"));
+                ReVancedUtils.showToastLong(str("sb_api_url_reset"));
             } else if (buttonPressed == DialogInterface.BUTTON_POSITIVE) {
                 String textAsString = editText.getText().toString();
                 if (!Patterns.WEB_URL.matcher(textAsString).matches()) {
-                    ReVancedUtils.showToastLong(str("api_url_invalid"));
+                    ReVancedUtils.showToastLong(str("sb_api_url_invalid"));
                 } else if (!textAsString.equals(SettingsEnum.SB_API_URL.getString())) {
                     SettingsEnum.SB_API_URL.saveValue(textAsString);
-                    ReVancedUtils.showToastLong(str("api_url_changed"));
+                    ReVancedUtils.showToastLong(str("sb_api_url_changed"));
                 }
             }
         }

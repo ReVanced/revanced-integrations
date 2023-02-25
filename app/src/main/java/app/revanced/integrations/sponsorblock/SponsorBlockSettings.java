@@ -90,12 +90,12 @@ public class SponsorBlockSettings {
     }
 
     public enum SegmentBehaviour {
-        SKIP_AUTOMATICALLY("skip", 2, sf("skip_automatically"), true, true),
+        SKIP_AUTOMATICALLY("skip", 2, sf("sb_skip_automatically"), true, true),
         // desktop does not have skip-once behavior. Key is unique to ReVanced
-        SKIP_AUTOMATICALLY_ONCE("skip-once", 3, sf("skip_automatically_once"), true, true),
-        MANUAL_SKIP("manual-skip", 1, sf("skip_showbutton"), false, true),
-        SHOW_IN_SEEKBAR("seekbar-only", 0, sf("skip_seekbaronly"), false, true),
-        IGNORE("ignore", -1, sf("skip_ignore"), false, false);
+        SKIP_AUTOMATICALLY_ONCE("skip-once", 3, sf("sb_skip_automatically_once"), true, true),
+        MANUAL_SKIP("manual-skip", 1, sf("sb_skip_showbutton"), false, true),
+        SHOW_IN_SEEKBAR("seekbar-only", 0, sf("sb_skip_seekbaronly"), false, true),
+        IGNORE("ignore", -1, sf("sb_skip_ignore"), false, false);
 
         @NonNull
         public final String key;
@@ -132,27 +132,27 @@ public class SponsorBlockSettings {
     }
 
     public enum SegmentInfo {
-        SPONSOR("sponsor", sf("segments_sponsor"), sf("segments_sponsor_sum"), sf("skip_button_sponsor"), sf("skipped_sponsor"),
+        SPONSOR("sponsor", sf("sb_segments_sponsor"), sf("sb_segments_sponsor_sum"), sf("sb_skip_button_sponsor"), sf("sb_skipped_sponsor"),
                 SKIP_AUTOMATICALLY, 0xFF00d400),
-        SELF_PROMO("selfpromo", sf("segments_selfpromo"), sf("segments_selfpromo_sum"), sf("skip_button_selfpromo"), sf("skipped_selfpromo"),
+        SELF_PROMO("selfpromo", sf("sb_segments_selfpromo"), sf("sb_segments_selfpromo_sum"), sf("sb_skip_button_selfpromo"), sf("sb_skipped_selfpromo"),
                 SKIP_AUTOMATICALLY, 0xFFffff00),
-        INTERACTION("interaction", sf("segments_interaction"), sf("segments_interaction_sum"), sf("skip_button_interaction"), sf("skipped_interaction"),
+        INTERACTION("interaction", sf("sb_segments_interaction"), sf("sb_segments_interaction_sum"), sf("sb_skip_button_interaction"), sf("sb_skipped_interaction"),
                 SKIP_AUTOMATICALLY, 0xFFcc00ff),
-        INTRO("intro", sf("segments_intro"), sf("segments_intro_sum"),
-                sf("skip_button_intro_beginning"), sf("skip_button_intro_middle"), sf("skip_button_intro_end"),
-                sf("skipped_intro_beginning"), sf("skipped_intro_middle"), sf("skipped_intro_end"),
+        INTRO("intro", sf("sb_segments_intro"), sf("sb_segments_intro_sum"),
+                sf("sb_skip_button_intro_beginning"), sf("sb_skip_button_intro_middle"), sf("sb_skip_button_intro_end"),
+                sf("sb_skipped_intro_beginning"), sf("sb_skipped_intro_middle"), sf("sb_skipped_intro_end"),
                 MANUAL_SKIP, 0xFF00ffff),
-        OUTRO("outro", sf("segments_endcards"), sf("segments_endcards_sum"), sf("skip_button_endcard"), sf("skipped_endcard"),
+        OUTRO("outro", sf("sb_segments_outro"), sf("sb_segments_outro_sum"), sf("sb_skip_button_outro"), sf("sb_skipped_outro"),
                 MANUAL_SKIP, 0xFF0202ed),
-        PREVIEW("preview", sf("segments_preview"), sf("segments_preview_sum"),
-                sf("skip_button_preview_beginning"), sf("skip_button_preview_middle"), sf("skip_button_preview_end"),
-                sf("skipped_preview_beginning"), sf("skipped_preview_middle"), sf("skipped_preview_end"),
+        PREVIEW("preview", sf("sb_segments_preview"), sf("sb_segments_preview_sum"),
+                sf("sb_skip_button_preview_beginning"), sf("sb_skip_button_preview_middle"), sf("sb_skip_button_preview_end"),
+                sf("sb_skipped_preview_beginning"), sf("sb_skipped_preview_middle"), sf("sb_skipped_preview_end"),
                 DefaultBehaviour, 0xFF008fd6),
-        FILLER("filler", sf("segments_filler"), sf("segments_filler_sum"), sf("skip_button_filler"), sf("skipped_filler"),
+        FILLER("filler", sf("sb_segments_filler"), sf("sb_segments_filler_sum"), sf("sb_skip_button_filler"), sf("sb_skipped_filler"),
                 DefaultBehaviour, 0xFF7300FF),
-        MUSIC_OFFTOPIC("music_offtopic", sf("segments_nomusic"), sf("segments_nomusic_sum"), sf("skip_button_nomusic"), sf("skipped_nomusic"),
+        MUSIC_OFFTOPIC("music_offtopic", sf("sb_segments_nomusic"), sf("sb_segments_nomusic_sum"), sf("sb_skip_button_nomusic"), sf("sb_skipped_nomusic"),
                 MANUAL_SKIP, 0xFFff9900),
-        UNSUBMITTED("unsubmitted", StringRef.empty, StringRef.empty, sf("skip_button_unsubmitted"), sf("skipped_unsubmitted"),
+        UNSUBMITTED("unsubmitted", StringRef.empty, StringRef.empty, sf("sb_skip_button_unsubmitted"), sf("sb_skipped_unsubmitted"),
                 SKIP_AUTOMATICALLY, 0xFFFFFFFF);
 
         private static final SegmentInfo[] mValuesWithoutUnsubmitted = new SegmentInfo[]{
@@ -245,11 +245,13 @@ public class SponsorBlockSettings {
             this.paint = new Paint();
         }
 
+        @NonNull
         public static SegmentInfo[] valuesWithoutUnsubmitted() {
             return mValuesWithoutUnsubmitted;
         }
 
-        public static SegmentInfo byCategoryKey(String key) {
+        @Nullable
+        public static SegmentInfo byCategoryKey(@NonNull String key) {
             return mValuesMap.get(key);
         }
 
@@ -260,6 +262,7 @@ public class SponsorBlockSettings {
             paint.setAlpha(255);
         }
 
+        @NonNull
         public CharSequence getTitleWithDot() {
             return Html.fromHtml(String.format("<font color=\"#%06X\">⬤</font> %s", color, title));
         }

@@ -31,7 +31,7 @@ public class VotingButton {
         try {
             LogHelper.printDebug(() -> "initializing voting button");
             RelativeLayout controlsLayout = (RelativeLayout) viewStub;
-            String buttonResourceName = "voting_button";
+            String buttonResourceName = "sb_voting_button";
             ImageView imageView = controlsLayout.findViewById(getIdentifier(buttonResourceName, "id"));
             if (imageView == null) {
                 LogHelper.printException(() -> "Couldn't find imageView with \"" + buttonResourceName + "\"");

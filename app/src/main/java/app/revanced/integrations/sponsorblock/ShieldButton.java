@@ -34,7 +34,7 @@ public class ShieldButton {
             LogHelper.printDebug(() -> "initializing shield button");
 
             RelativeLayout youtubeControlsLayout = (RelativeLayout) viewStub;
-            String buttonIdentifier = "sponsorblock_button";
+            String buttonIdentifier = "sb_sponsorblock_button";
             ImageView imageView = youtubeControlsLayout.findViewById(getIdentifier(buttonIdentifier, "id"));
             if (imageView == null) {
                 LogHelper.printException(() -> "Couldn't find imageView with \"" + buttonIdentifier + "\"");

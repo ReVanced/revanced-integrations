@@ -117,10 +117,10 @@ public class SponsorBlockView {
 
         _youtubeOverlaysLayout.addView(inlineSponsorOverlay, _youtubeOverlaysLayout.getChildCount() - 2);
 
-        SkipSponsorButton skipSponsorButton = Objects.requireNonNull(inlineSponsorOverlay.findViewById(getIdentifier("skip_sponsor_button", "id")));
+        SkipSponsorButton skipSponsorButton = Objects.requireNonNull(inlineSponsorOverlay.findViewById(getIdentifier("sb_skip_sponsor_button", "id")));
         _skipSponsorButton = new WeakReference<>(skipSponsorButton);
 
-        NewSegmentLayout newSegmentView = Objects.requireNonNull(inlineSponsorOverlay.findViewById(getIdentifier("new_segment_view", "id")));
+        NewSegmentLayout newSegmentView = Objects.requireNonNull(inlineSponsorOverlay.findViewById(getIdentifier("sb_new_segment_view", "id")));
         _newSegmentLayout = new WeakReference<>(newSegmentView);
     }
 

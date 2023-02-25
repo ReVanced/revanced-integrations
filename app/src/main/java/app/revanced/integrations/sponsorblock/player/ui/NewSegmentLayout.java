@@ -43,9 +43,9 @@ public class NewSegmentLayout extends FrameLayout {
         context.getTheme().resolveAttribute(android.R.attr.selectableItemBackground, rippleEffect, true);
         rippleEffectId = rippleEffect.resourceId;
 
-        // LinearLayout newSegmentContainer = this.findViewById(getIdentifier(context, "new_segment_container", "id"));
+        // LinearLayout newSegmentContainer = this.findViewById(getIdentifier(context, "sb_new_segment_container", "id"));
 
-        ImageButton rewindButton = findViewById(getResourceIdByName(context, "new_segment_rewind", "id"));
+        ImageButton rewindButton = findViewById(getResourceIdByName(context, "sb_new_segment_rewind", "id"));
         if (rewindButton == null) {
             LogHelper.printException(() -> "Could not find rewindButton");
         } else {
@@ -55,7 +55,7 @@ public class NewSegmentLayout extends FrameLayout {
                 VideoInformation.seekToRelative(-SettingsEnum.SB_ADJUST_NEW_SEGMENT_STEP.getInt());
             });
         }
-        ImageButton forwardButton = findViewById(getResourceIdByName(context, "new_segment_forward", "id"));
+        ImageButton forwardButton = findViewById(getResourceIdByName(context, "sb_new_segment_forward", "id"));
         if (forwardButton == null) {
             LogHelper.printException(() -> "Could not find forwardButton");
         } else {
@@ -65,7 +65,7 @@ public class NewSegmentLayout extends FrameLayout {
                 VideoInformation.seekToRelative(SettingsEnum.SB_ADJUST_NEW_SEGMENT_STEP.getInt());
             });
         }
-        ImageButton adjustButton = findViewById(getResourceIdByName(context, "new_segment_adjust", "id"));
+        ImageButton adjustButton = findViewById(getResourceIdByName(context, "sb_new_segment_adjust", "id"));
         if (adjustButton == null) {
             LogHelper.printException(() -> "Could not find adjustButton");
         } else {
@@ -75,7 +75,7 @@ public class NewSegmentLayout extends FrameLayout {
                 SponsorBlockUtils.onMarkLocationClicked();
             });
         }
-        ImageButton compareButton = this.findViewById(getResourceIdByName(context, "new_segment_compare", "id"));
+        ImageButton compareButton = this.findViewById(getResourceIdByName(context, "sb_new_segment_compare", "id"));
         if (compareButton == null) {
             LogHelper.printException(() -> "Could not find compareButton");
         } else {
@@ -85,7 +85,7 @@ public class NewSegmentLayout extends FrameLayout {
                 SponsorBlockUtils.onPreviewClicked();
             });
         }
-        ImageButton editButton = findViewById(getResourceIdByName(context, "new_segment_edit", "id"));
+        ImageButton editButton = findViewById(getResourceIdByName(context, "sb_new_segment_edit", "id"));
         if (editButton == null) {
             LogHelper.printException(() -> "Could not find editButton");
         } else {
@@ -95,7 +95,7 @@ public class NewSegmentLayout extends FrameLayout {
                 SponsorBlockUtils.onEditByHandClicked();
             });
         }
-        ImageButton publishButton = this.findViewById(getResourceIdByName(context, "new_segment_publish", "id"));
+        ImageButton publishButton = this.findViewById(getResourceIdByName(context, "sb_new_segment_publish", "id"));
         if (publishButton == null) {
             LogHelper.printException(() -> "Could not find publishButton");
         } else {

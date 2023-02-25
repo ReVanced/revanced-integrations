@@ -59,11 +59,11 @@ public class EditTextListPreference extends ListPreference {
             builder.setPositiveButton(android.R.string.ok, (dialog, which) -> {
                 EditTextListPreference.this.onClick(dialog, DialogInterface.BUTTON_POSITIVE);
             });
-            builder.setNeutralButton(str("reset"), (dialog, which) -> {
+            builder.setNeutralButton(str("sb_reset"), (dialog, which) -> {
                 try {
                     int defaultColor = category.defaultColor;
                     category.setColor(defaultColor);
-                    ReVancedUtils.showToastShort(str("color_reset"));
+                    ReVancedUtils.showToastShort(str("sb_color_reset"));
                     getSharedPreferences().edit().putString(getColorPreferenceKey(), formatColorString(defaultColor)).apply();
                     reformatTitle();
                 } catch (Exception ex) {
@@ -97,9 +97,9 @@ public class EditTextListPreference extends ListPreference {
                     category.setColor(color);
                     getSharedPreferences().edit().putString(getColorPreferenceKey(), formatColorString(color)).apply();
                     reformatTitle();
-                    ReVancedUtils.showToastShort(str("color_changed"));
+                    ReVancedUtils.showToastShort(str("sb_color_changed"));
                 } catch (IllegalArgumentException ex) {
-                    ReVancedUtils.showToastShort(str("color_invalid"));
+                    ReVancedUtils.showToastShort(str("sb_color_invalid"));
                 }
             }
         } catch (Exception ex) {
