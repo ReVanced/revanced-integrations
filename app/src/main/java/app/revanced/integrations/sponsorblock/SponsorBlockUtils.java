@@ -457,11 +457,13 @@ public class SponsorBlockUtils {
 
         // "user reputation".  Usually not useful, since it appears most users have zero reputation.
         // But if there is a reputation, then show it here
-        if (stats.reputation != 0) {
+        {
             Preference preference = new Preference(context);
-            category.addPreference(preference);
             preference.setTitle(fromHtml(str("stats_reputation", stats.reputation)));
             preference.setSelectable(false);
+            if (stats.reputation != 0) {
+                category.addPreference(preference);
+            }
         }
 
         {
