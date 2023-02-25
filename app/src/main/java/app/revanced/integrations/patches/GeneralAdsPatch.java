@@ -42,6 +42,7 @@ public final class GeneralAdsPatch extends Filter {
         var channelBar = new BlockRule(SettingsEnum.ADREMOVER_CHANNEL_BAR, "channel_bar");
         var relatedVideos = new BlockRule(SettingsEnum.ADREMOVER_RELATED_VIDEOS, "fullscreen_related_videos");
         var quickActions = new BlockRule(SettingsEnum.ADREMOVER_QUICK_ACTIONS, "quick_actions");
+        var musicSection = new BlockRule(SettingsEnum.ADREMOVER_MUSIC_SECTION_DESCRIPTION, "music_section");
         var graySeparator = new BlockRule(SettingsEnum.ADREMOVER_GRAY_SEPARATOR,
                 "cell_divider" // layout residue (gray line above the buttoned ad),
         );
@@ -78,6 +79,7 @@ public final class GeneralAdsPatch extends Filter {
                 paidContent,
                 latestPosts,
                 movieAds,
+                musicSection,
                 chapterTeaser,
                 communityGuidelines,
                 quickActions,
