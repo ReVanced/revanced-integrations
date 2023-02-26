@@ -1,7 +1,8 @@
 package app.revanced.integrations.sponsorblock;
 
-import static app.revanced.integrations.sponsorblock.SponsorBlockSettings.SegmentBehaviour.MANUAL_SKIP;
-import static app.revanced.integrations.sponsorblock.SponsorBlockSettings.SegmentBehaviour.SKIP_AUTOMATICALLY;
+import static app.revanced.integrations.sponsorblock.SponsorBlockSettings.CategoryBehaviour.IGNORE;
+import static app.revanced.integrations.sponsorblock.SponsorBlockSettings.CategoryBehaviour.MANUAL_SKIP;
+import static app.revanced.integrations.sponsorblock.SponsorBlockSettings.CategoryBehaviour.SKIP_AUTOMATICALLY;
 import static app.revanced.integrations.sponsorblock.StringRef.sf;
 
 import android.content.SharedPreferences;
@@ -15,6 +16,7 @@ import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
@@ -28,8 +30,7 @@ import app.revanced.integrations.utils.SharedPrefHelper;
 public class SponsorBlockSettings {
 
     public static final String CATEGORY_COLOR_SUFFIX = "_color";
-    public static final SegmentBehaviour DefaultBehaviour = SegmentBehaviour.IGNORE;
-    public static String sponsorBlockUrlCategories = "[]";
+    public static String sponsorBlockAPIFetchCategories = "[]";
 
     public static void update() {
         ReVancedUtils.verifyOnMainThread();
@@ -89,7 +90,7 @@ public class SponsorBlockSettings {
         }
     }
 
-    public enum SegmentBehaviour {
+    public enum CategoryBehaviour {
         SKIP_AUTOMATICALLY("skip", 2, sf("sb_skip_automatically"), true, true),
         // desktop does not have skip-once behavior. Key is unique to ReVanced
         SKIP_AUTOMATICALLY_ONCE("skip-once", 3, sf("sb_skip_automatically_once"), true, true),
@@ -108,11 +109,11 @@ public class SponsorBlockSettings {
         public final boolean skip;
         public final boolean showOnTimeBar;
 
-        SegmentBehaviour(String key,
-                         int desktopKey,
-                         StringRef name,
-                         boolean skip,
-                         boolean showOnTimeBar) {
+        CategoryBehaviour(String key,
+                          int desktopKey,
+                          StringRef name,
+                          boolean skip,
+                          boolean showOnTimeBar) {
             this.key = Objects.requireNonNull(key);
             this.desktopKey = desktopKey;
             this.name = Objects.requireNonNull(name);
@@ -121,8 +122,8 @@ public class SponsorBlockSettings {
         }
 
         @Nullable
-        public static SegmentBehaviour byDesktopKey(int desktopKey) {
-            for (SegmentBehaviour behaviour : values()) {
+        public static CategoryBehaviour byDesktopKey(int desktopKey) {
+            for (CategoryBehaviour behaviour : values()) {
                 if (behaviour.desktopKey == desktopKey) {
                     return behaviour;
                 }
@@ -131,7 +132,7 @@ public class SponsorBlockSettings {
         }
     }
 
-    public enum SegmentInfo {
+    public enum SegmentCategory {
         SPONSOR("sponsor", sf("sb_segments_sponsor"), sf("sb_segments_sponsor_sum"), sf("sb_skip_button_sponsor"), sf("sb_skipped_sponsor"),
                 SKIP_AUTOMATICALLY, 0xFF00d400),
         SELF_PROMO("selfpromo", sf("sb_segments_selfpromo"), sf("sb_segments_selfpromo_sum"), sf("sb_skip_button_selfpromo"), sf("sb_skipped_selfpromo"),
@@ -147,15 +148,15 @@ public class SponsorBlockSettings {
         PREVIEW("preview", sf("sb_segments_preview"), sf("sb_segments_preview_sum"),
                 sf("sb_skip_button_preview_beginning"), sf("sb_skip_button_preview_middle"), sf("sb_skip_button_preview_end"),
                 sf("sb_skipped_preview_beginning"), sf("sb_skipped_preview_middle"), sf("sb_skipped_preview_end"),
-                DefaultBehaviour, 0xFF008fd6),
+                IGNORE, 0xFF008fd6),
         FILLER("filler", sf("sb_segments_filler"), sf("sb_segments_filler_sum"), sf("sb_skip_button_filler"), sf("sb_skipped_filler"),
-                DefaultBehaviour, 0xFF7300FF),
+                IGNORE, 0xFF7300FF),
         MUSIC_OFFTOPIC("music_offtopic", sf("sb_segments_nomusic"), sf("sb_segments_nomusic_sum"), sf("sb_skip_button_nomusic"), sf("sb_skipped_nomusic"),
                 MANUAL_SKIP, 0xFFff9900),
         UNSUBMITTED("unsubmitted", StringRef.empty, StringRef.empty, sf("sb_skip_button_unsubmitted"), sf("sb_skipped_unsubmitted"),
                 SKIP_AUTOMATICALLY, 0xFFFFFFFF);
 
-        private static final SegmentInfo[] mValuesWithoutUnsubmitted = new SegmentInfo[]{
+        private static final SegmentCategory[] mValuesWithoutUnsubmitted = new SegmentCategory[]{
                 SPONSOR,
                 SELF_PROMO,
                 INTERACTION,
@@ -165,11 +166,20 @@ public class SponsorBlockSettings {
                 FILLER,
                 MUSIC_OFFTOPIC,
         };
-        private static final Map<String, SegmentInfo> mValuesMap = new HashMap<>(2 * values().length);
-
+        private static final Map<String, SegmentCategory> mValuesMap = new HashMap<>(2 * mValuesWithoutUnsubmitted.length);
         static {
-            for (SegmentInfo value : valuesWithoutUnsubmitted())
+            for (SegmentCategory value : mValuesWithoutUnsubmitted)
                 mValuesMap.put(value.key, value);
+        }
+
+        @NonNull
+        public static SegmentCategory[] valuesWithoutUnsubmitted() {
+            return mValuesWithoutUnsubmitted;
+        }
+
+        @Nullable
+        public static SegmentCategory byCategoryKey(@NonNull String key) {
+            return mValuesMap.get(key);
         }
 
         @NonNull
@@ -215,21 +225,21 @@ public class SponsorBlockSettings {
         public final int defaultColor;
         public int color;
         @NonNull
-        public SegmentBehaviour behaviour;
+        public CategoryBehaviour behaviour;
 
-        SegmentInfo(String key, StringRef title, StringRef description,
-                    StringRef skipButtonText,
-                    StringRef skippedToastText,
-                    SegmentBehaviour behaviour, int defaultColor) {
+        SegmentCategory(String key, StringRef title, StringRef description,
+                        StringRef skipButtonText,
+                        StringRef skippedToastText,
+                        CategoryBehaviour behaviour, int defaultColor) {
             this(key, title, description,
                     skipButtonText, skipButtonText, skipButtonText,
                     skippedToastText, skippedToastText, skippedToastText,
                     behaviour, defaultColor);
         }
-        SegmentInfo(String key, StringRef title, StringRef description,
-                    StringRef skipButtonTextBeginning, StringRef skipButtonTextMiddle, StringRef skipButtonTextEnd,
-                    StringRef skippedToastBeginning, StringRef skippedToastMiddle, StringRef skippedToastEnd,
-                    SegmentBehaviour behaviour, int defaultColor) {
+        SegmentCategory(String key, StringRef title, StringRef description,
+                        StringRef skipButtonTextBeginning, StringRef skipButtonTextMiddle, StringRef skipButtonTextEnd,
+                        StringRef skippedToastBeginning, StringRef skippedToastMiddle, StringRef skippedToastEnd,
+                        CategoryBehaviour behaviour, int defaultColor) {
             this.key = Objects.requireNonNull(key);
             this.title = Objects.requireNonNull(title);
             this.description = Objects.requireNonNull(description);
@@ -243,16 +253,6 @@ public class SponsorBlockSettings {
             this.defaultColor = defaultColor;
             this.color = defaultColor;
             this.paint = new Paint();
-        }
-
-        @NonNull
-        public static SegmentInfo[] valuesWithoutUnsubmitted() {
-            return mValuesWithoutUnsubmitted;
-        }
-
-        @Nullable
-        public static SegmentInfo byCategoryKey(@NonNull String key) {
-            return mValuesMap.get(key);
         }
 
         public void setColor(int color) {

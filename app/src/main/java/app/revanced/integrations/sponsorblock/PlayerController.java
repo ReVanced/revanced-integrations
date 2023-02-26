@@ -1,7 +1,7 @@
 package app.revanced.integrations.sponsorblock;
 
-import static app.revanced.integrations.sponsorblock.SponsorBlockSettings.SegmentBehaviour;
-import static app.revanced.integrations.sponsorblock.SponsorBlockSettings.SegmentInfo;
+import static app.revanced.integrations.sponsorblock.SponsorBlockSettings.CategoryBehaviour;
+import static app.revanced.integrations.sponsorblock.SponsorBlockSettings.SegmentCategory;
 import static app.revanced.integrations.sponsorblock.StringRef.str;
 
 import android.graphics.Canvas;
@@ -206,8 +206,8 @@ public class PlayerController {
             SponsorSegment foundUpcomingSegment = null;
 
             for (final SponsorSegment segment : segmentsOfCurrentVideo) {
-                if (segment.category.behaviour == SegmentBehaviour.SHOW_IN_SEEKBAR
-                    || segment.category.behaviour == SegmentBehaviour.IGNORE) {
+                if (segment.category.behaviour == CategoryBehaviour.SHOW_IN_SEEKBAR
+                    || segment.category.behaviour == CategoryBehaviour.IGNORE) {
                     continue;
                 }
                 if (segment.end <= millis) {
@@ -412,7 +412,7 @@ public class PlayerController {
                 }
             }
 
-            if (segment.category == SegmentInfo.UNSUBMITTED) {
+            if (segment.category == SegmentCategory.UNSUBMITTED) {
                 // skipped segment was a preview of unsubmitted segment
                 // remove the segment from the UI view
                 SponsorBlockUtils.setNewSponsorSegmentPreviewed();

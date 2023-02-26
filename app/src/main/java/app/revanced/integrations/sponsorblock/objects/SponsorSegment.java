@@ -1,7 +1,7 @@
 package app.revanced.integrations.sponsorblock.objects;
 
-import static app.revanced.integrations.sponsorblock.SponsorBlockSettings.SegmentBehaviour;
-import static app.revanced.integrations.sponsorblock.SponsorBlockSettings.SegmentInfo;
+import static app.revanced.integrations.sponsorblock.SponsorBlockSettings.CategoryBehaviour;
+import static app.revanced.integrations.sponsorblock.SponsorBlockSettings.SegmentCategory;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -12,7 +12,7 @@ import app.revanced.integrations.patches.VideoInformation;
 
 public class SponsorSegment implements Comparable<SponsorSegment> {
     @NonNull
-    public final SegmentInfo category;
+    public final SegmentCategory category;
     /**
      * NULL if segment is unsubmitted
      */
@@ -27,7 +27,7 @@ public class SponsorSegment implements Comparable<SponsorSegment> {
      */
     public boolean recordedAsSkipped = false;
 
-    public SponsorSegment(@NonNull SegmentInfo category, @Nullable String UUID, long start, long end, boolean isLocked) {
+    public SponsorSegment(@NonNull SegmentCategory category, @Nullable String UUID, long start, long end, boolean isLocked) {
         this.category = category;
         this.UUID = UUID;
         this.start = start;
@@ -36,7 +36,7 @@ public class SponsorSegment implements Comparable<SponsorSegment> {
     }
 
     public boolean shouldAutoSkip() {
-        return category.behaviour.skip && !(didAutoSkipped && category.behaviour == SegmentBehaviour.SKIP_AUTOMATICALLY_ONCE);
+        return category.behaviour.skip && !(didAutoSkipped && category.behaviour == CategoryBehaviour.SKIP_AUTOMATICALLY_ONCE);
     }
 
     /**
@@ -106,6 +106,10 @@ public class SponsorSegment implements Comparable<SponsorSegment> {
     @NonNull
     @Override
     public String toString() {
-        return MessageFormat.format("SegmentInfo'{'category=''{0}'', start={1}, end={2}, locked={3}'}'", category, start, end, isLocked);
+        return "SponsorSegment{"
+                + "category=" + category
+                + ", start=" + start
+                + ", end=" + end
+                + '}';
     }
 }

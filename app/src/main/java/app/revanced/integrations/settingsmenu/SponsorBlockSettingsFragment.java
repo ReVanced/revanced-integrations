@@ -1,5 +1,7 @@
 package app.revanced.integrations.settingsmenu;
 
+import static app.revanced.integrations.sponsorblock.SponsorBlockSettings.CategoryBehaviour;
+import static app.revanced.integrations.sponsorblock.SponsorBlockSettings.SegmentCategory;
 import static app.revanced.integrations.sponsorblock.StringRef.str;
 
 import android.app.Activity;
@@ -141,32 +143,30 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment implements 
     }
 
     private void addSegmentsCategory(Context context, PreferenceScreen screen) {
-        PreferenceCategory category = new PreferenceCategory(context);
-        screen.addPreference(category);
-        preferencesToDisableWhenSBDisabled.add(category);
-        category.setTitle(str("sb_diff_segments"));
+        PreferenceCategory preferenceCategory = new PreferenceCategory(context);
+        screen.addPreference(preferenceCategory);
+        preferencesToDisableWhenSBDisabled.add(preferenceCategory);
+        preferenceCategory.setTitle(str("sb_diff_segments"));
 
-        SponsorBlockSettings.SegmentBehaviour[] segmentBehaviours = SponsorBlockSettings.SegmentBehaviour.values();
-        String[] entries = new String[segmentBehaviours.length];
-        String[] entryValues = new String[segmentBehaviours.length];
-        for (int i = 0, segmentBehavioursLength = segmentBehaviours.length; i < segmentBehavioursLength; i++) {
-            SponsorBlockSettings.SegmentBehaviour behaviour = segmentBehaviours[i];
-            entries[i] = behaviour.name.toString();
-            entryValues[i] = behaviour.key;
+        CategoryBehaviour[] behaviours = CategoryBehaviour.values();
+        String[] behaviorNames = new String[behaviours.length];
+        String[] behaviorKeys = new String[behaviours.length];
+        for (int i = 0, length = behaviours.length; i < length; i++) {
+            CategoryBehaviour behaviour = behaviours[i];
+            behaviorNames[i] = behaviour.name.toString();
+            behaviorKeys[i] = behaviour.key;
         }
 
-        SponsorBlockSettings.SegmentInfo[] categories = SponsorBlockSettings.SegmentInfo.valuesWithoutUnsubmitted();
+        for (SegmentCategory category : SegmentCategory.valuesWithoutUnsubmitted()) {
+            EditTextListPreference listPreference = new EditTextListPreference(context);
+            listPreference.setTitle(category.getTitleWithDot());
+            listPreference.setSummary(category.description.toString());
+            listPreference.setKey(category.key);
+            listPreference.setDefaultValue(category.behaviour.key);
+            listPreference.setEntries(behaviorNames);
+            listPreference.setEntryValues(behaviorKeys);
 
-        for (SponsorBlockSettings.SegmentInfo segmentInfo : categories) {
-            EditTextListPreference preference = new EditTextListPreference(context);
-            preference.setTitle(segmentInfo.getTitleWithDot());
-            preference.setSummary(segmentInfo.description.toString());
-            preference.setKey(segmentInfo.key);
-            preference.setDefaultValue(segmentInfo.behaviour.key);
-            preference.setEntries(entries);
-            preference.setEntryValues(entryValues);
-
-            category.addPreference(preference);
+            preferenceCategory.addPreference(listPreference);
         }
 
         Preference colorPreference = new Preference(context); // TODO remove this after the next major update

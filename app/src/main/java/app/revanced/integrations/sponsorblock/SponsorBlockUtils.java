@@ -1,6 +1,8 @@
 package app.revanced.integrations.sponsorblock;
 
 import static android.text.Html.fromHtml;
+import static app.revanced.integrations.sponsorblock.SponsorBlockSettings.CategoryBehaviour;
+import static app.revanced.integrations.sponsorblock.SponsorBlockSettings.SegmentCategory;
 import static app.revanced.integrations.sponsorblock.StringRef.str;
 
 import android.annotation.SuppressLint;
@@ -80,19 +82,18 @@ public class SponsorBlockUtils {
             dialog.dismiss();
         }
     };
-    private static SponsorBlockSettings.SegmentInfo newSponsorBlockSegmentType;
+    private static SegmentCategory newUserCreatedSegmentCategory;
     private static final DialogInterface.OnClickListener segmentTypeListener = new DialogInterface.OnClickListener() {
         @Override
         public void onClick(DialogInterface dialog, int which) {
             try {
-                SponsorBlockSettings.SegmentInfo segmentType = SponsorBlockSettings.SegmentInfo.valuesWithoutUnsubmitted()[which];
+                SegmentCategory category = SegmentCategory.valuesWithoutUnsubmitted()[which];
                 boolean enableButton;
-                if (!segmentType.behaviour.showOnTimeBar) {
+                if (!category.behaviour.showOnTimeBar) {
                     ReVancedUtils.showToastLong(str("sb_new_segment_disabled_category"));
                     enableButton = false;
                 } else {
-                    ReVancedUtils.showToastShort(segmentType.description.toString());
-                    newSponsorBlockSegmentType = segmentType;
+                    newUserCreatedSegmentCategory = category;
                     enableButton = true;
                 }
 
@@ -112,14 +113,13 @@ public class SponsorBlockUtils {
                 Context context = ((AlertDialog) dialog).getContext();
                 dialog.dismiss();
 
-                SponsorBlockSettings.SegmentInfo[] values = SponsorBlockSettings.SegmentInfo.valuesWithoutUnsubmitted();
-                CharSequence[] titles = new CharSequence[values.length];
-                for (int i = 0; i < values.length; i++) {
-                    // titles[i] = values[i].title;
-                    titles[i] = values[i].getTitleWithDot();
+                SegmentCategory[] categories = SegmentCategory.valuesWithoutUnsubmitted();
+                CharSequence[] titles = new CharSequence[categories.length];
+                for (int i = 0, length = categories.length; i < length; i++) {
+                    titles[i] = categories[i].getTitleWithDot();
                 }
 
-                newSponsorBlockSegmentType = null;
+                newUserCreatedSegmentCategory = null;
                 new AlertDialog.Builder(context)
                         .setTitle(str("sb_new_segment_choose_category"))
                         .setSingleChoiceItems(titles, -1, segmentTypeListener)
@@ -233,14 +233,14 @@ public class SponsorBlockUtils {
             final long end = newSponsorSegmentEndMillis;
             final String videoId = PlayerController.getCurrentVideoId();
             final long videoLength = VideoInformation.getCurrentVideoLength();
-            final SponsorBlockSettings.SegmentInfo segmentType = newSponsorBlockSegmentType;
-            if (start < 0 || end < 0 || start >= end || videoLength <= 0 || segmentType == null || videoId == null || uuid == null) {
+            final SegmentCategory segmentCategory = newUserCreatedSegmentCategory;
+            if (start < 0 || end < 0 || start >= end || videoLength <= 0 || segmentCategory == null || videoId == null || uuid == null) {
                 LogHelper.printException(() -> "Unable to submit times, invalid parameters");
                 return;
             }
             clearUnsubmittedSegmentTimes();
             ReVancedUtils.runOnBackgroundThread(() -> {
-                SBRequester.submitSegments(uuid, videoId, segmentType.key, start, end, videoLength);
+                SBRequester.submitSegments(uuid, videoId, segmentCategory.key, start, end, videoLength);
                 PlayerController.executeDownloadSegments(videoId);
             });
         } catch (Exception e) {
@@ -324,7 +324,7 @@ public class SponsorBlockUtils {
             List<CharSequence> titles = new ArrayList<>(numberOfSegments);
             for (int i = 0; i < numberOfSegments; i++) {
                 SponsorSegment segment = currentSegments[i];
-                if (segment.category == SponsorBlockSettings.SegmentInfo.UNSUBMITTED) {
+                if (segment.category == SegmentCategory.UNSUBMITTED) {
                     continue;
                 }
                 String start = voteSegmentTimeFormatter.format(new Date(segment.start));
@@ -348,7 +348,7 @@ public class SponsorBlockUtils {
     private static void onNewCategorySelect(@NonNull SponsorSegment segment, @NonNull Context context) {
         try {
             ReVancedUtils.verifyOnMainThread();
-            final SponsorBlockSettings.SegmentInfo[] values = SponsorBlockSettings.SegmentInfo.valuesWithoutUnsubmitted();
+            final SegmentCategory[] values = SegmentCategory.valuesWithoutUnsubmitted();
             CharSequence[] titles = new CharSequence[values.length];
             for (int i = 0; i < values.length; i++) {
                 titles[i] = values[i].getTitleWithDot();
@@ -371,7 +371,7 @@ public class SponsorBlockUtils {
                 final SponsorSegment[] original = PlayerController.getSegmentsOfCurrentVideo();
                 final SponsorSegment[] segments = original == null ? new SponsorSegment[1] : Arrays.copyOf(original, original.length + 1);
 
-                segments[segments.length - 1] = new SponsorSegment(SponsorBlockSettings.SegmentInfo.UNSUBMITTED, null,
+                segments[segments.length - 1] = new SponsorSegment(SegmentCategory.UNSUBMITTED, null,
                         newSponsorSegmentStartMillis, newSponsorSegmentEndMillis, false);
 
                 PlayerController.setSegmentsOfCurrentVideo(segments);
@@ -385,7 +385,7 @@ public class SponsorBlockUtils {
 
 
     static void sendViewRequestAsync(@NonNull SponsorSegment segment, long videoTimeWhenSkipped) {
-        if (segment.recordedAsSkipped || segment.category == SponsorBlockSettings.SegmentInfo.UNSUBMITTED) {
+        if (segment.recordedAsSkipped || segment.category == SegmentCategory.UNSUBMITTED) {
             return;
         }
         segment.recordedAsSkipped = true;
@@ -543,32 +543,31 @@ public class SponsorBlockUtils {
 
             SharedPreferences.Editor editor = SharedPrefHelper.getPreferences(SharedPrefHelper.SharedPrefNames.SPONSOR_BLOCK).edit();
 
-            SponsorBlockSettings.SegmentInfo[] categories = SponsorBlockSettings.SegmentInfo.valuesWithoutUnsubmitted();
-            for (SponsorBlockSettings.SegmentInfo category : categories) {
+            SegmentCategory[] categories = SegmentCategory.valuesWithoutUnsubmitted();
+            for (SegmentCategory category : categories) {
                 String categoryKey = category.key;
                 JSONObject categoryObject = barTypesObject.getJSONObject(categoryKey);
                 String color = categoryObject.getString("color");
 
                 editor.putString(categoryKey + SponsorBlockSettings.CATEGORY_COLOR_SUFFIX, color);
-                editor.putString(categoryKey, SponsorBlockSettings.SegmentBehaviour.IGNORE.key);
+                editor.putString(categoryKey, CategoryBehaviour.IGNORE.key);
             }
 
             for (int i = 0; i < categorySelectionsArray.length(); i++) {
                 JSONObject categorySelectionObject = categorySelectionsArray.getJSONObject(i);
 
                 String categoryKey = categorySelectionObject.getString("name");
-                SponsorBlockSettings.SegmentInfo category = SponsorBlockSettings.SegmentInfo.byCategoryKey(categoryKey);
-
+                SegmentCategory category = SegmentCategory.byCategoryKey(categoryKey);
                 if (category == null) {
-                    continue;
+                    continue; // unsupported category, ignore
                 }
 
                 final int desktopKey = categorySelectionObject.getInt("option");
-                SponsorBlockSettings.SegmentBehaviour behaviour = SponsorBlockSettings.SegmentBehaviour.byDesktopKey(desktopKey);
+                CategoryBehaviour behaviour = CategoryBehaviour.byDesktopKey(desktopKey);
                 if (behaviour != null) {
                     editor.putString(category.key, behaviour.key);
                 } else {
-                    LogHelper.printException(() -> "Unknown segment category key: " + desktopKey);
+                    LogHelper.printException(() -> "Unknown segment category behavior key: " + desktopKey);
                 }
             }
             editor.apply();
@@ -598,8 +597,8 @@ public class SponsorBlockUtils {
             JSONObject barTypesObject = new JSONObject(); // categories' colors
             JSONArray categorySelectionsArray = new JSONArray(); // categories' behavior
 
-            SponsorBlockSettings.SegmentInfo[] categories = SponsorBlockSettings.SegmentInfo.valuesWithoutUnsubmitted();
-            for (SponsorBlockSettings.SegmentInfo category : categories) {
+            SegmentCategory[] categories = SegmentCategory.valuesWithoutUnsubmitted();
+            for (SegmentCategory category : categories) {
                 JSONObject categoryObject = new JSONObject();
                 String categoryKey = category.key;
                 categoryObject.put("color", formatColorString(category.color));

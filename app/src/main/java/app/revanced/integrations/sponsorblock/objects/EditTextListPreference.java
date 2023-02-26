@@ -1,5 +1,6 @@
 package app.revanced.integrations.sponsorblock.objects;
 
+import static app.revanced.integrations.sponsorblock.SponsorBlockSettings.SegmentCategory;
 import static app.revanced.integrations.sponsorblock.SponsorBlockUtils.formatColorString;
 import static app.revanced.integrations.sponsorblock.StringRef.str;
 
@@ -30,7 +31,7 @@ public class EditTextListPreference extends ListPreference {
     @Override
     protected void onPrepareDialogBuilder(AlertDialog.Builder builder) {
         try {
-            SponsorBlockSettings.SegmentInfo category = getCategoryBySelf();
+            SegmentCategory category = getCategoryBySelf();
 
             mEditText = new EditText(builder.getContext());
             mEditText.setInputType(InputType.TYPE_CLASS_TEXT);
@@ -88,7 +89,7 @@ public class EditTextListPreference extends ListPreference {
                     setValue(value);
                 }
                 String colorString = mEditText.getText().toString();
-                SponsorBlockSettings.SegmentInfo category = getCategoryBySelf();
+                SegmentCategory category = getCategoryBySelf();
                 if (colorString.equals(formatColorString(category.color))) {
                     return;
                 }
@@ -107,8 +108,8 @@ public class EditTextListPreference extends ListPreference {
         }
     }
 
-    private SponsorBlockSettings.SegmentInfo getCategoryBySelf() {
-        return SponsorBlockSettings.SegmentInfo.byCategoryKey(getKey());
+    private SegmentCategory getCategoryBySelf() {
+        return SegmentCategory.byCategoryKey(getKey());
     }
 
     private String getColorPreferenceKey() {
