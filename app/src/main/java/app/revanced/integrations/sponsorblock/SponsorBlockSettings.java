@@ -48,30 +48,25 @@ public class SponsorBlockSettings {
 
         // shield and voting button automatically show/hide themselves if feature is turned on/off
 
-        SegmentBehaviour[] possibleBehaviours = SegmentBehaviour.values();
-        final ArrayList<String> enabledCategories = new ArrayList<>(possibleBehaviours.length);
-        for (SegmentInfo segment : SegmentInfo.values()) {
+        SegmentCategory[] categories = SegmentCategory.valuesWithoutUnsubmitted();
+        List<String> enabledCategories = new ArrayList<>(categories.length);
+        CategoryBehaviour[] possibleBehaviours = CategoryBehaviour.values();
+        for (SegmentCategory segment : categories) {
             String categoryColor = preferences.getString(segment.key + CATEGORY_COLOR_SUFFIX, SponsorBlockUtils.formatColorString(segment.defaultColor));
             segment.setColor(Color.parseColor(categoryColor));
 
-            SegmentBehaviour behaviour = null;
             String value = preferences.getString(segment.key, null);
             if (value != null) {
-                for (SegmentBehaviour possibleBehaviour : possibleBehaviours) {
+                for (CategoryBehaviour possibleBehaviour : possibleBehaviours) {
                     if (possibleBehaviour.key.equals(value)) {
-                        behaviour = possibleBehaviour;
+                        segment.behaviour = possibleBehaviour;
                         break;
                     }
                 }
             }
-            if (behaviour != null) {
-                segment.behaviour = behaviour;
-            } else {
-                behaviour = segment.behaviour;
-            }
-
-            if (behaviour.showOnTimeBar && segment != SegmentInfo.UNSUBMITTED)
+            if (segment.behaviour.showOnTimeBar) {
                 enabledCategories.add(segment.key);
+            }
         }
 
         //"[%22sponsor%22,%22outro%22,%22music_offtopic%22,%22intro%22,%22selfpromo%22,%22interaction%22,%22preview%22]";
