@@ -292,7 +292,12 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment implements 
             preference.setSummary(str("sb_general_adjusting_sum"));
             preference.setText(String.valueOf(SettingsEnum.SB_ADJUST_NEW_SEGMENT_STEP.getInt()));
             preference.setOnPreferenceChangeListener((preference1, newValue) -> {
-                SettingsEnum.SB_ADJUST_NEW_SEGMENT_STEP.saveValue(Integer.valueOf(newValue.toString()));
+                Integer newAdjustmentValue = Integer.valueOf(newValue.toString());
+                if (newAdjustmentValue == 0) {
+                    ReVancedUtils.showToastLong(str("sb_general_adjusting_invalid"));
+                } else {
+                    SettingsEnum.SB_ADJUST_NEW_SEGMENT_STEP.saveValue(newAdjustmentValue);
+                }
                 return true;
             });
             screen.addPreference(preference);
@@ -362,7 +367,7 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment implements 
             });
             preference.setOnPreferenceChangeListener((preference1, newValue) -> {
                 SponsorBlockUtils.importSettings((String) newValue);
-                return false;
+                return true;
             });
             screen.addPreference(preference);
             preferencesToDisableWhenSBDisabled.add(preference);
