@@ -89,7 +89,7 @@ public class SponsorBlockUtils {
             try {
                 SegmentCategory category = SegmentCategory.valuesWithoutUnsubmitted()[which];
                 boolean enableButton;
-                if (!category.behaviour.showOnTimeBar) {
+                if (category.behaviour == CategoryBehaviour.IGNORE) {
                     ReVancedUtils.showToastLong(str("sb_new_segment_disabled_category"));
                     enableButton = false;
                 } else {

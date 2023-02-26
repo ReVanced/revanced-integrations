@@ -64,7 +64,7 @@ public class SponsorBlockSettings {
                     }
                 }
             }
-            if (segment.behaviour.showOnTimeBar) {
+            if (segment.behaviour != CategoryBehaviour.IGNORE) {
                 enabledCategories.add(segment.key);
             }
         }
@@ -86,12 +86,12 @@ public class SponsorBlockSettings {
     }
 
     public enum CategoryBehaviour {
-        SKIP_AUTOMATICALLY("skip", 2, sf("sb_skip_automatically"), true, true),
+        SKIP_AUTOMATICALLY("skip", 2, sf("sb_skip_automatically"), true),
         // desktop does not have skip-once behavior. Key is unique to ReVanced
-        SKIP_AUTOMATICALLY_ONCE("skip-once", 3, sf("sb_skip_automatically_once"), true, true),
-        MANUAL_SKIP("manual-skip", 1, sf("sb_skip_showbutton"), false, true),
-        SHOW_IN_SEEKBAR("seekbar-only", 0, sf("sb_skip_seekbaronly"), false, true),
-        IGNORE("ignore", -1, sf("sb_skip_ignore"), false, false);
+        SKIP_AUTOMATICALLY_ONCE("skip-once", 3, sf("sb_skip_automatically_once"), true),
+        MANUAL_SKIP("manual-skip", 1, sf("sb_skip_showbutton"), false),
+        SHOW_IN_SEEKBAR("seekbar-only", 0, sf("sb_skip_seekbaronly"), false),
+        IGNORE("ignore", -1, sf("sb_skip_ignore"), false);
 
         @NonNull
         public final String key;
@@ -102,18 +102,15 @@ public class SponsorBlockSettings {
          * If the segment should skip automatically
          */
         public final boolean skip;
-        public final boolean showOnTimeBar;
 
         CategoryBehaviour(String key,
                           int desktopKey,
                           StringRef name,
-                          boolean skip,
-                          boolean showOnTimeBar) {
+                          boolean skip) {
             this.key = Objects.requireNonNull(key);
             this.desktopKey = desktopKey;
             this.name = Objects.requireNonNull(name);
             this.skip = skip;
-            this.showOnTimeBar = showOnTimeBar;
         }
 
         @Nullable
@@ -225,16 +222,16 @@ public class SponsorBlockSettings {
         SegmentCategory(String key, StringRef title, StringRef description,
                         StringRef skipButtonText,
                         StringRef skippedToastText,
-                        CategoryBehaviour behaviour, int defaultColor) {
+                        CategoryBehaviour defaultBehavior, int defaultColor) {
             this(key, title, description,
                     skipButtonText, skipButtonText, skipButtonText,
                     skippedToastText, skippedToastText, skippedToastText,
-                    behaviour, defaultColor);
+                    defaultBehavior, defaultColor);
         }
         SegmentCategory(String key, StringRef title, StringRef description,
                         StringRef skipButtonTextBeginning, StringRef skipButtonTextMiddle, StringRef skipButtonTextEnd,
                         StringRef skippedToastBeginning, StringRef skippedToastMiddle, StringRef skippedToastEnd,
-                        CategoryBehaviour behaviour, int defaultColor) {
+                        CategoryBehaviour defaultBehavior, int defaultColor) {
             this.key = Objects.requireNonNull(key);
             this.title = Objects.requireNonNull(title);
             this.description = Objects.requireNonNull(description);
@@ -244,7 +241,7 @@ public class SponsorBlockSettings {
             this.skippedToastBeginning = Objects.requireNonNull(skippedToastBeginning);
             this.skippedToastMiddle = Objects.requireNonNull(skippedToastMiddle);
             this.skippedToastEnd = Objects.requireNonNull(skippedToastEnd);
-            this.behaviour = Objects.requireNonNull(behaviour);
+            this.behaviour = Objects.requireNonNull(defaultBehavior);
             this.defaultColor = defaultColor;
             this.color = defaultColor;
             this.paint = new Paint();

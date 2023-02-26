@@ -1,6 +1,7 @@
 package app.revanced.integrations.sponsorblock.requests;
 
 import static android.text.Html.fromHtml;
+import static app.revanced.integrations.sponsorblock.SponsorBlockSettings.CategoryBehaviour;
 import static app.revanced.integrations.sponsorblock.SponsorBlockSettings.SegmentCategory;
 import static app.revanced.integrations.sponsorblock.StringRef.str;
 import static app.revanced.integrations.utils.ReVancedUtils.runOnMainThread;
@@ -81,7 +82,7 @@ public class SBRequester {
                     SegmentCategory segmentCategory = SegmentCategory.byCategoryKey(categoryKey);
                     if (segmentCategory == null) {
                         LogHelper.printException(() -> "Received unknown category: " + categoryKey); // should never happen
-                    } else if (segmentCategory.behaviour.showOnTimeBar) {
+                    } else if (segmentCategory.behaviour != CategoryBehaviour.IGNORE) {
                         SponsorSegment sponsorSegment = new SponsorSegment(segmentCategory, uuid, start, end, locked);
                         segments.add(sponsorSegment);
                     }
