@@ -53,7 +53,8 @@ public class SegmentPlaybackController {
     @Nullable
     private static SponsorSegment scheduledUpcomingSegment;
 
-    private static String timeWithoutSegments = "";
+    @Nullable
+    private static String timeWithoutSegments;
     private static boolean settingsInitialized;
 
     private static float sponsorBarLeft = 1f;
@@ -86,7 +87,7 @@ public class SegmentPlaybackController {
     private static void clearData() {
         currentVideoId = null;
         segmentsOfCurrentVideo = null;
-        timeWithoutSegments = "";
+        timeWithoutSegments = null;
         segmentCurrentlyPlaying = null;
         scheduledUpcomingSegment = null; // prevent any existing scheduled skip from running
         scheduledHideSegment = null;
@@ -544,7 +545,7 @@ public class SegmentPlaybackController {
     public static String appendTimeWithoutSegments(String totalTime) {
         try {
             if (SettingsEnum.SB_ENABLED.getBoolean() && SettingsEnum.SB_SHOW_TIME_WITHOUT_SEGMENTS.getBoolean()
-                    && !TextUtils.isEmpty(totalTime) && VideoInformation.getCurrentVideoLength() > 0) {
+                    && !TextUtils.isEmpty(totalTime) && !TextUtils.isEmpty(timeWithoutSegments)) {
                 return totalTime + timeWithoutSegments;
             }
         } catch (Exception ex) {
@@ -558,7 +559,7 @@ public class SegmentPlaybackController {
         final long currentVideoLength = VideoInformation.getCurrentVideoLength();
         if (!SettingsEnum.SB_SHOW_TIME_WITHOUT_SEGMENTS.getBoolean() || currentVideoLength <= 0
                 || segmentsOfCurrentVideo == null || segmentsOfCurrentVideo.length == 0) {
-            timeWithoutSegments = "";
+            timeWithoutSegments = null;
             return;
         }
 
