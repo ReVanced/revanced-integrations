@@ -292,7 +292,7 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment implements 
             preference.setSummary(str("sb_general_adjusting_sum"));
             preference.setText(String.valueOf(SettingsEnum.SB_ADJUST_NEW_SEGMENT_STEP.getInt()));
             preference.setOnPreferenceChangeListener((preference1, newValue) -> {
-                Integer newAdjustmentValue = Integer.valueOf(newValue.toString());
+                final int newAdjustmentValue = Integer.parseInt(newValue.toString());
                 if (newAdjustmentValue == 0) {
                     ReVancedUtils.showToastLong(str("sb_general_adjusting_invalid"));
                 } else {
