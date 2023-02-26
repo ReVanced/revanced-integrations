@@ -1,6 +1,5 @@
 package app.revanced.integrations.sponsorblock.objects;
 
-import static app.revanced.integrations.sponsorblock.SponsorBlockSettings.SegmentCategory;
 import static app.revanced.integrations.sponsorblock.SponsorBlockUtils.formatColorString;
 import static app.revanced.integrations.sponsorblock.StringRef.str;
 
@@ -15,12 +14,11 @@ import android.text.InputType;
 import android.text.TextWatcher;
 import android.widget.EditText;
 
-import app.revanced.integrations.sponsorblock.SponsorBlockSettings;
+import app.revanced.integrations.sponsorblock.SponsorBlockUtils;
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedUtils;
 
 public class EditTextListPreference extends ListPreference {
-
     private EditText mEditText;
     private int mClickedDialogEntryIndex;
 
@@ -113,7 +111,7 @@ public class EditTextListPreference extends ListPreference {
     }
 
     private String getColorPreferenceKey() {
-        return getKey() + SponsorBlockSettings.CATEGORY_COLOR_SUFFIX;
+        return getKey() + SponsorBlockUtils.SEGMENT_CATEGORY_COLOR_SUFFIX;
     }
 
     private void reformatTitle() {

@@ -1,7 +1,8 @@
 package app.revanced.integrations.settingsmenu;
 
-import static app.revanced.integrations.sponsorblock.SponsorBlockSettings.CategoryBehaviour;
-import static app.revanced.integrations.sponsorblock.SponsorBlockSettings.SegmentCategory;
+import app.revanced.integrations.sponsorblock.objects.CategoryBehaviour;
+
+import app.revanced.integrations.sponsorblock.objects.SegmentCategory;
 import static app.revanced.integrations.sponsorblock.StringRef.str;
 
 import android.app.Activity;
@@ -30,7 +31,6 @@ import java.util.List;
 import java.util.Objects;
 
 import app.revanced.integrations.settings.SettingsEnum;
-import app.revanced.integrations.sponsorblock.SponsorBlockSettings;
 import app.revanced.integrations.sponsorblock.SponsorBlockUtils;
 import app.revanced.integrations.sponsorblock.objects.EditTextListPreference;
 import app.revanced.integrations.sponsorblock.requests.SBRequester;
@@ -51,7 +51,7 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment implements 
         PreferenceScreen preferenceScreen = preferenceManager.createPreferenceScreen(context);
         setPreferenceScreen(preferenceScreen);
 
-        SponsorBlockSettings.update();
+        SponsorBlockUtils.loadFromSavedSettings();
 
         {
             SwitchPreference preference = new SwitchPreference(context);
@@ -376,7 +376,7 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment implements 
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        SponsorBlockSettings.update();
+        SponsorBlockUtils.loadFromSavedSettings();
     }
 
     private static class APIURLChangeListener implements DialogInterface.OnClickListener {

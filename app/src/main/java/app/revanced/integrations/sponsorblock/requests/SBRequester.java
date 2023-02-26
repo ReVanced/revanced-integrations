@@ -1,8 +1,10 @@
 package app.revanced.integrations.sponsorblock.requests;
 
 import static android.text.Html.fromHtml;
-import static app.revanced.integrations.sponsorblock.SponsorBlockSettings.CategoryBehaviour;
-import static app.revanced.integrations.sponsorblock.SponsorBlockSettings.SegmentCategory;
+
+import app.revanced.integrations.sponsorblock.objects.CategoryBehaviour;
+
+import app.revanced.integrations.sponsorblock.objects.SegmentCategory;
 import static app.revanced.integrations.sponsorblock.StringRef.str;
 import static app.revanced.integrations.utils.ReVancedUtils.runOnMainThread;
 
@@ -27,9 +29,7 @@ import java.util.concurrent.TimeUnit;
 import app.revanced.integrations.requests.Requester;
 import app.revanced.integrations.requests.Route;
 import app.revanced.integrations.settings.SettingsEnum;
-import app.revanced.integrations.sponsorblock.SponsorBlockSettings;
 import app.revanced.integrations.sponsorblock.SponsorBlockUtils;
-import app.revanced.integrations.sponsorblock.SponsorBlockUtils.VoteOption;
 import app.revanced.integrations.sponsorblock.objects.SponsorSegment;
 import app.revanced.integrations.sponsorblock.objects.UserStats;
 import app.revanced.integrations.utils.LogHelper;
@@ -61,7 +61,7 @@ public class SBRequester {
         ReVancedUtils.verifyOffMainThread();
         List<SponsorSegment> segments = new ArrayList<>();
         try {
-            HttpURLConnection connection = getConnectionFromRoute(SBRoutes.GET_SEGMENTS, videoId, SponsorBlockSettings.sponsorBlockAPIFetchCategories);
+            HttpURLConnection connection = getConnectionFromRoute(SBRoutes.GET_SEGMENTS, videoId, SponsorBlockUtils.sponsorBlockAPIFetchCategories);
             final int responseCode = connection.getResponseCode();
 
             if (responseCode == SUCCESS_HTTP_STATUS_CODE) {
@@ -170,14 +170,14 @@ public class SBRequester {
         }
     }
 
-    public static void voteForSegmentOnBackgroundThread(@NonNull SponsorSegment segment, @NonNull VoteOption voteOption, String... args) {
+    public static void voteForSegmentOnBackgroundThread(@NonNull SponsorSegment segment, @NonNull SponsorSegment.SegmentVote voteOption, String... args) {
         ReVancedUtils.runOnBackgroundThread(() -> {
             try {
                 String segmentUuid = segment.UUID;
                 String uuid = SettingsEnum.SB_UUID.getString();
-                String vote = Integer.toString(voteOption == VoteOption.UPVOTE ? 1 : 0);
+                String vote = Integer.toString(voteOption == SponsorSegment.SegmentVote.UPVOTE ? 1 : 0);
 
-                HttpURLConnection connection = voteOption == VoteOption.CATEGORY_CHANGE
+                HttpURLConnection connection = voteOption == SponsorSegment.SegmentVote.CATEGORY_CHANGE
                         ? getConnectionFromRoute(SBRoutes.VOTE_ON_SEGMENT_CATEGORY, uuid, segmentUuid, args[0])
                         : getConnectionFromRoute(SBRoutes.VOTE_ON_SEGMENT_QUALITY, uuid, segmentUuid, vote);
                 final int responseCode = connection.getResponseCode();

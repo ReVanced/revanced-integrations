@@ -1,8 +1,6 @@
 package app.revanced.integrations.sponsorblock;
 
 import static android.text.Html.fromHtml;
-import static app.revanced.integrations.sponsorblock.SponsorBlockSettings.CategoryBehaviour;
-import static app.revanced.integrations.sponsorblock.SponsorBlockSettings.SegmentCategory;
 import static app.revanced.integrations.sponsorblock.StringRef.str;
 
 import android.annotation.SuppressLint;
@@ -11,11 +9,13 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.net.Uri;
 import android.preference.EditTextPreference;
 import android.preference.Preference;
 import android.preference.PreferenceCategory;
 import android.text.Html;
+import android.text.TextUtils;
 import android.widget.EditText;
 
 import androidx.annotation.NonNull;
@@ -34,9 +34,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.TimeZone;
+import java.util.UUID;
 
 import app.revanced.integrations.patches.VideoInformation;
 import app.revanced.integrations.settings.SettingsEnum;
+import app.revanced.integrations.sponsorblock.objects.CategoryBehaviour;
+import app.revanced.integrations.sponsorblock.objects.SegmentCategory;
 import app.revanced.integrations.sponsorblock.objects.SponsorSegment;
 import app.revanced.integrations.sponsorblock.objects.UserStats;
 import app.revanced.integrations.sponsorblock.player.ui.SponsorBlockView;
@@ -49,6 +52,9 @@ import app.revanced.integrations.utils.SharedPrefHelper;
  * Not thread safe. All fields/methods must be accessed from the main thread.
  */
 public class SponsorBlockUtils {
+    public static final String SEGMENT_CATEGORY_COLOR_SUFFIX = "_color";
+    public static String sponsorBlockAPIFetchCategories = "[]";
+
     private static final String MANUAL_EDIT_TIME_FORMAT = "HH:mm:ss.SSS";
     @SuppressLint("SimpleDateFormat")
     private static final SimpleDateFormat manualEditTimeFormatter = new SimpleDateFormat(MANUAL_EDIT_TIME_FORMAT);
@@ -180,11 +186,11 @@ public class SponsorBlockUtils {
             }
             SponsorSegment segment = currentSegments[which];
 
-            final VoteOption[] voteOptions = VoteOption.values();
+            final SponsorSegment.SegmentVote[] voteOptions = SponsorSegment.SegmentVote.values();
             CharSequence[] items = new CharSequence[voteOptions.length];
 
             for (int i = 0; i < voteOptions.length; i++) {
-                VoteOption voteOption = voteOptions[i];
+                SponsorSegment.SegmentVote voteOption = voteOptions[i];
                 String title = voteOption.title;
                 if (SettingsEnum.SB_IS_VIP.getBoolean() && segment.isLocked && voteOption.shouldHighlight) {
                     items[i] = Html.fromHtml(String.format("<font color=\"%s\">%s</font>", LOCKED_COLOR, title));
@@ -195,7 +201,7 @@ public class SponsorBlockUtils {
 
             new AlertDialog.Builder(context)
                     .setItems(items, (dialog1, which1) -> {
-                        VoteOption voteOption = voteOptions[which1];
+                        SponsorSegment.SegmentVote voteOption = voteOptions[which1];
                         switch (voteOption) {
                             case UPVOTE:
                             case DOWNVOTE:
@@ -356,7 +362,7 @@ public class SponsorBlockUtils {
 
             new AlertDialog.Builder(context)
                     .setTitle(str("sb_new_segment_choose_category"))
-                    .setItems(titles, (dialog, which) -> SBRequester.voteForSegmentOnBackgroundThread(segment, VoteOption.CATEGORY_CHANGE, values[which].key))
+                    .setItems(titles, (dialog, which) -> SBRequester.voteForSegmentOnBackgroundThread(segment, SponsorSegment.SegmentVote.CATEGORY_CHANGE, values[which].key))
                     .show();
         } catch (Exception ex) {
             LogHelper.printException(() -> "onNewCategorySelect failure", ex);
@@ -549,7 +555,7 @@ public class SponsorBlockUtils {
                 JSONObject categoryObject = barTypesObject.getJSONObject(categoryKey);
                 String color = categoryObject.getString("color");
 
-                editor.putString(categoryKey + SponsorBlockSettings.CATEGORY_COLOR_SUFFIX, color);
+                editor.putString(categoryKey + SEGMENT_CATEGORY_COLOR_SUFFIX, color);
                 editor.putString(categoryKey, CategoryBehaviour.IGNORE.key);
             }
 
@@ -630,18 +636,57 @@ public class SponsorBlockUtils {
         }
     }
 
-    public enum VoteOption {
-        UPVOTE(str("sb_vote_upvote"), false),
-        DOWNVOTE(str("sb_vote_downvote"), true),
-        CATEGORY_CHANGE(str("sb_vote_category"), true);
+    public static void loadFromSavedSettings() {
+        ReVancedUtils.verifyOnMainThread();
+        LogHelper.printDebug(() -> "updating SponsorBlockSettings");
+        SharedPreferences preferences = SharedPrefHelper.getPreferences(SharedPrefHelper.SharedPrefNames.SPONSOR_BLOCK);
 
-        @NonNull
-        public final String title;
-        public final boolean shouldHighlight;
+        if (!SettingsEnum.SB_ENABLED.getBoolean()) {
+            SponsorBlockView.hideSkipButton();
+            SponsorBlockView.hideNewSegmentLayout();
+            PlayerController.setCurrentVideoId(null);
+        }
+        if (!SettingsEnum.SB_NEW_SEGMENT_ENABLED.getBoolean()) {
+            SponsorBlockView.hideNewSegmentLayout();
+        }
 
-        VoteOption(@NonNull String title, boolean shouldHighlight) {
-            this.title = title;
-            this.shouldHighlight = shouldHighlight;
+        // shield and voting button automatically show/hide themselves if feature is turned on/off
+
+        SegmentCategory[] categories = SegmentCategory.valuesWithoutUnsubmitted();
+        List<String> enabledCategories = new ArrayList<>(categories.length);
+        for (SegmentCategory category : categories) {
+            String categoryColor = preferences.getString(category.key + SEGMENT_CATEGORY_COLOR_SUFFIX, null);
+            if (categoryColor != null) {
+                category.setColor(Color.parseColor(categoryColor));
+            }
+
+            String value = preferences.getString(category.key, null);
+            if (value != null) {
+                CategoryBehaviour behavior = CategoryBehaviour.byStringKey(value);
+                if (behavior == null) {
+                    LogHelper.printException(() -> "Unknown behavior: " + value); // should never happen
+                } else {
+                    category.behaviour = behavior;
+                }
+            }
+            if (category.behaviour != CategoryBehaviour.IGNORE) {
+                enabledCategories.add(category.key);
+            }
+        }
+
+        //"[%22sponsor%22,%22outro%22,%22music_offtopic%22,%22intro%22,%22selfpromo%22,%22interaction%22,%22preview%22]";
+        if (enabledCategories.isEmpty())
+            sponsorBlockAPIFetchCategories = "[]";
+        else
+            sponsorBlockAPIFetchCategories = "[%22" + TextUtils.join("%22,%22", enabledCategories) + "%22]";
+
+        String uuid = SettingsEnum.SB_UUID.getString();
+        if (uuid == null || uuid.length() == 0) {
+            uuid = (UUID.randomUUID().toString() +
+                    UUID.randomUUID().toString() +
+                    UUID.randomUUID().toString())
+                    .replace("-", "");
+            SettingsEnum.SB_UUID.saveValue(uuid);
         }
     }
 

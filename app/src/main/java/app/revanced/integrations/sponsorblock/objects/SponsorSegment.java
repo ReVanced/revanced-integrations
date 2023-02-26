@@ -1,16 +1,28 @@
 package app.revanced.integrations.sponsorblock.objects;
 
-import static app.revanced.integrations.sponsorblock.SponsorBlockSettings.CategoryBehaviour;
-import static app.revanced.integrations.sponsorblock.SponsorBlockSettings.SegmentCategory;
+import static app.revanced.integrations.sponsorblock.StringRef.str;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import java.text.MessageFormat;
-
 import app.revanced.integrations.patches.VideoInformation;
 
 public class SponsorSegment implements Comparable<SponsorSegment> {
+    public enum SegmentVote {
+        UPVOTE(str("sb_vote_upvote"), false),
+        DOWNVOTE(str("sb_vote_downvote"), true),
+        CATEGORY_CHANGE(str("sb_vote_category"), true);
+
+        @NonNull
+        public final String title;
+        public final boolean shouldHighlight;
+
+        SegmentVote(@NonNull String title, boolean shouldHighlight) {
+            this.title = title;
+            this.shouldHighlight = shouldHighlight;
+        }
+    }
+
     @NonNull
     public final SegmentCategory category;
     /**

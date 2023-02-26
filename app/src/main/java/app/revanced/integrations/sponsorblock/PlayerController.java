@@ -1,7 +1,8 @@
 package app.revanced.integrations.sponsorblock;
 
-import static app.revanced.integrations.sponsorblock.SponsorBlockSettings.CategoryBehaviour;
-import static app.revanced.integrations.sponsorblock.SponsorBlockSettings.SegmentCategory;
+import app.revanced.integrations.sponsorblock.objects.CategoryBehaviour;
+
+import app.revanced.integrations.sponsorblock.objects.SegmentCategory;
 import static app.revanced.integrations.sponsorblock.StringRef.str;
 
 import android.graphics.Canvas;
@@ -133,7 +134,7 @@ public class PlayerController {
             }
 
             if (!settingsInitialized) {
-                SponsorBlockSettings.update();
+                SponsorBlockUtils.loadFromSavedSettings();
                 settingsInitialized = true;
             }
 
