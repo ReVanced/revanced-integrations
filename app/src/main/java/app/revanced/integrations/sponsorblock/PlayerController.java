@@ -1,8 +1,5 @@
 package app.revanced.integrations.sponsorblock;
 
-import app.revanced.integrations.sponsorblock.objects.CategoryBehaviour;
-
-import app.revanced.integrations.sponsorblock.objects.SegmentCategory;
 import static app.revanced.integrations.sponsorblock.StringRef.str;
 
 import android.graphics.Canvas;
@@ -20,6 +17,8 @@ import app.revanced.integrations.patches.VideoInformation;
 import app.revanced.integrations.patches.playback.speed.RememberPlaybackRatePatch;
 import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.shared.PlayerType;
+import app.revanced.integrations.sponsorblock.objects.CategoryBehaviour;
+import app.revanced.integrations.sponsorblock.objects.SegmentCategory;
 import app.revanced.integrations.sponsorblock.objects.SponsorSegment;
 import app.revanced.integrations.sponsorblock.player.ui.SponsorBlockView;
 import app.revanced.integrations.sponsorblock.requests.SBRequester;

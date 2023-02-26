@@ -2,6 +2,7 @@ package app.revanced.integrations.sponsorblock.requests;
 
 import static android.text.Html.fromHtml;
 
+import app.revanced.integrations.settingsmenu.SponsorBlockSettingsFragment;
 import app.revanced.integrations.sponsorblock.SponsorBlockSettings;
 import app.revanced.integrations.sponsorblock.objects.CategoryBehaviour;
 
@@ -30,7 +31,6 @@ import java.util.concurrent.TimeUnit;
 import app.revanced.integrations.requests.Requester;
 import app.revanced.integrations.requests.Route;
 import app.revanced.integrations.settings.SettingsEnum;
-import app.revanced.integrations.sponsorblock.SponsorBlockUtils;
 import app.revanced.integrations.sponsorblock.objects.SponsorSegment;
 import app.revanced.integrations.sponsorblock.objects.UserStats;
 import app.revanced.integrations.utils.LogHelper;
@@ -214,7 +214,7 @@ public class SBRequester {
             UserStats stats = new UserStats(json);
             LogHelper.printDebug(() -> "user stats: " + stats);
             runOnMainThread(() -> { // get back on main thread to modify UI elements
-                SponsorBlockUtils.addUserStats(category, loadingPreference, stats);
+                SponsorBlockSettingsFragment.addUserStats(category, loadingPreference, stats);
             });
         } catch (IOException ex) {
             runOnMainThread(() -> loadingPreference.setTitle(str("sb_stats_connection_failure")));
