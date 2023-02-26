@@ -1,4 +1,4 @@
-package app.revanced.integrations.sponsorblock.player.ui;
+package app.revanced.integrations.sponsorblock.ui;
 
 import static app.revanced.integrations.utils.ReVancedUtils.getResourceIdByName;
 

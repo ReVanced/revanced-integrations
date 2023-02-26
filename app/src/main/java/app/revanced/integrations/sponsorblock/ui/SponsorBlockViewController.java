@@ -1,4 +1,4 @@
-package app.revanced.integrations.sponsorblock.player.ui;
+package app.revanced.integrations.sponsorblock.ui;
 
 import static app.revanced.integrations.utils.ReVancedUtils.getIdentifier;
 
@@ -19,7 +19,7 @@ import app.revanced.integrations.sponsorblock.objects.SponsorSegment;
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedUtils;
 
-public class SponsorBlockView {
+public class SponsorBlockViewController {
     private static RelativeLayout inlineSponsorOverlay;
     private static ViewGroup _youtubeOverlaysLayout;
     private static WeakReference<SkipSponsorButton> _skipSponsorButton = new WeakReference<>(null);

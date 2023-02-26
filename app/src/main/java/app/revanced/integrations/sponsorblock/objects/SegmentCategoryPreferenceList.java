@@ -18,11 +18,11 @@ import app.revanced.integrations.sponsorblock.SponsorBlockSettings;
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedUtils;
 
-public class EditTextListPreference extends ListPreference {
+public class SegmentCategoryPreferenceList extends ListPreference {
     private EditText mEditText;
     private int mClickedDialogEntryIndex;
 
-    public EditTextListPreference(Context context) {
+    public SegmentCategoryPreferenceList(Context context) {
         super(context);
     }
 
@@ -56,7 +56,7 @@ public class EditTextListPreference extends ListPreference {
             builder.setTitle(category.getTitleWithDot());
 
             builder.setPositiveButton(android.R.string.ok, (dialog, which) -> {
-                EditTextListPreference.this.onClick(dialog, DialogInterface.BUTTON_POSITIVE);
+                SegmentCategoryPreferenceList.this.onClick(dialog, DialogInterface.BUTTON_POSITIVE);
             });
             builder.setNeutralButton(str("sb_reset"), (dialog, which) -> {
                 try {

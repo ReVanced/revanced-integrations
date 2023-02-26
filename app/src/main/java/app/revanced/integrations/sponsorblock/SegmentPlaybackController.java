@@ -20,15 +20,17 @@ import app.revanced.integrations.shared.PlayerType;
 import app.revanced.integrations.sponsorblock.objects.CategoryBehaviour;
 import app.revanced.integrations.sponsorblock.objects.SegmentCategory;
 import app.revanced.integrations.sponsorblock.objects.SponsorSegment;
-import app.revanced.integrations.sponsorblock.player.ui.SponsorBlockView;
+import app.revanced.integrations.sponsorblock.ui.SponsorBlockViewController;
 import app.revanced.integrations.sponsorblock.requests.SBRequester;
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedUtils;
 
 /**
+ * Handles showing, scheduling, and skipping of all {@link SponsorSegment} for the current video.
+ *
  * Class is not thread safe. All methods must be called on the main thread unless otherwise specified.
  */
-public class PlayerController {
+public class SegmentPlaybackController {
     @Nullable
     private static String currentVideoId;
     @Nullable
@@ -59,7 +61,7 @@ public class PlayerController {
     private static float sponsorBarThickness = 2f;
 
     @Nullable
-    static SponsorSegment[] getSegmentsOfCurrentVideo() {
+    public static SponsorSegment[] getSegmentsOfCurrentVideo() {
         return segmentsOfCurrentVideo;
     }
 
@@ -100,8 +102,8 @@ public class PlayerController {
         try {
             ReVancedUtils.verifyOnMainThread();
             clearData();
-            SponsorBlockView.hideSkipButton();
-            SponsorBlockView.hideNewSegmentLayout();
+            SponsorBlockViewController.hideSkipButton();
+            SponsorBlockViewController.hideNewSegmentLayout();
             SponsorBlockUtils.clearUnsubmittedSegmentTimes();
             LogHelper.printDebug(() -> "Initialized SponsorBlock");
         } catch (Exception ex) {
@@ -272,11 +274,11 @@ public class PlayerController {
                 if (foundCurrentSegment == null) {
                     LogHelper.printDebug(() -> "Hiding segment: " + segmentCurrentlyPlaying);
                     segmentCurrentlyPlaying = null;
-                    SponsorBlockView.hideSkipButton();
+                    SponsorBlockViewController.hideSkipButton();
                 }  else {
                     segmentCurrentlyPlaying = foundCurrentSegment;
                     LogHelper.printDebug(() -> "Showing segment: " + segmentCurrentlyPlaying);
-                    SponsorBlockView.showSkipButton(foundCurrentSegment);
+                    SponsorBlockViewController.showSkipButton(foundCurrentSegment);
                 }
             }
 
@@ -317,7 +319,7 @@ public class PlayerController {
                         // Should not use VideoInformation time as it is less accurate,
                         // but this scheduled handler was scheduled precisely so we can just use the segment end time
                         segmentCurrentlyPlaying = null;
-                        SponsorBlockView.hideSkipButton();
+                        SponsorBlockViewController.hideSkipButton();
                         setVideoTime(segmentToHide.end);
                     }, delayUntilHide);
                 }
@@ -354,7 +356,7 @@ public class PlayerController {
                         } else {
                             LogHelper.printDebug(() -> "Running scheduled show segment: " + segmentToSkip);
                             segmentCurrentlyPlaying = segmentToSkip;
-                            SponsorBlockView.showSkipButton(segmentToSkip);
+                            SponsorBlockViewController.showSkipButton(segmentToSkip);
                         }
                     }, delayUntilSkip);
                 }
@@ -387,7 +389,7 @@ public class PlayerController {
             segmentCurrentlyPlaying = null;
             scheduledHideSegment = null; // if a scheduled has not run yet
             scheduledUpcomingSegment = null;
-            SponsorBlockView.hideSkipButton();
+            SponsorBlockViewController.hideSkipButton();
 
             final boolean seekSuccessful = VideoInformation.seekTo(segment.end);
             if (!seekSuccessful) {
@@ -466,7 +468,7 @@ public class PlayerController {
         if (segmentCurrentlyPlaying != null) {
             skipSegment(segmentCurrentlyPlaying, VideoInformation.getVideoTime(), true);
         } else {
-            SponsorBlockView.hideSkipButton();
+            SponsorBlockViewController.hideSkipButton();
             LogHelper.printException(() -> "error: segment not available to skip"); // should never happen
         }
     }
@@ -493,7 +495,9 @@ public class PlayerController {
             Field field = self.getClass().getDeclaredField("replaceMeWithsetSponsorBarRect");
             field.setAccessible(true);
             Rect rect = (Rect) field.get(self);
-            if (rect != null) {
+            if (rect == null) {
+                LogHelper.printException(() -> "Could not find sponsorblock rect");
+            } else {
                 setSponsorBarAbsoluteLeft(rect.left);
                 setSponsorBarAbsoluteRight(rect.right);
             }

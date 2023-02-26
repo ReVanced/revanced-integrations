@@ -1,4 +1,4 @@
-package app.revanced.integrations.sponsorblock.player.ui;
+package app.revanced.integrations.sponsorblock.ui;
 
 import static app.revanced.integrations.sponsorblock.StringRef.str;
 import static app.revanced.integrations.utils.ReVancedUtils.getResourceIdByName;
@@ -16,7 +16,7 @@ import android.widget.TextView;
 import java.util.Objects;
 
 import app.revanced.integrations.settings.SettingsEnum;
-import app.revanced.integrations.sponsorblock.PlayerController;
+import app.revanced.integrations.sponsorblock.SegmentPlaybackController;
 import app.revanced.integrations.sponsorblock.objects.SponsorSegment;
 import app.revanced.integrations.utils.LogHelper;
 
@@ -63,7 +63,7 @@ public class SkipSponsorButton extends FrameLayout {
 
         skipSponsorBtnContainer.setOnClickListener(v -> {
             LogHelper.printDebug(() -> "Skip button clicked");
-            PlayerController.onSkipSponsorClicked();
+            SegmentPlaybackController.onSkipSponsorClicked();
         });
     }
 

@@ -36,7 +36,7 @@ import app.revanced.integrations.sponsorblock.SponsorBlockSettings;
 import app.revanced.integrations.sponsorblock.SponsorBlockUtils;
 import app.revanced.integrations.sponsorblock.StringRef;
 import app.revanced.integrations.sponsorblock.objects.CategoryBehaviour;
-import app.revanced.integrations.sponsorblock.objects.EditTextListPreference;
+import app.revanced.integrations.sponsorblock.objects.SegmentCategoryPreferenceList;
 import app.revanced.integrations.sponsorblock.objects.SegmentCategory;
 import app.revanced.integrations.sponsorblock.objects.UserStats;
 import app.revanced.integrations.sponsorblock.requests.SBRequester;
@@ -164,7 +164,7 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment implements 
         }
 
         for (SegmentCategory category : SegmentCategory.valuesWithoutUnsubmitted()) {
-            EditTextListPreference listPreference = new EditTextListPreference(context);
+            SegmentCategoryPreferenceList listPreference = new SegmentCategoryPreferenceList(context);
             listPreference.setTitle(category.getTitleWithDot());
             listPreference.setSummary(category.description.toString());
             listPreference.setKey(category.key);

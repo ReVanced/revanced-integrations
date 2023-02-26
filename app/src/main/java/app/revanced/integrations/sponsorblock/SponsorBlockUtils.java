@@ -13,7 +13,6 @@ import android.widget.EditText;
 import androidx.annotation.NonNull;
 
 import java.lang.ref.WeakReference;
-import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
@@ -29,7 +28,7 @@ import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.sponsorblock.objects.CategoryBehaviour;
 import app.revanced.integrations.sponsorblock.objects.SegmentCategory;
 import app.revanced.integrations.sponsorblock.objects.SponsorSegment;
-import app.revanced.integrations.sponsorblock.player.ui.SponsorBlockView;
+import app.revanced.integrations.sponsorblock.ui.SponsorBlockViewController;
 import app.revanced.integrations.sponsorblock.requests.SBRequester;
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedUtils;
@@ -38,7 +37,6 @@ import app.revanced.integrations.utils.ReVancedUtils;
  * Not thread safe. All fields/methods must be accessed from the main thread.
  */
 public class SponsorBlockUtils {
-
     private static final String MANUAL_EDIT_TIME_FORMAT = "HH:mm:ss.SSS";
     @SuppressLint("SimpleDateFormat")
     private static final SimpleDateFormat manualEditTimeFormatter = new SimpleDateFormat(MANUAL_EDIT_TIME_FORMAT);
@@ -98,7 +96,7 @@ public class SponsorBlockUtils {
         @Override
         public void onClick(DialogInterface dialog, int which) {
             try {
-                SponsorBlockView.hideNewSegmentLayout();
+                SponsorBlockViewController.hideNewSegmentLayout();
                 Context context = ((AlertDialog) dialog).getContext();
                 dialog.dismiss();
 
@@ -161,7 +159,7 @@ public class SponsorBlockUtils {
     private static final DialogInterface.OnClickListener segmentVoteClickListener = (dialog, which) -> {
         try {
             final Context context = ((AlertDialog) dialog).getContext();
-            SponsorSegment[] currentSegments = PlayerController.getSegmentsOfCurrentVideo();
+            SponsorSegment[] currentSegments = SegmentPlaybackController.getSegmentsOfCurrentVideo();
             if (currentSegments == null || currentSegments.length == 0) {
                 // should never be reached
                 LogHelper.printException(() -> "Segment is no longer available on the client");
@@ -220,7 +218,7 @@ public class SponsorBlockUtils {
             final String uuid = SettingsEnum.SB_UUID.getString();
             final long start = newSponsorSegmentStartMillis;
             final long end = newSponsorSegmentEndMillis;
-            final String videoId = PlayerController.getCurrentVideoId();
+            final String videoId = SegmentPlaybackController.getCurrentVideoId();
             final long videoLength = VideoInformation.getCurrentVideoLength();
             final SegmentCategory segmentCategory = newUserCreatedSegmentCategory;
             if (start < 0 || end < 0 || start >= end || videoLength <= 0 || segmentCategory == null || videoId == null || uuid == null) {
@@ -230,7 +228,7 @@ public class SponsorBlockUtils {
             clearUnsubmittedSegmentTimes();
             ReVancedUtils.runOnBackgroundThread(() -> {
                 SBRequester.submitSegments(uuid, videoId, segmentCategory.key, start, end, videoLength);
-                PlayerController.executeDownloadSegments(videoId);
+                SegmentPlaybackController.executeDownloadSegments(videoId);
             });
         } catch (Exception e) {
             LogHelper.printException(() -> "Unable to submit segment", e);
@@ -242,7 +240,7 @@ public class SponsorBlockUtils {
             ReVancedUtils.verifyOnMainThread();
             newSponsorSegmentDialogShownMillis = VideoInformation.getVideoTime();
 
-            new AlertDialog.Builder(SponsorBlockView.getOverLaysViewGroupContext())
+            new AlertDialog.Builder(SponsorBlockViewController.getOverLaysViewGroupContext())
                     .setTitle(str("sb_new_segment_title"))
                     .setMessage(str("sb_new_segment_mark_time_as_question",
                             newSponsorSegmentDialogShownMillis / 60000,
@@ -266,7 +264,7 @@ public class SponsorBlockUtils {
                 long length = (newSponsorSegmentEndMillis - newSponsorSegmentStartMillis) / 1000;
                 long start = (newSponsorSegmentStartMillis) / 1000;
                 long end = (newSponsorSegmentEndMillis) / 1000;
-                new AlertDialog.Builder(SponsorBlockView.getOverLaysViewGroupContext())
+                new AlertDialog.Builder(SponsorBlockViewController.getOverLaysViewGroupContext())
                         .setTitle(str("sb_new_segment_confirm_title"))
                         .setMessage(str("sb_new_segment_confirm_content",
                                 start / 60, start % 60,
@@ -283,10 +281,10 @@ public class SponsorBlockUtils {
         }
     }
 
-    static void onVotingClicked(@NonNull Context context) {
+    public static void onVotingClicked(@NonNull Context context) {
         try {
             ReVancedUtils.verifyOnMainThread();
-            SponsorSegment[] currentSegments = PlayerController.getSegmentsOfCurrentVideo();
+            SponsorSegment[] currentSegments = SegmentPlaybackController.getSegmentsOfCurrentVideo();
             if (currentSegments == null || currentSegments.length == 0) {
                 // button is hidden if no segments exist.
                 // But if prior video had segments, and current video does not,
@@ -357,13 +355,13 @@ public class SponsorBlockUtils {
             ReVancedUtils.verifyOnMainThread();
             if (newSponsorSegmentStartMillis >= 0 && newSponsorSegmentStartMillis < newSponsorSegmentEndMillis) {
                 VideoInformation.seekTo(newSponsorSegmentStartMillis - 2500);
-                final SponsorSegment[] original = PlayerController.getSegmentsOfCurrentVideo();
+                final SponsorSegment[] original = SegmentPlaybackController.getSegmentsOfCurrentVideo();
                 final SponsorSegment[] segments = original == null ? new SponsorSegment[1] : Arrays.copyOf(original, original.length + 1);
 
                 segments[segments.length - 1] = new SponsorSegment(SegmentCategory.UNSUBMITTED, null,
                         newSponsorSegmentStartMillis, newSponsorSegmentEndMillis, false);
 
-                PlayerController.setSegmentsOfCurrentVideo(segments);
+                SegmentPlaybackController.setSegmentsOfCurrentVideo(segments);
             } else {
                 ReVancedUtils.showToastShort(str("sb_new_segment_mark_locations_first"));
             }
@@ -390,7 +388,7 @@ public class SponsorBlockUtils {
     public static void onEditByHandClicked() {
         try {
             ReVancedUtils.verifyOnMainThread();
-            new AlertDialog.Builder(SponsorBlockView.getOverLaysViewGroupContext())
+            new AlertDialog.Builder(SponsorBlockViewController.getOverLaysViewGroupContext())
                     .setTitle(str("sb_new_segment_edit_by_hand_title"))
                     .setMessage(str("sb_new_segment_edit_by_hand_content"))
                     .setNeutralButton(android.R.string.cancel, null)

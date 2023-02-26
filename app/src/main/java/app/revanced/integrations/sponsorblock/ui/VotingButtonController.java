@@ -1,4 +1,4 @@
-package app.revanced.integrations.sponsorblock;
+package app.revanced.integrations.sponsorblock.ui;
 
 import static app.revanced.integrations.utils.ReVancedUtils.getIdentifier;
 
@@ -11,19 +11,18 @@ import java.lang.ref.WeakReference;
 
 import app.revanced.integrations.patches.VideoInformation;
 import app.revanced.integrations.settings.SettingsEnum;
-import app.revanced.integrations.sponsorblock.player.ui.SponsorBlockView;
+import app.revanced.integrations.sponsorblock.SegmentPlaybackController;
+import app.revanced.integrations.sponsorblock.SponsorBlockUtils;
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedUtils;
 
-public class ShieldButton {
+public class VotingButtonController {
     private static WeakReference<ImageView> buttonReference = new WeakReference<>(null);
     private static Animation fadeIn;
     private static Animation fadeOut;
     private static boolean isShowing;
-
-    private static final View.OnClickListener sponsorBlockBtnListener = v -> {
-        LogHelper.printDebug(() -> "Shield button clicked");
-        SponsorBlockView.toggleNewSegmentLayout();
+    private static final View.OnClickListener voteButtonListener = v -> {
+        SponsorBlockUtils.onVotingClicked(v.getContext());
     };
 
     /**
@@ -31,16 +30,15 @@ public class ShieldButton {
      */
     public static void initialize(Object viewStub) {
         try {
-            LogHelper.printDebug(() -> "initializing shield button");
-
-            RelativeLayout youtubeControlsLayout = (RelativeLayout) viewStub;
-            String buttonIdentifier = "sb_sponsorblock_button";
-            ImageView imageView = youtubeControlsLayout.findViewById(getIdentifier(buttonIdentifier, "id"));
+            LogHelper.printDebug(() -> "initializing voting button");
+            RelativeLayout controlsLayout = (RelativeLayout) viewStub;
+            String buttonResourceName = "sb_voting_button";
+            ImageView imageView = controlsLayout.findViewById(getIdentifier(buttonResourceName, "id"));
             if (imageView == null) {
-                LogHelper.printException(() -> "Couldn't find imageView with \"" + buttonIdentifier + "\"");
+                LogHelper.printException(() -> "Couldn't find imageView with \"" + buttonResourceName + "\"");
                 return;
             }
-            imageView.setOnClickListener(sponsorBlockBtnListener);
+            imageView.setOnClickListener(voteButtonListener);
             buttonReference = new WeakReference<>(imageView);
 
             // Animations
@@ -108,8 +106,8 @@ public class ShieldButton {
     }
 
     private static boolean shouldBeShown() {
-        return SettingsEnum.SB_ENABLED.getBoolean() && SettingsEnum.SB_NEW_SEGMENT_ENABLED.getBoolean()
-                && !VideoInformation.isAtEndOfVideo();
+        return SettingsEnum.SB_ENABLED.getBoolean() && SettingsEnum.SB_VOTING_ENABLED.getBoolean()
+                && SegmentPlaybackController.currentVideoHasSegments() && !VideoInformation.isAtEndOfVideo();
     }
 
     public static void hide() {
@@ -119,6 +117,7 @@ public class ShieldButton {
         ReVancedUtils.verifyOnMainThread();
         View v = buttonReference.get();
         if (v == null) {
+            LogHelper.printDebug(() -> "Cannot hide voting button (value is null)");
             return;
         }
         v.setVisibility(View.GONE);
