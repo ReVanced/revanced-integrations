@@ -50,22 +50,23 @@ public class SponsorBlockSettings {
 
         SegmentCategory[] categories = SegmentCategory.valuesWithoutUnsubmitted();
         List<String> enabledCategories = new ArrayList<>(categories.length);
-        CategoryBehaviour[] possibleBehaviours = CategoryBehaviour.values();
-        for (SegmentCategory segment : categories) {
-            String categoryColor = preferences.getString(segment.key + CATEGORY_COLOR_SUFFIX, SponsorBlockUtils.formatColorString(segment.defaultColor));
-            segment.setColor(Color.parseColor(categoryColor));
+        for (SegmentCategory category : categories) {
+            String categoryColor = preferences.getString(category.key + CATEGORY_COLOR_SUFFIX, null);
+            if (categoryColor != null) {
+                category.setColor(Color.parseColor(categoryColor));
+            }
 
-            String value = preferences.getString(segment.key, null);
+            String value = preferences.getString(category.key, null);
             if (value != null) {
-                for (CategoryBehaviour possibleBehaviour : possibleBehaviours) {
-                    if (possibleBehaviour.key.equals(value)) {
-                        segment.behaviour = possibleBehaviour;
-                        break;
-                    }
+                CategoryBehaviour behavior = CategoryBehaviour.byStringKey(value);
+                if (behavior == null) {
+                    LogHelper.printException(() -> "Unknown behavior: " + value); // should never happen
+                } else {
+                    category.behaviour = behavior;
                 }
             }
-            if (segment.behaviour != CategoryBehaviour.IGNORE) {
-                enabledCategories.add(segment.key);
+            if (category.behaviour != CategoryBehaviour.IGNORE) {
+                enabledCategories.add(category.key);
             }
         }
 
@@ -111,6 +112,16 @@ public class SponsorBlockSettings {
             this.desktopKey = desktopKey;
             this.name = Objects.requireNonNull(name);
             this.skip = skip;
+        }
+
+        @Nullable
+        public static CategoryBehaviour byStringKey(@NonNull String key) {
+            for (CategoryBehaviour behaviour : values()) {
+                if (behaviour.key.equals(key)) {
+                    return behaviour;
+                }
+            }
+            return null;
         }
 
         @Nullable
