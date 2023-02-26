@@ -470,8 +470,8 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment implements 
                 new AlertDialog.Builder(preference1.getContext())
                         .setTitle(str("sb_stats_self_saved_reset_title"))
                         .setPositiveButton(android.R.string.yes, (dialog, whichButton) -> {
-                            SettingsEnum.SB_SKIPPED_SEGMENTS.setValue(SettingsEnum.SB_SKIPPED_SEGMENTS.getDefaultValue());
-                            SettingsEnum.SB_SKIPPED_SEGMENTS_TIME.setValue(SettingsEnum.SB_SKIPPED_SEGMENTS_TIME.getDefaultValue());
+                            SettingsEnum.SB_SKIPPED_SEGMENTS.saveValue(SettingsEnum.SB_SKIPPED_SEGMENTS.getDefaultValue());
+                            SettingsEnum.SB_SKIPPED_SEGMENTS_TIME.saveValue(SettingsEnum.SB_SKIPPED_SEGMENTS_TIME.getDefaultValue());
                             updateStatsSelfSaved.run();
                         })
                         .setNegativeButton(android.R.string.no, null).show();
