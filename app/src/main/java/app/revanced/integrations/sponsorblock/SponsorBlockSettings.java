@@ -71,9 +71,9 @@ public class SponsorBlockSettings {
 
         //"[%22sponsor%22,%22outro%22,%22music_offtopic%22,%22intro%22,%22selfpromo%22,%22interaction%22,%22preview%22]";
         if (enabledCategories.isEmpty())
-            sponsorBlockUrlCategories = "[]";
+            sponsorBlockAPIFetchCategories = "[]";
         else
-            sponsorBlockUrlCategories = "[%22" + TextUtils.join("%22,%22", enabledCategories) + "%22]";
+            sponsorBlockAPIFetchCategories = "[%22" + TextUtils.join("%22,%22", enabledCategories) + "%22]";
 
         String uuid = SettingsEnum.SB_UUID.getString();
         if (uuid == null || uuid.length() == 0) {

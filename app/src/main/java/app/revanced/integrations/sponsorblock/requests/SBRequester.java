@@ -60,19 +60,18 @@ public class SBRequester {
         ReVancedUtils.verifyOffMainThread();
         List<SponsorSegment> segments = new ArrayList<>();
         try {
-            HttpURLConnection connection = getConnectionFromRoute(SBRoutes.GET_SEGMENTS, videoId, SponsorBlockSettings.sponsorBlockUrlCategories);
+            HttpURLConnection connection = getConnectionFromRoute(SBRoutes.GET_SEGMENTS, videoId, SponsorBlockSettings.sponsorBlockAPIFetchCategories);
             final int responseCode = connection.getResponseCode();
 
             if (responseCode == SUCCESS_HTTP_STATUS_CODE) {
                 JSONArray responseArray = Requester.parseJSONArray(connection);
+                final long minSegmentDuration = (long) (SettingsEnum.SB_MIN_DURATION.getFloat() * 1000);
                 for (int i = 0, length = responseArray.length(); i < length; i++) {
                     JSONObject obj = (JSONObject) responseArray.get(i);
                     JSONArray segment = obj.getJSONArray("segment");
-                    long start = (long) (segment.getDouble(0) * 1000);
-                    long end = (long) (segment.getDouble(1) * 1000);
-
-                    long minDuration = (long) (SettingsEnum.SB_MIN_DURATION.getFloat() * 1000);
-                    if ((end - start) < minDuration)
+                    final long start = (long) (segment.getDouble(0) * 1000);
+                    final long end = (long) (segment.getDouble(1) * 1000);
+                    if ((end - start) < minSegmentDuration)
                         continue;
 
                     String categoryKey = obj.getString("category");
