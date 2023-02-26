@@ -2,6 +2,7 @@ package app.revanced.integrations.sponsorblock.requests;
 
 import static android.text.Html.fromHtml;
 
+import app.revanced.integrations.sponsorblock.SponsorBlockSettings;
 import app.revanced.integrations.sponsorblock.objects.CategoryBehaviour;
 
 import app.revanced.integrations.sponsorblock.objects.SegmentCategory;
@@ -61,7 +62,7 @@ public class SBRequester {
         ReVancedUtils.verifyOffMainThread();
         List<SponsorSegment> segments = new ArrayList<>();
         try {
-            HttpURLConnection connection = getConnectionFromRoute(SBRoutes.GET_SEGMENTS, videoId, SponsorBlockUtils.sponsorBlockAPIFetchCategories);
+            HttpURLConnection connection = getConnectionFromRoute(SBRoutes.GET_SEGMENTS, videoId, SponsorBlockSettings.sponsorBlockAPIFetchCategories);
             final int responseCode = connection.getResponseCode();
 
             if (responseCode == SUCCESS_HTTP_STATUS_CODE) {

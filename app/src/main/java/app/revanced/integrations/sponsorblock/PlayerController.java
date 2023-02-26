@@ -134,7 +134,7 @@ public class PlayerController {
             }
 
             if (!settingsInitialized) {
-                SponsorBlockUtils.loadFromSavedSettings();
+                SponsorBlockSettings.loadFromSavedSettings();
                 settingsInitialized = true;
             }
 

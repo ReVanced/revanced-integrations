@@ -1,5 +1,6 @@
 package app.revanced.integrations.settingsmenu;
 
+import app.revanced.integrations.sponsorblock.SponsorBlockSettings;
 import app.revanced.integrations.sponsorblock.objects.CategoryBehaviour;
 
 import app.revanced.integrations.sponsorblock.objects.SegmentCategory;
@@ -31,7 +32,6 @@ import java.util.List;
 import java.util.Objects;
 
 import app.revanced.integrations.settings.SettingsEnum;
-import app.revanced.integrations.sponsorblock.SponsorBlockUtils;
 import app.revanced.integrations.sponsorblock.objects.EditTextListPreference;
 import app.revanced.integrations.sponsorblock.requests.SBRequester;
 import app.revanced.integrations.utils.ReVancedUtils;
@@ -51,7 +51,7 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment implements 
         PreferenceScreen preferenceScreen = preferenceManager.createPreferenceScreen(context);
         setPreferenceScreen(preferenceScreen);
 
-        SponsorBlockUtils.loadFromSavedSettings();
+        SponsorBlockSettings.loadFromSavedSettings();
 
         {
             SwitchPreference preference = new SwitchPreference(context);
@@ -362,11 +362,11 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment implements 
             preference.setTitle(str("sb_settings_ie"));
             preference.setSummary(str("sb_settings_ie_sum"));
             preference.setOnPreferenceClickListener(preference1 -> {
-                preference.getEditText().setText(SponsorBlockUtils.exportSettings());
+                preference.getEditText().setText(SponsorBlockSettings.exportSettings());
                 return false;
             });
             preference.setOnPreferenceChangeListener((preference1, newValue) -> {
-                SponsorBlockUtils.importSettings((String) newValue);
+                SponsorBlockSettings.importSettings((String) newValue);
                 return true;
             });
             screen.addPreference(preference);
@@ -376,7 +376,7 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment implements 
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        SponsorBlockUtils.loadFromSavedSettings();
+        SponsorBlockSettings.loadFromSavedSettings();
     }
 
     private static class APIURLChangeListener implements DialogInterface.OnClickListener {

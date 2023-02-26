@@ -14,7 +14,7 @@ import android.text.InputType;
 import android.text.TextWatcher;
 import android.widget.EditText;
 
-import app.revanced.integrations.sponsorblock.SponsorBlockUtils;
+import app.revanced.integrations.sponsorblock.SponsorBlockSettings;
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedUtils;
 
@@ -111,7 +111,7 @@ public class EditTextListPreference extends ListPreference {
     }
 
     private String getColorPreferenceKey() {
-        return getKey() + SponsorBlockUtils.SEGMENT_CATEGORY_COLOR_SUFFIX;
+        return getKey() + SponsorBlockSettings.SEGMENT_CATEGORY_COLOR_PREFERENCE_KEY_SUFFIX;
     }
 
     private void reformatTitle() {
