@@ -260,8 +260,13 @@ public class ReturnYouTubeDislike {
                     if (isPreviouslyCreatedSegmentedSpan(oldSpannable)) {
                         // need to recreate using original, as oldSpannable has prior outdated dislike values
                         oldSpannable = originalDislikeSpan;
-                        if (oldSpannable == null) { // should never happen
-                            LogHelper.printException(() -> "Cannot add dislikes (original span is null)");
+                        if (oldSpannable == null) {
+                            // Regular video is opened, then a short is opened then closed,
+                            // then the app is closed then reopened (causes a call of NewVideoId() of the original videoId)
+                            // The original video (that was opened the entire time), is still showing the dislikes count
+                            // but the oldSpannable is now null because it was reset when the videoId was set again
+                            LogHelper.printDebug(() -> "Cannot add dislikes - original span is null" +
+                                    " (short was opened/closed, then app was closed/opened?) "); // ignore, with no toast
                             return null;
                         }
                     } else {
