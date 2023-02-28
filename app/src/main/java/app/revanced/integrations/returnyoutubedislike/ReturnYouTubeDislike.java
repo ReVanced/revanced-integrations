@@ -252,7 +252,7 @@ public class ReturnYouTubeDislike {
         long fetchStartTime = 0;
         try {
             synchronized (videoIdLockObject) {
-                if (oldSpannable == replacementLikeDislikeSpan) {
+                if (oldSpannable.equals(replacementLikeDislikeSpan)) {
                     LogHelper.printDebug(() -> "Ignoring previously created dislike span");
                     return null;
                 }
