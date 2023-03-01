@@ -3,6 +3,8 @@ package app.revanced.integrations.utils;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import androidx.annotation.NonNull;
+
 import java.util.Objects;
 
 public class SharedPrefHelper {
@@ -39,7 +41,7 @@ public class SharedPrefHelper {
     public static Long getLong(SharedPrefNames prefName, String key, Long _default) {
         SharedPreferences sharedPreferences = getPreferences(prefName);
         try {
-            return Long.valueOf(sharedPreferences.getString(key, _default + ""));
+            return Long.valueOf(sharedPreferences.getString(key, _default.toString()));
         } catch (ClassCastException ex) {
             return sharedPreferences.getLong(key, _default);
         }
@@ -48,7 +50,7 @@ public class SharedPrefHelper {
     public static Float getFloat(SharedPrefNames prefName, String key, Float _default) {
         SharedPreferences sharedPreferences = getPreferences(prefName);
         try {
-            return Float.valueOf(sharedPreferences.getString(key, _default + ""));
+            return Float.valueOf(sharedPreferences.getString(key, _default.toString()));
         } catch (ClassCastException ex) {
             return sharedPreferences.getFloat(key, _default);
         }
@@ -57,7 +59,7 @@ public class SharedPrefHelper {
     public static Integer getInt(SharedPrefNames prefName, String key, Integer _default) {
         SharedPreferences sharedPreferences = getPreferences(prefName);
         try {
-            return Integer.valueOf(sharedPreferences.getString(key, _default + ""));
+            return Integer.valueOf(sharedPreferences.getString(key, _default.toString()));
         } catch (ClassCastException ex) {
             return sharedPreferences.getInt(key, _default);
         }
@@ -86,6 +88,7 @@ public class SharedPrefHelper {
             return name;
         }
 
+        @NonNull
         @Override
         public String toString() {
             return name;
