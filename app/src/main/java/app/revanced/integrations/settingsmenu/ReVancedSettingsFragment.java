@@ -153,15 +153,21 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
         return PACKAGE_NAME;
     }
 
-    private void reboot(Activity activity, Class homeActivityClass) {
-        int intent;
-        intent = PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE;
-        ((AlarmManager) activity.getSystemService(Context.ALARM_SERVICE)).setExact(AlarmManager.ELAPSED_REALTIME, 1500L, PendingIntent.getActivity(activity, 0, new Intent(activity, Shell_HomeActivity.class), intent));
+    private void reboot(Activity activity) {
+        final int intentFlags = PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE;
+        PendingIntent intent = PendingIntent.getActivity(activity, 0,
+                new Intent(activity, Shell_HomeActivity.class), intentFlags);
+        AlarmManager systemService = (AlarmManager) activity.getSystemService(Context.ALARM_SERVICE);
+        systemService.setExact(AlarmManager.ELAPSED_REALTIME, 1500L, intent);
         Process.killProcess(Process.myPid());
     }
 
-    private void rebootDialog(final Activity activity) {
-        new AlertDialog.Builder(activity).setMessage(getStringByName(activity, "pref_refresh_config")).setPositiveButton(getStringByName(activity, "in_app_update_restart_button"), (dialog, id) -> reboot(activity, Shell_HomeActivity.class)).setNegativeButton(getStringByName(activity, "sign_in_cancel"), null).show();
+    private void rebootDialog(Activity activity) {
+        String positiveButton = getStringByName(activity, "in_app_update_restart_button");
+        String negativeButton = getStringByName(activity, "sign_in_cancel");
+        new AlertDialog.Builder(activity).setMessage(getStringByName(activity, "pref_refresh_config"))
+                .setPositiveButton(positiveButton, (dialog, id) -> reboot(activity))
+                .setNegativeButton(negativeButton, null).show();
     }
 
     private String getStringByName(Context context, String name) {
