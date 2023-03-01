@@ -70,18 +70,18 @@ public class SharedPrefHelper {
     }
 
     public enum SharedPrefNames {
-
         YOUTUBE("youtube"),
-        RYD("ryd"),
+        RETURN_YOUTUBE_DISLIKE("ryd"),
         SPONSOR_BLOCK("sponsor-block"),
         REVANCED_PREFS("revanced_prefs");
 
-        private final String name;
+        public final String name;
 
         SharedPrefNames(String name) {
             this.name = name;
         }
 
+        @Deprecated // TODO: inline this
         public String getName() {
             return name;
         }

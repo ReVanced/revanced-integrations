@@ -55,7 +55,7 @@ public class ReturnYouTubeDislikeSettingsFragment extends PreferenceFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getPreferenceManager().setSharedPreferencesName(SharedPrefHelper.SharedPrefNames.RYD.getName());
+        getPreferenceManager().setSharedPreferencesName(SharedPrefHelper.SharedPrefNames.RETURN_YOUTUBE_DISLIKE.getName());
 
         Activity context = this.getActivity();
         PreferenceScreen preferenceScreen = getPreferenceManager().createPreferenceScreen(context);
