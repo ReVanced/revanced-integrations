@@ -242,14 +242,7 @@ public enum SettingsEnum {
      * Sets the value, and persistently saves it
      */
     public void saveValue(Object newValue) {
-        Context context = ReVancedUtils.getContext();
-
-        if (context == null) {
-            LogHelper.printException(() -> "Context on SaveValue is null!");
-            return;
-        }
-
-        switch (getReturnType()) {
+        switch (returnType) {
             case FLOAT:
                 SharedPrefHelper.saveFloat(sharedPref, path, (float) newValue);
                 break;
@@ -266,7 +259,7 @@ public enum SettingsEnum {
                 SharedPrefHelper.saveString(sharedPref, path, (String) newValue);
                 break;
             default:
-                LogHelper.printException(() -> "Setting does not have a valid Type. Name is: " + name());
+                LogHelper.printException(() -> "Setting does not have a valid Type: " + name());
                 break;
         }
 
