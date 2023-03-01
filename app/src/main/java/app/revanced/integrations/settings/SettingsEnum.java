@@ -183,39 +183,39 @@ public enum SettingsEnum {
     }
 
     static {
-        load();
+        loadAllSettings();
     }
 
-    private static void load() {
-        Context context = ReVancedUtils.getContext();
-        if (context == null) {
-            LogHelper.printException(() -> "SettingsEnum.load() called before ReVancedUtils.init()");
+    private static void loadAllSettings() {
+        if (ReVancedUtils.getContext() == null) {
+            LogHelper.printException(() -> "SettingsEnum loaded before ReVancedUtils context was set");
             return;
         }
         for (SettingsEnum setting : values()) {
-            var path = setting.getPath();
-            var defaultValue = setting.getDefaultValue();
-            switch (setting.getReturnType()) {
-                case FLOAT:
-                    defaultValue = SharedPrefHelper.getFloat(setting.sharedPref, path, (float) defaultValue);
-                    break;
-                case LONG:
-                    defaultValue = SharedPrefHelper.getLong(setting.sharedPref, path, (long) defaultValue);
-                    break;
-                case BOOLEAN:
-                    defaultValue = SharedPrefHelper.getBoolean(setting.sharedPref, path, (boolean) defaultValue);
-                    break;
-                case INTEGER:
-                    defaultValue = SharedPrefHelper.getInt(setting.sharedPref, path, (int) defaultValue);
-                    break;
-                case STRING:
-                    defaultValue = SharedPrefHelper.getString(setting.sharedPref, path, (String) defaultValue);
-                    break;
-                default:
-                    LogHelper.printException(() -> "Setting does not have a valid Type. Name is: " + setting.name());
-                    break;
-            }
-            setting.setValue(defaultValue);
+            setting.load();
+        }
+    }
+
+    private void load() {
+        switch (returnType) {
+            case FLOAT:
+                value = SharedPrefHelper.getFloat(sharedPref, path, (float) defaultValue);
+                break;
+            case LONG:
+                value = SharedPrefHelper.getLong(sharedPref, path, (long) defaultValue);
+                break;
+            case BOOLEAN:
+                value = SharedPrefHelper.getBoolean(sharedPref, path, (boolean) defaultValue);
+                break;
+            case INTEGER:
+                value = SharedPrefHelper.getInt(sharedPref, path, (int) defaultValue);
+                break;
+            case STRING:
+                value = SharedPrefHelper.getString(sharedPref, path, (String) defaultValue);
+                break;
+            default:
+                LogHelper.printException(() -> "Setting does not have a valid Type: " + name());
+                break;
         }
     }
 
