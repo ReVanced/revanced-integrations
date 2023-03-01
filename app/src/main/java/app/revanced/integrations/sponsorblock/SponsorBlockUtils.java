@@ -51,6 +51,7 @@ import app.revanced.integrations.utils.SharedPrefHelper;
 import app.revanced.integrations.sponsorblock.objects.SponsorSegment;
 import app.revanced.integrations.sponsorblock.objects.UserStats;
 import app.revanced.integrations.sponsorblock.requests.SBRequester;
+import app.revanced.integrations.utils.SharedPrefCategory;
 
 public abstract class SponsorBlockUtils {
     public static final String DATE_FORMAT = "HH:mm:ss.SSS";
@@ -520,7 +521,7 @@ public abstract class SponsorBlockUtils {
             JSONArray categorySelectionsArray = settingsJson.getJSONArray("categorySelections");
 
 
-            SharedPreferences.Editor editor = SharedPrefHelper.getPreferences(SharedPrefHelper.SharedPrefNames.SPONSOR_BLOCK).edit();
+            SharedPreferences.Editor editor = SharedPrefHelper.getPreferences(SharedPrefCategory.SPONSOR_BLOCK).edit();
 
             SponsorBlockSettings.SegmentInfo[] categories = SponsorBlockSettings.SegmentInfo.valuesWithoutUnsubmitted();
             for (SponsorBlockSettings.SegmentInfo category : categories) {
@@ -603,7 +604,7 @@ public abstract class SponsorBlockUtils {
     }
 
     public static boolean isSBButtonEnabled(Context context, String key) {
-        return SettingsEnum.SB_ENABLED.getBoolean() && SharedPrefHelper.getBoolean(SharedPrefHelper.SharedPrefNames.SPONSOR_BLOCK, key, false);
+        return SettingsEnum.SB_ENABLED.getBoolean() && SharedPrefHelper.getBoolean(SharedPrefCategory.SPONSOR_BLOCK, key, false);
     }
 
     public enum VoteOption {

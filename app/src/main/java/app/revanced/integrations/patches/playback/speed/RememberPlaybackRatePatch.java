@@ -1,6 +1,6 @@
 package app.revanced.integrations.patches.playback.speed;
 
-import static app.revanced.integrations.utils.SharedPrefHelper.SharedPrefNames.REVANCED_PREFS;
+import static app.revanced.integrations.utils.SharedPrefCategory.REVANCED_PREFS;
 import static app.revanced.integrations.utils.SharedPrefHelper.getFloat;
 import static app.revanced.integrations.utils.SharedPrefHelper.saveFloat;
 

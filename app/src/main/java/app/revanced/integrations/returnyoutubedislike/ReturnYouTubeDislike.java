@@ -360,7 +360,7 @@ public class ReturnYouTubeDislike {
         ReVancedUtils.verifyOffMainThread();
 
         String userId = SettingsEnum.RYD_USER_ID.getString();
-        if (userId != null) {
+        if (!TextUtils.isEmpty(userId)) {
             return userId;
         }
 

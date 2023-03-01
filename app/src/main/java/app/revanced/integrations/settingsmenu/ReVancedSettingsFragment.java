@@ -12,91 +12,102 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Process;
 import android.preference.EditTextPreference;
-import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
-import android.preference.PreferenceScreen;
 import android.preference.SwitchPreference;
 
-import com.google.android.apps.youtube.app.application.Shell_HomeActivity;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
-import java.util.List;
+import com.google.android.apps.youtube.app.application.Shell_HomeActivity;
 
 import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedUtils;
-import app.revanced.integrations.utils.SharedPrefHelper;
+import app.revanced.integrations.utils.SharedPrefCategory;
 
 public class ReVancedSettingsFragment extends PreferenceFragment {
-
-    private List<PreferenceScreen> screens;
-
     private boolean Registered = false;
     private boolean settingsInitialized = false;
 
-    private final CharSequence[] videoSpeedEntries = {"Auto", "0.25x", "0.5x", "0.75x", "Normal", "1.25x", "1.5x", "1.75x", "2x", "3x", "4x", "5x"};
-    private final CharSequence[] videoSpeedentryValues = {"-2", "0.25", "0.5", "0.75", "1.0", "1.25", "1.5", "1.75", "2.0", "3.0", "4.0", "5.0"};
-    //private final CharSequence[] buttonLocationEntries = {"None", "In player", "Under player", "Both"};
-    //private final CharSequence[] buttonLocationentryValues = {"NONE", "PLAYER", "BUTTON_BAR", "BOTH"};
-
     SharedPreferences.OnSharedPreferenceChangeListener listener = (sharedPreferences, str) -> {
-        for (SettingsEnum setting : SettingsEnum.values()) {
-            if (!setting.getPath().equals(str)) continue;
-            Preference pref = this.findPreferenceOnScreen(str);
+        try {
+            for (SettingsEnum setting : SettingsEnum.values()) {
+                if (!setting.getPath().equals(str)) continue;
+                Preference pref = this.findPreference(str);
 
-            LogHelper.printDebug(() -> "Setting " + setting.name() + " was changed. Preference " + str + ": " + pref.toString());
+                LogHelper.printDebug(() -> "Setting " + setting.name() + " was changed. Preference '" + str + "': " + pref);
 
-            if (pref instanceof SwitchPreference) {
-                SwitchPreference switchPref = (SwitchPreference) pref;
-                setting.setValue(switchPref.isChecked());
-            } else if (pref instanceof EditTextPreference) {
-                EditTextPreference editPref = (EditTextPreference) pref;
-                Object value = null;
-                switch (setting.getReturnType()) {
-                    case FLOAT:
-                        value = Float.parseFloat(editPref.getText());
-                        break;
-                    case LONG:
-                        value = Long.parseLong(editPref.getText());
-                        break;
-                    case STRING:
-                        value = editPref.getText();
-                        break;
-                    case INTEGER:
-                        value = Integer.parseInt(editPref.getText());
-                        break;
-                    default:
-                        LogHelper.printException(() -> "Setting has no valid return type! " + setting.getReturnType());
-                        break;
+                if (pref instanceof SwitchPreference) {
+                    SwitchPreference switchPref = (SwitchPreference) pref;
+                    setting.setValue(switchPref.isChecked());
+                    turnChildPreferencesOnOff(setting);
+                } else if (pref instanceof EditTextPreference) {
+                    EditTextPreference editPref = (EditTextPreference) pref;
+                    Object value;
+                    switch (setting.getReturnType()) {
+                        case FLOAT:
+                            value = Float.parseFloat(editPref.getText());
+                            break;
+                        case LONG:
+                            value = Long.parseLong(editPref.getText());
+                            break;
+                        case STRING:
+                            value = editPref.getText();
+                            break;
+                        case INTEGER:
+                            value = Integer.parseInt(editPref.getText());
+                            break;
+                        default:
+                            LogHelper.printException(() -> "Setting has no valid return type! " + setting.getReturnType());
+                            return;
+                    }
+                    setting.setValue(value);
+                } else {
+                    LogHelper.printException(() -> "Setting cannot be handled: " + pref.getClass() + " " + pref);
                 }
-                setting.setValue(value);
-            } else {
-                LogHelper.printException(() -> "Setting cannot be handled: " +  pref.getClass() + " " + pref.toString());
-            }
 
-            if (ReVancedUtils.getContext() != null && settingsInitialized && setting.shouldRebootOnChange()) {
-                rebootDialog(getActivity());
+                if (ReVancedUtils.getContext() != null && settingsInitialized && setting.shouldRebootOnChange()) {
+                    rebootDialog(getActivity());
+                }
             }
+        } catch (Exception ex) {
+            LogHelper.printException(() -> "OnSharedPreferenceChangeListener failure", ex);
         }
     };
 
     @SuppressLint("ResourceType")
     @Override // android.preference.PreferenceFragment, android.app.Fragment
-    public void onCreate(Bundle bundle) {
+    public void onCreate(@Nullable Bundle bundle) {
         super.onCreate(bundle);
-        getPreferenceManager().setSharedPreferencesName(SharedPrefHelper.SharedPrefNames.YOUTUBE.getName());
+        getPreferenceManager().setSharedPreferencesName(SharedPrefCategory.YOUTUBE.prefName);
         try {
-            int identifier = getResources().getIdentifier("revanced_prefs", "xml", getPackageName());
+            String packageName = ReVancedUtils.getContext().getPackageName();
+            final int identifier = getResources().getIdentifier("revanced_prefs", "xml", packageName);
             addPreferencesFromResource(identifier);
 
             SharedPreferences sharedPreferences = getPreferenceManager().getSharedPreferences();
-            this.settingsInitialized = sharedPreferences.getBoolean("revanced_initialized", false);
             sharedPreferences.registerOnSharedPreferenceChangeListener(this.listener);
             this.Registered = true;
-
             this.settingsInitialized = true;
-        } catch (Throwable th) {
-            LogHelper.printException(() -> "Error during onCreate()", th);
+        } catch (Exception ex) {
+            LogHelper.printException(() -> "onCreate() error", ex);
+        }
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        // enable/disable preferences, based on status of parent setting
+        for (SettingsEnum setting : SettingsEnum.values()) {
+            SettingsEnum parent = setting.parent;
+            if (parent != null) {
+                Preference preference = this.findPreference(setting.getPath());
+                if (preference != null) {
+                    preference.setEnabled(parent.getBoolean());
+                }
+            }
         }
     }
 
@@ -109,48 +120,19 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
         super.onDestroy();
     }
 
-    private Preference findPreferenceOnScreen(CharSequence key) {
-        if (key == null) {
-            LogHelper.printException(() -> "Key cannot be null!");
-            return null;
+    private void turnChildPreferencesOnOff(@NonNull SettingsEnum parent) {
+        if (parent.getReturnType() != SettingsEnum.ReturnType.BOOLEAN) {
+            throw new IllegalArgumentException(parent.toString());
         }
-        Preference pref = null;
-        if (this.findPreference(key) != null) {
-            pref = this.findPreference(key);
-        } else {
-            for (PreferenceScreen screen : this.screens) {
-                Preference toCheck = screen.findPreference(key);
-                if (toCheck == null) continue;
-                pref = toCheck;
-                LogHelper.printDebug(() -> "Found preference " + key + " on screen: " + screen.getTitle());
+        final boolean enabled = parent.getBoolean();
+        for (SettingsEnum setting : SettingsEnum.values()) {
+            if (setting.parent == parent) {
+                Preference childPreference = this.findPreference(setting.getPath());
+                if (childPreference != null) {
+                    childPreference.setEnabled(enabled);
+                }
             }
         }
-
-        return pref;
-    }
-
-    /*
-    private void setCopyLinkListPreferenceData(ListPreference listPreference, String str) {
-        listPreference.setEntries(this.buttonLocationEntries);
-        listPreference.setEntryValues(this.buttonLocationentryValues);
-        String string = this.sharedPreferences.getString(str, "NONE");
-        if (listPreference.getValue() == null) {
-            listPreference.setValue(string);
-        }
-        listPreference.setSummary(this.buttonLocationEntries[listPreference.findIndexOfValue(string)]);
-    }
-    */
-
-    private String getPackageName() {
-        Context context = ReVancedUtils.getContext();
-        if (context == null) {
-            LogHelper.printException(() -> "Context is null, returning com.google.android.youtube!");
-            return "com.google.android.youtube";
-        }
-        String PACKAGE_NAME = context.getPackageName();
-        LogHelper.printDebug(() -> "getPackageName: " + PACKAGE_NAME);
-
-        return PACKAGE_NAME;
     }
 
     private void reboot(Activity activity) {
