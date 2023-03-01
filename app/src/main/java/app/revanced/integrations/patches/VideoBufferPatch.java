@@ -11,13 +11,13 @@ public class VideoBufferPatch {
     }
 
     public static int getPlaybackBuffer() {
-        int confVal = SettingsEnum.PLAYBACK_MAX_BUFFER.getInt();
+        int confVal = SettingsEnum.MAX_BUFFER_PLAYBACK.getInt();
         if (confVal < 1) confVal = 1;
         return confVal;
     }
 
     public static int getReBuffer() {
-        int confVal = SettingsEnum.MAX_PLAYBACK_BUFFER_AFTER_REBUFFER.getInt();
+        int confVal = SettingsEnum.MAX_BUFFER_PLAYBACK_AFTER_REBUFFER.getInt();
         if (confVal < 1) confVal = 1;
         return confVal;
     }

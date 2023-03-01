@@ -5,6 +5,7 @@ import android.view.View;
 import app.revanced.integrations.adremover.AdRemoverAPI;
 import app.revanced.integrations.settings.SettingsEnum;
 
+// edit: appears to be dead code
 public class HideReelsPatch {
 
     /**
