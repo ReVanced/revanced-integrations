@@ -35,10 +35,9 @@ public final class GeneralAdsPatch extends Filter {
         var channelGuidelines = new BlockRule(SettingsEnum.ADREMOVER_HIDE_CHANNEL_GUIDELINES, "channel_guidelines_entry_banner");
         var artistCard = new BlockRule(SettingsEnum.HIDE_ARTIST_CARDS, "official_card");
         var selfSponsor = new BlockRule(SettingsEnum.ADREMOVER_SELF_SPONSOR_REMOVAL, "cta_shelf_card");
-        var chapterTeaser = new BlockRule(SettingsEnum.ADREMOVER_CHAPTER_TEASER_REMOVAL, "expandable_metadata");
+        var chapterTeaser = new BlockRule(SettingsEnum.ADREMOVER_CHAPTER_TEASER_REMOVAL, "expandable_metadata", "macro_markers_carousel");
         var viewProducts = new BlockRule(SettingsEnum.ADREMOVER_VIEW_PRODUCTS, "product_item", "products_in_video");
         var webLinkPanel = new BlockRule(SettingsEnum.ADREMOVER_WEB_SEARCH_RESULTS, "web_link_panel");
-        var horizontalVideoShelf = new BlockRule(SettingsEnum.ADREMOVER_HORIZONTAL_VIDEO_SHELF, "horizontal_video_shelf");
         var channelBar = new BlockRule(SettingsEnum.ADREMOVER_CHANNEL_BAR, "channel_bar");
         var relatedVideos = new BlockRule(SettingsEnum.ADREMOVER_RELATED_VIDEOS, "fullscreen_related_videos");
         var quickActions = new BlockRule(SettingsEnum.ADREMOVER_QUICK_ACTIONS, "quick_actions");
@@ -47,7 +46,7 @@ public final class GeneralAdsPatch extends Filter {
                 "cell_divider" // layout residue (gray line above the buttoned ad),
         );
         var buttonedAd = new BlockRule(SettingsEnum.ADREMOVER_BUTTONED_REMOVAL,
-                "video_display_full_buttoned_layout",
+                "_buttoned_layout",
                 "full_width_square_image_layout",
                 "_ad_with",
                 "landscape_image_wide_button_layout"
@@ -94,7 +93,6 @@ public final class GeneralAdsPatch extends Filter {
                 selfSponsor,
                 webLinkPanel,
                 imageShelf,
-                horizontalVideoShelf,
                 subscribersCommunityGuidelines,
                 channelMemberShelf
         );
