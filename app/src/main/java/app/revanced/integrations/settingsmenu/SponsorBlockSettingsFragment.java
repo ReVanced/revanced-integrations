@@ -57,8 +57,8 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment implements 
         {
             SwitchPreference preference = new SwitchPreference(context);
             preferenceScreen.addPreference(preference);
-            preference.setKey(SettingsEnum.SB_ENABLED.getPath());
-            preference.setDefaultValue(SettingsEnum.SB_ENABLED.getDefaultValue());
+            preference.setKey(SettingsEnum.SB_ENABLED.path);
+            preference.setDefaultValue(SettingsEnum.SB_ENABLED.defaultValue);
             preference.setChecked(SettingsEnum.SB_ENABLED.getBoolean());
             preference.setTitle(str("enable_sb"));
             preference.setSummary(str("enable_sb_sum"));
@@ -73,8 +73,8 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment implements 
         {
             SwitchPreference preference = new SwitchPreference(context);
             preferenceScreen.addPreference(preference);
-            preference.setKey(SettingsEnum.SB_NEW_SEGMENT_ENABLED.getPath());
-            preference.setDefaultValue(SettingsEnum.SB_NEW_SEGMENT_ENABLED.getDefaultValue());
+            preference.setKey(SettingsEnum.SB_NEW_SEGMENT_ENABLED.path);
+            preference.setDefaultValue(SettingsEnum.SB_NEW_SEGMENT_ENABLED.defaultValue);
             preference.setChecked(SettingsEnum.SB_NEW_SEGMENT_ENABLED.getBoolean());
             preference.setTitle(str("enable_segmadding"));
             preference.setSummary(str("enable_segmadding_sum"));
@@ -99,8 +99,8 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment implements 
             preferenceScreen.addPreference(preference);
             preference.setTitle(str("enable_voting"));
             preference.setSummary(str("enable_voting_sum"));
-            preference.setKey(SettingsEnum.SB_VOTING_ENABLED.getPath());
-            preference.setDefaultValue(SettingsEnum.SB_VOTING_ENABLED.getDefaultValue());
+            preference.setKey(SettingsEnum.SB_VOTING_ENABLED.path);
+            preference.setDefaultValue(SettingsEnum.SB_VOTING_ENABLED.defaultValue);
             preference.setChecked(SettingsEnum.SB_VOTING_ENABLED.getBoolean());
             preferencesToDisableWhenSBDisabled.add(preference);
             preference.setOnPreferenceChangeListener((preference12, o) -> {
@@ -375,7 +375,7 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment implements 
 
             switch (which) {
                 case DialogInterface.BUTTON_NEUTRAL:
-                    SettingsEnum.SB_API_URL.saveValue(SettingsEnum.SB_API_URL.getDefaultValue());
+                    SettingsEnum.SB_API_URL.saveValue(SettingsEnum.SB_API_URL.defaultValue);
                     Toast.makeText(applicationContext, str("api_url_reset"), Toast.LENGTH_SHORT).show();
                     break;
                 case DialogInterface.BUTTON_POSITIVE:

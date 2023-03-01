@@ -302,27 +302,6 @@ public enum SettingsEnum {
         value = newValue;
     }
 
-    @NonNull @Deprecated // TODO: inline this
-    public String getPath() {
-        return path;
-    }
-    @NonNull @Deprecated // TODO: inline this
-    public ReturnType getReturnType() {
-        return returnType;
-    }
-    @NonNull @Deprecated // TODO: inline this
-    public Object getDefaultValue() {
-        return defaultValue;
-    }
-    @NonNull @Deprecated // TODO: inline this
-    public boolean shouldRebootOnChange() {
-        return rebootApp;
-    }
-    @NonNull @Deprecated // TODO: inline this
-    public SettingsEnum getParent() {
-        return parent;
-    }
-
     public boolean getBoolean() {
         return (Boolean) value;
     }

@@ -33,7 +33,7 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
     SharedPreferences.OnSharedPreferenceChangeListener listener = (sharedPreferences, str) -> {
         try {
             for (SettingsEnum setting : SettingsEnum.values()) {
-                if (!setting.getPath().equals(str)) continue;
+                if (!setting.path.equals(str)) continue;
                 Preference pref = this.findPreference(str);
 
                 LogHelper.printDebug(() -> "Setting " + setting.name() + " was changed. Preference '" + str + "': " + pref);
@@ -45,7 +45,7 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
                 } else if (pref instanceof EditTextPreference) {
                     EditTextPreference editPref = (EditTextPreference) pref;
                     Object value;
-                    switch (setting.getReturnType()) {
+                    switch (setting.returnType) {
                         case FLOAT:
                             value = Float.parseFloat(editPref.getText());
                             break;
@@ -59,7 +59,7 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
                             value = Integer.parseInt(editPref.getText());
                             break;
                         default:
-                            LogHelper.printException(() -> "Setting has no valid return type! " + setting.getReturnType());
+                            LogHelper.printException(() -> "Setting has no valid return type! " + setting.returnType);
                             return;
                     }
                     setting.setValue(value);
@@ -67,7 +67,7 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
                     LogHelper.printException(() -> "Setting cannot be handled: " + pref.getClass() + " " + pref);
                 }
 
-                if (ReVancedUtils.getContext() != null && settingsInitialized && setting.shouldRebootOnChange()) {
+                if (ReVancedUtils.getContext() != null && settingsInitialized && setting.rebootApp) {
                     rebootDialog(getActivity());
                 }
             }
@@ -103,7 +103,7 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
         for (SettingsEnum setting : SettingsEnum.values()) {
             SettingsEnum parent = setting.parent;
             if (parent != null) {
-                Preference preference = this.findPreference(setting.getPath());
+                Preference preference = this.findPreference(setting.path);
                 if (preference != null) {
                     preference.setEnabled(parent.getBoolean());
                 }
@@ -121,13 +121,13 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
     }
 
     private void turnChildPreferencesOnOff(@NonNull SettingsEnum parent) {
-        if (parent.getReturnType() != SettingsEnum.ReturnType.BOOLEAN) {
+        if (parent.returnType != SettingsEnum.ReturnType.BOOLEAN) {
             throw new IllegalArgumentException(parent.toString());
         }
         final boolean enabled = parent.getBoolean();
         for (SettingsEnum setting : SettingsEnum.values()) {
             if (setting.parent == parent) {
-                Preference childPreference = this.findPreference(setting.getPath());
+                Preference childPreference = this.findPreference(setting.path);
                 if (childPreference != null) {
                     childPreference.setEnabled(enabled);
                 }
