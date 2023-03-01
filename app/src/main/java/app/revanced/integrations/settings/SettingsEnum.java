@@ -188,7 +188,7 @@ public enum SettingsEnum {
     private volatile Object value;
 
     SettingsEnum(String path, ReturnType returnType, Object defaultValue) {
-        this(path, returnType, defaultValue, SharedPrefCategory.YOUTUBE, false);
+        this(path, returnType, defaultValue, SharedPrefCategory.YOUTUBE, false, null);
     }
     SettingsEnum(String path, ReturnType returnType, Object defaultValue,
                  SettingsEnum parent) {
@@ -197,7 +197,7 @@ public enum SettingsEnum {
 
     SettingsEnum(String path, ReturnType returnType, Object defaultValue,
                  boolean rebootApp) {
-        this(path, returnType, defaultValue, SharedPrefCategory.YOUTUBE, rebootApp);
+        this(path, returnType, defaultValue, SharedPrefCategory.YOUTUBE, rebootApp, null);
     }
     SettingsEnum(String path, ReturnType returnType, Object defaultValue,
                  boolean rebootApp, SettingsEnum parent) {
@@ -206,7 +206,7 @@ public enum SettingsEnum {
 
     SettingsEnum(String path, ReturnType returnType, Object defaultValue,
                  SharedPrefCategory prefName) {
-        this(path, returnType, defaultValue, prefName, false);
+        this(path, returnType, defaultValue, prefName, false, null);
     }
     SettingsEnum(String path, ReturnType returnType, Object defaultValue,
                  SharedPrefCategory prefName, SettingsEnum parent) {
@@ -218,7 +218,7 @@ public enum SettingsEnum {
         this(path, returnType, defaultValue, prefName, rebootApp, null);
     }
     SettingsEnum(String path, ReturnType returnType, Object defaultValue,
-                 SharedPrefCategory prefName, boolean rebootApp, SettingsEnum parent) {
+                 SharedPrefCategory prefName, boolean rebootApp, @Nullable SettingsEnum parent) {
         this.path = Objects.requireNonNull(path);
         this.returnType = Objects.requireNonNull(returnType);
         this.value = this.defaultValue = Objects.requireNonNull(defaultValue);
