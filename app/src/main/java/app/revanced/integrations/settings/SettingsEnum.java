@@ -191,13 +191,12 @@ public enum SettingsEnum {
         this(path, returnType, defaultValue, SharedPrefCategory.YOUTUBE, false, null);
     }
     SettingsEnum(String path, ReturnType returnType, Object defaultValue,
-                 SettingsEnum parent) {
-        this(path, returnType, defaultValue, SharedPrefCategory.YOUTUBE, false, parent);
-    }
-
-    SettingsEnum(String path, ReturnType returnType, Object defaultValue,
                  boolean rebootApp) {
         this(path, returnType, defaultValue, SharedPrefCategory.YOUTUBE, rebootApp, null);
+    }
+    SettingsEnum(String path, ReturnType returnType, Object defaultValue,
+                 SettingsEnum parent) {
+        this(path, returnType, defaultValue, SharedPrefCategory.YOUTUBE, false, parent);
     }
     SettingsEnum(String path, ReturnType returnType, Object defaultValue,
                  boolean rebootApp, SettingsEnum parent) {
@@ -209,13 +208,12 @@ public enum SettingsEnum {
         this(path, returnType, defaultValue, prefName, false, null);
     }
     SettingsEnum(String path, ReturnType returnType, Object defaultValue,
-                 SharedPrefCategory prefName, SettingsEnum parent) {
-        this(path, returnType, defaultValue, prefName, false, parent);
-    }
-
-    SettingsEnum(String path, ReturnType returnType, Object defaultValue,
                  SharedPrefCategory prefName, boolean rebootApp) {
         this(path, returnType, defaultValue, prefName, rebootApp, null);
+    }
+    SettingsEnum(String path, ReturnType returnType, Object defaultValue,
+                 SharedPrefCategory prefName, SettingsEnum parent) {
+        this(path, returnType, defaultValue, prefName, false, parent);
     }
     SettingsEnum(String path, ReturnType returnType, Object defaultValue,
                  SharedPrefCategory prefName, boolean rebootApp, @Nullable SettingsEnum parent) {
