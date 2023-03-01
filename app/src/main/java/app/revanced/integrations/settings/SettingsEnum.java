@@ -9,7 +9,9 @@ import static app.revanced.integrations.utils.SharedPrefHelper.SharedPrefNames;
 import static app.revanced.integrations.utils.SharedPrefHelper.SharedPrefNames.RETURN_YOUTUBE_DISLIKE;
 import static app.revanced.integrations.utils.SharedPrefHelper.SharedPrefNames.SPONSOR_BLOCK;
 
-import android.content.Context;
+import androidx.annotation.NonNull;
+
+import java.util.Objects;
 
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedUtils;
@@ -234,14 +236,15 @@ public enum SettingsEnum {
      *
      * @see #saveValue(Object)
      */
-    public void setValue(Object newValue) {
-        this.value = newValue;
+    public void setValue(@NonNull Object newValue) {
+        this.value = Objects.requireNonNull(newValue);
     }
 
     /**
      * Sets the value, and persistently saves it
      */
-    public void saveValue(Object newValue) {
+    public void saveValue(@NonNull Object newValue) {
+        Objects.requireNonNull(newValue);
         switch (returnType) {
             case FLOAT:
                 SharedPrefHelper.saveFloat(sharedPref, path, (float) newValue);
@@ -290,10 +293,12 @@ public enum SettingsEnum {
         return defaultValue;
     }
 
+    @NonNull
     public String getPath() {
         return path;
     }
 
+    @NonNull
     public ReturnType getReturnType() {
         return returnType;
     }
