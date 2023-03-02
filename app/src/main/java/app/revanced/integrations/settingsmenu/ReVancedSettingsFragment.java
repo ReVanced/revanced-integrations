@@ -14,8 +14,10 @@ import android.os.Process;
 import android.preference.EditTextPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
+import android.preference.PreferenceManager;
 import android.preference.SwitchPreference;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.google.android.apps.youtube.app.application.Shell_HomeActivity;
@@ -61,7 +63,7 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
                     LogHelper.printException(() -> "Setting cannot be handled: " + pref.getClass() + " " + pref);
                 }
 
-                if (ReVancedUtils.getContext() != null && setting.rebootApp) {
+                if (setting.rebootApp) {
                     rebootDialog(getActivity());
                 }
             }
@@ -73,25 +75,23 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
     };
 
     @SuppressLint("ResourceType")
-    @Override // android.preference.PreferenceFragment, android.app.Fragment
-    public void onCreate(@Nullable Bundle bundle) {
-        super.onCreate(bundle);
-        getPreferenceManager().setSharedPreferencesName(SharedPrefCategory.YOUTUBE.prefName);
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
         try {
+            PreferenceManager preferenceManager = getPreferenceManager();
+            preferenceManager.setSharedPreferencesName(SharedPrefCategory.YOUTUBE.prefName);
+
             String packageName = ReVancedUtils.getContext().getPackageName();
             final int identifier = getResources().getIdentifier("revanced_prefs", "xml", packageName);
             addPreferencesFromResource(identifier);
 
-            getPreferenceManager().getSharedPreferences().registerOnSharedPreferenceChangeListener(listener);
-        } catch (Exception ex) {
-            LogHelper.printException(() -> "onCreate() error", ex);
-        }
-    }
+            enableDisablePreferences();
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        enableDisablePreferences();
+            preferenceManager.getSharedPreferences().registerOnSharedPreferenceChangeListener(listener);
+        } catch (Exception ex) {
+            LogHelper.printException(() -> "onActivityCreated() error", ex);
+        }
     }
 
     @Override // android.preference.PreferenceFragment, android.app.Fragment
@@ -109,7 +109,7 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
         }
     }
 
-    private void reboot(Activity activity) {
+    private void reboot(@NonNull Activity activity) {
         final int intentFlags = PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE;
         PendingIntent intent = PendingIntent.getActivity(activity, 0,
                 new Intent(activity, Shell_HomeActivity.class), intentFlags);
@@ -118,7 +118,7 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
         Process.killProcess(Process.myPid());
     }
 
-    private void rebootDialog(Activity activity) {
+    private void rebootDialog(@NonNull Activity activity) {
         String positiveButton = getStringByName(activity, "in_app_update_restart_button");
         String negativeButton = getStringByName(activity, "sign_in_cancel");
         new AlertDialog.Builder(activity).setMessage(getStringByName(activity, "pref_refresh_config"))
