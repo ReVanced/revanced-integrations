@@ -36,7 +36,7 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
 
                 if (pref instanceof SwitchPreference) {
                     SwitchPreference switchPref = (SwitchPreference) pref;
-                    setting.setValue(switchPref.isChecked());
+                    SettingsEnum.setValue(setting, switchPref.isChecked());
                 } else if (pref instanceof EditTextPreference) {
                     EditTextPreference editPref = (EditTextPreference) pref;
                     Object value;
@@ -56,7 +56,7 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
                         default:
                             throw new IllegalStateException(setting.toString());
                     }
-                    setting.setValue(value);
+                    SettingsEnum.setValue(setting, value);
                 } else {
                     LogHelper.printException(() -> "Setting cannot be handled: " + pref.getClass() + " " + pref);
                 }
