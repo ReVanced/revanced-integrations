@@ -32,7 +32,7 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
                 if (!setting.path.equals(str)) continue;
                 Preference pref = this.findPreference(str);
 
-                LogHelper.printDebug(() -> "Setting " + setting.name() + " was changed. Preference '" + str + "': " + pref);
+                LogHelper.printDebug(() -> "Setting " + setting.name() + " was changed. Preference " + str + ": " + pref);
 
                 if (pref instanceof SwitchPreference) {
                     SwitchPreference switchPref = (SwitchPreference) pref;
@@ -66,7 +66,7 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
                 }
             }
 
-            turnOnOffPreferences();
+            enableDisablePreferences();
         } catch (Exception ex) {
             LogHelper.printException(() -> "OnSharedPreferenceChangeListener failure", ex);
         }
@@ -91,7 +91,7 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        turnOnOffPreferences();
+        enableDisablePreferences();
     }
 
     @Override // android.preference.PreferenceFragment, android.app.Fragment
@@ -100,7 +100,7 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
         super.onDestroy();
     }
 
-    private void turnOnOffPreferences() {
+    private void enableDisablePreferences() {
         for (SettingsEnum setting : SettingsEnum.values()) {
             Preference preference = this.findPreference(setting.path);
             if (preference != null) {
