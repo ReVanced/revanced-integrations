@@ -237,7 +237,7 @@ public enum SettingsEnum {
         if (parents != null) {
             for (SettingsEnum parent : parents) {
                 if (parent.returnType != ReturnType.BOOLEAN) {
-                    throw new IllegalArgumentException(" parent must be Boolean type: " + parent);
+                    throw new IllegalArgumentException("parent must be Boolean type: " + parent);
                 }
             }
         }
@@ -279,14 +279,10 @@ public enum SettingsEnum {
         }
     }
 
-    public void setValue(@NonNull Object newValue) {
-        setValue(this, newValue);
-    }
-
     /**
      * Sets, but does _not_ persistently save the value.
      *
-     * This is a intentionally a static method, to prevent accidental usage
+     * This intentionally is a static method, to deter accidental usage
      * when {@link #saveValue(Object)} was intended
      */
     public static void setValue(SettingsEnum setting, Object newValue) {
