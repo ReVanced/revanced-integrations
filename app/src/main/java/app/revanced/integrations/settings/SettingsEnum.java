@@ -25,7 +25,7 @@ public enum SettingsEnum {
     //Download Settings
     // TODO: DOWNLOAD_PATH("revanced_download_path", Environment.getExternalStorageDirectory().getPath() + "/Download", ReturnType.STRING),
     DOWNLOADS_BUTTON_SHOWN("revanced_downloads_enabled", BOOLEAN, TRUE, true),
-    DOWNLOADS_PACKAGE_NAME("revanced_downloads_package_name", STRING, "org.schabi.newpipe" /* NewPipe */, DOWNLOADS_BUTTON_SHOWN),
+    DOWNLOADS_PACKAGE_NAME("revanced_downloads_package_name", STRING, "org.schabi.newpipe" /* NewPipe */, parents(DOWNLOADS_BUTTON_SHOWN)),
 
     // Copy video URL settings
     COPY_VIDEO_URL_BUTTON_SHOWN("revanced_copy_video_url_enabled", BOOLEAN, TRUE, true),
@@ -120,14 +120,19 @@ public enum SettingsEnum {
     USE_HDR_AUTO_BRIGHTNESS("revanced_pref_hdr_autobrightness", BOOLEAN, TRUE),
 
     // Swipe controls
-    ENABLE_PRESS_TO_SWIPE("revanced_enable_press_to_swipe", BOOLEAN, FALSE),
     ENABLE_SWIPE_BRIGHTNESS("revanced_enable_swipe_brightness", BOOLEAN, TRUE),
-    ENABLE_SWIPE_HAPTIC_FEEDBACK("revanced_enable_swipe_haptic_feedback", BOOLEAN, TRUE),
     ENABLE_SWIPE_VOLUME("revanced_enable_swipe_volume", BOOLEAN, TRUE),
-    SWIPE_MAGNITUDE_THRESHOLD("revanced_swipe_magnitude_threshold", FLOAT, 30f),
-    SWIPE_OVERLAY_BACKGROUND_ALPHA("revanced_swipe_overlay_background_alpha", INTEGER, 127),
-    SWIPE_OVERLAY_TEXT_SIZE("revanced_swipe_overlay_text_size", FLOAT, 22f),
-    SWIPE_OVERLAY_TIMEOUT("revanced_swipe_overlay_timeout", LONG, 500L),
+    ENABLE_PRESS_TO_SWIPE("revanced_enable_press_to_swipe", BOOLEAN, FALSE),
+    ENABLE_SWIPE_HAPTIC_FEEDBACK("revanced_enable_swipe_haptic_feedback", BOOLEAN, TRUE,
+            parents(ENABLE_SWIPE_BRIGHTNESS, ENABLE_SWIPE_VOLUME)),
+    SWIPE_MAGNITUDE_THRESHOLD("revanced_swipe_magnitude_threshold", FLOAT, 30f,
+            parents(ENABLE_SWIPE_BRIGHTNESS, ENABLE_SWIPE_VOLUME)),
+    SWIPE_OVERLAY_BACKGROUND_ALPHA("revanced_swipe_overlay_background_alpha", INTEGER, 127,
+            parents(ENABLE_SWIPE_BRIGHTNESS, ENABLE_SWIPE_VOLUME)),
+    SWIPE_OVERLAY_TEXT_SIZE("revanced_swipe_overlay_text_size", FLOAT, 22f,
+            parents(ENABLE_SWIPE_BRIGHTNESS, ENABLE_SWIPE_VOLUME)),
+    SWIPE_OVERLAY_TIMEOUT("revanced_swipe_overlay_timeout", LONG, 500L,
+            parents(ENABLE_SWIPE_BRIGHTNESS, ENABLE_SWIPE_VOLUME)),
 
     // Buffer settings
     MAX_BUFFER("revanced_pref_max_buffer_ms", INTEGER, 120000),
@@ -136,31 +141,35 @@ public enum SettingsEnum {
 
     // Debug settings
     DEBUG("revanced_debug_enabled", BOOLEAN, FALSE),
-    DEBUG_STACKTRACE("revanced_debug_stacktrace_enabled", BOOLEAN, FALSE, DEBUG),
+    DEBUG_STACKTRACE("revanced_debug_stacktrace_enabled", BOOLEAN, FALSE, parents(DEBUG)),
     DEBUG_SHOW_TOAST_ON_ERROR("revanced_debug_toast_on_error_enabled", BOOLEAN, TRUE),
 
     // ReturnYoutubeDislike settings
     RYD_ENABLED("ryd_enabled", BOOLEAN, TRUE, RETURN_YOUTUBE_DISLIKE),
     RYD_USER_ID("ryd_userId", STRING, "", RETURN_YOUTUBE_DISLIKE),
-    RYD_SHOW_DISLIKE_PERCENTAGE("ryd_show_dislike_percentage", BOOLEAN, FALSE, RETURN_YOUTUBE_DISLIKE, RYD_ENABLED),
-    RYD_USE_COMPACT_LAYOUT("ryd_use_compact_layout", BOOLEAN, FALSE, RETURN_YOUTUBE_DISLIKE, RYD_ENABLED),
+    RYD_SHOW_DISLIKE_PERCENTAGE("ryd_show_dislike_percentage", BOOLEAN, FALSE, RETURN_YOUTUBE_DISLIKE, parents(RYD_ENABLED)),
+    RYD_USE_COMPACT_LAYOUT("ryd_use_compact_layout", BOOLEAN, FALSE, RETURN_YOUTUBE_DISLIKE, parents(RYD_ENABLED)),
 
     // SponsorBlock settings
     SB_ENABLED("sb-enabled", BOOLEAN, TRUE, SPONSOR_BLOCK),
     SB_API_URL("sb-api-host-url", STRING, "https://sponsor.ajay.app", SPONSOR_BLOCK),
     SB_UUID("uuid", STRING, "", SPONSOR_BLOCK),
-    SB_NEW_SEGMENT_ENABLED("sb-new-segment-enabled", BOOLEAN, FALSE, SPONSOR_BLOCK, SB_ENABLED),
-    SB_VOTING_ENABLED("sb-voting-enabled", BOOLEAN, FALSE, SPONSOR_BLOCK, SB_ENABLED),
-    SB_SHOW_TOAST_WHEN_SKIP("show-toast", BOOLEAN, TRUE, SPONSOR_BLOCK, SB_ENABLED),
-    SB_SHOW_TIME_WITHOUT_SEGMENTS("sb-length-without-segments", BOOLEAN, TRUE, SPONSOR_BLOCK, SB_ENABLED),
-    SB_COUNT_SKIPS("count-skips", BOOLEAN, TRUE, SPONSOR_BLOCK, SB_ENABLED),
-    SB_ADJUST_NEW_SEGMENT_STEP("new-segment-step-accuracy", INTEGER, 150, SPONSOR_BLOCK, SB_ENABLED),
-    SB_MIN_DURATION("sb-min-duration", FLOAT, 0F, SPONSOR_BLOCK, SB_ENABLED),
+    SB_NEW_SEGMENT_ENABLED("sb-new-segment-enabled", BOOLEAN, FALSE, SPONSOR_BLOCK, parents(SB_ENABLED)),
+    SB_VOTING_ENABLED("sb-voting-enabled", BOOLEAN, FALSE, SPONSOR_BLOCK, parents(SB_ENABLED)),
+    SB_SHOW_TOAST_WHEN_SKIP("show-toast", BOOLEAN, TRUE, SPONSOR_BLOCK, parents(SB_ENABLED)),
+    SB_SHOW_TIME_WITHOUT_SEGMENTS("sb-length-without-segments", BOOLEAN, TRUE, SPONSOR_BLOCK, parents(SB_ENABLED)),
+    SB_COUNT_SKIPS("count-skips", BOOLEAN, TRUE, SPONSOR_BLOCK, parents(SB_ENABLED)),
+    SB_ADJUST_NEW_SEGMENT_STEP("new-segment-step-accuracy", INTEGER, 150, SPONSOR_BLOCK, parents(SB_ENABLED)),
+    SB_MIN_DURATION("sb-min-duration", FLOAT, 0F, SPONSOR_BLOCK, parents(SB_ENABLED)),
     SB_SEEN_GUIDELINES("sb-seen-gl", BOOLEAN, FALSE, SPONSOR_BLOCK),
     SB_SKIPPED_SEGMENTS("sb-skipped-segments", INTEGER, 0, SPONSOR_BLOCK),
     SB_SKIPPED_SEGMENTS_TIME("sb-skipped-segments-time", LONG, 0L, SPONSOR_BLOCK),
     SB_IS_VIP("sb-is-vip", BOOLEAN, FALSE, SPONSOR_BLOCK),
     SB_LAST_VIP_CHECK("sb-last-vip-check", LONG, 0L, SPONSOR_BLOCK);
+
+    private static SettingsEnum[] parents(SettingsEnum ... parents) {
+        return parents;
+    }
 
     @NonNull
     public final String path;
@@ -172,15 +181,16 @@ public enum SettingsEnum {
     public final ReturnType returnType;
     public final boolean rebootApp;
     /**
-     * Boolean parent setting that must be enabled, for this setting to be valid.
+     * Set of boolean parent settings.
+     * If any of the parents are enabled, then this setting is available to configure.
      *
-     * For example: {@link #DEBUG_STACKTRACE} is non-functional,
+     * For example: {@link #DEBUG_STACKTRACE} is non-functional and cannot be configured,
      * unless it's parent {@link #DEBUG} is enabled.
      *
      * Used only for items that show up in the the ReVanced Settings UI.
      */
     @Nullable
-    public final SettingsEnum parent;
+    private final SettingsEnum[] parents;
 
     // must be volatile, as some settings are read/write from different threads
     // of note, the object value is persistently stored using SharedPreferences (which is thread safe)
@@ -195,12 +205,12 @@ public enum SettingsEnum {
         this(path, returnType, defaultValue, SharedPrefCategory.YOUTUBE, rebootApp, null);
     }
     SettingsEnum(String path, ReturnType returnType, Object defaultValue,
-                 SettingsEnum parent) {
-        this(path, returnType, defaultValue, SharedPrefCategory.YOUTUBE, false, parent);
+                 SettingsEnum[] parents) {
+        this(path, returnType, defaultValue, SharedPrefCategory.YOUTUBE, false, parents);
     }
     SettingsEnum(String path, ReturnType returnType, Object defaultValue,
-                 boolean rebootApp, SettingsEnum parent) {
-        this(path, returnType, defaultValue, SharedPrefCategory.YOUTUBE, rebootApp, parent);
+                 boolean rebootApp, SettingsEnum[] parents) {
+        this(path, returnType, defaultValue, SharedPrefCategory.YOUTUBE, rebootApp, parents);
     }
 
     SettingsEnum(String path, ReturnType returnType, Object defaultValue,
@@ -212,19 +222,23 @@ public enum SettingsEnum {
         this(path, returnType, defaultValue, prefName, rebootApp, null);
     }
     SettingsEnum(String path, ReturnType returnType, Object defaultValue,
-                 SharedPrefCategory prefName, SettingsEnum parent) {
-        this(path, returnType, defaultValue, prefName, false, parent);
+                 SharedPrefCategory prefName, SettingsEnum[] parents) {
+        this(path, returnType, defaultValue, prefName, false, parents);
     }
     SettingsEnum(String path, ReturnType returnType, Object defaultValue,
-                 SharedPrefCategory prefName, boolean rebootApp, @Nullable SettingsEnum parent) {
+                 SharedPrefCategory prefName, boolean rebootApp, @Nullable SettingsEnum[]  parents) {
         this.path = Objects.requireNonNull(path);
         this.returnType = Objects.requireNonNull(returnType);
         this.value = this.defaultValue = Objects.requireNonNull(defaultValue);
         this.sharedPref = Objects.requireNonNull(prefName);
         this.rebootApp = rebootApp;
-        this.parent = parent;
-        if (parent != null && parent.returnType != ReturnType.BOOLEAN) {
-            LogHelper.printException(() -> this + " parent must be Boolean type: " + parent);
+        this.parents = parents;
+        if (parents != null) {
+            for (SettingsEnum parent : parents) {
+                if (parent.returnType != ReturnType.BOOLEAN) {
+                    throw new IllegalArgumentException(" parent must be Boolean type: " + parent);
+                }
+            }
         }
     }
 
@@ -298,6 +312,19 @@ public enum SettingsEnum {
                 throw new IllegalStateException(name());
         }
         value = newValue;
+    }
+
+    /**
+     * @return if this setting can be configured and used.  Not to be confused with {@link #getBoolean()}
+     */
+    public boolean isAvailable() {
+        if (parents == null) {
+            return true;
+        }
+        for (SettingsEnum parent : parents) {
+            if (parent.getBoolean()) return true;
+        }
+        return false;
     }
 
     public boolean getBoolean() {

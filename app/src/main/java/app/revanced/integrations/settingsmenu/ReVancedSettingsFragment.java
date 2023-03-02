@@ -41,7 +41,6 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
                 if (pref instanceof SwitchPreference) {
                     SwitchPreference switchPref = (SwitchPreference) pref;
                     setting.setValue(switchPref.isChecked());
-                    turnChildPreferencesOnOff(setting);
                 } else if (pref instanceof EditTextPreference) {
                     EditTextPreference editPref = (EditTextPreference) pref;
                     Object value;
@@ -71,6 +70,8 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
                     rebootDialog(getActivity());
                 }
             }
+
+            turnOnOffPreferences();
         } catch (Exception ex) {
             LogHelper.printException(() -> "OnSharedPreferenceChangeListener failure", ex);
         }
@@ -98,17 +99,7 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
-        // enable/disable preferences, based on status of parent setting
-        for (SettingsEnum setting : SettingsEnum.values()) {
-            SettingsEnum parent = setting.parent;
-            if (parent != null) {
-                Preference preference = this.findPreference(setting.path);
-                if (preference != null) {
-                    preference.setEnabled(parent.getBoolean());
-                }
-            }
-        }
+        turnOnOffPreferences();
     }
 
     @Override // android.preference.PreferenceFragment, android.app.Fragment
@@ -120,17 +111,11 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
         super.onDestroy();
     }
 
-    private void turnChildPreferencesOnOff(@NonNull SettingsEnum parent) {
-        if (parent.returnType != SettingsEnum.ReturnType.BOOLEAN) {
-            throw new IllegalArgumentException(parent.toString());
-        }
-        final boolean enabled = parent.getBoolean();
+    private void turnOnOffPreferences() {
         for (SettingsEnum setting : SettingsEnum.values()) {
-            if (setting.parent == parent) {
-                Preference childPreference = this.findPreference(setting.path);
-                if (childPreference != null) {
-                    childPreference.setEnabled(enabled);
-                }
+            Preference preference = this.findPreference(setting.path);
+            if (preference != null) {
+                preference.setEnabled(setting.isAvailable());
             }
         }
     }
