@@ -49,7 +49,7 @@ public enum SettingsEnum {
     ADREMOVER_COMMUNITY_POSTS_REMOVAL("revanced_adremover_community_posts_removal", BOOLEAN, FALSE),
     ADREMOVER_COMPACT_BANNER_REMOVAL("revanced_adremover_compact_banner_removal", BOOLEAN, TRUE),
     ADREMOVER_CUSTOM_ENABLED("revanced_adremover_custom_enabled", BOOLEAN, FALSE),
-    ADREMOVER_CUSTOM_REMOVAL("revanced_adremover_custom_strings", STRING, "", true),
+    ADREMOVER_CUSTOM_REMOVAL("revanced_adremover_custom_strings", STRING, "", true, parents(ADREMOVER_CUSTOM_ENABLED)),
     ADREMOVER_EMERGENCY_BOX_REMOVAL("revanced_adremover_emergency_box_removal", BOOLEAN, TRUE),
     ADREMOVER_FEED_SURVEY_REMOVAL("revanced_adremover_feed_survey", BOOLEAN, TRUE),
     ADREMOVER_GENERAL_ADS_REMOVAL("revanced_adremover_ad_removal", BOOLEAN, TRUE),
@@ -188,7 +188,7 @@ public enum SettingsEnum {
      * For example: {@link #DEBUG_STACKTRACE} is non-functional and cannot be configured,
      * unless it's parent {@link #DEBUG} is enabled.
      *
-     * Used only for items that show up in the the ReVanced Settings UI.
+     * Declaration is not needed for items that do not appear in the ReVanced Settings UI.
      */
     @Nullable
     private final SettingsEnum[] parents;
