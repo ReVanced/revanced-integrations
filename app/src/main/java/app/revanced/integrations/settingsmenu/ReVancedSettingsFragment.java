@@ -16,7 +16,6 @@ import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.SwitchPreference;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.google.android.apps.youtube.app.application.Shell_HomeActivity;
@@ -27,9 +26,6 @@ import app.revanced.integrations.utils.ReVancedUtils;
 import app.revanced.integrations.utils.SharedPrefCategory;
 
 public class ReVancedSettingsFragment extends PreferenceFragment {
-    private boolean Registered = false;
-    private boolean settingsInitialized = false;
-
     SharedPreferences.OnSharedPreferenceChangeListener listener = (sharedPreferences, str) -> {
         try {
             for (SettingsEnum setting : SettingsEnum.values()) {
@@ -58,15 +54,14 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
                             value = Integer.parseInt(editPref.getText());
                             break;
                         default:
-                            LogHelper.printException(() -> "Setting has no valid return type! " + setting.returnType);
-                            return;
+                            throw new IllegalStateException(setting.toString());
                     }
                     setting.setValue(value);
                 } else {
                     LogHelper.printException(() -> "Setting cannot be handled: " + pref.getClass() + " " + pref);
                 }
 
-                if (ReVancedUtils.getContext() != null && settingsInitialized && setting.rebootApp) {
+                if (ReVancedUtils.getContext() != null && setting.rebootApp) {
                     rebootDialog(getActivity());
                 }
             }
@@ -87,10 +82,7 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
             final int identifier = getResources().getIdentifier("revanced_prefs", "xml", packageName);
             addPreferencesFromResource(identifier);
 
-            SharedPreferences sharedPreferences = getPreferenceManager().getSharedPreferences();
-            sharedPreferences.registerOnSharedPreferenceChangeListener(this.listener);
-            this.Registered = true;
-            this.settingsInitialized = true;
+            getPreferenceManager().getSharedPreferences().registerOnSharedPreferenceChangeListener(listener);
         } catch (Exception ex) {
             LogHelper.printException(() -> "onCreate() error", ex);
         }
@@ -104,10 +96,7 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
 
     @Override // android.preference.PreferenceFragment, android.app.Fragment
     public void onDestroy() {
-        if (this.Registered) {
-            getPreferenceManager().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this.listener);
-            this.Registered = false;
-        }
+        getPreferenceManager().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(listener);
         super.onDestroy();
     }
 
