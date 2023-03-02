@@ -122,7 +122,8 @@ public enum SettingsEnum {
     // Swipe controls
     ENABLE_SWIPE_BRIGHTNESS("revanced_enable_swipe_brightness", BOOLEAN, TRUE),
     ENABLE_SWIPE_VOLUME("revanced_enable_swipe_volume", BOOLEAN, TRUE),
-    ENABLE_PRESS_TO_SWIPE("revanced_enable_press_to_swipe", BOOLEAN, FALSE),
+    ENABLE_PRESS_TO_SWIPE("revanced_enable_press_to_swipe", BOOLEAN, FALSE,
+            parents(ENABLE_SWIPE_BRIGHTNESS, ENABLE_SWIPE_VOLUME)),
     ENABLE_SWIPE_HAPTIC_FEEDBACK("revanced_enable_swipe_haptic_feedback", BOOLEAN, TRUE,
             parents(ENABLE_SWIPE_BRIGHTNESS, ENABLE_SWIPE_VOLUME)),
     SWIPE_MAGNITUDE_THRESHOLD("revanced_swipe_magnitude_threshold", FLOAT, 30f,
@@ -278,13 +279,18 @@ public enum SettingsEnum {
         }
     }
 
-    /**
-     * Sets, but does _not_ persistently save the value
-     *
-     * @see #saveValue(Object)
-     */
     public void setValue(@NonNull Object newValue) {
-        this.value = Objects.requireNonNull(newValue);
+        setValue(this, newValue);
+    }
+
+    /**
+     * Sets, but does _not_ persistently save the value.
+     *
+     * This is a intentionally a static method, to prevent accidental usage
+     * when {@link #saveValue(Object)} was intended
+     */
+    public static void setValue(SettingsEnum setting, Object newValue) {
+        setting.value = Objects.requireNonNull(newValue);
     }
 
     /**
