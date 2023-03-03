@@ -63,7 +63,7 @@ public class SegmentCategoryPreferenceList extends ListPreference {
                     int defaultColor = category.defaultColor;
                     category.setColor(defaultColor);
                     ReVancedUtils.showToastShort(str("sb_color_reset"));
-                    getSharedPreferences().edit().putString(getColorPreferenceKey(), formatColorString(defaultColor)).apply();
+                    getSharedPreferences().edit().putString(getColorPreferenceKey(), null).apply();
                     reformatTitle();
                 } catch (Exception ex) {
                     LogHelper.printException(() -> "setNeutralButton failure", ex);
