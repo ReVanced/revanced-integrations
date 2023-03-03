@@ -19,27 +19,27 @@ import app.revanced.integrations.sponsorblock.StringRef;
 
 public enum SegmentCategory {
     SPONSOR("sponsor", sf("sb_segments_sponsor"), sf("sb_segments_sponsor_sum"), sf("sb_skip_button_sponsor"), sf("sb_skipped_sponsor"),
-            SKIP_AUTOMATICALLY, 0xFF00d400),
+            SKIP_AUTOMATICALLY, 0x00d400),
     SELF_PROMO("selfpromo", sf("sb_segments_selfpromo"), sf("sb_segments_selfpromo_sum"), sf("sb_skip_button_selfpromo"), sf("sb_skipped_selfpromo"),
-            SKIP_AUTOMATICALLY, 0xFFffff00),
+            SKIP_AUTOMATICALLY, 0xffff00),
     INTERACTION("interaction", sf("sb_segments_interaction"), sf("sb_segments_interaction_sum"), sf("sb_skip_button_interaction"), sf("sb_skipped_interaction"),
-            SKIP_AUTOMATICALLY, 0xFFcc00ff),
+            SKIP_AUTOMATICALLY, 0xcc00ff),
     INTRO("intro", sf("sb_segments_intro"), sf("sb_segments_intro_sum"),
             sf("sb_skip_button_intro_beginning"), sf("sb_skip_button_intro_middle"), sf("sb_skip_button_intro_end"),
             sf("sb_skipped_intro_beginning"), sf("sb_skipped_intro_middle"), sf("sb_skipped_intro_end"),
-            MANUAL_SKIP, 0xFF00ffff),
+            MANUAL_SKIP, 0x00ffff),
     OUTRO("outro", sf("sb_segments_outro"), sf("sb_segments_outro_sum"), sf("sb_skip_button_outro"), sf("sb_skipped_outro"),
-            MANUAL_SKIP, 0xFF0202ed),
+            MANUAL_SKIP, 0x0202ed),
     PREVIEW("preview", sf("sb_segments_preview"), sf("sb_segments_preview_sum"),
             sf("sb_skip_button_preview_beginning"), sf("sb_skip_button_preview_middle"), sf("sb_skip_button_preview_end"),
             sf("sb_skipped_preview_beginning"), sf("sb_skipped_preview_middle"), sf("sb_skipped_preview_end"),
-            IGNORE, 0xFF008fd6),
+            IGNORE, 0x008fd6),
     FILLER("filler", sf("sb_segments_filler"), sf("sb_segments_filler_sum"), sf("sb_skip_button_filler"), sf("sb_skipped_filler"),
-            IGNORE, 0xFF7300FF),
+            IGNORE, 0x7300FF),
     MUSIC_OFFTOPIC("music_offtopic", sf("sb_segments_nomusic"), sf("sb_segments_nomusic_sum"), sf("sb_skip_button_nomusic"), sf("sb_skipped_nomusic"),
-            MANUAL_SKIP, 0xFFff9900),
+            MANUAL_SKIP, 0xff9900),
     UNSUBMITTED("unsubmitted", StringRef.empty, StringRef.empty, sf("sb_skip_button_unsubmitted"), sf("sb_skipped_unsubmitted"),
-            SKIP_AUTOMATICALLY, 0xFFFFFFFF);
+            SKIP_AUTOMATICALLY, 0xFFFFFF);
 
     private static final SegmentCategory[] mValuesWithoutUnsubmitted = new SegmentCategory[]{
             SPONSOR,
@@ -140,13 +140,13 @@ public enum SegmentCategory {
         this.defaultColor = defaultColor;
         this.color = defaultColor;
         this.paint = new Paint();
+        setColor(defaultColor);
     }
 
     public void setColor(int color) {
-        color = color & 0xFFFFFF;
+        color &= 0xFFFFFF;
         this.color = color;
         paint.setColor(color);
-        paint.setAlpha(255);
     }
 
     @NonNull
