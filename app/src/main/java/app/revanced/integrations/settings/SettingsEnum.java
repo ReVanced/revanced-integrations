@@ -285,7 +285,7 @@ public enum SettingsEnum {
      * This intentionally is a static method, to deter accidental usage
      * when {@link #saveValue(Object)} was intended
      */
-    public static void setValue(SettingsEnum setting, Object newValue) {
+    public static void setValue(@NonNull SettingsEnum setting, @NonNull Object newValue) {
         setting.value = Objects.requireNonNull(newValue);
     }
 
@@ -345,6 +345,7 @@ public enum SettingsEnum {
         return (Float) value;
     }
 
+    @NonNull
     public String getString() {
         return (String) value;
     }
