@@ -1,6 +1,5 @@
 package app.revanced.integrations.sponsorblock;
 
-import static android.text.Html.fromHtml;
 import static app.revanced.integrations.sponsorblock.StringRef.str;
 
 import android.annotation.SuppressLint;
@@ -28,8 +27,8 @@ import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.sponsorblock.objects.CategoryBehaviour;
 import app.revanced.integrations.sponsorblock.objects.SegmentCategory;
 import app.revanced.integrations.sponsorblock.objects.SponsorSegment;
-import app.revanced.integrations.sponsorblock.ui.SponsorBlockViewController;
 import app.revanced.integrations.sponsorblock.requests.SBRequester;
+import app.revanced.integrations.sponsorblock.ui.SponsorBlockViewController;
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedUtils;
 
@@ -103,7 +102,7 @@ public class SponsorBlockUtils {
                 SegmentCategory[] categories = SegmentCategory.valuesWithoutUnsubmitted();
                 CharSequence[] titles = new CharSequence[categories.length];
                 for (int i = 0, length = categories.length; i < length; i++) {
-                    titles[i] = categories[i].getTitleWithDot();
+                    titles[i] = categories[i].getTitleWithColorDot();
                 }
 
                 newUserCreatedSegmentCategory = null;
@@ -338,7 +337,7 @@ public class SponsorBlockUtils {
             final SegmentCategory[] values = SegmentCategory.valuesWithoutUnsubmitted();
             CharSequence[] titles = new CharSequence[values.length];
             for (int i = 0; i < values.length; i++) {
-                titles[i] = values[i].getTitleWithDot();
+                titles[i] = values[i].getTitleWithColorDot();
             }
 
             new AlertDialog.Builder(context)
@@ -398,10 +397,6 @@ public class SponsorBlockUtils {
         } catch (Exception ex) {
             LogHelper.printException(() -> "onEditByHandClicked failure", ex);
         }
-    }
-
-    public static String formatColorString(int color) {
-        return String.format("#%06X", color);
     }
 
     public static String getTimeSavedString(long totalSecondsSaved) {

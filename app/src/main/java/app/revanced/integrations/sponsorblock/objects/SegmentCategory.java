@@ -5,17 +5,25 @@ import static app.revanced.integrations.sponsorblock.objects.CategoryBehaviour.I
 import static app.revanced.integrations.sponsorblock.objects.CategoryBehaviour.MANUAL_SKIP;
 import static app.revanced.integrations.sponsorblock.objects.CategoryBehaviour.SKIP_AUTOMATICALLY;
 
+import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.text.Html;
+import android.text.Spanned;
+import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
 import app.revanced.integrations.sponsorblock.StringRef;
+import app.revanced.integrations.utils.LogHelper;
+import app.revanced.integrations.utils.SharedPrefHelper;
 
 public enum SegmentCategory {
     SPONSOR("sponsor", sf("sb_segments_sponsor"), sf("sb_segments_sponsor_sum"), sf("sb_skip_button_sponsor"), sf("sb_skipped_sponsor"),
@@ -53,6 +61,13 @@ public enum SegmentCategory {
     };
     private static final Map<String, SegmentCategory> mValuesMap = new HashMap<>(2 * mValuesWithoutUnsubmitted.length);
 
+    private static final String COLOR_PREFERENCE_KEY_SUFFIX = "_color";
+
+    /**
+     * Categories currently enabled, formatted for an API call
+     */
+    public static String sponsorBlockAPIFetchCategories = "[]";
+
     static {
         for (SegmentCategory value : mValuesWithoutUnsubmitted)
             mValuesMap.put(value.key, value);
@@ -66,6 +81,25 @@ public enum SegmentCategory {
     @Nullable
     public static SegmentCategory byCategoryKey(@NonNull String key) {
         return mValuesMap.get(key);
+    }
+
+    public static void loadFromPreferences() {
+        SharedPreferences preferences = SharedPrefHelper.getPreferences(SharedPrefHelper.SharedPrefNames.SPONSOR_BLOCK);
+        SegmentCategory[] categories = valuesWithoutUnsubmitted();
+        List<String> enabledCategories = new ArrayList<>(categories.length);
+        for (SegmentCategory category : categories) {
+            category.load(preferences);
+
+            if (category.behaviour != CategoryBehaviour.IGNORE) {
+                enabledCategories.add(category.key);
+            }
+        }
+
+        //"[%22sponsor%22,%22outro%22,%22music_offtopic%22,%22intro%22,%22selfpromo%22,%22interaction%22,%22preview%22]";
+        if (enabledCategories.isEmpty())
+            sponsorBlockAPIFetchCategories = "[]";
+        else
+            sponsorBlockAPIFetchCategories = "[%22" + TextUtils.join("%22,%22", enabledCategories) + "%22]";
     }
 
     @NonNull
@@ -137,10 +171,50 @@ public enum SegmentCategory {
         this.skippedToastMiddle = Objects.requireNonNull(skippedToastMiddle);
         this.skippedToastEnd = Objects.requireNonNull(skippedToastEnd);
         this.behaviour = Objects.requireNonNull(defaultBehavior);
-        this.defaultColor = defaultColor;
-        this.color = defaultColor;
+        this.color = this.defaultColor = defaultColor;
         this.paint = new Paint();
         setColor(defaultColor);
+    }
+
+    private void load(SharedPreferences preferences) {
+        String categoryColor = preferences.getString(key + COLOR_PREFERENCE_KEY_SUFFIX, null);
+        if (categoryColor == null) {
+            setColor(defaultColor);
+        } else {
+            setColor(categoryColor);
+        }
+
+        String behaviorString = preferences.getString(key, null);
+        if (behaviorString != null) {
+            CategoryBehaviour preferenceBehavior = CategoryBehaviour.byStringKey(behaviorString);
+            if (preferenceBehavior == null) {
+                LogHelper.printException(() -> "Unknown behavior: " + behaviorString); // should never happen
+            } else {
+                behaviour = preferenceBehavior;
+            }
+        }
+    }
+
+    /**
+     * Saves the current color.
+     * Calling code is responsible for calling {@link SharedPreferences.Editor#apply()}
+     */
+    public void save(SharedPreferences.Editor editor) {
+        String colorString = (color == defaultColor)
+                ? null // remove any saved preference, so default is used on the next load
+                : colorString();
+        editor.putString(key + COLOR_PREFERENCE_KEY_SUFFIX, colorString);
+    }
+
+    /**
+     * @return HTML color format string
+     */
+    public String colorString() {
+        return String.format("#%06X", color);
+    }
+
+    public void setColor(@NonNull String colorString) throws IllegalArgumentException {
+        setColor(Color.parseColor(colorString));
     }
 
     public void setColor(int color) {
@@ -150,8 +224,24 @@ public enum SegmentCategory {
     }
 
     @NonNull
-    public CharSequence getTitleWithDot() {
-        return Html.fromHtml(String.format("<font color=\"#%06X\">⬤</font> %s", color, title));
+    private static String getCategoryColorDotHTML(int color) {
+        color &= 0xFFFFFF;
+        return String.format("<font color=\"#%06X\">⬤</font>", color);
+    }
+
+    @NonNull
+    public static Spanned getCategoryColorDot(int color) {
+        return Html.fromHtml(getCategoryColorDotHTML(color));
+    }
+
+    @NonNull
+    public Spanned getCategoryColorDot() {
+        return getCategoryColorDot(color);
+    }
+
+    @NonNull
+    public Spanned getTitleWithColorDot() {
+        return Html.fromHtml(getCategoryColorDotHTML(color) + " " + title);
     }
 
     /**

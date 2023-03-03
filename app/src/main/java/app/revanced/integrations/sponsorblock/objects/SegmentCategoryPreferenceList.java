@@ -1,24 +1,29 @@
 package app.revanced.integrations.sponsorblock.objects;
 
-import static app.revanced.integrations.sponsorblock.SponsorBlockUtils.formatColorString;
 import static app.revanced.integrations.sponsorblock.StringRef.str;
 
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.preference.ListPreference;
 import android.text.Editable;
-import android.text.Html;
 import android.text.InputType;
 import android.text.TextWatcher;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.TableLayout;
+import android.widget.TableRow;
+import android.widget.TextView;
 
-import app.revanced.integrations.sponsorblock.SponsorBlockSettings;
+import java.util.Objects;
+
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedUtils;
 
 public class SegmentCategoryPreferenceList extends ListPreference {
+    private SegmentCategory category;
     private EditText mEditText;
     private int mClickedDialogEntryIndex;
 
@@ -29,11 +34,30 @@ public class SegmentCategoryPreferenceList extends ListPreference {
     @Override
     protected void onPrepareDialogBuilder(AlertDialog.Builder builder) {
         try {
-            SegmentCategory category = getCategoryBySelf();
+            category = Objects.requireNonNull(SegmentCategory.byCategoryKey(getKey()));
 
-            mEditText = new EditText(builder.getContext());
-            mEditText.setInputType(InputType.TYPE_CLASS_TEXT);
-            mEditText.setText(formatColorString(category.color));
+            Context context = builder.getContext();
+            TableLayout table = new TableLayout(context);
+            table.setOrientation(LinearLayout.HORIZONTAL);
+            table.setPadding(70, 0, 150, 0);
+            table.setLayoutParams(new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT));
+
+            TableRow row = new TableRow(context);
+
+            TextView colorTextLabel = new TextView(context);
+            colorTextLabel.setText(str("sb_color_dot_label"));
+            row.addView(colorTextLabel);
+
+            TextView colorDotView = new TextView(context);
+            colorDotView.setText(category.getCategoryColorDot());
+            colorDotView.setPadding(30, 0, 30, 0);
+            row.addView(colorDotView);
+
+            mEditText = new EditText(context);
+            mEditText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
+            mEditText.setText(category.colorString());
             mEditText.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -46,25 +70,40 @@ public class SegmentCategoryPreferenceList extends ListPreference {
                 @Override
                 public void afterTextChanged(Editable s) {
                     try {
-                        Color.parseColor(s.toString()); // validation
-                        getDialog().setTitle(Html.fromHtml(String.format("<font color=\"%s\">⬤</font> %s", s, category.title)));
+                        String colorString = s.toString();
+                        if (!colorString.startsWith("#")) {
+                            s.insert(0, "#"); // recursively calls back into this method
+                            return;
+                        }
+                        if (colorString.length() > 7) {
+                            s.delete(7, colorString.length());
+                            return;
+                        }
+                        final int color = Color.parseColor(colorString);
+                        colorDotView.setText(SegmentCategory.getCategoryColorDot(color));
                     } catch (IllegalArgumentException ex) {
+                        // ignore
                     }
                 }
             });
-            builder.setView(mEditText);
-            builder.setTitle(category.getTitleWithDot());
+            mEditText.setLayoutParams(new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1f));
+            row.addView(mEditText);
+
+            table.addView(row);
+            builder.setView(table);
+            builder.setTitle(category.title.toString());
 
             builder.setPositiveButton(android.R.string.ok, (dialog, which) -> {
-                SegmentCategoryPreferenceList.this.onClick(dialog, DialogInterface.BUTTON_POSITIVE);
+                onClick(dialog, DialogInterface.BUTTON_POSITIVE);
             });
-            builder.setNeutralButton(str("sb_reset"), (dialog, which) -> {
+            builder.setNeutralButton(str("sb_reset_color"), (dialog, which) -> {
                 try {
-                    int defaultColor = category.defaultColor;
-                    category.setColor(defaultColor);
-                    ReVancedUtils.showToastShort(str("sb_color_reset"));
-                    getSharedPreferences().edit().putString(getColorPreferenceKey(), null).apply();
+                    SharedPreferences.Editor editor = getSharedPreferences().edit();
+                    category.setColor(category.defaultColor);
+                    category.save(editor);
+                    editor.apply();
                     reformatTitle();
+                    ReVancedUtils.showToastShort(str("sb_color_reset"));
                 } catch (Exception ex) {
                     LogHelper.printException(() -> "setNeutralButton failure", ex);
                 }
@@ -87,14 +126,15 @@ public class SegmentCategoryPreferenceList extends ListPreference {
                     setValue(value);
                 }
                 String colorString = mEditText.getText().toString();
-                SegmentCategory category = getCategoryBySelf();
-                if (colorString.equals(formatColorString(category.color))) {
-                    return;
-                }
                 try {
-                    int color = Color.parseColor(colorString);
+                    final int color = Color.parseColor(colorString) & 0xFFFFFF;
+                    if (color == category.color) {
+                        return;
+                    }
+                    SharedPreferences.Editor editor = getSharedPreferences().edit();
                     category.setColor(color);
-                    getSharedPreferences().edit().putString(getColorPreferenceKey(), formatColorString(color)).apply();
+                    category.save(editor);
+                    editor.apply();
                     reformatTitle();
                     ReVancedUtils.showToastShort(str("sb_color_changed"));
                 } catch (IllegalArgumentException ex) {
@@ -106,15 +146,7 @@ public class SegmentCategoryPreferenceList extends ListPreference {
         }
     }
 
-    private SegmentCategory getCategoryBySelf() {
-        return SegmentCategory.byCategoryKey(getKey());
-    }
-
-    private String getColorPreferenceKey() {
-        return getKey() + SponsorBlockSettings.SEGMENT_CATEGORY_COLOR_PREFERENCE_KEY_SUFFIX;
-    }
-
     private void reformatTitle() {
-        this.setTitle(getCategoryBySelf().getTitleWithDot());
+        this.setTitle(category.getTitleWithColorDot());
     }
 }

@@ -3,7 +3,6 @@ package app.revanced.integrations.sponsorblock;
 import static app.revanced.integrations.sponsorblock.StringRef.str;
 
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
@@ -24,8 +23,6 @@ import app.revanced.integrations.utils.ReVancedUtils;
 import app.revanced.integrations.utils.SharedPrefHelper;
 
 public class SponsorBlockSettings {
-    public static final String SEGMENT_CATEGORY_COLOR_PREFERENCE_KEY_SUFFIX = "_color";
-    public static String sponsorBlockAPIFetchCategories = "[]";
 
     public static void importSettings(@NonNull String json) {
         ReVancedUtils.verifyOnMainThread();
@@ -40,11 +37,13 @@ public class SponsorBlockSettings {
             SegmentCategory[] categories = SegmentCategory.valuesWithoutUnsubmitted();
             for (SegmentCategory category : categories) {
                 String categoryKey = category.key;
-                JSONObject categoryObject = barTypesObject.getJSONObject(categoryKey);
-                String color = categoryObject.getString("color");
-
-                editor.putString(categoryKey + SEGMENT_CATEGORY_COLOR_PREFERENCE_KEY_SUFFIX, color);
+                // clear existing behavior, as browser plugin exports no value for ignored categories
                 editor.putString(categoryKey, CategoryBehaviour.IGNORE.key);
+
+                JSONObject categoryObject = barTypesObject.getJSONObject(categoryKey);
+                String colorString = categoryObject.getString("color");
+                category.setColor(colorString);
+                category.save(editor);
             }
 
             for (int i = 0; i < categorySelectionsArray.length(); i++) {
@@ -95,7 +94,7 @@ public class SponsorBlockSettings {
             for (SegmentCategory category : categories) {
                 JSONObject categoryObject = new JSONObject();
                 String categoryKey = category.key;
-                categoryObject.put("color", SponsorBlockUtils.formatColorString(category.color));
+                categoryObject.put("color", category.colorString());
                 barTypesObject.put(categoryKey, categoryObject);
 
                 int desktopKey = category.behaviour.desktopKey;
@@ -127,7 +126,6 @@ public class SponsorBlockSettings {
     public static void loadFromSavedSettings() {
         ReVancedUtils.verifyOnMainThread();
         LogHelper.printDebug(() -> "updating SponsorBlockSettings");
-        SharedPreferences preferences = SharedPrefHelper.getPreferences(SharedPrefHelper.SharedPrefNames.SPONSOR_BLOCK);
 
         if (!SettingsEnum.SB_ENABLED.getBoolean()) {
             SponsorBlockViewController.hideSkipButton();
@@ -137,36 +135,9 @@ public class SponsorBlockSettings {
         if (!SettingsEnum.SB_NEW_SEGMENT_ENABLED.getBoolean()) {
             SponsorBlockViewController.hideNewSegmentLayout();
         }
-
         // shield and voting button automatically show/hide themselves if feature is turned on/off
 
-        SegmentCategory[] categories = SegmentCategory.valuesWithoutUnsubmitted();
-        List<String> enabledCategories = new ArrayList<>(categories.length);
-        for (SegmentCategory category : categories) {
-            String categoryColor = preferences.getString(category.key + SEGMENT_CATEGORY_COLOR_PREFERENCE_KEY_SUFFIX, null);
-            if (categoryColor != null) {
-                category.setColor(Color.parseColor(categoryColor));
-            }
-
-            String value = preferences.getString(category.key, null);
-            if (value != null) {
-                CategoryBehaviour behavior = CategoryBehaviour.byStringKey(value);
-                if (behavior == null) {
-                    LogHelper.printException(() -> "Unknown behavior: " + value); // should never happen
-                } else {
-                    category.behaviour = behavior;
-                }
-            }
-            if (category.behaviour != CategoryBehaviour.IGNORE) {
-                enabledCategories.add(category.key);
-            }
-        }
-
-        //"[%22sponsor%22,%22outro%22,%22music_offtopic%22,%22intro%22,%22selfpromo%22,%22interaction%22,%22preview%22]";
-        if (enabledCategories.isEmpty())
-            sponsorBlockAPIFetchCategories = "[]";
-        else
-            sponsorBlockAPIFetchCategories = "[%22" + TextUtils.join("%22,%22", enabledCategories) + "%22]";
+        SegmentCategory.loadFromPreferences();
 
         String uuid = SettingsEnum.SB_UUID.getString();
         if (uuid == null || uuid.length() == 0) {
