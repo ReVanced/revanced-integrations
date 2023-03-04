@@ -3,10 +3,12 @@ package app.revanced.integrations.sponsorblock;
 import static app.revanced.integrations.sponsorblock.StringRef.str;
 
 import android.content.SharedPreferences;
+import android.util.Patterns;
 
 import androidx.annotation.NonNull;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.UUID;
@@ -59,18 +61,49 @@ public class SponsorBlockSettings {
             }
             editor.apply();
 
-            SettingsEnum.SB_UUID.saveValue(settingsJson.getString("userID"));
+            String userID = settingsJson.getString("userID");
+            if (userID.length() == 0) {
+                throw new IllegalArgumentException("userId is blank");
+            }
+            SettingsEnum.SB_UUID.saveValue(userID);
+
             SettingsEnum.SB_IS_VIP.saveValue(settingsJson.getBoolean("isVip"));
-            SettingsEnum.SB_API_URL.saveValue(settingsJson.getString("serverAddress"));
             SettingsEnum.SB_SHOW_TOAST_WHEN_SKIP.saveValue(!settingsJson.getBoolean("dontShowNotice"));
-            SettingsEnum.SB_SHOW_TIME_WITHOUT_SEGMENTS.saveValue(settingsJson.getBoolean("showTimeWithSkips"));
-            SettingsEnum.SB_MIN_DURATION.saveValue(Float.valueOf(settingsJson.getString("minDuration")));
             SettingsEnum.SB_COUNT_SKIPS.saveValue(settingsJson.getBoolean("trackViewCount"));
+
+            String serverAddress = settingsJson.getString("serverAddress");
+            if (!Patterns.WEB_URL.matcher(serverAddress).matches()) {
+                throw new IllegalArgumentException(str("sb_api_url_invalid"));
+            }
+            SettingsEnum.SB_API_URL.saveValue(serverAddress);
+
+            SettingsEnum.SB_SHOW_TIME_WITHOUT_SEGMENTS.saveValue(settingsJson.getBoolean("showTimeWithSkips"));
+            final float minDuration = (float)settingsJson.getDouble("minDuration");
+            if (minDuration < 0) {
+                throw new IllegalArgumentException("invalid minDuration: " + minDuration);
+            }
+            SettingsEnum.SB_MIN_DURATION.saveValue(minDuration);
+
+            try {
+                int skipCount = settingsJson.getInt("skipCount");
+                if (skipCount < 0) {
+                    throw new IllegalArgumentException("invalid skipCount: " + skipCount);
+                }
+                SettingsEnum.SB_SKIPPED_SEGMENTS.saveValue(skipCount);
+
+                final double minutesSaved = settingsJson.getDouble("minutesSaved");
+                if (minutesSaved < 0) {
+                    throw new IllegalArgumentException("invalid minutesSaved: " + minutesSaved);
+                }
+                SettingsEnum.SB_SKIPPED_SEGMENTS_TIME.saveValue((long)(minutesSaved * 60 * 1000));
+            } catch (JSONException ex) {
+                // ignore. values were not exported in prior versions of ReVanced
+            }
 
             ReVancedUtils.showToastLong(str("sb_settings_import_successful"));
         } catch (Exception ex) {
             LogHelper.printInfo(() -> "failed to import settings", ex); // use info level, as we are showing our own toast
-            ReVancedUtils.showToastLong(str("sb_settings_import_failed"));
+            ReVancedUtils.showToastLong(str("sb_settings_import_failed", ex.getMessage()));
         }
     }
 
@@ -103,6 +136,9 @@ public class SponsorBlockSettings {
             json.put("showTimeWithSkips", SettingsEnum.SB_SHOW_TIME_WITHOUT_SEGMENTS.getBoolean());
             json.put("minDuration", SettingsEnum.SB_MIN_DURATION.getFloat());
             json.put("trackViewCount", SettingsEnum.SB_COUNT_SKIPS.getBoolean());
+            json.put("skipCount", SettingsEnum.SB_SKIPPED_SEGMENTS.getInt());
+            json.put("minutesSaved", SettingsEnum.SB_SKIPPED_SEGMENTS_TIME.getLong() / (60f * 1000));
+
             json.put("categorySelections", categorySelectionsArray);
             json.put("barTypes", barTypesObject);
 
