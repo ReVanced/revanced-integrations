@@ -91,13 +91,10 @@ public class SponsorBlockSettings {
                 categoryObject.put("color", category.colorString());
                 barTypesObject.put(categoryKey, categoryObject);
 
-                int desktopKey = category.behaviour.desktopKey;
-                if (desktopKey != -1) {
-                    JSONObject behaviorObject = new JSONObject();
-                    behaviorObject.put("name", categoryKey);
-                    behaviorObject.put("option", desktopKey);
-                    categorySelectionsArray.put(behaviorObject);
-                }
+                JSONObject behaviorObject = new JSONObject();
+                behaviorObject.put("name", categoryKey);
+                behaviorObject.put("option", category.behaviour.desktopKey);
+                categorySelectionsArray.put(behaviorObject);
             }
             json.put("userID", SettingsEnum.SB_UUID.getString());
             json.put("isVip", SettingsEnum.SB_IS_VIP.getBoolean());

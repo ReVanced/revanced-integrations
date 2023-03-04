@@ -191,6 +191,9 @@ public enum SegmentCategory {
         setColor(defaultColor);
     }
 
+    /**
+     * Caller must also call {@link #updateEnabledCategories()}
+     */
     private void load(SharedPreferences preferences) {
         String categoryColor = preferences.getString(key + COLOR_PREFERENCE_KEY_SUFFIX, null);
         if (categoryColor == null) {
