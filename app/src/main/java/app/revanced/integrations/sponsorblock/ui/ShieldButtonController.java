@@ -107,7 +107,7 @@ public class ShieldButtonController {
     }
 
     private static boolean shouldBeShown() {
-        return SettingsEnum.SB_ENABLED.getBoolean() && SettingsEnum.SB_NEW_SEGMENT_ENABLED.getBoolean()
+        return SettingsEnum.SB_ENABLED.getBoolean() && SettingsEnum.SB_CREATE_NEW_SEGMENT_ENABLED.getBoolean()
                 && !VideoInformation.isAtEndOfVideo();
     }
 

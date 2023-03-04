@@ -43,19 +43,30 @@ import app.revanced.integrations.utils.SharedPrefHelper;
 
 @SuppressWarnings("deprecation")
 public class SponsorBlockSettingsFragment extends PreferenceFragment {
+
+    private static void updateSwitchPreference(boolean preferenceEnabled, SwitchPreference preference,
+                                               SettingsEnum setting, String titleKey, String summaryOn, String summaryOff) {
+        final boolean preferenceChecked = setting.getBoolean();
+        preference.setChecked(preferenceChecked);
+        preference.setTitle(str(titleKey));
+        preference.setSummary(str( preferenceChecked ? summaryOn : summaryOff));
+        preference.setEnabled(preferenceEnabled);
+    }
+
     private SwitchPreference sbEnabled;
     private SwitchPreference addNewSegment;
     private SwitchPreference votingEnabled;
     private SwitchPreference compactSkipButton;
-
     private SwitchPreference showSkipToast;
     private SwitchPreference countSkips;
     private SwitchPreference showTimeWithoutSegments;
+
     private EditTextPreference newSegmentStep;
     private EditTextPreference minSegmentDuration;
     private EditTextPreference privateUserId;
-    private Preference apiUrl;
     private EditTextPreference importExport;
+    private Preference apiUrl;
+
     private PreferenceCategory statsCategory;
     private PreferenceCategory segmentCategory;
 
@@ -65,7 +76,7 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment {
             SponsorBlockViewController.hideSkipButton();
             SponsorBlockViewController.hideNewSegmentLayout();
             SegmentPlaybackController.setCurrentVideoId(null);
-        } else if (!SettingsEnum.SB_NEW_SEGMENT_ENABLED.getBoolean()) {
+        } else if (!SettingsEnum.SB_CREATE_NEW_SEGMENT_ENABLED.getBoolean()) {
             SponsorBlockViewController.hideNewSegmentLayout();
         }
         // voting and add new segment buttons automatically shows/hides themselves
@@ -74,35 +85,29 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment {
         sbEnabled.setTitle(str("sb_enable_sb"));
         sbEnabled.setSummary(str("sb_enable_sb_sum"));
 
-        addNewSegment.setChecked(SettingsEnum.SB_NEW_SEGMENT_ENABLED.getBoolean());
-        addNewSegment.setTitle(str("sb_enable_add_segment"));
-        addNewSegment.setSummary(str("sb_enable_add_segment_sum"));
-        addNewSegment.setEnabled(enabled);
+        updateSwitchPreference(enabled, addNewSegment, SettingsEnum.SB_CREATE_NEW_SEGMENT_ENABLED,
+                "sb_enable_create_segment",
+                "sb_enable_create_segment_sum_on", "sb_enable_create_segment_sum_off");
 
-        votingEnabled.setChecked(SettingsEnum.SB_VOTING_ENABLED.getBoolean());
-        votingEnabled.setTitle(str("sb_enable_voting"));
-        votingEnabled.setSummary(str("sb_enable_voting_sum"));
-        votingEnabled.setEnabled(enabled);
+        updateSwitchPreference(enabled, votingEnabled, SettingsEnum.SB_VOTING_ENABLED,
+                "sb_enable_voting",
+                "sb_enable_voting_sum_on", "sb_enable_voting_sum_off");
 
-        compactSkipButton.setChecked(SettingsEnum.SB_USE_COMPACT_SKIPBUTTON.getBoolean());
-        compactSkipButton.setTitle(str("sb_enable_compact_skip_button"));
-        compactSkipButton.setSummary(str("sb_enable_compact_skip_button_sum"));
-        compactSkipButton.setEnabled(enabled);
+        updateSwitchPreference(enabled, compactSkipButton, SettingsEnum.SB_USE_COMPACT_SKIPBUTTON,
+                "sb_enable_compact_skip_button",
+                "sb_enable_compact_skip_button_sum_on", "sb_enable_compact_skip_button_sum_off");
 
-        showSkipToast.setChecked(SettingsEnum.SB_SHOW_TOAST_WHEN_SKIP.getBoolean());
-        showSkipToast.setTitle(str("sb_general_skiptoast"));
-        showSkipToast.setSummary(str("sb_general_skiptoast_sum"));
-        showSkipToast.setEnabled(enabled);
+        updateSwitchPreference(enabled, showSkipToast, SettingsEnum.SB_SHOW_TOAST_WHEN_SKIP,
+                "sb_general_skiptoast",
+                "sb_general_skiptoast_sum_on", "sb_general_skiptoast_sum_off");
 
-        countSkips.setTitle(str("sb_general_skipcount"));
-        countSkips.setSummary(str("sb_general_skipcount_sum"));
-        countSkips.setChecked(SettingsEnum.SB_COUNT_SKIPS.getBoolean());
-        countSkips.setEnabled(enabled);
+        updateSwitchPreference(enabled, countSkips, SettingsEnum.SB_COUNT_SKIPS,
+                "sb_general_skipcount",
+                "sb_general_skipcount_sum_on", "sb_general_skipcount_sum_off");
 
-        showTimeWithoutSegments.setTitle(str("sb_general_time_without"));
-        showTimeWithoutSegments.setSummary(str("sb_general_time_without_sum"));
-        showTimeWithoutSegments.setChecked(SettingsEnum.SB_SHOW_TIME_WITHOUT_SEGMENTS.getBoolean());
-        showTimeWithoutSegments.setEnabled(enabled);
+        updateSwitchPreference(enabled, showTimeWithoutSegments, SettingsEnum.SB_SHOW_TIME_WITHOUT_SEGMENTS,
+                "sb_general_time_without",
+                "sb_general_time_without_sum_on", "sb_general_time_without_sum_off");
 
         newSegmentStep.setTitle(str("sb_general_adjusting"));
         newSegmentStep.setSummary(str("sb_general_adjusting_sum"));
@@ -164,7 +169,7 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment {
                         .setPositiveButton(str("sb_guidelines_popup_open"), (dialogInterface, i) -> openGuidelines())
                         .show();
             }
-            SettingsEnum.SB_NEW_SEGMENT_ENABLED.saveValue(newValue);
+            SettingsEnum.SB_CREATE_NEW_SEGMENT_ENABLED.saveValue(newValue);
             updateUI();
             return true;
         });
@@ -219,7 +224,7 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment {
 
         showSkipToast = new SwitchPreference(context);
         showSkipToast.setOnPreferenceClickListener(preference1 -> {
-            ReVancedUtils.showToastShort(str("skipped_sponsor"));
+            ReVancedUtils.showToastShort(str("sb_skipped_sponsor"));
             return false;
         });
         showSkipToast.setOnPreferenceChangeListener((preference1, newValue) -> {
@@ -294,7 +299,7 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment {
                     .setTitle(apiUrl.getTitle())
                     .setView(editText)
                     .setNegativeButton(android.R.string.cancel, null)
-                    .setNeutralButton(str("reset"), urlListener)
+                    .setNeutralButton(str("sb_reset"), urlListener)
                     .setPositiveButton(android.R.string.ok, urlListener)
                     .show();
             return true;
