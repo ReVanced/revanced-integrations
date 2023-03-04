@@ -308,6 +308,7 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment {
         });
         importExport.setOnPreferenceChangeListener((preference1, newValue) -> {
             SponsorBlockSettings.importSettings((String) newValue);
+            updateSegmentCategories();
             fetchAndDisplayStats();
             updateUI();
             return true;
