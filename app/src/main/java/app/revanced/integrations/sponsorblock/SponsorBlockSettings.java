@@ -3,21 +3,17 @@ package app.revanced.integrations.sponsorblock;
 import static app.revanced.integrations.sponsorblock.StringRef.str;
 
 import android.content.SharedPreferences;
-import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.sponsorblock.objects.CategoryBehaviour;
 import app.revanced.integrations.sponsorblock.objects.SegmentCategory;
-import app.revanced.integrations.sponsorblock.ui.SponsorBlockViewController;
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedUtils;
 import app.revanced.integrations.utils.SharedPrefHelper;
@@ -28,22 +24,14 @@ public class SponsorBlockSettings {
         ReVancedUtils.verifyOnMainThread();
         try {
             JSONObject settingsJson = new JSONObject(json);
-
             JSONObject barTypesObject = settingsJson.getJSONObject("barTypes");
             JSONArray categorySelectionsArray = settingsJson.getJSONArray("categorySelections");
 
-            SharedPreferences.Editor editor = SharedPrefHelper.getPreferences(SharedPrefHelper.SharedPrefNames.SPONSOR_BLOCK).edit();
-
-            SegmentCategory[] categories = SegmentCategory.valuesWithoutUnsubmitted();
-            for (SegmentCategory category : categories) {
-                String categoryKey = category.key;
+            for (SegmentCategory category : SegmentCategory.valuesWithoutUnsubmitted()) {
                 // clear existing behavior, as browser plugin exports no value for ignored categories
-                editor.putString(categoryKey, CategoryBehaviour.IGNORE.key);
-
-                JSONObject categoryObject = barTypesObject.getJSONObject(categoryKey);
-                String colorString = categoryObject.getString("color");
-                category.setColor(colorString);
-                category.save(editor);
+                category.behaviour = CategoryBehaviour.IGNORE;
+                JSONObject categoryObject = barTypesObject.getJSONObject(category.key);
+                category.setColor(categoryObject.getString("color"));
             }
 
             for (int i = 0; i < categorySelectionsArray.length(); i++) {
@@ -58,10 +46,16 @@ public class SponsorBlockSettings {
                 final int desktopKey = categorySelectionObject.getInt("option");
                 CategoryBehaviour behaviour = CategoryBehaviour.byDesktopKey(desktopKey);
                 if (behaviour != null) {
-                    editor.putString(category.key, behaviour.key);
+                    category.behaviour = behaviour;
                 } else {
                     LogHelper.printException(() -> "Unknown segment category behavior key: " + desktopKey);
                 }
+            }
+
+            SegmentCategory.updateEnabledCategories();
+            SharedPreferences.Editor editor = SharedPrefHelper.getPreferences(SharedPrefHelper.SharedPrefNames.SPONSOR_BLOCK).edit();
+            for (SegmentCategory category : SegmentCategory.valuesWithoutUnsubmitted()) {
+                category.save(editor);
             }
             editor.apply();
 
@@ -123,21 +117,13 @@ public class SponsorBlockSettings {
         }
     }
 
-    public static void loadFromSavedSettings() {
-        ReVancedUtils.verifyOnMainThread();
-        LogHelper.printDebug(() -> "updating SponsorBlockSettings");
+    private static boolean initialized;
 
-        if (!SettingsEnum.SB_ENABLED.getBoolean()) {
-            SponsorBlockViewController.hideSkipButton();
-            SponsorBlockViewController.hideNewSegmentLayout();
-            SegmentPlaybackController.setCurrentVideoId(null);
+    public static void initialize() {
+        if (initialized) {
+            return;
         }
-        if (!SettingsEnum.SB_NEW_SEGMENT_ENABLED.getBoolean()) {
-            SponsorBlockViewController.hideNewSegmentLayout();
-        }
-        // shield and voting button automatically show/hide themselves if feature is turned on/off
-
-        SegmentCategory.loadFromPreferences();
+        initialized = true;
 
         String uuid = SettingsEnum.SB_UUID.getString();
         if (uuid == null || uuid.length() == 0) {
@@ -147,5 +133,7 @@ public class SponsorBlockSettings {
                     .replace("-", "");
             SettingsEnum.SB_UUID.saveValue(uuid);
         }
+
+        SegmentCategory.loadFromPreferences();
     }
 }

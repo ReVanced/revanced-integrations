@@ -1,19 +1,9 @@
 package app.revanced.integrations.sponsorblock.requests;
 
-import static android.text.Html.fromHtml;
-
-import app.revanced.integrations.settingsmenu.SponsorBlockSettingsFragment;
-import app.revanced.integrations.sponsorblock.objects.CategoryBehaviour;
-
-import app.revanced.integrations.sponsorblock.objects.SegmentCategory;
 import static app.revanced.integrations.sponsorblock.StringRef.str;
-import static app.revanced.integrations.utils.ReVancedUtils.runOnMainThread;
-
-import android.preference.EditTextPreference;
-import android.preference.Preference;
-import android.preference.PreferenceCategory;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -30,6 +20,8 @@ import java.util.concurrent.TimeUnit;
 import app.revanced.integrations.requests.Requester;
 import app.revanced.integrations.requests.Route;
 import app.revanced.integrations.settings.SettingsEnum;
+import app.revanced.integrations.sponsorblock.objects.CategoryBehaviour;
+import app.revanced.integrations.sponsorblock.objects.SegmentCategory;
 import app.revanced.integrations.sponsorblock.objects.SponsorSegment;
 import app.revanced.integrations.sponsorblock.objects.UserStats;
 import app.revanced.integrations.utils.LogHelper;
@@ -204,44 +196,41 @@ public class SBRequester {
     }
 
     /**
-     * Must be called off the main thread.
+     * @return NULL, if stats fetch failed
      */
-    public static void retrieveUserStats(@NonNull PreferenceCategory category, @NonNull Preference loadingPreference) {
+    @Nullable
+    public static UserStats retrieveUserStats() {
         ReVancedUtils.verifyOffMainThread();
         try {
-            JSONObject json = getJSONObject(SBRoutes.GET_USER_STATS, SettingsEnum.SB_UUID.getString());
-            UserStats stats = new UserStats(json);
+            UserStats stats = new UserStats(getJSONObject(SBRoutes.GET_USER_STATS, SettingsEnum.SB_UUID.getString()));
             LogHelper.printDebug(() -> "user stats: " + stats);
-            runOnMainThread(() -> { // get back on main thread to modify UI elements
-                SponsorBlockSettingsFragment.addUserStats(category, loadingPreference, stats);
-            });
+            return stats;
         } catch (IOException ex) {
-            runOnMainThread(() -> loadingPreference.setTitle(str("sb_stats_connection_failure")));
-            LogHelper.printInfo(() -> "failed to retrieve user stats", ex); // info, to not show a toast
+            LogHelper.printInfo(() -> "failed to retrieve user stats", ex); // info level, do not show a toast
         } catch (Exception ex) {
-            LogHelper.printException(() -> "failed to retrieve user stats", ex); // should never happen
+            LogHelper.printException(() -> "failure retrieving user stats", ex); // should never happen
         }
+        return null;
     }
 
-    public static void setUsername(@NonNull String username, @NonNull EditTextPreference preference) {
-        ReVancedUtils.runOnBackgroundThread(() -> {
-            try {
-                HttpURLConnection connection = getConnectionFromRoute(SBRoutes.CHANGE_USERNAME, SettingsEnum.SB_UUID.getString(), username);
-                final int responseCode = connection.getResponseCode();
-                String responseMessage = connection.getResponseMessage();
-                runOnMainThread(() -> {
-                    if (responseCode == SUCCESS_HTTP_STATUS_CODE) {
-                        ReVancedUtils.showToastLong(str("sb_stats_username_changed"));
-                        preference.setTitle(fromHtml(str("sb_stats_username", username)));
-                        preference.setText(username);
-                    } else {
-                        ReVancedUtils.showToastLong(str("sb_stats_username_change_unknown_error", responseCode, responseMessage));
-                    }
-                });
-            } catch (Exception ex) {
-                LogHelper.printException(() -> "failed to set username", ex);
+    /**
+     * @return NULL if the call was successful.  If unsuccessful, an error message is returned.
+     */
+    @Nullable
+    public static String setUsername(@NonNull String username) {
+        ReVancedUtils.verifyOffMainThread();
+        try {
+            HttpURLConnection connection = getConnectionFromRoute(SBRoutes.CHANGE_USERNAME, SettingsEnum.SB_UUID.getString(), username);
+            final int responseCode = connection.getResponseCode();
+            String responseMessage = connection.getResponseMessage();
+            if (responseCode == SUCCESS_HTTP_STATUS_CODE) {
+                return null;
             }
-        });
+            return str("sb_stats_username_change_unknown_error", responseCode, responseMessage);
+        } catch (Exception ex) { // should never happen
+            LogHelper.printInfo(() -> "failed to set username", ex); // do not toast
+            return str("sb_stats_username_change_unknown_error", 0, ex.getMessage());
+        }
     }
 
     public static void runVipCheckInBackgroundIfNeeded() {

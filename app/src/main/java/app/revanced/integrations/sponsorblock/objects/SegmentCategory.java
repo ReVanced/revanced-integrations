@@ -85,11 +85,20 @@ public enum SegmentCategory {
 
     public static void loadFromPreferences() {
         SharedPreferences preferences = SharedPrefHelper.getPreferences(SharedPrefHelper.SharedPrefNames.SPONSOR_BLOCK);
+        LogHelper.printDebug(() -> "loadFromPreferences");
+        for (SegmentCategory category : valuesWithoutUnsubmitted()) {
+            category.load(preferences);
+        }
+        updateEnabledCategories();
+    }
+
+    /**
+     * Must be called if behavior of any category is changed
+     */
+    public static void updateEnabledCategories() {
         SegmentCategory[] categories = valuesWithoutUnsubmitted();
         List<String> enabledCategories = new ArrayList<>(categories.length);
         for (SegmentCategory category : categories) {
-            category.load(preferences);
-
             if (category.behaviour != CategoryBehaviour.IGNORE) {
                 enabledCategories.add(category.key);
             }
@@ -143,7 +152,13 @@ public enum SegmentCategory {
     @NonNull
     public final Paint paint;
     public final int defaultColor;
+    /**
+     * If value is changed, then also call {@link #save(SharedPreferences.Editor)}
+     */
     public int color;
+    /**
+     * If value is changed, then also call {@link #updateEnabledCategories()}
+     */
     @NonNull
     public CategoryBehaviour behaviour;
 
@@ -196,7 +211,7 @@ public enum SegmentCategory {
     }
 
     /**
-     * Saves the current color.
+     * Saves the current color and behavior.
      * Calling code is responsible for calling {@link SharedPreferences.Editor#apply()}
      */
     public void save(SharedPreferences.Editor editor) {
@@ -204,11 +219,13 @@ public enum SegmentCategory {
                 ? null // remove any saved preference, so default is used on the next load
                 : colorString();
         editor.putString(key + COLOR_PREFERENCE_KEY_SUFFIX, colorString);
+        editor.putString(key, behaviour.key);
     }
 
     /**
      * @return HTML color format string
      */
+    @NonNull
     public String colorString() {
         return String.format("#%06X", color);
     }

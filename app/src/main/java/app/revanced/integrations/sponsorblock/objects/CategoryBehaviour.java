@@ -8,6 +8,7 @@ import androidx.annotation.Nullable;
 import java.util.Objects;
 
 import app.revanced.integrations.sponsorblock.StringRef;
+import app.revanced.integrations.utils.ReVancedUtils;
 
 public enum CategoryBehaviour {
     SKIP_AUTOMATICALLY("skip", 2, sf("sb_skip_automatically"), true),
@@ -55,5 +56,34 @@ public enum CategoryBehaviour {
             }
         }
         return null;
+    }
+
+    private static String[] behaviorKeys;
+    private static String[] behaviorNames;
+
+    private static void createNameAndKeyArrays() {
+        ReVancedUtils.verifyOnMainThread();
+        CategoryBehaviour[] behaviours = values();
+        behaviorKeys = new String[behaviours.length];
+        behaviorNames = new String[behaviours.length];
+        for (int i = 0, length = behaviours.length; i < length; i++) {
+            CategoryBehaviour behaviour = behaviours[i];
+            behaviorKeys[i] = behaviour.key;
+            behaviorNames[i] = behaviour.name.toString();
+        }
+    }
+
+    public static String[] getBehaviorNames() {
+        if (behaviorNames == null) {
+            createNameAndKeyArrays();
+        }
+        return behaviorNames;
+    }
+
+    public static String[] getBehaviorKeys() {
+        if (behaviorKeys == null) {
+            createNameAndKeyArrays();
+        }
+        return behaviorKeys;
     }
 }

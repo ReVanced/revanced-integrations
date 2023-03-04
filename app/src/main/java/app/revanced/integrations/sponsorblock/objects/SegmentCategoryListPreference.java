@@ -22,27 +22,28 @@ import java.util.Objects;
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedUtils;
 
-public class SegmentCategoryPreferenceList extends ListPreference {
-    private SegmentCategory category;
+public class SegmentCategoryListPreference extends ListPreference {
+    private final SegmentCategory category;
     private EditText mEditText;
     private int mClickedDialogEntryIndex;
 
-    public SegmentCategoryPreferenceList(Context context) {
+    public SegmentCategoryListPreference(Context context, SegmentCategory category) {
         super(context);
+        this.category = Objects.requireNonNull(category);
+        setTitle(category.getTitleWithColorDot());
+        setSummary(category.description.toString());
+        setKey(category.key);
+        setEntries(CategoryBehaviour.getBehaviorNames());
+        setEntryValues(CategoryBehaviour.getBehaviorKeys());
     }
 
     @Override
     protected void onPrepareDialogBuilder(AlertDialog.Builder builder) {
         try {
-            category = Objects.requireNonNull(SegmentCategory.byCategoryKey(getKey()));
-
             Context context = builder.getContext();
             TableLayout table = new TableLayout(context);
             table.setOrientation(LinearLayout.HORIZONTAL);
             table.setPadding(70, 0, 150, 0);
-            table.setLayoutParams(new LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT));
 
             TableRow row = new TableRow(context);
 
@@ -102,7 +103,7 @@ public class SegmentCategoryPreferenceList extends ListPreference {
                     category.setColor(category.defaultColor);
                     category.save(editor);
                     editor.apply();
-                    reformatTitle();
+                    updateTitle();
                     ReVancedUtils.showToastShort(str("sb_color_reset"));
                 } catch (Exception ex) {
                     LogHelper.printException(() -> "setNeutralButton failure", ex);
@@ -124,29 +125,31 @@ public class SegmentCategoryPreferenceList extends ListPreference {
                 String value = getEntryValues()[mClickedDialogEntryIndex].toString();
                 if (callChangeListener(value)) {
                     setValue(value);
+                    category.behaviour = Objects.requireNonNull(CategoryBehaviour.byStringKey(value));
+                    SegmentCategory.updateEnabledCategories();
                 }
                 String colorString = mEditText.getText().toString();
                 try {
                     final int color = Color.parseColor(colorString) & 0xFFFFFF;
-                    if (color == category.color) {
-                        return;
+                    if (color != category.color) {
+                        category.setColor(color);
+                        ReVancedUtils.showToastShort(str("sb_color_changed"));
                     }
-                    SharedPreferences.Editor editor = getSharedPreferences().edit();
-                    category.setColor(color);
-                    category.save(editor);
-                    editor.apply();
-                    reformatTitle();
-                    ReVancedUtils.showToastShort(str("sb_color_changed"));
                 } catch (IllegalArgumentException ex) {
                     ReVancedUtils.showToastShort(str("sb_color_invalid"));
                 }
+                // behavior is already saved, but color needs to be saved
+                SharedPreferences.Editor editor = getSharedPreferences().edit();
+                category.save(editor);
+                editor.apply();
+                updateTitle();
             }
         } catch (Exception ex) {
             LogHelper.printException(() -> "onDialogClosed failure", ex);
         }
     }
 
-    private void reformatTitle() {
+    private void updateTitle() {
         this.setTitle(category.getTitleWithColorDot());
     }
 }

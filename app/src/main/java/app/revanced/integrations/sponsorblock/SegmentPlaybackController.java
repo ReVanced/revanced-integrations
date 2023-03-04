@@ -55,7 +55,6 @@ public class SegmentPlaybackController {
 
     @Nullable
     private static String timeWithoutSegments;
-    private static boolean settingsInitialized;
 
     private static float sponsorBarLeft = 1f;
     private static float sponsorBarRight = 1f;
@@ -102,6 +101,7 @@ public class SegmentPlaybackController {
     public static void initialize(Object _o) {
         try {
             ReVancedUtils.verifyOnMainThread();
+            SponsorBlockSettings.initialize();
             clearData();
             SponsorBlockViewController.hideSkipButton();
             SponsorBlockViewController.hideNewSegmentLayout();
@@ -117,32 +117,23 @@ public class SegmentPlaybackController {
      */
     public static void setCurrentVideoId(@Nullable String videoId) {
         try {
-            if (videoId == null || !SettingsEnum.SB_ENABLED.getBoolean()) {
-                clearData();
+            if (Objects.equals(currentVideoId, videoId)) {
                 return;
             }
-            if (videoId.equals(currentVideoId)) {
+            clearData();
+            if (videoId == null || !SettingsEnum.SB_ENABLED.getBoolean()) {
                 return;
             }
             if (PlayerType.getCurrent().isNoneOrHidden()) {
                 LogHelper.printDebug(() -> "ignoring short or story");
-                clearData();
                 return;
             }
             if (!ReVancedUtils.isNetworkConnected()) {
                 LogHelper.printDebug(() -> "Network not connected, ignoring video");
-                clearData();
                 return;
             }
 
-            if (!settingsInitialized) {
-                SponsorBlockSettings.loadFromSavedSettings();
-                settingsInitialized = true;
-            }
-
-            clearData();
             currentVideoId = videoId;
-
             LogHelper.printDebug(() -> "setCurrentVideoId: " + videoId);
 
             String videoIdToDownload = videoId; // make a copy, to use off main thread
