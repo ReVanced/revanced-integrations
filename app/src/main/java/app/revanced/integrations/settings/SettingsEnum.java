@@ -97,7 +97,6 @@ public enum SettingsEnum {
     HIDE_MIX_PLAYLISTS("revanced_hide_mix_playlists", BOOLEAN, FALSE, true),
     HIDE_PLAYER_BUTTONS("revanced_hide_player_buttons", BOOLEAN, FALSE),
     HIDE_PREVIEW_COMMENT("revanced_hide_preview_comment", BOOLEAN, FALSE, true),
-    HIDE_REEL_BUTTON("revanced_hide_reel_button", BOOLEAN, TRUE, true),
     HIDE_SEEKBAR("revanced_hide_seekbar", BOOLEAN, FALSE),
     HIDE_SHORTS_BUTTON("revanced_hide_shorts_button", BOOLEAN, TRUE, true),
     HIDE_SHORTS_COMMENTS_BUTTON("revanced_hide_shorts_comments_button", BOOLEAN, FALSE),
