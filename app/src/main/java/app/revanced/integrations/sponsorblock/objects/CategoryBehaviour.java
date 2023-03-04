@@ -11,6 +11,8 @@ import app.revanced.integrations.sponsorblock.StringRef;
 import app.revanced.integrations.utils.ReVancedUtils;
 
 public enum CategoryBehaviour {
+    // TODO: the sb browser plugin has recently changed the desktop keys
+    // and the desktop keys here are no longer valid.  Updating the keys will require some extra code to migrate old settings.
     SKIP_AUTOMATICALLY("skip", 2, sf("sb_skip_automatically"), true),
     // desktop does not have skip-once behavior. Key is unique to ReVanced
     SKIP_AUTOMATICALLY_ONCE("skip-once", 3, sf("sb_skip_automatically_once"), true),
