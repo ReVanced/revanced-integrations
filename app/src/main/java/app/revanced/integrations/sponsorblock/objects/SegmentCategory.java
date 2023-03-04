@@ -241,6 +241,7 @@ public enum SegmentCategory {
         color &= 0xFFFFFF;
         this.color = color;
         paint.setColor(color);
+        paint.setAlpha(255);
     }
 
     @NonNull
