@@ -11,14 +11,13 @@ import app.revanced.integrations.sponsorblock.StringRef;
 import app.revanced.integrations.utils.ReVancedUtils;
 
 public enum CategoryBehaviour {
-    // TODO: the sb browser plugin has recently changed the desktop keys
-    // and the desktop keys here are no longer valid.  Updating the keys will require some extra code to migrate old settings.
     SKIP_AUTOMATICALLY("skip", 2, sf("sb_skip_automatically"), true),
     // desktop does not have skip-once behavior. Key is unique to ReVanced
-    SKIP_AUTOMATICALLY_ONCE("skip-once", 3, sf("sb_skip_automatically_once"), true),
+    SKIP_AUTOMATICALLY_ONCE("skip-once", 4, sf("sb_skip_automatically_once"), true),
     MANUAL_SKIP("manual-skip", 1, sf("sb_skip_showbutton"), false),
     SHOW_IN_SEEKBAR("seekbar-only", 0, sf("sb_skip_seekbaronly"), false),
-    IGNORE("ignore", -1, sf("sb_skip_ignore"), false);
+    // Ignore is the default behavior if no desktop behavior key is present
+    IGNORE("ignore", 3, sf("sb_skip_ignore"), false);
 
     @NonNull
     public final String key;
