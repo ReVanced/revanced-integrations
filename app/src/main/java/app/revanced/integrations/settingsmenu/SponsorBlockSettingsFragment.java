@@ -68,7 +68,7 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment {
         } else if (!SettingsEnum.SB_NEW_SEGMENT_ENABLED.getBoolean()) {
             SponsorBlockViewController.hideNewSegmentLayout();
         }
-        // shield and voting button automatically show/hide themselves if feature is turned on/off
+        // voting and add new segment buttons automatically shows/hides themselves
 
         sbEnabled.setChecked(enabled);
         sbEnabled.setTitle(str("sb_enable_sb"));
