@@ -91,7 +91,7 @@ public class SponsorBlockViewController {
     public static void toggleNewSegmentLayout() {
         NewSegmentLayout newSegmentLayout = _newSegmentLayout.get();
         if (newSegmentLayout == null) {
-            LogHelper.printException(() -> "Unable to newSegmentLayoutVisibility");
+            LogHelper.printDebug(() -> "Unable to newSegmentLayoutVisibility");
             return;
         }
         newSegmentLayoutVisibility(newSegmentLayout.getVisibility() == View.VISIBLE ? false : true);
@@ -177,7 +177,7 @@ public class SponsorBlockViewController {
     private static void newSegmentLayoutVisibility(boolean visible) {
         NewSegmentLayout newSegmentLayout = _newSegmentLayout.get();
         if (newSegmentLayout == null) {
-            LogHelper.printException(() -> "Unable to newSegmentLayoutVisibility");
+            LogHelper.printDebug(() -> "Unable to newSegmentLayoutVisibility");
             return;
         }
 
