@@ -85,13 +85,17 @@ public class SponsorBlockViewController {
     }
 
     public static void hideNewSegmentLayout() {
+        NewSegmentLayout newSegmentLayout = _newSegmentLayout.get();
+        if (newSegmentLayout == null) {
+            return;
+        }
         newSegmentLayoutVisibility(false);
     }
 
     public static void toggleNewSegmentLayout() {
         NewSegmentLayout newSegmentLayout = _newSegmentLayout.get();
         if (newSegmentLayout == null) {
-            LogHelper.printDebug(() -> "Unable to newSegmentLayoutVisibility");
+            LogHelper.printException(() -> "Unable to toggleNewSegmentLayout");
             return;
         }
         newSegmentLayoutVisibility(newSegmentLayout.getVisibility() == View.VISIBLE ? false : true);
@@ -106,7 +110,7 @@ public class SponsorBlockViewController {
             setNewSegmentLayoutMargins(isWatchFullScreen);
             updateSkipButton();
         } catch (Exception ex) {
-            LogHelper.printException(() -> "Player type changed caused a crash.", ex);
+            LogHelper.printException(() -> "Player type changed error", ex);
         }
     }
 
@@ -161,13 +165,13 @@ public class SponsorBlockViewController {
     private static void setNewSegmentLayoutMargins(boolean fullScreen) {
         NewSegmentLayout newSegmentLayout = _newSegmentLayout.get();
         if (newSegmentLayout == null) {
-            LogHelper.printException(() -> "Unable to setNewSegmentLayoutMargins");
+            LogHelper.printException(() -> "Unable to setNewSegmentLayoutMargins (button is null)");
             return;
         }
 
         RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) newSegmentLayout.getLayoutParams();
         if (params == null) {
-            LogHelper.printException(() -> "Unable to setNewSegmentLayoutMargins");
+            LogHelper.printException(() -> "Unable to setNewSegmentLayoutMargins (params are null)");
             return;
         }
         params.bottomMargin = fullScreen ? newSegmentLayout.ctaBottomMargin : newSegmentLayout.defaultBottomMargin;
@@ -177,7 +181,7 @@ public class SponsorBlockViewController {
     private static void newSegmentLayoutVisibility(boolean visible) {
         NewSegmentLayout newSegmentLayout = _newSegmentLayout.get();
         if (newSegmentLayout == null) {
-            LogHelper.printDebug(() -> "Unable to newSegmentLayoutVisibility");
+            LogHelper.printException(() -> "Unable to newSegmentLayoutVisibility");
             return;
         }
 
