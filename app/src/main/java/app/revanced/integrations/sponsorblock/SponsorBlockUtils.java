@@ -47,7 +47,6 @@ import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.sponsorblock.player.PlayerType;
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedUtils;
-import app.revanced.integrations.utils.SharedPrefHelper;
 import app.revanced.integrations.sponsorblock.objects.SponsorSegment;
 import app.revanced.integrations.sponsorblock.objects.UserStats;
 import app.revanced.integrations.sponsorblock.requests.SBRequester;
@@ -521,7 +520,7 @@ public abstract class SponsorBlockUtils {
             JSONArray categorySelectionsArray = settingsJson.getJSONArray("categorySelections");
 
 
-            SharedPreferences.Editor editor = SharedPrefHelper.getPreferences(SharedPrefCategory.SPONSOR_BLOCK).edit();
+            SharedPreferences.Editor editor = SharedPrefCategory.SPONSOR_BLOCK.preferences.edit();
 
             SponsorBlockSettings.SegmentInfo[] categories = SponsorBlockSettings.SegmentInfo.valuesWithoutUnsubmitted();
             for (SponsorBlockSettings.SegmentInfo category : categories) {
@@ -604,7 +603,7 @@ public abstract class SponsorBlockUtils {
     }
 
     public static boolean isSBButtonEnabled(Context context, String key) {
-        return SettingsEnum.SB_ENABLED.getBoolean() && SharedPrefHelper.getBoolean(SharedPrefCategory.SPONSOR_BLOCK, key, false);
+        return SettingsEnum.SB_ENABLED.getBoolean() && SharedPrefCategory.SPONSOR_BLOCK.getBoolean(key, false);
     }
 
     public enum VoteOption {

@@ -1,8 +1,6 @@
 package app.revanced.integrations.patches.playback.speed;
 
 import static app.revanced.integrations.utils.SharedPrefCategory.REVANCED_PREFS;
-import static app.revanced.integrations.utils.SharedPrefHelper.getFloat;
-import static app.revanced.integrations.utils.SharedPrefHelper.saveFloat;
 
 import android.widget.Toast;
 
@@ -20,11 +18,11 @@ public final class RememberPlaybackRatePatch {
         Toast.makeText(ReVancedUtils.getContext(), "Playback rate will be remembered", Toast.LENGTH_SHORT).show();
 
         LogHelper.printDebug(() -> "Remembering playback rate: " + selectedPlaybackRate);
-        saveFloat(REVANCED_PREFS, REMEMBERED_PLAYBACK_RATE_PREFERENCE_KEY, selectedPlaybackRate);
+        REVANCED_PREFS.saveFloat(REMEMBERED_PLAYBACK_RATE_PREFERENCE_KEY, selectedPlaybackRate);
     }
 
     public static float getRememberedPlaybackRate() {
-        final var playbackRateOverride = getFloat(REVANCED_PREFS, REMEMBERED_PLAYBACK_RATE_PREFERENCE_KEY, -2f);
+        final var playbackRateOverride = REVANCED_PREFS.getFloat(REMEMBERED_PLAYBACK_RATE_PREFERENCE_KEY, -2f);
 
         LogHelper.printDebug(() -> "Overriding playback rate: " + playbackRateOverride);
         return playbackRateOverride;

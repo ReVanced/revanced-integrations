@@ -10,7 +10,6 @@ import android.widget.FrameLayout;
 import app.revanced.integrations.sponsorblock.player.PlayerType;
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedUtils;
-import app.revanced.integrations.utils.SharedPrefHelper;
 import app.revanced.integrations.utils.SharedPrefCategory;
 
 public class SwipeHelper {
@@ -22,7 +21,7 @@ public class SwipeHelper {
         try {
             _frameLayout = (FrameLayout) obj;
             Context appContext = ReVancedUtils.getContext();
-            if (ReVancedUtils.isTablet(appContext) || SharedPrefHelper.getBoolean(SharedPrefCategory.YOUTUBE, "pref_swipe_tablet", false)) {
+            if (ReVancedUtils.isTablet(appContext) || SharedPrefCategory.YOUTUBE.getBoolean("pref_swipe_tablet", false)) {
                 isTabletMode = true;
             }
         } catch (Exception e) {

@@ -19,7 +19,6 @@ import java.util.Objects;
 
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedUtils;
-import app.revanced.integrations.utils.SharedPrefHelper;
 
 public enum SettingsEnum {
     //Download Settings
@@ -260,19 +259,19 @@ public enum SettingsEnum {
     private void load() {
         switch (returnType) {
             case FLOAT:
-                value = SharedPrefHelper.getFloat(sharedPref, path, (float) defaultValue);
+                value = sharedPref.getFloat(path, (float) defaultValue);
                 break;
             case LONG:
-                value = SharedPrefHelper.getLong(sharedPref, path, (long) defaultValue);
+                value = sharedPref.getLong(path, (long) defaultValue);
                 break;
             case BOOLEAN:
-                value = SharedPrefHelper.getBoolean(sharedPref, path, (boolean) defaultValue);
+                value = sharedPref.getBoolean(path, (boolean) defaultValue);
                 break;
             case INTEGER:
-                value = SharedPrefHelper.getInt(sharedPref, path, (int) defaultValue);
+                value = sharedPref.getInt(path, (int) defaultValue);
                 break;
             case STRING:
-                value = SharedPrefHelper.getString(sharedPref, path, (String) defaultValue);
+                value = sharedPref.getString(path, (String) defaultValue);
                 break;
             default:
                 throw new IllegalStateException(name());
@@ -296,19 +295,19 @@ public enum SettingsEnum {
         Objects.requireNonNull(newValue);
         switch (returnType) {
             case FLOAT:
-                SharedPrefHelper.saveFloat(sharedPref, path, (float) newValue);
+                sharedPref.saveFloat(path, (float) newValue);
                 break;
             case LONG:
-                SharedPrefHelper.saveLong(sharedPref, path, (long) newValue);
+                sharedPref.saveLong(path, (long) newValue);
                 break;
             case BOOLEAN:
-                SharedPrefHelper.saveBoolean(sharedPref, path, (boolean) newValue);
+                sharedPref.saveBoolean(path, (boolean) newValue);
                 break;
             case INTEGER:
-                SharedPrefHelper.saveInt(sharedPref, path, (int) newValue);
+                sharedPref.saveInt(path, (int) newValue);
                 break;
             case STRING:
-                SharedPrefHelper.saveString(sharedPref, path, (String) newValue);
+                sharedPref.saveString(path, (String) newValue);
                 break;
             default:
                 throw new IllegalStateException(name());

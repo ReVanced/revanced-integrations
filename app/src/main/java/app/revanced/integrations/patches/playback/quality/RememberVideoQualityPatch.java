@@ -14,7 +14,6 @@ import java.util.Collections;
 import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedUtils;
-import app.revanced.integrations.utils.SharedPrefHelper;
 import app.revanced.integrations.utils.SharedPrefCategory;
 
 public class RememberVideoQualityPatch {
@@ -27,7 +26,7 @@ public class RememberVideoQualityPatch {
         Context context = ReVancedUtils.getContext();
         if (isConnectedWifi(context)) {
             try {
-                SharedPrefHelper.saveString(SharedPrefCategory.REVANCED_PREFS, "wifi_quality", defaultQuality + "");
+                SharedPrefCategory.REVANCED_PREFS.saveString("wifi_quality",  defaultQuality + "");
                 String message = "Changing default Wi-Fi quality to: " + defaultQuality;
                 LogHelper.printDebug(() -> message);
                 Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
@@ -36,7 +35,7 @@ public class RememberVideoQualityPatch {
             }
         } else if (isConnectedMobile(context)) {
             try {
-                SharedPrefHelper.saveString(SharedPrefCategory.REVANCED_PREFS, "mobile_quality", defaultQuality + "");
+                SharedPrefCategory.REVANCED_PREFS.saveString("mobile_quality", defaultQuality + "");
                 String message = "Changing default mobile data quality to:" + defaultQuality;
                 LogHelper.printDebug(() -> message);
                 Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
@@ -95,10 +94,10 @@ public class RememberVideoQualityPatch {
             return quality;
         }
         if (isConnectedWifi(context)) {
-            preferredQuality = SharedPrefHelper.getInt(SharedPrefCategory.REVANCED_PREFS, "wifi_quality", -2);
+            preferredQuality = SharedPrefCategory.REVANCED_PREFS.getInt("wifi_quality", -2);
             LogHelper.printDebug(() -> "Wi-Fi connection detected, preferred quality: " + preferredQuality);
         } else if (isConnectedMobile(context)) {
-            preferredQuality = SharedPrefHelper.getInt(SharedPrefCategory.REVANCED_PREFS, "mobile_quality", -2);
+            preferredQuality = SharedPrefCategory.REVANCED_PREFS.getInt("mobile_quality", -2);
             LogHelper.printDebug(() -> "Mobile data connection detected, preferred quality: " + preferredQuality);
         } else {
             LogHelper.printDebug(() -> "No Internet connection!");

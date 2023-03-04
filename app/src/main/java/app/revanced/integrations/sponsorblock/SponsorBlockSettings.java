@@ -16,7 +16,6 @@ import java.util.Map;
 import java.util.UUID;
 
 import app.revanced.integrations.settings.SettingsEnum;
-import app.revanced.integrations.utils.SharedPrefHelper;
 import app.revanced.integrations.utils.SharedPrefCategory;
 
 public class SponsorBlockSettings {
@@ -26,7 +25,7 @@ public class SponsorBlockSettings {
     public static String sponsorBlockUrlCategories = "[]";
 
     public static void update(Activity _activity) {
-        SharedPreferences preferences = SharedPrefHelper.getPreferences(SharedPrefCategory.SPONSOR_BLOCK);
+        SharedPreferences preferences = SharedPrefCategory.SPONSOR_BLOCK.preferences;
 
         if (!SettingsEnum.SB_ENABLED.getBoolean()) {
             SkipSegmentView.hide();
