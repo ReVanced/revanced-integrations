@@ -27,6 +27,7 @@ import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.sponsorblock.objects.CategoryBehaviour;
 import app.revanced.integrations.sponsorblock.objects.SegmentCategory;
 import app.revanced.integrations.sponsorblock.objects.SponsorSegment;
+import app.revanced.integrations.sponsorblock.objects.SponsorSegment.SegmentVote;
 import app.revanced.integrations.sponsorblock.requests.SBRequester;
 import app.revanced.integrations.sponsorblock.ui.SponsorBlockViewController;
 import app.revanced.integrations.utils.LogHelper;
@@ -166,11 +167,11 @@ public class SponsorBlockUtils {
             }
             SponsorSegment segment = currentSegments[which];
 
-            final SponsorSegment.SegmentVote[] voteOptions = SponsorSegment.SegmentVote.values();
+            SegmentVote[] voteOptions = SegmentVote.values();
             CharSequence[] items = new CharSequence[voteOptions.length];
 
             for (int i = 0; i < voteOptions.length; i++) {
-                SponsorSegment.SegmentVote voteOption = voteOptions[i];
+                SegmentVote voteOption = voteOptions[i];
                 String title = voteOption.title;
                 if (SettingsEnum.SB_IS_VIP.getBoolean() && segment.isLocked && voteOption.shouldHighlight) {
                     items[i] = Html.fromHtml(String.format("<font color=\"%s\">%s</font>", LOCKED_COLOR, title));
@@ -181,7 +182,7 @@ public class SponsorBlockUtils {
 
             new AlertDialog.Builder(context)
                     .setItems(items, (dialog1, which1) -> {
-                        SponsorSegment.SegmentVote voteOption = voteOptions[which1];
+                        SegmentVote voteOption = voteOptions[which1];
                         switch (voteOption) {
                             case UPVOTE:
                             case DOWNVOTE:
@@ -342,7 +343,7 @@ public class SponsorBlockUtils {
 
             new AlertDialog.Builder(context)
                     .setTitle(str("sb_new_segment_choose_category"))
-                    .setItems(titles, (dialog, which) -> SBRequester.voteForSegmentOnBackgroundThread(segment, SponsorSegment.SegmentVote.CATEGORY_CHANGE, values[which].key))
+                    .setItems(titles, (dialog, which) -> SBRequester.voteToChangeCategoryOnBackgroundThread(segment, values[which]))
                     .show();
         } catch (Exception ex) {
             LogHelper.printException(() -> "onNewCategorySelect failure", ex);

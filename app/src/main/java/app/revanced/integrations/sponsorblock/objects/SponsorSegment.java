@@ -9,16 +9,18 @@ import app.revanced.integrations.patches.VideoInformation;
 
 public class SponsorSegment implements Comparable<SponsorSegment> {
     public enum SegmentVote {
-        UPVOTE(str("sb_vote_upvote"), false),
-        DOWNVOTE(str("sb_vote_downvote"), true),
-        CATEGORY_CHANGE(str("sb_vote_category"), true);
+        UPVOTE(str("sb_vote_upvote"), 1,false),
+        DOWNVOTE(str("sb_vote_downvote"), 0, true),
+        CATEGORY_CHANGE(str("sb_vote_category"), -1, true); // apiVoteType is not used for category change
 
         @NonNull
         public final String title;
+        public final int apiVoteType;
         public final boolean shouldHighlight;
 
-        SegmentVote(@NonNull String title, boolean shouldHighlight) {
+        SegmentVote(@NonNull String title, int apiVoteType, boolean shouldHighlight) {
             this.title = title;
+            this.apiVoteType = apiVoteType;
             this.shouldHighlight = shouldHighlight;
         }
     }

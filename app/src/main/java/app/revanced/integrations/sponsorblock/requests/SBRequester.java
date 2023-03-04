@@ -15,6 +15,7 @@ import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import app.revanced.integrations.requests.Requester;
@@ -23,6 +24,7 @@ import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.sponsorblock.objects.CategoryBehaviour;
 import app.revanced.integrations.sponsorblock.objects.SegmentCategory;
 import app.revanced.integrations.sponsorblock.objects.SponsorSegment;
+import app.revanced.integrations.sponsorblock.objects.SponsorSegment.SegmentVote;
 import app.revanced.integrations.sponsorblock.objects.UserStats;
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedUtils;
@@ -162,16 +164,20 @@ public class SBRequester {
         }
     }
 
-    public static void voteForSegmentOnBackgroundThread(@NonNull SponsorSegment segment, @NonNull SponsorSegment.SegmentVote voteOption, String... args) {
+    public static void voteForSegmentOnBackgroundThread(@NonNull SponsorSegment segment, @NonNull SegmentVote voteOption) {
+        voteOrRequestCategoryChange(segment, voteOption, null);
+    }
+    public static void voteToChangeCategoryOnBackgroundThread(@NonNull SponsorSegment segment, @NonNull SegmentCategory categoryToVoteFor) {
+        voteOrRequestCategoryChange(segment, SegmentVote.CATEGORY_CHANGE, categoryToVoteFor);
+    }
+    private static void voteOrRequestCategoryChange(@NonNull SponsorSegment segment, @NonNull SegmentVote voteOption, SegmentCategory categoryToVoteFor) {
         ReVancedUtils.runOnBackgroundThread(() -> {
             try {
                 String segmentUuid = segment.UUID;
                 String uuid = SettingsEnum.SB_UUID.getString();
-                String vote = Integer.toString(voteOption == SponsorSegment.SegmentVote.UPVOTE ? 1 : 0);
-
-                HttpURLConnection connection = voteOption == SponsorSegment.SegmentVote.CATEGORY_CHANGE
-                        ? getConnectionFromRoute(SBRoutes.VOTE_ON_SEGMENT_CATEGORY, uuid, segmentUuid, args[0])
-                        : getConnectionFromRoute(SBRoutes.VOTE_ON_SEGMENT_QUALITY, uuid, segmentUuid, vote);
+                HttpURLConnection connection = (voteOption == SegmentVote.CATEGORY_CHANGE)
+                        ? getConnectionFromRoute(SBRoutes.VOTE_ON_SEGMENT_CATEGORY, uuid, segmentUuid, categoryToVoteFor.key)
+                        : getConnectionFromRoute(SBRoutes.VOTE_ON_SEGMENT_QUALITY, uuid, segmentUuid, String.valueOf(voteOption.apiVoteType));
                 final int responseCode = connection.getResponseCode();
 
                 switch (responseCode) {
