@@ -156,6 +156,7 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment {
         addNewSegment.setOnPreferenceChangeListener((preference1, o) -> {
             Boolean newValue = (Boolean) o;
             if (newValue && !SettingsEnum.SB_SEEN_GUIDELINES.getBoolean()) {
+                SettingsEnum.SB_SEEN_GUIDELINES.saveValue(true);
                 new AlertDialog.Builder(preference1.getContext())
                         .setTitle(str("sb_guidelines_popup_title"))
                         .setMessage(str("sb_guidelines_popup_content"))
@@ -355,8 +356,6 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment {
     }
 
     private void openGuidelines() {
-        SettingsEnum.SB_SEEN_GUIDELINES.saveValue(true);
-
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setData(Uri.parse("https://wiki.sponsor.ajay.app/w/Guidelines"));
         getActivity().startActivity(intent);
