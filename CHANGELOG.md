@@ -1,3 +1,10 @@
+# [0.100.0-dev.7](https://github.com/revanced/revanced-integrations/compare/v0.100.0-dev.6...v0.100.0-dev.7) (2023-03-02)
+
+
+### Bug Fixes
+
+* **youtube/return-youtube-dislike:** improve segmented like/dislike layout ([#325](https://github.com/revanced/revanced-integrations/issues/325)) ([9e11853](https://github.com/revanced/revanced-integrations/commit/9e118532926db0ad0efc9477a80de5278f201caa))
+
 # [0.100.0-dev.6](https://github.com/revanced/revanced-integrations/compare/v0.100.0-dev.5...v0.100.0-dev.6) (2023-02-26)
 
 
