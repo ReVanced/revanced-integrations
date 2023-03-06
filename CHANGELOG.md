@@ -1,3 +1,10 @@
+# [0.100.0-dev.8](https://github.com/revanced/revanced-integrations/compare/v0.100.0-dev.7...v0.100.0-dev.8) (2023-03-06)
+
+
+### Bug Fixes
+
+* **youtube/remember-video-quality:** treat any connection as wifi except mobile and bluetooth ([1f52e9f](https://github.com/revanced/revanced-integrations/commit/1f52e9ffd6fba35847a059d3803b5eab8747ac7f))
+
 # [0.100.0-dev.7](https://github.com/revanced/revanced-integrations/compare/v0.100.0-dev.6...v0.100.0-dev.7) (2023-03-02)
 
 
