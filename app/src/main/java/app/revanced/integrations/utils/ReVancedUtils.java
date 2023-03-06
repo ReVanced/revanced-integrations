@@ -204,17 +204,32 @@ public class ReVancedUtils {
         }
     }
 
-    /**
-     * Useful to check if user is watching offline downloaded videos.
-     *
-     * @return if connected to a network
-     */
-    @SuppressLint("MissingPermission") // permissions already included in YouTube
     public static boolean isNetworkConnected() {
-        if (context == null) {
-            return false;
+        NetworkType networkType = getNetworkType();
+        return networkType == NetworkType.MOBILE
+                || networkType == NetworkType.OTHER;
+    }
+
+    @SuppressLint("MissingPermission") // permission already included in YouTube
+    public static NetworkType getNetworkType() {
+        Context networkContext = getContext();
+        if (networkContext == null) {
+            return NetworkType.NONE;
         }
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        return cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnected();
+        var networkInfo = cm.getActiveNetworkInfo();
+
+        if (networkInfo == null || !networkInfo.isConnected()) {
+            return NetworkType.NONE;
+        }
+        var type = networkInfo.getType();
+        return (type == ConnectivityManager.TYPE_MOBILE)
+                || (type == ConnectivityManager.TYPE_BLUETOOTH) ? NetworkType.MOBILE : NetworkType.OTHER;
+    }
+
+    public enum NetworkType {
+        NONE,
+        MOBILE,
+        OTHER,
     }
 }
