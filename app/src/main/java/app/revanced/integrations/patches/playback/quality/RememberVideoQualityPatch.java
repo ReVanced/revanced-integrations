@@ -31,7 +31,7 @@ public class RememberVideoQualityPatch {
             }
 
             SharedPrefHelper.saveString(SharedPrefHelper.SharedPrefNames.REVANCED_PREFS, preferenceKey, defaultQuality + "");
-            ReVancedUtils.showToastShort("Changing default " + networkTypeMessage + " quality to:" + defaultQuality);
+            ReVancedUtils.showToastShort("Changing default " + networkTypeMessage + " quality to: " + defaultQuality);
         }
 
         userChangedQuality = false;
