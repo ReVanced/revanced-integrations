@@ -100,7 +100,7 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment {
             minSegmentDuration.setText(String.valueOf(SettingsEnum.SB_MIN_DURATION.getFloat()));
             minSegmentDuration.setEnabled(enabled);
 
-            privateUserId.setText(String.valueOf(SettingsEnum.SB_UUID.getString()));
+            privateUserId.setText(SettingsEnum.SB_UUID.getString());
             privateUserId.setEnabled(enabled);
 
             apiUrl.setEnabled(enabled);
