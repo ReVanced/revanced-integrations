@@ -106,8 +106,7 @@ public final class VideoInformation {
     }
 
     /**
-     * Id of the current video playing.
-     * <b>Currently this does not function for Shorts playback.</b>
+     * Id of the current video playing.  Includes Shorts and YouTube Stories.
      *
      * @return The id of the video. Empty string if not set yet.
      */
