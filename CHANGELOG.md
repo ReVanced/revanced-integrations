@@ -1,3 +1,10 @@
+# [0.100.0-dev.10](https://github.com/revanced/revanced-integrations/compare/v0.100.0-dev.9...v0.100.0-dev.10) (2023-03-12)
+
+
+### Features
+
+* **youtube:** remove `custom-video-buffer` patch ([#1718](https://github.com/revanced/revanced-integrations/issues/1718)) ([c015649](https://github.com/revanced/revanced-integrations/commit/c015649efc9c92a1e5dfddbbf1c7979c152a3ecd))
+
 # [0.100.0-dev.9](https://github.com/revanced/revanced-integrations/compare/v0.100.0-dev.8...v0.100.0-dev.9) (2023-03-12)
 
 
