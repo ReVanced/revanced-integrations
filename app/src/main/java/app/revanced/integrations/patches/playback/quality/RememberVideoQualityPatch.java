@@ -1,14 +1,17 @@
 package app.revanced.integrations.patches.playback.quality;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collections;
-
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.widget.Toast;
 import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedUtils;
 import app.revanced.integrations.utils.SharedPrefHelper;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collections;
 
 public class RememberVideoQualityPatch {
 
@@ -17,30 +20,34 @@ public class RememberVideoQualityPatch {
     private static Boolean userChangedQuality = false;
 
     public static void changeDefaultQuality(int defaultQuality) {
-        var networkType = ReVancedUtils.getNetworkType();
+        Context context = ReVancedUtils.getContext();
 
-        if (networkType == ReVancedUtils.NetworkType.NONE) {
-            ReVancedUtils.showToastShort("No internet connection");
+        var networkType = getNetworType(context);
+
+        if (networkType == NetworkType.NONE) {
+            String message = "No internet connection.";
+            LogHelper.printDebug(() -> message);
+            Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
         } else {
             var preferenceKey = "wifi_quality";
             var networkTypeMessage = "WIFI";
 
-            if (networkType == ReVancedUtils.NetworkType.MOBILE) {
+            if (networkType == NetworkType.MOBILE) {
                 networkTypeMessage = "mobile";
                 preferenceKey = "mobile_quality";
             }
 
             SharedPrefHelper.saveString(SharedPrefHelper.SharedPrefNames.REVANCED_PREFS, preferenceKey, defaultQuality + "");
-            ReVancedUtils.showToastShort("Changing default " + networkTypeMessage + " quality to: " + defaultQuality);
+            String message = "Changing default " + networkTypeMessage + " quality to: " + defaultQuality;
+            Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
         }
 
         userChangedQuality = false;
     }
 
-    /**
-     * Injection point
-     */
     public static int setVideoQuality(Object[] qualities, int quality, Object qInterface, String qIndexMethod) {
+        Field[] fields;
+
         if (!(newVideo || userChangedQuality) || qInterface == null) {
             return quality;
         }
@@ -77,17 +84,18 @@ public class RememberVideoQualityPatch {
         newVideo = false;
         final int qualityToLog = quality;
         LogHelper.printDebug(() -> "Quality: " + qualityToLog);
-        if (ReVancedUtils.getContext() == null) {
-            LogHelper.printException(() -> "Context is null"); // should never happen
+        Context context = ReVancedUtils.getContext();
+        if (context == null) {
+            LogHelper.printException(() -> "Context is null or settings not initialized, returning quality: " + qualityToLog);
             return quality;
         }
-        var networkType = ReVancedUtils.getNetworkType();
-        if (networkType == ReVancedUtils.NetworkType.NONE) {
-            LogHelper.printDebug(() -> "No Internet connection");
+        var networkType = getNetworType(context);
+        if (networkType == NetworkType.NONE) {
+            LogHelper.printDebug(() -> "No Internet connection!");
             return quality;
         } else {
             var preferenceKey = "wifi_quality";
-            if (networkType == ReVancedUtils.NetworkType.MOBILE) preferenceKey = "mobile_quality";
+            if (networkType == NetworkType.MOBILE) preferenceKey = "mobile_quality";
 
             int preferredQuality = SharedPrefHelper.getInt(SharedPrefHelper.SharedPrefNames.REVANCED_PREFS, preferenceKey, -2);
             if (preferredQuality == -2) return quality;
@@ -122,9 +130,6 @@ public class RememberVideoQualityPatch {
         }
     }
 
-    /**
-     * Injection point
-     */
     public static void userChangedQuality(int selectedQuality) {
         if (!SettingsEnum.REMEMBER_VIDEO_QUALITY_LAST_SELECTED.getBoolean()) return;
 
@@ -132,10 +137,27 @@ public class RememberVideoQualityPatch {
         userChangedQuality = true;
     }
 
-    /**
-     * Injection point
-     */
     public static void newVideoStarted(String videoId) {
         newVideo = true;
     }
+
+    private static NetworkType getNetworType(Context context) {
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        var networkInfo = cm.getActiveNetworkInfo();
+
+        if (networkInfo == null || !networkInfo.isConnected()) {
+            return NetworkType.NONE;
+        } else {
+            var type = networkInfo.getType();
+
+            return type == ConnectivityManager.TYPE_MOBILE || type == ConnectivityManager.TYPE_BLUETOOTH ? NetworkType.MOBILE : NetworkType.OTHER;
+        }
+    }
+
+    enum NetworkType {
+        MOBILE,
+        OTHER,
+        NONE
+    }
+
 }
