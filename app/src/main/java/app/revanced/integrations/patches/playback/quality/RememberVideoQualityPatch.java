@@ -3,15 +3,16 @@ package app.revanced.integrations.patches.playback.quality;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.widget.Toast;
-import app.revanced.integrations.settings.SettingsEnum;
-import app.revanced.integrations.utils.LogHelper;
-import app.revanced.integrations.utils.ReVancedUtils;
-import app.revanced.integrations.utils.SharedPrefHelper;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
+
+import app.revanced.integrations.settings.SettingsEnum;
+import app.revanced.integrations.utils.LogHelper;
+import app.revanced.integrations.utils.ReVancedUtils;
+import app.revanced.integrations.utils.SharedPrefCategory;
 
 public class RememberVideoQualityPatch {
 
@@ -37,7 +38,7 @@ public class RememberVideoQualityPatch {
                 preferenceKey = "mobile_quality";
             }
 
-            SharedPrefHelper.saveString(SharedPrefHelper.SharedPrefNames.REVANCED_PREFS, preferenceKey, defaultQuality + "");
+            SharedPrefCategory.REVANCED_PREFS.saveString(preferenceKey, String.valueOf(defaultQuality));
             String message = "Changing default " + networkTypeMessage + " quality to: " + defaultQuality;
             Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
         }
@@ -97,7 +98,7 @@ public class RememberVideoQualityPatch {
             var preferenceKey = "wifi_quality";
             if (networkType == NetworkType.MOBILE) preferenceKey = "mobile_quality";
 
-            int preferredQuality = SharedPrefHelper.getInt(SharedPrefHelper.SharedPrefNames.REVANCED_PREFS, preferenceKey, -2);
+            int preferredQuality = SharedPrefCategory.REVANCED_PREFS.getInt(preferenceKey, -2);
             if (preferredQuality == -2) return quality;
 
             for (int streamQuality2 : iStreamQualities) {
