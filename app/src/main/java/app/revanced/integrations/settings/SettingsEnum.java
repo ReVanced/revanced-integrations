@@ -133,11 +133,6 @@ public enum SettingsEnum {
     SWIPE_OVERLAY_TIMEOUT("revanced_swipe_overlay_timeout", LONG, 500L,
             parents(ENABLE_SWIPE_BRIGHTNESS, ENABLE_SWIPE_VOLUME)),
 
-    // Buffer settings
-    MAX_BUFFER("revanced_pref_max_buffer_ms", INTEGER, 120000),
-    MAX_BUFFER_PLAYBACK("revanced_pref_buffer_for_playback_ms", INTEGER, 2500),
-    MAX_BUFFER_PLAYBACK_AFTER_REBUFFER("revanced_pref_buffer_for_playback_after_rebuffer_ms", INTEGER, 5000),
-
     // Debug settings
     DEBUG("revanced_debug_enabled", BOOLEAN, FALSE),
     DEBUG_STACKTRACE("revanced_debug_stacktrace_enabled", BOOLEAN, FALSE, parents(DEBUG)),

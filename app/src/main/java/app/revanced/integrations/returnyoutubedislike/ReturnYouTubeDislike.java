@@ -15,7 +15,6 @@ import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
-import android.text.TextUtils;
 import android.text.style.ImageSpan;
 
 import androidx.annotation.GuardedBy;
@@ -382,7 +381,7 @@ public class ReturnYouTubeDislike {
         ReVancedUtils.verifyOffMainThread();
 
         String userId = SettingsEnum.RYD_USER_ID.getString();
-        if (!TextUtils.isEmpty(userId)) {
+        if (userId != null) {
             return userId;
         }
 
