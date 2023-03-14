@@ -1,3 +1,74 @@
+# [0.100.0-dev.10](https://github.com/revanced/revanced-integrations/compare/v0.100.0-dev.9...v0.100.0-dev.10) (2023-03-12)
+
+
+### Features
+
+* **youtube:** remove `custom-video-buffer` patch ([#1718](https://github.com/revanced/revanced-integrations/issues/1718)) ([c015649](https://github.com/revanced/revanced-integrations/commit/c015649efc9c92a1e5dfddbbf1c7979c152a3ecd))
+
+# [0.100.0-dev.9](https://github.com/revanced/revanced-integrations/compare/v0.100.0-dev.8...v0.100.0-dev.9) (2023-03-12)
+
+
+### Features
+
+* **youtube/general-ads:** hide new type of ad ([3770dd3](https://github.com/revanced/revanced-integrations/commit/3770dd393473b254d71123eb9055c6b91ad072c5))
+
+# [0.100.0-dev.8](https://github.com/revanced/revanced-integrations/compare/v0.100.0-dev.7...v0.100.0-dev.8) (2023-03-06)
+
+
+### Bug Fixes
+
+* **youtube/remember-video-quality:** treat any connection as wifi except mobile and bluetooth ([1f52e9f](https://github.com/revanced/revanced-integrations/commit/1f52e9ffd6fba35847a059d3803b5eab8747ac7f))
+
+# [0.100.0-dev.7](https://github.com/revanced/revanced-integrations/compare/v0.100.0-dev.6...v0.100.0-dev.7) (2023-03-02)
+
+
+### Bug Fixes
+
+* **youtube/return-youtube-dislike:** improve segmented like/dislike layout ([#325](https://github.com/revanced/revanced-integrations/issues/325)) ([9e11853](https://github.com/revanced/revanced-integrations/commit/9e118532926db0ad0efc9477a80de5278f201caa))
+
+# [0.100.0-dev.6](https://github.com/revanced/revanced-integrations/compare/v0.100.0-dev.5...v0.100.0-dev.6) (2023-02-26)
+
+
+### Bug Fixes
+
+* **youtube/hide-floating-microphone-button:** reboot when changing settings ([919f285](https://github.com/revanced/revanced-integrations/commit/919f2855edff0acc96c42ea733fff41a55211e48))
+
+# [0.100.0-dev.5](https://github.com/revanced/revanced-integrations/compare/v0.100.0-dev.4...v0.100.0-dev.5) (2023-02-26)
+
+
+### Features
+
+* **youtube/hide-autoplay-button:** do not disable autoplay button when hidden ([519c2bd](https://github.com/revanced/revanced-integrations/commit/519c2bd5118db41fc512a665d9454b902134ba2c))
+* **youtube:** `hide-floating-microphone-button` patch ([cb77e96](https://github.com/revanced/revanced-integrations/commit/cb77e96da91bb4707d8559757cd86a7583f8048b))
+
+# [0.100.0-dev.4](https://github.com/revanced/revanced-integrations/compare/v0.100.0-dev.3...v0.100.0-dev.4) (2023-02-26)
+
+
+### Bug Fixes
+
+* **youtube/general-ads:** hide any kind of buttoned ad ([0b3508b](https://github.com/revanced/revanced-integrations/commit/0b3508bd8dcd6e031f1a7625ee5214fd093ee3f5))
+
+# [0.100.0-dev.3](https://github.com/revanced/revanced-integrations/compare/v0.100.0-dev.2...v0.100.0-dev.3) (2023-02-25)
+
+
+### Bug Fixes
+
+* **youtube/general-ads:** hide chapters in video description ([#326](https://github.com/revanced/revanced-integrations/issues/326)) ([f31e3a0](https://github.com/revanced/revanced-integrations/commit/f31e3a02a0965da0c1f901e9d6afcfe4f6f6b608))
+
+# [0.100.0-dev.2](https://github.com/revanced/revanced-integrations/compare/v0.100.0-dev.1...v0.100.0-dev.2) (2023-02-24)
+
+
+### Features
+
+* **youtube/general-ads:** do not hide components in library tab ([3c00e58](https://github.com/revanced/revanced-integrations/commit/3c00e58c13fa11da68ff21f4d76e341bc24c5737))
+
+# [0.100.0-dev.1](https://github.com/revanced/revanced-integrations/compare/v0.99.0...v0.100.0-dev.1) (2023-02-24)
+
+
+### Features
+
+* **youtube/general-ads:** hide image shelf from search results ([db6ce55](https://github.com/revanced/revanced-integrations/commit/db6ce554779d58b23685b1794e17f89342abbd87))
+
 # [0.99.0](https://github.com/revanced/revanced-integrations/compare/v0.98.0...v0.99.0) (2023-02-24)
 
 
