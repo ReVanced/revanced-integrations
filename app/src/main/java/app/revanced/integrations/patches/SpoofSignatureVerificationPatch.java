@@ -13,11 +13,6 @@ import app.revanced.integrations.utils.ReVancedUtils;
 public class SpoofSignatureVerificationPatch {
 
     /**
-     * If a video playback connection error was encountered, and spoofing is now automatically turned on
-     */
-    private static volatile boolean spoofAutoEnabled;
-
-    /**
      * Protobuf parameters used by the player.
      * Known issue: YouTube client recognizes generic player as shorts video.
      */
@@ -41,7 +36,7 @@ public class SpoofSignatureVerificationPatch {
      */
     public static String getProtoBufParameterOverride(String original) {
         try {
-            if (!SettingsEnum.FORCE_SIGNATURE_SPOOFING.getBoolean() && !spoofAutoEnabled) {
+            if (!SettingsEnum.SIGNATURE_SPOOFING.getBoolean()) {
                 return original;
             }
             PlayerType player = PlayerType.getCurrent();
@@ -75,16 +70,16 @@ public class SpoofSignatureVerificationPatch {
      */
     public static void connectionCompleted(int statusCode, Map<String, List<String>> urlConnectionHeaders) {
         try {
-            if (SettingsEnum.FORCE_SIGNATURE_SPOOFING.getBoolean() || spoofAutoEnabled) {
+            if (SettingsEnum.SIGNATURE_SPOOFING.getBoolean()) {
                 return; // already enabled
             }
 
             if (statusCode >= 400 && statusCode < 500) {
                 LogHelper.printDebug(() -> "YouTube http status code: " + statusCode);
-                spoofAutoEnabled = true;
+                SettingsEnum.SIGNATURE_SPOOFING.saveValue(true);
                 ReVancedUtils.runOnMainThread(() -> {
                     Toast.makeText(ReVancedUtils.getContext(),
-                            "Automatically spoofing app signature", Toast.LENGTH_LONG).show();
+                            "Automatically enabling app signature spoofing", Toast.LENGTH_LONG).show();
 
                     // force video to reload, by temporarily seeking to a different location
                     final long currentVideoTime = VideoInformation.getVideoTime();
