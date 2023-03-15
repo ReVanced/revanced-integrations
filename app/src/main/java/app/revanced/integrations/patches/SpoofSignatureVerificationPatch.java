@@ -16,18 +16,18 @@ public class SpoofSignatureVerificationPatch {
      * Protobuf parameters used by the player.
      * Known issue: YouTube client recognizes generic player as shorts video.
      */
-    private static final String GENERAL_PROTOBUF_PARAMETER = "CgIQBg";
+    private static final String PROTOBUF_PARAMETER_GENERAL = "CgIQBg";
 
     /**
-     * Protobuf parameter of short and YouTube story.
+     * Protobuf parameter of shorts and YouTube stories.
      */
-    private static final String SHORTS_PROTOBUF_PARAMETER = "8AEB"; // "8AEByAMTuAQP"
+    private static final String PROTOBUF_PARAMETER_SHORTS = "8AEB"; // "8AEByAMTuAQP"
 
     /**
      * Target Protobuf parameters.
      * Used by the generic player.
      */
-    private static final String TARGET_PROTOBUF_PARAMETER = "YADI";
+    private static final String PROTOBUF_PARAMETER_TARGET = "YADI";
 
     /**
      * Injection point
@@ -41,14 +41,14 @@ public class SpoofSignatureVerificationPatch {
             }
             PlayerType player = PlayerType.getCurrent();
             LogHelper.printDebug(() -> "Original protobuf parameter value: " + original + " PlayerType: " + player);
-            if (original.startsWith(TARGET_PROTOBUF_PARAMETER) || original.length() == 0) {
+            if (original.startsWith(PROTOBUF_PARAMETER_TARGET) || original.length() == 0) {
                 if (player == PlayerType.INLINE_MINIMAL) {
-                    return GENERAL_PROTOBUF_PARAMETER; // home feed autoplay
+                    return PROTOBUF_PARAMETER_GENERAL; // home feed autoplay
                 }
                 if (player.isNoneOrHidden()) {
-                    return SHORTS_PROTOBUF_PARAMETER; // short or story
+                    return PROTOBUF_PARAMETER_SHORTS; // short or story
                 }
-                return SHORTS_PROTOBUF_PARAMETER; // regular video player
+                return PROTOBUF_PARAMETER_SHORTS; // regular video player
             }
         } catch (Exception ex) {
             LogHelper.printException(() -> "getProtoBufParameterOverride failure", ex);
