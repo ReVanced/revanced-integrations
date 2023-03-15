@@ -87,7 +87,7 @@ public class SpoofSignatureVerificationPatch {
                 // force video to reload, by temporarily seeking to a different location
                 final long currentVideoTime = VideoInformation.getVideoTime();
 
-                VideoInformation.seekTo(Math.max(currentVideoTime + 30000, VideoInformation.getCurrentVideoLength()));
+                VideoInformation.seekTo(Math.min(currentVideoTime + 30000, VideoInformation.getCurrentVideoLength()));
 
                 ReVancedUtils.runOnMainThreadDelayed(() -> VideoInformation.seekTo(currentVideoTime), 100);
             });
