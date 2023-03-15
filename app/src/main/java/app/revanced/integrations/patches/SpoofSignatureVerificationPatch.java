@@ -40,19 +40,23 @@ public class SpoofSignatureVerificationPatch {
      * @param original original protobuf parameter
      */
     public static String getProtoBufParameterOverride(String original) {
-        if (!SettingsEnum.FORCE_SIGNATURE_SPOOFING.getBoolean() && !spoofAutoEnabled) {
-            return original;
-        }
-        PlayerType player = PlayerType.getCurrent();
-        LogHelper.printDebug(() -> "Original protobuf parameter value: " + original + " PlayerType: " + player);
-        if (original.startsWith(TARGET_PROTOBUF_PARAMETER) || original.length() == 0) {
-            if (player == PlayerType.INLINE_MINIMAL) {
-                return GENERAL_PROTOBUF_PARAMETER; // home feed autoplay
+        try {
+            if (!SettingsEnum.FORCE_SIGNATURE_SPOOFING.getBoolean() && !spoofAutoEnabled) {
+                return original;
             }
-            if (player.isNoneOrHidden()) {
-                return SHORTS_PROTOBUF_PARAMETER; // short or story
+            PlayerType player = PlayerType.getCurrent();
+            LogHelper.printDebug(() -> "Original protobuf parameter value: " + original + " PlayerType: " + player);
+            if (original.startsWith(TARGET_PROTOBUF_PARAMETER) || original.length() == 0) {
+                if (player == PlayerType.INLINE_MINIMAL) {
+                    return GENERAL_PROTOBUF_PARAMETER; // home feed autoplay
+                }
+                if (player.isNoneOrHidden()) {
+                    return SHORTS_PROTOBUF_PARAMETER; // short or story
+                }
+                return SHORTS_PROTOBUF_PARAMETER; // regular video player
             }
-            return SHORTS_PROTOBUF_PARAMETER; // regular video player
+        } catch (Exception ex) {
+            LogHelper.printException(() -> "getProtoBufParameterOverride failure", ex);
         }
 
         return original;
@@ -81,6 +85,8 @@ public class SpoofSignatureVerificationPatch {
                 ReVancedUtils.runOnMainThread(() -> {
                     Toast.makeText(ReVancedUtils.getContext(),
                             "Automatically spoofing app signature", Toast.LENGTH_LONG).show();
+
+                    // force video to reload, by temporarily seeking to a different location
                     final long currentVideoTime = VideoInformation.getVideoTime();
                     VideoInformation.seekTo(Math.max(currentVideoTime + 30000, VideoInformation.getCurrentVideoLength()));
                     ReVancedUtils.runOnMainThreadDelayed(() -> {
