@@ -49,7 +49,7 @@ public class SpoofSignatureVerificationPatch {
                 return PROTOBUF_PARAMETER_SHORTS; // regular video player
             }
         } catch (Exception ex) {
-            LogHelper.printException(() -> "getProtoBufParameterOverride failure", ex);
+            LogHelper.printException(() -> "overrideProtobufParameter failure", ex);
         }
 
         return originalValue;
@@ -93,7 +93,7 @@ public class SpoofSignatureVerificationPatch {
             });
 
         } catch (Exception ex) {
-            LogHelper.printException(() -> "connectionCompleted failure", ex);
+            LogHelper.printException(() -> "onResponse failure", ex);
         }
     }
 
