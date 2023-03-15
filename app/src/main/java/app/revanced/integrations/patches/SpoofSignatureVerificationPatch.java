@@ -1,17 +1,15 @@
 package app.revanced.integrations.patches;
 
 import android.widget.Toast;
-
-import java.util.List;
-import java.util.Map;
-
 import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.shared.PlayerType;
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedUtils;
 
-public class SpoofSignatureVerificationPatch {
+import java.util.List;
+import java.util.Map;
 
+public class SpoofSignatureVerificationPatch {
     /**
      * Protobuf parameters used by the player.
      * Known issue: YouTube client recognizes generic player as shorts video.
@@ -30,18 +28,18 @@ public class SpoofSignatureVerificationPatch {
     private static final String PROTOBUF_PARAMETER_TARGET = "YADI";
 
     /**
-     * Injection point
+     * Injection point.
      *
-     * @param original original protobuf parameter
+     * @param originalValue originalValue protobuf parameter
      */
-    public static String getProtoBufParameterOverride(String original) {
+    public static String overrideProtobufParameter(String originalValue) {
         try {
             if (!SettingsEnum.SIGNATURE_SPOOFING.getBoolean()) {
-                return original;
+                return originalValue;
             }
             PlayerType player = PlayerType.getCurrent();
-            LogHelper.printDebug(() -> "Original protobuf parameter value: " + original + " PlayerType: " + player);
-            if (original.startsWith(PROTOBUF_PARAMETER_TARGET) || original.length() == 0) {
+            LogHelper.printDebug(() -> "Original protobuf parameter value: " + originalValue + " PlayerType: " + player);
+            if (originalValue.startsWith(PROTOBUF_PARAMETER_TARGET) || originalValue.length() == 0) {
                 if (player == PlayerType.INLINE_MINIMAL) {
                     return PROTOBUF_PARAMETER_GENERAL; // home feed autoplay
                 }
@@ -54,41 +52,46 @@ public class SpoofSignatureVerificationPatch {
             LogHelper.printException(() -> "getProtoBufParameterOverride failure", ex);
         }
 
-        return original;
+        return originalValue;
     }
 
 
     /**
      * Injection point. Runs off the main thread.
+     * <p>
+     * Used to check the response code for requests made by YouTube.
+     * Response code of interest is 403 that indicate a signature verification failure for the current request
      *
-     * Used to check the status of http calls made to YouTube.
-     * Calls of interest have status code in the 4xx range (usually 403),
-     * which usually indicates a signature verification failure.
-     *
-     * @param statusCode           HTTP status code of the completed YouTube connection
-     * @param urlConnectionHeaders all connection headers of the completed connection
+     * @param responseCode HTTP status code of the completed YouTube connection
      */
-    public static void connectionCompleted(int statusCode, Map<String, List<String>> urlConnectionHeaders) {
+    public static void onResponse(int responseCode) {
         try {
             if (SettingsEnum.SIGNATURE_SPOOFING.getBoolean()) {
                 return; // already enabled
             }
 
-            if (statusCode >= 400 && statusCode < 500) {
-                LogHelper.printDebug(() -> "YouTube http status code: " + statusCode);
-                SettingsEnum.SIGNATURE_SPOOFING.saveValue(true);
-                ReVancedUtils.runOnMainThread(() -> {
-                    Toast.makeText(ReVancedUtils.getContext(),
-                            "Automatically enabling app signature spoofing", Toast.LENGTH_LONG).show();
-
-                    // force video to reload, by temporarily seeking to a different location
-                    final long currentVideoTime = VideoInformation.getVideoTime();
-                    VideoInformation.seekTo(Math.max(currentVideoTime + 30000, VideoInformation.getCurrentVideoLength()));
-                    ReVancedUtils.runOnMainThreadDelayed(() -> {
-                        VideoInformation.seekTo(currentVideoTime);
-                    }, 100);
-                });
+            if (responseCode < 400 || responseCode >= 500){
+                return; // everything normal
             }
+
+            // TODO: check for the current url using UrlResponseInfo.getUrl()
+
+            LogHelper.printDebug(() -> "YouTube HTTP status code: " + responseCode);
+            SettingsEnum.SIGNATURE_SPOOFING.saveValue(true);
+            ReVancedUtils.runOnMainThread(() -> {
+                Toast.makeText(
+                        ReVancedUtils.getContext(),
+                        "Spoofing app signature to prevent playback issues", Toast.LENGTH_LONG
+                ).show();
+
+                // force video to reload, by temporarily seeking to a different location
+                final long currentVideoTime = VideoInformation.getVideoTime();
+
+                VideoInformation.seekTo(Math.max(currentVideoTime + 30000, VideoInformation.getCurrentVideoLength()));
+
+                ReVancedUtils.runOnMainThreadDelayed(() -> VideoInformation.seekTo(currentVideoTime), 100);
+            });
+
         } catch (Exception ex) {
             LogHelper.printException(() -> "connectionCompleted failure", ex);
         }
