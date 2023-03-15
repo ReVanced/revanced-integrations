@@ -80,7 +80,7 @@ public class SpoofSignatureVerificationPatch {
             }
 
             if (statusCode >= 400 && statusCode < 500) {
-                LogHelper.printDebug(() -> "Connection status: " + statusCode);
+                LogHelper.printDebug(() -> "YouTube http status code: " + statusCode);
                 spoofAutoEnabled = true;
                 ReVancedUtils.runOnMainThread(() -> {
                     Toast.makeText(ReVancedUtils.getContext(),
