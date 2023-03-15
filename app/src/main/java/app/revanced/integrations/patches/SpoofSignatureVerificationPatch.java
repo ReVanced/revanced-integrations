@@ -23,9 +23,9 @@ public class SpoofSignatureVerificationPatch {
     private static final String TARGET_PROTOBUF_PARAMETER = "YADI";
 
     public static String getVerificationSpoofOverride(String original) {
-        LogHelper.printDebug(() -> "original verification spoof: " + original);
-        if (original.startsWith(TARGET_PROTOBUF_PARAMETER)  || original.equals("")) {
-            PlayerType player = PlayerType.getCurrent();
+        PlayerType player = PlayerType.getCurrent();
+        LogHelper.printDebug(() -> "original protobuf verification: " + original + " playerType: " + player);
+        if (original.startsWith(TARGET_PROTOBUF_PARAMETER)  || original.length() == 0) {
             if (player == PlayerType.INLINE_MINIMAL) {
                 return GENERAL_PROTOBUF_PARAMETER; // home feed autoplay
             }
