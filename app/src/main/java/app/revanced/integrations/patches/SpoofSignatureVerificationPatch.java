@@ -7,12 +7,12 @@ public class SpoofSignatureVerificationPatch {
 
     /**
      * Protobuf parameters used by the player.
-     * Known issue: YouTube client recognizes generic player as shorts video
+     * Known issue: YouTube client recognizes generic player as shorts video.
      */
     private static final String GENERAL_PROTOBUF_PARAMETER = "CgIQBg";
 
     /**
-     * Protobuf parameter of short and YouTube story
+     * Protobuf parameter of short and YouTube story.
      */
     private static final String SHORTS_PROTOBUF_PARAMETER = "8AEB"; // "8AEByAMTuAQP"
 
@@ -24,7 +24,7 @@ public class SpoofSignatureVerificationPatch {
 
     public static String getVerificationSpoofOverride(String original) {
         PlayerType player = PlayerType.getCurrent();
-        LogHelper.printDebug(() -> "original protobuf verification: " + original + " playerType: " + player);
+        LogHelper.printDebug(() -> "Original protobuf parameter value: " + original + " PlayerType: " + player);
         if (original.startsWith(TARGET_PROTOBUF_PARAMETER)  || original.length() == 0) {
             if (player == PlayerType.INLINE_MINIMAL) {
                 return GENERAL_PROTOBUF_PARAMETER; // home feed autoplay
