@@ -64,8 +64,10 @@ public class SpoofSignatureVerificationPatch {
      *
      * @param responseCode HTTP status code of the completed YouTube connection
      */
-    public static void onResponse(int responseCode) {
+    public static void onResponse(int responseCode, String url) {
         try {
+            //LogHelper.printDebug(() -> "url: " + url);
+
             if (SettingsEnum.SIGNATURE_SPOOFING.getBoolean()) {
                 return; // already enabled
             }
