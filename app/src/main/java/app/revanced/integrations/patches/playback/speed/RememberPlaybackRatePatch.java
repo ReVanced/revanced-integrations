@@ -40,7 +40,7 @@ public final class RememberPlaybackRatePatch {
                 return;
             }
 
-            SettingsEnum.REMEMBER_PLAYBACK_RATE_LAST_SELECTED_VALUE.setValue(selectedPlaybackRate);
+            SettingsEnum.REMEMBER_PLAYBACK_RATE_LAST_SELECTED_VALUE.saveValue(selectedPlaybackRate);
             Toast.makeText(ReVancedUtils.getContext(),
                     "Changing default playback rate to " + selectedPlaybackRate + "x",
                     Toast.LENGTH_LONG).show();
