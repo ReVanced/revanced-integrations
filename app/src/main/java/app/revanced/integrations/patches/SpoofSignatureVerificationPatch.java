@@ -66,12 +66,15 @@ public class SpoofSignatureVerificationPatch {
      */
     public static void onResponse(int responseCode) {
         try {
-            if (responseCode < 400 || responseCode >= 500 // everything normal
-                || SettingsEnum.SIGNATURE_SPOOFING.getBoolean()) { // already enabled
-                return;
+            if (responseCode < 400 || responseCode >= 500) {
+                return; // everything normal
+            }
+            LogHelper.printDebug(() -> "YouTube HTTP status code: " + responseCode);
+
+            if (SettingsEnum.SIGNATURE_SPOOFING.getBoolean()) {
+                return;  // already enabled
             }
 
-            LogHelper.printDebug(() -> "YouTube HTTP status code: " + responseCode);
             SettingsEnum.SIGNATURE_SPOOFING.saveValue(true);
             ReVancedUtils.runOnMainThread(() -> {
                 Toast.makeText(
