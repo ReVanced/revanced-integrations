@@ -72,7 +72,8 @@ public final class RememberPlaybackSpeedPatch {
 
     /**
      * Injection point.
-     * Called when the playback speed is being applied to the current video.
+     * Called when playback first starts,
+     * and also called immediately after the user selects a new video speed.
      *
      * @return The currently set playback speed.
      */
