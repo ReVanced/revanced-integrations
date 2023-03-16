@@ -76,7 +76,6 @@ public class SpoofSignatureVerificationPatch {
                 return; // everything normal
             }
 
-            // TODO: check for the current url using UrlResponseInfo.getUrl()
 
             LogHelper.printDebug(() -> "YouTube HTTP status code: " + responseCode);
             SettingsEnum.SIGNATURE_SPOOFING.saveValue(true);
