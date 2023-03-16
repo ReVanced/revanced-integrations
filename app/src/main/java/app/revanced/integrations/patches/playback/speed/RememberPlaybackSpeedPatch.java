@@ -19,7 +19,6 @@ public final class RememberPlaybackSpeedPatch {
     @Nullable
     private static String currentVideoId;
 
-
     private static void showToast(final String message) {
         Toast.makeText(ReVancedUtils.getContext(), message, Toast.LENGTH_LONG).show();
     }
@@ -44,6 +43,7 @@ public final class RememberPlaybackSpeedPatch {
         if (videoId.equals(currentVideoId)) {
             return;
         }
+
         currentVideoId = videoId;
         currentPlaybackSpeed = getLastRememberedPlaybackSpeed();
     }
