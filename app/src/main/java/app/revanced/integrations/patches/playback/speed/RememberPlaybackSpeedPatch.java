@@ -1,10 +1,8 @@
 package app.revanced.integrations.patches.playback.speed;
 
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
 import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedUtils;
@@ -14,51 +12,69 @@ public final class RememberPlaybackSpeedPatch {
     /**
      * The current playback speed
      */
-    private static float currentPlaybackSpeed = SettingsEnum.REMEMBER_PLAYBACK_SPEED_LAST_SELECTED_VALUE.getFloat();
+    private static float currentPlaybackSpeed = getLastRememberedPlaybackSpeed();
+
+    private final static float DEFAULT_PLAYBACK_SPEED = (float) SettingsEnum.REMEMBER_PLAYBACK_SPEED_LAST_SELECTED_VALUE.getDefaultValue();
 
     @Nullable
     private static String currentVideoId;
 
+
+    private static void showToast(final String message) {
+        Toast.makeText(ReVancedUtils.getContext(), message, Toast.LENGTH_LONG).show();
+    }
+
+    private static float getLastRememberedPlaybackSpeed() {
+        return SettingsEnum.REMEMBER_PLAYBACK_SPEED_LAST_SELECTED_VALUE.getFloat();
+    }
+
+    private static void rememberPlaybackSpeed() {
+        SettingsEnum.REMEMBER_PLAYBACK_SPEED_LAST_SELECTED_VALUE.saveValue(currentPlaybackSpeed);
+    }
+
+    private static boolean rememberLastSelectedPlaybackSpeed() {
+        return SettingsEnum.REMEMBER_PLAYBACK_SPEED_LAST_SELECTED.getBoolean();
+    }
+
     /**
-     * Injection point
+     * Injection point.
+     * Called when a new video loads.
      */
     public static void newVideoLoaded(@NonNull String videoId) {
         if (videoId.equals(currentVideoId)) {
             return;
         }
         currentVideoId = videoId;
-        currentPlaybackSpeed = SettingsEnum.REMEMBER_PLAYBACK_SPEED_LAST_SELECTED_VALUE.getFloat();
+        currentPlaybackSpeed = getLastRememberedPlaybackSpeed();
     }
 
     /**
-     * Injection point
+     * Injection point.
+     * Called when a playback speed is selected.
+     *
+     * @param playbackSpeed The playback speed to set.
      */
-    public static void rememberPlaybackSpeed(float selectedPlaybackSpeed) {
-        try {
-            LogHelper.printDebug(() -> "Playback speed changed to: " + selectedPlaybackSpeed);
-            currentPlaybackSpeed = selectedPlaybackSpeed;
+    public static void setPlaybackSpeed(final float playbackSpeed) {
+        LogHelper.printDebug(() -> "Playback speed changed to: " + playbackSpeed);
 
-            if (!SettingsEnum.REMEMBER_PLAYBACK_SPEED_LAST_SELECTED.getBoolean()) {
-                if (SettingsEnum.REMEMBER_PLAYBACK_SPEED_LAST_SELECTED_VALUE.getFloat()
-                        != (float)SettingsEnum.REMEMBER_PLAYBACK_SPEED_LAST_SELECTED_VALUE.getDefaultValue()) {
-                    Toast.makeText(ReVancedUtils.getContext(),
-                            "Playback speed " + selectedPlaybackSpeed + "x applies to this video",
-                            Toast.LENGTH_LONG).show();
-                }
-                return;
-            }
+        currentPlaybackSpeed = playbackSpeed;
 
-            SettingsEnum.REMEMBER_PLAYBACK_SPEED_LAST_SELECTED_VALUE.saveValue(selectedPlaybackSpeed);
-            Toast.makeText(ReVancedUtils.getContext(),
-                    "Changing default playback speed to " + selectedPlaybackSpeed + "x",
-                    Toast.LENGTH_LONG).show();
-        } catch (Exception ex) {
-            LogHelper.printException(() -> "Failed to remember playback speed", ex);
+        if (rememberLastSelectedPlaybackSpeed()) {
+            rememberPlaybackSpeed();
+
+            showToast("Remembering playback speed: " + playbackSpeed + "x");
+        } else {
+            if (getLastRememberedPlaybackSpeed() == DEFAULT_PLAYBACK_SPEED) return;
+
+            showToast("Applying playback speed: " + playbackSpeed + "x");
         }
     }
 
     /**
-     * Injection point
+     * Injection point.
+     * Called when the playback speed is being applied to the current video.
+     *
+     * @return The currently set playback speed.
      */
     public static float getCurrentPlaybackSpeed() {
         return currentPlaybackSpeed;
