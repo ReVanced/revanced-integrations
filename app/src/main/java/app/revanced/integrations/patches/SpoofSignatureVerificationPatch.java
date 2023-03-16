@@ -59,21 +59,16 @@ public class SpoofSignatureVerificationPatch {
     /**
      * Injection point. Runs off the main thread.
      * <p>
-     * Used to check the response code for requests made by YouTube.
+     * Used to check the response code of video playback requests made by YouTube.
      * Response code of interest is 403 that indicate a signature verification failure for the current request
      *
      * @param responseCode HTTP status code of the completed YouTube connection
      */
-    public static void onResponse(int responseCode, String url) {
+    public static void onResponse(int responseCode) {
         try {
-            //LogHelper.printDebug(() -> "url: " + url);
-
-            if (SettingsEnum.SIGNATURE_SPOOFING.getBoolean()) {
-                return; // already enabled
-            }
-
-            if (responseCode < 400 || responseCode >= 500){
-                return; // everything normal
+            if (responseCode < 400 || responseCode >= 500 // everything normal
+                || SettingsEnum.SIGNATURE_SPOOFING.getBoolean()) { // already enabled
+                return;
             }
 
             LogHelper.printDebug(() -> "YouTube HTTP status code: " + responseCode);
