@@ -76,7 +76,6 @@ public class SpoofSignatureVerificationPatch {
                 return; // everything normal
             }
 
-
             LogHelper.printDebug(() -> "YouTube HTTP status code: " + responseCode);
             SettingsEnum.SIGNATURE_SPOOFING.saveValue(true);
             ReVancedUtils.runOnMainThread(() -> {
