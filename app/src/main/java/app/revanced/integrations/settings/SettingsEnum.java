@@ -21,8 +21,8 @@ public enum SettingsEnum {
     REMEMBER_PLAYBACK_SPEED_LAST_SELECTED("revanced_remember_playback_speed_last_selected", true, ReturnType.BOOLEAN),
     REMEMBER_PLAYBACK_SPEED_LAST_SELECTED_VALUE("revanced_remember_playback_speed_last_selected_value", 1.0f, ReturnType.FLOAT),
 
+    // TODO: Unused currently
     // Whitelist settings
-    //ToDo: Not used atm, Patch missing
     ENABLE_WHITELIST("revanced_whitelist_ads_enabled", false, ReturnType.BOOLEAN),
 
     // Ad settings
