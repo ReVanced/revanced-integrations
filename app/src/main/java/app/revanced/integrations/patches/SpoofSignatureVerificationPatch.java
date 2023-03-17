@@ -72,13 +72,6 @@ public class SpoofSignatureVerificationPatch {
                         ReVancedUtils.getContext(),
                         "Spoofing app signature to prevent playback issues", Toast.LENGTH_LONG
                 ).show();
-
-                // force video to reload, by temporarily seeking to a different location
-                final long currentVideoTime = VideoInformation.getVideoTime();
-
-                VideoInformation.seekTo(Math.min(currentVideoTime + 30000, VideoInformation.getCurrentVideoLength()));
-
-                ReVancedUtils.runOnMainThreadDelayed(() -> VideoInformation.seekTo(currentVideoTime), 100);
             });
 
         } catch (Exception ex) {
