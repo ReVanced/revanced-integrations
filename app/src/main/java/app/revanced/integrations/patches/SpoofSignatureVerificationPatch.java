@@ -72,6 +72,7 @@ public class SpoofSignatureVerificationPatch {
                         ReVancedUtils.getContext(),
                         "Spoofing app signature to prevent playback issues", Toast.LENGTH_LONG
                 ).show();
+                // it would be great if the video could be forcefully reloaded, but currently there is no code to do this
             });
 
         } catch (Exception ex) {
