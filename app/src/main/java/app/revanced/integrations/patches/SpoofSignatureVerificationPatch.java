@@ -32,8 +32,11 @@ public class SpoofSignatureVerificationPatch {
      */
     public static String overrideProtobufParameter(String originalValue) {
         try {
+            if (!SettingsEnum.SIGNATURE_SPOOFING.getBoolean()) {
+                return originalValue;
+            }
             LogHelper.printDebug(() -> "Original protobuf parameter value: " + originalValue);
-            if (SettingsEnum.SIGNATURE_SPOOFING.getBoolean()) {
+            if (originalValue.startsWith(PROTOBUF_PARAMETER_TARGET) || originalValue.isEmpty()) {
                 return PROTOBUF_PARAMETER_SHORTS;
             }
         } catch (Exception ex) {
