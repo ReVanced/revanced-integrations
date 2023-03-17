@@ -1,23 +1,21 @@
 package app.revanced.integrations.patches;
 
 import android.widget.Toast;
+
 import app.revanced.integrations.settings.SettingsEnum;
-import app.revanced.integrations.shared.PlayerType;
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedUtils;
-
-import java.util.List;
-import java.util.Map;
 
 public class SpoofSignatureVerificationPatch {
     /**
      * Protobuf parameters used by the player.
-     * Known issue: YouTube client recognizes generic player as shorts video.
+     * Known issue: video preview not showing when using the seekbar.
      */
     private static final String PROTOBUF_PARAMETER_GENERAL = "CgIQBg";
 
     /**
      * Protobuf parameter of shorts and YouTube stories.
+     * Known issue: captions are positioned on upper area in the player.
      */
     private static final String PROTOBUF_PARAMETER_SHORTS = "8AEB"; // "8AEByAMTuAQP"
 
@@ -34,19 +32,9 @@ public class SpoofSignatureVerificationPatch {
      */
     public static String overrideProtobufParameter(String originalValue) {
         try {
-            if (!SettingsEnum.SIGNATURE_SPOOFING.getBoolean()) {
-                return originalValue;
-            }
-            PlayerType player = PlayerType.getCurrent();
-            LogHelper.printDebug(() -> "Original protobuf parameter value: " + originalValue + " PlayerType: " + player);
-            if (originalValue.startsWith(PROTOBUF_PARAMETER_TARGET) || originalValue.length() == 0) {
-                if (player == PlayerType.INLINE_MINIMAL) {
-                    return PROTOBUF_PARAMETER_GENERAL; // home feed autoplay
-                }
-                if (player.isNoneOrHidden()) {
-                    return PROTOBUF_PARAMETER_SHORTS; // short or story
-                }
-                return PROTOBUF_PARAMETER_SHORTS; // regular video player
+            LogHelper.printDebug(() -> "Original protobuf parameter value: " + originalValue);
+            if (SettingsEnum.SIGNATURE_SPOOFING.getBoolean()) {
+                return PROTOBUF_PARAMETER_SHORTS;
             }
         } catch (Exception ex) {
             LogHelper.printException(() -> "overrideProtobufParameter failure", ex);
