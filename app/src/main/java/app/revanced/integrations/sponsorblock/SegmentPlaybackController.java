@@ -14,14 +14,14 @@ import java.util.Arrays;
 import java.util.Objects;
 
 import app.revanced.integrations.patches.VideoInformation;
-import app.revanced.integrations.patches.playback.speed.RememberPlaybackRatePatch;
+import app.revanced.integrations.patches.playback.speed.RememberPlaybackSpeedPatch;
 import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.shared.PlayerType;
 import app.revanced.integrations.sponsorblock.objects.CategoryBehaviour;
 import app.revanced.integrations.sponsorblock.objects.SegmentCategory;
 import app.revanced.integrations.sponsorblock.objects.SponsorSegment;
-import app.revanced.integrations.sponsorblock.ui.SponsorBlockViewController;
 import app.revanced.integrations.sponsorblock.requests.SBRequester;
+import app.revanced.integrations.sponsorblock.ui.SponsorBlockViewController;
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedUtils;
 
@@ -193,7 +193,7 @@ public class SegmentPlaybackController {
             // to debug the timing logic, set this to a very large value (5000 or more)
             // then try manually seeking just playback reaches a skip/hide of different segments
             final long lookAheadMilliseconds = 1500; // must be larger than the average time between calls to this method
-            final float playbackRate = RememberPlaybackRatePatch.getCurrentPlaybackRate();
+            final float playbackRate = RememberPlaybackSpeedPatch.getCurrentPlaybackSpeed();
             final long startTimerLookAheadThreshold = millis + (long)(playbackRate * lookAheadMilliseconds);
 
             SponsorSegment foundCurrentSegment = null;
