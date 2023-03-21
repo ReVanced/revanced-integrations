@@ -61,7 +61,8 @@ public final class GeneralAdsPatch extends Filter {
                 "hero_promo_image",
                 "statement_banner",
                 "carousel_footered_layout",
-                "text_image_button_layout"
+                "text_image_button_layout",
+                "primetime_promo",
         );
         var movieAds = new BlockRule(
                 SettingsEnum.ADREMOVER_MOVIE_REMOVAL,
