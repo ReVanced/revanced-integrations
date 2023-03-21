@@ -183,11 +183,6 @@ public class SegmentPlaybackController {
                 || segmentsOfCurrentVideo == null || segmentsOfCurrentVideo.length == 0) {
                 return;
             }
-            if (VideoInformation.getCurrentVideoLength() <= 0) {
-                LogHelper.printDebug(() -> "Video is not yet loaded (video has no length)."
-                        + "  Ignoring setVideoTime call of time: " + millis);
-                return;
-            }
             LogHelper.printDebug(() -> "setVideoTime: " + millis);
 
             // to debug the timing logic, set this to a very large value (5000 or more)

@@ -77,7 +77,7 @@ public final class VideoInformation {
 
     /**
      * Seek on the current video.
-     * <b>Currently this does not function for Shorts playback.</b>
+     * Does not function for playback of Shorts or Stories.
      *
      * Caution: If called from a videoTimeHook() callback,
      * this will cause a recursive call into the same videoTimeHook() callback.
@@ -119,7 +119,9 @@ public final class VideoInformation {
      * Length of the current video playing.
      * Includes Shorts playback.
      *
-     * @return The length of the video in milliseconds, or zero  if video is not yet loaded.
+     * @return The length of the video in milliseconds.
+     *         If the video is not yet loaded, or if the video is playing in the background with no video visible,
+     *         then this returns zero.
      */
     public static long getCurrentVideoLength() {
        return videoLength;
@@ -142,7 +144,10 @@ public final class VideoInformation {
     }
 
     /**
-     * @return If the playback is at the end of the video
+     * @return If the playback is at the end of the video.
+     *
+     * If video is playing in the background with no video visible,
+     * this always returns false (even if the video is actually at the end)
      */
     public static boolean isAtEndOfVideo() {
         return videoTime > 0 && videoLength > 0 && videoTime >= videoLength;
