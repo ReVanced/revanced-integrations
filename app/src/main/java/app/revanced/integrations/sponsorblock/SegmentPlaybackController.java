@@ -193,8 +193,8 @@ public class SegmentPlaybackController {
             // to debug the timing logic, set this to a very large value (5000 or more)
             // then try manually seeking just playback reaches a skip/hide of different segments
             final long lookAheadMilliseconds = 1500; // must be larger than the average time between calls to this method
-            final float playbackRate = RememberPlaybackSpeedPatch.getCurrentPlaybackSpeed();
-            final long startTimerLookAheadThreshold = millis + (long)(playbackRate * lookAheadMilliseconds);
+            final float playbackSpeed = RememberPlaybackSpeedPatch.getCurrentPlaybackSpeed();
+            final long startTimerLookAheadThreshold = millis + (long)(playbackSpeed * lookAheadMilliseconds);
 
             SponsorSegment foundCurrentSegment = null;
             SponsorSegment foundUpcomingSegment = null;
@@ -289,8 +289,8 @@ public class SegmentPlaybackController {
                     scheduledHideSegment = null;
                 } else {
                     scheduledHideSegment = segmentToHide;
-                    LogHelper.printDebug(() -> "Scheduling hide segment: " + segmentToHide + " playbackRate: " + playbackRate);
-                    final long delayUntilHide = (long) ((segmentToHide.end - millis) / playbackRate);
+                    LogHelper.printDebug(() -> "Scheduling hide segment: " + segmentToHide + " playbackSpeed: " + playbackSpeed);
+                    final long delayUntilHide = (long) ((segmentToHide.end - millis) / playbackSpeed);
                     ReVancedUtils.runOnMainThreadDelayed(() -> {
                         if (scheduledHideSegment != segmentToHide) {
                             LogHelper.printDebug(() -> "Ignoring old scheduled hide segment: " + segmentToHide);
@@ -325,8 +325,8 @@ public class SegmentPlaybackController {
                     scheduledUpcomingSegment = foundUpcomingSegment;
                     final SponsorSegment segmentToSkip = foundUpcomingSegment;
 
-                    LogHelper.printDebug(() -> "Scheduling segment: " + segmentToSkip + " playbackRate: " + playbackRate);
-                    final long delayUntilSkip = (long) ((segmentToSkip.start - millis) / playbackRate);
+                    LogHelper.printDebug(() -> "Scheduling segment: " + segmentToSkip + " playbackSpeed: " + playbackSpeed);
+                    final long delayUntilSkip = (long) ((segmentToSkip.start - millis) / playbackSpeed);
                     ReVancedUtils.runOnMainThreadDelayed(() -> {
                         if (scheduledUpcomingSegment != segmentToSkip) {
                             LogHelper.printDebug(() -> "Ignoring old scheduled segment: " + segmentToSkip);
