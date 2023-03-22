@@ -14,6 +14,7 @@ import androidx.annotation.Nullable;
 import java.lang.ref.WeakReference;
 import java.util.Objects;
 
+import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.shared.PlayerType;
 import app.revanced.integrations.sponsorblock.objects.SponsorSegment;
 import app.revanced.integrations.utils.LogHelper;
@@ -42,6 +43,9 @@ public class SponsorBlockViewController {
         return _youtubeOverlaysLayout.getContext();
     }
 
+    /**
+     * Injection point.
+     */
     public static void initialize(Object viewGroup) {
         try {
             LogHelper.printDebug(() -> "initializing");
@@ -201,5 +205,19 @@ public class SponsorBlockViewController {
         inlineSponsorOverlay.bringToFront();
         inlineSponsorOverlay.requestLayout();
         inlineSponsorOverlay.invalidate();
+    }
+
+    /**
+     * Injection point.
+     */
+    public static void endOfVideoReached() {
+        LogHelper.printDebug(() -> "endOfVideoReached");
+        // the buttons automatically set themselves to visible when appropriate,
+        // but if buttons are showing when the end of the video is reached then they need
+        // to be forcefully hidden
+        if (!SettingsEnum.PREFERRED_AUTO_REPEAT.getBoolean()) {
+            ShieldButtonController.hide();
+            VotingButtonController.hide();
+        }
     }
 }
