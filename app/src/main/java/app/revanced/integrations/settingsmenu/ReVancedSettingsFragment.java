@@ -34,45 +34,45 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
             if (setting == null) {
                 return;
             }
-                Preference pref = this.findPreference(str);
-                LogHelper.printDebug(() -> "Setting " + setting.name() + " was changed. Preference " + str + ": " + pref);
-                boolean rebootDialogHandled = false;
+            Preference pref = this.findPreference(str);
+            LogHelper.printDebug(() -> "Setting " + setting.name() + " was changed. Preference " + str + ": " + pref);
+            boolean rebootDialogHandled = false;
 
-                if (pref instanceof SwitchPreference) {
-                    SwitchPreference switchPref = (SwitchPreference) pref;
-                    final boolean checked = switchPref.isChecked();
-                    SettingsEnum.setValue(setting, checked);
-                    if (setting.userNoticeMessage != null && checked != (Boolean) setting.defaultValue) {
-                        showSettingConfirmation(getActivity(), switchPref, setting);
-                        rebootDialogHandled = true;
-                    }
-                } else if (pref instanceof EditTextPreference) {
-                    EditTextPreference editPref = (EditTextPreference) pref;
-                    Object value;
-                    switch (setting.returnType) {
-                        case FLOAT:
-                            value = Float.parseFloat(editPref.getText());
-                            break;
-                        case LONG:
-                            value = Long.parseLong(editPref.getText());
-                            break;
-                        case STRING:
-                            value = editPref.getText();
-                            break;
-                        case INTEGER:
-                            value = Integer.parseInt(editPref.getText());
-                            break;
-                        default:
-                            throw new IllegalStateException(setting.toString());
-                    }
-                    SettingsEnum.setValue(setting, value);
-                } else {
-                    LogHelper.printException(() -> "Setting cannot be handled: " + pref.getClass() + " " + pref);
+            if (pref instanceof SwitchPreference) {
+                SwitchPreference switchPref = (SwitchPreference) pref;
+                final boolean checked = switchPref.isChecked();
+                SettingsEnum.setValue(setting, checked);
+                if (setting.userNoticeMessage != null && checked != (Boolean) setting.defaultValue) {
+                    showSettingConfirmation(getActivity(), switchPref, setting);
+                    rebootDialogHandled = true;
                 }
+            } else if (pref instanceof EditTextPreference) {
+                EditTextPreference editPref = (EditTextPreference) pref;
+                Object value;
+                switch (setting.returnType) {
+                    case FLOAT:
+                        value = Float.parseFloat(editPref.getText());
+                        break;
+                    case LONG:
+                        value = Long.parseLong(editPref.getText());
+                        break;
+                    case STRING:
+                        value = editPref.getText();
+                        break;
+                    case INTEGER:
+                        value = Integer.parseInt(editPref.getText());
+                        break;
+                    default:
+                        throw new IllegalStateException(setting.toString());
+                }
+                SettingsEnum.setValue(setting, value);
+            } else {
+                LogHelper.printException(() -> "Setting cannot be handled: " + pref.getClass() + " " + pref);
+            }
 
-                if (!rebootDialogHandled && setting.rebootApp) {
-                    rebootDialog(getActivity());
-                }
+            if (!rebootDialogHandled && setting.rebootApp) {
+                rebootDialog(getActivity());
+            }
 
             enableDisablePreferences();
         } catch (Exception ex) {
