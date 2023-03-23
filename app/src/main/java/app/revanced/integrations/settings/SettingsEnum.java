@@ -33,10 +33,11 @@ public enum SettingsEnum {
     // Video settings
     OLD_STYLE_VIDEO_QUALITY_PLAYER_SETTINGS("revanced_use_old_style_quality_settings", BOOLEAN, TRUE),
     REMEMBER_VIDEO_QUALITY_LAST_SELECTED("revanced_remember_video_quality_last_selected", BOOLEAN, TRUE),
-    REMEMBER_PLAYBACK_RATE_SELECTED("revanced_remember_playback_rate_selected", BOOLEAN, TRUE),
+    REMEMBER_PLAYBACK_SPEED_LAST_SELECTED("revanced_remember_playback_speed_last_selected", BOOLEAN, TRUE),
+    REMEMBER_PLAYBACK_SPEED_LAST_SELECTED_VALUE("revanced_remember_playback_speed_last_selected_value", FLOAT, 1.0f),
 
+    // TODO: Unused currently
     // Whitelist settings
-    //TODO: Patch missing
     //ENABLE_WHITELIST("revanced_whitelist_ads_enabled", BOOLEAN, FALSE),
 
     // Ad settings
@@ -109,6 +110,7 @@ public enum SettingsEnum {
     WIDE_SEARCHBAR("revanced_wide_searchbar", BOOLEAN, FALSE, true),
 
     // Misc. Settings
+    SIGNATURE_SPOOFING("revanced_spoof_signature_verification", BOOLEAN, FALSE),
     CAPTIONS_ENABLED("revanced_autocaptions_enabled", BOOLEAN, FALSE),
     DISABLE_ZOOM_HAPTICS("revanced_disable_zoom_haptics", BOOLEAN, TRUE),
     ENABLE_EXTERNAL_BROWSER("revanced_enable_external_browser", BOOLEAN, TRUE, true),
