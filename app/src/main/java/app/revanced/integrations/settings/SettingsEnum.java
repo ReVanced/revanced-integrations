@@ -8,6 +8,7 @@ import static app.revanced.integrations.settings.SettingsEnum.ReturnType.INTEGER
 import static app.revanced.integrations.settings.SettingsEnum.ReturnType.LONG;
 import static app.revanced.integrations.settings.SettingsEnum.ReturnType.STRING;
 
+import app.revanced.integrations.sponsorblock.StringRef;
 import app.revanced.integrations.utils.SharedPrefCategory;
 import static app.revanced.integrations.utils.SharedPrefCategory.RETURN_YOUTUBE_DISLIKE;
 import static app.revanced.integrations.utils.SharedPrefCategory.SPONSOR_BLOCK;
@@ -105,12 +106,12 @@ public enum SettingsEnum {
     HIDE_VIDEO_WATERMARK("revanced_hide_video_watermark", BOOLEAN, TRUE),
     HIDE_WATCH_IN_VR("revanced_hide_watch_in_vr", BOOLEAN, FALSE, true),
     PLAYER_POPUP_PANELS("revanced_player_popup_panels_enabled", BOOLEAN, FALSE),
-    SPOOF_APP_VERSION("revanced_spoof_app_version", BOOLEAN, FALSE, true),
+    SPOOF_APP_VERSION("revanced_spoof_app_version", BOOLEAN, FALSE, true, "revanced_user_notice_message_app_version_spoofing"),
     USE_TABLET_MINIPLAYER("revanced_tablet_miniplayer", BOOLEAN, FALSE, true),
     WIDE_SEARCHBAR("revanced_wide_searchbar", BOOLEAN, FALSE, true),
 
     // Misc. Settings
-    SIGNATURE_SPOOFING("revanced_spoof_signature_verification", BOOLEAN, FALSE),
+    SIGNATURE_SPOOFING("revanced_spoof_signature_verification", BOOLEAN, FALSE, "revanced_user_notice_message_signature_spoofing"),
     CAPTIONS_ENABLED("revanced_autocaptions_enabled", BOOLEAN, FALSE),
     DISABLE_ZOOM_HAPTICS("revanced_disable_zoom_haptics", BOOLEAN, TRUE),
     ENABLE_EXTERNAL_BROWSER("revanced_enable_external_browser", BOOLEAN, TRUE, true),
@@ -188,46 +189,87 @@ public enum SettingsEnum {
     @Nullable
     private final SettingsEnum[] parents;
 
+    /**
+     * Message to display, if the user tries to change the setting from the default value.
+     * Can only be used for {@link ReturnType#BOOLEAN} setting types.
+     */
+    @Nullable
+    public final StringRef userNoticeMessage;
+
     // must be volatile, as some settings are read/write from different threads
     // of note, the object value is persistently stored using SharedPreferences (which is thread safe)
     @NonNull
     private volatile Object value;
 
     SettingsEnum(String path, ReturnType returnType, Object defaultValue) {
-        this(path, returnType, defaultValue, SharedPrefCategory.YOUTUBE, false, null);
+        this(path, returnType, defaultValue, SharedPrefCategory.YOUTUBE, false, null, null);
     }
     SettingsEnum(String path, ReturnType returnType, Object defaultValue,
                  boolean rebootApp) {
-        this(path, returnType, defaultValue, SharedPrefCategory.YOUTUBE, rebootApp, null);
+        this(path, returnType, defaultValue, SharedPrefCategory.YOUTUBE, rebootApp, null,null);
+    }
+    SettingsEnum(String path, ReturnType returnType, Object defaultValue,
+                 String userNoticeMessageKey) {
+        this(path, returnType, defaultValue, SharedPrefCategory.YOUTUBE, false, userNoticeMessageKey, null);
     }
     SettingsEnum(String path, ReturnType returnType, Object defaultValue,
                  SettingsEnum[] parents) {
-        this(path, returnType, defaultValue, SharedPrefCategory.YOUTUBE, false, parents);
+        this(path, returnType, defaultValue, SharedPrefCategory.YOUTUBE, false, null, parents);
+    }
+    SettingsEnum(String path, ReturnType returnType, Object defaultValue,
+                 boolean rebootApp, String userNoticeMessageKey) {
+        this(path, returnType, defaultValue, SharedPrefCategory.YOUTUBE, rebootApp, userNoticeMessageKey, null);
     }
     SettingsEnum(String path, ReturnType returnType, Object defaultValue,
                  boolean rebootApp, SettingsEnum[] parents) {
-        this(path, returnType, defaultValue, SharedPrefCategory.YOUTUBE, rebootApp, parents);
+        this(path, returnType, defaultValue, SharedPrefCategory.YOUTUBE, rebootApp, null, parents);
+    }
+    SettingsEnum(String path, ReturnType returnType, Object defaultValue,
+                 boolean rebootApp, String userNoticeMessageKey, SettingsEnum[] parents) {
+        this(path, returnType, defaultValue, SharedPrefCategory.YOUTUBE, rebootApp, userNoticeMessageKey, parents);
     }
 
-    SettingsEnum(String path, ReturnType returnType, Object defaultValue,
-                 SharedPrefCategory prefName) {
-        this(path, returnType, defaultValue, prefName, false, null);
+
+    SettingsEnum(String path, ReturnType returnType, Object defaultValue, SharedPrefCategory prefName) {
+        this(path, returnType, defaultValue, prefName, false, null, null);
     }
-    SettingsEnum(String path, ReturnType returnType, Object defaultValue,
-                 SharedPrefCategory prefName, boolean rebootApp) {
-        this(path, returnType, defaultValue, prefName, rebootApp, null);
+    SettingsEnum(String path, ReturnType returnType, Object defaultValue, SharedPrefCategory prefName,
+                 boolean rebootApp) {
+        this(path, returnType, defaultValue, prefName, rebootApp, null, null);
     }
-    SettingsEnum(String path, ReturnType returnType, Object defaultValue,
-                 SharedPrefCategory prefName, SettingsEnum[] parents) {
-        this(path, returnType, defaultValue, prefName, false, parents);
+    SettingsEnum(String path, ReturnType returnType, Object defaultValue, SharedPrefCategory prefName,
+                 String userNoticeMessageKey) {
+        this(path, returnType, defaultValue, prefName, false, userNoticeMessageKey, null);
     }
-    SettingsEnum(String path, ReturnType returnType, Object defaultValue,
-                 SharedPrefCategory prefName, boolean rebootApp, @Nullable SettingsEnum[]  parents) {
+    SettingsEnum(String path, ReturnType returnType, Object defaultValue, SharedPrefCategory prefName,
+                 boolean rebootApp, String userNoticeMessageKey) {
+        this(path, returnType, defaultValue, prefName, rebootApp, userNoticeMessageKey, null);
+    }
+    SettingsEnum(String path, ReturnType returnType, Object defaultValue, SharedPrefCategory prefName,
+                 boolean rebootApp, SettingsEnum[] parents) {
+        this(path, returnType, defaultValue, prefName, rebootApp, null, parents);
+    }
+    SettingsEnum(String path, ReturnType returnType, Object defaultValue, SharedPrefCategory prefName,
+                 SettingsEnum[] parents) {
+        this(path, returnType, defaultValue, prefName, false, null, parents);
+    }
+    SettingsEnum(String path, ReturnType returnType, Object defaultValue, SharedPrefCategory prefName,
+                 boolean rebootApp, @Nullable String userNoticeMessageKey, @Nullable SettingsEnum[]  parents) {
         this.path = Objects.requireNonNull(path);
         this.returnType = Objects.requireNonNull(returnType);
         this.value = this.defaultValue = Objects.requireNonNull(defaultValue);
         this.sharedPref = Objects.requireNonNull(prefName);
         this.rebootApp = rebootApp;
+
+        if (userNoticeMessageKey == null) {
+            this.userNoticeMessage = null;
+        } else {
+            if (returnType != ReturnType.BOOLEAN) {
+                throw new IllegalArgumentException("must be boolean type: " + path);
+            }
+            this.userNoticeMessage = new StringRef(userNoticeMessageKey);
+        }
+
         this.parents = parents;
         if (parents != null) {
             for (SettingsEnum parent : parents) {
@@ -240,6 +282,14 @@ public enum SettingsEnum {
 
     static {
         loadAllSettings();
+    }
+
+    @Nullable
+    public static SettingsEnum settingFromPath(String str) {
+        for (SettingsEnum setting : SettingsEnum.values()) {
+            if (setting.path.equals(str)) return setting;
+        }
+        return null;
     }
 
     private static void loadAllSettings() {

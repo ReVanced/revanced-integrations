@@ -30,15 +30,22 @@ import app.revanced.integrations.utils.SharedPrefCategory;
 public class ReVancedSettingsFragment extends PreferenceFragment {
     SharedPreferences.OnSharedPreferenceChangeListener listener = (sharedPreferences, str) -> {
         try {
-            for (SettingsEnum setting : SettingsEnum.values()) {
-                if (!setting.path.equals(str)) continue;
+            SettingsEnum setting = SettingsEnum.settingFromPath(str);
+            if (setting == null) {
+                return;
+            }
                 Preference pref = this.findPreference(str);
-
                 LogHelper.printDebug(() -> "Setting " + setting.name() + " was changed. Preference " + str + ": " + pref);
+                boolean rebootDialogHandled = false;
 
                 if (pref instanceof SwitchPreference) {
                     SwitchPreference switchPref = (SwitchPreference) pref;
-                    SettingsEnum.setValue(setting, switchPref.isChecked());
+                    final boolean checked = switchPref.isChecked();
+                    SettingsEnum.setValue(setting, checked);
+                    if (setting.userNoticeMessage != null && checked != (Boolean) setting.defaultValue) {
+                        showSettingConfirmation(getActivity(), switchPref, setting);
+                        rebootDialogHandled = true;
+                    }
                 } else if (pref instanceof EditTextPreference) {
                     EditTextPreference editPref = (EditTextPreference) pref;
                     Object value;
@@ -63,10 +70,9 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
                     LogHelper.printException(() -> "Setting cannot be handled: " + pref.getClass() + " " + pref);
                 }
 
-                if (setting.rebootApp) {
+                if (!rebootDialogHandled && setting.rebootApp) {
                     rebootDialog(getActivity());
                 }
-            }
 
             enableDisablePreferences();
         } catch (Exception ex) {
@@ -124,6 +130,22 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
         new AlertDialog.Builder(activity).setMessage(getStringByName(activity, "pref_refresh_config"))
                 .setPositiveButton(positiveButton, (dialog, id) -> reboot(activity))
                 .setNegativeButton(negativeButton, null).show();
+    }
+
+    private void showSettingConfirmation(@NonNull Activity activity, SwitchPreference switchPref, SettingsEnum setting) {
+        new AlertDialog.Builder(activity)
+                .setTitle(getStringByName(activity, "revanced_enable_setting_user_notice_message_title_text"))
+                .setMessage(setting.userNoticeMessage.toString())
+                .setPositiveButton(android.R.string.ok, (dialog, id) -> {
+                    if (setting.rebootApp) {
+                        rebootDialog(activity);
+                    }
+                })
+                .setNegativeButton(android.R.string.cancel, (dialog, id) -> {
+                    Boolean defaultBooleanValue = (Boolean) setting.defaultValue;
+                    SettingsEnum.setValue(setting, defaultBooleanValue);
+                    switchPref.setChecked(defaultBooleanValue);
+                }).show();
     }
 
     private String getStringByName(Context context, String name) {
