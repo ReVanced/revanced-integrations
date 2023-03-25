@@ -28,6 +28,11 @@ import app.revanced.integrations.utils.ReVancedUtils;
 import app.revanced.integrations.utils.SharedPrefCategory;
 
 public class ReVancedSettingsFragment extends PreferenceFragment {
+    /**
+     * If a dialog is currently being shown.  Used to prevent showing additional dialogs if user cancels a dialog.
+     */
+    private static boolean currentlyShowingDialog;
+
     SharedPreferences.OnSharedPreferenceChangeListener listener = (sharedPreferences, str) -> {
         try {
             SettingsEnum setting = SettingsEnum.settingFromPath(str);
@@ -36,16 +41,10 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
             }
             Preference pref = this.findPreference(str);
             LogHelper.printDebug(() -> "Setting " + setting.name() + " was changed. Preference " + str + ": " + pref);
-            boolean rebootDialogHandled = false;
 
             if (pref instanceof SwitchPreference) {
                 SwitchPreference switchPref = (SwitchPreference) pref;
-                final boolean checked = switchPref.isChecked();
-                SettingsEnum.setValue(setting, checked);
-                if (setting.userNoticeMessage != null && checked != (Boolean) setting.defaultValue) {
-                    showSettingConfirmation(getActivity(), switchPref, setting);
-                    rebootDialogHandled = true;
-                }
+                SettingsEnum.setValue(setting, switchPref.isChecked());
             } else if (pref instanceof EditTextPreference) {
                 EditTextPreference editPref = (EditTextPreference) pref;
                 Object value;
@@ -70,8 +69,12 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
                 LogHelper.printException(() -> "Setting cannot be handled: " + pref.getClass() + " " + pref);
             }
 
-            if (!rebootDialogHandled && setting.rebootApp) {
-                rebootDialog(getActivity());
+            if (!currentlyShowingDialog) {
+                if (setting.userNoticeMessage != null && ((SwitchPreference) pref).isChecked() != (Boolean) setting.defaultValue) {
+                    showSettingConfirmation(getActivity(), (SwitchPreference) pref, setting);
+                } else if (setting.rebootApp) {
+                    rebootDialog(getActivity());
+                }
             }
 
             enableDisablePreferences();
@@ -125,26 +128,36 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
     }
 
     private void rebootDialog(@NonNull Activity activity) {
+        currentlyShowingDialog = true;
         String positiveButton = getStringByName(activity, "in_app_update_restart_button");
         String negativeButton = getStringByName(activity, "sign_in_cancel");
         new AlertDialog.Builder(activity).setMessage(getStringByName(activity, "pref_refresh_config"))
-                .setPositiveButton(positiveButton, (dialog, id) -> reboot(activity))
-                .setNegativeButton(negativeButton, null).show();
+                .setPositiveButton(positiveButton, (dialog, id) -> {
+                    reboot(activity);
+                    currentlyShowingDialog = false;
+                })
+                .setNegativeButton(negativeButton, (dialog, id) -> {
+                    currentlyShowingDialog = false;
+                }).show();
     }
 
     private void showSettingConfirmation(@NonNull Activity activity, SwitchPreference switchPref, SettingsEnum setting) {
+        currentlyShowingDialog = true;
         new AlertDialog.Builder(activity)
                 .setTitle(getStringByName(activity, "revanced_enable_setting_user_notice_message_title_text"))
                 .setMessage(setting.userNoticeMessage.toString())
                 .setPositiveButton(android.R.string.ok, (dialog, id) -> {
                     if (setting.rebootApp) {
                         rebootDialog(activity);
+                    } else {
+                        currentlyShowingDialog = false;
                     }
                 })
                 .setNegativeButton(android.R.string.cancel, (dialog, id) -> {
                     Boolean defaultBooleanValue = (Boolean) setting.defaultValue;
                     SettingsEnum.setValue(setting, defaultBooleanValue);
                     switchPref.setChecked(defaultBooleanValue);
+                    currentlyShowingDialog = false;
                 }).show();
     }
 
