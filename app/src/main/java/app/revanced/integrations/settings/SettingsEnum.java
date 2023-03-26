@@ -106,12 +106,12 @@ public enum SettingsEnum {
     HIDE_VIDEO_WATERMARK("revanced_hide_video_watermark", BOOLEAN, TRUE),
     HIDE_WATCH_IN_VR("revanced_hide_watch_in_vr", BOOLEAN, FALSE, true),
     PLAYER_POPUP_PANELS("revanced_player_popup_panels_enabled", BOOLEAN, FALSE),
-    SPOOF_APP_VERSION("revanced_spoof_app_version", BOOLEAN, FALSE, true, "revanced_user_notice_message_app_version_spoofing"),
+    SPOOF_APP_VERSION("revanced_spoof_app_version", BOOLEAN, FALSE, true, "revanced_spoof_app_version_user_dialog_notice"),
     USE_TABLET_MINIPLAYER("revanced_tablet_miniplayer", BOOLEAN, FALSE, true),
     WIDE_SEARCHBAR("revanced_wide_searchbar", BOOLEAN, FALSE, true),
 
     // Misc. Settings
-    SIGNATURE_SPOOFING("revanced_spoof_signature_verification", BOOLEAN, FALSE, "revanced_user_notice_message_signature_spoofing"),
+    SIGNATURE_SPOOFING("revanced_spoof_signature_verification", BOOLEAN, FALSE, "revanced_spoof_signature_verification_user_dialog_notice"),
     CAPTIONS_ENABLED("revanced_autocaptions_enabled", BOOLEAN, FALSE),
     DISABLE_ZOOM_HAPTICS("revanced_disable_zoom_haptics", BOOLEAN, TRUE),
     ENABLE_EXTERNAL_BROWSER("revanced_enable_external_browser", BOOLEAN, TRUE, true),
