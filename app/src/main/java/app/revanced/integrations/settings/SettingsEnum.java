@@ -190,11 +190,11 @@ public enum SettingsEnum {
     private final SettingsEnum[] parents;
 
     /**
-     * Message to display, if the user tries to change the setting from the default value.
+     * Confirmation message to display, if the user tries to change the setting from the default value.
      * Can only be used for {@link ReturnType#BOOLEAN} setting types.
      */
     @Nullable
-    public final StringRef userNoticeMessage;
+    public final StringRef userDialogMessage;
 
     // must be volatile, as some settings are read/write from different threads
     // of note, the object value is persistently stored using SharedPreferences (which is thread safe)
@@ -254,20 +254,20 @@ public enum SettingsEnum {
         this(path, returnType, defaultValue, prefName, false, null, parents);
     }
     SettingsEnum(String path, ReturnType returnType, Object defaultValue, SharedPrefCategory prefName,
-                 boolean rebootApp, @Nullable String userNoticeMessageKey, @Nullable SettingsEnum[]  parents) {
+                 boolean rebootApp, @Nullable String userDialogMessage, @Nullable SettingsEnum[]  parents) {
         this.path = Objects.requireNonNull(path);
         this.returnType = Objects.requireNonNull(returnType);
         this.value = this.defaultValue = Objects.requireNonNull(defaultValue);
         this.sharedPref = Objects.requireNonNull(prefName);
         this.rebootApp = rebootApp;
 
-        if (userNoticeMessageKey == null) {
-            this.userNoticeMessage = null;
+        if (userDialogMessage == null) {
+            this.userDialogMessage = null;
         } else {
             if (returnType != ReturnType.BOOLEAN) {
-                throw new IllegalArgumentException("must be boolean type: " + path);
+                throw new IllegalArgumentException("must be Boolean type: " + path);
             }
-            this.userNoticeMessage = new StringRef(userNoticeMessageKey);
+            this.userDialogMessage = new StringRef(userDialogMessage);
         }
 
         this.parents = parents;
@@ -286,7 +286,7 @@ public enum SettingsEnum {
 
     @Nullable
     public static SettingsEnum settingFromPath(String str) {
-        for (SettingsEnum setting : SettingsEnum.values()) {
+        for (SettingsEnum setting : values()) {
             if (setting.path.equals(str)) return setting;
         }
         return null;

@@ -70,8 +70,8 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
             }
 
             if (!currentlyShowingDialog) {
-                if (setting.userNoticeMessage != null && ((SwitchPreference) pref).isChecked() != (Boolean) setting.defaultValue) {
-                    showSettingConfirmation(getActivity(), (SwitchPreference) pref, setting);
+                if (setting.userDialogMessage != null && ((SwitchPreference) pref).isChecked() != (Boolean) setting.defaultValue) {
+                    showSettingUserDialogConfirmation(getActivity(), (SwitchPreference) pref, setting);
                 } else if (setting.rebootApp) {
                     rebootDialog(getActivity());
                 }
@@ -141,11 +141,11 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
                 }).show();
     }
 
-    private void showSettingConfirmation(@NonNull Activity activity, SwitchPreference switchPref, SettingsEnum setting) {
+    private void showSettingUserDialogConfirmation(@NonNull Activity activity, SwitchPreference switchPref, SettingsEnum setting) {
         currentlyShowingDialog = true;
         new AlertDialog.Builder(activity)
-                .setTitle(getStringByName(activity, "revanced_enable_setting_user_notice_message_title_text"))
-                .setMessage(setting.userNoticeMessage.toString())
+                .setTitle(getStringByName(activity, "revanced_settings_confirm_user_dialog_title"))
+                .setMessage(setting.userDialogMessage.toString())
                 .setPositiveButton(android.R.string.ok, (dialog, id) -> {
                     if (setting.rebootApp) {
                         rebootDialog(activity);
