@@ -1,4 +1,4 @@
-package app.revanced.integrations.utils;
+package app.revanced.integrations.settings;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -6,6 +6,8 @@ import android.content.SharedPreferences;
 import androidx.annotation.NonNull;
 
 import java.util.Objects;
+
+import app.revanced.integrations.utils.ReVancedUtils;
 
 public enum SharedPrefCategory {
     YOUTUBE("youtube"),

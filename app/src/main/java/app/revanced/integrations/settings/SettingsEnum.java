@@ -7,17 +7,15 @@ import static app.revanced.integrations.settings.SettingsEnum.ReturnType.FLOAT;
 import static app.revanced.integrations.settings.SettingsEnum.ReturnType.INTEGER;
 import static app.revanced.integrations.settings.SettingsEnum.ReturnType.LONG;
 import static app.revanced.integrations.settings.SettingsEnum.ReturnType.STRING;
-
-import app.revanced.integrations.sponsorblock.StringRef;
-import app.revanced.integrations.utils.SharedPrefCategory;
-import static app.revanced.integrations.utils.SharedPrefCategory.RETURN_YOUTUBE_DISLIKE;
-import static app.revanced.integrations.utils.SharedPrefCategory.SPONSOR_BLOCK;
+import static app.revanced.integrations.settings.SharedPrefCategory.RETURN_YOUTUBE_DISLIKE;
+import static app.revanced.integrations.settings.SharedPrefCategory.SPONSOR_BLOCK;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import java.util.Objects;
 
+import app.revanced.integrations.sponsorblock.StringRef;
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedUtils;
 

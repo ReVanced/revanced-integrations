@@ -10,9 +10,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import app.revanced.integrations.settings.SettingsEnum;
+import app.revanced.integrations.settings.SharedPrefCategory;
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedUtils;
-import app.revanced.integrations.utils.SharedPrefCategory;
 
 public class RememberVideoQualityPatch {
 

@@ -9,14 +9,13 @@ import android.graphics.Paint;
 import android.text.Html;
 import android.text.TextUtils;
 
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
 import app.revanced.integrations.settings.SettingsEnum;
-import app.revanced.integrations.utils.SharedPrefCategory;
+import app.revanced.integrations.settings.SharedPrefCategory;
 
 public class SponsorBlockSettings {
 

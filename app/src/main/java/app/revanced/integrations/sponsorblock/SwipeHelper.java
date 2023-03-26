@@ -2,15 +2,14 @@ package app.revanced.integrations.sponsorblock;
 
 import android.content.Context;
 import android.content.res.Resources;
-
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
+import app.revanced.integrations.settings.SharedPrefCategory;
 import app.revanced.integrations.sponsorblock.player.PlayerType;
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedUtils;
-import app.revanced.integrations.utils.SharedPrefCategory;
 
 public class SwipeHelper {
     static FrameLayout _frameLayout;

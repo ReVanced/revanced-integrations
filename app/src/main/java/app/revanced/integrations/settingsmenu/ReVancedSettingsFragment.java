@@ -23,9 +23,9 @@ import androidx.annotation.Nullable;
 import com.google.android.apps.youtube.app.application.Shell_HomeActivity;
 
 import app.revanced.integrations.settings.SettingsEnum;
+import app.revanced.integrations.settings.SharedPrefCategory;
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedUtils;
-import app.revanced.integrations.utils.SharedPrefCategory;
 
 public class ReVancedSettingsFragment extends PreferenceFragment {
     /**

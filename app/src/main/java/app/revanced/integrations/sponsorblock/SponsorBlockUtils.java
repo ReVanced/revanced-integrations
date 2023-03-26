@@ -3,12 +3,12 @@ package app.revanced.integrations.sponsorblock;
 import static android.text.Html.fromHtml;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
+import static app.revanced.integrations.settingsmenu.SponsorBlockSettingsFragment.FORMATTER;
+import static app.revanced.integrations.settingsmenu.SponsorBlockSettingsFragment.SAVED_TEMPLATE;
 import static app.revanced.integrations.sponsorblock.PlayerController.getCurrentVideoId;
 import static app.revanced.integrations.sponsorblock.PlayerController.getCurrentVideoLength;
 import static app.revanced.integrations.sponsorblock.PlayerController.getLastKnownVideoTime;
 import static app.revanced.integrations.sponsorblock.PlayerController.sponsorSegmentsOfCurrentVideo;
-import static app.revanced.integrations.settingsmenu.SponsorBlockSettingsFragment.FORMATTER;
-import static app.revanced.integrations.settingsmenu.SponsorBlockSettingsFragment.SAVED_TEMPLATE;
 import static app.revanced.integrations.sponsorblock.StringRef.str;
 import static app.revanced.integrations.sponsorblock.requests.SBRequester.voteForSegment;
 
@@ -24,7 +24,6 @@ import android.preference.Preference;
 import android.preference.PreferenceCategory;
 import android.text.Html;
 import android.text.TextUtils;
-
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -44,13 +43,13 @@ import java.util.Objects;
 import java.util.TimeZone;
 
 import app.revanced.integrations.settings.SettingsEnum;
-import app.revanced.integrations.sponsorblock.player.PlayerType;
-import app.revanced.integrations.utils.LogHelper;
-import app.revanced.integrations.utils.ReVancedUtils;
+import app.revanced.integrations.settings.SharedPrefCategory;
 import app.revanced.integrations.sponsorblock.objects.SponsorSegment;
 import app.revanced.integrations.sponsorblock.objects.UserStats;
+import app.revanced.integrations.sponsorblock.player.PlayerType;
 import app.revanced.integrations.sponsorblock.requests.SBRequester;
-import app.revanced.integrations.utils.SharedPrefCategory;
+import app.revanced.integrations.utils.LogHelper;
+import app.revanced.integrations.utils.ReVancedUtils;
 
 public abstract class SponsorBlockUtils {
     public static final String DATE_FORMAT = "HH:mm:ss.SSS";
