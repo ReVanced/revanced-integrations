@@ -304,17 +304,17 @@ public enum SettingsEnum {
 
     private void load() {
         switch (returnType) {
-            case FLOAT:
-                value = sharedPref.getFloat(path, (float) defaultValue);
-                break;
-            case LONG:
-                value = sharedPref.getLong(path, (long) defaultValue);
-                break;
             case BOOLEAN:
                 value = sharedPref.getBoolean(path, (boolean) defaultValue);
                 break;
             case INTEGER:
-                value = sharedPref.getInt(path, (int) defaultValue);
+                value = sharedPref.getInt(path, (Integer) defaultValue);
+                break;
+            case LONG:
+                value = sharedPref.getLong(path, (Long) defaultValue);
+                break;
+            case FLOAT:
+                value = sharedPref.getFloat(path, (Float) defaultValue);
                 break;
             case STRING:
                 value = sharedPref.getString(path, (String) defaultValue);
@@ -340,17 +340,17 @@ public enum SettingsEnum {
     public void saveValue(@NonNull Object newValue) {
         Objects.requireNonNull(newValue);
         switch (returnType) {
-            case FLOAT:
-                sharedPref.saveFloat(path, (float) newValue);
-                break;
-            case LONG:
-                sharedPref.saveLong(path, (long) newValue);
-                break;
             case BOOLEAN:
                 sharedPref.saveBoolean(path, (boolean) newValue);
                 break;
             case INTEGER:
                 sharedPref.saveInt(path, (int) newValue);
+                break;
+            case LONG:
+                sharedPref.saveLong(path, (long) newValue);
+                break;
+            case FLOAT:
+                sharedPref.saveFloat(path, (float) newValue);
                 break;
             case STRING:
                 sharedPref.saveString(path, (String) newValue);
