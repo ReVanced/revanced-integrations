@@ -209,24 +209,24 @@ public enum SettingsEnum {
         this(path, returnType, defaultValue, SharedPrefCategory.YOUTUBE, rebootApp, null,null);
     }
     SettingsEnum(String path, ReturnType returnType, Object defaultValue,
-                 String userNoticeMessageKey) {
-        this(path, returnType, defaultValue, SharedPrefCategory.YOUTUBE, false, userNoticeMessageKey, null);
+                 String userDialogMessage) {
+        this(path, returnType, defaultValue, SharedPrefCategory.YOUTUBE, false, userDialogMessage, null);
     }
     SettingsEnum(String path, ReturnType returnType, Object defaultValue,
                  SettingsEnum[] parents) {
         this(path, returnType, defaultValue, SharedPrefCategory.YOUTUBE, false, null, parents);
     }
     SettingsEnum(String path, ReturnType returnType, Object defaultValue,
-                 boolean rebootApp, String userNoticeMessageKey) {
-        this(path, returnType, defaultValue, SharedPrefCategory.YOUTUBE, rebootApp, userNoticeMessageKey, null);
+                 boolean rebootApp, String userDialogMessage) {
+        this(path, returnType, defaultValue, SharedPrefCategory.YOUTUBE, rebootApp, userDialogMessage, null);
     }
     SettingsEnum(String path, ReturnType returnType, Object defaultValue,
                  boolean rebootApp, SettingsEnum[] parents) {
         this(path, returnType, defaultValue, SharedPrefCategory.YOUTUBE, rebootApp, null, parents);
     }
     SettingsEnum(String path, ReturnType returnType, Object defaultValue,
-                 boolean rebootApp, String userNoticeMessageKey, SettingsEnum[] parents) {
-        this(path, returnType, defaultValue, SharedPrefCategory.YOUTUBE, rebootApp, userNoticeMessageKey, parents);
+                 boolean rebootApp, String userDialogMessage, SettingsEnum[] parents) {
+        this(path, returnType, defaultValue, SharedPrefCategory.YOUTUBE, rebootApp, userDialogMessage, parents);
     }
 
 
@@ -238,12 +238,12 @@ public enum SettingsEnum {
         this(path, returnType, defaultValue, prefName, rebootApp, null, null);
     }
     SettingsEnum(String path, ReturnType returnType, Object defaultValue, SharedPrefCategory prefName,
-                 String userNoticeMessageKey) {
-        this(path, returnType, defaultValue, prefName, false, userNoticeMessageKey, null);
+                 String userDialogMessage) {
+        this(path, returnType, defaultValue, prefName, false, userDialogMessage, null);
     }
     SettingsEnum(String path, ReturnType returnType, Object defaultValue, SharedPrefCategory prefName,
-                 boolean rebootApp, String userNoticeMessageKey) {
-        this(path, returnType, defaultValue, prefName, rebootApp, userNoticeMessageKey, null);
+                 boolean rebootApp, String userDialogMessage) {
+        this(path, returnType, defaultValue, prefName, rebootApp, userDialogMessage, null);
     }
     SettingsEnum(String path, ReturnType returnType, Object defaultValue, SharedPrefCategory prefName,
                  boolean rebootApp, SettingsEnum[] parents) {
