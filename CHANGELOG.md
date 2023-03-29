@@ -1,3 +1,10 @@
+# [0.102.0-dev.1](https://github.com/revanced/revanced-integrations/compare/v0.101.0...v0.102.0-dev.1) (2023-03-29)
+
+
+### Features
+
+* **youtube/general-ads:** hide new type of ad ([e11a53a](https://github.com/revanced/revanced-integrations/commit/e11a53a51209db95619f08be9878e346c6e43c37))
+
 # [0.101.0](https://github.com/revanced/revanced-integrations/compare/v0.100.1...v0.101.0) (2023-03-29)
 
 
