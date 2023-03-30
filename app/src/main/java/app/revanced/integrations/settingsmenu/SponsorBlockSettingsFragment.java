@@ -20,14 +20,12 @@ import android.preference.PreferenceScreen;
 import android.preference.SwitchPreference;
 import android.text.Html;
 import android.text.InputType;
-import android.util.Patterns;
 import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import java.text.DecimalFormat;
-import java.util.Objects;
 
 import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.sponsorblock.SegmentPlaybackController;
@@ -285,7 +283,7 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment {
         privateUserId.setSummary(str("sb_general_uuid_sum"));
         privateUserId.setOnPreferenceChangeListener((preference1, newValue) -> {
             String newUUID = newValue.toString();
-            if (newUUID.length() == 0) {
+            if (SponsorBlockSettings.isValidSBUserId(newUUID)) {
                 ReVancedUtils.showToastLong(str("sb_general_uuid_invalid"));
                 return false;
             }
@@ -304,13 +302,26 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment {
             editText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_URI);
             editText.setText(SettingsEnum.SB_API_URL.getString());
 
-            APIURLChangeListener urlListener = new APIURLChangeListener(editText);
+            DialogInterface.OnClickListener urlChangeListener = (dialog, buttonPressed) -> {
+                if (buttonPressed == DialogInterface.BUTTON_NEUTRAL) {
+                    SettingsEnum.SB_API_URL.saveValue(SettingsEnum.SB_API_URL.getDefaultValue());
+                    ReVancedUtils.showToastLong(str("sb_api_url_reset"));
+                } else if (buttonPressed == DialogInterface.BUTTON_POSITIVE) {
+                    String serverAddress = editText.getText().toString();
+                    if (!SponsorBlockSettings.isValidSBServerAddress(serverAddress)) {
+                        ReVancedUtils.showToastLong(str("sb_api_url_invalid"));
+                    } else if (!serverAddress.equals(SettingsEnum.SB_API_URL.getString())) {
+                        SettingsEnum.SB_API_URL.saveValue(serverAddress);
+                        ReVancedUtils.showToastLong(str("sb_api_url_changed"));
+                    }
+                }
+            };
             new AlertDialog.Builder(context)
                     .setTitle(apiUrl.getTitle())
                     .setView(editText)
                     .setNegativeButton(android.R.string.cancel, null)
-                    .setNeutralButton(str("sb_reset"), urlListener)
-                    .setPositiveButton(android.R.string.ok, urlListener)
+                    .setNeutralButton(str("sb_reset"), urlChangeListener)
+                    .setPositiveButton(android.R.string.ok, urlChangeListener)
                     .show();
             return true;
         });
@@ -521,30 +532,6 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment {
             }
         } catch (Exception ex) {
             LogHelper.printException(() -> "fetchAndDisplayStats failure", ex);
-        }
-    }
-
-    private static class APIURLChangeListener implements DialogInterface.OnClickListener {
-        private final EditText editText;
-
-        public APIURLChangeListener(EditText editText) {
-            this.editText = Objects.requireNonNull(editText);
-        }
-
-        @Override
-        public void onClick(DialogInterface dialog, int buttonPressed) {
-            if (buttonPressed == DialogInterface.BUTTON_NEUTRAL) {
-                SettingsEnum.SB_API_URL.saveValue(SettingsEnum.SB_API_URL.getDefaultValue());
-                ReVancedUtils.showToastLong(str("sb_api_url_reset"));
-            } else if (buttonPressed == DialogInterface.BUTTON_POSITIVE) {
-                String textAsString = editText.getText().toString();
-                if (!Patterns.WEB_URL.matcher(textAsString).matches()) {
-                    ReVancedUtils.showToastLong(str("sb_api_url_invalid"));
-                } else if (!textAsString.equals(SettingsEnum.SB_API_URL.getString())) {
-                    SettingsEnum.SB_API_URL.saveValue(textAsString);
-                    ReVancedUtils.showToastLong(str("sb_api_url_changed"));
-                }
-            }
         }
     }
 

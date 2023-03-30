@@ -53,8 +53,8 @@ public class SponsorBlockSettings {
                     LogHelper.printException(() -> "Unknown segment category behavior key: " + desktopKey);
                 }
             }
-
             SegmentCategory.updateEnabledCategories();
+
             SharedPreferences.Editor editor = SharedPrefHelper.getPreferences(SharedPrefHelper.SharedPrefNames.SPONSOR_BLOCK).edit();
             for (SegmentCategory category : SegmentCategory.valuesWithoutUnsubmitted()) {
                 category.save(editor);
@@ -62,8 +62,8 @@ public class SponsorBlockSettings {
             editor.apply();
 
             String userID = settingsJson.getString("userID");
-            if (userID.length() == 0) {
-                throw new IllegalArgumentException("userId is blank");
+            if (!isValidSBUserId(userID)) {
+                throw new IllegalArgumentException("userId is empty");
             }
             SettingsEnum.SB_UUID.saveValue(userID);
 
@@ -72,7 +72,7 @@ public class SponsorBlockSettings {
             SettingsEnum.SB_COUNT_SKIPS.saveValue(settingsJson.getBoolean("trackViewCount"));
 
             String serverAddress = settingsJson.getString("serverAddress");
-            if (!Patterns.WEB_URL.matcher(serverAddress).matches()) {
+            if (!isValidSBServerAddress(serverAddress)) {
                 throw new IllegalArgumentException(str("sb_api_url_invalid"));
             }
             SettingsEnum.SB_API_URL.saveValue(serverAddress);
@@ -148,6 +148,29 @@ public class SponsorBlockSettings {
             ReVancedUtils.showToastLong(str("sb_settings_export_failed"));
             return "";
         }
+    }
+
+    public static boolean isValidSBUserId(@NonNull String userId) {
+        return !userId.isEmpty();
+    }
+
+    /**
+     * A non comprehensive check if a SB api server address is valid.
+     */
+    public static boolean isValidSBServerAddress(@NonNull String serverAddress) {
+        if (!Patterns.WEB_URL.matcher(serverAddress).matches()) {
+            return false;
+        }
+        // Verify url is only the server address and does not contain a path such as: "https://sponsor.ajay.app/api/"
+        // Could use Patterns.compile, but this is simpler
+        final int lastDotIndex = serverAddress.lastIndexOf('.');
+        if (lastDotIndex != -1 && serverAddress.substring(lastDotIndex).contains("/")) {
+            return false;
+        }
+        // Optionally, could also verify the domain exists using "InetAddress.getByName(serverAddress)"
+        // but that should not be done on the main thread.
+        // Instead, assume the domain exists and the user knows what they're doing.
+        return true;
     }
 
     private static boolean initialized;
