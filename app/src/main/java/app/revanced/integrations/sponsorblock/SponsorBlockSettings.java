@@ -63,7 +63,7 @@ public class SponsorBlockSettings {
 
             String userID = settingsJson.getString("userID");
             if (!isValidSBUserId(userID)) {
-                throw new IllegalArgumentException("userId is empty");
+                throw new IllegalArgumentException("userId is blank");
             }
             SettingsEnum.SB_UUID.saveValue(userID);
 

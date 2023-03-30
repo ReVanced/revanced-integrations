@@ -21,7 +21,7 @@ public class CreateSegmentButtonController {
     private static boolean isShowing;
 
     private static final View.OnClickListener sponsorBlockBtnListener = v -> {
-        LogHelper.printDebug(() -> "Shield button clicked");
+        LogHelper.printDebug(() -> "New segment button clicked");
         SponsorBlockViewController.toggleNewSegmentLayout();
     };
 
@@ -30,7 +30,7 @@ public class CreateSegmentButtonController {
      */
     public static void initialize(Object viewStub) {
         try {
-            LogHelper.printDebug(() -> "initializing shield button");
+            LogHelper.printDebug(() -> "initializing new segment button");
 
             RelativeLayout youtubeControlsLayout = (RelativeLayout) viewStub;
             String buttonIdentifier = "sb_sponsorblock_button";
@@ -52,7 +52,7 @@ public class CreateSegmentButtonController {
             isShowing = true;
             changeVisibilityImmediate(false);
         } catch (Exception ex) {
-            LogHelper.printException(() -> "Unable to set RelativeLayout", ex);
+            LogHelper.printException(() -> "initialize failure", ex);
         }
     }
 
