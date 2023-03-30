@@ -1,4 +1,4 @@
-package app.revanced.integrations.sponsorblock;
+package app.revanced.integrations.utils;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -9,10 +9,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import app.revanced.integrations.utils.LogHelper;
-import app.revanced.integrations.utils.ReVancedUtils;
-
-// should probably move this class into utils package
 public class StringRef {
     private static Resources resources;
     private static String packageName;
@@ -72,7 +68,6 @@ public class StringRef {
     public static String str(@NonNull String id, Object... args) {
         return String.format(str(id), args);
     }
-
 
     /**
      * Creates a StringRef object that'll not change it's value

@@ -1,16 +1,17 @@
 package app.revanced.integrations.patches;
 
+import static app.revanced.integrations.utils.StringRef.str;
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.widget.Toast;
-import app.revanced.integrations.utils.LogHelper;
-import app.revanced.integrations.utils.ReVancedUtils;
 
 import java.util.Objects;
 
-import static app.revanced.integrations.sponsorblock.StringRef.str;
+import app.revanced.integrations.utils.LogHelper;
+import app.revanced.integrations.utils.ReVancedUtils;
 
 public class MicroGSupport {
     private static final String MICROG_VENDOR = "com.mgoogle";

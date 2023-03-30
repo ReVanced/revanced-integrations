@@ -1,12 +1,12 @@
 package app.revanced.integrations.sponsorblock.objects;
 
-import static app.revanced.integrations.sponsorblock.StringRef.sf;
+import static app.revanced.integrations.utils.StringRef.sf;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import app.revanced.integrations.patches.VideoInformation;
-import app.revanced.integrations.sponsorblock.StringRef;
+import app.revanced.integrations.utils.StringRef;
 
 public class SponsorSegment implements Comparable<SponsorSegment> {
     public enum SegmentVote {

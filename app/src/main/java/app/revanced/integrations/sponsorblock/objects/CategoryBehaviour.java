@@ -1,14 +1,14 @@
 package app.revanced.integrations.sponsorblock.objects;
 
-import static app.revanced.integrations.sponsorblock.StringRef.sf;
+import static app.revanced.integrations.utils.StringRef.sf;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import java.util.Objects;
 
-import app.revanced.integrations.sponsorblock.StringRef;
 import app.revanced.integrations.utils.ReVancedUtils;
+import app.revanced.integrations.utils.StringRef;
 
 public enum CategoryBehaviour {
     SKIP_AUTOMATICALLY("skip", 2, sf("sb_skip_automatically"), true),

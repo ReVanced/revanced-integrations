@@ -1,6 +1,6 @@
 package app.revanced.integrations.sponsorblock;
 
-import static app.revanced.integrations.sponsorblock.StringRef.str;
+import static app.revanced.integrations.utils.StringRef.str;
 
 import android.graphics.Canvas;
 import android.graphics.Rect;

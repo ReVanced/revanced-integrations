@@ -1,7 +1,7 @@
 package app.revanced.integrations.sponsorblock.ui;
 
-import static app.revanced.integrations.sponsorblock.StringRef.str;
 import static app.revanced.integrations.utils.ReVancedUtils.getResourceIdByName;
+import static app.revanced.integrations.utils.StringRef.str;
 
 import android.content.Context;
 import android.content.res.Resources;
