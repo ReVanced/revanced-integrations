@@ -1,24 +1,25 @@
 package app.revanced.integrations.sponsorblock.objects;
 
-import static app.revanced.integrations.sponsorblock.StringRef.str;
+import static app.revanced.integrations.sponsorblock.StringRef.sf;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import app.revanced.integrations.patches.VideoInformation;
+import app.revanced.integrations.sponsorblock.StringRef;
 
 public class SponsorSegment implements Comparable<SponsorSegment> {
     public enum SegmentVote {
-        UPVOTE(str("sb_vote_upvote"), 1,false),
-        DOWNVOTE(str("sb_vote_downvote"), 0, true),
-        CATEGORY_CHANGE(str("sb_vote_category"), -1, true); // apiVoteType is not used for category change
+        UPVOTE(sf("sb_vote_upvote"), 1,false),
+        DOWNVOTE(sf("sb_vote_downvote"), 0, true),
+        CATEGORY_CHANGE(sf("sb_vote_category"), -1, true); // apiVoteType is not used for category change
 
         @NonNull
-        public final String title;
+        public final StringRef title;
         public final int apiVoteType;
         public final boolean shouldHighlight;
 
-        SegmentVote(@NonNull String title, int apiVoteType, boolean shouldHighlight) {
+        SegmentVote(@NonNull StringRef title, int apiVoteType, boolean shouldHighlight) {
             this.title = title;
             this.apiVoteType = apiVoteType;
             this.shouldHighlight = shouldHighlight;

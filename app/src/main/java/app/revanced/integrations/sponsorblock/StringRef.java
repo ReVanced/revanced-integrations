@@ -21,14 +21,14 @@ public class StringRef {
     private static final Map<String, StringRef> strings = Collections.synchronizedMap(new HashMap<>());
 
     /**
-     * Gets strings reference from shared collection or creates if not exists yet,
-     * this method should be called if you want to get StringRef
+     * Returns a cached instance.
+     * Should be used if the same String could be loaded more than once.
      *
      * @param id string resource name/id
-     * @return String reference that'll resolve to excepted string, may be from cache
+     * @see #sf(String)
      */
     @NonNull
-    public static StringRef sf(@NonNull String id) {
+    public static StringRef sfc(@NonNull String id) {
         StringRef ref = strings.get(id);
         if (ref == null) {
             ref = new StringRef(id);
@@ -38,18 +38,30 @@ public class StringRef {
     }
 
     /**
-     * Gets string value by string id, shorthand for <code>sf(id).toString()</code>
+     * Creates a new instance, but does not cache the value.
+     * Should be used for Strings that are loaded exactly once.
+     *
+     * @param id string resource name/id
+     * @see #sfc(String)
+     */
+    @NonNull
+    public static StringRef sf(@NonNull String id) {
+        return new StringRef(id);
+    }
+
+    /**
+     * Gets string value by string id, shorthand for <code>sfc(id).toString()</code>
      *
      * @param id string resource name/id
      * @return String value from string.xml
      */
     @NonNull
     public static String str(@NonNull String id) {
-        return sf(id).toString();
+        return sfc(id).toString();
     }
 
     /**
-     * Gets string value by string id, shorthand for <code>sf(id).toString()</code> and formats the string
+     * Gets string value by string id, shorthand for <code>sfc(id).toString()</code> and formats the string
      * with given args.
      *
      * @param id   string resource name/id
