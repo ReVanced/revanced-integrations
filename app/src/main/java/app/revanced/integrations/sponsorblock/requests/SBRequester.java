@@ -144,7 +144,7 @@ public class SBRequester {
         }
     }
 
-    public static void sendViewCountRequest(@NonNull SponsorSegment segment) {
+    public static void sendSegmentSkippedViewedRequest(@NonNull SponsorSegment segment) {
         ReVancedUtils.verifyOffMainThread();
         try {
             HttpURLConnection connection = getConnectionFromRoute(SBRoutes.VIEWED_SEGMENT, segment.UUID);

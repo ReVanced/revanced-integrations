@@ -380,8 +380,8 @@ public class SponsorBlockUtils {
         SettingsEnum.SB_SKIPPED_SEGMENTS_TIME_SAVED.saveValue(totalTimeSkipped);
         SettingsEnum.SB_SKIPPED_SEGMENTS_NUMBER_SKIPPED.saveValue(SettingsEnum.SB_SKIPPED_SEGMENTS_NUMBER_SKIPPED.getInt() + 1);
 
-        if (SettingsEnum.SB_COUNT_SKIPS.getBoolean()) {
-            ReVancedUtils.runOnBackgroundThread(() -> SBRequester.sendViewCountRequest(segment));
+        if (SettingsEnum.SB_TRACK_SKIP_COUNT.getBoolean()) {
+            ReVancedUtils.runOnBackgroundThread(() -> SBRequester.sendSegmentSkippedViewedRequest(segment));
         }
     }
 

@@ -48,7 +48,7 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment {
     private SwitchPreference votingEnabled;
     private SwitchPreference compactSkipButton;
     private SwitchPreference showSkipToast;
-    private SwitchPreference countSkips;
+    private SwitchPreference trackSkips;
     private SwitchPreference showTimeWithoutSegments;
 
     private EditTextPreference newSegmentStep;
@@ -83,11 +83,11 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment {
             compactSkipButton.setChecked(SettingsEnum.SB_USE_COMPACT_SKIPBUTTON.getBoolean());
             compactSkipButton.setEnabled(enabled);
 
-            showSkipToast.setChecked(SettingsEnum.SB_SHOW_TOAST_WHEN_SKIP.getBoolean());
+            showSkipToast.setChecked(SettingsEnum.SB_SHOW_TOAST_ON_SKIP.getBoolean());
             showSkipToast.setEnabled(enabled);
 
-            countSkips.setChecked(SettingsEnum.SB_COUNT_SKIPS.getBoolean());
-            countSkips.setEnabled(enabled);
+            trackSkips.setChecked(SettingsEnum.SB_TRACK_SKIP_COUNT.getBoolean());
+            trackSkips.setEnabled(enabled);
 
             showTimeWithoutSegments.setChecked(SettingsEnum.SB_SHOW_TIME_WITHOUT_SEGMENTS.getBoolean());
             showTimeWithoutSegments.setEnabled(enabled);
@@ -220,23 +220,23 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment {
             return false;
         });
         showSkipToast.setOnPreferenceChangeListener((preference1, newValue) -> {
-            SettingsEnum.SB_SHOW_TOAST_WHEN_SKIP.saveValue(newValue);
+            SettingsEnum.SB_SHOW_TOAST_ON_SKIP.saveValue(newValue);
             updateUI();
             return true;
         });
         category.addPreference(showSkipToast);
 
 
-        countSkips = new SwitchPreference(context);
-        countSkips.setTitle(str("sb_general_skipcount"));
-        countSkips.setSummaryOn(str("sb_general_skipcount_sum_on"));
-        countSkips.setSummaryOff(str("sb_general_skipcount_sum_off"));
-        countSkips.setOnPreferenceChangeListener((preference1, newValue) -> {
-            SettingsEnum.SB_COUNT_SKIPS.saveValue(newValue);
+        trackSkips = new SwitchPreference(context);
+        trackSkips.setTitle(str("sb_general_skipcount"));
+        trackSkips.setSummaryOn(str("sb_general_skipcount_sum_on"));
+        trackSkips.setSummaryOff(str("sb_general_skipcount_sum_off"));
+        trackSkips.setOnPreferenceChangeListener((preference1, newValue) -> {
+            SettingsEnum.SB_TRACK_SKIP_COUNT.saveValue(newValue);
             updateUI();
             return true;
         });
-        category.addPreference(countSkips);
+        category.addPreference(trackSkips);
 
 
         showTimeWithoutSegments = new SwitchPreference(context);

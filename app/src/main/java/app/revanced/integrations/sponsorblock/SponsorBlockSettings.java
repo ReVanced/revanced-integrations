@@ -68,8 +68,8 @@ public class SponsorBlockSettings {
             SettingsEnum.SB_UUID.saveValue(userID);
 
             SettingsEnum.SB_IS_VIP.saveValue(settingsJson.getBoolean("isVip"));
-            SettingsEnum.SB_SHOW_TOAST_WHEN_SKIP.saveValue(!settingsJson.getBoolean("dontShowNotice"));
-            SettingsEnum.SB_COUNT_SKIPS.saveValue(settingsJson.getBoolean("trackViewCount"));
+            SettingsEnum.SB_SHOW_TOAST_ON_SKIP.saveValue(!settingsJson.getBoolean("dontShowNotice"));
+            SettingsEnum.SB_TRACK_SKIP_COUNT.saveValue(settingsJson.getBoolean("trackViewCount"));
 
             String serverAddress = settingsJson.getString("serverAddress");
             if (!isValidSBServerAddress(serverAddress)) {
@@ -132,10 +132,10 @@ public class SponsorBlockSettings {
             json.put("userID", SettingsEnum.SB_UUID.getString());
             json.put("isVip", SettingsEnum.SB_IS_VIP.getBoolean());
             json.put("serverAddress", SettingsEnum.SB_API_URL.getString());
-            json.put("dontShowNotice", !SettingsEnum.SB_SHOW_TOAST_WHEN_SKIP.getBoolean());
+            json.put("dontShowNotice", !SettingsEnum.SB_SHOW_TOAST_ON_SKIP.getBoolean());
             json.put("showTimeWithSkips", SettingsEnum.SB_SHOW_TIME_WITHOUT_SEGMENTS.getBoolean());
             json.put("minDuration", SettingsEnum.SB_MIN_DURATION.getFloat());
-            json.put("trackViewCount", SettingsEnum.SB_COUNT_SKIPS.getBoolean());
+            json.put("trackViewCount", SettingsEnum.SB_TRACK_SKIP_COUNT.getBoolean());
             json.put("skipCount", SettingsEnum.SB_SKIPPED_SEGMENTS_NUMBER_SKIPPED.getInt());
             json.put("minutesSaved", SettingsEnum.SB_SKIPPED_SEGMENTS_TIME_SAVED.getLong() / (60f * 1000));
 

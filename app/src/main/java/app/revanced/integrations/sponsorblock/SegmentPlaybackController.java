@@ -387,7 +387,7 @@ public class SegmentPlaybackController {
 
             if (!userManuallySkipped) {
                 // check for any smaller embedded segments, and count those as autoskipped
-                final boolean showSkipToast = SettingsEnum.SB_SHOW_TOAST_WHEN_SKIP.getBoolean();
+                final boolean showSkipToast = SettingsEnum.SB_SHOW_TOAST_ON_SKIP.getBoolean();
                 for (final SponsorSegment otherSegment : segmentsOfCurrentVideo) {
                     if (segment.end <= otherSegment.start) {
                         break; // no other segments can be contained
