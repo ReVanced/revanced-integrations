@@ -182,7 +182,7 @@ public class SponsorBlockSettings {
         initialized = true;
 
         String uuid = SettingsEnum.SB_UUID.getString();
-        if (uuid == null || uuid.length() == 0) {
+        if (uuid == null || uuid.isEmpty()) {
             uuid = (UUID.randomUUID().toString() +
                     UUID.randomUUID().toString() +
                     UUID.randomUUID().toString())

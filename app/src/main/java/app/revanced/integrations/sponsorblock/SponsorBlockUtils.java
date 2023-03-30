@@ -288,7 +288,7 @@ public class SponsorBlockUtils {
             if (currentSegments == null || currentSegments.length == 0) {
                 // button is hidden if no segments exist.
                 // But if prior video had segments, and current video does not,
-                // then the button persists until the overlay fades out (this is intentional, as abruptly hiding the button is jaring)
+                // then the button persists until the overlay fades out (this is intentional, as abruptly hiding the button is jarring)
                 ReVancedUtils.showToastShort(str("sb_vote_no_segments"));
                 return;
             }

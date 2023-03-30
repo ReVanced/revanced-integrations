@@ -41,7 +41,7 @@ public enum CategoryBehaviour {
 
     @Nullable
     public static CategoryBehaviour byStringKey(@NonNull String key) {
-        for (CategoryBehaviour behaviour : CategoryBehaviour.values()){
+        for (CategoryBehaviour behaviour : values()){
             if (behaviour.key.equals(key)) {
                 return behaviour;
             }

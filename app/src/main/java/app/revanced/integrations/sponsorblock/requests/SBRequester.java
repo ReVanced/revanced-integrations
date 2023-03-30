@@ -15,7 +15,6 @@ import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import app.revanced.integrations.requests.Requester;
@@ -45,7 +44,7 @@ public class SBRequester {
     /**
      * Response code of a successful API call
      */
-    private static final int SUCCESS_HTTP_STATUS_CODE = 200;
+    private static final int HTTP_STATUS_CODE_SUCCESS = 200;
 
     private SBRequester() {
     }
@@ -58,7 +57,7 @@ public class SBRequester {
             HttpURLConnection connection = getConnectionFromRoute(SBRoutes.GET_SEGMENTS, videoId, SegmentCategory.sponsorBlockAPIFetchCategories);
             final int responseCode = connection.getResponseCode();
 
-            if (responseCode == SUCCESS_HTTP_STATUS_CODE) {
+            if (responseCode == HTTP_STATUS_CODE_SUCCESS) {
                 JSONArray responseArray = Requester.parseJSONArray(connection);
                 final long minSegmentDuration = (long) (SettingsEnum.SB_MIN_DURATION.getFloat() * 1000);
                 for (int i = 0, length = responseArray.length(); i < length; i++) {
@@ -118,7 +117,7 @@ public class SBRequester {
 
             final String messageToToast;
             switch (responseCode) {
-                case SUCCESS_HTTP_STATUS_CODE:
+                case HTTP_STATUS_CODE_SUCCESS:
                     messageToToast = str("sb_submit_succeeded");
                     break;
                 case 409:
@@ -151,7 +150,7 @@ public class SBRequester {
             HttpURLConnection connection = getConnectionFromRoute(SBRoutes.VIEWED_SEGMENT, segment.UUID);
             final int responseCode = connection.getResponseCode();
 
-            if (responseCode == SUCCESS_HTTP_STATUS_CODE) {
+            if (responseCode == HTTP_STATUS_CODE_SUCCESS) {
                 LogHelper.printDebug(() -> "Successfully sent view count for segment: " + segment);
             } else {
                 LogHelper.printDebug(() -> "Failed to sent view count for segment: " + segment.UUID
@@ -181,7 +180,7 @@ public class SBRequester {
                 final int responseCode = connection.getResponseCode();
 
                 switch (responseCode) {
-                    case SUCCESS_HTTP_STATUS_CODE:
+                    case HTTP_STATUS_CODE_SUCCESS:
                         LogHelper.printDebug(() -> "Vote success for segment: " + segment);
                         break;
                     case 403:
@@ -229,7 +228,7 @@ public class SBRequester {
             HttpURLConnection connection = getConnectionFromRoute(SBRoutes.CHANGE_USERNAME, SettingsEnum.SB_UUID.getString(), username);
             final int responseCode = connection.getResponseCode();
             String responseMessage = connection.getResponseMessage();
-            if (responseCode == SUCCESS_HTTP_STATUS_CODE) {
+            if (responseCode == HTTP_STATUS_CODE_SUCCESS) {
                 return null;
             }
             return str("sb_stats_username_change_unknown_error", responseCode, responseMessage);
