@@ -89,13 +89,13 @@ public class SponsorBlockSettings {
                 if (skipCount < 0) {
                     throw new IllegalArgumentException("invalid skipCount: " + skipCount);
                 }
-                SettingsEnum.SB_SKIPPED_SEGMENTS.saveValue(skipCount);
+                SettingsEnum.SB_SKIPPED_SEGMENTS_NUMBER_SKIPPED.saveValue(skipCount);
 
                 final double minutesSaved = settingsJson.getDouble("minutesSaved");
                 if (minutesSaved < 0) {
                     throw new IllegalArgumentException("invalid minutesSaved: " + minutesSaved);
                 }
-                SettingsEnum.SB_SKIPPED_SEGMENTS_TIME.saveValue((long)(minutesSaved * 60 * 1000));
+                SettingsEnum.SB_SKIPPED_SEGMENTS_TIME_SAVED.saveValue((long)(minutesSaved * 60 * 1000));
             } catch (JSONException ex) {
                 // ignore. values were not exported in prior versions of ReVanced
             }
@@ -136,8 +136,8 @@ public class SponsorBlockSettings {
             json.put("showTimeWithSkips", SettingsEnum.SB_SHOW_TIME_WITHOUT_SEGMENTS.getBoolean());
             json.put("minDuration", SettingsEnum.SB_MIN_DURATION.getFloat());
             json.put("trackViewCount", SettingsEnum.SB_COUNT_SKIPS.getBoolean());
-            json.put("skipCount", SettingsEnum.SB_SKIPPED_SEGMENTS.getInt());
-            json.put("minutesSaved", SettingsEnum.SB_SKIPPED_SEGMENTS_TIME.getLong() / (60f * 1000));
+            json.put("skipCount", SettingsEnum.SB_SKIPPED_SEGMENTS_NUMBER_SKIPPED.getInt());
+            json.put("minutesSaved", SettingsEnum.SB_SKIPPED_SEGMENTS_TIME_SAVED.getLong() / (60f * 1000));
 
             json.put("categorySelections", categorySelectionsArray);
             json.put("barTypes", barTypesObject);

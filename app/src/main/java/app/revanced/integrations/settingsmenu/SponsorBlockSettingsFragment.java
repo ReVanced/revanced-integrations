@@ -512,9 +512,9 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment {
                 statsCategory.addPreference(preference);
 
                 Runnable updateStatsSelfSaved = () -> {
-                    String formatted = statsNumberOfSegmentsSkippedFormatter.format(SettingsEnum.SB_SKIPPED_SEGMENTS.getInt());
+                    String formatted = statsNumberOfSegmentsSkippedFormatter.format(SettingsEnum.SB_SKIPPED_SEGMENTS_NUMBER_SKIPPED.getInt());
                     preference.setTitle(fromHtml(str("sb_stats_self_saved", formatted)));
-                    String formattedSaved = SponsorBlockUtils.getTimeSavedString(SettingsEnum.SB_SKIPPED_SEGMENTS_TIME.getLong() / 1000);
+                    String formattedSaved = SponsorBlockUtils.getTimeSavedString(SettingsEnum.SB_SKIPPED_SEGMENTS_TIME_SAVED.getLong() / 1000);
                     preference.setSummary(fromHtml(str("sb_stats_self_saved_sum", formattedSaved)));
                 };
                 updateStatsSelfSaved.run();
@@ -522,8 +522,8 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment {
                     new AlertDialog.Builder(preference1.getContext())
                             .setTitle(str("sb_stats_self_saved_reset_title"))
                             .setPositiveButton(android.R.string.yes, (dialog, whichButton) -> {
-                                SettingsEnum.SB_SKIPPED_SEGMENTS.saveValue(SettingsEnum.SB_SKIPPED_SEGMENTS.getDefaultValue());
-                                SettingsEnum.SB_SKIPPED_SEGMENTS_TIME.saveValue(SettingsEnum.SB_SKIPPED_SEGMENTS_TIME.getDefaultValue());
+                                SettingsEnum.SB_SKIPPED_SEGMENTS_NUMBER_SKIPPED.saveValue(SettingsEnum.SB_SKIPPED_SEGMENTS_NUMBER_SKIPPED.getDefaultValue());
+                                SettingsEnum.SB_SKIPPED_SEGMENTS_TIME_SAVED.saveValue(SettingsEnum.SB_SKIPPED_SEGMENTS_TIME_SAVED.getDefaultValue());
                                 updateStatsSelfSaved.run();
                             })
                             .setNegativeButton(android.R.string.no, null).show();

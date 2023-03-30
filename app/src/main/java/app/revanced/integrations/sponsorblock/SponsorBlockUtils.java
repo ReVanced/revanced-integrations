@@ -376,9 +376,9 @@ public class SponsorBlockUtils {
             return;
         }
         segment.recordedAsSkipped = true;
-        final long totalTimeSkipped = SettingsEnum.SB_SKIPPED_SEGMENTS_TIME.getLong() + segment.length();
-        SettingsEnum.SB_SKIPPED_SEGMENTS_TIME.saveValue(totalTimeSkipped);
-        SettingsEnum.SB_SKIPPED_SEGMENTS.saveValue(SettingsEnum.SB_SKIPPED_SEGMENTS.getInt() + 1);
+        final long totalTimeSkipped = SettingsEnum.SB_SKIPPED_SEGMENTS_TIME_SAVED.getLong() + segment.length();
+        SettingsEnum.SB_SKIPPED_SEGMENTS_TIME_SAVED.saveValue(totalTimeSkipped);
+        SettingsEnum.SB_SKIPPED_SEGMENTS_NUMBER_SKIPPED.saveValue(SettingsEnum.SB_SKIPPED_SEGMENTS_NUMBER_SKIPPED.getInt() + 1);
 
         if (SettingsEnum.SB_COUNT_SKIPS.getBoolean()) {
             ReVancedUtils.runOnBackgroundThread(() -> SBRequester.sendViewCountRequest(segment));
