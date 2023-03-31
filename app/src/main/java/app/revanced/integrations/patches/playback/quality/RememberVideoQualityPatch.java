@@ -1,7 +1,6 @@
 package app.revanced.integrations.patches.playback.quality;
 
 import android.content.Context;
-import android.net.ConnectivityManager;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -11,6 +10,7 @@ import java.util.Collections;
 import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedUtils;
+import app.revanced.integrations.utils.ReVancedUtils.NetworkType;
 import app.revanced.integrations.utils.SharedPrefHelper;
 
 public class RememberVideoQualityPatch {
@@ -22,7 +22,7 @@ public class RememberVideoQualityPatch {
     public static void changeDefaultQuality(int defaultQuality) {
         Context context = ReVancedUtils.getContext();
 
-        var networkType = getNetworType(context);
+        var networkType = ReVancedUtils.getNetworkType();
 
         if (networkType == NetworkType.NONE) {
             ReVancedUtils.showToastShort("No internet connection.");
@@ -86,7 +86,7 @@ public class RememberVideoQualityPatch {
             LogHelper.printException(() -> "Context is null or settings not initialized, returning quality: " + qualityToLog);
             return quality;
         }
-        var networkType = getNetworType(context);
+        var networkType = ReVancedUtils.getNetworkType();
         if (networkType == NetworkType.NONE) {
             LogHelper.printDebug(() -> "No Internet connection!");
             return quality;
@@ -137,24 +137,4 @@ public class RememberVideoQualityPatch {
     public static void newVideoStarted(String videoId) {
         newVideo = true;
     }
-
-    private static NetworkType getNetworType(Context context) {
-        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        var networkInfo = cm.getActiveNetworkInfo();
-
-        if (networkInfo == null || !networkInfo.isConnected()) {
-            return NetworkType.NONE;
-        } else {
-            var type = networkInfo.getType();
-
-            return type == ConnectivityManager.TYPE_MOBILE || type == ConnectivityManager.TYPE_BLUETOOTH ? NetworkType.MOBILE : NetworkType.OTHER;
-        }
-    }
-
-    enum NetworkType {
-        MOBILE,
-        OTHER,
-        NONE
-    }
-
 }
