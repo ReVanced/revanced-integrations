@@ -30,11 +30,11 @@ public class SegmentCategoryListPreference extends ListPreference {
     public SegmentCategoryListPreference(Context context, SegmentCategory category) {
         super(context);
         this.category = Objects.requireNonNull(category);
-        setTitle(category.getTitleWithColorDot());
-        setSummary(category.description.toString());
         setKey(category.key);
         setEntries(CategoryBehaviour.getBehaviorNames());
         setEntryValues(CategoryBehaviour.getBehaviorKeys());
+        setSummary(category.description.toString());
+        updateTitle();
     }
 
     @Override
@@ -150,6 +150,6 @@ public class SegmentCategoryListPreference extends ListPreference {
     }
 
     private void updateTitle() {
-        this.setTitle(category.getTitleWithColorDot());
+        setTitle(category.getTitleWithColorDot());
     }
 }
