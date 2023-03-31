@@ -371,7 +371,7 @@ public class SponsorBlockUtils {
     }
 
 
-    static void sendViewRequestAsync(@NonNull SponsorSegment segment, long videoTimeWhenSkipped) {
+    static void sendViewRequestAsync(@NonNull SponsorSegment segment) {
         if (segment.recordedAsSkipped || segment.category == SegmentCategory.UNSUBMITTED) {
             return;
         }

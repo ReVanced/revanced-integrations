@@ -152,7 +152,7 @@ public class SegmentPlaybackController {
     /**
      * Must be called off main thread
      */
-    static void executeDownloadSegments(String videoId) {
+    static void executeDownloadSegments(@NonNull String videoId) {
         Objects.requireNonNull(videoId);
         try {
             SponsorSegment[] segments = SBRequester.getSegments(videoId);
@@ -206,7 +206,7 @@ public class SegmentPlaybackController {
                 if (segment.start <= millis) {
                     // we are in the segment!
                     if (segment.shouldAutoSkip()) {
-                        skipSegment(segment, millis, false);
+                        skipSegment(segment, false);
                         return; // must return, as skipping causes a recursive call back into this method
                     }
 
@@ -339,7 +339,7 @@ public class SegmentPlaybackController {
                         }
                         if (segmentToSkip.shouldAutoSkip()) {
                             LogHelper.printDebug(() -> "Running scheduled skip segment: " + segmentToSkip);
-                            skipSegment(segmentToSkip, segmentToSkip.start, false);
+                            skipSegment(segmentToSkip, false);
                         } else {
                             LogHelper.printDebug(() -> "Running scheduled show segment: " + segmentToSkip);
                             segmentCurrentlyPlaying = segmentToSkip;
@@ -357,7 +357,7 @@ public class SegmentPlaybackController {
     private static SponsorSegment lastSegmentSkipped;
     private static long lastSegmentSkippedTime;
 
-    private static void skipSegment(SponsorSegment segment, long currentVideoTime, boolean userManuallySkipped) {
+    private static void skipSegment(@NonNull SponsorSegment segment, boolean userManuallySkipped) {
         try {
             // If trying to seek to end of the video, YouTube can seek just short of the actual end.
             // (especially if the video does not end on a whole second boundary).
@@ -413,7 +413,7 @@ public class SegmentPlaybackController {
                 }
                 setSegmentsOfCurrentVideo(newSegments);
             } else {
-                SponsorBlockUtils.sendViewRequestAsync(segment, currentVideoTime);
+                SponsorBlockUtils.sendViewRequestAsync(segment);
             }
         } catch (Exception ex) {
             LogHelper.printException(() -> "skipSegment failure", ex);
@@ -422,9 +422,10 @@ public class SegmentPlaybackController {
 
 
     private static int toastNumberOfSegmentsSkipped;
+    @Nullable
     private static SponsorSegment toastSegmentSkipped;
 
-    private static void showSkippedSegmentToast(SponsorSegment segment) {
+    private static void showSkippedSegmentToast(@NonNull SponsorSegment segment) {
         ReVancedUtils.verifyOnMainThread();
         toastNumberOfSegmentsSkipped++;
         if (toastNumberOfSegmentsSkipped > 1) {
@@ -453,7 +454,7 @@ public class SegmentPlaybackController {
 
     public static void onSkipSponsorClicked() {
         if (segmentCurrentlyPlaying != null) {
-            skipSegment(segmentCurrentlyPlaying, VideoInformation.getVideoTime(), true);
+            skipSegment(segmentCurrentlyPlaying, true);
         } else {
             SponsorBlockViewController.hideSkipButton();
             LogHelper.printException(() -> "error: segment not available to skip"); // should never happen
