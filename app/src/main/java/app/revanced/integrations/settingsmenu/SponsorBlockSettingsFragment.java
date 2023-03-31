@@ -283,7 +283,7 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment {
         privateUserId.setSummary(str("sb_general_uuid_sum"));
         privateUserId.setOnPreferenceChangeListener((preference1, newValue) -> {
             String newUUID = newValue.toString();
-            if (SponsorBlockSettings.isValidSBUserId(newUUID)) {
+            if (!SponsorBlockSettings.isValidSBUserId(newUUID)) {
                 ReVancedUtils.showToastLong(str("sb_general_uuid_invalid"));
                 return false;
             }
