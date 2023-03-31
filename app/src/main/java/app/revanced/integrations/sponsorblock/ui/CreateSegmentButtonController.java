@@ -22,7 +22,7 @@ public class CreateSegmentButtonController {
 
     private static final View.OnClickListener sponsorBlockBtnListener = v -> {
         LogHelper.printDebug(() -> "New segment button clicked");
-        SponsorBlockViewController.toggleNewSegmentLayout();
+        SponsorBlockViewController.toggleNewSegmentLayoutVisibility();
     };
 
     /**
