@@ -21,9 +21,6 @@ public class VotingButtonController {
     private static Animation fadeIn;
     private static Animation fadeOut;
     private static boolean isShowing;
-    private static final View.OnClickListener voteButtonListener = v -> {
-        SponsorBlockUtils.onVotingClicked(v.getContext());
-    };
 
     /**
      * injection point
@@ -38,7 +35,9 @@ public class VotingButtonController {
                 LogHelper.printException(() -> "Couldn't find imageView with \"" + buttonResourceName + "\"");
                 return;
             }
-            imageView.setOnClickListener(voteButtonListener);
+            imageView.setOnClickListener(v -> {
+                SponsorBlockUtils.onVotingClicked(v.getContext());
+            });
             buttonReference = new WeakReference<>(imageView);
 
             // Animations

@@ -20,11 +20,6 @@ public class CreateSegmentButtonController {
     private static Animation fadeOut;
     private static boolean isShowing;
 
-    private static final View.OnClickListener sponsorBlockBtnListener = v -> {
-        LogHelper.printDebug(() -> "New segment button clicked");
-        SponsorBlockViewController.toggleNewSegmentLayoutVisibility();
-    };
-
     /**
      * injection point
      */
@@ -39,7 +34,10 @@ public class CreateSegmentButtonController {
                 LogHelper.printException(() -> "Couldn't find imageView with \"" + buttonIdentifier + "\"");
                 return;
             }
-            imageView.setOnClickListener(sponsorBlockBtnListener);
+            imageView.setOnClickListener(v -> {
+                LogHelper.printDebug(() -> "New segment button clicked");
+                SponsorBlockViewController.toggleNewSegmentLayoutVisibility();
+            });
             buttonReference = new WeakReference<>(imageView);
 
             // Animations
