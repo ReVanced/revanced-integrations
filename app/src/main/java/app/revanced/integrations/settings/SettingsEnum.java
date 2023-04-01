@@ -240,14 +240,6 @@ public enum SettingsEnum {
         this(path, returnType, defaultValue, prefName, false, userDialogMessage, null);
     }
     SettingsEnum(String path, ReturnType returnType, Object defaultValue, SharedPrefCategory prefName,
-                 boolean rebootApp, String userDialogMessage) {
-        this(path, returnType, defaultValue, prefName, rebootApp, userDialogMessage, null);
-    }
-    SettingsEnum(String path, ReturnType returnType, Object defaultValue, SharedPrefCategory prefName,
-                 boolean rebootApp, SettingsEnum[] parents) {
-        this(path, returnType, defaultValue, prefName, rebootApp, null, parents);
-    }
-    SettingsEnum(String path, ReturnType returnType, Object defaultValue, SharedPrefCategory prefName,
                  SettingsEnum[] parents) {
         this(path, returnType, defaultValue, prefName, false, null, parents);
     }
@@ -283,7 +275,7 @@ public enum SettingsEnum {
     }
 
     @Nullable
-    public static SettingsEnum settingFromPath(String str) {
+    public static SettingsEnum settingFromPath(@NonNull String str) {
         for (SettingsEnum setting : values()) {
             if (setting.path.equals(str)) return setting;
         }
