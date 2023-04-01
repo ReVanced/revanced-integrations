@@ -1,3 +1,10 @@
+# [0.102.0-dev.2](https://github.com/revanced/revanced-integrations/compare/v0.102.0-dev.1...v0.102.0-dev.2) (2023-04-01)
+
+
+### Bug Fixes
+
+* **youtube/general-ads:** hide new types of ads ([#339](https://github.com/revanced/revanced-integrations/issues/339)) ([f60ed0c](https://github.com/revanced/revanced-integrations/commit/f60ed0c534dd28b4202da69c55739b1bbc0de523))
+
 # [0.102.0-dev.1](https://github.com/revanced/revanced-integrations/compare/v0.101.0...v0.102.0-dev.1) (2023-03-29)
 
 
