@@ -81,36 +81,56 @@ public class SpoofSignatureVerificationPatch {
     }
 
     /**
-     * Last WindowsSetting constructor values. Values are checked for change to reduce log spam.
+     * Last WindowsSetting constructor values. Values are checked for changes to reduce log spam.
      */
-    private static int lastAp, lastAnchorHorizontalPos, lastAnchorVerticalPos;
-    private static boolean lastZ1, lastZ2;
+    private static int lastAnchorPositionConfig, lastAnchorHorizontal, lastAnchorVertical;
+    private static boolean lastVs, lastSd;
 
     /**
      * Injection point.
+     *
+     * @param anchorPositionConfig appears to indicate the layout configuration, using a bitmask with 6 fields
+     * @param anchorHorizontal     horizontal on screen position anchor point
+     * @param anchorVertical       vertical on screen position anchor point
+     * @param vs                   appears to indicate is subtitles exist, and value is always true.
+     * @param sd                   appears to indicate if video has non standard aspect ratio (4:3, or rotated orientation)
+     *                             Always true for Shorts playback.
      */
-    public static int[] getSubtitleWindowSettingsOverride(int ap, int anchorHorizontalPos, int anchorVerticalPos,
-                                                         boolean z1, boolean z2) {
-        int[] override = {ap, anchorHorizontalPos, anchorVerticalPos};
-
-        if (SettingsEnum.DEBUG.getBoolean()) {
-            if (ap != lastAp || anchorHorizontalPos != lastAnchorHorizontalPos
-                    || anchorVerticalPos != lastAnchorVerticalPos
-                    || z1 != lastZ1 || z2 != lastZ2) {
-                LogHelper.printDebug(() -> "SubtitleWindowSettings ap:" + ap + " anchorHorizontalPos:" + anchorHorizontalPos
-                        + " anchorVerticalPos:" + anchorVerticalPos + " z1:" + z1 + " z2:" + z2);
-                lastAp = ap;
-                lastAnchorHorizontalPos = anchorHorizontalPos;
-                lastAnchorVerticalPos = anchorVerticalPos;
-                lastZ1 = z1;
-                lastZ2 = z2;
-            }
-        }
+    public static int[] getSubtitleWindowSettingsOverride(int anchorPositionConfig, int anchorHorizontal, int anchorVertical,
+                                                         boolean vs, boolean sd) {
+        int[] override = {anchorPositionConfig, anchorHorizontal, anchorVertical};
 
         if (SettingsEnum.SIGNATURE_SPOOFING.getBoolean() && !PlayerType.getCurrent().isNoneOrHidden()) {
-            override[0] = 34;
-            override[1] = 50;
-            override[2] = 95;
+            if (sd) {
+                // values observed during playback
+                override[0] = 33;
+                override[1] = 20;
+                override[2] = 100;
+            } else {
+                // Default values used for regular (non Shorts) playback of videos with a non-vertical aspect ratio
+                // Values are found in SubtitleWindowSettings static field
+                override[0] = 34;
+                override[1] = 50;
+                override[2] = 95;
+            }
+            // shorts use values of 9, 20, 0
+            // but no override is needed, since spoof already gives shorts caption parameters
+        }
+
+        if (!SettingsEnum.DEBUG.getBoolean()) {
+            return override;
+        }
+        if (anchorPositionConfig != lastAnchorPositionConfig
+                || anchorHorizontal != lastAnchorHorizontal || anchorVertical != lastAnchorVertical
+                || vs != lastVs || sd != lastSd) {
+            LogHelper.printDebug(() -> "SubtitleWindowSettings anchorPositionConfig:" + anchorPositionConfig
+                    + " anchorHorizontal:" + anchorHorizontal + " anchorVertical:" + anchorVertical
+                    + " vs:" + vs + " sd:" + sd);
+            lastAnchorPositionConfig = anchorPositionConfig;
+            lastAnchorHorizontal = anchorHorizontal;
+            lastAnchorVertical = anchorVertical;
+            lastVs = vs;
+            lastSd = sd;
         }
 
         return override;
