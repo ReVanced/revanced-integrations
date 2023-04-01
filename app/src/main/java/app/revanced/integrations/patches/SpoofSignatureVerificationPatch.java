@@ -100,7 +100,7 @@ public class SpoofSignatureVerificationPatch {
                                                          boolean vs, boolean sd) {
         int[] override = {anchorPositionConfig, anchorHorizontal, anchorVertical};
 
-        // Videos with custom captions that specify screen positions appear to always have correct caption positions (even with spoofing).
+        // Videos with custom captions that specify screen positions appear to always have correct screen positions (even with spoofing).
         // But for auto generated and most other captions, the spoof incorrectly gives Shorts caption settings for all videos.
         // Override the parameters if the video is not a Short but it has Short caption settings.
         if (SettingsEnum.SIGNATURE_SPOOFING.getBoolean()
