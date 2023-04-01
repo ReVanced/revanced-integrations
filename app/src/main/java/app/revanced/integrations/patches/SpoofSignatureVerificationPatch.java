@@ -107,7 +107,7 @@ public class SpoofSignatureVerificationPatch {
                 override[1] = 20;
                 override[2] = 100;
             } else {
-                // Default values used for regular (non Shorts) playback of videos with a non-vertical aspect ratio
+                // Default values used for regular (non Shorts) playback of videos with a standard aspect ratio
                 // Values are found in SubtitleWindowSettings static field
                 override[0] = 34;
                 override[1] = 50;
