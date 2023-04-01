@@ -3,6 +3,7 @@ package app.revanced.integrations.patches;
 import android.widget.Toast;
 
 import app.revanced.integrations.settings.SettingsEnum;
+import app.revanced.integrations.shared.PlayerType;
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedUtils;
 
@@ -15,7 +16,6 @@ public class SpoofSignatureVerificationPatch {
 
     /**
      * Protobuf parameter of shorts and YouTube stories.
-     * Known issue: captions are positioned on upper area in the player.
      */
     private static final String PROTOBUF_PARAMETER_SHORTS = "8AEB"; // "8AEByAMTuAQP"
 
@@ -78,6 +78,42 @@ public class SpoofSignatureVerificationPatch {
         } catch (Exception ex) {
             LogHelper.printException(() -> "onResponse failure", ex);
         }
+    }
+
+    /**
+     * Last WindowsSetting constructor values. Values are checked for change to reduce log spam.
+     */
+    private static int lastAp, lastAnchorHorizontalPos, lastAnchorVerticalPos;
+    private static boolean lastZ1, lastZ2;
+
+    /**
+     * Injection point.
+     */
+    public static int[] getSubtitleWindowSettingsOverride(int ap, int anchorHorizontalPos, int anchorVerticalPos,
+                                                         boolean z1, boolean z2) {
+        int[] override = {ap, anchorHorizontalPos, anchorVerticalPos};
+
+        if (SettingsEnum.DEBUG.getBoolean()) {
+            if (ap != lastAp || anchorHorizontalPos != lastAnchorHorizontalPos
+                    || anchorVerticalPos != lastAnchorVerticalPos
+                    || z1 != lastZ1 || z2 != lastZ2) {
+                LogHelper.printDebug(() -> "SubtitleWindowSettings ap:" + ap + " anchorHorizontalPos:" + anchorHorizontalPos
+                        + " anchorVerticalPos:" + anchorVerticalPos + " z1:" + z1 + " z2:" + z2);
+                lastAp = ap;
+                lastAnchorHorizontalPos = anchorHorizontalPos;
+                lastAnchorVerticalPos = anchorVerticalPos;
+                lastZ1 = z1;
+                lastZ2 = z2;
+            }
+        }
+
+        if (SettingsEnum.SIGNATURE_SPOOFING.getBoolean() && !PlayerType.getCurrent().isNoneOrHidden()) {
+            override[0] = 34;
+            override[1] = 50;
+            override[2] = 95;
+        }
+
+        return override;
     }
 
 }
