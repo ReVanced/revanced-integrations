@@ -89,7 +89,7 @@ public class SpoofSignatureVerificationPatch {
     /**
      * Injection point.  Overrides values passed into SubtitleWindowSettings constructor.
      *
-     * @param anchorPositionConfig appears to be a bitmask with 5 bit fields, that indicates the layout configuration
+     * @param anchorPositionConfig appears to be a bitmask with 6 bit fields, that indicates the layout configuration
      * @param anchorHorizontal     horizontal on screen position anchor point
      * @param anchorVertical       vertical on screen position anchor point
      * @param vs                   appears to indicate is subtitles exist, and value is always true.
