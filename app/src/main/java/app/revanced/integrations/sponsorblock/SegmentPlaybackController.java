@@ -559,9 +559,9 @@ public class SegmentPlaybackController {
         final long minutes = (timeWithoutSegmentsValue / 60000) % 60;
         final long seconds = (timeWithoutSegmentsValue / 1000) % 60;
         if (hours > 0) {
-            timeWithoutSegments = String.format(" (%d:%02d:%02d)", hours, minutes, seconds);
+            timeWithoutSegments = String.format("\u2009(%d:%02d:%02d)", hours, minutes, seconds);
         } else {
-            timeWithoutSegments = String.format(" (%d:%02d)", minutes, seconds);
+            timeWithoutSegments = String.format("\u2009(%d:%02d)", minutes, seconds);
         }
     }
 
