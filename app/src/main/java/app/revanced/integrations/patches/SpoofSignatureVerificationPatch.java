@@ -89,9 +89,9 @@ public class SpoofSignatureVerificationPatch {
     /**
      * Injection point.  Overrides values passed into SubtitleWindowSettings constructor.
      *
-     * @param anchorPosition       appears to be a bitmask with 6 bit fields that indicates the layout position on screen
-     * @param anchorHorizontal     horizontal on screen position anchor point.  Appears to be a percentage [0, 100]
-     * @param anchorVertical       vertical on screen position anchor point.  Appears to be a percentage [0, 100]
+     * @param anchorPosition       bitmask with 6 bit fields, that appears to be indicate the layout position on screen
+     * @param anchorHorizontal     percentage [0, 100], that appears to be a horizontal text anchor point
+     * @param anchorVertical       percentage [0, 100], that appears to be a vertical text anchor point
      * @param vs                   appears to indicate is subtitles exist, and value is always true.
      * @param sd                   appears to indicate if video has non standard aspect ratio (4:3, or a rotated orientation)
      *                             Always true for Shorts playback.
