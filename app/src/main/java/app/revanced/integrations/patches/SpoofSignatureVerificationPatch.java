@@ -87,7 +87,7 @@ public class SpoofSignatureVerificationPatch {
     private static boolean lastVs, lastSd;
 
     /**
-     * Injection point.
+     * Injection point.  Overrides values passed into SubtitleWindowSettings constructor.
      *
      * @param anchorPositionConfig appears to indicate the layout configuration, using a bitmask with 6 fields
      * @param anchorHorizontal     horizontal on screen position anchor point
