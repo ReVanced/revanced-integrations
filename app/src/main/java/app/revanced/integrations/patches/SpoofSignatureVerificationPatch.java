@@ -83,29 +83,29 @@ public class SpoofSignatureVerificationPatch {
     /**
      * Last WindowsSetting constructor values. Values are checked for changes to reduce log spam.
      */
-    private static int lastAnchorPositionConfig, lastAnchorHorizontal, lastAnchorVertical;
+    private static int lastAnchorPosition, lastAnchorHorizontal, lastAnchorVertical;
     private static boolean lastVs, lastSd;
 
     /**
      * Injection point.  Overrides values passed into SubtitleWindowSettings constructor.
      *
-     * @param anchorPositionConfig appears to be a bitmask with 6 bit fields, that indicates the layout configuration
-     * @param anchorHorizontal     horizontal on screen position anchor point
-     * @param anchorVertical       vertical on screen position anchor point
+     * @param anchorPosition       appears to be a bitmask with 6 bit fields that indicates the layout position on screen
+     * @param anchorHorizontal     horizontal on screen position anchor point.  Appears to be a percentage [0, 100]
+     * @param anchorVertical       vertical on screen position anchor point.  Appears to be a percentage [0, 100]
      * @param vs                   appears to indicate is subtitles exist, and value is always true.
      * @param sd                   appears to indicate if video has non standard aspect ratio (4:3, or a rotated orientation)
      *                             Always true for Shorts playback.
      */
-    public static int[] getSubtitleWindowSettingsOverride(int anchorPositionConfig, int anchorHorizontal, int anchorVertical,
+    public static int[] getSubtitleWindowSettingsOverride(int anchorPosition, int anchorHorizontal, int anchorVertical,
                                                          boolean vs, boolean sd) {
-        int[] override = {anchorPositionConfig, anchorHorizontal, anchorVertical};
+        int[] override = {anchorPosition, anchorHorizontal, anchorVertical};
 
         // Videos with custom captions that specify screen positions appear to always have correct screen positions (even with spoofing).
         // But for auto generated and most other captions, the spoof incorrectly gives Shorts caption settings for all videos.
         // Override the parameters if the video is not a Short but it has Short caption settings.
         if (SettingsEnum.SIGNATURE_SPOOFING.getBoolean()
                 && !PlayerType.getCurrent().isNoneOrHidden() // video is not a Short or Story
-                && anchorPositionConfig == 9 // but it has shorts specific subtitle parameters
+                && anchorPosition == 9 // but it has shorts specific subtitle parameters
                 && anchorHorizontal == 20
                 && anchorVertical == 0) {
             if (sd) {
@@ -125,13 +125,13 @@ public class SpoofSignatureVerificationPatch {
         if (!SettingsEnum.DEBUG.getBoolean()) {
             return override;
         }
-        if (anchorPositionConfig != lastAnchorPositionConfig
+        if (anchorPosition != lastAnchorPosition
                 || anchorHorizontal != lastAnchorHorizontal || anchorVertical != lastAnchorVertical
                 || vs != lastVs || sd != lastSd) {
-            LogHelper.printDebug(() -> "SubtitleWindowSettings anchorPositionConfig:" + anchorPositionConfig
+            LogHelper.printDebug(() -> "SubtitleWindowSettings anchorPosition:" + anchorPosition
                     + " anchorHorizontal:" + anchorHorizontal + " anchorVertical:" + anchorVertical
                     + " vs:" + vs + " sd:" + sd);
-            lastAnchorPositionConfig = anchorPositionConfig;
+            lastAnchorPosition = anchorPosition;
             lastAnchorHorizontal = anchorHorizontal;
             lastAnchorVertical = anchorVertical;
             lastVs = vs;
