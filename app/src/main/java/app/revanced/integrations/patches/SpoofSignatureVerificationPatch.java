@@ -100,7 +100,15 @@ public class SpoofSignatureVerificationPatch {
                                                          boolean vs, boolean sd) {
         int[] override = {anchorPositionConfig, anchorHorizontal, anchorVertical};
 
-        if (SettingsEnum.SIGNATURE_SPOOFING.getBoolean() && !PlayerType.getCurrent().isNoneOrHidden()) {
+        // Videos with captions that specify screen positions appear to always have correct layout (even with spoofing)
+        // But for auto generated and most other captions, the spoof incorrectly gives Shorts caption settings for all videos
+        // check if the captions settings are those of a Short, and override
+        if (SettingsEnum.SIGNATURE_SPOOFING.getBoolean()
+                && !PlayerType.getCurrent().isNoneOrHidden()
+                // shorts specific subtitle parameters
+                && anchorPositionConfig == 9
+                && anchorHorizontal == 20
+                && anchorVertical == 0) {
             if (sd) {
                 // values observed during playback
                 override[0] = 33;
@@ -113,8 +121,6 @@ public class SpoofSignatureVerificationPatch {
                 override[1] = 50;
                 override[2] = 95;
             }
-            // shorts use values of 9, 20, 0
-            // but no override is needed, since spoof already gives shorts caption parameters
         }
 
         if (!SettingsEnum.DEBUG.getBoolean()) {
