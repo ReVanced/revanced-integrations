@@ -15,8 +15,6 @@ import androidx.annotation.Nullable;
 
 import java.util.Objects;
 
-import app.revanced.integrations.utils.LogHelper;
-import app.revanced.integrations.utils.ReVancedUtils;
 import app.revanced.integrations.utils.StringRef;
 
 public enum SettingsEnum {
@@ -283,10 +281,6 @@ public enum SettingsEnum {
     }
 
     private static void loadAllSettings() {
-        if (ReVancedUtils.getContext() == null) {
-            LogHelper.printException(() -> "SettingsEnum loaded before ReVancedUtils context was set");
-            return;
-        }
         for (SettingsEnum setting : values()) {
             setting.load();
         }
