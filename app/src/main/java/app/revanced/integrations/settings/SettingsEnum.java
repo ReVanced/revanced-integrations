@@ -15,9 +15,9 @@ import androidx.annotation.Nullable;
 
 import java.util.Objects;
 
-import app.revanced.integrations.sponsorblock.StringRef;
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedUtils;
+import app.revanced.integrations.utils.StringRef;
 
 public enum SettingsEnum {
     //Download Settings
@@ -149,7 +149,7 @@ public enum SettingsEnum {
     SB_ENABLED("sb-enabled", BOOLEAN, TRUE, SPONSOR_BLOCK),
     SB_VOTING_ENABLED("sb-voting-enabled", BOOLEAN, FALSE, SPONSOR_BLOCK, parents(SB_ENABLED)),
     SB_CREATE_NEW_SEGMENT_ENABLED("sb-new-segment-enabled", BOOLEAN, FALSE, SPONSOR_BLOCK, parents(SB_ENABLED)),
-    SB_USE_COMPACT_SKIPBUTTON("sb-use-compact-skip-button", FALSE, SPONSOR_BLOCK, parents(SB_ENABLED)),
+    SB_USE_COMPACT_SKIPBUTTON("sb-use-compact-skip-button", BOOLEAN, FALSE, SPONSOR_BLOCK, parents(SB_ENABLED)),
     SB_SHOW_TOAST_ON_SKIP("show-toast", BOOLEAN, TRUE, SPONSOR_BLOCK, parents(SB_ENABLED)),
     SB_TRACK_SKIP_COUNT("count-skips", BOOLEAN, TRUE, SPONSOR_BLOCK, parents(SB_ENABLED)),
     SB_UUID("uuid", STRING, "", SPONSOR_BLOCK),
@@ -160,8 +160,8 @@ public enum SettingsEnum {
     SB_SKIPPED_SEGMENTS_TIME_SAVED("sb-skipped-segments-time", LONG, 0L, SPONSOR_BLOCK),
     SB_SHOW_TIME_WITHOUT_SEGMENTS("sb-length-without-segments", BOOLEAN, TRUE, SPONSOR_BLOCK, parents(SB_ENABLED)),
     SB_IS_VIP("sb-is-vip", BOOLEAN, FALSE, SPONSOR_BLOCK),
-    SB_LAST_VIP_CHECK("sb-last-vip-check", LONG, 0L, SPONSOR_BLOCK);
-    SB_API_URL("sb-api-host-url", STRING, "https://sponsor.ajay.app", SPONSOR_BLOCK),
+    SB_LAST_VIP_CHECK("sb-last-vip-check", LONG, 0L, SPONSOR_BLOCK),
+    SB_API_URL("sb-api-host-url", STRING, "https://sponsor.ajay.app", SPONSOR_BLOCK);
 
     private static SettingsEnum[] parents(SettingsEnum ... parents) {
         return parents;
@@ -227,7 +227,6 @@ public enum SettingsEnum {
                  boolean rebootApp, String userDialogMessage, SettingsEnum[] parents) {
         this(path, returnType, defaultValue, SharedPrefCategory.YOUTUBE, rebootApp, userDialogMessage, parents);
     }
-
 
     SettingsEnum(String path, ReturnType returnType, Object defaultValue, SharedPrefCategory prefName) {
         this(path, returnType, defaultValue, prefName, false, null, null);
