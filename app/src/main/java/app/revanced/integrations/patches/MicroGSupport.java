@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.widget.Toast;
 
 import java.util.Objects;
 
@@ -21,7 +20,7 @@ public class MicroGSupport {
     private static final Uri VANCED_MICROG_PROVIDER = Uri.parse("content://" + MICROG_VENDOR + ".android.gsf.gservices/prefix");
 
     private static void startIntent(Context context, String uriString, String message) {
-        Toast.makeText(context, message, Toast.LENGTH_LONG).show(); // cannot use ReVancedUtils.showTast, as it's not yet initialized
+        ReVancedUtils.showToastLong(message);
 
         var intent = new Intent(Intent.ACTION_VIEW);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
