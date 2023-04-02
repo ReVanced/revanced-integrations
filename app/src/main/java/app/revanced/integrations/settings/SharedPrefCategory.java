@@ -15,10 +15,10 @@ public enum SharedPrefCategory {
     SPONSOR_BLOCK("sponsor-block"),
     REVANCED_PREFS("revanced_prefs");
 
-    public final SharedPreferences preferences;
-
     @NonNull
     public final String prefName;
+    @NonNull
+    public final SharedPreferences preferences;
 
     SharedPrefCategory(@NonNull String prefName) {
         this.prefName = Objects.requireNonNull(prefName);
