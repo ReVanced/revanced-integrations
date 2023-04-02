@@ -21,7 +21,7 @@ import app.revanced.integrations.utils.StringRef;
 
 public enum SettingsEnum {
     //Download Settings
-    // TODO: DOWNLOAD_PATH("revanced_download_path", Environment.getExternalStorageDirectory().getPath() + "/Download", ReturnType.STRING),
+    // TODO: DOWNLOAD_PATH("revanced_download_path", STRING, Environment.getExternalStorageDirectory().getPath() + "/Download"),
     DOWNLOADS_BUTTON_SHOWN("revanced_downloads_enabled", BOOLEAN, TRUE, true),
     DOWNLOADS_PACKAGE_NAME("revanced_downloads_package_name", STRING, "org.schabi.newpipe" /* NewPipe */, parents(DOWNLOADS_BUTTON_SHOWN)),
 
