@@ -39,7 +39,7 @@ class SwipeControlsOverlayLayout(
 
     private fun getDrawable(name: String, width: Int, height: Int): Drawable {
         return resources.getDrawable(
-            ReVancedUtils.getResourceIdByName(context, name, "drawable"),
+            ReVancedUtils.getResourceIdentifier(context, name, "drawable"),
             context.theme
         ).apply {
             setTint(config.overlayForegroundColor)

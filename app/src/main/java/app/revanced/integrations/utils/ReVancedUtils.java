@@ -65,24 +65,24 @@ public class ReVancedUtils {
      * @return zero, if the resource is not found
      */
     @SuppressLint("DiscouragedApi")
-    public static int getResourceIdByName(@NonNull Context context, @NonNull String name, @NonNull String type) {
+    public static int getResourceIdentifier(@NonNull Context context, @NonNull String name, @NonNull String type) {
         return context.getResources().getIdentifier(name, type, context.getPackageName());
     }
 
     /**
      * @return zero, if the resource is not found
      */
-    public static int getIdentifier(@NonNull String name, @NonNull String defType) {
-        return getResourceIdByName(getContext(), name, defType);
+    public static int getResourceIdentifier(@NonNull String name, @NonNull String defType) {
+        return getResourceIdentifier(getContext(), name, defType);
     }
 
     public static int getResourceInteger(@NonNull String resourceIdentifierName) throws Resources.NotFoundException {
-        return getContext().getResources().getInteger(getIdentifier(resourceIdentifierName, "integer"));
+        return getContext().getResources().getInteger(getResourceIdentifier(resourceIdentifierName, "integer"));
     }
 
     @NonNull
     public static Animation getResourceAnimation(@NonNull String resourceIdentifierName) throws Resources.NotFoundException {
-        return AnimationUtils.loadAnimation(getContext(), getIdentifier(resourceIdentifierName, "anim"));
+        return AnimationUtils.loadAnimation(getContext(), getResourceIdentifier(resourceIdentifierName, "anim"));
     }
 
     public static Context getContext() {
@@ -99,7 +99,7 @@ public class ReVancedUtils {
         clipboard.setPrimaryClip(clip);
     }
 
-    public static boolean isTablet(@NonNull Context context) {
+    public static boolean isTablet() {
         return context.getResources().getConfiguration().smallestScreenWidthDp >= 600;
     }
 

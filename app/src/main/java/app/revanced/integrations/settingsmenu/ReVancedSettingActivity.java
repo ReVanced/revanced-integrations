@@ -23,11 +23,11 @@ public class ReVancedSettingActivity {
         final var theme = ThemeHelper.isDarkTheme() ? darkTheme : whiteTheme;
 
         LogHelper.printDebug(() -> "Using theme: " + theme);
-        base.setTheme(ReVancedUtils.getIdentifier(theme, "style"));
+        base.setTheme(ReVancedUtils.getResourceIdentifier(theme, "style"));
     }
 
     public static void initializeSettings(LicenseActivity base) {
-        base.setContentView(ReVancedUtils.getIdentifier("revanced_settings_with_toolbar", "layout"));
+        base.setContentView(ReVancedUtils.getResourceIdentifier("revanced_settings_with_toolbar", "layout"));
 
         PreferenceFragment preferenceFragment;
         String preferenceIdentifier;
@@ -45,7 +45,7 @@ public class ReVancedSettingActivity {
         }
 
         try {
-            TextView toolbar = getTextView((ViewGroup) base.findViewById(ReVancedUtils.getIdentifier("toolbar", "id")));
+            TextView toolbar = getTextView((ViewGroup) base.findViewById(ReVancedUtils.getResourceIdentifier("toolbar", "id")));
             if (toolbar == null) {
                 // FIXME
                 // https://github.com/revanced/revanced-patches/issues/1384
@@ -57,7 +57,7 @@ public class ReVancedSettingActivity {
             LogHelper.printException(() -> "Could not set Toolbar title", e);
         }
 
-        base.getFragmentManager().beginTransaction().replace(ReVancedUtils.getIdentifier("revanced_settings_fragments", "id"), preferenceFragment).commit();
+        base.getFragmentManager().beginTransaction().replace(ReVancedUtils.getResourceIdentifier("revanced_settings_fragments", "id"), preferenceFragment).commit();
     }
 
 

@@ -1,6 +1,6 @@
 package app.revanced.integrations.sponsorblock.ui;
 
-import static app.revanced.integrations.utils.ReVancedUtils.getIdentifier;
+import static app.revanced.integrations.utils.ReVancedUtils.getResourceIdentifier;
 
 import android.view.View;
 import android.view.animation.Animation;
@@ -29,7 +29,7 @@ public class CreateSegmentButtonController {
 
             RelativeLayout youtubeControlsLayout = (RelativeLayout) viewStub;
             String buttonIdentifier = "sb_sponsorblock_button";
-            ImageView imageView = youtubeControlsLayout.findViewById(getIdentifier(buttonIdentifier, "id"));
+            ImageView imageView = youtubeControlsLayout.findViewById(getResourceIdentifier(buttonIdentifier, "id"));
             if (imageView == null) {
                 LogHelper.printException(() -> "Couldn't find imageView with \"" + buttonIdentifier + "\"");
                 return;

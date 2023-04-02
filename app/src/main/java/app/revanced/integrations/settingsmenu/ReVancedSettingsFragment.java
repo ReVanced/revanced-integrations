@@ -85,7 +85,7 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
         super.onCreate(bundle);
         getPreferenceManager().setSharedPreferencesName(SharedPrefHelper.SharedPrefNames.YOUTUBE.getName());
         try {
-            addPreferencesFromResource(ReVancedUtils.getIdentifier("revanced_prefs", "xml"));
+            addPreferencesFromResource(ReVancedUtils.getResourceIdentifier("revanced_prefs", "xml"));
 
             SharedPreferences sharedPreferences = getPreferenceManager().getSharedPreferences();
             this.settingsInitialized = sharedPreferences.getBoolean("revanced_initialized", false);

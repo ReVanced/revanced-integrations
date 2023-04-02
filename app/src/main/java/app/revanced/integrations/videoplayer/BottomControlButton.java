@@ -25,7 +25,7 @@ public abstract class BottomControlButton {
             constraintLayout = (ConstraintLayout) obj;
             isButtonEnabled = isEnabled;
 
-            ImageView imageView = constraintLayout.findViewById(ReVancedUtils.getIdentifier(viewId, "id"));
+            ImageView imageView = constraintLayout.findViewById(ReVancedUtils.getResourceIdentifier(viewId, "id"));
             if (imageView == null) {
                 LogHelper.printException(() -> "Couldn't find ImageView with id: " + viewId);
                 return;

@@ -1,6 +1,6 @@
 package app.revanced.integrations.sponsorblock.ui;
 
-import static app.revanced.integrations.utils.ReVancedUtils.getIdentifier;
+import static app.revanced.integrations.utils.ReVancedUtils.getResourceIdentifier;
 
 import android.view.View;
 import android.view.animation.Animation;
@@ -30,7 +30,7 @@ public class VotingButtonController {
             LogHelper.printDebug(() -> "initializing voting button");
             RelativeLayout controlsLayout = (RelativeLayout) viewStub;
             String buttonResourceName = "sb_voting_button";
-            ImageView imageView = controlsLayout.findViewById(getIdentifier(buttonResourceName, "id"));
+            ImageView imageView = controlsLayout.findViewById(getResourceIdentifier(buttonResourceName, "id"));
             if (imageView == null) {
                 LogHelper.printException(() -> "Couldn't find imageView with \"" + buttonResourceName + "\"");
                 return;

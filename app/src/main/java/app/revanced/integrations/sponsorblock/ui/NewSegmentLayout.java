@@ -1,6 +1,6 @@
 package app.revanced.integrations.sponsorblock.ui;
 
-import static app.revanced.integrations.utils.ReVancedUtils.getResourceIdByName;
+import static app.revanced.integrations.utils.ReVancedUtils.getResourceIdentifier;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
@@ -37,7 +37,7 @@ public class NewSegmentLayout extends FrameLayout {
     public NewSegmentLayout(Context context, AttributeSet attributeSet, int defStyleAttr, int defStyleRes) {
         super(context, attributeSet, defStyleAttr, defStyleRes);
 
-        LayoutInflater.from(context).inflate(getResourceIdByName(context, "new_segment", "layout"), this, true);
+        LayoutInflater.from(context).inflate(getResourceIdentifier(context, "new_segment", "layout"), this, true);
 
         TypedValue rippleEffect = new TypedValue();
         context.getTheme().resolveAttribute(android.R.attr.selectableItemBackground, rippleEffect, true);
@@ -45,7 +45,7 @@ public class NewSegmentLayout extends FrameLayout {
 
         // LinearLayout newSegmentContainer = this.findViewById(getIdentifier(context, "sb_new_segment_container", "id"));
 
-        ImageButton rewindButton = findViewById(getResourceIdByName(context, "sb_new_segment_rewind", "id"));
+        ImageButton rewindButton = findViewById(getResourceIdentifier(context, "sb_new_segment_rewind", "id"));
         if (rewindButton == null) {
             LogHelper.printException(() -> "Could not find rewindButton");
         } else {
@@ -55,7 +55,7 @@ public class NewSegmentLayout extends FrameLayout {
                 VideoInformation.seekToRelative(-SettingsEnum.SB_ADJUST_NEW_SEGMENT_STEP.getInt());
             });
         }
-        ImageButton forwardButton = findViewById(getResourceIdByName(context, "sb_new_segment_forward", "id"));
+        ImageButton forwardButton = findViewById(getResourceIdentifier(context, "sb_new_segment_forward", "id"));
         if (forwardButton == null) {
             LogHelper.printException(() -> "Could not find forwardButton");
         } else {
@@ -65,7 +65,7 @@ public class NewSegmentLayout extends FrameLayout {
                 VideoInformation.seekToRelative(SettingsEnum.SB_ADJUST_NEW_SEGMENT_STEP.getInt());
             });
         }
-        ImageButton adjustButton = findViewById(getResourceIdByName(context, "sb_new_segment_adjust", "id"));
+        ImageButton adjustButton = findViewById(getResourceIdentifier(context, "sb_new_segment_adjust", "id"));
         if (adjustButton == null) {
             LogHelper.printException(() -> "Could not find adjustButton");
         } else {
@@ -75,7 +75,7 @@ public class NewSegmentLayout extends FrameLayout {
                 SponsorBlockUtils.onMarkLocationClicked();
             });
         }
-        ImageButton compareButton = this.findViewById(getResourceIdByName(context, "sb_new_segment_compare", "id"));
+        ImageButton compareButton = findViewById(getResourceIdentifier(context, "sb_new_segment_compare", "id"));
         if (compareButton == null) {
             LogHelper.printException(() -> "Could not find compareButton");
         } else {
@@ -85,7 +85,7 @@ public class NewSegmentLayout extends FrameLayout {
                 SponsorBlockUtils.onPreviewClicked();
             });
         }
-        ImageButton editButton = findViewById(getResourceIdByName(context, "sb_new_segment_edit", "id"));
+        ImageButton editButton = findViewById(getResourceIdentifier(context, "sb_new_segment_edit", "id"));
         if (editButton == null) {
             LogHelper.printException(() -> "Could not find editButton");
         } else {
@@ -95,7 +95,7 @@ public class NewSegmentLayout extends FrameLayout {
                 SponsorBlockUtils.onEditByHandClicked();
             });
         }
-        ImageButton publishButton = this.findViewById(getResourceIdByName(context, "sb_new_segment_publish", "id"));
+        ImageButton publishButton = findViewById(getResourceIdentifier(context, "sb_new_segment_publish", "id"));
         if (publishButton == null) {
             LogHelper.printException(() -> "Could not find publishButton");
         } else {
@@ -107,8 +107,8 @@ public class NewSegmentLayout extends FrameLayout {
         }
 
         Resources resources = context.getResources();
-        defaultBottomMargin = resources.getDimensionPixelSize(getResourceIdByName(context, "brand_interaction_default_bottom_margin", "dimen"));
-        ctaBottomMargin = resources.getDimensionPixelSize(getResourceIdByName(context, "brand_interaction_cta_bottom_margin", "dimen"));
+        defaultBottomMargin = resources.getDimensionPixelSize(getResourceIdentifier(context, "brand_interaction_default_bottom_margin", "dimen"));
+        ctaBottomMargin = resources.getDimensionPixelSize(getResourceIdentifier(context, "brand_interaction_cta_bottom_margin", "dimen"));
     }
 
     private void setClickEffect(ImageButton btn) {

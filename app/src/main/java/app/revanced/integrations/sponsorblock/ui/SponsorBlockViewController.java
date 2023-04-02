@@ -1,6 +1,6 @@
 package app.revanced.integrations.sponsorblock.ui;
 
-import static app.revanced.integrations.utils.ReVancedUtils.getIdentifier;
+import static app.revanced.integrations.utils.ReVancedUtils.getResourceIdentifier;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -53,7 +53,7 @@ public class SponsorBlockViewController {
 
             RelativeLayout layout = new RelativeLayout(ReVancedUtils.getContext());
             layout.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,RelativeLayout.LayoutParams.MATCH_PARENT));
-            LayoutInflater.from(ReVancedUtils.getContext()).inflate(getIdentifier("inline_sponsor_overlay", "layout"), layout);
+            LayoutInflater.from(ReVancedUtils.getContext()).inflate(getResourceIdentifier("inline_sponsor_overlay", "layout"), layout);
             inlineSponsorOverlayRef = new WeakReference<>(layout);
 
             ViewGroup viewGroup = (ViewGroup) obj;
@@ -61,10 +61,10 @@ public class SponsorBlockViewController {
             youtubeOverlaysLayoutRef = new WeakReference<>(viewGroup);
 
             skipSponsorButtonRef = new WeakReference<>(
-                    Objects.requireNonNull(layout.findViewById(getIdentifier("sb_skip_sponsor_button", "id"))));
+                    Objects.requireNonNull(layout.findViewById(getResourceIdentifier("sb_skip_sponsor_button", "id"))));
 
             newSegmentLayoutRef = new WeakReference<>(
-                    Objects.requireNonNull(layout.findViewById(getIdentifier("sb_new_segment_view", "id"))));
+                    Objects.requireNonNull(layout.findViewById(getResourceIdentifier("sb_new_segment_view", "id"))));
         } catch (Exception ex) {
             LogHelper.printException(() -> "initialize failure", ex);
         }
