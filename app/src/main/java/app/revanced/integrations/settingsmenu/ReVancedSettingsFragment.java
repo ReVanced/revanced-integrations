@@ -47,20 +47,20 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
                 SwitchPreference switchPref = (SwitchPreference) pref;
                 SettingsEnum.setValue(setting, switchPref.isChecked());
             } else if (pref instanceof EditTextPreference) {
-                EditTextPreference editPref = (EditTextPreference) pref;
+                String editText = ((EditTextPreference) pref).getText();
                 Object value;
                 switch (setting.returnType) {
                     case INTEGER:
-                        value = Integer.parseInt(editPref.getText());
+                        value = Integer.parseInt(editText);
                         break;
                     case LONG:
-                        value = Long.parseLong(editPref.getText());
+                        value = Long.parseLong(editText);
                         break;
                     case FLOAT:
-                        value = Float.parseFloat(editPref.getText());
+                        value = Float.parseFloat(editText);
                         break;
                     case STRING:
-                        value = editPref.getText();
+                        value = editText;
                         break;
                     default:
                         throw new IllegalStateException(setting.toString());
