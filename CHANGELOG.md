@@ -1,3 +1,10 @@
+# [0.102.0-dev.4](https://github.com/revanced/revanced-integrations/compare/v0.102.0-dev.3...v0.102.0-dev.4) (2023-04-02)
+
+
+### Features
+
+* **youtube:** sponsorblock improvements ([#308](https://github.com/revanced/revanced-integrations/issues/308)) ([13b1c7d](https://github.com/revanced/revanced-integrations/commit/13b1c7d21947322cb28d13453b5b8a9ae3bcf41f))
+
 # [0.102.0-dev.3](https://github.com/revanced/revanced-integrations/compare/v0.102.0-dev.2...v0.102.0-dev.3) (2023-04-01)
 
 
