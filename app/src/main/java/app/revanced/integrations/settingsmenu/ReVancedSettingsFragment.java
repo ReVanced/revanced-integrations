@@ -1,5 +1,7 @@
 package app.revanced.integrations.settingsmenu;
 
+import static app.revanced.integrations.utils.StringRef.str;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlarmManager;
@@ -88,12 +90,8 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         try {
-            PreferenceManager preferenceManager = getPreferenceManager();
-            preferenceManager.setSharedPreferencesName(SharedPrefCategory.YOUTUBE.prefName);
-
-            String packageName = ReVancedUtils.getContext().getPackageName();
-            final int identifier = getResources().getIdentifier("revanced_prefs", "xml", packageName);
-            addPreferencesFromResource(identifier);
+            getPreferenceManager().setSharedPreferencesName(SharedPrefCategory.YOUTUBE.prefName);
+            addPreferencesFromResource(ReVancedUtils.getResourceIdentifier("revanced_prefs", "xml"));
 
             enableDisablePreferences();
 
@@ -129,9 +127,9 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
 
     private void rebootDialog(@NonNull Activity activity) {
         currentlyShowingDialog = true;
-        String positiveButton = getStringByName(activity, "in_app_update_restart_button");
-        String negativeButton = getStringByName(activity, "sign_in_cancel");
-        new AlertDialog.Builder(activity).setMessage(getStringByName(activity, "pref_refresh_config"))
+        String positiveButton = str("in_app_update_restart_button");
+        String negativeButton = str("sign_in_cancel");
+        new AlertDialog.Builder(activity).setMessage(str("pref_refresh_config"))
                 .setPositiveButton(positiveButton, (dialog, id) -> {
                     reboot(activity);
                     currentlyShowingDialog = false;
@@ -144,7 +142,7 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
     private void showSettingUserDialogConfirmation(@NonNull Activity activity, SwitchPreference switchPref, SettingsEnum setting) {
         currentlyShowingDialog = true;
         new AlertDialog.Builder(activity)
-                .setTitle(getStringByName(activity, "revanced_settings_confirm_user_dialog_title"))
+                .setTitle(str("revanced_settings_confirm_user_dialog_title"))
                 .setMessage(setting.userDialogMessage.toString())
                 .setPositiveButton(android.R.string.ok, (dialog, id) -> {
                     if (setting.rebootApp) {
@@ -159,16 +157,6 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
                     switchPref.setChecked(defaultBooleanValue);
                     currentlyShowingDialog = false;
                 }).show();
-    }
-
-    private String getStringByName(Context context, String name) {
-        try {
-            Resources res = context.getResources();
-            return res.getString(res.getIdentifier(name, "string", context.getPackageName()));
-        } catch (Throwable exception) {
-            LogHelper.printException(() -> "Resource not found.", exception);
-            return "";
-        }
     }
 
 }
