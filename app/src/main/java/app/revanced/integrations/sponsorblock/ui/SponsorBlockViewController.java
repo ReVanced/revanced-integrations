@@ -21,10 +21,10 @@ import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedUtils;
 
 public class SponsorBlockViewController {
-    private static WeakReference<RelativeLayout> inlineSponsorOverlay = new WeakReference<>(null);
-    private static WeakReference<ViewGroup> youtubeOverlaysLayout = new WeakReference<>(null);
-    private static WeakReference<SkipSponsorButton> skipSponsorButton = new WeakReference<>(null);
-    private static WeakReference<NewSegmentLayout> newSegmentLayout = new WeakReference<>(null);
+    private static WeakReference<RelativeLayout> inlineSponsorOverlayRef = new WeakReference<>(null);
+    private static WeakReference<ViewGroup> youtubeOverlaysLayoutRef = new WeakReference<>(null);
+    private static WeakReference<SkipSponsorButton> skipSponsorButtonRef = new WeakReference<>(null);
+    private static WeakReference<NewSegmentLayout> newSegmentLayoutRef = new WeakReference<>(null);
     private static boolean canShowViewElements = true;
     @Nullable
     private static SponsorSegment skipSegment;
@@ -37,7 +37,7 @@ public class SponsorBlockViewController {
     }
 
     public static Context getOverLaysViewGroupContext() {
-        ViewGroup group = youtubeOverlaysLayout.get();
+        ViewGroup group = youtubeOverlaysLayoutRef.get();
         if (group == null) {
             return null;
         }
@@ -54,16 +54,16 @@ public class SponsorBlockViewController {
             RelativeLayout layout = new RelativeLayout(ReVancedUtils.getContext());
             layout.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,RelativeLayout.LayoutParams.MATCH_PARENT));
             LayoutInflater.from(ReVancedUtils.getContext()).inflate(getIdentifier("inline_sponsor_overlay", "layout"), layout);
-            inlineSponsorOverlay = new WeakReference<>(layout);
+            inlineSponsorOverlayRef = new WeakReference<>(layout);
 
             ViewGroup viewGroup = (ViewGroup) obj;
             viewGroup.addView(layout, viewGroup.getChildCount() - 2);
-            youtubeOverlaysLayout = new WeakReference<>(viewGroup);
+            youtubeOverlaysLayoutRef = new WeakReference<>(viewGroup);
 
-            skipSponsorButton = new WeakReference<>(
+            skipSponsorButtonRef = new WeakReference<>(
                     Objects.requireNonNull(layout.findViewById(getIdentifier("sb_skip_sponsor_button", "id"))));
 
-            newSegmentLayout = new WeakReference<>(
+            newSegmentLayoutRef = new WeakReference<>(
                     Objects.requireNonNull(layout.findViewById(getIdentifier("sb_new_segment_view", "id"))));
         } catch (Exception ex) {
             LogHelper.printException(() -> "initialize failure", ex);
@@ -81,7 +81,7 @@ public class SponsorBlockViewController {
     }
 
     private static void updateSkipButton() {
-        SkipSponsorButton skipSponsorButton = SponsorBlockViewController.skipSponsorButton.get();
+        SkipSponsorButton skipSponsorButton = skipSponsorButtonRef.get();
         if (skipSponsorButton == null) {
             return;
         }
@@ -101,7 +101,7 @@ public class SponsorBlockViewController {
     }
 
     public static void hideNewSegmentLayout() {
-        NewSegmentLayout newSegmentLayout = SponsorBlockViewController.newSegmentLayout.get();
+        NewSegmentLayout newSegmentLayout = newSegmentLayoutRef.get();
         if (newSegmentLayout == null) {
             return;
         }
@@ -109,7 +109,7 @@ public class SponsorBlockViewController {
     }
 
     public static void toggleNewSegmentLayoutVisibility() {
-        NewSegmentLayout newSegmentLayout = SponsorBlockViewController.newSegmentLayout.get();
+        NewSegmentLayout newSegmentLayout = newSegmentLayoutRef.get();
         if (newSegmentLayout == null) {
             LogHelper.printException(() -> "toggleNewSegmentLayoutVisibility failure");
             return;
@@ -131,7 +131,7 @@ public class SponsorBlockViewController {
     }
 
     private static void setSkipButtonMargins(boolean fullScreen) {
-        SkipSponsorButton skipSponsorButton = SponsorBlockViewController.skipSponsorButton.get();
+        SkipSponsorButton skipSponsorButton = skipSponsorButtonRef.get();
         if (skipSponsorButton == null) {
             LogHelper.printException(() -> "setSkipButtonMargins failure");
             return;
@@ -147,7 +147,7 @@ public class SponsorBlockViewController {
     }
 
     private static void setSkipSponsorButtonVisibility(boolean visible) {
-        SkipSponsorButton skipSponsorButton = SponsorBlockViewController.skipSponsorButton.get();
+        SkipSponsorButton skipSponsorButton = skipSponsorButtonRef.get();
         if (skipSponsorButton == null) {
             LogHelper.printException(() -> "setSkipSponsorButtonVisibility failure");
             return;
@@ -165,7 +165,7 @@ public class SponsorBlockViewController {
     }
 
     private static void setNewSegmentLayoutMargins(boolean fullScreen) {
-        NewSegmentLayout newSegmentLayout = SponsorBlockViewController.newSegmentLayout.get();
+        NewSegmentLayout newSegmentLayout = newSegmentLayoutRef.get();
         if (newSegmentLayout == null) {
             LogHelper.printException(() -> "Unable to setNewSegmentLayoutMargins (button is null)");
             return;
@@ -181,7 +181,7 @@ public class SponsorBlockViewController {
     }
 
     private static void setNewSegmentLayoutVisibility(boolean visible) {
-        NewSegmentLayout newSegmentLayout = SponsorBlockViewController.newSegmentLayout.get();
+        NewSegmentLayout newSegmentLayout = newSegmentLayoutRef.get();
         if (newSegmentLayout == null) {
             LogHelper.printException(() -> "setNewSegmentLayoutVisibility failure");
             return;
@@ -199,7 +199,7 @@ public class SponsorBlockViewController {
     }
 
     private static void bringLayoutToFront() {
-        RelativeLayout layout = inlineSponsorOverlay.get();
+        RelativeLayout layout = inlineSponsorOverlayRef.get();
         if (layout != null) {
             // needed to keep skip button overtop end screen cards
             layout.bringToFront();
