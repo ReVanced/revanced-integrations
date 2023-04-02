@@ -184,7 +184,7 @@ public class ReVancedUtils {
      * If called off the main thread, this is the same as {@link #runOnMainThread(Runnable)}.
      */
     public static void runOnMainThreadNowOrLater(@NonNull Runnable runnable) {
-        if (currentlyIsOnMainThread()) {
+        if (isCurrentlyOnMainThread()) {
             runnable.run();
         } else {
             runOnMainThread(runnable);
@@ -194,7 +194,7 @@ public class ReVancedUtils {
     /**
      * @return if the calling thread is on the main thread
      */
-    public static boolean currentlyIsOnMainThread() {
+    public static boolean isCurrentlyOnMainThread() {
         return Looper.getMainLooper().isCurrentThread();
     }
 
@@ -202,7 +202,7 @@ public class ReVancedUtils {
      * @throws IllegalStateException if the calling thread is _off_ the main thread
      */
     public static void verifyOnMainThread() throws IllegalStateException {
-        if (!currentlyIsOnMainThread()) {
+        if (!isCurrentlyOnMainThread()) {
             throw new IllegalStateException("Must call _on_ the main thread");
         }
     }
@@ -211,7 +211,7 @@ public class ReVancedUtils {
      * @throws IllegalStateException if the calling thread is _on_ the main thread
      */
     public static void verifyOffMainThread() throws IllegalStateException {
-        if (currentlyIsOnMainThread()) {
+        if (isCurrentlyOnMainThread()) {
             throw new IllegalStateException("Must call _off_ the main thread");
         }
     }
