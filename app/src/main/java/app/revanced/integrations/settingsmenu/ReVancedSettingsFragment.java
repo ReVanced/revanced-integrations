@@ -12,7 +12,6 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Process;
 import android.preference.EditTextPreference;
-import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceScreen;
@@ -86,8 +85,7 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
         super.onCreate(bundle);
         getPreferenceManager().setSharedPreferencesName(SharedPrefHelper.SharedPrefNames.YOUTUBE.getName());
         try {
-            int identifier = getResources().getIdentifier("revanced_prefs", "xml", getPackageName());
-            addPreferencesFromResource(identifier);
+            addPreferencesFromResource(ReVancedUtils.getIdentifier("revanced_prefs", "xml"));
 
             SharedPreferences sharedPreferences = getPreferenceManager().getSharedPreferences();
             this.settingsInitialized = sharedPreferences.getBoolean("revanced_initialized", false);
