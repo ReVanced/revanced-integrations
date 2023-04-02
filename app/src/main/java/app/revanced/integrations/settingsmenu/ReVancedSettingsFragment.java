@@ -50,17 +50,17 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
                 EditTextPreference editPref = (EditTextPreference) pref;
                 Object value;
                 switch (setting.returnType) {
-                    case FLOAT:
-                        value = Float.parseFloat(editPref.getText());
+                    case INTEGER:
+                        value = Integer.parseInt(editPref.getText());
                         break;
                     case LONG:
                         value = Long.parseLong(editPref.getText());
                         break;
+                    case FLOAT:
+                        value = Float.parseFloat(editPref.getText());
+                        break;
                     case STRING:
                         value = editPref.getText();
-                        break;
-                    case INTEGER:
-                        value = Integer.parseInt(editPref.getText());
                         break;
                     default:
                         throw new IllegalStateException(setting.toString());
