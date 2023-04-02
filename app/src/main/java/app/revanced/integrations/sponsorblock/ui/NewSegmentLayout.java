@@ -1,10 +1,10 @@
 package app.revanced.integrations.sponsorblock.ui;
 
+import static app.revanced.integrations.utils.ReVancedUtils.getResourceDimensionPixelSize;
 import static app.revanced.integrations.utils.ReVancedUtils.getResourceIdentifier;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
-import android.content.res.Resources;
 import android.graphics.drawable.RippleDrawable;
 import android.util.AttributeSet;
 import android.util.TypedValue;
@@ -43,7 +43,7 @@ public class NewSegmentLayout extends FrameLayout {
         context.getTheme().resolveAttribute(android.R.attr.selectableItemBackground, rippleEffect, true);
         rippleEffectId = rippleEffect.resourceId;
 
-        // LinearLayout newSegmentContainer = this.findViewById(getIdentifier(context, "sb_new_segment_container", "id"));
+        // LinearLayout newSegmentContainer = findViewById(getResourceIdentifier(context, "sb_new_segment_container", "id"));
 
         ImageButton rewindButton = findViewById(getResourceIdentifier(context, "sb_new_segment_rewind", "id"));
         if (rewindButton == null) {
@@ -106,9 +106,8 @@ public class NewSegmentLayout extends FrameLayout {
             });
         }
 
-        Resources resources = context.getResources();
-        defaultBottomMargin = resources.getDimensionPixelSize(getResourceIdentifier(context, "brand_interaction_default_bottom_margin", "dimen"));
-        ctaBottomMargin = resources.getDimensionPixelSize(getResourceIdentifier(context, "brand_interaction_cta_bottom_margin", "dimen"));
+        defaultBottomMargin = getResourceDimensionPixelSize("brand_interaction_default_bottom_margin");
+        ctaBottomMargin = getResourceDimensionPixelSize("brand_interaction_cta_bottom_margin");
     }
 
     private void setClickEffect(ImageButton btn) {

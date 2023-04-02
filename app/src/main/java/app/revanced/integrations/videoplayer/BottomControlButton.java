@@ -30,15 +30,14 @@ public abstract class BottomControlButton {
                 LogHelper.printException(() -> "Couldn't find ImageView with id: " + viewId);
                 return;
             }
-
             imageView.setOnClickListener(onClickListener);
-
             button = new WeakReference<>(imageView);
+
             fadeIn = ReVancedUtils.getResourceAnimation("fade_in");
             fadeOut = ReVancedUtils.getResourceAnimation("fade_out");
-
             fadeIn.setDuration(ReVancedUtils.getResourceInteger("fade_duration_fast"));
             fadeOut.setDuration(ReVancedUtils.getResourceInteger("fade_duration_scheduled"));
+
             isShowing = true;
             setVisibility(false);
         } catch (Exception e) {

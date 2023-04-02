@@ -1,5 +1,8 @@
 package app.revanced.integrations.sponsorblock.ui;
 
+import static app.revanced.integrations.utils.ReVancedUtils.getResourceColor;
+import static app.revanced.integrations.utils.ReVancedUtils.getResourceDimension;
+import static app.revanced.integrations.utils.ReVancedUtils.getResourceDimensionPixelSize;
 import static app.revanced.integrations.utils.ReVancedUtils.getResourceIdentifier;
 import static app.revanced.integrations.utils.StringRef.str;
 
@@ -46,19 +49,18 @@ public class SkipSponsorButton extends FrameLayout {
         super(context, attributeSet, defStyleAttr, defStyleRes);
 
         LayoutInflater.from(context).inflate(getResourceIdentifier(context, "skip_sponsor_button", "layout"), this, true);  // layout:skip_ad_button
-        setMinimumHeight(getResources().getDimensionPixelSize(getResourceIdentifier(context, "ad_skip_ad_button_min_height", "dimen")));  // dimen:ad_skip_ad_button_min_height
+        setMinimumHeight(getResourceDimensionPixelSize("ad_skip_ad_button_min_height"));  // dimen:ad_skip_ad_button_min_height
         skipSponsorBtnContainer = Objects.requireNonNull((LinearLayout) findViewById(getResourceIdentifier(context, "sb_skip_sponsor_button_container", "id")));  // id:skip_ad_button_container
         background = new Paint();
-        background.setColor(context.getColor(getResourceIdentifier(context, "skip_ad_button_background_color", "color")));  // color:skip_ad_button_background_color);
+        background.setColor(getResourceColor("skip_ad_button_background_color"));  // color:skip_ad_button_background_color);
         background.setStyle(Paint.Style.FILL);
         border = new Paint();
-        border.setColor(context.getColor(getResourceIdentifier(context, "skip_ad_button_border_color", "color")));  // color:skip_ad_button_border_color);
-        border.setStrokeWidth(getResources().getDimension(getResourceIdentifier(context, "ad_skip_ad_button_border_width", "dimen")));  // dimen:ad_skip_ad_button_border_width);
+        border.setColor(getResourceColor("skip_ad_button_border_color"));  // color:skip_ad_button_border_color);
+        border.setStrokeWidth(getResourceDimension("ad_skip_ad_button_border_width"));  // dimen:ad_skip_ad_button_border_width);
         border.setStyle(Paint.Style.STROKE);
         skipSponsorTextView = Objects.requireNonNull((TextView) findViewById(getResourceIdentifier(context, "sb_skip_sponsor_button_text", "id")));  // id:skip_ad_button_text;
-        Resources resources = context.getResources();
-        defaultBottomMargin = resources.getDimensionPixelSize(getResourceIdentifier(context, "skip_button_default_bottom_margin", "dimen"));  // dimen:skip_button_default_bottom_margin
-        ctaBottomMargin = resources.getDimensionPixelSize(getResourceIdentifier(context, "skip_button_cta_bottom_margin", "dimen"));  // dimen:skip_button_cta_bottom_margin
+        defaultBottomMargin = getResourceDimensionPixelSize("skip_button_default_bottom_margin");  // dimen:skip_button_default_bottom_margin
+        ctaBottomMargin = getResourceDimensionPixelSize("skip_button_cta_bottom_margin");  // dimen:skip_button_cta_bottom_margin
         skipSponsorTextCompact = str("sb_skip_button_compact");  // string:skip_ads "Skip ads"
 
         skipSponsorBtnContainer.setOnClickListener(v -> {

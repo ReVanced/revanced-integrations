@@ -65,15 +65,15 @@ public class ReVancedUtils {
      * @return zero, if the resource is not found
      */
     @SuppressLint("DiscouragedApi")
-    public static int getResourceIdentifier(@NonNull Context context, @NonNull String name, @NonNull String type) {
-        return context.getResources().getIdentifier(name, type, context.getPackageName());
+    public static int getResourceIdentifier(@NonNull Context context, @NonNull String resourceIdentifierName, @NonNull String type) {
+        return context.getResources().getIdentifier(resourceIdentifierName, type, context.getPackageName());
     }
 
     /**
      * @return zero, if the resource is not found
      */
-    public static int getResourceIdentifier(@NonNull String name, @NonNull String defType) {
-        return getResourceIdentifier(getContext(), name, defType);
+    public static int getResourceIdentifier(@NonNull String resourceIdentifierName, @NonNull String type) {
+        return getResourceIdentifier(getContext(), resourceIdentifierName, type);
     }
 
     public static int getResourceInteger(@NonNull String resourceIdentifierName) throws Resources.NotFoundException {
@@ -83,6 +83,18 @@ public class ReVancedUtils {
     @NonNull
     public static Animation getResourceAnimation(@NonNull String resourceIdentifierName) throws Resources.NotFoundException {
         return AnimationUtils.loadAnimation(getContext(), getResourceIdentifier(resourceIdentifierName, "anim"));
+    }
+
+    public static int getResourceColor(@NonNull String resourceIdentifierName) throws Resources.NotFoundException {
+        return getContext().getResources().getColor(getResourceIdentifier(resourceIdentifierName, "color"));
+    }
+
+    public static int getResourceDimensionPixelSize(@NonNull String resourceIdentifierName) throws Resources.NotFoundException {
+        return getContext().getResources().getDimensionPixelSize(getResourceIdentifier(resourceIdentifierName, "dimen"));
+    }
+
+    public static float getResourceDimension(@NonNull String resourceIdentifierName) throws Resources.NotFoundException {
+        return getContext().getResources().getDimension(getResourceIdentifier(resourceIdentifierName, "dimen"));
     }
 
     public static Context getContext() {
