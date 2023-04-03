@@ -5,6 +5,7 @@ import androidx.annotation.NonNull;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Method;
 
+import app.revanced.integrations.patches.playback.speed.RememberPlaybackSpeedPatch;
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedUtils;
 
@@ -12,6 +13,7 @@ import app.revanced.integrations.utils.ReVancedUtils;
  * Hooking class for the current playing video.
  */
 public final class VideoInformation {
+    private static final float DEFAULT_YOUTUBE_PLAYBACK_SPEED = 1.0f;
     private static final String SEEK_METHOD_NAME = "seekTo";
 
     private static WeakReference<Object> playerController;
@@ -21,6 +23,10 @@ public final class VideoInformation {
     private static String videoId = "";
     private static long videoLength = 0;
     private static volatile long videoTime = -1; // must be volatile. Value is set off main thread from high precision patch hook
+    /**
+     * The current playback speed
+     */
+    private static float playbackSpeed = DEFAULT_YOUTUBE_PLAYBACK_SPEED;
 
     /**
      * Injection point.
@@ -50,6 +56,30 @@ public final class VideoInformation {
         if (!videoId.equals(newlyLoadedVideoId)) {
             LogHelper.printDebug(() -> "New video id: " + newlyLoadedVideoId);
             videoId = newlyLoadedVideoId;
+            playbackSpeed = DEFAULT_YOUTUBE_PLAYBACK_SPEED;
+        }
+    }
+
+    /**
+     * Injection point.
+     * Called when user selects a playback speed.
+     *
+     * @param playbackSpeed The playback speed the user selected
+     */
+    public static void userSelectedPlaybackSpeed(float playbackSpeed) {
+        LogHelper.printDebug(() -> "User selected playback speed: " + playbackSpeed);
+        VideoInformation.playbackSpeed = playbackSpeed;
+    }
+
+    /**
+     * Overrides the current playback speed.
+     *
+     * <b> Used exclusively by {@link RememberPlaybackSpeedPatch} </b>
+     */
+    public static void overridePlaybackSpeed(float playbackSpeed) {
+        if (VideoInformation.playbackSpeed != playbackSpeed) {
+            LogHelper.printDebug(() -> "Overriding playback speed to: " + playbackSpeed);
+            VideoInformation.playbackSpeed = playbackSpeed;
         }
     }
 
@@ -113,6 +143,13 @@ public final class VideoInformation {
     @NonNull
     public static String getCurrentVideoId() {
         return videoId;
+    }
+
+    /**
+     * @return The current playback speed.
+     */
+    public static float getCurrentPlaybackSpeed() {
+        return playbackSpeed;
     }
 
     /**

@@ -3,8 +3,8 @@ package app.revanced.integrations.patches.playback.speed;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import app.revanced.integrations.patches.VideoInformation;
 import app.revanced.integrations.settings.SettingsEnum;
-import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedUtils;
 
 public final class RememberPlaybackSpeedPatch {
@@ -20,10 +20,8 @@ public final class RememberPlaybackSpeedPatch {
         if (videoId.equals(currentVideoId)) {
             return;
         }
-
         currentVideoId = videoId;
-        CurrentPlaybackSpeedPatch.setCurrentPlaybackSpeed(
-                SettingsEnum.REMEMBER_PLAYBACK_SPEED_LAST_SELECTED_VALUE.getFloat());
+        VideoInformation.overridePlaybackSpeed(SettingsEnum.REMEMBER_PLAYBACK_SPEED_LAST_SELECTED_VALUE.getFloat());
     }
 
     /**
@@ -35,8 +33,9 @@ public final class RememberPlaybackSpeedPatch {
     public static void userSelectedPlaybackSpeed(float playbackSpeed) {
         if (SettingsEnum.REMEMBER_PLAYBACK_SPEED_LAST_SELECTED.getBoolean()) {
             SettingsEnum.REMEMBER_PLAYBACK_SPEED_LAST_SELECTED_VALUE.saveValue(playbackSpeed);
-            ReVancedUtils.showToastLong("Remembering playback speed: " + playbackSpeed + "x");
 
+            // TODO: extract these strings into localized file
+            ReVancedUtils.showToastLong("Remembering playback speed: " + playbackSpeed + "x");
         } else if (playbackSpeed != (float) SettingsEnum.REMEMBER_PLAYBACK_SPEED_LAST_SELECTED_VALUE.getDefaultValue()) {
             ReVancedUtils.showToastLong("Applying playback speed: " + playbackSpeed + "x");
         }
@@ -47,6 +46,6 @@ public final class RememberPlaybackSpeedPatch {
      * Overrides the video speed.  Called after video loads, and immediately after user selects a different playback speed
      */
     public static float getVideoSpeedOverride() {
-        return CurrentPlaybackSpeedPatch.getCurrentPlaybackSpeed();
+        return VideoInformation.getCurrentPlaybackSpeed();
     }
 }
