@@ -154,7 +154,7 @@ public class SpoofSignatureVerificationPatch {
             this.replacementAv = replacementAv;
         }
 
-        boolean match(float ap, float ah, float av, boolean vs, boolean sd) {
+        boolean match(int ap, int ah, int av, boolean vs, boolean sd) {
             return this.ap == ap && this.ah == ah && this.av == av && this.vs == vs && this.sd == sd;
         }
 
