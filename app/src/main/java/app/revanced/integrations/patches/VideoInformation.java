@@ -64,11 +64,11 @@ public final class VideoInformation {
      * Injection point.
      * Called when user selects a playback speed.
      *
-     * @param playbackSpeed The playback speed the user selected
+     * @param userSelectedPlaybackSpeed The playback speed the user selected
      */
-    public static void userSelectedPlaybackSpeed(float playbackSpeed) {
-        LogHelper.printDebug(() -> "User selected playback speed: " + playbackSpeed);
-        VideoInformation.playbackSpeed = playbackSpeed;
+    public static void userSelectedPlaybackSpeed(float userSelectedPlaybackSpeed) {
+        LogHelper.printDebug(() -> "User selected playback speed: " + userSelectedPlaybackSpeed);
+        playbackSpeed = userSelectedPlaybackSpeed;
     }
 
     /**
@@ -76,10 +76,10 @@ public final class VideoInformation {
      *
      * <b> Used exclusively by {@link RememberPlaybackSpeedPatch} </b>
      */
-    public static void overridePlaybackSpeed(float playbackSpeed) {
-        if (VideoInformation.playbackSpeed != playbackSpeed) {
-            LogHelper.printDebug(() -> "Overriding playback speed to: " + playbackSpeed);
-            VideoInformation.playbackSpeed = playbackSpeed;
+    public static void overridePlaybackSpeed(float speedOverride) {
+        if (playbackSpeed != speedOverride) {
+            LogHelper.printDebug(() -> "Overriding playback speed to: " + speedOverride);
+            playbackSpeed = speedOverride;
         }
     }
 
