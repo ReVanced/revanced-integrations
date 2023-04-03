@@ -123,7 +123,7 @@ public class SpoofSignatureVerificationPatch {
                     return setting.replacementSetting();
                 }
             }
-            // Parameters are either subtitles with custom positions, or a set of unidentified default parameters.
+            // Parameters are either subtitles with custom positions, or a set of unidentified (and incorrect) default parameters.
             // The subtitles could be forced to the bottom no matter what, but that would override custom screen positions.
             // For now, just return the original parameters.
         }
