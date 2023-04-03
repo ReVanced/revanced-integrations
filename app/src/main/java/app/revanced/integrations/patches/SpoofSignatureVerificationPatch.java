@@ -104,7 +104,7 @@ public class SpoofSignatureVerificationPatch {
 
         // Videos with custom captions that specify screen positions appear to always have correct screen positions (even with spoofing).
         // But for auto generated and most other captions, the spoof incorrectly gives various default Shorts caption settings.
-        // Check for these known default shorts captions data, and replace with correct values.
+        // Check for these known default shorts captions parameters, and replace with the known correct values.
         if (signatureSpoofing && !PlayerType.getCurrent().isNoneOrHidden()) { // video is not a Short or Story
             for (SubtitleWindowReplacementSettings setting : SubtitleWindowReplacementSettings.values()) {
                 if (setting.match(ap, ah, av, vs, sd)) {
