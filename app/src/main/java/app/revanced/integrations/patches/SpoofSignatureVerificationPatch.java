@@ -122,7 +122,7 @@ public class SpoofSignatureVerificationPatch {
 
 
     /**
-     * Known incorrect default Shorts subtitle parameters, and the corresponding (non-Shorts) correct values.
+     * Known incorrect default Shorts subtitle parameters, and the corresponding correct (non-Shorts) values.
      */
     private enum SubtitleWindowReplacementSettings {
         DEFAULT_SHORTS_PARAMETERS_1(9, 20, 0, true, false,
