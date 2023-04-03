@@ -135,7 +135,7 @@ public enum SettingsEnum {
     // Debug settings
     DEBUG("revanced_debug_enabled", BOOLEAN, FALSE),
     DEBUG_STACKTRACE("revanced_debug_stacktrace_enabled", BOOLEAN, FALSE, parents(DEBUG)),
-    DEBUG_SHOW_TOAST_ON_ERROR("revanced_debug_toast_on_error_enabled", BOOLEAN, TRUE),
+    DEBUG_SHOW_TOAST_ON_ERROR("revanced_debug_toast_on_error_enabled", BOOLEAN, TRUE, "revanced_debug_toast_on_error_user_dialog_message"),
 
     // ReturnYoutubeDislike settings
     RYD_ENABLED("ryd_enabled", BOOLEAN, TRUE, RETURN_YOUTUBE_DISLIKE),
