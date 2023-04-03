@@ -80,18 +80,6 @@ public class SpoofSignatureVerificationPatch {
     private static boolean lastVs, lastSd;
 
     /**
-     * Known incorrect default Shorts subtitle parameters, and the corresponding (non-Shorts) correct values.
-     */
-    private static final SubtitleWindowReplacementSettings[] knownReplacements = {
-            new SubtitleWindowReplacementSettings(9, 20, 0, true, false,
-                    34, 50, 90),
-            new SubtitleWindowReplacementSettings(10, 50, 0, true, false,
-                    34, 50, 95),
-            new SubtitleWindowReplacementSettings(9, 20, 0, true, true,
-                    33, 20, 100),
-    };
-
-    /**
      * Injection point.  Overrides values passed into SubtitleWindowSettings constructor.
      *
      * @param ap anchor position. A bitmask with 6 bit fields, that appears to indicate the layout position on screen
@@ -118,7 +106,7 @@ public class SpoofSignatureVerificationPatch {
         // But for auto generated and most other captions, the spoof incorrectly gives various default Shorts caption settings.
         // Check for these known default shorts captions data, and replace with correct values.
         if (signatureSpoofing && !PlayerType.getCurrent().isNoneOrHidden()) { // video is not a Short or Story
-            for (SubtitleWindowReplacementSettings setting : knownReplacements) {
+            for (SubtitleWindowReplacementSettings setting : SubtitleWindowReplacementSettings.values()) {
                 if (setting.match(ap, ah, av, vs, sd)) {
                     return setting.replacementSetting();
                 }
@@ -133,8 +121,17 @@ public class SpoofSignatureVerificationPatch {
     }
 
 
-    // set of known parameters, and the corresponding (non shorts) correct subtitle values
-    private static class SubtitleWindowReplacementSettings {
+    /**
+     * Known incorrect default Shorts subtitle parameters, and the corresponding (non-Shorts) correct values.
+     */
+    private enum SubtitleWindowReplacementSettings {
+        DEFAULT_SHORTS_PARAMETERS_1(9, 20, 0, true, false,
+                34, 50, 90),
+        DEFAULT_SHORTS_PARAMETERS_2(10, 50, 0, true, false,
+                34, 50, 95),
+        DEFAULT_SHORTS_PARAMETERS_3(9, 20, 0, true, true,
+                33, 20, 100);
+
         // original values
         final int ap, ah, av;
         final boolean vs, sd;
