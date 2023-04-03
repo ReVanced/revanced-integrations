@@ -45,7 +45,7 @@ public final class RememberPlaybackSpeedPatch {
      * Injection point.
      * Overrides the video speed.  Called after video loads, and immediately after user selects a different playback speed
      */
-    public static float getVideoSpeedOverride() {
+    public static float getPlaybackSpeedOverride() {
         return VideoInformation.getCurrentPlaybackSpeed();
     }
 }
