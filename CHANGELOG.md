@@ -1,3 +1,10 @@
+# [0.102.0-dev.6](https://github.com/revanced/revanced-integrations/compare/v0.102.0-dev.5...v0.102.0-dev.6) (2023-04-04)
+
+
+### Bug Fixes
+
+* **youtube/spoof-signature-verification:** additional fixes for subtitle locations ([#346](https://github.com/revanced/revanced-integrations/issues/346)) ([09af69d](https://github.com/revanced/revanced-integrations/commit/09af69de62093d963bd5ee526261c7a548d8ff8c))
+
 # [0.102.0-dev.5](https://github.com/revanced/revanced-integrations/compare/v0.102.0-dev.4...v0.102.0-dev.5) (2023-04-02)
 
 
