@@ -1,3 +1,10 @@
+# [0.102.0-dev.5](https://github.com/revanced/revanced-integrations/compare/v0.102.0-dev.4...v0.102.0-dev.5) (2023-04-02)
+
+
+### Bug Fixes
+
+* **youtube:** updated http user agent ([#344](https://github.com/revanced/revanced-integrations/issues/344)) ([09a59ee](https://github.com/revanced/revanced-integrations/commit/09a59eea6912ebce143d74b98aa8833ba63a6494))
+
 # [0.102.0-dev.4](https://github.com/revanced/revanced-integrations/compare/v0.102.0-dev.3...v0.102.0-dev.4) (2023-04-02)
 
 
