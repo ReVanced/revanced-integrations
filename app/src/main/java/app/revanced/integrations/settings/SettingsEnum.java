@@ -173,6 +173,9 @@ public enum SettingsEnum {
     public final SharedPrefCategory sharedPref;
     @NonNull
     public final ReturnType returnType;
+    /**
+     * If the app should be rebooted, if this setting is changed
+     */
     public final boolean rebootApp;
     /**
      * Set of boolean parent settings.
@@ -193,8 +196,8 @@ public enum SettingsEnum {
     @Nullable
     public final StringRef userDialogMessage;
 
-    // must be volatile, as some settings are read/write from different threads
-    // of note, the object value is persistently stored using SharedPreferences (which is thread safe)
+    // Must be volatile, as some settings are read/write from different threads.
+    // Of note, the object value is persistently stored using SharedPreferences (which is thread safe).
     @NonNull
     private volatile Object value;
 
@@ -312,14 +315,14 @@ public enum SettingsEnum {
      * Sets, but does _not_ persistently save the value.
      *
      * This intentionally is a static method, to deter accidental usage
-     * when {@link #saveValue(Object)} was intended
+     * when {@link #saveValue(Object)} was intended.
      */
     public static void setValue(@NonNull SettingsEnum setting, @NonNull Object newValue) {
         setting.value = Objects.requireNonNull(newValue);
     }
 
     /**
-     * Sets the value, and persistently saves it
+     * Sets the value, and persistently saves it.
      */
     public void saveValue(@NonNull Object newValue) {
         Objects.requireNonNull(newValue);
@@ -346,7 +349,9 @@ public enum SettingsEnum {
     }
 
     /**
-     * @return if this setting can be configured and used.  Not to be confused with {@link #getBoolean()}
+     * @return if this setting can be configured and used.
+     *
+     * Not to be confused with {@link #getBoolean()}
      */
     public boolean isAvailable() {
         if (parents == null) {

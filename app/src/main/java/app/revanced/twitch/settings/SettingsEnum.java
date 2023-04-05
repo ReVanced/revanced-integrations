@@ -33,6 +33,9 @@ public enum SettingsEnum {
     public final ReturnType returnType;
     @NonNull
     public final Object defaultValue;
+    /**
+     * If the app should be rebooted, if this setting is changed
+     */
     public final boolean rebootApp;
 
     private Object value;
@@ -91,7 +94,7 @@ public enum SettingsEnum {
      * Sets, but does _not_ persistently save the value.
      *
      * This intentionally is a static method, to deter accidental usage
-     * when {@link #saveValue(Object)} was intended
+     * when {@link #saveValue(Object)} was intended.
      */
     public static void setValue(SettingsEnum setting, Object newValue) {
         setting.setValue(newValue);
