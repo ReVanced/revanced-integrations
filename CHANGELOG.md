@@ -1,3 +1,17 @@
+# [0.102.0-dev.4](https://github.com/revanced/revanced-integrations/compare/v0.102.0-dev.3...v0.102.0-dev.4) (2023-04-06)
+
+
+### Bug Fixes
+
+* **youtube/settings:** fix dialog not shown if dismissed with back button ([3cc907e](https://github.com/revanced/revanced-integrations/commit/3cc907e59854ae431b5a3c2d2e1e3b359881a9c8))
+* **youtube/sponsorblock:** update HTTP user agent ([#344](https://github.com/revanced/revanced-integrations/issues/344)) ([f8c88c6](https://github.com/revanced/revanced-integrations/commit/f8c88c67347569eb875bac2a50d2b612eafa7e82))
+* **youtube/spoof-signature-verification:** additional fixes for subtitle locations ([#346](https://github.com/revanced/revanced-integrations/issues/346)) ([a976587](https://github.com/revanced/revanced-integrations/commit/a976587c2aa4f860d78df1accbc7b957ddc286ac))
+
+
+### Features
+
+* **youtube/settings:** disable preference control if the feature is turned off.  show a dialog explaining side effects of some patches ([#328](https://github.com/revanced/revanced-integrations/issues/328)) ([dcde6dd](https://github.com/revanced/revanced-integrations/commit/dcde6dd0aca6ae8a2d19f92895bc8f7cf309e145))
+
 # [0.102.0-dev.3](https://github.com/revanced/revanced-integrations/compare/v0.102.0-dev.2...v0.102.0-dev.3) (2023-04-01)
 
 
