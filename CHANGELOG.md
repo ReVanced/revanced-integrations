@@ -1,3 +1,10 @@
+# [0.102.0-dev.5](https://github.com/revanced/revanced-integrations/compare/v0.102.0-dev.4...v0.102.0-dev.5) (2023-04-07)
+
+
+### Bug Fixes
+
+* **youtube/return-youtube-dislike:** fix error toast when voting ([#349](https://github.com/revanced/revanced-integrations/issues/349)) ([2b7db68](https://github.com/revanced/revanced-integrations/commit/2b7db6812179c9a132ba6aed6c5324603b282ad0))
+
 # [0.102.0-dev.4](https://github.com/revanced/revanced-integrations/compare/v0.102.0-dev.3...v0.102.0-dev.4) (2023-04-06)
 
 
