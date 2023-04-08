@@ -74,7 +74,7 @@ public class SponsorBlockUtils {
         @Override
         public void onClick(DialogInterface dialog, int which) {
             try {
-                SegmentCategory category = SegmentCategory.valuesWithoutUnsubmitted()[which];
+                SegmentCategory category = SegmentCategory.categoriesWithoutUnsubmitted()[which];
                 boolean enableButton;
                 if (category.behaviour == CategoryBehaviour.IGNORE) {
                     ReVancedUtils.showToastLong(str("sb_new_segment_disabled_category"));
@@ -100,7 +100,7 @@ public class SponsorBlockUtils {
                 Context context = ((AlertDialog) dialog).getContext();
                 dialog.dismiss();
 
-                SegmentCategory[] categories = SegmentCategory.valuesWithoutUnsubmitted();
+                SegmentCategory[] categories = SegmentCategory.categoriesWithoutUnsubmitted();
                 CharSequence[] titles = new CharSequence[categories.length];
                 for (int i = 0, length = categories.length; i < length; i++) {
                     titles[i] = categories[i].getTitleWithColorDot();
@@ -335,7 +335,7 @@ public class SponsorBlockUtils {
     private static void onNewCategorySelect(@NonNull SponsorSegment segment, @NonNull Context context) {
         try {
             ReVancedUtils.verifyOnMainThread();
-            final SegmentCategory[] values = SegmentCategory.valuesWithoutUnsubmitted();
+            final SegmentCategory[] values = SegmentCategory.categoriesWithoutUnsubmitted();
             CharSequence[] titles = new CharSequence[values.length];
             for (int i = 0; i < values.length; i++) {
                 titles[i] = values[i].getTitleWithColorDot();

@@ -350,7 +350,7 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment {
             segmentCategory.removeAll();
 
             Activity activity = getActivity();
-            for (SegmentCategory category : SegmentCategory.valuesWithoutUnsubmitted()) {
+            for (SegmentCategory category : SegmentCategory.categoriesWithoutUnsubmitted()) {
                 segmentCategory.addPreference(new SegmentCategoryListPreference(activity, category));
             }
         } catch (Exception ex) {

@@ -51,7 +51,7 @@ public enum SegmentCategory {
     UNSUBMITTED("unsubmitted", StringRef.empty, StringRef.empty, sf("sb_skip_button_unsubmitted"), sf("sb_skipped_unsubmitted"),
             SKIP_AUTOMATICALLY, true, 0xFFFFFF);
 
-    private static final SegmentCategory[] mValuesWithoutUnsubmitted = new SegmentCategory[]{
+    private static final SegmentCategory[] categoriesWithoutUnsubmitted = new SegmentCategory[]{
             SPONSOR,
             SELF_PROMO,
             INTERACTION,
@@ -62,7 +62,7 @@ public enum SegmentCategory {
             FILLER,
             MUSIC_OFFTOPIC,
     };
-    private static final Map<String, SegmentCategory> mValuesMap = new HashMap<>(2 * mValuesWithoutUnsubmitted.length);
+    private static final Map<String, SegmentCategory> mValuesMap = new HashMap<>(2 * categoriesWithoutUnsubmitted.length);
 
     private static final String COLOR_PREFERENCE_KEY_SUFFIX = "_color";
 
@@ -72,13 +72,13 @@ public enum SegmentCategory {
     public static String sponsorBlockAPIFetchCategories = "[]";
 
     static {
-        for (SegmentCategory value : mValuesWithoutUnsubmitted)
+        for (SegmentCategory value : categoriesWithoutUnsubmitted)
             mValuesMap.put(value.key, value);
     }
 
     @NonNull
-    public static SegmentCategory[] valuesWithoutUnsubmitted() {
-        return mValuesWithoutUnsubmitted;
+    public static SegmentCategory[] categoriesWithoutUnsubmitted() {
+        return categoriesWithoutUnsubmitted;
     }
 
     @Nullable
@@ -89,7 +89,7 @@ public enum SegmentCategory {
     public static void loadFromPreferences() {
         SharedPreferences preferences = SharedPrefCategory.SPONSOR_BLOCK.preferences;
         LogHelper.printDebug(() -> "loadFromPreferences");
-        for (SegmentCategory category : valuesWithoutUnsubmitted()) {
+        for (SegmentCategory category : categoriesWithoutUnsubmitted()) {
             category.load(preferences);
         }
         updateEnabledCategories();
@@ -99,7 +99,7 @@ public enum SegmentCategory {
      * Must be called if behavior of any category is changed
      */
     public static void updateEnabledCategories() {
-        SegmentCategory[] categories = valuesWithoutUnsubmitted();
+        SegmentCategory[] categories = categoriesWithoutUnsubmitted();
         List<String> enabledCategories = new ArrayList<>(categories.length);
         for (SegmentCategory category : categories) {
             if (category.behaviour != CategoryBehaviour.IGNORE) {

@@ -29,7 +29,7 @@ public class SponsorBlockSettings {
             JSONObject barTypesObject = settingsJson.getJSONObject("barTypes");
             JSONArray categorySelectionsArray = settingsJson.getJSONArray("categorySelections");
 
-            for (SegmentCategory category : SegmentCategory.valuesWithoutUnsubmitted()) {
+            for (SegmentCategory category : SegmentCategory.categoriesWithoutUnsubmitted()) {
                 // clear existing behavior, as browser plugin exports no value for ignored categories
                 category.behaviour = CategoryBehaviour.IGNORE;
                 JSONObject categoryObject = barTypesObject.getJSONObject(category.key);
@@ -59,7 +59,7 @@ public class SponsorBlockSettings {
             SegmentCategory.updateEnabledCategories();
 
             SharedPreferences.Editor editor = SharedPrefCategory.SPONSOR_BLOCK.preferences.edit();
-            for (SegmentCategory category : SegmentCategory.valuesWithoutUnsubmitted()) {
+            for (SegmentCategory category : SegmentCategory.categoriesWithoutUnsubmitted()) {
                 category.save(editor);
             }
             editor.apply();
@@ -120,7 +120,7 @@ public class SponsorBlockSettings {
             JSONObject barTypesObject = new JSONObject(); // categories' colors
             JSONArray categorySelectionsArray = new JSONArray(); // categories' behavior
 
-            SegmentCategory[] categories = SegmentCategory.valuesWithoutUnsubmitted();
+            SegmentCategory[] categories = SegmentCategory.categoriesWithoutUnsubmitted();
             for (SegmentCategory category : categories) {
                 JSONObject categoryObject = new JSONObject();
                 String categoryKey = category.key;
