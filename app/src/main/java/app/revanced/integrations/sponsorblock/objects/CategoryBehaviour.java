@@ -11,10 +11,10 @@ import app.revanced.integrations.utils.ReVancedUtils;
 import app.revanced.integrations.utils.StringRef;
 
 public enum CategoryBehaviour {
-    SKIP_AUTOMATICALLY("skip", 2, true, sf("sb_skip_automatically"), sf("sb_skip_automatically_highlight")),
+    SKIP_AUTOMATICALLY("skip", 2, true, sf("sb_skip_automatically")),
     // desktop does not have skip-once behavior. Key is unique to ReVanced
     SKIP_AUTOMATICALLY_ONCE("skip-once", 4, true, sf("sb_skip_automatically_once")),
-    MANUAL_SKIP("manual-skip", 1, false, sf("sb_skip_showbutton"), sf("sb_skip_showbutton_highlight")),
+    MANUAL_SKIP("manual-skip", 1, false, sf("sb_skip_showbutton")),
     SHOW_IN_SEEKBAR("seekbar-only", 0, false, sf("sb_skip_seekbaronly")),
     // Ignore is the default behavior if no desktop behavior key is present
     IGNORE("ignore", 3, false, sf("sb_skip_ignore"));
@@ -28,23 +28,13 @@ public enum CategoryBehaviour {
     public final boolean skipAutomatically;
     @NonNull
     public final StringRef description;
-    /**
-     * Applies only to {@link SegmentCategory#HIGHLIGHT}
-     */
-    @NonNull
-    public final StringRef descriptionForHighlightCategory;
-
-    CategoryBehaviour(String key, int desktopKey, boolean skipAutomatically, StringRef description) {
-        this(key, desktopKey, skipAutomatically, description, description);
-    }
 
     CategoryBehaviour(String key, int desktopKey, boolean skipAutomatically,
-                      StringRef description, StringRef descriptionForHighlightCategory) {
+                      StringRef description) {
         this.key = Objects.requireNonNull(key);
         this.desktopKey = desktopKey;
         this.skipAutomatically = skipAutomatically;
         this.description = Objects.requireNonNull(description);
-        this.descriptionForHighlightCategory = Objects.requireNonNull(descriptionForHighlightCategory);
     }
 
     @Nullable
@@ -69,11 +59,9 @@ public enum CategoryBehaviour {
 
     private static String[] behaviorKeys;
     private static String[] behaviorDescriptions;
-    /**
-     * All keys and descriptions that can be used for {@link SegmentCategory#HIGHLIGHT}
-     */
-    private static String[] behaviorKeysHighlightCategory;
-    private static String[] behaviorDescriptionsHighlightCategory;
+
+    private static String[] behaviorKeysWithoutSkipOnce;
+    private static String[] behaviorDescriptionsWithoutSkipOnce;
 
     private static void createNameAndKeyArrays() {
         ReVancedUtils.verifyOnMainThread();
@@ -82,19 +70,20 @@ public enum CategoryBehaviour {
         final int behaviorLength = behaviours.length;
         behaviorKeys = new String[behaviorLength];
         behaviorDescriptions = new String[behaviorLength];
-        behaviorKeysHighlightCategory = new String[behaviorLength - 1];
-        behaviorDescriptionsHighlightCategory = new String[behaviorLength - 1];
+        behaviorKeysWithoutSkipOnce = new String[behaviorLength - 1];
+        behaviorDescriptionsWithoutSkipOnce = new String[behaviorLength - 1];
 
         int behaviorIndex = 0, behaviorHighlightIndex = 0;
         while (behaviorIndex < behaviorLength) {
             CategoryBehaviour behaviour = behaviours[behaviorIndex];
             String key = behaviour.key;
+            String description = behaviour.description.toString();
             behaviorKeys[behaviorIndex] = key;
-            behaviorDescriptions[behaviorIndex] = behaviour.description.toString();
+            behaviorDescriptions[behaviorIndex] = description;
             behaviorIndex++;
             if (behaviour != SKIP_AUTOMATICALLY_ONCE) {
-                behaviorKeysHighlightCategory[behaviorHighlightIndex] = key;
-                behaviorDescriptionsHighlightCategory[behaviorHighlightIndex] = behaviour.descriptionForHighlightCategory.toString();
+                behaviorKeysWithoutSkipOnce[behaviorHighlightIndex] = key;
+                behaviorDescriptionsWithoutSkipOnce[behaviorHighlightIndex] = description;
                 behaviorHighlightIndex++;
             }
         }
@@ -106,11 +95,11 @@ public enum CategoryBehaviour {
         }
         return behaviorKeys;
     }
-    static String[] getBehaviorKeysHighlightCategory() {
-        if (behaviorKeysHighlightCategory == null) {
+    static String[] getBehaviorKeysWithoutSkipOnce() {
+        if (behaviorKeysWithoutSkipOnce == null) {
             createNameAndKeyArrays();
         }
-        return behaviorKeysHighlightCategory;
+        return behaviorKeysWithoutSkipOnce;
     }
 
     static String[] getBehaviorDescriptions() {
@@ -119,10 +108,10 @@ public enum CategoryBehaviour {
         }
         return behaviorDescriptions;
     }
-    static String[] getBehaviorDescriptionsHighlightCategory() {
-        if (behaviorDescriptionsHighlightCategory == null) {
+    static String[] getBehaviorDescriptionsWithoutSkipOnce() {
+        if (behaviorDescriptionsWithoutSkipOnce == null) {
             createNameAndKeyArrays();
         }
-        return behaviorDescriptionsHighlightCategory;
+        return behaviorDescriptionsWithoutSkipOnce;
     }
 }

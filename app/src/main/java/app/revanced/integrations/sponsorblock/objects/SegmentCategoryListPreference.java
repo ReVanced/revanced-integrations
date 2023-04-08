@@ -34,10 +34,10 @@ public class SegmentCategoryListPreference extends ListPreference {
         setKey(category.key);
         setDefaultValue(category.behaviour.key);
         setEntries(isHighlightCategory
-                ? CategoryBehaviour.getBehaviorDescriptionsHighlightCategory()
+                ? CategoryBehaviour.getBehaviorDescriptionsWithoutSkipOnce()
                 : CategoryBehaviour.getBehaviorDescriptions());
         setEntryValues(isHighlightCategory
-                ? CategoryBehaviour.getBehaviorKeysHighlightCategory()
+                ? CategoryBehaviour.getBehaviorKeysWithoutSkipOnce()
                 : CategoryBehaviour.getBehaviorKeys());
         setSummary(category.description.toString());
         updateTitle();
