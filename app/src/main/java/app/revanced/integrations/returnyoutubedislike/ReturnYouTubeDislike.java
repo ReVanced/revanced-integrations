@@ -278,11 +278,11 @@ public class ReturnYouTubeDislike {
     /**
      * Injection point.
      */
-    public static Spanned onShortsComponentCreated(@NonNull Spanned span) {
+    public static Spanned onShortsComponentCreated(@NonNull Spanned original) {
         try {
             if (SettingsEnum.RYD_ENABLED.getBoolean()) {
                 lastVideoLoadedWasShort = true;
-                Spanned replacement = waitForFetchAndUpdateReplacementSpan(span, false);
+                Spanned replacement = waitForFetchAndUpdateReplacementSpan(original, false);
                 if (replacement != null) {
                     return replacement;
                 }
@@ -290,7 +290,7 @@ public class ReturnYouTubeDislike {
         } catch (Exception ex) {
             LogHelper.printException(() -> "onShortsComponentCreated failure", ex);
         }
-        return span;
+        return original;
     }
 
     // alternatively, this could check if the span contains one of the custom created spans, but this is simple and quick
@@ -329,8 +329,8 @@ public class ReturnYouTubeDislike {
                             // then the app is closed then reopened (causes a call of NewVideoId() of the original videoId)
                             // The original video (that was opened the entire time), is still showing the dislikes count
                             // but the oldSpannable is now null because it was reset when the videoId was set again
-                            LogHelper.printDebug(() -> "Cannot add dislikes - original span is null" +
-                                    " (short was opened/closed, then app was closed/opened?) "); // ignore, with no toast
+                            LogHelper.printDebug(() -> "Cannot add dislikes - original span is null"
+                                    + " (short was opened/closed, then app was minimized/restored?) "); // ignore, with no toast
                             return null;
                         }
                     } else {
@@ -410,9 +410,7 @@ public class ReturnYouTubeDislike {
                 }
             });
 
-            synchronized (videoIdLockObject) {
-                replacementLikeDislikeSpan = null; // ui values need updating
-            }
+            clearCache(); // ui values need updating
 
             // update the downloaded vote data
             Future<RYDVoteData> future = getVoteFetchFuture();
