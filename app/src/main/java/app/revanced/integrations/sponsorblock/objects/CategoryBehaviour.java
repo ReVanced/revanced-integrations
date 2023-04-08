@@ -11,32 +11,40 @@ import app.revanced.integrations.utils.ReVancedUtils;
 import app.revanced.integrations.utils.StringRef;
 
 public enum CategoryBehaviour {
-    SKIP_AUTOMATICALLY("skip", 2, sf("sb_skip_automatically"), true),
+    SKIP_AUTOMATICALLY("skip", 2, true, sf("sb_skip_automatically"), sf("sb_skip_automatically_highlight")),
     // desktop does not have skip-once behavior. Key is unique to ReVanced
-    SKIP_AUTOMATICALLY_ONCE("skip-once", 4, sf("sb_skip_automatically_once"), true),
-    MANUAL_SKIP("manual-skip", 1, sf("sb_skip_showbutton"), false),
-    SHOW_IN_SEEKBAR("seekbar-only", 0, sf("sb_skip_seekbaronly"), false),
+    SKIP_AUTOMATICALLY_ONCE("skip-once", 4, true, sf("sb_skip_automatically_once")),
+    MANUAL_SKIP("manual-skip", 1, false, sf("sb_skip_showbutton"), sf("sb_skip_showbutton_highlight")),
+    SHOW_IN_SEEKBAR("seekbar-only", 0, false, sf("sb_skip_seekbaronly")),
     // Ignore is the default behavior if no desktop behavior key is present
-    IGNORE("ignore", 3, sf("sb_skip_ignore"), false);
+    IGNORE("ignore", 3, false, sf("sb_skip_ignore"));
 
     @NonNull
     public final String key;
     public final int desktopKey;
-    @NonNull
-    public final StringRef name;
     /**
      * If the segment should skip automatically
      */
-    public final boolean skip;
+    public final boolean skipAutomatically;
+    @NonNull
+    public final StringRef description;
+    /**
+     * Applies only to {@link SegmentCategory#HIGHLIGHT}
+     */
+    @NonNull
+    public final StringRef descriptionForHighlightCategory;
 
-    CategoryBehaviour(String key,
-                      int desktopKey,
-                      StringRef name,
-                      boolean skip) {
+    CategoryBehaviour(String key, int desktopKey, boolean skipAutomatically, StringRef description) {
+        this(key, desktopKey, skipAutomatically, description, description);
+    }
+
+    CategoryBehaviour(String key, int desktopKey, boolean skipAutomatically,
+                      StringRef description, StringRef descriptionForHighlightCategory) {
         this.key = Objects.requireNonNull(key);
         this.desktopKey = desktopKey;
-        this.name = Objects.requireNonNull(name);
-        this.skip = skip;
+        this.skipAutomatically = skipAutomatically;
+        this.description = Objects.requireNonNull(description);
+        this.descriptionForHighlightCategory = Objects.requireNonNull(descriptionForHighlightCategory);
     }
 
     @Nullable
@@ -60,10 +68,12 @@ public enum CategoryBehaviour {
     }
 
     private static String[] behaviorKeys;
-    private static String[] behaviorKeysWithoutSkipOnce;
-
-    private static String[] behaviorNames;
-    private static String[] behaviorNamesWithoutSkipOnce;
+    private static String[] behaviorDescriptions;
+    /**
+     * All keys and descriptions that can be used for {@link SegmentCategory#HIGHLIGHT}
+     */
+    private static String[] behaviorKeysHighlightCategory;
+    private static String[] behaviorDescriptionsHighlightCategory;
 
     private static void createNameAndKeyArrays() {
         ReVancedUtils.verifyOnMainThread();
@@ -71,49 +81,48 @@ public enum CategoryBehaviour {
         CategoryBehaviour[] behaviours = values();
         final int behaviorLength = behaviours.length;
         behaviorKeys = new String[behaviorLength];
-        behaviorNames = new String[behaviorLength];
-        behaviorKeysWithoutSkipOnce = new String[behaviorLength - 1];
-        behaviorNamesWithoutSkipOnce = new String[behaviorLength - 1];
+        behaviorDescriptions = new String[behaviorLength];
+        behaviorKeysHighlightCategory = new String[behaviorLength - 1];
+        behaviorDescriptionsHighlightCategory = new String[behaviorLength - 1];
 
-        int behaviorIndex = 0, behaviorWithoutSkipOnceIndex = 0;
+        int behaviorIndex = 0, behaviorHighlightIndex = 0;
         while (behaviorIndex < behaviorLength) {
             CategoryBehaviour behaviour = behaviours[behaviorIndex];
             String key = behaviour.key;
-            String name = behaviour.name.toString();
             behaviorKeys[behaviorIndex] = key;
-            behaviorNames[behaviorIndex] = name;
+            behaviorDescriptions[behaviorIndex] = behaviour.description.toString();
             behaviorIndex++;
             if (behaviour != SKIP_AUTOMATICALLY_ONCE) {
-                behaviorKeysWithoutSkipOnce[behaviorWithoutSkipOnceIndex] = key;
-                behaviorNamesWithoutSkipOnce[behaviorWithoutSkipOnceIndex] = name;
-                behaviorWithoutSkipOnceIndex++;
+                behaviorKeysHighlightCategory[behaviorHighlightIndex] = key;
+                behaviorDescriptionsHighlightCategory[behaviorHighlightIndex] = behaviour.descriptionForHighlightCategory.toString();
+                behaviorHighlightIndex++;
             }
         }
     }
 
-    public static String[] getBehaviorNames() {
-        if (behaviorNames == null) {
-            createNameAndKeyArrays();
-        }
-        return behaviorNames;
-    }
-    public static String[] getBehaviorNamesWithoutSkipOnce() {
-        if (behaviorNamesWithoutSkipOnce == null) {
-            createNameAndKeyArrays();
-        }
-        return behaviorNamesWithoutSkipOnce;
-    }
-
-    public static String[] getBehaviorKeys() {
+    static String[] getBehaviorKeys() {
         if (behaviorKeys == null) {
             createNameAndKeyArrays();
         }
         return behaviorKeys;
     }
-    public static String[] getBehaviorKeysWithoutSkipOnce() {
-        if (behaviorKeysWithoutSkipOnce == null) {
+    static String[] getBehaviorKeysHighlightCategory() {
+        if (behaviorKeysHighlightCategory == null) {
             createNameAndKeyArrays();
         }
-        return behaviorKeysWithoutSkipOnce;
+        return behaviorKeysHighlightCategory;
+    }
+
+    static String[] getBehaviorDescriptions() {
+        if (behaviorDescriptions == null) {
+            createNameAndKeyArrays();
+        }
+        return behaviorDescriptions;
+    }
+    static String[] getBehaviorDescriptionsHighlightCategory() {
+        if (behaviorDescriptionsHighlightCategory == null) {
+            createNameAndKeyArrays();
+        }
+        return behaviorDescriptionsHighlightCategory;
     }
 }

@@ -14,6 +14,11 @@ public class SponsorSegment implements Comparable<SponsorSegment> {
         DOWNVOTE(sf("sb_vote_downvote"), 0, true),
         CATEGORY_CHANGE(sf("sb_vote_category"), -1, true); // apiVoteType is not used for category change
 
+        public static final SegmentVote[] voteTypesWithoutCategoryChange = {
+                UPVOTE,
+                DOWNVOTE,
+        };
+
         @NonNull
         public final StringRef title;
         public final int apiVoteType;
@@ -51,7 +56,7 @@ public class SponsorSegment implements Comparable<SponsorSegment> {
     }
 
     public boolean shouldAutoSkip() {
-        return category.behaviour.skip && !(didAutoSkipped && category.behaviour == CategoryBehaviour.SKIP_AUTOMATICALLY_ONCE);
+        return category.behaviour.skipAutomatically && !(didAutoSkipped && category.behaviour == CategoryBehaviour.SKIP_AUTOMATICALLY_ONCE);
     }
 
     /**

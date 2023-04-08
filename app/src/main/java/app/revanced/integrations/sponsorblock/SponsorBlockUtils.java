@@ -74,8 +74,8 @@ public class SponsorBlockUtils {
         @Override
         public void onClick(DialogInterface dialog, int which) {
             try {
-                SegmentCategory category = SegmentCategory.categoriesWithoutUnsubmitted()[which];
-                boolean enableButton;
+                SegmentCategory category = SegmentCategory.categoriesWithoutHighlights()[which];
+                final boolean enableButton;
                 if (category.behaviour == CategoryBehaviour.IGNORE) {
                     ReVancedUtils.showToastLong(str("sb_new_segment_disabled_category"));
                     enableButton = false;
@@ -100,7 +100,7 @@ public class SponsorBlockUtils {
                 Context context = ((AlertDialog) dialog).getContext();
                 dialog.dismiss();
 
-                SegmentCategory[] categories = SegmentCategory.categoriesWithoutUnsubmitted();
+                SegmentCategory[] categories = SegmentCategory.categoriesWithoutHighlights();
                 CharSequence[] titles = new CharSequence[categories.length];
                 for (int i = 0, length = categories.length; i < length; i++) {
                     titles[i] = categories[i].getTitleWithColorDot();
@@ -167,7 +167,9 @@ public class SponsorBlockUtils {
             }
             SponsorSegment segment = currentSegments[which];
 
-            SegmentVote[] voteOptions = SegmentVote.values();
+            SegmentVote[] voteOptions = (segment.category == SegmentCategory.HIGHLIGHT)
+                    ? SegmentVote.voteTypesWithoutCategoryChange // highlight segments cannot change category
+                    : SegmentVote.values();
             CharSequence[] items = new CharSequence[voteOptions.length];
 
             for (int i = 0; i < voteOptions.length; i++) {
@@ -221,7 +223,7 @@ public class SponsorBlockUtils {
             final String videoId = SegmentPlaybackController.getCurrentVideoId();
             final long videoLength = VideoInformation.getCurrentVideoLength();
             final SegmentCategory segmentCategory = newUserCreatedSegmentCategory;
-            if (start < 0 || end < 0 || start >= end || videoLength <= 0 || segmentCategory == null || videoId == null || uuid == null) {
+            if (start < 0 || end < 0 || start >= end || videoLength <= 0 || segmentCategory == null || videoId == null || uuid.isEmpty()) {
                 LogHelper.printException(() -> "Unable to submit times, invalid parameters");
                 return;
             }
@@ -335,7 +337,7 @@ public class SponsorBlockUtils {
     private static void onNewCategorySelect(@NonNull SponsorSegment segment, @NonNull Context context) {
         try {
             ReVancedUtils.verifyOnMainThread();
-            final SegmentCategory[] values = SegmentCategory.categoriesWithoutUnsubmitted();
+            final SegmentCategory[] values = SegmentCategory.categoriesWithoutHighlights();
             CharSequence[] titles = new CharSequence[values.length];
             for (int i = 0; i < values.length; i++) {
                 titles[i] = values[i].getTitleWithColorDot();

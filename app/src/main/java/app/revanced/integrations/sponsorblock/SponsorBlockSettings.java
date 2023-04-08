@@ -49,7 +49,7 @@ public class SponsorBlockSettings {
                 CategoryBehaviour behaviour = CategoryBehaviour.byDesktopKey(desktopKey);
                 if (behaviour == null) {
                     LogHelper.printException(() -> "Unknown segment category behavior key: " + desktopKey);
-                } else if (!category.skipOnceAllowed && behaviour == CategoryBehaviour.SKIP_AUTOMATICALLY_ONCE) {
+                } else if (category == SegmentCategory.HIGHLIGHT && behaviour == CategoryBehaviour.SKIP_AUTOMATICALLY_ONCE) {
                     LogHelper.printException(() -> "Skip-once behavior not allowed for " + category.key);
                     category.behaviour = CategoryBehaviour.SKIP_AUTOMATICALLY; // use closest match
                 } else {

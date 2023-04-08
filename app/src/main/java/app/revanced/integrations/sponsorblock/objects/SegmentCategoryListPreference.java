@@ -29,15 +29,16 @@ public class SegmentCategoryListPreference extends ListPreference {
 
     public SegmentCategoryListPreference(Context context, SegmentCategory category) {
         super(context);
+        final boolean isHighlightCategory = category == SegmentCategory.HIGHLIGHT;
         this.category = Objects.requireNonNull(category);
         setKey(category.key);
         setDefaultValue(category.behaviour.key);
-        setEntries(category.skipOnceAllowed
-                ? CategoryBehaviour.getBehaviorNames()
-                : CategoryBehaviour.getBehaviorNamesWithoutSkipOnce());
-        setEntryValues(category.skipOnceAllowed
-                ? CategoryBehaviour.getBehaviorKeys()
-                :CategoryBehaviour.getBehaviorKeysWithoutSkipOnce());
+        setEntries(isHighlightCategory
+                ? CategoryBehaviour.getBehaviorDescriptionsHighlightCategory()
+                : CategoryBehaviour.getBehaviorDescriptions());
+        setEntryValues(isHighlightCategory
+                ? CategoryBehaviour.getBehaviorKeysHighlightCategory()
+                : CategoryBehaviour.getBehaviorKeys());
         setSummary(category.description.toString());
         updateTitle();
     }
