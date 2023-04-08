@@ -267,10 +267,7 @@ public class ReturnYouTubeDislike {
                     return null;
                 }
 
-                SpannableString replacement = waitForFetchAndUpdateReplacementSpan(original, isSegmentedButton);
-                if (replacement != null) {
-                    return replacement;
-                }
+                return waitForFetchAndUpdateReplacementSpan(original, isSegmentedButton);
             }
         } catch (Exception ex) {
             LogHelper.printException(() -> "getDislikeSpanForContext failure", ex);
