@@ -5,6 +5,7 @@ import static app.revanced.integrations.utils.StringRef.str;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.text.TextUtils;
+import android.util.TypedValue;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -34,6 +35,38 @@ public class SegmentPlaybackController {
     private static String currentVideoId;
     @Nullable
     private static SponsorSegment[] segmentsOfCurrentVideo;
+
+    /**
+     * Highlight segment, if one exists.
+     */
+    @Nullable
+    private static SponsorSegment highlightSegment;
+
+    /**
+     * Length of time to show a highlight segment manual skip.
+     *
+     * Other segments have higher priority over showing the highlight button.
+     * If an intro or other segments exist, then those other segment time periods
+     * do not count towards this length.
+     */
+    private static final long HIGHLIGHT_SEGMENT_DURATION_TO_SHOW_SKIP_PROMPT = 5000;
+
+    /**
+     * If a highlight segment exists, then show the manual skip button from the start of the video
+     * up until this video time.
+     *
+     * Value will be zero if segment does not exists or if behavior is {@link CategoryBehaviour#SHOW_IN_SEEKBAR}
+     *
+     * If no segments are present at the beginning of the video,
+     * then this will be equal to {@link #HIGHLIGHT_SEGMENT_DURATION_TO_SHOW_SKIP_PROMPT}.
+     */
+    private static long highlightDisplaySkipButtonVideoEndTime;
+
+    /*
+     * Highlight segments have zero length, as they are a point in time.
+     * Draw them on screen using a fixed width bar.
+     */
+    private static final int HIGHLIGHT_SEGMENT_DRAW_BAR_WIDTH = 7; // value is independent of device dpi
 
     /**
      * Current segment that user can manually skip
@@ -67,6 +100,7 @@ public class SegmentPlaybackController {
     static void setSegmentsOfCurrentVideo(@NonNull SponsorSegment[] segments) {
         Arrays.sort(segments);
         segmentsOfCurrentVideo = segments;
+        calculateHighlightSegment();
         calculateTimeWithoutSegments();
     }
 
@@ -85,6 +119,8 @@ public class SegmentPlaybackController {
     private static void clearData() {
         currentVideoId = null;
         segmentsOfCurrentVideo = null;
+        highlightSegment = null;
+        highlightDisplaySkipButtonVideoEndTime = 0;
         timeWithoutSegments = null;
         segmentCurrentlyPlaying = null;
         scheduledUpcomingSegment = null; // prevent any existing scheduled skip from running
@@ -164,7 +200,15 @@ public class SegmentPlaybackController {
                     return;
                 }
                 setSegmentsOfCurrentVideo(segments);
-                setVideoTime(VideoInformation.getVideoTime()); // check for any skips now, instead of waiting for the next update
+
+                final long videoTime = VideoInformation.getVideoTime();
+                if (highlightSegment != null && highlightSegment.shouldAutoSkip() && videoTime < highlightSegment.end) {
+                    // if the current video time is before the highlight, then autoskip to it
+                    skipSegment(highlightSegment, false);
+                } else {
+                    // check for any skips now, instead of waiting for the next update
+                    setVideoTime(videoTime);
+                }
             });
         } catch (Exception ex) {
             LogHelper.printException(() -> "executeDownloadSegments failure", ex);
@@ -196,7 +240,8 @@ public class SegmentPlaybackController {
 
             for (final SponsorSegment segment : segmentsOfCurrentVideo) {
                 if (segment.category.behaviour == CategoryBehaviour.SHOW_IN_SEEKBAR
-                    || segment.category.behaviour == CategoryBehaviour.IGNORE) {
+                    || segment.category.behaviour == CategoryBehaviour.IGNORE
+                    || segment.category == SegmentCategory.HIGHLIGHT) {
                     continue;
                 }
                 if (segment.end <= millis) {
@@ -256,6 +301,11 @@ public class SegmentPlaybackController {
                 }
             }
 
+            // if no segments were found, and the video time is within the time period to show the highlight skip button
+            // then display the highlight skip button
+            if (foundCurrentSegment == null && millis < highlightDisplaySkipButtonVideoEndTime) {
+                foundCurrentSegment = highlightSegment;
+            }
 
             if (segmentCurrentlyPlaying != foundCurrentSegment) {
                 if (foundCurrentSegment == null) {
@@ -389,7 +439,7 @@ public class SegmentPlaybackController {
                 // check for any smaller embedded segments, and count those as autoskipped
                 final boolean showSkipToast = SettingsEnum.SB_SHOW_TOAST_ON_SKIP.getBoolean();
                 for (final SponsorSegment otherSegment : segmentsOfCurrentVideo) {
-                    if (segment.end <= otherSegment.start) {
+                    if (segment.end < otherSegment.start) {
                         break; // no other segments can be contained
                     }
                     if (segment.containsSegment(otherSegment)) { // includes checking the segment against itself
@@ -433,7 +483,7 @@ public class SegmentPlaybackController {
         }
         toastSegmentSkipped = segment;
 
-        final long delayToToastMilliseconds = 200; // also the maximum time between skips to be considered skipping multiple segments
+        final long delayToToastMilliseconds = 500; // also the maximum time between skips to be considered skipping multiple segments
         ReVancedUtils.runOnMainThreadDelayed(() -> {
             try {
                 if (toastSegmentSkipped == null) { // video was changed just after skipping segment
@@ -459,6 +509,38 @@ public class SegmentPlaybackController {
             SponsorBlockViewController.hideSkipButton();
             LogHelper.printException(() -> "error: segment not available to skip"); // should never happen
         }
+    }
+
+    private static void calculateHighlightSegment() {
+        highlightSegment = null;
+        highlightDisplaySkipButtonVideoEndTime = 0;
+
+        for (SponsorSegment segment : segmentsOfCurrentVideo) {
+            if (segment.category == SegmentCategory.HIGHLIGHT) {
+                highlightSegment = segment;
+                break;
+            }
+        }
+        if (highlightSegment == null
+                || highlightSegment.category.behaviour == CategoryBehaviour.SHOW_IN_SEEKBAR) {
+            return;
+        }
+
+        long highlightEndTime = HIGHLIGHT_SEGMENT_DURATION_TO_SHOW_SKIP_PROMPT;
+        for (SponsorSegment segment : segmentsOfCurrentVideo) {
+            if (segment == highlightSegment || segment.category.behaviour == CategoryBehaviour.SHOW_IN_SEEKBAR) {
+                continue;
+            }
+            if (highlightEndTime <= segment.start) {
+                break; // segments are past the highlight display time
+            }
+            if (segment.timeIsInside(highlightEndTime)) {
+                // move highlight end time past this segment
+                highlightEndTime = Math.min(highlightEndTime + segment.length(), highlightSegment.end);
+            }
+        }
+        highlightDisplaySkipButtonVideoEndTime = highlightEndTime;
+        LogHelper.printDebug(() -> "highlight display skip button end time: "+ highlightDisplaySkipButtonVideoEndTime);
     }
 
     /**
@@ -564,6 +646,16 @@ public class SegmentPlaybackController {
         }
     }
 
+    private static int highlightSegmentTimeBarScreenWidth = -1; // actual pixel width to use
+    private static int getHighlightSegmentTimeBarScreenWidth() {
+        if (highlightSegmentTimeBarScreenWidth == -1) {
+            highlightSegmentTimeBarScreenWidth = (int) TypedValue.applyDimension(
+                    TypedValue.COMPLEX_UNIT_DIP, HIGHLIGHT_SEGMENT_DRAW_BAR_WIDTH,
+                    ReVancedUtils.getContext().getResources().getDisplayMetrics());
+        }
+        return highlightSegmentTimeBarScreenWidth;
+    }
+
     /**
      * Injection point
      */
@@ -582,8 +674,13 @@ public class SegmentPlaybackController {
 
             final float tmp1 = (1f / currentVideoLength) * (absoluteRight - absoluteLeft);
             for (SponsorSegment segment : segmentsOfCurrentVideo) {
-                float left = segment.start * tmp1 + absoluteLeft;
-                float right = segment.end * tmp1 + absoluteLeft;
+                final float left = segment.start * tmp1 + absoluteLeft;
+                final float right;
+                if (segment.category == SegmentCategory.HIGHLIGHT) {
+                    right = left + getHighlightSegmentTimeBarScreenWidth();
+                } else {
+                     right = segment.end * tmp1 + absoluteLeft;
+                }
                 canvas.drawRect(left, top, right, bottom, segment.category.paint);
             }
         } catch (Exception ex) {

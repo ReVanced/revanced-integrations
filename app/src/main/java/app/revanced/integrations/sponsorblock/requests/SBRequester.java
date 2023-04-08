@@ -75,9 +75,8 @@ public class SBRequester {
                     SegmentCategory segmentCategory = SegmentCategory.byCategoryKey(categoryKey);
                     if (segmentCategory == null) {
                         LogHelper.printException(() -> "Received unknown category: " + categoryKey); // should never happen
-                    } else if (segmentCategory.behaviour != CategoryBehaviour.IGNORE) {
-                        SponsorSegment sponsorSegment = new SponsorSegment(segmentCategory, uuid, start, end, locked);
-                        segments.add(sponsorSegment);
+                    } else {
+                        segments.add(new SponsorSegment(segmentCategory, uuid, start, end, locked));
                     }
                 }
                 LogHelper.printDebug(() -> {

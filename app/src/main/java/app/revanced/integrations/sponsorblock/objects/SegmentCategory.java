@@ -27,32 +27,35 @@ import app.revanced.integrations.utils.StringRef;
 
 public enum SegmentCategory {
     SPONSOR("sponsor", sf("sb_segments_sponsor"), sf("sb_segments_sponsor_sum"), sf("sb_skip_button_sponsor"), sf("sb_skipped_sponsor"),
-            SKIP_AUTOMATICALLY, 0x00D400),
+            SKIP_AUTOMATICALLY, true, 0x00D400),
     SELF_PROMO("selfpromo", sf("sb_segments_selfpromo"), sf("sb_segments_selfpromo_sum"), sf("sb_skip_button_selfpromo"), sf("sb_skipped_selfpromo"),
-            SKIP_AUTOMATICALLY, 0xFFFF00),
+            SKIP_AUTOMATICALLY, true, 0xFFFF00),
     INTERACTION("interaction", sf("sb_segments_interaction"), sf("sb_segments_interaction_sum"), sf("sb_skip_button_interaction"), sf("sb_skipped_interaction"),
-            SKIP_AUTOMATICALLY, 0xCC00FF),
+            SKIP_AUTOMATICALLY, true, 0xCC00FF),
+    HIGHLIGHT("poi_highlight", sf("sb_segments_highlight"), sf("sb_segments_highlight_sum"), sf("sb_skip_button_highlight"), sf("sb_skipped_highlight"),
+            MANUAL_SKIP, false, 0xA6634A),
     INTRO("intro", sf("sb_segments_intro"), sf("sb_segments_intro_sum"),
             sf("sb_skip_button_intro_beginning"), sf("sb_skip_button_intro_middle"), sf("sb_skip_button_intro_end"),
             sf("sb_skipped_intro_beginning"), sf("sb_skipped_intro_middle"), sf("sb_skipped_intro_end"),
-            MANUAL_SKIP, 0x00FFFF),
+            MANUAL_SKIP, true, 0x00FFFF),
     OUTRO("outro", sf("sb_segments_outro"), sf("sb_segments_outro_sum"), sf("sb_skip_button_outro"), sf("sb_skipped_outro"),
-            MANUAL_SKIP, 0x0202ED),
+            MANUAL_SKIP, true, 0x0202ED),
     PREVIEW("preview", sf("sb_segments_preview"), sf("sb_segments_preview_sum"),
             sf("sb_skip_button_preview_beginning"), sf("sb_skip_button_preview_middle"), sf("sb_skip_button_preview_end"),
             sf("sb_skipped_preview_beginning"), sf("sb_skipped_preview_middle"), sf("sb_skipped_preview_end"),
-            IGNORE, 0x008FD6),
+            IGNORE, true, 0x008FD6),
     FILLER("filler", sf("sb_segments_filler"), sf("sb_segments_filler_sum"), sf("sb_skip_button_filler"), sf("sb_skipped_filler"),
-            IGNORE, 0x7300FF),
+            IGNORE, true, 0x7300FF),
     MUSIC_OFFTOPIC("music_offtopic", sf("sb_segments_nomusic"), sf("sb_segments_nomusic_sum"), sf("sb_skip_button_nomusic"), sf("sb_skipped_nomusic"),
-            MANUAL_SKIP, 0xFF9900),
+            MANUAL_SKIP, true, 0xFF9900),
     UNSUBMITTED("unsubmitted", StringRef.empty, StringRef.empty, sf("sb_skip_button_unsubmitted"), sf("sb_skipped_unsubmitted"),
-            SKIP_AUTOMATICALLY, 0xFFFFFF);
+            SKIP_AUTOMATICALLY, true, 0xFFFFFF);
 
     private static final SegmentCategory[] mValuesWithoutUnsubmitted = new SegmentCategory[]{
             SPONSOR,
             SELF_PROMO,
             INTERACTION,
+            HIGHLIGHT,
             INTRO,
             OUTRO,
             PREVIEW,
@@ -156,26 +159,32 @@ public enum SegmentCategory {
      * If value is changed, then also call {@link #save(SharedPreferences.Editor)}
      */
     public int color;
+
     /**
      * If value is changed, then also call {@link #updateEnabledCategories()}
      */
     @NonNull
     public CategoryBehaviour behaviour;
 
+    /**
+     * If {@link CategoryBehaviour#SKIP_AUTOMATICALLY_ONCE} can be applied to this behavior.
+     */
+    public final boolean skipOnceAllowed;
+
     SegmentCategory(String key, StringRef title, StringRef description,
                     StringRef skipButtonText,
                     StringRef skippedToastText,
-                    CategoryBehaviour defaultBehavior, int defaultColor) {
+                    CategoryBehaviour defaultBehavior, boolean skipOnceAllowed, int defaultColor) {
         this(key, title, description,
                 skipButtonText, skipButtonText, skipButtonText,
                 skippedToastText, skippedToastText, skippedToastText,
-                defaultBehavior, defaultColor);
+                defaultBehavior, skipOnceAllowed, defaultColor);
     }
 
     SegmentCategory(String key, StringRef title, StringRef description,
                     StringRef skipButtonTextBeginning, StringRef skipButtonTextMiddle, StringRef skipButtonTextEnd,
                     StringRef skippedToastBeginning, StringRef skippedToastMiddle, StringRef skippedToastEnd,
-                    CategoryBehaviour defaultBehavior, int defaultColor) {
+                    CategoryBehaviour defaultBehavior, boolean skipOnceAllowed, int defaultColor) {
         this.key = Objects.requireNonNull(key);
         this.title = Objects.requireNonNull(title);
         this.description = Objects.requireNonNull(description);
@@ -186,6 +195,7 @@ public enum SegmentCategory {
         this.skippedToastMiddle = Objects.requireNonNull(skippedToastMiddle);
         this.skippedToastEnd = Objects.requireNonNull(skippedToastEnd);
         this.behaviour = Objects.requireNonNull(defaultBehavior);
+        this.skipOnceAllowed = skipOnceAllowed;
         this.color = this.defaultColor = defaultColor;
         this.paint = new Paint();
         setColor(defaultColor);

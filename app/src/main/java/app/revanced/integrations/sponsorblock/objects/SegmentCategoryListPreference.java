@@ -32,8 +32,12 @@ public class SegmentCategoryListPreference extends ListPreference {
         this.category = Objects.requireNonNull(category);
         setKey(category.key);
         setDefaultValue(category.behaviour.key);
-        setEntries(CategoryBehaviour.getBehaviorNames());
-        setEntryValues(CategoryBehaviour.getBehaviorKeys());
+        setEntries(category.skipOnceAllowed
+                ? CategoryBehaviour.getBehaviorNames()
+                : CategoryBehaviour.getBehaviorNamesWithoutSkipOnce());
+        setEntryValues(category.skipOnceAllowed
+                ? CategoryBehaviour.getBehaviorKeys()
+                :CategoryBehaviour.getBehaviorKeysWithoutSkipOnce());
         setSummary(category.description.toString());
         updateTitle();
     }

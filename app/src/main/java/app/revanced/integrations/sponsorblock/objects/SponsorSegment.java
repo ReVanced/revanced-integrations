@@ -77,6 +77,13 @@ public class SponsorSegment implements Comparable<SponsorSegment> {
     }
 
     /**
+     * @return if the time parameter is within this segment
+     */
+    public boolean timeIsInside(long videoTime) {
+        return  start <= videoTime && videoTime < end;
+    }
+
+    /**
      * @return if the time parameter is outside this segment
      */
     public boolean timeIsOutside(long videoTime) {

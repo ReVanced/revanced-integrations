@@ -60,17 +60,34 @@ public enum CategoryBehaviour {
     }
 
     private static String[] behaviorKeys;
+    private static String[] behaviorKeysWithoutSkipOnce;
+
     private static String[] behaviorNames;
+    private static String[] behaviorNamesWithoutSkipOnce;
 
     private static void createNameAndKeyArrays() {
         ReVancedUtils.verifyOnMainThread();
+
         CategoryBehaviour[] behaviours = values();
-        behaviorKeys = new String[behaviours.length];
-        behaviorNames = new String[behaviours.length];
-        for (int i = 0, length = behaviours.length; i < length; i++) {
-            CategoryBehaviour behaviour = behaviours[i];
-            behaviorKeys[i] = behaviour.key;
-            behaviorNames[i] = behaviour.name.toString();
+        final int behaviorLength = behaviours.length;
+        behaviorKeys = new String[behaviorLength];
+        behaviorNames = new String[behaviorLength];
+        behaviorKeysWithoutSkipOnce = new String[behaviorLength - 1];
+        behaviorNamesWithoutSkipOnce = new String[behaviorLength - 1];
+
+        int behaviorIndex = 0, behaviorWithoutSkipOnceIndex = 0;
+        while (behaviorIndex < behaviorLength) {
+            CategoryBehaviour behaviour = behaviours[behaviorIndex];
+            String key = behaviour.key;
+            String name = behaviour.name.toString();
+            behaviorKeys[behaviorIndex] = key;
+            behaviorNames[behaviorIndex] = name;
+            behaviorIndex++;
+            if (behaviour != SKIP_AUTOMATICALLY_ONCE) {
+                behaviorKeysWithoutSkipOnce[behaviorWithoutSkipOnceIndex] = key;
+                behaviorNamesWithoutSkipOnce[behaviorWithoutSkipOnceIndex] = name;
+                behaviorWithoutSkipOnceIndex++;
+            }
         }
     }
 
@@ -80,11 +97,23 @@ public enum CategoryBehaviour {
         }
         return behaviorNames;
     }
+    public static String[] getBehaviorNamesWithoutSkipOnce() {
+        if (behaviorNamesWithoutSkipOnce == null) {
+            createNameAndKeyArrays();
+        }
+        return behaviorNamesWithoutSkipOnce;
+    }
 
     public static String[] getBehaviorKeys() {
         if (behaviorKeys == null) {
             createNameAndKeyArrays();
         }
         return behaviorKeys;
+    }
+    public static String[] getBehaviorKeysWithoutSkipOnce() {
+        if (behaviorKeysWithoutSkipOnce == null) {
+            createNameAndKeyArrays();
+        }
+        return behaviorKeysWithoutSkipOnce;
     }
 }

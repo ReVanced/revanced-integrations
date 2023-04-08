@@ -47,10 +47,13 @@ public class SponsorBlockSettings {
 
                 final int desktopKey = categorySelectionObject.getInt("option");
                 CategoryBehaviour behaviour = CategoryBehaviour.byDesktopKey(desktopKey);
-                if (behaviour != null) {
-                    category.behaviour = behaviour;
-                } else {
+                if (behaviour == null) {
                     LogHelper.printException(() -> "Unknown segment category behavior key: " + desktopKey);
+                } else if (!category.skipOnceAllowed && behaviour == CategoryBehaviour.SKIP_AUTOMATICALLY_ONCE) {
+                    LogHelper.printException(() -> "Skip-once behavior not allowed for " + category.key);
+                    category.behaviour = CategoryBehaviour.SKIP_AUTOMATICALLY; // use closest match
+                } else {
+                    category.behaviour = behaviour;
                 }
             }
             SegmentCategory.updateEnabledCategories();
@@ -182,7 +185,7 @@ public class SponsorBlockSettings {
         initialized = true;
 
         String uuid = SettingsEnum.SB_UUID.getString();
-        if (uuid == null || uuid.isEmpty()) {
+        if (uuid.isEmpty()) {
             uuid = (UUID.randomUUID().toString() +
                     UUID.randomUUID().toString() +
                     UUID.randomUUID().toString())
