@@ -521,8 +521,7 @@ public class SegmentPlaybackController {
                 break;
             }
         }
-        if (highlightSegment == null
-                || highlightSegment.category.behaviour == CategoryBehaviour.SHOW_IN_SEEKBAR) {
+        if (highlightSegment == null || highlightSegment.category.behaviour == CategoryBehaviour.SHOW_IN_SEEKBAR) {
             return;
         }
 
@@ -532,12 +531,12 @@ public class SegmentPlaybackController {
                 continue;
             }
             if (highlightEndTime <= segment.start) {
-                break; // segments are past the highlight display time
+                break; // segment and all remaining are past the highlight display time
             }
-            if (segment.containsTime(highlightEndTime)) {
-                // move highlight end time past this segment
-                highlightEndTime = Math.min(highlightEndTime + segment.length(), highlightSegment.end);
-            }
+            // segment is during the highlight skip button time frame
+            // move highlight end time past the segment
+            highlightEndTime = Math.max(highlightEndTime, segment.end + HIGHLIGHT_SEGMENT_DURATION_TO_SHOW_SKIP_PROMPT);
+            highlightEndTime = Math.min(highlightEndTime, highlightSegment.end);
         }
         highlightDisplaySkipButtonVideoEndTime = highlightEndTime;
         LogHelper.printDebug(() -> "highlight display skip button end time: "+ highlightDisplaySkipButtonVideoEndTime);
