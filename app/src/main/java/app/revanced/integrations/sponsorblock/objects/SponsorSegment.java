@@ -57,23 +57,15 @@ public class SponsorSegment implements Comparable<SponsorSegment> {
     /**
      * @param nearThreshold threshold to declare the time parameter is near this segment. Must be a positive number
      */
-    public boolean timeIsNearStart(long videoTime, long nearThreshold) {
+    public boolean startIsNear(long videoTime, long nearThreshold) {
         return Math.abs(start - videoTime) <= nearThreshold;
     }
 
     /**
      * @param nearThreshold threshold to declare the time parameter is near this segment. Must be a positive number
      */
-    public boolean timeIsNearEnd(long videoTime, long nearThreshold) {
+    public boolean endIsNear(long videoTime, long nearThreshold) {
         return Math.abs(end - videoTime) <= nearThreshold;
-    }
-
-    /**
-     * @param nearThreshold threshold to declare the time parameter is near this segment
-     * @return if the time parameter is within or close to this segment
-     */
-    public boolean timeIsInsideOrNear(long videoTime, long nearThreshold) {
-        return (start - nearThreshold) <= videoTime && videoTime < (end + nearThreshold);
     }
 
     /**

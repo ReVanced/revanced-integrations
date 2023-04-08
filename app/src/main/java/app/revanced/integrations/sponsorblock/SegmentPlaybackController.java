@@ -262,7 +262,7 @@ public class SegmentPlaybackController {
                         // Also prevents showing the skip button if user seeks into the last half second of the segment.
                         final long minMillisOfSegmentRemainingThreshold = 500;
                         if (segmentCurrentlyPlaying == segment
-                                || !segment.timeIsNearEnd(millis, minMillisOfSegmentRemainingThreshold)) {
+                                || !segment.endIsNear(millis, minMillisOfSegmentRemainingThreshold)) {
                             foundCurrentSegment = segment;
                         } else {
                             LogHelper.printDebug(() -> "Ignoring segment that ends very soon: " + segment);
@@ -293,7 +293,7 @@ public class SegmentPlaybackController {
                     // This check is needed to prevent scheduled hide and show from clashing with each other.
                     final long minTimeBetweenStartEndOfSegments = 1000;
                     if (foundCurrentSegment == null
-                            || !foundCurrentSegment.timeIsNearEnd(segment.start, minTimeBetweenStartEndOfSegments)) {
+                            || !foundCurrentSegment.endIsNear(segment.start, minTimeBetweenStartEndOfSegments)) {
                         foundUpcomingSegment = segment;
                     } else {
                         LogHelper.printDebug(() -> "Not scheduling segment (start time is near end of current segment): " + segment);
@@ -324,7 +324,7 @@ public class SegmentPlaybackController {
 
             // schedule a hide, only if the segment end is near
             final SponsorSegment segmentToHide =
-                    (foundCurrentSegment != null && foundCurrentSegment.timeIsNearEnd(millis, lookAheadMilliseconds))
+                    (foundCurrentSegment != null && foundCurrentSegment.endIsNear(millis, lookAheadMilliseconds))
                     ? foundCurrentSegment
                     : null;
 
@@ -344,7 +344,7 @@ public class SegmentPlaybackController {
                         scheduledHideSegment = null;
 
                         final long videoTime = VideoInformation.getVideoTime();
-                        if (!segmentToHide.timeIsNearEnd(videoTime, videoInformationTimeUpdateThresholdMilliseconds)) {
+                        if (!segmentToHide.endIsNear(videoTime, videoInformationTimeUpdateThresholdMilliseconds)) {
                             // current video time is not what's expected.  User paused playback
                             LogHelper.printDebug(() -> "Ignoring outdated scheduled hide: " + segmentToHide
                                     + " videoInformation time: " + videoTime);
@@ -380,7 +380,7 @@ public class SegmentPlaybackController {
                         scheduledUpcomingSegment = null;
 
                         final long videoTime = VideoInformation.getVideoTime();
-                        if (!segmentToSkip.timeIsNearStart(videoTime,
+                        if (!segmentToSkip.startIsNear(videoTime,
                                 videoInformationTimeUpdateThresholdMilliseconds)) {
                             // current video time is not what's expected.  User paused playback
                             LogHelper.printDebug(() -> "Ignoring outdated scheduled segment: " + segmentToSkip
