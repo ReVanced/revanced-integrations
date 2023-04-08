@@ -97,7 +97,7 @@ public class ReturnYouTubeDislike {
      */
     @Nullable
     @GuardedBy("videoIdLockObject")
-    private static Spanned replacementLikeDislikeSpan;
+    private static SpannableString replacementLikeDislikeSpan;
 
     public enum Vote {
         LIKE(1),
@@ -131,6 +131,18 @@ public class ReturnYouTubeDislike {
             // Must clear old values, to protect against using stale data
             // if the user re-enables RYD while watching a video.
             setCurrentVideoId(null);
+        }
+    }
+
+    /**
+     * Should be called if user changes settings for dislikes appearance.
+     */
+    public static void clearCache() {
+        synchronized (videoIdLockObject) {
+            if (replacementLikeDislikeSpan != null) {
+                LogHelper.printDebug(() -> "Clearing cache");
+            }
+            replacementLikeDislikeSpan = null;
         }
     }
 
@@ -194,38 +206,82 @@ public class ReturnYouTubeDislike {
     }
 
     /**
+     * Injection point.
+     *
      * This method is sometimes called on the main thread, but it usually is called _off_ the main thread.
      * This method can be called multiple times for the same UI element (including after dislikes was added)
+     *
+     * @param textRef atomic reference should always be non null, but the spanned reference inside can be null.
      */
     public static void onComponentCreated(@NonNull Object conversionContext, @NonNull AtomicReference<Object> textRef) {
         try {
-            if (!SettingsEnum.RYD_ENABLED.getBoolean()) return;
-
-            // do not set lastVideoLoadedWasShort to false. It will be cleared when the next regular video is loaded.
-            if (lastVideoLoadedWasShort || PlayerType.getCurrent().isNoneOrHidden()) {
-                return;
-            }
-
-            String conversionContextString = conversionContext.toString();
-            final boolean isSegmentedButton;
-            if (conversionContextString.contains("|segmented_like_dislike_button.eml|")) {
-                isSegmentedButton = true;
-            } else if (conversionContextString.contains("|dislike_button.eml|")) {
-                isSegmentedButton = false;
-            } else {
-                return;
-            }
-
-            Spanned replacement = waitForFetchAndUpdateReplacementSpan((Spanned) textRef.get(), isSegmentedButton);
-            if (replacement != null) {
-                textRef.set(replacement);
+            Object original = textRef.get();
+            if (original instanceof Spanned) {
+                SpannableString replacement = getDislikeSpanForContext(conversionContext, (Spanned) original);
+                if (replacement != null) {
+                    textRef.set(replacement);
+                }
             }
         } catch (Exception ex) {
             LogHelper.printException(() -> "onComponentCreated failure", ex);
         }
     }
 
-    public static Spanned onShortsComponentCreated(Spanned span) {
+    /**
+     * Injection point.
+     *
+     * Called after dislike is already created,
+     * such as scrolling the dislikes off screen and then scrolling back on screen.
+     */
+    public static SpannableString overrideLikeDislikeSpan(@NonNull Object conversionContext, @NonNull SpannableString original) {
+        try {
+            SpannableString dislikes = getDislikeSpanForContext(conversionContext, original);
+            if (dislikes != null) {
+                return dislikes;
+            }
+        } catch (Exception ex) {
+            LogHelper.printException(() -> "overrideLikeDislikeSpan failure", ex);
+        }
+        return original;
+    }
+
+    /**
+     * @return NULL if the span does not need changing or if RYD is not available
+     */
+    @Nullable
+    private static SpannableString getDislikeSpanForContext(@NonNull Object conversionContext, @NonNull Spanned original) {
+        try {
+            if (SettingsEnum.RYD_ENABLED.getBoolean()) {
+                // do not set lastVideoLoadedWasShort to false. It will be cleared when the next regular video is loaded.
+                if (lastVideoLoadedWasShort || PlayerType.getCurrent().isNoneOrHidden()) {
+                    return null;
+                }
+
+                String conversionContextString = conversionContext.toString();
+                final boolean isSegmentedButton;
+                if (conversionContextString.contains("|segmented_like_dislike_button.eml|")) {
+                    isSegmentedButton = true;
+                } else if (conversionContextString.contains("|dislike_button.eml|")) {
+                    isSegmentedButton = false;
+                } else {
+                    return null;
+                }
+
+                SpannableString replacement = waitForFetchAndUpdateReplacementSpan(original, isSegmentedButton);
+                if (replacement != null) {
+                    return replacement;
+                }
+            }
+        } catch (Exception ex) {
+            LogHelper.printException(() -> "getDislikeSpanForContext failure", ex);
+        }
+        return null;
+    }
+
+    /**
+     * Injection point.
+     */
+    public static Spanned onShortsComponentCreated(@NonNull Spanned span) {
         try {
             if (SettingsEnum.RYD_ENABLED.getBoolean()) {
                 lastVideoLoadedWasShort = true;
@@ -249,7 +305,7 @@ public class ReturnYouTubeDislike {
      * @return NULL if the span does not need changing or if RYD is not available
      */
     @Nullable
-    private static Spanned waitForFetchAndUpdateReplacementSpan(@Nullable Spanned oldSpannable, boolean isSegmentedButton) {
+    private static SpannableString waitForFetchAndUpdateReplacementSpan(@Nullable Spanned oldSpannable, boolean isSegmentedButton) {
         if (oldSpannable == null) {
             LogHelper.printDebug(() -> "Cannot add dislikes (injection code was called with null Span)");
             return null;
@@ -260,8 +316,12 @@ public class ReturnYouTubeDislike {
         try {
             synchronized (videoIdLockObject) {
                 if (oldSpannable.equals(replacementLikeDislikeSpan)) {
-                    LogHelper.printDebug(() -> "Ignoring previously created dislike span");
+                    LogHelper.printDebug(() -> "Ignoring span that already contains dislikes");
                     return null;
+                }
+                if (replacementLikeDislikeSpan != null) {
+                    LogHelper.printDebug(() -> "Adding dislikes using previously created span");
+                    return replacementLikeDislikeSpan;
                 }
                 if (isSegmentedButton) {
                     if (isPreviouslyCreatedSegmentedSpan(oldSpannable)) {
@@ -296,7 +356,7 @@ public class ReturnYouTubeDislike {
                 return null;
             }
 
-            Spanned replacement = createDislikeSpan(oldSpannable, isSegmentedButton, votingData);
+            SpannableString replacement = createDislikeSpan(oldSpannable, isSegmentedButton, votingData);
             synchronized (videoIdLockObject) {
                 replacementLikeDislikeSpan = replacement;
             }
@@ -306,7 +366,7 @@ public class ReturnYouTubeDislike {
         } catch (TimeoutException e) {
             LogHelper.printDebug(() -> "UI timed out while waiting for fetch votes to complete"); // show no toast
         } catch (Exception e) {
-            LogHelper.printException(() -> "createReplacementSpan failure", e); // should never happen
+            LogHelper.printException(() -> "waitForFetchAndUpdateReplacementSpan failure", e); // should never happen
         } finally {
             recordTimeUISpentWaitingForNetworkCall(fetchStartTime);
         }
@@ -338,8 +398,7 @@ public class ReturnYouTubeDislike {
             if (videoIdToVoteFor == null || (lastVideoLoadedWasShort && !PlayerType.getCurrent().isNoneOrHidden())) {
                 // User enabled RYD after starting playback of a video.
                 // Or shorts was loaded with regular video present, then shorts was closed, and then user voted on the now visible original video
-                LogHelper.printException(() -> "Cannot send vote",
-                        null, str("revanced_ryd_failure_ryd_enabled_while_playing_video_then_user_voted"));
+                ReVancedUtils.showToastLong(str("revanced_ryd_failure_ryd_enabled_while_playing_video_then_user_voted"));
                 return;
             }
 
@@ -402,7 +461,7 @@ public class ReturnYouTubeDislike {
     /**
      * @param isSegmentedButton if UI is using the segmented single UI component for both like and dislike
      */
-    private static Spanned createDislikeSpan(@NonNull Spanned oldSpannable, boolean isSegmentedButton, @NonNull RYDVoteData voteData) {
+    private static SpannableString createDislikeSpan(@NonNull Spanned oldSpannable, boolean isSegmentedButton, @NonNull RYDVoteData voteData) {
         if (!isSegmentedButton) {
             // simple replacement of 'dislike' with a number/percentage
             return newSpannableWithDislikes(oldSpannable, voteData);
@@ -493,14 +552,14 @@ public class ReturnYouTubeDislike {
         return false;
     }
 
-    private static Spannable newSpannableWithDislikes(@NonNull Spanned sourceStyling, @NonNull RYDVoteData voteData) {
+    private static SpannableString newSpannableWithDislikes(@NonNull Spanned sourceStyling, @NonNull RYDVoteData voteData) {
         return newSpanUsingStylingOfAnotherSpan(sourceStyling,
                 SettingsEnum.RYD_SHOW_DISLIKE_PERCENTAGE.getBoolean()
                         ? formatDislikePercentage(voteData.getDislikePercentage())
                         : formatDislikeCount(voteData.getDislikeCount()));
     }
 
-    private static Spannable newSpanUsingStylingOfAnotherSpan(@NonNull Spanned sourceStyle, @NonNull String newSpanText) {
+    private static SpannableString newSpanUsingStylingOfAnotherSpan(@NonNull Spanned sourceStyle, @NonNull String newSpanText) {
         SpannableString destination = new SpannableString(newSpanText);
         Object[] spans = sourceStyle.getSpans(0, sourceStyle.length(), Object.class);
         for (Object span : spans) {
