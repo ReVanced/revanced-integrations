@@ -534,7 +534,7 @@ public class SegmentPlaybackController {
             if (highlightEndTime <= segment.start) {
                 break; // segments are past the highlight display time
             }
-            if (segment.timeIsInside(highlightEndTime)) {
+            if (segment.containsTime(highlightEndTime)) {
                 // move highlight end time past this segment
                 highlightEndTime = Math.min(highlightEndTime + segment.length(), highlightSegment.end);
             }
