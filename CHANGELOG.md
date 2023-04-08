@@ -1,3 +1,10 @@
+# [0.102.0-dev.6](https://github.com/revanced/revanced-integrations/compare/v0.102.0-dev.5...v0.102.0-dev.6) (2023-04-08)
+
+
+### Bug Fixes
+
+* **youtube/sponsorblock:** settings do not show default behavior ([#351](https://github.com/revanced/revanced-integrations/issues/351)) ([c6ea5c3](https://github.com/revanced/revanced-integrations/commit/c6ea5c39d1a10cc129645c196cc53af7703aae16))
+
 # [0.102.0-dev.5](https://github.com/revanced/revanced-integrations/compare/v0.102.0-dev.4...v0.102.0-dev.5) (2023-04-07)
 
 
