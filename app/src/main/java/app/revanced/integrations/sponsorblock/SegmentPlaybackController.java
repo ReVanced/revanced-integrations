@@ -407,7 +407,7 @@ public class SegmentPlaybackController {
     private static SponsorSegment lastSegmentSkipped;
     private static long lastSegmentSkippedTime;
 
-    private static void skipSegment(@NonNull SponsorSegment segment, boolean userManuallySkipped) {
+    private static void skipSegment(@NonNull SponsorSegment segmentToSkip, boolean userManuallySkipped) {
         try {
             // If trying to seek to end of the video, YouTube can seek just short of the actual end.
             // (especially if the video does not end on a whole second boundary).
@@ -415,23 +415,23 @@ public class SegmentPlaybackController {
             // Check for and ignore repeated skip attempts of the same segment over a short time period.
             final long now = System.currentTimeMillis();
             final long minimumMillisecondsBetweenSkippingSameSegment = 500;
-            if ((lastSegmentSkipped == segment) && (now - lastSegmentSkippedTime < minimumMillisecondsBetweenSkippingSameSegment)) {
-                LogHelper.printDebug(() -> "Ignoring skip segment request (already skipped as close as possible): " + segment);
+            if ((lastSegmentSkipped == segmentToSkip) && (now - lastSegmentSkippedTime < minimumMillisecondsBetweenSkippingSameSegment)) {
+                LogHelper.printDebug(() -> "Ignoring skip segment request (already skipped as close as possible): " + segmentToSkip);
                 return;
             }
 
-            LogHelper.printDebug(() -> "Skipping segment: " + segment);
-            lastSegmentSkipped = segment;
+            LogHelper.printDebug(() -> "Skipping segment: " + segmentToSkip);
+            lastSegmentSkipped = segmentToSkip;
             lastSegmentSkippedTime = now;
             segmentCurrentlyPlaying = null;
-            scheduledHideSegment = null; // if a scheduled has not run yet
+            scheduledHideSegment = null;
             scheduledUpcomingSegment = null;
             SponsorBlockViewController.hideSkipButton();
 
-            final boolean seekSuccessful = VideoInformation.seekTo(segment.end);
+            final boolean seekSuccessful = VideoInformation.seekTo(segmentToSkip.end);
             if (!seekSuccessful) {
                 // can happen when switching videos and is normal
-                LogHelper.printDebug(() -> "Could not skip segment (seek unsuccessful): " + segment);
+                LogHelper.printDebug(() -> "Could not skip segment (seek unsuccessful): " + segmentToSkip);
                 return;
             }
 
@@ -439,10 +439,10 @@ public class SegmentPlaybackController {
                 // check for any smaller embedded segments, and count those as autoskipped
                 final boolean showSkipToast = SettingsEnum.SB_SHOW_TOAST_ON_SKIP.getBoolean();
                 for (final SponsorSegment otherSegment : segmentsOfCurrentVideo) {
-                    if (segment.end < otherSegment.start) {
+                    if (segmentToSkip.end < otherSegment.start) {
                         break; // no other segments can be contained
                     }
-                    if (segment.containsSegment(otherSegment)) { // includes checking the segment against itself
+                    if (segmentToSkip.containsSegment(otherSegment)) { // includes checking the segment against itself
                         otherSegment.didAutoSkipped = true; // skipped this segment as well
                         if (showSkipToast) {
                             showSkippedSegmentToast(otherSegment);
@@ -451,19 +451,19 @@ public class SegmentPlaybackController {
                 }
             }
 
-            if (segment.category == SegmentCategory.UNSUBMITTED) {
+            if (segmentToSkip.category == SegmentCategory.UNSUBMITTED) {
                 // skipped segment was a preview of unsubmitted segment
                 // remove the segment from the UI view
                 SponsorBlockUtils.setNewSponsorSegmentPreviewed();
                 SponsorSegment[] newSegments = new SponsorSegment[segmentsOfCurrentVideo.length - 1];
                 int i = 0;
-                for (SponsorSegment sponsorSegment : segmentsOfCurrentVideo) {
-                    if (sponsorSegment != segment)
-                        newSegments[i++] = sponsorSegment;
+                for (SponsorSegment segment : segmentsOfCurrentVideo) {
+                    if (segment != segmentToSkip)
+                        newSegments[i++] = segment;
                 }
                 setSegmentsOfCurrentVideo(newSegments);
             } else {
-                SponsorBlockUtils.sendViewRequestAsync(segment);
+                SponsorBlockUtils.sendViewRequestAsync(segmentToSkip);
             }
         } catch (Exception ex) {
             LogHelper.printException(() -> "skipSegment failure", ex);
