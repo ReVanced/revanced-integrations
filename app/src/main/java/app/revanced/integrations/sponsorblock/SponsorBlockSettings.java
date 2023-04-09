@@ -30,10 +30,12 @@ public class SponsorBlockSettings {
             JSONArray categorySelectionsArray = settingsJson.getJSONArray("categorySelections");
 
             for (SegmentCategory category : SegmentCategory.categoriesWithoutUnsubmitted()) {
-                // clear existing behavior, as browser plugin exports no value for ignored categories
+                // clear existing behavior, as browser plugin exports no behavior for ignored categories
                 category.behaviour = CategoryBehaviour.IGNORE;
-                JSONObject categoryObject = barTypesObject.getJSONObject(category.key);
-                category.setColor(categoryObject.getString("color"));
+                if (barTypesObject.has(category.key)) {
+                    JSONObject categoryObject = barTypesObject.getJSONObject(category.key);
+                    category.setColor(categoryObject.getString("color"));
+                }
             }
 
             for (int i = 0; i < categorySelectionsArray.length(); i++) {
