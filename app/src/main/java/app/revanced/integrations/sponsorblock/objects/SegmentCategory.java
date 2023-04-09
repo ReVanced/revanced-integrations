@@ -37,7 +37,7 @@ public enum SegmentCategory {
      * Unique category that is treated differently than the rest.
      */
     HIGHLIGHT("poi_highlight", sf("sb_segments_highlight"), sf("sb_segments_highlight_sum"), sf("sb_skip_button_highlight"), sf("sb_skipped_highlight"),
-            MANUAL_SKIP, 0xA6634A),
+            MANUAL_SKIP, 0xFF1684),
     INTRO("intro", sf("sb_segments_intro"), sf("sb_segments_intro_sum"),
             sf("sb_skip_button_intro_beginning"), sf("sb_skip_button_intro_middle"), sf("sb_skip_button_intro_end"),
             sf("sb_skipped_intro_beginning"), sf("sb_skipped_intro_middle"), sf("sb_skipped_intro_end"),
