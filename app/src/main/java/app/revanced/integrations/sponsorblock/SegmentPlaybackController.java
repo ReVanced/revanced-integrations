@@ -48,8 +48,11 @@ public class SegmentPlaybackController {
      * Other segments have higher priority over showing the highlight button.
      * If an intro or other segments exist, then those other segment time periods
      * do not count towards this length.
+     *
+     * Because there is no scheduled hide of a skip to highlight,
+     * effectively this time value is rounded up to the next second.
      */
-    private static final long HIGHLIGHT_SEGMENT_DURATION_TO_SHOW_SKIP_PROMPT = 5000;
+    private static final long HIGHLIGHT_SEGMENT_DURATION_TO_SHOW_SKIP_PROMPT = 4800;
 
     /**
      * If a highlight segment exists, then show the manual skip button from the start of the video
@@ -483,7 +486,7 @@ public class SegmentPlaybackController {
         }
         toastSegmentSkipped = segment;
 
-        final long delayToToastMilliseconds = 500; // also the maximum time between skips to be considered skipping multiple segments
+        final long delayToToastMilliseconds = 250; // also the maximum time between skips to be considered skipping multiple segments
         ReVancedUtils.runOnMainThreadDelayed(() -> {
             try {
                 if (toastSegmentSkipped == null) { // video was changed just after skipping segment
