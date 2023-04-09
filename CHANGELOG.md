@@ -1,3 +1,10 @@
+# [0.102.0-dev.7](https://github.com/revanced/revanced-integrations/compare/v0.102.0-dev.6...v0.102.0-dev.7) (2023-04-09)
+
+
+### Features
+
+* **youtube/general-ads:** block new type of ad ([a552f3c](https://github.com/revanced/revanced-integrations/commit/a552f3cb61f54ed6241805a6a2323123175976a8))
+
 # [0.102.0-dev.6](https://github.com/revanced/revanced-integrations/compare/v0.102.0-dev.5...v0.102.0-dev.6) (2023-04-08)
 
 
