@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.settings.SharedPrefCategory;
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.StringRef;
@@ -53,6 +54,9 @@ public enum SegmentCategory {
             MANUAL_SKIP, 0xFF9900),
     UNSUBMITTED("unsubmitted", StringRef.empty, StringRef.empty, sf("sb_skip_button_unsubmitted"), sf("sb_skipped_unsubmitted"),
             SKIP_AUTOMATICALLY, 0xFFFFFF);
+
+    private static final StringRef skipSponsorTextCompact = sf("sb_skip_button_compact");
+    private static final StringRef skipSponsorTextCompactHighlight = sf("sb_skip_button_compact_highlight");
 
     private static final SegmentCategory[] categoriesWithoutHighlights = new SegmentCategory[]{
             SPONSOR,
@@ -294,17 +298,23 @@ public enum SegmentCategory {
      * @return the skip button text
      */
     @NonNull
-    public String getSkipButtonText(long segmentStartTime, long videoLength) {
+    StringRef getSkipButtonText(long segmentStartTime, long videoLength) {
+        if (SettingsEnum.SB_USE_COMPACT_SKIPBUTTON.getBoolean()) {
+            return (this == SegmentCategory.HIGHLIGHT)
+                    ? skipSponsorTextCompactHighlight
+                    : skipSponsorTextCompact;
+        }
+
         if (videoLength == 0) {
-            return skipButtonTextBeginning.toString(); // video is still loading.  Assume it's the beginning
+            return skipButtonTextBeginning; // video is still loading.  Assume it's the beginning
         }
         final float position = segmentStartTime / (float) videoLength;
         if (position < 0.25f) {
-            return skipButtonTextBeginning.toString();
+            return skipButtonTextBeginning;
         } else if (position < 0.75f) {
-            return skipButtonTextMiddle.toString();
+            return skipButtonTextMiddle;
         }
-        return skipButtonTextEnd.toString();
+        return skipButtonTextEnd;
     }
 
     /**
@@ -313,16 +323,16 @@ public enum SegmentCategory {
      * @return 'skipped segment' toast message
      */
     @NonNull
-    public String getSkippedToastText(long segmentStartTime, long videoLength) {
+    StringRef getSkippedToastText(long segmentStartTime, long videoLength) {
         if (videoLength == 0) {
-            return skippedToastBeginning.toString(); // video is still loading.  Assume it's the beginning
+            return skippedToastBeginning; // video is still loading.  Assume it's the beginning
         }
         final float position = segmentStartTime / (float) videoLength;
         if (position < 0.25f) {
-            return skippedToastBeginning.toString();
+            return skippedToastBeginning;
         } else if (position < 0.75f) {
-            return skippedToastMiddle.toString();
+            return skippedToastMiddle;
         }
-        return skippedToastEnd.toString();
+        return skippedToastEnd;
     }
 }
