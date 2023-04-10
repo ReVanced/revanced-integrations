@@ -77,7 +77,7 @@ public class SponsorSegment implements Comparable<SponsorSegment> {
      * @return if the time parameter is within this segment
      */
     public boolean containsTime(long videoTime) {
-        return  start <= videoTime && videoTime < end;
+        return start <= videoTime && videoTime < end;
     }
 
     /**

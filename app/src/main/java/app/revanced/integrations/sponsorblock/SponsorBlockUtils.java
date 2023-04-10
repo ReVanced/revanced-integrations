@@ -197,7 +197,7 @@ public class SponsorBlockUtils {
                     })
                     .show();
         } catch (Exception ex) {
-            LogHelper.printException(() -> "onPreviewClicked failure", ex);
+            LogHelper.printException(() -> "segmentVoteClickListener failure", ex);
         }
     };
 
@@ -305,29 +305,32 @@ public class SponsorBlockUtils {
             } else if (currentVideoLength < (10 * 60 * 60 * 1000)) {
                 formatPattern = "H:mm:ss"; // less than 10 hours
             } else {
-                formatPattern = "HH:mm:ss";  // why is this on YouTube
+                formatPattern = "HH:mm:ss"; // why is this on YouTube
             }
             voteSegmentTimeFormatter.applyPattern(formatPattern);
 
             final int numberOfSegments = currentSegments.length;
-            List<CharSequence> titles = new ArrayList<>(numberOfSegments);
+            CharSequence titles[] = new CharSequence[numberOfSegments];
             for (int i = 0; i < numberOfSegments; i++) {
                 SponsorSegment segment = currentSegments[i];
                 if (segment.category == SegmentCategory.UNSUBMITTED) {
                     continue;
                 }
-                String start = voteSegmentTimeFormatter.format(new Date(segment.start));
-                String end = voteSegmentTimeFormatter.format(new Date(segment.end));
                 StringBuilder htmlBuilder = new StringBuilder();
-                htmlBuilder.append(String.format("<b><font color=\"#%06X\">⬤</font> %s<br> %s to %s",
-                        segment.category.color, segment.category.title, start, end));
+                htmlBuilder.append(String.format("<b><font color=\"#%06X\">⬤</font> %s<br>",
+                        segment.category.color, segment.category.title));
+                htmlBuilder.append(voteSegmentTimeFormatter.format(new Date(segment.start)));
+                if (segment.category != SegmentCategory.HIGHLIGHT) {
+                    htmlBuilder.append(" to ").append(voteSegmentTimeFormatter.format(new Date(segment.end)));
+                }
+                htmlBuilder.append("</b>");
                 if (i + 1 != numberOfSegments) // prevents trailing new line after last segment
                     htmlBuilder.append("<br>");
-                titles.add(Html.fromHtml(htmlBuilder.toString()));
+                titles[i] = Html.fromHtml(htmlBuilder.toString());
             }
 
             new AlertDialog.Builder(context)
-                    .setItems(titles.toArray(new CharSequence[0]), segmentVoteClickListener)
+                    .setItems(titles, segmentVoteClickListener)
                     .show();
         } catch (Exception ex) {
             LogHelper.printException(() -> "onVotingClicked failure", ex);
