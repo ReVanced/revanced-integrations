@@ -16,7 +16,7 @@ public enum CategoryBehaviour {
     SKIP_AUTOMATICALLY_ONCE("skip-once", 3, true, sf("sb_skip_automatically_once")),
     MANUAL_SKIP("manual-skip", 1, false, sf("sb_skip_showbutton")),
     SHOW_IN_SEEKBAR("seekbar-only", 0, false, sf("sb_skip_seekbaronly")),
-    // Ignore is the default behavior if no desktop behavior key is present
+    // ignored categories are not exported to json, and ignore is the default behavior when importing
     IGNORE("ignore", -1, false, sf("sb_skip_ignore"));
 
     @NonNull
@@ -29,8 +29,7 @@ public enum CategoryBehaviour {
     @NonNull
     public final StringRef description;
 
-    CategoryBehaviour(String key, int desktopKey, boolean skipAutomatically,
-                      StringRef description) {
+    CategoryBehaviour(String key, int desktopKey, boolean skipAutomatically, StringRef description) {
         this.key = Objects.requireNonNull(key);
         this.desktopKey = desktopKey;
         this.skipAutomatically = skipAutomatically;
