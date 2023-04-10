@@ -29,6 +29,11 @@ import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedUtils;
 
 public class ReVancedSettingsFragment extends PreferenceFragment {
+    private final CharSequence[] videoSpeedEntries = {"Auto", "0.25x", "0.5x", "0.75x", "Normal", "1.25x", "1.5x", "1.75x", "2x", "3x", "4x", "5x"};
+    private final CharSequence[] videoSpeedentryValues = {"-2", "0.25", "0.5", "0.75", "1.0", "1.25", "1.5", "1.75", "2.0", "3.0", "4.0", "5.0"};
+    private final CharSequence[] videoQualityEntries = {"Auto", "144p", "240p", "360p", "480p", "720p", "1080p", "1440p", "2160p"};
+    private final CharSequence[] videoQualityEntryValues = {"-2", "144", "240", "360", "480", "720", "1080", "1440", "2160"};
+
     SharedPreferences.OnSharedPreferenceChangeListener listener = (sharedPreferences, str) -> {
         try {
             SettingsEnum setting = SettingsEnum.settingFromPath(str);
@@ -61,6 +66,45 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
                         throw new IllegalStateException(setting.toString());
                 }
                 SettingsEnum.setValue(setting, value);
+            } else if (pref instanceof ListPreference) {
+                Context context = ReVancedUtils.getContext();
+                ListPreference listPref = (ListPreference) pref;
+                if (setting == SettingsEnum.PREFERRED_VIDEO_SPEED) {
+                    try {
+                        String value = sharedPreferences.getString(setting.getPath(), setting.getDefaultValue() + "");
+                        listPref.setDefaultValue(value);
+                        listPref.setSummary(videoSpeedEntries[listPref.findIndexOfValue(value)]);
+                        SettingsEnum.PREFERRED_VIDEO_SPEED.saveValue(value);
+                    } catch (Throwable th) {
+                        LogHelper.printException(ReVancedSettingsFragment.class, "Error setting value of speed" + th);
+                    }
+                } else {
+                    LogHelper.printException(ReVancedSettingsFragment.class, "No valid setting found: " + setting.toString());
+                }
+
+                if (setting == SettingsEnum.DEFAULT_VIDEO_QUALITY_WIFI) {
+                    try {
+                        updateVideoQuality(context, listPref, setting, false);
+                    } catch (Throwable th) {
+                        LogHelper.printException(ReVancedSettingsFragment.class, "Error setting value of wifi quality" + th);
+                    }
+                } else {
+                    LogHelper.printException(ReVancedSettingsFragment.class, "No valid setting found: " + setting);
+                }
+
+                if (setting == SettingsEnum.DEFAULT_VIDEO_QUALITY_MOBILE) {
+                    try {
+                        updateVideoQuality(context, listPref, setting, false);
+                    } catch (Throwable th) {
+                        LogHelper.printException(ReVancedSettingsFragment.class, "Error setting value of mobile quality" + th);
+                    }
+                } else {
+                    LogHelper.printException(ReVancedSettingsFragment.class, "No valid setting found: " + setting);
+                }
+
+                if ("pref_download_button_list".equals(str)) {
+                    DownloadButton.refreshShouldBeShown();
+                }
             } else {
                 LogHelper.printException(() -> "Setting cannot be handled: " + pref.getClass() + " " + pref);
             }
@@ -107,6 +151,21 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
                 preference.setEnabled(setting.isAvailable());
             }
         }
+    }
+
+    private void updateVideoQuality(Context context, ListPreference listPref, SettingsEnum setting, Boolean auto) {
+        String key = setting.getPath();
+        String value = Integer.toString(SharedPrefHelper.getInt(context, SharedPrefHelper.SharedPrefNames.YOUTUBE, key, -2));
+        listPref.setDefaultValue(value);
+        listPref.setSummary(listPref.getEntry());
+        setting.saveValue(Integer.parseInt(value));
+        SharedPrefHelper.saveString(context, SharedPrefHelper.SharedPrefNames.YOUTUBE, key, value + "");
+
+        if (setting.getInt() == Integer.parseInt((String) videoQualityEntryValues[0]))
+            auto = true;
+        String network = key == SettingsEnum.DEFAULT_VIDEO_QUALITY_WIFI.getPath() ? " Wi-Fi " : " mobile ";
+        String qualityValue = auto ? "Auto" : setting.getInt() + "p";
+        Toast.makeText(context, "Changing default" + network + "quality to: " + qualityValue, Toast.LENGTH_SHORT).show();
     }
 
     private void reboot(@NonNull Activity activity) {

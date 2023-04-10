@@ -30,6 +30,8 @@ public enum SettingsEnum {
     // Video settings
     OLD_STYLE_VIDEO_QUALITY_PLAYER_SETTINGS("revanced_use_old_style_quality_settings", BOOLEAN, TRUE),
     REMEMBER_VIDEO_QUALITY_LAST_SELECTED("revanced_remember_video_quality_last_selected", BOOLEAN, TRUE),
+    DEFAULT_VIDEO_QUALITY_WIFI("revanced_default_video_quality_wifi", -2, ReturnType.INTEGER),
+    DEFAULT_VIDEO_QUALITY_MOBILE("revanced_default_video_quality_mobile", -2, ReturnType.INTEGER),
     REMEMBER_PLAYBACK_SPEED_LAST_SELECTED("revanced_remember_playback_speed_last_selected", BOOLEAN, TRUE),
     REMEMBER_PLAYBACK_SPEED_LAST_SELECTED_VALUE("revanced_remember_playback_speed_last_selected_value", FLOAT, 1.0f),
 

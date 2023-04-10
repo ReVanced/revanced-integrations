@@ -11,12 +11,16 @@ import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.settings.SharedPrefCategory;
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedUtils;
-import app.revanced.integrations.utils.ReVancedUtils.NetworkType;
+import app.revanced.integrations.utils.SharedPrefHelper;
 
 public class RememberVideoQualityPatch {
+
     public static int selectedQuality1 = -2;
     private static Boolean newVideo = false;
     private static Boolean userChangedQuality = false;
+
+    private static final SettingsEnum wifiQualitySetting = SettingsEnum.DEFAULT_VIDEO_QUALITY_WIFI;
+    private static final SettingsEnum mobileQualitySetting = SettingsEnum.DEFAULT_VIDEO_QUALITY_MOBILE;
 
     public static void changeDefaultQuality(int defaultQuality) {
         Context context = ReVancedUtils.getContext();
@@ -26,15 +30,14 @@ public class RememberVideoQualityPatch {
         if (networkType == NetworkType.NONE) {
             ReVancedUtils.showToastShort("No internet connection.");
         } else {
-            var preferenceKey = "wifi_quality";
-            var networkTypeMessage = "WIFI";
-
+            String networkTypeMessage;
             if (networkType == NetworkType.MOBILE) {
                 networkTypeMessage = "mobile";
-                preferenceKey = "mobile_quality";
+                mobileQualitySetting.saveValue(defaultQuality);
+            } else {
+                networkTypeMessage = "WIFI";
+                wifiQualitySetting.saveValue(defaultQuality);
             }
-
-            SharedPrefCategory.REVANCED_PREFS.saveString(preferenceKey, String.valueOf(defaultQuality));
             ReVancedUtils.showToastShort("Changing default " + networkTypeMessage + " quality to: " + defaultQuality);
         }
 
@@ -87,42 +90,44 @@ public class RememberVideoQualityPatch {
         }
         var networkType = ReVancedUtils.getNetworkType();
         if (networkType == NetworkType.NONE) {
-            LogHelper.printDebug(() -> "No Internet connection!");
+            LogHelper.printDebug(() -> "No Internet connection");
             return quality;
+        }
+        int preferredQuality;
+        if (networkType == NetworkType.MOBILE) {
+            preferredQuality = mobileQualitySetting.getInt();
         } else {
-            var preferenceKey = "wifi_quality";
-            if (networkType == NetworkType.MOBILE) preferenceKey = "mobile_quality";
+            preferredQuality = wifiQualitySetting.getInt();
+        }
 
-            int preferredQuality = SharedPrefCategory.REVANCED_PREFS.getInt(preferenceKey, -2);
-            if (preferredQuality == -2) return quality;
+        if (preferredQuality == -2) return quality;
 
-            for (int streamQuality2 : iStreamQualities) {
-                final int indexToLog = index;
-                LogHelper.printDebug(() -> "Quality at index " + indexToLog + ": " + streamQuality2);
-                index++;
+        for (int streamQuality2 : iStreamQualities) {
+            final int indexToLog = index;
+            LogHelper.printDebug(() -> "Quality at index " + indexToLog + ": " + streamQuality2);
+            index++;
+        }
+        for (Integer iStreamQuality : iStreamQualities) {
+            int streamQuality3 = iStreamQuality;
+            if (streamQuality3 <= preferredQuality) {
+                quality = streamQuality3;
             }
-            for (Integer iStreamQuality : iStreamQualities) {
-                int streamQuality3 = iStreamQuality;
-                if (streamQuality3 <= preferredQuality) {
-                    quality = streamQuality3;
-                }
-            }
-            if (quality == -2) return quality;
+        }
+        if (quality == -2) return quality;
 
-            int qualityIndex = iStreamQualities.indexOf(quality);
-            final int qualityToLog2 = quality;
-            LogHelper.printDebug(() -> "Index of quality " + qualityToLog2 + " is " + qualityIndex);
-            try {
-                Class<?> cl = qInterface.getClass();
-                Method m = cl.getMethod(qIndexMethod, Integer.TYPE);
-                LogHelper.printDebug(() -> "Method is: " + qIndexMethod);
-                m.invoke(qInterface, iStreamQualities.get(qualityIndex));
-                LogHelper.printDebug(() -> "Quality changed to: " + qualityIndex);
-                return qualityIndex;
-            } catch (Exception ex) {
-                LogHelper.printException(() -> "Failed to set quality", ex);
-                return qualityIndex;
-            }
+        int qualityIndex = iStreamQualities.indexOf(quality);
+        final int qualityToLog2 = quality;
+        LogHelper.printDebug(() -> "Index of quality " + qualityToLog2 + " is " + qualityIndex);
+        try {
+            Class<?> cl = qInterface.getClass();
+            Method m = cl.getMethod(qIndexMethod, Integer.TYPE);
+            LogHelper.printDebug(() -> "Method is: " + qIndexMethod);
+            m.invoke(qInterface, iStreamQualities.get(qualityIndex));
+            LogHelper.printDebug(() -> "Quality changed to: " + qualityIndex);
+            return qualityIndex;
+        } catch (Exception ex) {
+            LogHelper.printException(() -> "Failed to set quality", ex);
+            return qualityIndex;
         }
     }
 
