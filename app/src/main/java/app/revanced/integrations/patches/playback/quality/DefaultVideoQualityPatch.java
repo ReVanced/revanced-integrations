@@ -1,124 +1,115 @@
 package app.revanced.integrations.patches.playback.quality;
 
-import android.content.Context;
+import static app.revanced.integrations.utils.ReVancedUtils.NetworkType;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 import app.revanced.integrations.settings.SettingsEnum;
-import app.revanced.integrations.settings.SharedPrefCategory;
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedUtils;
-import app.revanced.integrations.utils.SharedPrefHelper;
 
-public class RememberVideoQualityPatch {
+public class DefaultVideoQualityPatch {
+    private static final int NO_DEFAULT_QUALITY_SET = (int) SettingsEnum.VIDEO_QUALITY_DEFAULT_WIFI.defaultValue;
+    private static final SettingsEnum wifiQualitySetting = SettingsEnum.VIDEO_QUALITY_DEFAULT_WIFI;
+    private static final SettingsEnum mobileQualitySetting = SettingsEnum.VIDEO_QUALITY_DEFAULT_MOBILE;
 
-    public static int selectedQuality1 = -2;
+    private static int selectedQuality1 = NO_DEFAULT_QUALITY_SET;
     private static Boolean newVideo = false;
     private static Boolean userChangedQuality = false;
 
-    private static final SettingsEnum wifiQualitySetting = SettingsEnum.DEFAULT_VIDEO_QUALITY_WIFI;
-    private static final SettingsEnum mobileQualitySetting = SettingsEnum.DEFAULT_VIDEO_QUALITY_MOBILE;
-
-    public static void changeDefaultQuality(int defaultQuality) {
-        Context context = ReVancedUtils.getContext();
-
-        var networkType = ReVancedUtils.getNetworkType();
-
+    private static void changeDefaultQuality(int defaultQuality) {
+        NetworkType networkType = ReVancedUtils.getNetworkType();
         if (networkType == NetworkType.NONE) {
-            ReVancedUtils.showToastShort("No internet connection.");
-        } else {
-            String networkTypeMessage;
-            if (networkType == NetworkType.MOBILE) {
-                networkTypeMessage = "mobile";
-                mobileQualitySetting.saveValue(defaultQuality);
-            } else {
-                networkTypeMessage = "WIFI";
-                wifiQualitySetting.saveValue(defaultQuality);
-            }
-            ReVancedUtils.showToastShort("Changing default " + networkTypeMessage + " quality to: " + defaultQuality);
+            ReVancedUtils.showToastShort("No internet connection");
+            return;
         }
-
-        userChangedQuality = false;
+        String networkTypeMessage;
+        if (networkType == NetworkType.MOBILE) {
+            mobileQualitySetting.saveValue(defaultQuality);
+            networkTypeMessage = "mobile";
+        } else {
+            wifiQualitySetting.saveValue(defaultQuality);
+            networkTypeMessage = "WIFI";
+        }
+        ReVancedUtils.showToastShort("Changing default " + networkTypeMessage
+                + " quality to: " + defaultQuality);
     }
 
-    public static int setVideoQuality(Object[] qualities, int quality, Object qInterface, String qIndexMethod) {
-        Field[] fields;
-
-        if (!(newVideo || userChangedQuality) || qInterface == null) {
-            return quality;
-        }
-
-        Class<?> intType = Integer.TYPE;
-        ArrayList<Integer> iStreamQualities = new ArrayList<>();
+    /**
+     * Injection point.
+     */
+    public static int setVideoQuality(Object[] qualities, final int originalQuality, Object qInterface, String qIndexMethod) {
         try {
-            for (Object streamQuality : qualities) {
-                for (Field field : streamQuality.getClass().getFields()) {
-                    if (field.getType().isAssignableFrom(intType)) {  // converts quality index to actual readable resolution
-                        int value = field.getInt(streamQuality);
-                        if (field.getName().length() <= 2) {
-                            iStreamQualities.add(value);
+            if (!(newVideo || userChangedQuality) || qInterface == null) {
+                return originalQuality;
+            }
+
+            Class<?> intType = Integer.TYPE;
+            List<Integer> iStreamQualities = new ArrayList<>();
+            try {
+                for (Object streamQuality : qualities) {
+                    for (Field field : streamQuality.getClass().getFields()) {
+                        if (field.getType().isAssignableFrom(intType)) {  // converts quality index to actual readable resolution
+                            int value = field.getInt(streamQuality);
+                            if (field.getName().length() <= 2) {
+                                iStreamQualities.add(value);
+                            }
                         }
                     }
                 }
+            } catch (Exception ignored) {
+                // edit: what could be caught here?
             }
-        } catch (Exception ignored) {
-        }
-        Collections.sort(iStreamQualities);
-        int index = 0;
-        if (userChangedQuality) {
-            for (int convertedQuality : iStreamQualities) {
-                int selectedQuality2 = qualities.length - selectedQuality1 + 1;
-                index++;
-                if (selectedQuality2 == index) {
-                    final int indexToLog = index; // must be final for lambda
-                    LogHelper.printDebug(() -> "Quality index is: " + indexToLog + " and corresponding value is: " + convertedQuality);
-                    changeDefaultQuality(convertedQuality);
-                    return selectedQuality2;
+            Collections.sort(iStreamQualities);
+            int index = 0;
+            if (userChangedQuality) {
+                for (int convertedQuality : iStreamQualities) {
+                    final int selectedQuality2 = qualities.length - selectedQuality1 + 1;
+                    index++;
+                    if (selectedQuality2 == index) {
+                        final int indexToLog = index; // must be final for lambda
+                        LogHelper.printDebug(() -> "Quality index is: " + indexToLog + " and corresponding value is: " + convertedQuality);
+                        changeDefaultQuality(convertedQuality);
+                        userChangedQuality = false;
+                        return selectedQuality2;
+                    }
                 }
             }
-        }
-        newVideo = false;
-        final int qualityToLog = quality;
-        LogHelper.printDebug(() -> "Quality: " + qualityToLog);
-        Context context = ReVancedUtils.getContext();
-        if (context == null) {
-            LogHelper.printException(() -> "Context is null or settings not initialized, returning quality: " + qualityToLog);
-            return quality;
-        }
-        var networkType = ReVancedUtils.getNetworkType();
-        if (networkType == NetworkType.NONE) {
-            LogHelper.printDebug(() -> "No Internet connection");
-            return quality;
-        }
-        int preferredQuality;
-        if (networkType == NetworkType.MOBILE) {
-            preferredQuality = mobileQualitySetting.getInt();
-        } else {
-            preferredQuality = wifiQualitySetting.getInt();
-        }
+            newVideo = false;
+            LogHelper.printDebug(() -> "Quality: " + originalQuality);
 
-        if (preferredQuality == -2) return quality;
-
-        for (int streamQuality2 : iStreamQualities) {
-            final int indexToLog = index;
-            LogHelper.printDebug(() -> "Quality at index " + indexToLog + ": " + streamQuality2);
-            index++;
-        }
-        for (Integer iStreamQuality : iStreamQualities) {
-            int streamQuality3 = iStreamQuality;
-            if (streamQuality3 <= preferredQuality) {
-                quality = streamQuality3;
+            var networkType = ReVancedUtils.getNetworkType();
+            if (networkType == NetworkType.NONE) {
+                LogHelper.printDebug(() -> "No Internet connection");
+                return originalQuality;
             }
-        }
-        if (quality == -2) return quality;
 
-        int qualityIndex = iStreamQualities.indexOf(quality);
-        final int qualityToLog2 = quality;
-        LogHelper.printDebug(() -> "Index of quality " + qualityToLog2 + " is " + qualityIndex);
-        try {
+            final int preferredQuality;
+            if (networkType == NetworkType.MOBILE) {
+                preferredQuality = mobileQualitySetting.getInt();
+            } else {
+                preferredQuality = wifiQualitySetting.getInt();
+            }
+            if (preferredQuality == NO_DEFAULT_QUALITY_SET) {
+                return originalQuality;
+            }
+
+            int quality = originalQuality;
+            for (Integer iStreamQuality : iStreamQualities) {
+                if (iStreamQuality <= preferredQuality) {
+                    quality = iStreamQuality;
+                }
+            }
+            if (quality == -2) return quality; // edit: ?
+
+            final int qualityIndex = iStreamQualities.indexOf(quality);
+            final int qualityToLog = quality;
+            LogHelper.printDebug(() -> "Index of quality " + qualityToLog + " is " + qualityIndex);
+
             Class<?> cl = qInterface.getClass();
             Method m = cl.getMethod(qIndexMethod, Integer.TYPE);
             LogHelper.printDebug(() -> "Method is: " + qIndexMethod);
@@ -127,18 +118,24 @@ public class RememberVideoQualityPatch {
             return qualityIndex;
         } catch (Exception ex) {
             LogHelper.printException(() -> "Failed to set quality", ex);
-            return qualityIndex;
+            return originalQuality;
         }
     }
 
+    /**
+     * Injection point.
+     */
     public static void userChangedQuality(int selectedQuality) {
-        if (!SettingsEnum.REMEMBER_VIDEO_QUALITY_LAST_SELECTED.getBoolean()) return;
+        if (!SettingsEnum.VIDEO_QUALITY_REMEMBER_LAST_SELECTED.getBoolean()) return;
 
         selectedQuality1 = selectedQuality;
         userChangedQuality = true;
     }
 
+    /**
+     * Injection point.
+     */
     public static void newVideoStarted(String videoId) {
-        newVideo = true;
+        newVideo = true; // FIXME: this method can be called multiple times for the same video playback
     }
 }

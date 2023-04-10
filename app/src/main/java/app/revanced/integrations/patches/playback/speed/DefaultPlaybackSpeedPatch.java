@@ -7,7 +7,7 @@ import app.revanced.integrations.patches.VideoInformation;
 import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.utils.ReVancedUtils;
 
-public final class RememberPlaybackSpeedPatch {
+public final class DefaultPlaybackSpeedPatch {
 
     @Nullable
     private static String currentVideoId;
@@ -21,7 +21,7 @@ public final class RememberPlaybackSpeedPatch {
             return;
         }
         currentVideoId = videoId;
-        VideoInformation.overridePlaybackSpeed(SettingsEnum.REMEMBER_PLAYBACK_SPEED_LAST_SELECTED_VALUE.getFloat());
+        VideoInformation.overridePlaybackSpeed(SettingsEnum.PLAYBACK_SPEED_DEFAULT.getFloat());
     }
 
     /**
@@ -31,13 +31,9 @@ public final class RememberPlaybackSpeedPatch {
      * @param playbackSpeed The playback speed the user selected
      */
     public static void userSelectedPlaybackSpeed(float playbackSpeed) {
-        if (SettingsEnum.REMEMBER_PLAYBACK_SPEED_LAST_SELECTED.getBoolean()) {
-            SettingsEnum.REMEMBER_PLAYBACK_SPEED_LAST_SELECTED_VALUE.saveValue(playbackSpeed);
-
-            // TODO: extract these strings into localized file
-            ReVancedUtils.showToastLong("Remembering playback speed: " + playbackSpeed + "x");
-        } else if (playbackSpeed != (float) SettingsEnum.REMEMBER_PLAYBACK_SPEED_LAST_SELECTED_VALUE.defaultValue) {
-            ReVancedUtils.showToastLong("Applying playback speed: " + playbackSpeed + "x");
+        if (SettingsEnum.PLAYBACK_SPEED_REMEMBER_LAST_SELECTED.getBoolean()) {
+            SettingsEnum.PLAYBACK_SPEED_DEFAULT.saveValue(playbackSpeed);
+            ReVancedUtils.showToastLong("Changing default speed to: " + playbackSpeed + "x");
         }
     }
 

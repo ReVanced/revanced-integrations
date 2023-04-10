@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import java.util.Objects;
 
@@ -25,27 +26,39 @@ public enum SharedPrefCategory {
         preferences = Objects.requireNonNull(ReVancedUtils.getContext()).getSharedPreferences(prefName, Context.MODE_PRIVATE);
     }
 
-    public void saveString(@NonNull String key, @NonNull String value) {
-        Objects.requireNonNull(value);
-        preferences.edit().putString(key, value).apply();
+    private void saveObjectAsString(@NonNull String key, @Nullable Object value) {
+        preferences.edit().putString(key, (value == null ? null : value.toString())).apply();
     }
 
     public void saveBoolean(@NonNull String key, boolean value) {
         preferences.edit().putBoolean(key, value).apply();
     }
 
-    public void saveInt(@NonNull String key, int value) {
-        preferences.edit().putInt(key, value).apply();
+    /**
+     * @param value a NULL parameter removes the value from the preferences
+     */
+    public void saveInt(@NonNull String key, @Nullable Integer value) {
+        saveObjectAsString(key, value);
     }
 
-    public void saveLong(@NonNull String key, long value) {
-        preferences.edit().putLong(key, value).apply();
+    /**
+     * @param value a NULL parameter removes the value from the preferences
+     */
+    public void saveLong(@NonNull String key, @Nullable Long value) {
+        saveObjectAsString(key, value);
     }
 
-    public void saveFloat(@NonNull String key, float value) {
-        preferences.edit().putFloat(key, value).apply();
+    /**
+     * @param value a NULL parameter removes the value from the preferences
+     */
+    public void saveFloat(@NonNull String key, @Nullable Float value) {
+        saveObjectAsString(key, value);
     }
 
+    public void saveString(@NonNull String key, @NonNull String value) {
+        Objects.requireNonNull(value);
+        saveObjectAsString(key, value);
+    }
 
     @NonNull
     public String getString(@NonNull String key, @NonNull String _default) {
@@ -53,25 +66,32 @@ public enum SharedPrefCategory {
         return preferences.getString(key, _default);
     }
 
+
     public boolean getBoolean(@NonNull String key, boolean _default) {
         return preferences.getBoolean(key, _default);
     }
 
-    // region Hack, required for PreferencesFragments to function correctly.  unknown why required
-
     @NonNull
     public Integer getInt(@NonNull String key, @NonNull Integer _default) {
         try {
-            return Integer.valueOf(preferences.getString(key, _default.toString()));
+            String value = preferences.getString(key, null);
+            if (value != null) {
+                return Integer.valueOf(value);
+            }
+            return _default;
         } catch (ClassCastException ex) {
-            return preferences.getInt(key, _default);
+            return preferences.getInt(key, _default); // old data, previously stored as primitive
         }
     }
 
     @NonNull
     public Long getLong(@NonNull String key, @NonNull Long _default) {
         try {
-            return Long.valueOf(preferences.getString(key, _default.toString()));
+            String value = preferences.getString(key, null);
+            if (value != null) {
+                return Long.valueOf(value);
+            }
+            return _default;
         } catch (ClassCastException ex) {
             return preferences.getLong(key, _default);
         }
@@ -80,14 +100,15 @@ public enum SharedPrefCategory {
     @NonNull
     public Float getFloat(@NonNull String key, @NonNull Float _default) {
         try {
-            return Float.valueOf(preferences.getString(key, _default.toString()));
+            String value = preferences.getString(key, null);
+            if (value != null) {
+                return Float.valueOf(value);
+            }
+            return _default;
         } catch (ClassCastException ex) {
             return preferences.getFloat(key, _default);
         }
     }
-
-    // endregion
-
 
     @NonNull
     @Override
