@@ -13,11 +13,11 @@ import app.revanced.integrations.utils.StringRef;
 public enum CategoryBehaviour {
     SKIP_AUTOMATICALLY("skip", 2, true, sf("sb_skip_automatically")),
     // desktop does not have skip-once behavior. Key is unique to ReVanced
-    SKIP_AUTOMATICALLY_ONCE("skip-once", 4, true, sf("sb_skip_automatically_once")),
+    SKIP_AUTOMATICALLY_ONCE("skip-once", 3, true, sf("sb_skip_automatically_once")),
     MANUAL_SKIP("manual-skip", 1, false, sf("sb_skip_showbutton")),
     SHOW_IN_SEEKBAR("seekbar-only", 0, false, sf("sb_skip_seekbaronly")),
     // Ignore is the default behavior if no desktop behavior key is present
-    IGNORE("ignore", 3, false, sf("sb_skip_ignore"));
+    IGNORE("ignore", -1, false, sf("sb_skip_ignore"));
 
     @NonNull
     public final String key;
