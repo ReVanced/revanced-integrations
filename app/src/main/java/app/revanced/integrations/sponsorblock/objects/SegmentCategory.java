@@ -3,6 +3,7 @@ package app.revanced.integrations.sponsorblock.objects;
 import static app.revanced.integrations.sponsorblock.objects.CategoryBehaviour.IGNORE;
 import static app.revanced.integrations.sponsorblock.objects.CategoryBehaviour.MANUAL_SKIP;
 import static app.revanced.integrations.sponsorblock.objects.CategoryBehaviour.SKIP_AUTOMATICALLY;
+import static app.revanced.integrations.sponsorblock.objects.CategoryBehaviour.SKIP_AUTOMATICALLY_ONCE;
 import static app.revanced.integrations.utils.StringRef.sf;
 
 import android.content.SharedPreferences;
@@ -21,18 +22,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.settings.SharedPrefCategory;
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.StringRef;
 
 public enum SegmentCategory {
     SPONSOR("sponsor", sf("sb_segments_sponsor"), sf("sb_segments_sponsor_sum"), sf("sb_skip_button_sponsor"), sf("sb_skipped_sponsor"),
-            SKIP_AUTOMATICALLY, 0x00D400),
+            SKIP_AUTOMATICALLY_ONCE, 0x00D400),
     SELF_PROMO("selfpromo", sf("sb_segments_selfpromo"), sf("sb_segments_selfpromo_sum"), sf("sb_skip_button_selfpromo"), sf("sb_skipped_selfpromo"),
-            SKIP_AUTOMATICALLY, 0xFFFF00),
+            MANUAL_SKIP, 0xFFFF00),
     INTERACTION("interaction", sf("sb_segments_interaction"), sf("sb_segments_interaction_sum"), sf("sb_skip_button_interaction"), sf("sb_skipped_interaction"),
-            SKIP_AUTOMATICALLY, 0xCC00FF),
+            MANUAL_SKIP, 0xCC00FF),
     /**
      * Unique category that is treated differently than the rest.
      */
@@ -55,10 +55,7 @@ public enum SegmentCategory {
     UNSUBMITTED("unsubmitted", StringRef.empty, StringRef.empty, sf("sb_skip_button_unsubmitted"), sf("sb_skipped_unsubmitted"),
             SKIP_AUTOMATICALLY, 0xFFFFFF);
 
-    private static final StringRef skipSponsorTextCompact = sf("sb_skip_button_compact");
-    private static final StringRef skipSponsorTextCompactHighlight = sf("sb_skip_button_compact_highlight");
-
-    private static final SegmentCategory[] categoriesWithoutHighlights = new SegmentCategory[]{
+    private static final SegmentCategory[] mValuesWithoutUnsubmitted = new SegmentCategory[]{
             SPONSOR,
             SELF_PROMO,
             INTERACTION,
@@ -68,19 +65,7 @@ public enum SegmentCategory {
             FILLER,
             MUSIC_OFFTOPIC,
     };
-
-    private static final SegmentCategory[] categoriesWithoutUnsubmitted = new SegmentCategory[]{
-            SPONSOR,
-            SELF_PROMO,
-            INTERACTION,
-            HIGHLIGHT,
-            INTRO,
-            OUTRO,
-            PREVIEW,
-            FILLER,
-            MUSIC_OFFTOPIC,
-    };
-    private static final Map<String, SegmentCategory> mValuesMap = new HashMap<>(2 * categoriesWithoutUnsubmitted.length);
+    private static final Map<String, SegmentCategory> mValuesMap = new HashMap<>(2 * mValuesWithoutUnsubmitted.length);
 
     private static final String COLOR_PREFERENCE_KEY_SUFFIX = "_color";
 
@@ -90,18 +75,13 @@ public enum SegmentCategory {
     public static String sponsorBlockAPIFetchCategories = "[]";
 
     static {
-        for (SegmentCategory value : categoriesWithoutUnsubmitted)
+        for (SegmentCategory value : mValuesWithoutUnsubmitted)
             mValuesMap.put(value.key, value);
     }
 
     @NonNull
-    public static SegmentCategory[] categoriesWithoutUnsubmitted() {
-        return categoriesWithoutUnsubmitted;
-    }
-
-    @NonNull
-    public static SegmentCategory[] categoriesWithoutHighlights() {
-        return categoriesWithoutHighlights;
+    public static SegmentCategory[] valuesWithoutUnsubmitted() {
+        return mValuesWithoutUnsubmitted;
     }
 
     @Nullable
@@ -112,7 +92,7 @@ public enum SegmentCategory {
     public static void loadFromPreferences() {
         SharedPreferences preferences = SharedPrefCategory.SPONSOR_BLOCK.preferences;
         LogHelper.printDebug(() -> "loadFromPreferences");
-        for (SegmentCategory category : categoriesWithoutUnsubmitted()) {
+        for (SegmentCategory category : valuesWithoutUnsubmitted()) {
             category.load(preferences);
         }
         updateEnabledCategories();
@@ -122,7 +102,7 @@ public enum SegmentCategory {
      * Must be called if behavior of any category is changed
      */
     public static void updateEnabledCategories() {
-        SegmentCategory[] categories = categoriesWithoutUnsubmitted();
+        SegmentCategory[] categories = valuesWithoutUnsubmitted();
         List<String> enabledCategories = new ArrayList<>(categories.length);
         for (SegmentCategory category : categories) {
             if (category.behaviour != CategoryBehaviour.IGNORE) {
@@ -182,7 +162,6 @@ public enum SegmentCategory {
      * If value is changed, then also call {@link #save(SharedPreferences.Editor)}
      */
     public int color;
-
     /**
      * If value is changed, then also call {@link #updateEnabledCategories()}
      */
@@ -298,23 +277,17 @@ public enum SegmentCategory {
      * @return the skip button text
      */
     @NonNull
-    StringRef getSkipButtonText(long segmentStartTime, long videoLength) {
-        if (SettingsEnum.SB_USE_COMPACT_SKIPBUTTON.getBoolean()) {
-            return (this == SegmentCategory.HIGHLIGHT)
-                    ? skipSponsorTextCompactHighlight
-                    : skipSponsorTextCompact;
-        }
-
+    public String getSkipButtonText(long segmentStartTime, long videoLength) {
         if (videoLength == 0) {
-            return skipButtonTextBeginning; // video is still loading.  Assume it's the beginning
+            return skipButtonTextBeginning.toString(); // video is still loading.  Assume it's the beginning
         }
         final float position = segmentStartTime / (float) videoLength;
         if (position < 0.25f) {
-            return skipButtonTextBeginning;
+            return skipButtonTextBeginning.toString();
         } else if (position < 0.75f) {
-            return skipButtonTextMiddle;
+            return skipButtonTextMiddle.toString();
         }
-        return skipButtonTextEnd;
+        return skipButtonTextEnd.toString();
     }
 
     /**
@@ -323,16 +296,16 @@ public enum SegmentCategory {
      * @return 'skipped segment' toast message
      */
     @NonNull
-    StringRef getSkippedToastText(long segmentStartTime, long videoLength) {
+    public String getSkippedToastText(long segmentStartTime, long videoLength) {
         if (videoLength == 0) {
-            return skippedToastBeginning; // video is still loading.  Assume it's the beginning
+            return skippedToastBeginning.toString(); // video is still loading.  Assume it's the beginning
         }
         final float position = segmentStartTime / (float) videoLength;
         if (position < 0.25f) {
-            return skippedToastBeginning;
+            return skippedToastBeginning.toString();
         } else if (position < 0.75f) {
-            return skippedToastMiddle;
+            return skippedToastMiddle.toString();
         }
-        return skippedToastEnd;
+        return skippedToastEnd.toString();
     }
 }

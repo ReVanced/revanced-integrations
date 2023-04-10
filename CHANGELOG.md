@@ -1,3 +1,17 @@
+# [0.102.0-dev.8](https://github.com/revanced/revanced-integrations/compare/v0.102.0-dev.7...v0.102.0-dev.8) (2023-04-10)
+
+
+### Bug Fixes
+
+* **youtube/sponsorblock:** change default behavior to better match the browser ([#353](https://github.com/revanced/revanced-integrations/issues/353)) ([34c3704](https://github.com/revanced/revanced-integrations/commit/34c37046e6dd52ba2c229b885e4adb3e2c48b9bf))
+
+# [0.102.0-dev.7](https://github.com/revanced/revanced-integrations/compare/v0.102.0-dev.6...v0.102.0-dev.7) (2023-04-09)
+
+
+### Features
+
+* **youtube/general-ads:** block new type of ad ([a552f3c](https://github.com/revanced/revanced-integrations/commit/a552f3cb61f54ed6241805a6a2323123175976a8))
+
 # [0.102.0-dev.6](https://github.com/revanced/revanced-integrations/compare/v0.102.0-dev.5...v0.102.0-dev.6) (2023-04-08)
 
 
