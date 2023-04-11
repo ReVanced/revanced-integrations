@@ -64,7 +64,6 @@ public final class GeneralAdsPatch extends Filter {
                 "carousel_footered_layout",
                 "text_image_button_layout",
                 "primetime_promo",
-                "feature_grid_interstitial",
                 "product_details",
                 "brand_video_shelf"
         );
