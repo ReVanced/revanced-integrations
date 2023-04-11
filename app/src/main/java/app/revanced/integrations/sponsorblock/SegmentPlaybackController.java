@@ -33,11 +33,6 @@ import app.revanced.integrations.utils.ReVancedUtils;
 public class SegmentPlaybackController {
     /**
      * Length of time to show a highlight segment manual skip.
-     *
-     * Other segments have higher priority over showing the highlight button.
-     * If an intro or other segments exist, then those other segment time periods
-     * do not count towards this length.
-     *
      * Because there is no scheduled hide of a skip to highlight,
      * effectively this time value is rounded up to the next second.
      */
@@ -46,8 +41,9 @@ public class SegmentPlaybackController {
     /*
      * Highlight segments have zero length, as they are a point in time.
      * Draw them on screen using a fixed width bar.
+     * Value is independent of device dpi.
      */
-    private static final int HIGHLIGHT_SEGMENT_DRAW_BAR_WIDTH = 7; // value is independent of device dpi
+    private static final int HIGHLIGHT_SEGMENT_DRAW_BAR_WIDTH = 7;
 
     @Nullable
     private static String currentVideoId;
@@ -62,7 +58,7 @@ public class SegmentPlaybackController {
 
     /**
      * Because loading can take time, show the skip to highlight for a few seconds after the segments load.
-     * This is the end time (in milliseconds) to no longer show the initial display of the skip to highlight.
+     * This is the end time (in milliseconds) to no longer show the initial display skip to highlight.
      */
     private static long highlightSegmentInitialShowEndTime;
 
