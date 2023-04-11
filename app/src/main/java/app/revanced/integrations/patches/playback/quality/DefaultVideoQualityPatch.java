@@ -2,6 +2,8 @@ package app.revanced.integrations.patches.playback.quality;
 
 import static app.revanced.integrations.utils.ReVancedUtils.NetworkType;
 
+import androidx.annotation.Nullable;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -17,6 +19,8 @@ public class DefaultVideoQualityPatch {
     private static final SettingsEnum wifiQualitySetting = SettingsEnum.VIDEO_QUALITY_DEFAULT_WIFI;
     private static final SettingsEnum mobileQualitySetting = SettingsEnum.VIDEO_QUALITY_DEFAULT_MOBILE;
 
+    @Nullable
+    private static String videoId;
     private static int selectedQuality1 = NO_DEFAULT_QUALITY_SET;
     private static boolean newVideo;
     private static boolean userChangedQuality;
@@ -135,7 +139,10 @@ public class DefaultVideoQualityPatch {
     /**
      * Injection point.
      */
-    public static void newVideoStarted(String videoId) {
-        newVideo = true; // FIXME: this method can be called multiple times for the same video playback
+    public static void newVideoStarted(String currentVideo) {
+        if (!currentVideo.equals(videoId)) {
+            videoId = currentVideo;
+            newVideo = true;
+        }
     }
 }
