@@ -31,17 +31,6 @@ import app.revanced.integrations.utils.ReVancedUtils;
  * Class is not thread safe. All methods must be called on the main thread unless otherwise specified.
  */
 public class SegmentPlaybackController {
-    @Nullable
-    private static String currentVideoId;
-    @Nullable
-    private static SponsorSegment[] segmentsOfCurrentVideo;
-
-    /**
-     * Highlight segment, if one exists.
-     */
-    @Nullable
-    private static SponsorSegment highlightSegment;
-
     /**
      * Length of time to show a highlight segment manual skip.
      *
@@ -59,6 +48,23 @@ public class SegmentPlaybackController {
      * Draw them on screen using a fixed width bar.
      */
     private static final int HIGHLIGHT_SEGMENT_DRAW_BAR_WIDTH = 7; // value is independent of device dpi
+
+    @Nullable
+    private static String currentVideoId;
+    @Nullable
+    private static SponsorSegment[] segmentsOfCurrentVideo;
+
+    /**
+     * Highlight segment, if one exists.
+     */
+    @Nullable
+    private static SponsorSegment highlightSegment;
+
+    /**
+     * Because loading can take time, show the skip to highlight for a few seconds after the segments load.
+     * This is the end time (in milliseconds) to no longer show the initial display of the skip to highlight.
+     */
+    private static long highlightSegmentInitialShowEndTime;
 
     /**
      * Current (non-highlight) segment that user can manually skip
@@ -119,6 +125,7 @@ public class SegmentPlaybackController {
         currentVideoId = null;
         segmentsOfCurrentVideo = null;
         highlightSegment = null;
+        highlightSegmentInitialShowEndTime = 0;
         timeWithoutSegments = null;
         segmentCurrentlyPlaying = null;
         scheduledUpcomingSegment = null; // prevent any existing scheduled skip from running
@@ -205,6 +212,8 @@ public class SegmentPlaybackController {
                     // if the current video time is before the highlight, then autoskip to it
                     skipSegment(highlightSegment, false);
                 } else {
+                    highlightSegmentInitialShowEndTime = System.currentTimeMillis()
+                            + HIGHLIGHT_SEGMENT_DURATION_TO_SHOW_SKIP_PROMPT;
                     // check for any skips now, instead of waiting for the next update
                     setVideoTime(videoTime);
                 }
@@ -300,7 +309,8 @@ public class SegmentPlaybackController {
                 }
             }
 
-            if (highlightSegment != null && millis < HIGHLIGHT_SEGMENT_DURATION_TO_SHOW_SKIP_PROMPT) {
+            if (highlightSegment != null && (millis < HIGHLIGHT_SEGMENT_DURATION_TO_SHOW_SKIP_PROMPT
+                    || System.currentTimeMillis() < highlightSegmentInitialShowEndTime)) {
                 SponsorBlockViewController.showSkipHighlightButton(highlightSegment);
             } else {
                 SponsorBlockViewController.hideSkipHighlightButton();
