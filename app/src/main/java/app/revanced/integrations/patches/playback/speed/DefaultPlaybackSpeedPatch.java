@@ -65,8 +65,9 @@ public final class DefaultPlaybackSpeedPatch {
             preferenceListEntryValues = new String[videoSpeeds.length];
             int i = 0;
             for (float speed : videoSpeeds) {
-                preferenceListEntries[i] = speed + "x";
-                preferenceListEntryValues[i] = String.valueOf(speed);
+                String speedString = String.valueOf(speed);
+                preferenceListEntries[i] = speedString + "x";
+                preferenceListEntryValues[i] = speedString;
                 i++;
             }
         }
