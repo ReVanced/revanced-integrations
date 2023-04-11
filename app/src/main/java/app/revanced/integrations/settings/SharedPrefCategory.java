@@ -10,6 +10,15 @@ import java.util.Objects;
 
 import app.revanced.integrations.utils.ReVancedUtils;
 
+/**
+ * Shared categories, and helper methods.
+ *
+ * The various save methods store numbers as Strings,
+ * which is required if using {@link android.preference.PreferenceFragment}.
+ *
+ * If saved numbers will not be used with a preference fragment,
+ * then store the primitive numbers using {@link #preferences}.
+ */
 public enum SharedPrefCategory {
     YOUTUBE("youtube"),
     RETURN_YOUTUBE_DISLIKE("ryd"),
@@ -37,26 +46,28 @@ public enum SharedPrefCategory {
     /**
      * @param value a NULL parameter removes the value from the preferences
      */
-    public void saveInt(@NonNull String key, @Nullable Integer value) {
+    public void saveIntegerString(@NonNull String key, @Nullable Integer value) {
         saveObjectAsString(key, value);
     }
 
     /**
      * @param value a NULL parameter removes the value from the preferences
      */
-    public void saveLong(@NonNull String key, @Nullable Long value) {
+    public void saveLongString(@NonNull String key, @Nullable Long value) {
         saveObjectAsString(key, value);
     }
 
     /**
      * @param value a NULL parameter removes the value from the preferences
      */
-    public void saveFloat(@NonNull String key, @Nullable Float value) {
+    public void saveFloatString(@NonNull String key, @Nullable Float value) {
         saveObjectAsString(key, value);
     }
 
-    public void saveString(@NonNull String key, @NonNull String value) {
-        Objects.requireNonNull(value);
+    /**
+     * @param value a NULL parameter removes the value from the preferences
+     */
+    public void saveString(@NonNull String key, @Nullable String value) {
         saveObjectAsString(key, value);
     }
 
@@ -72,7 +83,7 @@ public enum SharedPrefCategory {
     }
 
     @NonNull
-    public Integer getInt(@NonNull String key, @NonNull Integer _default) {
+    public Integer getIntegerString(@NonNull String key, @NonNull Integer _default) {
         try {
             String value = preferences.getString(key, null);
             if (value != null) {
@@ -85,7 +96,7 @@ public enum SharedPrefCategory {
     }
 
     @NonNull
-    public Long getLong(@NonNull String key, @NonNull Long _default) {
+    public Long getLongString(@NonNull String key, @NonNull Long _default) {
         try {
             String value = preferences.getString(key, null);
             if (value != null) {
@@ -98,7 +109,7 @@ public enum SharedPrefCategory {
     }
 
     @NonNull
-    public Float getFloat(@NonNull String key, @NonNull Float _default) {
+    public Float getFloatString(@NonNull String key, @NonNull Float _default) {
         try {
             String value = preferences.getString(key, null);
             if (value != null) {

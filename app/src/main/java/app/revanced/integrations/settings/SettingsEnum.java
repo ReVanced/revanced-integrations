@@ -297,13 +297,13 @@ public enum SettingsEnum {
                 value = sharedPref.getBoolean(path, (boolean) defaultValue);
                 break;
             case INTEGER:
-                value = sharedPref.getInt(path, (Integer) defaultValue);
+                value = sharedPref.getIntegerString(path, (Integer) defaultValue);
                 break;
             case LONG:
-                value = sharedPref.getLong(path, (Long) defaultValue);
+                value = sharedPref.getLongString(path, (Long) defaultValue);
                 break;
             case FLOAT:
-                value = sharedPref.getFloat(path, (Float) defaultValue);
+                value = sharedPref.getFloatString(path, (Float) defaultValue);
                 break;
             case STRING:
                 value = sharedPref.getString(path, (String) defaultValue);
@@ -361,13 +361,13 @@ public enum SettingsEnum {
                 sharedPref.saveBoolean(path, (boolean) newValue);
                 break;
             case INTEGER:
-                sharedPref.saveInt(path, (Integer) newValue);
+                sharedPref.saveIntegerString(path, (Integer) newValue);
                 break;
             case LONG:
-                sharedPref.saveLong(path, (Long) newValue);
+                sharedPref.saveLongString(path, (Long) newValue);
                 break;
             case FLOAT:
-                sharedPref.saveFloat(path, (Float) newValue);
+                sharedPref.saveFloatString(path, (Float) newValue);
                 break;
             case STRING:
                 sharedPref.saveString(path, (String) newValue);
