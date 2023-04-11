@@ -431,6 +431,9 @@ public class SegmentPlaybackController {
             segmentCurrentlyPlaying = null;
             scheduledHideSegment = null;
             scheduledUpcomingSegment = null;
+            if (segmentToSkip == highlightSegment) {
+                highlightSegmentInitialShowEndTime = 0;
+            }
             SponsorBlockViewController.hideSkipHighlightButton();
             SponsorBlockViewController.hideSkipSegmentButton();
 
