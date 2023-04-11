@@ -41,7 +41,7 @@ public class SegmentPlaybackController {
      * Because there is no scheduled hide of a skip to highlight,
      * effectively this time value is rounded up to the next second.
      */
-    private static final long HIGHLIGHT_SEGMENT_DURATION_TO_SHOW_SKIP_PROMPT = 4800;
+    private static final long HIGHLIGHT_SEGMENT_DURATION_TO_SHOW_SKIP_PROMPT = 3800;
 
     /*
      * Highlight segments have zero length, as they are a point in time.
