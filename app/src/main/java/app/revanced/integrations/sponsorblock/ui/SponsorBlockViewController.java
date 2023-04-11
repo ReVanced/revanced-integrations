@@ -108,10 +108,7 @@ public class SponsorBlockViewController {
         if (segment == null) {
             setViewVisibility(button, false);
         } else {
-            final boolean layoutNeedsUpdating = button.updateSkipButtonText(segment);
-            if (layoutNeedsUpdating) {
-                bringLayoutToFront();
-            }
+            button.updateSkipButtonText(segment);
             setViewVisibility(button, true);
         }
     }
@@ -131,6 +128,29 @@ public class SponsorBlockViewController {
             return;
         }
         setViewVisibility(newSegmentLayout, false);
+    }
+
+    private static void setViewVisibility(View view, boolean visible) {
+        if (view == null) {
+            LogHelper.printException(() -> "setViewVisibility failure: " + view);
+            return;
+        }
+
+        visible &= canShowViewElements;
+
+        final int desiredVisibility = visible ? View.VISIBLE : View.GONE;
+        if (view.getVisibility() != desiredVisibility) {
+            view.setVisibility(desiredVisibility);
+            if (visible) {
+                RelativeLayout layout = inlineSponsorOverlayRef.get();
+                if (layout != null) {
+                    layout.bringToFront(); // needed to keep skip buttons overtop end screen cards
+                    // edit: this does not appear to be needed
+//                  layout.requestLayout();
+//                    layout.invalidate();
+                }
+            }
+        }
     }
 
     private static void playerTypeChanged(PlayerType playerType) {
@@ -170,34 +190,6 @@ public class SponsorBlockViewController {
         }
         params.bottomMargin = fullScreen ? ctaBottomMargin : defaultBottomMargin;
         view.setLayoutParams(params);
-    }
-
-    private static void setViewVisibility(View view, boolean visible) {
-        if (view == null) {
-            LogHelper.printException(() -> "setViewVisibility failure: " + view);
-            return;
-        }
-
-        visible &= canShowViewElements;
-
-        final int desiredVisibility = visible ? View.VISIBLE : View.GONE;
-        if (view.getVisibility() != desiredVisibility) {
-            view.setVisibility(desiredVisibility);
-            if (visible) {
-                bringLayoutToFront();
-            }
-        }
-    }
-
-    private static void bringLayoutToFront() {
-        RelativeLayout layout = inlineSponsorOverlayRef.get();
-        if (layout != null) {
-            layout.bringToFront(); // needed to keep skip buttons overtop end screen cards
-
-            // edit: this does not appear to be needed
-//             layout.requestLayout();
-//             layout.invalidate();
-        }
     }
 
     /**
