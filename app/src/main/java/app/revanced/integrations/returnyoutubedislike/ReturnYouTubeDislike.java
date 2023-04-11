@@ -276,7 +276,6 @@ public class ReturnYouTubeDislike {
         }
         // Must block the current thread until fetching is done
         // There's no known way to edit the text after creation yet
-        long fetchStartTime = 0;
         try {
             synchronized (videoIdLockObject) {
                 if (oldSpannable.equals(replacementLikeDislikeSpan)) {
@@ -311,9 +310,6 @@ public class ReturnYouTubeDislike {
                 LogHelper.printDebug(() -> "fetch future not available (user enabled RYD while video was playing?)");
                 return null;
             }
-            if (SettingsEnum.DEBUG.getBoolean() && !fetchFuture.isDone()) {
-                fetchStartTime = System.currentTimeMillis();
-            }
             RYDVoteData votingData = fetchFuture.get(MAX_MILLISECONDS_TO_BLOCK_UI_WHILE_WAITING_FOR_FETCH_VOTES_TO_COMPLETE, TimeUnit.MILLISECONDS);
             if (votingData == null) {
                 LogHelper.printDebug(() -> "Cannot add dislike to UI (RYD data not available)");
@@ -331,8 +327,6 @@ public class ReturnYouTubeDislike {
             LogHelper.printDebug(() -> "UI timed out while waiting for fetch votes to complete"); // show no toast
         } catch (Exception e) {
             LogHelper.printException(() -> "createReplacementSpan failure", e); // should never happen
-        } finally {
-            recordTimeUISpentWaitingForNetworkCall(fetchStartTime);
         }
         return null;
     }
@@ -565,33 +559,6 @@ public class ReturnYouTubeDislike {
             }
             return dislikePercentageFormatter.format(dislikePercentage);
         }
-    }
-
-
-    /**
-     * Number of times the UI was forced to wait on a network fetch to complete
-     */
-    private static volatile int numberOfTimesUIWaitedOnNetworkCalls;
-
-    /**
-     * Total time the UI waited, of all times it was forced to wait.
-     */
-    private static volatile long totalTimeUIWaitedOnNetworkCalls;
-
-    @SuppressWarnings("NonAtomicOperationOnVolatileField")
-    private static void recordTimeUISpentWaitingForNetworkCall(long timeUIWaitStarted) {
-        if (timeUIWaitStarted == 0 || !SettingsEnum.DEBUG.getBoolean()) {
-            return;
-        }
-        final long timeUIWaitingTotal = System.currentTimeMillis() - timeUIWaitStarted;
-        LogHelper.printDebug(() -> "UI thread waited for: " + timeUIWaitingTotal + "ms for vote fetch to complete");
-
-        totalTimeUIWaitedOnNetworkCalls += timeUIWaitingTotal;
-        numberOfTimesUIWaitedOnNetworkCalls++;
-        final long averageTimeForcedToWait = totalTimeUIWaitedOnNetworkCalls / numberOfTimesUIWaitedOnNetworkCalls;
-        LogHelper.printDebug(() -> "UI thread forced to wait: " + numberOfTimesUIWaitedOnNetworkCalls + " times, "
-                + "total wait time: " + totalTimeUIWaitedOnNetworkCalls + "ms, "
-                + "average wait time: " + averageTimeForcedToWait + "ms");
     }
 }
 
