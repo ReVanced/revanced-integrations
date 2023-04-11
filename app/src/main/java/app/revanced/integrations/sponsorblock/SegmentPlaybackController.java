@@ -202,15 +202,17 @@ public class SegmentPlaybackController {
                 setSegmentsOfCurrentVideo(segments);
 
                 final long videoTime = VideoInformation.getVideoTime();
-                if (highlightSegment != null && highlightSegment.shouldAutoSkip() && videoTime < highlightSegment.end) {
-                    // if the current video time is before the highlight, then autoskip to it
-                    skipSegment(highlightSegment, false);
-                } else {
+                // if the current video time is before the highlight
+                if (highlightSegment != null && videoTime < highlightSegment.end) {
+                    if (highlightSegment.shouldAutoSkip()) {
+                        skipSegment(highlightSegment, false);
+                        return;
+                    }
                     highlightSegmentInitialShowEndTime = System.currentTimeMillis()
                             + HIGHLIGHT_SEGMENT_DURATION_TO_SHOW_SKIP_PROMPT;
-                    // check for any skips now, instead of waiting for the next update
-                    setVideoTime(videoTime);
                 }
+                // check for any skips now, instead of waiting for the next update to setVideoTime()
+                setVideoTime(videoTime);
             });
         } catch (Exception ex) {
             LogHelper.printException(() -> "executeDownloadSegments failure", ex);
