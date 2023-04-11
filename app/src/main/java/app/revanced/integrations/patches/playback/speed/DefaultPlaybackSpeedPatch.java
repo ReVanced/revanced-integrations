@@ -56,7 +56,7 @@ public final class DefaultPlaybackSpeedPatch {
      * Initialize a settings preference list.
      *
      * Normally this is done during patching by creating a static xml preference list,
-     * but the playback speeds differ depending if {@link CustomVideoSpeedPatch} is applied or not.
+     * but the available playback speeds differ depending if {@link CustomVideoSpeedPatch} is applied or not.
      */
     public static void initializeListPreference(ListPreference preference) {
         if (preferenceListEntries == null) {
