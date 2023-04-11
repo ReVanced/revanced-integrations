@@ -24,6 +24,7 @@ import androidx.annotation.Nullable;
 
 import com.google.android.apps.youtube.app.application.Shell_HomeActivity;
 
+import app.revanced.integrations.patches.playback.speed.DefaultPlaybackSpeedPatch;
 import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.settings.SharedPrefCategory;
 import app.revanced.integrations.utils.LogHelper;
@@ -53,9 +54,10 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
             } else if (pref instanceof ListPreference) {
                 ListPreference listPref = (ListPreference) pref;
                 SettingsEnum.setValue(setting, listPref.getValue());
-                updateListPreferenceToSettingValue((ListPreference) pref, setting);
+                updateListPreferenceSummary((ListPreference) pref, setting);
             } else {
                 LogHelper.printException(() -> "Setting cannot be handled: " + pref.getClass() + " " + pref);
+                return;
             }
 
             if (!showingUserDialogMessage) {
@@ -83,9 +85,18 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
 
             enableDisablePreferences();
 
-            // update any list preferences that are on screen
+            // if the preference was included, then initialize it based on the available playback speed
+            Preference defaultSpeedPreference = findPreference(SettingsEnum.PLAYBACK_SPEED_DEFAULT.path);
+            if (defaultSpeedPreference instanceof ListPreference) {
+                DefaultPlaybackSpeedPatch.initializeListPreference((ListPreference) defaultSpeedPreference);
+            }
+
+            // set the summary text for any ListPreferences
             for (SettingsEnum setting : SettingsEnum.values()) {
-                updateListPreferenceToSettingValue(setting);
+                Preference preference = findPreference(setting.path);
+                if (preference instanceof ListPreference) {
+                    updateListPreferenceSummary((ListPreference) preference, setting);
+                }
             }
 
             preferenceManager.getSharedPreferences().registerOnSharedPreferenceChangeListener(listener);
@@ -109,14 +120,7 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
         }
     }
 
-    private void updateListPreferenceToSettingValue(SettingsEnum setting) {
-        Preference preference = findPreference(setting.path);
-        if (preference instanceof ListPreference) {
-            updateListPreferenceToSettingValue((ListPreference) preference, setting);
-        }
-    }
-
-    private void updateListPreferenceToSettingValue(ListPreference listPreference, SettingsEnum setting) {
+    private void updateListPreferenceSummary(ListPreference listPreference, SettingsEnum setting) {
         final int entryIndex = listPreference.findIndexOfValue(setting.getObjectValue().toString());
         if (entryIndex >= 0) {
             listPreference.setSummary(listPreference.getEntries()[entryIndex]);

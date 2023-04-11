@@ -1,5 +1,7 @@
 package app.revanced.integrations.patches.playback.speed;
 
+import android.preference.ListPreference;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -8,6 +10,11 @@ import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.utils.ReVancedUtils;
 
 public final class DefaultPlaybackSpeedPatch {
+
+    /**
+     * PreferenceList entries and values, of all available playback speeds.
+     */
+    private static String[] preferenceListEntries, preferenceListEntryValues;
 
     @Nullable
     private static String currentVideoId;
@@ -43,5 +50,27 @@ public final class DefaultPlaybackSpeedPatch {
      */
     public static float getPlaybackSpeedOverride() {
         return VideoInformation.getCurrentPlaybackSpeed();
+    }
+
+    /**
+     * Initialize a settings preference list.
+     *
+     * Normally this is done during patching by creating a static xml preference list,
+     * but the playback speeds differ depending if {@link CustomVideoSpeedPatch} is applied or not.
+     */
+    public static void initializeListPreference(ListPreference preference) {
+        if (preferenceListEntries == null) {
+            float[] videoSpeeds = CustomVideoSpeedPatch.videoSpeeds;
+            preferenceListEntries = new String[videoSpeeds.length];
+            preferenceListEntryValues = new String[videoSpeeds.length];
+            int i = 0;
+            for (float speed : videoSpeeds) {
+                preferenceListEntries[i] = speed + "x";
+                preferenceListEntryValues[i] = String.valueOf(speed);
+                i++;
+            }
+        }
+        preference.setEntries(preferenceListEntries);
+        preference.setEntryValues(preferenceListEntryValues);
     }
 }
