@@ -75,7 +75,7 @@ public class ReturnYouTubeDislike {
     /**
      * If {@link #currentVideoId} and the RYD data is for the last shorts loaded
      */
-    private static volatile boolean lastVideoLoadedWasShort;
+    private static volatile boolean dataIsForShort;
 
     /**
      * Stores the results of the vote api fetch, and used as a barrier to wait until fetch completes
@@ -140,9 +140,21 @@ public class ReturnYouTubeDislike {
                 LogHelper.printDebug(() -> "Clearing data");
             }
             currentVideoId = videoId;
-            lastVideoLoadedWasShort = false;
+            dataIsForShort = PlayerType.getCurrent().isNoneOrHidden();
             voteFetchFuture = null;
             originalDislikeSpan = null;
+            replacementLikeDislikeSpan = null;
+        }
+    }
+
+    /**
+     * Should be called if user changes settings for dislikes appearance.
+     */
+    public static void clearCache() {
+        synchronized (videoIdLockObject) {
+            if (replacementLikeDislikeSpan != null) {
+                LogHelper.printDebug(() -> "Clearing cache");
+            }
             replacementLikeDislikeSpan = null;
         }
     }
@@ -201,8 +213,7 @@ public class ReturnYouTubeDislike {
         try {
             if (!SettingsEnum.RYD_ENABLED.getBoolean()) return;
 
-            // do not set lastVideoLoadedWasShort to false. It will be cleared when the next regular video is loaded.
-            if (lastVideoLoadedWasShort || PlayerType.getCurrent().isNoneOrHidden()) {
+            if (PlayerType.getCurrent().isNoneOrHidden()) {
                 return;
             }
 
@@ -213,6 +224,16 @@ public class ReturnYouTubeDislike {
             } else if (conversionContextString.contains("|dislike_button.eml|")) {
                 isSegmentedButton = false;
             } else {
+                return;
+            }
+
+            if (dataIsForShort) {
+                // user:
+                // 1, opened a video
+                // 2. opened a short (without closing the regular video)
+                // 3. closed the short
+                // 4. regular video is now present, but the videoId and RYD data is still for the short
+                LogHelper.printDebug(() -> "Ignoring onComponentCreated(), as data loaded is is for prior short");
                 return;
             }
 
@@ -228,7 +249,6 @@ public class ReturnYouTubeDislike {
     public static Spanned onShortsComponentCreated(Spanned span) {
         try {
             if (SettingsEnum.RYD_ENABLED.getBoolean()) {
-                lastVideoLoadedWasShort = true;
                 Spanned replacement = waitForFetchAndUpdateReplacementSpan(span, false);
                 if (replacement != null) {
                     return replacement;
@@ -262,6 +282,10 @@ public class ReturnYouTubeDislike {
                 if (oldSpannable.equals(replacementLikeDislikeSpan)) {
                     LogHelper.printDebug(() -> "Ignoring previously created dislike span");
                     return null;
+                }
+                if (replacementLikeDislikeSpan != null) {
+                    LogHelper.printDebug(() -> "Using previously created dislike span");
+                    return replacementLikeDislikeSpan;
                 }
                 if (isSegmentedButton) {
                     if (isPreviouslyCreatedSegmentedSpan(oldSpannable)) {
@@ -335,7 +359,7 @@ public class ReturnYouTubeDislike {
         try {
             // Must make a local copy of videoId, since it may change between now and when the vote thread runs
             String videoIdToVoteFor = getCurrentVideoId();
-            if (videoIdToVoteFor == null || (lastVideoLoadedWasShort && !PlayerType.getCurrent().isNoneOrHidden())) {
+            if (videoIdToVoteFor == null || (dataIsForShort != PlayerType.getCurrent().isNoneOrHidden())) {
                 // User enabled RYD after starting playback of a video.
                 // Or shorts was loaded with regular video present, then shorts was closed, and then user voted on the now visible original video
                 LogHelper.printException(() -> "Cannot send vote",
@@ -354,9 +378,7 @@ public class ReturnYouTubeDislike {
                 }
             });
 
-            synchronized (videoIdLockObject) {
-                replacementLikeDislikeSpan = null; // ui values need updating
-            }
+            clearCache(); // ui values need updating
 
             // update the downloaded vote data
             Future<RYDVoteData> future = getVoteFetchFuture();
