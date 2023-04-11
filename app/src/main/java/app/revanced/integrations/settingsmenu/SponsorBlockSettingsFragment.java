@@ -64,8 +64,7 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment {
         try {
             final boolean enabled = SettingsEnum.SB_ENABLED.getBoolean();
             if (!enabled) {
-                SponsorBlockViewController.hideSkipButton();
-                SponsorBlockViewController.hideNewSegmentLayout();
+                SponsorBlockViewController.hideAll();
                 SegmentPlaybackController.setCurrentVideoId(null);
             } else if (!SettingsEnum.SB_CREATE_NEW_SEGMENT_ENABLED.getBoolean()) {
                 SponsorBlockViewController.hideNewSegmentLayout();

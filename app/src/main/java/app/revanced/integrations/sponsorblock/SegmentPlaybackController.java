@@ -54,17 +54,6 @@ public class SegmentPlaybackController {
      */
     private static final long HIGHLIGHT_SEGMENT_DURATION_TO_SHOW_SKIP_PROMPT = 4800;
 
-    /**
-     * If a highlight segment exists, then show the manual skip button from the start of the video
-     * up until this video time.
-     *
-     * Value will be zero if segment does not exists or if behavior is {@link CategoryBehaviour#SHOW_IN_SEEKBAR}
-     *
-     * If no segments are present at the beginning of the video,
-     * then this will be equal to {@link #HIGHLIGHT_SEGMENT_DURATION_TO_SHOW_SKIP_PROMPT}.
-     */
-    private static long highlightDisplaySkipButtonVideoEndTime;
-
     /*
      * Highlight segments have zero length, as they are a point in time.
      * Draw them on screen using a fixed width bar.
@@ -72,7 +61,7 @@ public class SegmentPlaybackController {
     private static final int HIGHLIGHT_SEGMENT_DRAW_BAR_WIDTH = 7; // value is independent of device dpi
 
     /**
-     * Current segment that user can manually skip
+     * Current (non-highlight) segment that user can manually skip
      */
     @Nullable
     private static SponsorSegment segmentCurrentlyPlaying;
@@ -103,8 +92,15 @@ public class SegmentPlaybackController {
     static void setSegmentsOfCurrentVideo(@NonNull SponsorSegment[] segments) {
         Arrays.sort(segments);
         segmentsOfCurrentVideo = segments;
-        calculateHighlightSegment();
         calculateTimeWithoutSegments();
+
+        for (SponsorSegment segment : segments) {
+            if (segment.category == SegmentCategory.HIGHLIGHT) {
+                highlightSegment = segment;
+                return;
+            }
+        }
+        highlightSegment = null;
     }
 
     public static boolean currentVideoHasSegments() {
@@ -123,7 +119,6 @@ public class SegmentPlaybackController {
         currentVideoId = null;
         segmentsOfCurrentVideo = null;
         highlightSegment = null;
-        highlightDisplaySkipButtonVideoEndTime = 0;
         timeWithoutSegments = null;
         segmentCurrentlyPlaying = null;
         scheduledUpcomingSegment = null; // prevent any existing scheduled skip from running
@@ -141,7 +136,8 @@ public class SegmentPlaybackController {
             ReVancedUtils.verifyOnMainThread();
             SponsorBlockSettings.initialize();
             clearData();
-            SponsorBlockViewController.hideSkipButton();
+            SponsorBlockViewController.hideSkipHighlightButton();
+            SponsorBlockViewController.hideSkipSegmentButton();
             SponsorBlockViewController.hideNewSegmentLayout();
             SponsorBlockUtils.clearUnsubmittedSegmentTimes();
             LogHelper.printDebug(() -> "Initialized SponsorBlock");
@@ -304,21 +300,21 @@ public class SegmentPlaybackController {
                 }
             }
 
-            // if no segments were found, and the video time is within the time period to show the highlight skip button
-            // then display the highlight skip button
-            if (foundCurrentSegment == null && millis < highlightDisplaySkipButtonVideoEndTime) {
-                foundCurrentSegment = highlightSegment;
+            if (highlightSegment != null && millis < HIGHLIGHT_SEGMENT_DURATION_TO_SHOW_SKIP_PROMPT) {
+                SponsorBlockViewController.showSkipHighlightButton(highlightSegment);
+            } else {
+                SponsorBlockViewController.hideSkipHighlightButton();
             }
 
             if (segmentCurrentlyPlaying != foundCurrentSegment) {
                 if (foundCurrentSegment == null) {
                     LogHelper.printDebug(() -> "Hiding segment: " + segmentCurrentlyPlaying);
                     segmentCurrentlyPlaying = null;
-                    SponsorBlockViewController.hideSkipButton();
+                    SponsorBlockViewController.hideSkipSegmentButton();
                 }  else {
                     segmentCurrentlyPlaying = foundCurrentSegment;
                     LogHelper.printDebug(() -> "Showing segment: " + segmentCurrentlyPlaying);
-                    SponsorBlockViewController.showSkipButton(foundCurrentSegment);
+                    SponsorBlockViewController.showSkipSegmentButton(foundCurrentSegment);
                 }
             }
 
@@ -359,7 +355,7 @@ public class SegmentPlaybackController {
                         // Should not use VideoInformation time as it is less accurate,
                         // but this scheduled handler was scheduled precisely so we can just use the segment end time
                         segmentCurrentlyPlaying = null;
-                        SponsorBlockViewController.hideSkipButton();
+                        SponsorBlockViewController.hideSkipSegmentButton();
                         setVideoTime(segmentToHide.end);
                     }, delayUntilHide);
                 }
@@ -396,7 +392,7 @@ public class SegmentPlaybackController {
                         } else {
                             LogHelper.printDebug(() -> "Running scheduled show segment: " + segmentToSkip);
                             segmentCurrentlyPlaying = segmentToSkip;
-                            SponsorBlockViewController.showSkipButton(segmentToSkip);
+                            SponsorBlockViewController.showSkipSegmentButton(segmentToSkip);
                         }
                     }, delayUntilSkip);
                 }
@@ -429,7 +425,8 @@ public class SegmentPlaybackController {
             segmentCurrentlyPlaying = null;
             scheduledHideSegment = null;
             scheduledUpcomingSegment = null;
-            SponsorBlockViewController.hideSkipButton();
+            SponsorBlockViewController.hideSkipHighlightButton();
+            SponsorBlockViewController.hideSkipSegmentButton();
 
             final boolean seekSuccessful = VideoInformation.seekTo(segmentToSkip.end);
             if (!seekSuccessful) {
@@ -505,44 +502,16 @@ public class SegmentPlaybackController {
         }, delayToToastMilliseconds);
     }
 
-    public static void onSkipSponsorClicked() {
-        if (segmentCurrentlyPlaying != null) {
-            skipSegment(segmentCurrentlyPlaying, true);
-        } else {
-            SponsorBlockViewController.hideSkipButton();
+    /**
+     * @param segment can be either a highlight or a regular manual skip segment
+     */
+    public static void onSkipSegmentClicked(SponsorSegment segment) {
+        if (segment != highlightSegment && segment != segmentCurrentlyPlaying) {
             LogHelper.printException(() -> "error: segment not available to skip"); // should never happen
-        }
-    }
-
-    private static void calculateHighlightSegment() {
-        highlightSegment = null;
-        highlightDisplaySkipButtonVideoEndTime = 0;
-
-        for (SponsorSegment segment : segmentsOfCurrentVideo) {
-            if (segment.category == SegmentCategory.HIGHLIGHT) {
-                highlightSegment = segment;
-                break;
-            }
-        }
-        if (highlightSegment == null || highlightSegment.category.behaviour == CategoryBehaviour.SHOW_IN_SEEKBAR) {
+            SponsorBlockViewController.hideSkipSegmentButton();
             return;
         }
-
-        long highlightEndTime = HIGHLIGHT_SEGMENT_DURATION_TO_SHOW_SKIP_PROMPT;
-        for (SponsorSegment segment : segmentsOfCurrentVideo) {
-            if (segment == highlightSegment || segment.category.behaviour == CategoryBehaviour.SHOW_IN_SEEKBAR) {
-                continue;
-            }
-            if (highlightEndTime <= segment.start) {
-                break; // segment and all remaining are past the highlight display time
-            }
-            // segment is during the highlight skip button time frame
-            // move highlight end time past the segment
-            highlightEndTime = Math.max(highlightEndTime, segment.end + HIGHLIGHT_SEGMENT_DURATION_TO_SHOW_SKIP_PROMPT);
-            highlightEndTime = Math.min(highlightEndTime, highlightSegment.end);
-        }
-        highlightDisplaySkipButtonVideoEndTime = highlightEndTime;
-        LogHelper.printDebug(() -> "highlight display skip button end time: "+ highlightDisplaySkipButtonVideoEndTime);
+        skipSegment(segment, true);
     }
 
     /**

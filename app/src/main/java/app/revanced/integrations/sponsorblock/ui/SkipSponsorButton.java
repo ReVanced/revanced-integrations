@@ -26,6 +26,7 @@ public class SkipSponsorButton extends FrameLayout {
     private final TextView skipSponsorTextView;
     private final Paint background;
     private final Paint border;
+    private SponsorSegment segment;
     final int defaultBottomMargin;
     final int ctaBottomMargin;
 
@@ -60,7 +61,7 @@ public class SkipSponsorButton extends FrameLayout {
 
         skipSponsorBtnContainer.setOnClickListener(v -> {
             LogHelper.printDebug(() -> "Skip button clicked");
-            SegmentPlaybackController.onSkipSponsorClicked();
+            SegmentPlaybackController.onSkipSegmentClicked(segment);
         });
     }
 
@@ -86,6 +87,7 @@ public class SkipSponsorButton extends FrameLayout {
      * @return true, if this button state was changed
      */
     public boolean updateSkipButtonText(SponsorSegment segment) {
+        this.segment = segment;
         CharSequence newText = segment.getSkipButtonText();
         if (newText.equals(skipSponsorTextView.getText())) {
             return false;
