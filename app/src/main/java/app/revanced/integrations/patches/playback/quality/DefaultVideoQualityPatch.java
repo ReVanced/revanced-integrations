@@ -18,8 +18,8 @@ public class DefaultVideoQualityPatch {
     private static final SettingsEnum mobileQualitySetting = SettingsEnum.VIDEO_QUALITY_DEFAULT_MOBILE;
 
     private static int selectedQuality1 = NO_DEFAULT_QUALITY_SET;
-    private static Boolean newVideo = false;
-    private static Boolean userChangedQuality = false;
+    private static boolean newVideo;
+    private static boolean userChangedQuality;
 
     private static void changeDefaultQuality(int defaultQuality) {
         NetworkType networkType = ReVancedUtils.getNetworkType();
