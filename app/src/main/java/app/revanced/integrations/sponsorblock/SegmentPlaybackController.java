@@ -139,9 +139,7 @@ public class SegmentPlaybackController {
             ReVancedUtils.verifyOnMainThread();
             SponsorBlockSettings.initialize();
             clearData();
-            SponsorBlockViewController.hideSkipHighlightButton();
-            SponsorBlockViewController.hideSkipSegmentButton();
-            SponsorBlockViewController.hideNewSegmentLayout();
+            SponsorBlockViewController.hideAll();
             SponsorBlockUtils.clearUnsubmittedSegmentTimes();
             LogHelper.printDebug(() -> "Initialized SponsorBlock");
         } catch (Exception ex) {
