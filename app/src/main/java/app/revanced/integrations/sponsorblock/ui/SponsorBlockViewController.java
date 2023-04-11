@@ -101,7 +101,7 @@ public class SponsorBlockViewController {
         updateSkipButton(skipSponsorButtonRef.get(), null);
     }
 
-    private static void updateSkipButton(SkipSponsorButton button, SponsorSegment segment) {
+    private static void updateSkipButton(@Nullable SkipSponsorButton button, @Nullable SponsorSegment segment) {
         if (button == null) {
             return;
         }
@@ -130,12 +130,7 @@ public class SponsorBlockViewController {
         setViewVisibility(newSegmentLayout, false);
     }
 
-    private static void setViewVisibility(View view, boolean visible) {
-        if (view == null) {
-            LogHelper.printException(() -> "setViewVisibility failure: " + view);
-            return;
-        }
-
+    private static void setViewVisibility(@NonNull View view, boolean visible) {
         visible &= canShowViewElements;
 
         final int desiredVisibility = visible ? View.VISIBLE : View.GONE;
@@ -146,14 +141,14 @@ public class SponsorBlockViewController {
                 if (layout != null) {
                     layout.bringToFront(); // needed to keep skip buttons overtop end screen cards
                     // edit: this does not appear to be needed
-//                  layout.requestLayout();
+//                    layout.requestLayout();
 //                    layout.invalidate();
                 }
             }
         }
     }
 
-    private static void playerTypeChanged(PlayerType playerType) {
+    private static void playerTypeChanged(@NonNull PlayerType playerType) {
         try {
             final boolean isWatchFullScreen = playerType == PlayerType.WATCH_WHILE_FULLSCREEN;
             canShowViewElements = (isWatchFullScreen || playerType == PlayerType.WATCH_WHILE_MAXIMIZED);
@@ -172,17 +167,17 @@ public class SponsorBlockViewController {
 
     private static void setNewSegmentLayoutMargins(boolean fullScreen) {
         NewSegmentLayout layout = newSegmentLayoutRef.get();
-        setLayoutMargins(layout, fullScreen, layout.defaultBottomMargin, layout.ctaBottomMargin);
-    }
-    private static void setSkipButtonMargins(SkipSponsorButton button, boolean fullScreen) {
-        setLayoutMargins(button, fullScreen, button.defaultBottomMargin, button.ctaBottomMargin);
-    }
-    private static void setLayoutMargins(View view, boolean fullScreen, int defaultBottomMargin, int ctaBottomMargin) {
-        if (view == null) {
-            LogHelper.printException(() -> "setLayoutMargins failure (view is null)");
-            return;
+        if (layout != null) {
+            setLayoutMargins(layout, fullScreen, layout.defaultBottomMargin, layout.ctaBottomMargin);
         }
-
+    }
+    private static void setSkipButtonMargins(@Nullable SkipSponsorButton button, boolean fullScreen) {
+        if (button != null) {
+            setLayoutMargins(button, fullScreen, button.defaultBottomMargin, button.ctaBottomMargin);
+        }
+    }
+    private static void setLayoutMargins(@NonNull View view, boolean fullScreen,
+                                         int defaultBottomMargin, int ctaBottomMargin) {
         RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) view.getLayoutParams();
         if (params == null) {
             LogHelper.printException(() -> "Unable to setNewSegmentLayoutMargins (params are null)");
