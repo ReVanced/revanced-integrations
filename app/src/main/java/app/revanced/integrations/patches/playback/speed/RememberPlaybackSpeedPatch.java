@@ -40,7 +40,7 @@ public final class RememberPlaybackSpeedPatch {
     public static void userSelectedPlaybackSpeed(float playbackSpeed) {
         if (SettingsEnum.PLAYBACK_SPEED_REMEMBER_LAST_SELECTED.getBoolean()) {
             SettingsEnum.PLAYBACK_SPEED_DEFAULT.saveValue(playbackSpeed);
-            ReVancedUtils.showToastLong("Changing default speed to: " + playbackSpeed + "x");
+            ReVancedUtils.showToastLong("Changed default speed to: " + playbackSpeed + "x");
         }
     }
 

@@ -42,7 +42,7 @@ public class RememberVideoQualityPatch {
             wifiQualitySetting.saveValue(defaultQuality);
             networkTypeMessage = "Wi-Fi";
         }
-        ReVancedUtils.showToastShort("Changing default " + networkTypeMessage
+        ReVancedUtils.showToastShort("Changed default " + networkTypeMessage
                 + " quality to: " + defaultQuality +"p");
     }
 
