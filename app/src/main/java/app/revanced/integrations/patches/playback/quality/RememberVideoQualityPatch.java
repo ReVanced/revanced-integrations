@@ -57,8 +57,19 @@ public class RememberVideoQualityPatch {
             if (!(newVideo || userChangedDefaultQuality) || qInterface == null) {
                 return originalQualityIndex;
             }
+            newVideo = false;
 
-            // list of human readable resolution
+            final int preferredResolution;
+            if (ReVancedUtils.getNetworkType() == NetworkType.MOBILE) {
+                preferredResolution = mobileQualitySetting.getInt();
+            } else {
+                preferredResolution = wifiQualitySetting.getInt();
+            }
+            if (!userChangedDefaultQuality && preferredResolution == AUTOMATIC_VIDEO_QUALITY_VALUE) {
+                return originalQualityIndex; // nothing to do
+            }
+
+            // create list of human readable resolutions
             List<Integer> streamResolutions = new ArrayList<>();
             try {
                 for (Object streamQuality : qualities) {
@@ -81,24 +92,6 @@ public class RememberVideoQualityPatch {
                         + " index: " + userSelectedQualityIndex);
                 changeDefaultQuality(streamResolution);
                 return userSelectedQualityIndex;
-            }
-
-            newVideo = false;
-
-            var networkType = ReVancedUtils.getNetworkType();
-            if (networkType == NetworkType.NONE) {
-                LogHelper.printDebug(() -> "No Internet connection");
-                return originalQualityIndex;
-            }
-
-            final int preferredResolution;
-            if (networkType == NetworkType.MOBILE) {
-                preferredResolution = mobileQualitySetting.getInt();
-            } else {
-                preferredResolution = wifiQualitySetting.getInt();
-            }
-            if (preferredResolution == AUTOMATIC_VIDEO_QUALITY_VALUE) {
-                return originalQualityIndex;
             }
 
             // find the highest resolution that is equal to or less than the preferred resolution
