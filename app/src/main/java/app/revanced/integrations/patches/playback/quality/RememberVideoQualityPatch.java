@@ -119,7 +119,7 @@ public class RememberVideoQualityPatch {
                 i++;
             }
             if (qualityIndexToUse == originalQualityIndex) {
-                LogHelper.printDebug(() -> "Ignoring video that is already preferred quality: " + preferredQuality);
+                LogHelper.printDebug(() -> "Video is already preferred quality: " + preferredQuality);
                 return originalQualityIndex;
             }
 
