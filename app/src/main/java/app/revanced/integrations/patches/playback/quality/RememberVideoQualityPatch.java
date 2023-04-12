@@ -101,8 +101,7 @@ public class RememberVideoQualityPatch {
             if (userChangedDefaultQuality) {
                 userChangedDefaultQuality = false;
                 final int quality = videoQualities.get(userSelectedQualityIndex);
-                LogHelper.printDebug(() -> "User changed default to quality: " + quality
-                        + " index: " + userSelectedQualityIndex);
+                LogHelper.printDebug(() -> "User changed default quality to: " + quality);
                 changeDefaultQuality(quality);
                 return userSelectedQualityIndex;
             }
@@ -124,10 +123,8 @@ public class RememberVideoQualityPatch {
             }
 
             final int qualityToUseLog = qualityToUse;
-            final int qualityIndexToUseLog = qualityIndexToUse;
-            LogHelper.printDebug(() -> "Method is: " + qIndexMethod);
-            LogHelper.printDebug(() -> "Quality changed from index: " + originalQualityIndex
-                    + " to index: " + qualityIndexToUseLog + " quality: " + qualityToUseLog);
+            LogHelper.printDebug(() -> "Quality changed from: "
+                    + videoQualities.get(originalQualityIndex) + " to: " + qualityToUseLog);
 
             Method m = qInterface.getClass().getMethod(qIndexMethod, Integer.TYPE);
             m.invoke(qInterface, qualityToUse);
