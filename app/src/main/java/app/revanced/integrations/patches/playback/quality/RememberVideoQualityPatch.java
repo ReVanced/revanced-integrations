@@ -101,9 +101,10 @@ public class RememberVideoQualityPatch {
                 return originalQualityIndex;
             }
 
-            Collections.sort(streamResolutions);
-            int resolutionToUse = streamResolutions.get(0);
-            for (Integer resolution : streamResolutions) {
+            List<Integer> sortedStreamResolutions = new ArrayList<>(streamResolutions);
+            Collections.sort(sortedStreamResolutions);
+            int resolutionToUse = sortedStreamResolutions.get(0);
+            for (Integer resolution : sortedStreamResolutions) {
                 if (resolution <= preferredResolution) {
                     resolutionToUse = resolution;
                 }
@@ -116,7 +117,7 @@ public class RememberVideoQualityPatch {
 
             Method m = qInterface.getClass().getMethod(qIndexMethod, Integer.TYPE);
             LogHelper.printDebug(() -> "Method is: " + qIndexMethod);
-            m.invoke(qInterface, streamResolutions.get(qualityIndex));
+            m.invoke(qInterface, resolutionToUse);
             final int resolutionToUseLog = resolutionToUse;
             LogHelper.printDebug(() -> "Quality changed from index: " + originalQualityIndex
                     + " to index: " + qualityIndex + " resolution: " + resolutionToUseLog);
