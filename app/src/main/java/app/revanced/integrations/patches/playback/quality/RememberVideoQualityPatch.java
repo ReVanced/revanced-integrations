@@ -82,19 +82,21 @@ public class RememberVideoQualityPatch {
             }
 
             if (videoQualities == null || videoQualities.size() != qualities.length) {
-                videoQualities = new ArrayList<>(qualities.length);
                 try {
+                    List<Integer> list = new ArrayList<>(qualities.length);
                     for (Object streamQuality : qualities) {
                         for (Field field : streamQuality.getClass().getFields()) {
                             if (field.getType().isAssignableFrom(Integer.TYPE)
                                     && field.getName().length() <= 2) {
-                                videoQualities.add(field.getInt(streamQuality));
+                                list.add(field.getInt(streamQuality));
                             }
                         }
                     }
+                    videoQualities = list;
                     LogHelper.printDebug(() -> "VideoId: " + currentVideoId + " videoQualities: " + videoQualities);
                 } catch (Exception ignored) {
-                    // edit: what could be caught here?
+                    // Edit: What could be caught here?  Should it stop here and return?
+                    LogHelper.printDebug(() -> "??? : " + ignored);
                 }
             }
 
@@ -156,7 +158,7 @@ public class RememberVideoQualityPatch {
         // 1. a default video quality exists, and remember quality is turned off
         // 2. user opens a video
         // 3. user changes the video quality
-        // 4. user turns on then off the device screen (or does anything else that triggers the video id hook)
+        // 4. user turns off then on the device screen (or does anything else that triggers the video id hook)
         // result: the video quality of the current video will revert back to the saved default
         //
         // qualityNeedsUpdating could be set only when the videoId changes
