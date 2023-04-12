@@ -317,7 +317,7 @@ public class ReturnYouTubeDislike {
      */
     @Nullable
     private static SpannableString waitForFetchAndUpdateReplacementSpan(@Nullable Spanned oldSpannable, boolean isSegmentedButton) {
-        if (oldSpannable == null) {
+        if (oldSpannable == null) { // should never happen
             LogHelper.printDebug(() -> "Cannot add dislikes (injection code was called with null Span)");
             return null;
         }
