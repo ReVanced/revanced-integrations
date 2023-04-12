@@ -1,3 +1,10 @@
+# [0.102.0-dev.9](https://github.com/revanced/revanced-integrations/compare/v0.102.0-dev.8...v0.102.0-dev.9) (2023-04-12)
+
+
+### Bug Fixes
+
+* **youtube/return-youtube-dislike:** stale dislike data shown after opening / closing the app during shorts playback ([#356](https://github.com/revanced/revanced-integrations/issues/356)) ([b3cffef](https://github.com/revanced/revanced-integrations/commit/b3cffef3a09709d5ce6c8c2d109d62fd7c1c8398))
+
 # [0.102.0-dev.8](https://github.com/revanced/revanced-integrations/compare/v0.102.0-dev.7...v0.102.0-dev.8) (2023-04-10)
 
 
