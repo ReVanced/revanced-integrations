@@ -37,10 +37,10 @@ public class RememberVideoQualityPatch {
             networkTypeMessage = "mobile";
         } else {
             wifiQualitySetting.saveValue(defaultQuality);
-            networkTypeMessage = "WIFI";
+            networkTypeMessage = "Wi-Fi";
         }
         ReVancedUtils.showToastShort("Changing default " + networkTypeMessage
-                + " quality to: " + defaultQuality);
+                + " quality to: " + defaultQuality +"p");
     }
 
     /**
