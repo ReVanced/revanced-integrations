@@ -2,8 +2,6 @@ package app.revanced.integrations.patches.playback.quality;
 
 import static app.revanced.integrations.utils.ReVancedUtils.NetworkType;
 
-import androidx.annotation.Nullable;
-
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -19,8 +17,6 @@ public class RememberVideoQualityPatch {
     private static final SettingsEnum wifiQualitySetting = SettingsEnum.VIDEO_QUALITY_DEFAULT_WIFI;
     private static final SettingsEnum mobileQualitySetting = SettingsEnum.VIDEO_QUALITY_DEFAULT_MOBILE;
 
-    @Nullable
-    private static String videoId;
     private static boolean newVideo;
     /**
      * If the user selected a new resolution from the flyout menu,
@@ -147,11 +143,10 @@ public class RememberVideoQualityPatch {
     public static void newVideoStarted(String currentVideo) {
         // The same videoId can be passed in multiple times for a single video playback.
         // Such as closing and opening the app, or turning off/on the device screen.
-        if (!currentVideo.equals(videoId)) {
-            // Known limitation: If user closes and then reopens the same video, then the saved default quality is not applied
-            LogHelper.printDebug(() -> "newVideoStarted: " + currentVideo);
-            videoId = currentVideo;
-            newVideo = true;
-        }
+        //
+        // Known limitation: if the resolution is changed from default,
+        // and then the app is closed and then reopened,
+        // the video resolution will revert back to the saved default.
+        newVideo = true;
     }
 }
