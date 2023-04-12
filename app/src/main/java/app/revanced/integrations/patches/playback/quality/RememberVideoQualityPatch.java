@@ -139,11 +139,11 @@ public class RememberVideoQualityPatch {
         // The same videoId can be passed in multiple times for a single video playback.
         // Such as closing and opening the app, and sometimes when turning off/on the device screen.
         //
-        // Known limitation:
+        // Known limitation, if:
         // 1. a default video quality exists, and remember quality is turned off
-        // 1. user opens a video
-        // 2. user changes the video resolution
-        // 3. user turns on then off the device screen (or does anything else that triggers the video id hook)
+        // 2. user opens a video
+        // 3. user changes the video resolution
+        // 4. user turns on then off the device screen (or does anything else that triggers the video id hook)
         // result: the video resolution of the current video will revert back to the saved default
         //
         // The videoId could be checked if it changed,
