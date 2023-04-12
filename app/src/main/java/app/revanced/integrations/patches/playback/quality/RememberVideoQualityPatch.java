@@ -109,13 +109,16 @@ public class RememberVideoQualityPatch {
 
             // find the highest resolution that is equal to or less than the preferred resolution
             int resolutionToUse = videoResolutions.get(0); // first element is automatic mode
+            int resolutionIndexToUse = 0;
+            int i = 0;
             for (Integer resolution : videoResolutions) {
-                if (resolution <= preferredResolution) {
-                    resolutionToUse = Math.max(resolution, resolutionToUse);
+                if (resolution <= preferredResolution && resolutionToUse < resolution)  {
+                    resolutionToUse = resolution;
+                    resolutionIndexToUse = i;
                 }
+                i++;
             }
-            final int qualityIndex = videoResolutions.indexOf(resolutionToUse);
-            if (qualityIndex == originalQualityIndex) {
+            if (resolutionIndexToUse == originalQualityIndex) {
                 LogHelper.printDebug(() -> "Ignoring video that is already preferred resolution: " + preferredResolution);
                 return originalQualityIndex;
             }
@@ -124,9 +127,10 @@ public class RememberVideoQualityPatch {
             LogHelper.printDebug(() -> "Method is: " + qIndexMethod);
             m.invoke(qInterface, resolutionToUse);
             final int resolutionToUseLog = resolutionToUse;
+            final int resolutionIndexToUseLog = resolutionIndexToUse;
             LogHelper.printDebug(() -> "Quality changed from index: " + originalQualityIndex
-                    + " to index: " + qualityIndex + " resolution: " + resolutionToUseLog);
-            return qualityIndex;
+                    + " to index: " + resolutionIndexToUseLog + " resolution: " + resolutionToUseLog);
+            return resolutionIndexToUse;
         } catch (Exception ex) {
             LogHelper.printException(() -> "Failed to set quality", ex);
             return originalQualityIndex;
