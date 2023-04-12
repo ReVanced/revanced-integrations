@@ -5,7 +5,7 @@ import androidx.annotation.NonNull;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Method;
 
-import app.revanced.integrations.patches.playback.speed.DefaultPlaybackSpeedPatch;
+import app.revanced.integrations.patches.playback.speed.RememberPlaybackSpeedPatch;
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedUtils;
 
@@ -74,7 +74,7 @@ public final class VideoInformation {
     /**
      * Overrides the current playback speed.
      *
-     * <b> Used exclusively by {@link DefaultPlaybackSpeedPatch} </b>
+     * <b> Used exclusively by {@link RememberPlaybackSpeedPatch} </b>
      */
     public static void overridePlaybackSpeed(float speedOverride) {
         if (playbackSpeed != speedOverride) {

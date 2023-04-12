@@ -14,7 +14,7 @@ import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedUtils;
 
-public class DefaultVideoQualityPatch {
+public class RememberVideoQualityPatch {
     private static final int NO_DEFAULT_QUALITY_SET = (int) SettingsEnum.VIDEO_QUALITY_DEFAULT_WIFI.defaultValue;
     private static final SettingsEnum wifiQualitySetting = SettingsEnum.VIDEO_QUALITY_DEFAULT_WIFI;
     private static final SettingsEnum mobileQualitySetting = SettingsEnum.VIDEO_QUALITY_DEFAULT_MOBILE;

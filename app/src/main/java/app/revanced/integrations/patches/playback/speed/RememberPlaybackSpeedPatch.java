@@ -9,7 +9,7 @@ import app.revanced.integrations.patches.VideoInformation;
 import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.utils.ReVancedUtils;
 
-public final class DefaultPlaybackSpeedPatch {
+public final class RememberPlaybackSpeedPatch {
 
     /**
      * PreferenceList entries and values, of all available playback speeds.

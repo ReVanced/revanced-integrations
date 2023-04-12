@@ -3,7 +3,7 @@ package app.revanced.integrations.patches.playback.speed;
 public class CustomVideoSpeedPatch {
     /**
      * Default playback speeds offered by YouTube.
-     * Values are also used by {@link DefaultPlaybackSpeedPatch}.
+     * Values are also used by {@link RememberPlaybackSpeedPatch}.
      *
      * If custom video speed is applied,
      * then this array is overwritten by the patch with custom speeds
