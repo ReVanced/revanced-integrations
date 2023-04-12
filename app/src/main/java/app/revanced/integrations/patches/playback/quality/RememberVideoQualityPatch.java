@@ -139,9 +139,16 @@ public class RememberVideoQualityPatch {
         // The same videoId can be passed in multiple times for a single video playback.
         // Such as closing and opening the app, and sometimes when turning off/on the device screen.
         //
-        // Known limitation: if the resolution is changed from default,
-        // and then the app is closed and then reopened,
-        // the video resolution can revert back to the saved default.
+        // Known limitation:
+        // 1. a default video quality exists, and remember quality is turned off
+        // 1. user opens a video
+        // 2. user changes the video resolution
+        // 3. user turns on then off the device screen (or does anything else that triggers the video id hook)
+        // result: the video resolution of the current video will revert back to the saved default
+        //
+        // The videoId could be checked if it changed,
+        // but then if the user closes and re-opens the same video the default video quality will not be applied.
+        LogHelper.printDebug(() -> "newVideoStarted: " + currentVideo);
         newVideo = true;
     }
 }
