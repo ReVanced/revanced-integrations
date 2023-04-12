@@ -101,6 +101,7 @@ public class RememberVideoQualityPatch {
                 return originalQualityIndex;
             }
 
+            // find the highest resolution that is equal to or less than the preferred resolution
             List<Integer> sortedStreamResolutions = new ArrayList<>(streamResolutions);
             Collections.sort(sortedStreamResolutions);
             int resolutionToUse = sortedStreamResolutions.get(0);
