@@ -332,10 +332,6 @@ public class ReturnYouTubeDislike {
                     return replacementLikeDislikeSpan;
                 }
                 if (isSegmentedButton) {
-                    if (lastVideoLoadedWasShort) {
-                        LogHelper.printDebug(() -> "Cannot add dislikes, videoId and data is from prior Shorts");
-                        return null;
-                    }
                     if (isPreviouslyCreatedSegmentedSpan(oldSpannable)) {
                         // need to recreate using original, as oldSpannable has prior outdated dislike values
                         oldSpannable = originalDislikeSpan;
