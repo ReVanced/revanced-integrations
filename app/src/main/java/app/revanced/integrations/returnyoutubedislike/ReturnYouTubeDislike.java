@@ -134,18 +134,6 @@ public class ReturnYouTubeDislike {
         }
     }
 
-    /**
-     * Should be called if user changes settings for dislikes appearance.
-     */
-    public static void clearCache() {
-        synchronized (videoIdLockObject) {
-            if (replacementLikeDislikeSpan != null) {
-                LogHelper.printDebug(() -> "Clearing cache");
-            }
-            replacementLikeDislikeSpan = null;
-        }
-    }
-
     private static void setCurrentVideoId(@Nullable String videoId) {
         synchronized (videoIdLockObject) {
             if (videoId == null && currentVideoId != null) {
@@ -155,6 +143,18 @@ public class ReturnYouTubeDislike {
             lastVideoLoadedWasShort = false;
             voteFetchFuture = null;
             originalDislikeSpan = null;
+            replacementLikeDislikeSpan = null;
+        }
+    }
+
+    /**
+     * Should be called if user changes settings for dislikes appearance.
+     */
+    public static void clearCache() {
+        synchronized (videoIdLockObject) {
+            if (replacementLikeDislikeSpan != null) {
+                LogHelper.printDebug(() -> "Clearing cache");
+            }
             replacementLikeDislikeSpan = null;
         }
     }
@@ -213,6 +213,8 @@ public class ReturnYouTubeDislike {
 
     /**
      * Injection point.
+     *
+     * Called when a litho text component is created.
      *
      * This method is sometimes called on the main thread, but it usually is called _off_ the main thread.
      * This method can be called multiple times for the same UI element (including after dislikes was added)
@@ -273,11 +275,12 @@ public class ReturnYouTubeDislike {
                 }
 
                 if (lastVideoLoadedWasShort) {
-                    // 1. user opened regular video
-                    // 2. user opened a short (without closing the regular video)
-                    // 3. user closed the short
-                    // 4. the regular video is now visible again, but the videoId and RYD data is still for the short
-                    LogHelper.printDebug(() -> "Old short data still loaded. Ignoring span.");
+                    // user:
+                    // 1, opened a video
+                    // 2. opened a short (without closing the regular video)
+                    // 3. closed the short
+                    // 4. regular video is now present, but the videoId and RYD data is still for the short
+                    LogHelper.printDebug(() -> "Ignoring getDislikeSpanForContext(), as data loaded is is for prior short");
                     return null;
                 }
 
@@ -291,6 +294,8 @@ public class ReturnYouTubeDislike {
 
     /**
      * Injection point.
+     *
+     * Called when a Shorts dislike Spannable is created.
      */
     public static Spanned onShortsComponentCreated(@NonNull Spanned original) {
         try {
@@ -328,7 +333,7 @@ public class ReturnYouTubeDislike {
                     return null;
                 }
                 if (replacementLikeDislikeSpan != null) {
-                    LogHelper.printDebug(() -> "Adding dislikes using previously created span");
+                    LogHelper.printDebug(() -> "Using previously created dislike span");
                     return replacementLikeDislikeSpan;
                 }
                 if (isSegmentedButton) {
@@ -373,6 +378,11 @@ public class ReturnYouTubeDislike {
         return null;
     }
 
+    /**
+     * Called when the like/dislike button is clicked.
+     *
+     * @param vote int that matches {@link Vote#value}
+     */
     public static void sendVote(int vote) {
         if (!SettingsEnum.RYD_ENABLED.getBoolean()) return;
 

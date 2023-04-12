@@ -1,3 +1,31 @@
+# [0.102.0-dev.9](https://github.com/revanced/revanced-integrations/compare/v0.102.0-dev.8...v0.102.0-dev.9) (2023-04-12)
+
+
+### Bug Fixes
+
+* **youtube/return-youtube-dislike:** stale dislike data shown after opening / closing the app during shorts playback ([#356](https://github.com/revanced/revanced-integrations/issues/356)) ([b3cffef](https://github.com/revanced/revanced-integrations/commit/b3cffef3a09709d5ce6c8c2d109d62fd7c1c8398))
+
+# [0.102.0-dev.8](https://github.com/revanced/revanced-integrations/compare/v0.102.0-dev.7...v0.102.0-dev.8) (2023-04-10)
+
+
+### Bug Fixes
+
+* **youtube/sponsorblock:** change default behavior to better match the browser ([#353](https://github.com/revanced/revanced-integrations/issues/353)) ([34c3704](https://github.com/revanced/revanced-integrations/commit/34c37046e6dd52ba2c229b885e4adb3e2c48b9bf))
+
+# [0.102.0-dev.7](https://github.com/revanced/revanced-integrations/compare/v0.102.0-dev.6...v0.102.0-dev.7) (2023-04-09)
+
+
+### Features
+
+* **youtube/general-ads:** block new type of ad ([a552f3c](https://github.com/revanced/revanced-integrations/commit/a552f3cb61f54ed6241805a6a2323123175976a8))
+
+# [0.102.0-dev.6](https://github.com/revanced/revanced-integrations/compare/v0.102.0-dev.5...v0.102.0-dev.6) (2023-04-08)
+
+
+### Bug Fixes
+
+* **youtube/sponsorblock:** settings do not show default behavior ([#351](https://github.com/revanced/revanced-integrations/issues/351)) ([c6ea5c3](https://github.com/revanced/revanced-integrations/commit/c6ea5c39d1a10cc129645c196cc53af7703aae16))
+
 # [0.102.0-dev.5](https://github.com/revanced/revanced-integrations/compare/v0.102.0-dev.4...v0.102.0-dev.5) (2023-04-07)
 
 
