@@ -196,6 +196,12 @@ public class ReturnYouTubeDislike {
                 }
                 LogHelper.printDebug(() -> "New video loaded: " + videoId + " playerType: " + currentPlayerType);
                 setCurrentVideoId(videoId);
+
+                // If a Short is opened while a regular video is on screen, this will incorrectly set this as false.
+                // But this check is needed to fix unusual situations of opening/closing the app
+                // while both a regular video and a short are on screen.
+                lastVideoLoadedWasShort = PlayerType.getCurrent().isNoneOrHidden();
+
                 // no need to wrap the call in a try/catch,
                 // as any exceptions are propagated out in the later Future#Get call
                 voteFetchFuture = ReVancedUtils.submitOnBackgroundThread(() -> ReturnYouTubeDislikeApi.fetchVotes(videoId));
@@ -252,8 +258,7 @@ public class ReturnYouTubeDislike {
     private static SpannableString getDislikeSpanForContext(@NonNull Object conversionContext, @NonNull Spanned original) {
         try {
             if (SettingsEnum.RYD_ENABLED.getBoolean()) {
-                // do not set lastVideoLoadedWasShort to false. It will be cleared when the next regular video is loaded.
-                if (lastVideoLoadedWasShort || PlayerType.getCurrent().isNoneOrHidden()) {
+                if (PlayerType.getCurrent().isNoneOrHidden()) {
                     return null;
                 }
 
@@ -264,6 +269,15 @@ public class ReturnYouTubeDislike {
                 } else if (conversionContextString.contains("|dislike_button.eml|")) {
                     isSegmentedButton = false;
                 } else {
+                    return null;
+                }
+
+                if (lastVideoLoadedWasShort) {
+                    // 1. user opened regular video
+                    // 2. user opened a short (without closing the regular video)
+                    // 3. user closed the short
+                    // 4. the regular video is now visible again, but the videoId and RYD data is still for the short
+                    LogHelper.printDebug(() -> "Old short data still loaded. Ignoring span.");
                     return null;
                 }
 
@@ -281,7 +295,7 @@ public class ReturnYouTubeDislike {
     public static Spanned onShortsComponentCreated(@NonNull Spanned original) {
         try {
             if (SettingsEnum.RYD_ENABLED.getBoolean()) {
-                lastVideoLoadedWasShort = true;
+                lastVideoLoadedWasShort = true; // it's now certain the video and data are a short
                 Spanned replacement = waitForFetchAndUpdateReplacementSpan(original, false);
                 if (replacement != null) {
                     return replacement;
@@ -318,16 +332,15 @@ public class ReturnYouTubeDislike {
                     return replacementLikeDislikeSpan;
                 }
                 if (isSegmentedButton) {
+                    if (lastVideoLoadedWasShort) {
+                        LogHelper.printDebug(() -> "Cannot add dislikes, videoId and data is from prior Shorts");
+                        return null;
+                    }
                     if (isPreviouslyCreatedSegmentedSpan(oldSpannable)) {
                         // need to recreate using original, as oldSpannable has prior outdated dislike values
                         oldSpannable = originalDislikeSpan;
                         if (oldSpannable == null) {
-                            // Regular video is opened, then a short is opened then closed,
-                            // then the app is closed then reopened (causes a call of NewVideoId() of the original videoId)
-                            // The original video (that was opened the entire time), is still showing the dislikes count
-                            // but the oldSpannable is now null because it was reset when the videoId was set again
-                            LogHelper.printDebug(() -> "Cannot add dislikes - original span is null"
-                                    + " (short was opened/closed, then app was minimized/restored?) "); // ignore, with no toast
+                            LogHelper.printDebug(() -> "Cannot add dislikes - original span is null"); // should never happen
                             return null;
                         }
                     } else {
@@ -386,9 +399,10 @@ public class ReturnYouTubeDislike {
         try {
             // Must make a local copy of videoId, since it may change between now and when the vote thread runs
             String videoIdToVoteFor = getCurrentVideoId();
-            if (videoIdToVoteFor == null || (lastVideoLoadedWasShort && !PlayerType.getCurrent().isNoneOrHidden())) {
+            if (videoIdToVoteFor == null || lastVideoLoadedWasShort != PlayerType.getCurrent().isNoneOrHidden()) {
                 // User enabled RYD after starting playback of a video.
-                // Or shorts was loaded with regular video present, then shorts was closed, and then user voted on the now visible original video
+                // Or shorts was loaded with regular video present, then shorts was closed,
+                // and then user voted on the now visible original video
                 ReVancedUtils.showToastLong(str("revanced_ryd_failure_ryd_enabled_while_playing_video_then_user_voted"));
                 return;
             }
