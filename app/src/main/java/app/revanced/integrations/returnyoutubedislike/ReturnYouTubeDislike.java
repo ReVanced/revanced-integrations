@@ -216,6 +216,8 @@ public class ReturnYouTubeDislike {
      *
      * This method is sometimes called on the main thread, but it usually is called _off_ the main thread.
      * This method can be called multiple times for the same UI element (including after dislikes was added)
+     *
+     * @param textRef atomic reference should always be non null, but the spanned reference inside can be null.
      */
     public static void onComponentCreated(@NonNull Object conversionContext, @NonNull AtomicReference<Object> textRef) {
         try {
@@ -282,7 +284,7 @@ public class ReturnYouTubeDislike {
      */
     @Nullable
     private static SpannableString waitForFetchAndUpdateReplacementSpan(@Nullable Spanned oldSpannable, boolean isSegmentedButton) {
-        if (oldSpannable == null) { // should never happen
+        if (oldSpannable == null) {
             LogHelper.printDebug(() -> "Cannot add dislikes (injection code was called with null Span)");
             return null;
         }
