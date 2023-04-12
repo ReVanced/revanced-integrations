@@ -142,11 +142,11 @@ public class RememberVideoQualityPatch {
      */
     public static void newVideoStarted(String currentVideo) {
         // The same videoId can be passed in multiple times for a single video playback.
-        // Such as closing and opening the app, or turning off/on the device screen.
+        // Such as closing and opening the app, and sometimes when turning off/on the device screen.
         //
         // Known limitation: if the resolution is changed from default,
         // and then the app is closed and then reopened,
-        // the video resolution will revert back to the saved default.
+        // the video resolution can revert back to the saved default.
         newVideo = true;
     }
 }
