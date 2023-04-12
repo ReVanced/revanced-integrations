@@ -81,7 +81,7 @@ public class RememberVideoQualityPatch {
                 return originalQualityIndex; // nothing to do
             }
 
-            if (videoQualities == null) {
+            if (videoQualities == null || videoQualities.size() != qualities.length) {
                 videoQualities = new ArrayList<>(qualities.length);
                 try {
                     for (Object streamQuality : qualities) {
