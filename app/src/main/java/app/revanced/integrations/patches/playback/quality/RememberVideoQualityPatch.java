@@ -24,7 +24,7 @@ public class RememberVideoQualityPatch {
     private static String currentVideoId;
 
     /**
-     * If the user selected a new resolution from the flyout menu,
+     * If the user selected a new quality from the flyout menu,
      * and {@link SettingsEnum#VIDEO_QUALITY_REMEMBER_LAST_SELECTED} is enabled.
      */
     private static boolean userChangedDefaultQuality;
@@ -35,10 +35,10 @@ public class RememberVideoQualityPatch {
     private static int userSelectedQualityIndex;
 
     /**
-     * The available resolutions of the current video in human readable form: [1080, 720, 480]
+     * The available qualities of the current video in human readable form: [1080, 720, 480]
      */
     @Nullable
-    private static List<Integer> videoResolutions;
+    private static List<Integer> videoQualities;
 
     private static void changeDefaultQuality(int defaultQuality) {
         NetworkType networkType = ReVancedUtils.getNetworkType();
@@ -71,28 +71,28 @@ public class RememberVideoQualityPatch {
             }
             qualityNeedsUpdating = false;
 
-            final int preferredResolution;
+            final int preferredQuality;
             if (ReVancedUtils.getNetworkType() == NetworkType.MOBILE) {
-                preferredResolution = mobileQualitySetting.getInt();
+                preferredQuality = mobileQualitySetting.getInt();
             } else {
-                preferredResolution = wifiQualitySetting.getInt();
+                preferredQuality = wifiQualitySetting.getInt();
             }
-            if (!userChangedDefaultQuality && preferredResolution == AUTOMATIC_VIDEO_QUALITY_VALUE) {
+            if (!userChangedDefaultQuality && preferredQuality == AUTOMATIC_VIDEO_QUALITY_VALUE) {
                 return originalQualityIndex; // nothing to do
             }
 
-            if (videoResolutions == null) {
-                videoResolutions = new ArrayList<>(qualities.length);
+            if (videoQualities == null) {
+                videoQualities = new ArrayList<>(qualities.length);
                 try {
                     for (Object streamQuality : qualities) {
                         for (Field field : streamQuality.getClass().getFields()) {
                             if (field.getType().isAssignableFrom(Integer.TYPE)
                                     && field.getName().length() <= 2) {
-                                videoResolutions.add(field.getInt(streamQuality));
+                                videoQualities.add(field.getInt(streamQuality));
                             }
                         }
                     }
-                    LogHelper.printDebug(() -> "Video: " + currentVideoId + " qualities: " + videoResolutions);
+                    LogHelper.printDebug(() -> "VideoId: " + currentVideoId + " videoQualities: " + videoQualities);
                 } catch (Exception ignored) {
                     // edit: what could be caught here?
                 }
@@ -100,37 +100,38 @@ public class RememberVideoQualityPatch {
 
             if (userChangedDefaultQuality) {
                 userChangedDefaultQuality = false;
-                final int streamResolution = videoResolutions.get(userSelectedQualityIndex);
-                LogHelper.printDebug(() -> "User changed default to resolution: " + streamResolution
+                final int quality = videoQualities.get(userSelectedQualityIndex);
+                LogHelper.printDebug(() -> "User changed default to quality: " + quality
                         + " index: " + userSelectedQualityIndex);
-                changeDefaultQuality(streamResolution);
+                changeDefaultQuality(quality);
                 return userSelectedQualityIndex;
             }
 
-            // find the highest resolution that is equal to or less than the preferred resolution
-            int resolutionToUse = videoResolutions.get(0); // first element is automatic mode
-            int resolutionIndexToUse = 0;
+            // find the highest quality that is equal to or less than the preferred
+            int qualityToUse = videoQualities.get(0); // first element is automatic mode
+            int qualityIndexToUse = 0;
             int i = 0;
-            for (Integer resolution : videoResolutions) {
-                if (resolution <= preferredResolution && resolutionToUse < resolution)  {
-                    resolutionToUse = resolution;
-                    resolutionIndexToUse = i;
+            for (Integer quality : videoQualities) {
+                if (quality <= preferredQuality && qualityToUse < quality)  {
+                    qualityToUse = quality;
+                    qualityIndexToUse = i;
                 }
                 i++;
             }
-            if (resolutionIndexToUse == originalQualityIndex) {
-                LogHelper.printDebug(() -> "Ignoring video that is already preferred resolution: " + preferredResolution);
+            if (qualityIndexToUse == originalQualityIndex) {
+                LogHelper.printDebug(() -> "Ignoring video that is already preferred quality: " + preferredQuality);
                 return originalQualityIndex;
             }
 
-            Method m = qInterface.getClass().getMethod(qIndexMethod, Integer.TYPE);
+            final int qualityToUseLog = qualityToUse;
+            final int qualityIndexToUseLog = qualityIndexToUse;
             LogHelper.printDebug(() -> "Method is: " + qIndexMethod);
-            m.invoke(qInterface, resolutionToUse);
-            final int resolutionToUseLog = resolutionToUse;
-            final int resolutionIndexToUseLog = resolutionIndexToUse;
             LogHelper.printDebug(() -> "Quality changed from index: " + originalQualityIndex
-                    + " to index: " + resolutionIndexToUseLog + " resolution: " + resolutionToUseLog);
-            return resolutionIndexToUse;
+                    + " to index: " + qualityIndexToUseLog + " quality: " + qualityToUseLog);
+
+            Method m = qInterface.getClass().getMethod(qIndexMethod, Integer.TYPE);
+            m.invoke(qInterface, qualityToUse);
+            return qualityIndexToUse;
         } catch (Exception ex) {
             LogHelper.printException(() -> "Failed to set quality", ex);
             return originalQualityIndex;
@@ -157,9 +158,9 @@ public class RememberVideoQualityPatch {
         // Known limitation, if:
         // 1. a default video quality exists, and remember quality is turned off
         // 2. user opens a video
-        // 3. user changes the video resolution
+        // 3. user changes the video quality
         // 4. user turns on then off the device screen (or does anything else that triggers the video id hook)
-        // result: the video resolution of the current video will revert back to the saved default
+        // result: the video quality of the current video will revert back to the saved default
         //
         // qualityNeedsUpdating could be set only when the videoId changes
         // but then if the user closes and re-opens the same video the default video quality will not be applied.
@@ -168,7 +169,7 @@ public class RememberVideoQualityPatch {
 
         if (!videoId.equals(currentVideoId)) {
             currentVideoId = videoId;
-            videoResolutions = null;
+            videoQualities = null;
         }
     }
 }
