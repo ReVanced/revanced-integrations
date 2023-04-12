@@ -145,7 +145,7 @@ public class RememberVideoQualityPatch {
      * Injection point.
      */
     public static void newVideoStarted(String currentVideo) {
-        // The same videoId can be passed in multiple times for a single video video playback.
+        // The same videoId can be passed in multiple times for a single video playback.
         // Such as closing and opening the app, or turning off/on the device screen.
         if (!currentVideo.equals(videoId)) {
             // Known limitation: If user closes and then reopens the same video, then the saved default quality is not applied
