@@ -75,7 +75,7 @@ public class ReturnYouTubeDislike {
     /**
      * If {@link #currentVideoId} and the RYD data is for the last shorts loaded
      */
-    private static volatile boolean dataIsForShort;
+    private static volatile boolean lastVideoLoadedWasShort;
 
     /**
      * Stores the results of the vote api fetch, and used as a barrier to wait until fetch completes
@@ -97,7 +97,7 @@ public class ReturnYouTubeDislike {
      */
     @Nullable
     @GuardedBy("videoIdLockObject")
-    private static Spanned replacementLikeDislikeSpan;
+    private static SpannableString replacementLikeDislikeSpan;
 
     public enum Vote {
         LIKE(1),
@@ -140,7 +140,7 @@ public class ReturnYouTubeDislike {
                 LogHelper.printDebug(() -> "Clearing data");
             }
             currentVideoId = videoId;
-            dataIsForShort = PlayerType.getCurrent().isNoneOrHidden();
+            lastVideoLoadedWasShort = false;
             voteFetchFuture = null;
             originalDislikeSpan = null;
             replacementLikeDislikeSpan = null;
@@ -196,6 +196,12 @@ public class ReturnYouTubeDislike {
                 }
                 LogHelper.printDebug(() -> "New video loaded: " + videoId + " playerType: " + currentPlayerType);
                 setCurrentVideoId(videoId);
+
+                // If a Short is opened while a regular video is on screen, this will incorrectly set this as false.
+                // But this check is needed to fix unusual situations of opening/closing the app
+                // while both a regular video and a short are on screen.
+                lastVideoLoadedWasShort = PlayerType.getCurrent().isNoneOrHidden();
+
                 // no need to wrap the call in a try/catch,
                 // as any exceptions are propagated out in the later Future#Get call
                 voteFetchFuture = ReVancedUtils.submitOnBackgroundThread(() -> ReturnYouTubeDislikeApi.fetchVotes(videoId));
@@ -206,6 +212,8 @@ public class ReturnYouTubeDislike {
     }
 
     /**
+     * Called when a litho text component is created.
+     *
      * This method is sometimes called on the main thread, but it usually is called _off_ the main thread.
      * This method can be called multiple times for the same UI element (including after dislikes was added)
      */
@@ -227,7 +235,7 @@ public class ReturnYouTubeDislike {
                 return;
             }
 
-            if (dataIsForShort) {
+            if (lastVideoLoadedWasShort) {
                 // user:
                 // 1, opened a video
                 // 2. opened a short (without closing the regular video)
@@ -246,10 +254,14 @@ public class ReturnYouTubeDislike {
         }
     }
 
-    public static Spanned onShortsComponentCreated(Spanned span) {
+    /**
+     * Called when a Shorts dislike Spannable is created.
+     */
+    public static Spanned onShortsComponentCreated(Spanned original) {
         try {
             if (SettingsEnum.RYD_ENABLED.getBoolean()) {
-                Spanned replacement = waitForFetchAndUpdateReplacementSpan(span, false);
+                lastVideoLoadedWasShort = true; // it's now certain the video and data are a short
+                Spanned replacement = waitForFetchAndUpdateReplacementSpan(original, false);
                 if (replacement != null) {
                     return replacement;
                 }
@@ -257,7 +269,7 @@ public class ReturnYouTubeDislike {
         } catch (Exception ex) {
             LogHelper.printException(() -> "onShortsComponentCreated failure", ex);
         }
-        return span;
+        return original;
     }
 
     // alternatively, this could check if the span contains one of the custom created spans, but this is simple and quick
@@ -269,17 +281,15 @@ public class ReturnYouTubeDislike {
      * @return NULL if the span does not need changing or if RYD is not available
      */
     @Nullable
-    private static Spanned waitForFetchAndUpdateReplacementSpan(@Nullable Spanned oldSpannable, boolean isSegmentedButton) {
-        if (oldSpannable == null) {
+    private static SpannableString waitForFetchAndUpdateReplacementSpan(@Nullable Spanned oldSpannable, boolean isSegmentedButton) {
+        if (oldSpannable == null) { // should never happen
             LogHelper.printDebug(() -> "Cannot add dislikes (injection code was called with null Span)");
             return null;
         }
-        // Must block the current thread until fetching is done
-        // There's no known way to edit the text after creation yet
         try {
             synchronized (videoIdLockObject) {
                 if (oldSpannable.equals(replacementLikeDislikeSpan)) {
-                    LogHelper.printDebug(() -> "Ignoring previously created dislike span");
+                    LogHelper.printDebug(() -> "Ignoring span that already contains dislikes");
                     return null;
                 }
                 if (replacementLikeDislikeSpan != null) {
@@ -291,12 +301,7 @@ public class ReturnYouTubeDislike {
                         // need to recreate using original, as oldSpannable has prior outdated dislike values
                         oldSpannable = originalDislikeSpan;
                         if (oldSpannable == null) {
-                            // Regular video is opened, then a short is opened then closed,
-                            // then the app is closed then reopened (causes a call of NewVideoId() of the original videoId)
-                            // The original video (that was opened the entire time), is still showing the dislikes count
-                            // but the oldSpannable is now null because it was reset when the videoId was set again
-                            LogHelper.printDebug(() -> "Cannot add dislikes - original span is null" +
-                                    " (short was opened/closed, then app was closed/opened?) "); // ignore, with no toast
+                            LogHelper.printDebug(() -> "Cannot add dislikes - original span is null"); // should never happen
                             return null;
                         }
                     } else {
@@ -305,6 +310,8 @@ public class ReturnYouTubeDislike {
                 }
             }
 
+            // Must block the current thread until fetching is done
+            // There's no known way to edit the text after creation yet
             Future<RYDVoteData> fetchFuture = getVoteFetchFuture();
             if (fetchFuture == null) {
                 LogHelper.printDebug(() -> "fetch future not available (user enabled RYD while video was playing?)");
@@ -316,7 +323,7 @@ public class ReturnYouTubeDislike {
                 return null;
             }
 
-            Spanned replacement = createDislikeSpan(oldSpannable, isSegmentedButton, votingData);
+            SpannableString replacement = createDislikeSpan(oldSpannable, isSegmentedButton, votingData);
             synchronized (videoIdLockObject) {
                 replacementLikeDislikeSpan = replacement;
             }
@@ -326,11 +333,16 @@ public class ReturnYouTubeDislike {
         } catch (TimeoutException e) {
             LogHelper.printDebug(() -> "UI timed out while waiting for fetch votes to complete"); // show no toast
         } catch (Exception e) {
-            LogHelper.printException(() -> "createReplacementSpan failure", e); // should never happen
+            LogHelper.printException(() -> "waitForFetchAndUpdateReplacementSpan failure", e); // should never happen
         }
         return null;
     }
 
+    /**
+     * Called when the like/dislike button is clicked.
+     *
+     * @param vote int that matches {@link Vote#value}
+     */
     public static void sendVote(int vote) {
         if (!SettingsEnum.RYD_ENABLED.getBoolean()) return;
 
@@ -353,11 +365,12 @@ public class ReturnYouTubeDislike {
         try {
             // Must make a local copy of videoId, since it may change between now and when the vote thread runs
             String videoIdToVoteFor = getCurrentVideoId();
-            if (videoIdToVoteFor == null || (dataIsForShort != PlayerType.getCurrent().isNoneOrHidden())) {
+            if (videoIdToVoteFor == null || lastVideoLoadedWasShort != PlayerType.getCurrent().isNoneOrHidden()) {
                 // User enabled RYD after starting playback of a video.
-                // Or shorts was loaded with regular video present, then shorts was closed, and then user voted on the now visible original video
-                LogHelper.printException(() -> "Cannot send vote",
-                        null, str("revanced_ryd_failure_ryd_enabled_while_playing_video_then_user_voted"));
+                // Or shorts was loaded with regular video present, then shorts was closed,
+                // and then user voted on the now visible original video
+                // Cannot send a vote, because the loaded videoId is for the wrong video.
+                ReVancedUtils.showToastLong(str("revanced_ryd_failure_ryd_enabled_while_playing_video_then_user_voted"));
                 return;
             }
 
@@ -418,7 +431,7 @@ public class ReturnYouTubeDislike {
     /**
      * @param isSegmentedButton if UI is using the segmented single UI component for both like and dislike
      */
-    private static Spanned createDislikeSpan(@NonNull Spanned oldSpannable, boolean isSegmentedButton, @NonNull RYDVoteData voteData) {
+    private static SpannableString createDislikeSpan(@NonNull Spanned oldSpannable, boolean isSegmentedButton, @NonNull RYDVoteData voteData) {
         if (!isSegmentedButton) {
             // simple replacement of 'dislike' with a number/percentage
             return newSpannableWithDislikes(oldSpannable, voteData);
@@ -509,14 +522,14 @@ public class ReturnYouTubeDislike {
         return false;
     }
 
-    private static Spannable newSpannableWithDislikes(@NonNull Spanned sourceStyling, @NonNull RYDVoteData voteData) {
+    private static SpannableString newSpannableWithDislikes(@NonNull Spanned sourceStyling, @NonNull RYDVoteData voteData) {
         return newSpanUsingStylingOfAnotherSpan(sourceStyling,
                 SettingsEnum.RYD_SHOW_DISLIKE_PERCENTAGE.getBoolean()
                         ? formatDislikePercentage(voteData.getDislikePercentage())
                         : formatDislikeCount(voteData.getDislikeCount()));
     }
 
-    private static Spannable newSpanUsingStylingOfAnotherSpan(@NonNull Spanned sourceStyle, @NonNull String newSpanText) {
+    private static SpannableString newSpanUsingStylingOfAnotherSpan(@NonNull Spanned sourceStyle, @NonNull String newSpanText) {
         SpannableString destination = new SpannableString(newSpanText);
         Object[] spans = sourceStyle.getSpans(0, sourceStyle.length(), Object.class);
         for (Object span : spans) {
