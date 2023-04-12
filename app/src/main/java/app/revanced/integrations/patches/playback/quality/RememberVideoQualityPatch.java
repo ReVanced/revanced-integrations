@@ -2,10 +2,12 @@ package app.revanced.integrations.patches.playback.quality;
 
 import static app.revanced.integrations.utils.ReVancedUtils.NetworkType;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import app.revanced.integrations.settings.SettingsEnum;
@@ -17,16 +19,26 @@ public class RememberVideoQualityPatch {
     private static final SettingsEnum wifiQualitySetting = SettingsEnum.VIDEO_QUALITY_DEFAULT_WIFI;
     private static final SettingsEnum mobileQualitySetting = SettingsEnum.VIDEO_QUALITY_DEFAULT_MOBILE;
 
-    private static boolean newVideo;
+    private static boolean qualityNeedsUpdating;
+    @Nullable
+    private static String currentVideoId;
+
     /**
      * If the user selected a new resolution from the flyout menu,
      * and {@link SettingsEnum#VIDEO_QUALITY_REMEMBER_LAST_SELECTED} is enabled.
      */
     private static boolean userChangedDefaultQuality;
+
     /**
      * Index of the video quality chosen by the user from the flyout menu.
      */
     private static int userSelectedQualityIndex;
+
+    /**
+     * The available resolutions of the current video in human readable form: [1080, 720, 480]
+     */
+    @Nullable
+    private static List<Integer> videoResolutions;
 
     private static void changeDefaultQuality(int defaultQuality) {
         NetworkType networkType = ReVancedUtils.getNetworkType();
@@ -54,10 +66,10 @@ public class RememberVideoQualityPatch {
      */
     public static int setVideoQuality(Object[] qualities, final int originalQualityIndex, Object qInterface, String qIndexMethod) {
         try {
-            if (!(newVideo || userChangedDefaultQuality) || qInterface == null) {
+            if (!(qualityNeedsUpdating || userChangedDefaultQuality) || qInterface == null) {
                 return originalQualityIndex;
             }
-            newVideo = false;
+            qualityNeedsUpdating = false;
 
             final int preferredResolution;
             if (ReVancedUtils.getNetworkType() == NetworkType.MOBILE) {
@@ -69,25 +81,26 @@ public class RememberVideoQualityPatch {
                 return originalQualityIndex; // nothing to do
             }
 
-            // create list of human readable resolutions
-            List<Integer> streamResolutions = new ArrayList<>();
-            try {
-                for (Object streamQuality : qualities) {
-                    for (Field field : streamQuality.getClass().getFields()) {
-                        if (field.getType().isAssignableFrom(Integer.TYPE)
-                                && field.getName().length() <= 2) {
-                            streamResolutions.add(field.getInt(streamQuality));
+            if (videoResolutions == null) {
+                videoResolutions = new ArrayList<>(qualities.length);
+                try {
+                    for (Object streamQuality : qualities) {
+                        for (Field field : streamQuality.getClass().getFields()) {
+                            if (field.getType().isAssignableFrom(Integer.TYPE)
+                                    && field.getName().length() <= 2) {
+                                videoResolutions.add(field.getInt(streamQuality));
+                            }
                         }
                     }
+                    LogHelper.printDebug(() -> "Video: " + currentVideoId + " qualities: " + videoResolutions);
+                } catch (Exception ignored) {
+                    // edit: what could be caught here?
                 }
-                LogHelper.printDebug(() -> "Qualities: " + streamResolutions);
-            } catch (Exception ignored) {
-                // edit: what could be caught here?
             }
 
             if (userChangedDefaultQuality) {
                 userChangedDefaultQuality = false;
-                final int streamResolution = streamResolutions.get(userSelectedQualityIndex);
+                final int streamResolution = videoResolutions.get(userSelectedQualityIndex);
                 LogHelper.printDebug(() -> "User changed default to resolution: " + streamResolution
                         + " index: " + userSelectedQualityIndex);
                 changeDefaultQuality(streamResolution);
@@ -95,17 +108,15 @@ public class RememberVideoQualityPatch {
             }
 
             // find the highest resolution that is equal to or less than the preferred resolution
-            List<Integer> sortedStreamResolutions = new ArrayList<>(streamResolutions);
-            Collections.sort(sortedStreamResolutions);
-            int resolutionToUse = sortedStreamResolutions.get(0);
-            for (Integer resolution : sortedStreamResolutions) {
+            int resolutionToUse = videoResolutions.get(0); // first element is automatic mode
+            for (Integer resolution : videoResolutions) {
                 if (resolution <= preferredResolution) {
-                    resolutionToUse = resolution;
+                    resolutionToUse = Math.max(resolution, resolutionToUse);
                 }
             }
-            final int qualityIndex = streamResolutions.indexOf(resolutionToUse);
+            final int qualityIndex = videoResolutions.indexOf(resolutionToUse);
             if (qualityIndex == originalQualityIndex) {
-                LogHelper.printDebug(() -> "Ignoring video that is already preferred default resolution: " + preferredResolution);
+                LogHelper.printDebug(() -> "Ignoring video that is already preferred resolution: " + preferredResolution);
                 return originalQualityIndex;
             }
 
@@ -135,7 +146,7 @@ public class RememberVideoQualityPatch {
     /**
      * Injection point.
      */
-    public static void newVideoStarted(String currentVideo) {
+    public static void newVideoStarted(@NonNull String videoId) {
         // The same videoId can be passed in multiple times for a single video playback.
         // Such as closing and opening the app, and sometimes when turning off/on the device screen.
         //
@@ -146,9 +157,14 @@ public class RememberVideoQualityPatch {
         // 4. user turns on then off the device screen (or does anything else that triggers the video id hook)
         // result: the video resolution of the current video will revert back to the saved default
         //
-        // The videoId could be checked if it changed,
+        // qualityNeedsUpdating could be set only when the videoId changes
         // but then if the user closes and re-opens the same video the default video quality will not be applied.
-        LogHelper.printDebug(() -> "newVideoStarted: " + currentVideo);
-        newVideo = true;
+        LogHelper.printDebug(() -> "newVideoStarted: " + videoId);
+        qualityNeedsUpdating = true;
+
+        if (!videoId.equals(currentVideoId)) {
+            currentVideoId = videoId;
+            videoResolutions = null;
+        }
     }
 }
