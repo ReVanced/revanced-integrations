@@ -82,22 +82,16 @@ public class RememberVideoQualityPatch {
             }
 
             if (videoQualities == null || videoQualities.size() != qualities.length) {
-                try {
-                    List<Integer> list = new ArrayList<>(qualities.length);
-                    for (Object streamQuality : qualities) {
-                        for (Field field : streamQuality.getClass().getFields()) {
-                            if (field.getType().isAssignableFrom(Integer.TYPE)
-                                    && field.getName().length() <= 2) {
-                                list.add(field.getInt(streamQuality));
-                            }
+                videoQualities = new ArrayList<>(qualities.length);
+                for (Object streamQuality : qualities) {
+                    for (Field field : streamQuality.getClass().getFields()) {
+                        if (field.getType().isAssignableFrom(Integer.TYPE)
+                                && field.getName().length() <= 2) {
+                            videoQualities.add(field.getInt(streamQuality));
                         }
                     }
-                    videoQualities = list;
-                    LogHelper.printDebug(() -> "VideoId: " + currentVideoId + " videoQualities: " + videoQualities);
-                } catch (Exception ignored) {
-                    // Edit: What could be caught here?  Should it stop here and return?
-                    LogHelper.printDebug(() -> "??? : " + ignored);
                 }
+                LogHelper.printDebug(() -> "VideoId: " + currentVideoId + " videoQualities: " + videoQualities);
             }
 
             if (userChangedDefaultQuality) {
