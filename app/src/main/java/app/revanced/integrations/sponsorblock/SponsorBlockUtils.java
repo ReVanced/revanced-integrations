@@ -15,10 +15,8 @@ import java.lang.ref.WeakReference;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
 import java.util.Objects;
 import java.util.TimeZone;
 
@@ -260,9 +258,13 @@ public class SponsorBlockUtils {
     public static void onPublishClicked() {
         try {
             ReVancedUtils.verifyOnMainThread();
-            if (!newSponsorSegmentPreviewed) {
+            if (newSponsorSegmentStartMillis < 0 || newSponsorSegmentEndMillis < 0) {
+                ReVancedUtils.showToastShort(str("sb_new_segment_mark_locations_first"));
+            } else if (newSponsorSegmentStartMillis >= newSponsorSegmentEndMillis) {
+                ReVancedUtils.showToastShort(str("sb_new_segment_start_is_before_end"));
+            } else if (!newSponsorSegmentPreviewed && newSponsorSegmentStartMillis != 0) {
                 ReVancedUtils.showToastLong(str("sb_new_segment_preview_segment_first"));
-            } else if (newSponsorSegmentStartMillis >= 0 && newSponsorSegmentStartMillis < newSponsorSegmentEndMillis) {
+            } else {
                 long length = (newSponsorSegmentEndMillis - newSponsorSegmentStartMillis) / 1000;
                 long start = (newSponsorSegmentStartMillis) / 1000;
                 long end = (newSponsorSegmentEndMillis) / 1000;
@@ -275,8 +277,6 @@ public class SponsorBlockUtils {
                         .setNegativeButton(android.R.string.no, null)
                         .setPositiveButton(android.R.string.yes, segmentReadyDialogButtonListener)
                         .show();
-            } else {
-                ReVancedUtils.showToastShort(str("sb_new_segment_mark_locations_first"));
             }
         } catch (Exception ex) {
             LogHelper.printException(() -> "onPublishClicked failure", ex);
@@ -358,7 +358,11 @@ public class SponsorBlockUtils {
     public static void onPreviewClicked() {
         try {
             ReVancedUtils.verifyOnMainThread();
-            if (newSponsorSegmentStartMillis >= 0 && newSponsorSegmentStartMillis < newSponsorSegmentEndMillis) {
+            if (newSponsorSegmentStartMillis < 0 || newSponsorSegmentEndMillis < 0) {
+                ReVancedUtils.showToastShort(str("sb_new_segment_mark_locations_first"));
+            } else if (newSponsorSegmentStartMillis >= newSponsorSegmentEndMillis) {
+                ReVancedUtils.showToastShort(str("sb_new_segment_start_is_before_end"));
+            } else {
                 VideoInformation.seekTo(newSponsorSegmentStartMillis - 2500);
                 final SponsorSegment[] original = SegmentPlaybackController.getSegmentsOfCurrentVideo();
                 final SponsorSegment[] segments = original == null ? new SponsorSegment[1] : Arrays.copyOf(original, original.length + 1);
@@ -367,8 +371,6 @@ public class SponsorBlockUtils {
                         newSponsorSegmentStartMillis, newSponsorSegmentEndMillis, false);
 
                 SegmentPlaybackController.setSegmentsOfCurrentVideo(segments);
-            } else {
-                ReVancedUtils.showToastShort(str("sb_new_segment_mark_locations_first"));
             }
         } catch (Exception ex) {
             LogHelper.printException(() -> "onPreviewClicked failure", ex);
