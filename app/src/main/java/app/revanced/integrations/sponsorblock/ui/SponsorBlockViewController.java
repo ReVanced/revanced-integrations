@@ -85,41 +85,47 @@ public class SponsorBlockViewController {
 
     public static void showSkipHighlightButton(@NonNull SponsorSegment segment) {
         skipHighlight = Objects.requireNonNull(segment);
-        updateSkipButton(skipHighlightButtonRef.get(), segment);
+        NewSegmentLayout newSegmentLayout = newSegmentLayoutRef.get();
+        // don't show highlight button if create new segment is visible
+        final boolean buttonVisibility = newSegmentLayout != null && newSegmentLayout.getVisibility() != View.VISIBLE;
+        updateSkipButton(skipHighlightButtonRef.get(), segment, buttonVisibility);
     }
     public static void showSkipSegmentButton(@NonNull SponsorSegment segment) {
         skipSegment = Objects.requireNonNull(segment);
-        updateSkipButton(skipSponsorButtonRef.get(), segment);
+        updateSkipButton(skipSponsorButtonRef.get(), segment, true);
     }
 
     public static void hideSkipHighlightButton() {
         skipHighlight = null;
-        updateSkipButton(skipHighlightButtonRef.get(), null);
+        updateSkipButton(skipHighlightButtonRef.get(), null, false);
     }
     public static void hideSkipSegmentButton() {
         skipSegment = null;
-        updateSkipButton(skipSponsorButtonRef.get(), null);
+        updateSkipButton(skipSponsorButtonRef.get(), null, false);
     }
 
-    private static void updateSkipButton(@Nullable SkipSponsorButton button, @Nullable SponsorSegment segment) {
+    private static void updateSkipButton(@Nullable SkipSponsorButton button,
+                                         @Nullable SponsorSegment segment, boolean visible) {
         if (button == null) {
             return;
         }
-        if (segment == null) {
-            setViewVisibility(button, false);
-        } else {
+        if (segment != null) {
             button.updateSkipButtonText(segment);
-            setViewVisibility(button, true);
         }
+        setViewVisibility(button, visible);
     }
 
     public static void toggleNewSegmentLayoutVisibility() {
         NewSegmentLayout newSegmentLayout = newSegmentLayoutRef.get();
-        if (newSegmentLayout == null) {
+        if (newSegmentLayout == null) { // should never happen
             LogHelper.printException(() -> "toggleNewSegmentLayoutVisibility failure");
             return;
         }
-        setViewVisibility(newSegmentLayout, newSegmentLayout.getVisibility() == View.VISIBLE ? false : true);
+        final boolean createLayoutVisibility = (newSegmentLayout.getVisibility() != View.VISIBLE);
+        if (skipHighlight != null) {
+            setViewVisibility(skipHighlightButtonRef.get(), !createLayoutVisibility);
+        }
+        setViewVisibility(newSegmentLayout, createLayoutVisibility);
     }
 
     public static void hideNewSegmentLayout() {
@@ -140,9 +146,6 @@ public class SponsorBlockViewController {
                 RelativeLayout layout = inlineSponsorOverlayRef.get();
                 if (layout != null) {
                     layout.bringToFront(); // needed to keep skip buttons overtop end screen cards
-                    // edit: this does not appear to be needed
-//                    layout.requestLayout();
-//                    layout.invalidate();
                 }
             }
         }
@@ -153,15 +156,10 @@ public class SponsorBlockViewController {
             final boolean isWatchFullScreen = playerType == PlayerType.WATCH_WHILE_FULLSCREEN;
             canShowViewElements = (isWatchFullScreen || playerType == PlayerType.WATCH_WHILE_MAXIMIZED);
             setNewSegmentLayoutMargins(isWatchFullScreen);
-
-            SkipSponsorButton skipSponsorButton = skipSponsorButtonRef.get();
-            SkipSponsorButton skipHighlightButton = skipHighlightButtonRef.get();
-            setSkipButtonMargins(skipSponsorButton, isWatchFullScreen);
-            setSkipButtonMargins(skipHighlightButton, isWatchFullScreen);
-            updateSkipButton(skipSponsorButton, skipSegment);
-            updateSkipButton(skipHighlightButton, skipHighlight);
+            setSkipButtonMargins(skipHighlightButtonRef.get(), isWatchFullScreen);
+            setSkipButtonMargins(skipSponsorButtonRef.get(), isWatchFullScreen);
         } catch (Exception ex) {
-            LogHelper.printException(() -> "Player type changed error", ex);
+            LogHelper.printException(() -> "Player type changed failure", ex);
         }
     }
 
