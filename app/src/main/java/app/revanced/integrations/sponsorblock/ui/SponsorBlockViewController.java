@@ -62,7 +62,20 @@ public class SponsorBlockViewController {
             inlineSponsorOverlayRef = new WeakReference<>(layout);
 
             ViewGroup viewGroup = (ViewGroup) obj;
-            viewGroup.addView(layout, viewGroup.getChildCount() - 2);
+            viewGroup.addView(layout);
+            viewGroup.setOnHierarchyChangeListener(new ViewGroup.OnHierarchyChangeListener() {
+                @Override
+                public void onChildViewAdded(View parent, View child) {
+                    // ensure SB buttons and controls are always on top, otherwise the endscreen cards can cover the skip button
+                    RelativeLayout layout = inlineSponsorOverlayRef.get();
+                    if (layout != null) {
+                        layout.bringToFront();
+                    }
+                }
+                @Override
+                public void onChildViewRemoved(View parent, View child) {
+                }
+            });
             youtubeOverlaysLayoutRef = new WeakReference<>(viewGroup);
 
             skipHighlightButtonRef = new WeakReference<>(
@@ -148,12 +161,6 @@ public class SponsorBlockViewController {
         final int desiredVisibility = visible ? View.VISIBLE : View.GONE;
         if (view.getVisibility() != desiredVisibility) {
             view.setVisibility(desiredVisibility);
-            if (visible) {
-                RelativeLayout layout = inlineSponsorOverlayRef.get();
-                if (layout != null) {
-                    layout.bringToFront(); // needed to keep skip buttons overtop end screen cards
-                }
-            }
         }
     }
 
