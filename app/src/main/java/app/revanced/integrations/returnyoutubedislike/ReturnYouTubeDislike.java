@@ -259,33 +259,34 @@ public class ReturnYouTubeDislike {
     @Nullable
     private static SpannableString getDislikeSpanForContext(@NonNull Object conversionContext, @NonNull Spanned original) {
         try {
-            if (SettingsEnum.RYD_ENABLED.getBoolean()) {
-                if (PlayerType.getCurrent().isNoneOrHidden()) {
-                    return null;
-                }
-
-                String conversionContextString = conversionContext.toString();
-                final boolean isSegmentedButton;
-                if (conversionContextString.contains("|segmented_like_dislike_button.eml|")) {
-                    isSegmentedButton = true;
-                } else if (conversionContextString.contains("|dislike_button.eml|")) {
-                    isSegmentedButton = false;
-                } else {
-                    return null;
-                }
-
-                if (lastVideoLoadedWasShort) {
-                    // user:
-                    // 1, opened a video
-                    // 2. opened a short (without closing the regular video)
-                    // 3. closed the short
-                    // 4. regular video is now present, but the videoId and RYD data is still for the short
-                    LogHelper.printDebug(() -> "Ignoring getDislikeSpanForContext(), as data loaded is is for prior short");
-                    return null;
-                }
-
-                return waitForFetchAndUpdateReplacementSpan(original, isSegmentedButton);
+            if (!SettingsEnum.RYD_ENABLED.getBoolean()) {
+                return null;
             }
+            if (PlayerType.getCurrent().isNoneOrHidden()) {
+                return null;
+            }
+
+            String conversionContextString = conversionContext.toString();
+            final boolean isSegmentedButton;
+            if (conversionContextString.contains("|segmented_like_dislike_button.eml|")) {
+                isSegmentedButton = true;
+            } else if (conversionContextString.contains("|dislike_button.eml|")) {
+                isSegmentedButton = false;
+            } else {
+                return null;
+            }
+
+            if (lastVideoLoadedWasShort) {
+                // user:
+                // 1, opened a video
+                // 2. opened a short (without closing the regular video)
+                // 3. closed the short
+                // 4. regular video is now present, but the videoId and RYD data is still for the short
+                LogHelper.printDebug(() -> "Ignoring getDislikeSpanForContext(), as data loaded is is for prior short");
+                return null;
+            }
+
+            return waitForFetchAndUpdateReplacementSpan(original, isSegmentedButton);
         } catch (Exception ex) {
             LogHelper.printException(() -> "getDislikeSpanForContext failure", ex);
         }
