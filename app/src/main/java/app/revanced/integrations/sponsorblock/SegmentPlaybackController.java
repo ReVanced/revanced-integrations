@@ -109,11 +109,6 @@ public class SegmentPlaybackController {
         return segmentsOfCurrentVideo != null && segmentsOfCurrentVideo.length > 0;
     }
 
-    @Nullable
-    static String getCurrentVideoId() {
-        return currentVideoId;
-    }
-
     /**
      * Clears all downloaded data
      */

@@ -218,11 +218,12 @@ public class SponsorBlockUtils {
             final String uuid = SettingsEnum.SB_UUID.getString();
             final long start = newSponsorSegmentStartMillis;
             final long end = newSponsorSegmentEndMillis;
-            final String videoId = SegmentPlaybackController.getCurrentVideoId();
+            final String videoId = VideoInformation.getCurrentVideoId();
             final long videoLength = VideoInformation.getCurrentVideoLength();
             final SegmentCategory segmentCategory = newUserCreatedSegmentCategory;
-            if (start < 0 || end < 0 || start >= end || videoLength <= 0 || segmentCategory == null || videoId == null || uuid.isEmpty()) {
-                LogHelper.printException(() -> "Unable to submit times, invalid parameters");
+            if (start < 0 || end < 0 || start >= end || videoLength <= 0 || videoId.isEmpty()
+                     || segmentCategory == null || uuid.isEmpty()) {
+                LogHelper.printException(() -> "invalid parameters");
                 return;
             }
             clearUnsubmittedSegmentTimes();
@@ -310,7 +311,7 @@ public class SponsorBlockUtils {
             voteSegmentTimeFormatter.applyPattern(formatPattern);
 
             final int numberOfSegments = currentSegments.length;
-            CharSequence titles[] = new CharSequence[numberOfSegments];
+            CharSequence[] titles = new CharSequence[numberOfSegments];
             for (int i = 0; i < numberOfSegments; i++) {
                 SponsorSegment segment = currentSegments[i];
                 if (segment.category == SegmentCategory.UNSUBMITTED) {
