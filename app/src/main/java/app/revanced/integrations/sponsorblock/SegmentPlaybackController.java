@@ -210,21 +210,23 @@ public class SegmentPlaybackController {
      * Called multiple times during video playback.
      */
     public static void videoDataLoaded() {
-        CountDownLatch latch = videoLoadLatch;
-        if (latch == null) {
-            return;
-        }
         try {
+            CountDownLatch latch = videoLoadLatch;
+            if (latch == null) {
+                return;
+            }
             final long start = System.currentTimeMillis();
             LogHelper.printDebug(() -> "Delaying video playback until segments are loaded");
             final boolean latchReleased = latch.await(MAX_WAIT_TIME_MILLISECONDS, TimeUnit.MILLISECONDS);
             LogHelper.printDebug(() -> latchReleased
                     ? "Resuming video playback after waiting: " + (System.currentTimeMillis() - start) + "ms"
-                    : "Segments not loaded after waiting " + MAX_WAIT_TIME_MILLISECONDS + " milliseconds");
+                    : "Segments not loaded after waiting: " + MAX_WAIT_TIME_MILLISECONDS + " ms");
         } catch (InterruptedException e) {
             // YouTube interrupted it's own background thread.
             // Does not appear to ever happen, and this is not a concern if it does.
             LogHelper.printDebug(() -> "video load thread interrupted");
+        } catch (Exception ex) { // should never happen
+            LogHelper.printException(() -> "videoDataLoaded failure", ex);
         }
     }
 
