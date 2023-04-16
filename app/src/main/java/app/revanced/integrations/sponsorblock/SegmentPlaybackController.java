@@ -509,13 +509,18 @@ public class SegmentPlaybackController {
     /**
      * @param segment can be either a highlight or a regular manual skip segment
      */
-    public static void onSkipSegmentClicked(SponsorSegment segment) {
-        if (segment != highlightSegment && segment != segmentCurrentlyPlaying) {
-            LogHelper.printException(() -> "error: segment not available to skip"); // should never happen
-            SponsorBlockViewController.hideSkipSegmentButton();
-            return;
+    public static void onSkipSegmentClicked(@NonNull SponsorSegment segment) {
+        try {
+            if (segment != highlightSegment && segment != segmentCurrentlyPlaying) {
+                LogHelper.printException(() -> "error: segment not available to skip"); // should never happen
+                SponsorBlockViewController.hideSkipSegmentButton();
+                SponsorBlockViewController.hideSkipHighlightButton();
+                return;
+            }
+            skipSegment(segment, true);
+        } catch (Exception ex) {
+            LogHelper.printException(() -> "onSkipSegmentClicked failure", ex);
         }
-        skipSegment(segment, true);
     }
 
     /**
@@ -569,17 +574,17 @@ public class SegmentPlaybackController {
      * Injection point
      */
     public static void setSponsorBarThickness(final int thickness) {
-        try {
-            setSponsorBarThickness((float) thickness);
-        } catch (Exception ex) {
-            LogHelper.printException(() -> "setSponsorBarThickness failure", ex);
-        }
+        setSponsorBarThickness((float) thickness);
     }
 
     public static void setSponsorBarThickness(final float thickness) {
-        if (sponsorBarThickness != thickness) {
-            LogHelper.printDebug(() -> String.format("setSponsorBarThickness: %.2f", thickness));
-            sponsorBarThickness = thickness;
+        try {
+            if (sponsorBarThickness != thickness) {
+                LogHelper.printDebug(() -> String.format("setSponsorBarThickness: %.2f", thickness));
+                sponsorBarThickness = thickness;
+            }
+        } catch (Exception ex) {
+            LogHelper.printException(() -> "setSponsorBarThickness failure", ex);
         }
     }
 
