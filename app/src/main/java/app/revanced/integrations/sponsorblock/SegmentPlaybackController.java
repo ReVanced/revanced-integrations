@@ -33,8 +33,8 @@ import app.revanced.integrations.utils.ReVancedUtils;
  */
 public class SegmentPlaybackController {
     /**
-     * Maximum time to wait for segments to load,
-     * if {@link SettingsEnum#SB_WAIT_FOR_SEGMENTS_BEFORE_STARTING_PLAYBACK} is enabled
+     * Maximum time to delay starting video playback if
+     * {@link SettingsEnum#SB_WAIT_FOR_SEGMENTS_BEFORE_STARTING_PLAYBACK} is enabled
      */
     private static final long MAX_WAIT_TIME_MILLISECONDS = 3000;
 
@@ -44,7 +44,7 @@ public class SegmentPlaybackController {
     private static SponsorSegment[] segmentsOfCurrentVideo;
 
     /**
-     * Used to delay video playback until video segments have loaded
+     * Used to delay video playback until SB segments have loaded
      */
     @Nullable
     private static volatile CountDownLatch videoLoadLatch;
@@ -177,10 +177,10 @@ public class SegmentPlaybackController {
         try {
             SponsorSegment[] segments = SBRequester.getSegments(videoId);
 
-            final boolean debugPlaybackDelay = false;
-            if (debugPlaybackDelay) {
+            final boolean debugWaitForSegments = false;
+            if (debugWaitForSegments) {
                 // force a delay in loading SB, to debug wait for segments setting
-                Thread.sleep(10000);
+                Thread.sleep((long) (Math.random() * 10000));
             }
 
             ReVancedUtils.runOnMainThread(()-> {
@@ -223,7 +223,7 @@ public class SegmentPlaybackController {
                     : "Segments not loaded after waiting: " + MAX_WAIT_TIME_MILLISECONDS + " ms");
         } catch (InterruptedException e) {
             // YouTube interrupted it's own background thread.
-            // Does not appear to ever happen, and this is not a concern if it does.
+            // Does not appear to ever happen, and is not a concern if does happen.
             LogHelper.printDebug(() -> "video load thread interrupted");
         } catch (Exception ex) { // should never happen
             LogHelper.printException(() -> "videoDataLoaded failure", ex);
