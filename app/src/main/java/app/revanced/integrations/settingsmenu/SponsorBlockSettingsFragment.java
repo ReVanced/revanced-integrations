@@ -50,10 +50,10 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment {
     private SwitchPreference showSkipToast;
     private SwitchPreference trackSkips;
     private SwitchPreference showTimeWithoutSegments;
+    private SwitchPreference waitForSegments;
 
     private EditTextPreference newSegmentStep;
     private EditTextPreference minSegmentDuration;
-    private EditTextPreference maxPlaybackDelay;
     private EditTextPreference privateUserId;
     private EditTextPreference importExport;
     private Preference apiUrl;
@@ -99,8 +99,8 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment {
             minSegmentDuration.setText(SettingsEnum.SB_MIN_DURATION.getObjectValue().toString());
             minSegmentDuration.setEnabled(enabled);
 
-            maxPlaybackDelay.setText(SettingsEnum.SB_MAX_PLAYBACK_DELAY_WHILE_WAITING_FOR_SEGMENTS.getObjectValue().toString());
-            maxPlaybackDelay.setEnabled(enabled);
+            waitForSegments.setChecked(SettingsEnum.SB_WAIT_FOR_SEGMENTS_BEFORE_STARTING_PLAYBACK.getBoolean());
+            waitForSegments.setEnabled(enabled);
 
             privateUserId.setText(SettingsEnum.SB_UUID.getString());
             privateUserId.setEnabled(enabled);
@@ -255,6 +255,17 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment {
         category.addPreference(showTimeWithoutSegments);
 
 
+        waitForSegments = new SwitchPreference(context);
+        waitForSegments.setTitle(str("sb_general_wait_for_segments_before_starting_playback"));
+        waitForSegments.setSummaryOn(str("sb_general_wait_for_segments_before_starting_playback_sum_on"));
+        waitForSegments.setSummaryOff(str("sb_general_wait_for_segments_before_starting_playback_sum_off"));
+        waitForSegments.setOnPreferenceChangeListener((preference1, newValue) -> {
+            SettingsEnum.SB_WAIT_FOR_SEGMENTS_BEFORE_STARTING_PLAYBACK.saveValue(newValue);
+            return true;
+        });
+        category.addPreference(waitForSegments);
+
+
         newSegmentStep = new EditTextPreference(context);
         newSegmentStep.setTitle(str("sb_general_adjusting"));
         newSegmentStep.setSummary(str("sb_general_adjusting_sum"));
@@ -280,17 +291,6 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment {
             return true;
         });
         category.addPreference(minSegmentDuration);
-
-
-        maxPlaybackDelay = new EditTextPreference(context);
-        maxPlaybackDelay.setTitle(str("sb_general_max_playback_delay"));
-        maxPlaybackDelay.setSummary(str("sb_general_max_playback_delay_sum"));
-        maxPlaybackDelay.getEditText().setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
-        maxPlaybackDelay.setOnPreferenceChangeListener((preference1, newValue) -> {
-            SettingsEnum.SB_MAX_PLAYBACK_DELAY_WHILE_WAITING_FOR_SEGMENTS.saveValue(Float.valueOf(newValue.toString()));
-            return true;
-        });
-        category.addPreference(maxPlaybackDelay);
 
 
         privateUserId = new EditTextPreference(context);

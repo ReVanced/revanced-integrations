@@ -32,6 +32,12 @@ import app.revanced.integrations.utils.ReVancedUtils;
  * Class is not thread safe. All methods must be called on the main thread unless otherwise specified.
  */
 public class SegmentPlaybackController {
+    /**
+     * Maximum time to wait for segments to load,
+     * if {@link SettingsEnum#SB_WAIT_FOR_SEGMENTS_BEFORE_STARTING_PLAYBACK} is enabled
+     */
+    private static final long MAX_WAIT_TIME_MILLISECONDS = 3000;
+
     @Nullable
     private static String currentVideoId;
     @Nullable
@@ -145,7 +151,7 @@ public class SegmentPlaybackController {
             currentVideoId = videoId;
             LogHelper.printDebug(() -> "setCurrentVideoId: " + videoId);
 
-            if (SettingsEnum.SB_MAX_PLAYBACK_DELAY_WHILE_WAITING_FOR_SEGMENTS.getFloat() > 0) {
+            if (SettingsEnum.SB_WAIT_FOR_SEGMENTS_BEFORE_STARTING_PLAYBACK.getBoolean()) {
                 videoLoadLatch = new CountDownLatch(1);
             }
 
@@ -208,20 +214,17 @@ public class SegmentPlaybackController {
         if (latch == null) {
             return;
         }
-        final float maxWaitTimeSeconds = SettingsEnum.SB_MAX_PLAYBACK_DELAY_WHILE_WAITING_FOR_SEGMENTS.getFloat();
-        if (maxWaitTimeSeconds <= 0) {
-            return;
-        }
         try {
-            LogHelper.printDebug(() -> "Delaying video playback until SB segments are loaded");
-            final boolean latchReleased = latch.await((long)(maxWaitTimeSeconds * 1000), TimeUnit.MILLISECONDS);
+            final long start = System.currentTimeMillis();
+            LogHelper.printDebug(() -> "Delaying video playback until segments are loaded");
+            final boolean latchReleased = latch.await(MAX_WAIT_TIME_MILLISECONDS, TimeUnit.MILLISECONDS);
             LogHelper.printDebug(() -> latchReleased
-                    ? "Segments loaded, resuming video playback"
-                    : "Segments not loaded after waiting " + maxWaitTimeSeconds + " seconds");
+                    ? "Resuming video playback after waiting: " + (System.currentTimeMillis() - start) + "ms"
+                    : "Segments not loaded after waiting " + MAX_WAIT_TIME_MILLISECONDS + " milliseconds");
         } catch (InterruptedException e) {
             // YouTube interrupted it's own background thread.
             // Does not appear to ever happen, and this is not a concern if it does.
-            LogHelper.printDebug(() -> "video load interrupted");
+            LogHelper.printDebug(() -> "video load thread interrupted");
         }
     }
 

@@ -154,7 +154,7 @@ public enum SettingsEnum {
     SB_TRACK_SKIP_COUNT("count-skips", BOOLEAN, TRUE, SPONSOR_BLOCK, parents(SB_ENABLED)),
     SB_UUID("uuid", STRING, "", SPONSOR_BLOCK),
     SB_ADJUST_NEW_SEGMENT_STEP("new-segment-step-accuracy", INTEGER, 150, SPONSOR_BLOCK, parents(SB_ENABLED)),
-    SB_MAX_PLAYBACK_DELAY_WHILE_WAITING_FOR_SEGMENTS("sb-max-playback-delay", FLOAT, 0f, SPONSOR_BLOCK, parents(SB_ENABLED)),
+    SB_WAIT_FOR_SEGMENTS_BEFORE_STARTING_PLAYBACK("sb-wait-for-segments-before-starting-playback", BOOLEAN, FALSE, SPONSOR_BLOCK, parents(SB_ENABLED)),
     SB_MIN_DURATION("sb-min-duration", FLOAT, 0F, SPONSOR_BLOCK, parents(SB_ENABLED)),
     SB_SEEN_GUIDELINES("sb-seen-gl", BOOLEAN, FALSE, SPONSOR_BLOCK),
     SB_SKIPPED_SEGMENTS_NUMBER_SKIPPED("sb-skipped-segments", INTEGER, 0, SPONSOR_BLOCK),
