@@ -12,6 +12,8 @@ import androidx.annotation.Nullable;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import app.revanced.integrations.patches.VideoInformation;
 import app.revanced.integrations.settings.SettingsEnum;
@@ -34,6 +36,12 @@ public class SegmentPlaybackController {
     private static String currentVideoId;
     @Nullable
     private static SponsorSegment[] segmentsOfCurrentVideo;
+
+    /**
+     * Used to delay video playback until video segments have loaded
+     */
+    @Nullable
+    private static volatile CountDownLatch videoLoadLatch;
 
     /**
      * Current segment that user can manually skip
@@ -85,6 +93,7 @@ public class SegmentPlaybackController {
     private static void clearData() {
         currentVideoId = null;
         segmentsOfCurrentVideo = null;
+        videoLoadLatch = null;
         timeWithoutSegments = null;
         segmentCurrentlyPlaying = null;
         scheduledUpcomingSegment = null; // prevent any existing scheduled skip from running
@@ -132,8 +141,13 @@ public class SegmentPlaybackController {
                 return;
             }
 
+            ReVancedUtils.verifyOnMainThread();
             currentVideoId = videoId;
             LogHelper.printDebug(() -> "setCurrentVideoId: " + videoId);
+
+            if (SettingsEnum.SB_MAX_PLAYBACK_DELAY_WHILE_WAITING_FOR_SEGMENTS.getFloat() > 0) {
+                videoLoadLatch = new CountDownLatch(1);
+            }
 
             //noinspection UnnecessaryLocalVariable
             String videoIdToDownload = videoId; // make a copy, to use off main thread
@@ -157,6 +171,12 @@ public class SegmentPlaybackController {
         try {
             SponsorSegment[] segments = SBRequester.getSegments(videoId);
 
+            final boolean debugPlaybackDelay = false;
+            if (debugPlaybackDelay) {
+                // force a delay in loading SB, to debug wait for segments setting
+                Thread.sleep(10000);
+            }
+
             ReVancedUtils.runOnMainThread(()-> {
                 if (!videoId.equals(currentVideoId)) {
                     // user changed videos before get segments network call could complete
@@ -165,9 +185,43 @@ public class SegmentPlaybackController {
                 }
                 setSegmentsOfCurrentVideo(segments);
                 setVideoTime(VideoInformation.getVideoTime()); // check for any skips now, instead of waiting for the next update
+
+                if (videoLoadLatch != null) {
+                    // segments loaded and any video seeks are made, and now can start the video
+                    videoLoadLatch.countDown();
+                    videoLoadLatch = null;
+                }
             });
         } catch (Exception ex) {
             LogHelper.printException(() -> "executeDownloadSegments failure", ex);
+        }
+    }
+
+    /**
+     * Injection point.
+     *
+     * Called off the main thread after video data is loaded.
+     * Called multiple times during video playback.
+     */
+    public static void videoDataLoaded() {
+        CountDownLatch latch = videoLoadLatch;
+        if (latch == null) {
+            return;
+        }
+        final float maxWaitTimeSeconds = SettingsEnum.SB_MAX_PLAYBACK_DELAY_WHILE_WAITING_FOR_SEGMENTS.getFloat();
+        if (maxWaitTimeSeconds <= 0) {
+            return;
+        }
+        try {
+            LogHelper.printDebug(() -> "Delaying video playback until SB segments are loaded");
+            final boolean latchReleased = latch.await((long)(maxWaitTimeSeconds * 1000), TimeUnit.MILLISECONDS);
+            LogHelper.printDebug(() -> latchReleased
+                    ? "Segments loaded, resuming video playback"
+                    : "Segments not loaded after waiting " + maxWaitTimeSeconds + " seconds");
+        } catch (InterruptedException e) {
+            // YouTube interrupted it's own background thread.
+            // Does not appear to ever happen, and this is not a concern if it does.
+            LogHelper.printDebug(() -> "video load interrupted");
         }
     }
 

@@ -53,6 +53,7 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment {
 
     private EditTextPreference newSegmentStep;
     private EditTextPreference minSegmentDuration;
+    private EditTextPreference maxPlaybackDelay;
     private EditTextPreference privateUserId;
     private EditTextPreference importExport;
     private Preference apiUrl;
@@ -92,11 +93,14 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment {
             showTimeWithoutSegments.setChecked(SettingsEnum.SB_SHOW_TIME_WITHOUT_SEGMENTS.getBoolean());
             showTimeWithoutSegments.setEnabled(enabled);
 
-            newSegmentStep.setText(String.valueOf(SettingsEnum.SB_ADJUST_NEW_SEGMENT_STEP.getInt()));
+            newSegmentStep.setText(SettingsEnum.SB_ADJUST_NEW_SEGMENT_STEP.getObjectValue().toString());
             newSegmentStep.setEnabled(enabled);
 
-            minSegmentDuration.setText(String.valueOf(SettingsEnum.SB_MIN_DURATION.getFloat()));
+            minSegmentDuration.setText(SettingsEnum.SB_MIN_DURATION.getObjectValue().toString());
             minSegmentDuration.setEnabled(enabled);
+
+            maxPlaybackDelay.setText(SettingsEnum.SB_MAX_PLAYBACK_DELAY_WHILE_WAITING_FOR_SEGMENTS.getObjectValue().toString());
+            maxPlaybackDelay.setEnabled(enabled);
 
             privateUserId.setText(SettingsEnum.SB_UUID.getString());
             privateUserId.setEnabled(enabled);
@@ -276,6 +280,17 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment {
             return true;
         });
         category.addPreference(minSegmentDuration);
+
+
+        maxPlaybackDelay = new EditTextPreference(context);
+        maxPlaybackDelay.setTitle(str("sb_general_max_playback_delay"));
+        maxPlaybackDelay.setSummary(str("sb_general_max_playback_delay_sum"));
+        maxPlaybackDelay.getEditText().setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
+        maxPlaybackDelay.setOnPreferenceChangeListener((preference1, newValue) -> {
+            SettingsEnum.SB_MAX_PLAYBACK_DELAY_WHILE_WAITING_FOR_SEGMENTS.saveValue(Float.valueOf(newValue.toString()));
+            return true;
+        });
+        category.addPreference(maxPlaybackDelay);
 
 
         privateUserId = new EditTextPreference(context);
