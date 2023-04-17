@@ -259,7 +259,7 @@ public class ReturnYouTubeDislike {
                 String oldSpannableString = oldSpannable.toString();
                 if (replacementLikeDislikeSpan != null
                         && replacementLikeDislikeSpan.toString().equals(oldSpannableString)) {
-                    LogHelper.printDebug(() -> "Ignoring span that already contains dislikes");
+                    LogHelper.printDebug(() -> "Ignoring previously created dislikes span");
                     return null;
                 }
                 if (originalDislikeSpan != null
