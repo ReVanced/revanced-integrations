@@ -149,7 +149,7 @@ public class ReturnYouTubeDislike {
 
 
     /**
-     * Should be called after a user dislikes, and if the user changes settings for dislikes appearance.
+     * Should be called after a user dislikes, or if the user changes settings for dislikes appearance.
      */
     public static void clearCache() {
         synchronized (videoIdLockObject) {
