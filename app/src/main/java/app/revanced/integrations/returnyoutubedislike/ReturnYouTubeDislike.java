@@ -214,7 +214,7 @@ public class ReturnYouTubeDislike {
     /**
      * Injection point.
      *
-     * Called when a litho text component is created.
+     * Called when a litho text component is initially created, including after user likes/dislikes.
      *
      * This method is sometimes called on the main thread, but it usually is called _off_ the main thread.
      * This method can be called multiple times for the same UI element (including after dislikes was added)
@@ -238,10 +238,11 @@ public class ReturnYouTubeDislike {
     /**
      * Injection point.
      *
-     * Called after dislike is already created,
-     * such as scrolling the dislikes off screen and then scrolling back on screen.
+     * Identical to {@link #onComponentCreated(Object, AtomicReference)},
+     * Except this is called when a Span reappears on screen after scrolling,
+     * and this is not called after user likes/dislkes a video.
      */
-    public static SpannableString overrideLikeDislikeSpan(@NonNull Object conversionContext, @NonNull SpannableString original) {
+    public static SpannableString onComponentCreated(@NonNull Object conversionContext, @NonNull SpannableString original) {
         try {
             SpannableString dislikes = getDislikeSpanForContext(conversionContext, original);
             if (dislikes != null) {
