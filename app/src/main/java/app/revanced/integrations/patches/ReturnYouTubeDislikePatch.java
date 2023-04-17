@@ -32,7 +32,7 @@ public class ReturnYouTubeDislikePatch {
      *
      * Required to update the UI after users dislikes.
      *
-     * @param textRef atomic reference should always be non null, but the object reference inside can be null.
+     * @param textRef Reference to the dislike char sequence.
      */
     public static void onComponentCreated(@NonNull Object conversionContext, @NonNull AtomicReference<CharSequence> textRef) {
         try {
