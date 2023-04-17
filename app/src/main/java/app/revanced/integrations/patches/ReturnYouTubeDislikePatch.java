@@ -39,7 +39,7 @@ public class ReturnYouTubeDislikePatch {
             if (!SettingsEnum.RYD_ENABLED.getBoolean()) {
                 return;
             }
-            CharSequence original = textRef.get();
+            CharSequence original = textRef.get(); // CharSequence can be null
             if (original instanceof Spanned) {
                 SpannableString replacement = ReturnYouTubeDislike.getDislikeSpanForContext(conversionContext, (Spanned) original);
                 if (replacement != null) {
