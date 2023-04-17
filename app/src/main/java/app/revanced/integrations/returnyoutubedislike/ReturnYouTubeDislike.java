@@ -148,6 +148,19 @@ public class ReturnYouTubeDislike {
         }
     }
 
+
+    /**
+     * Should be called after a user dislikes, and if the user changes settings for dislikes appearance.
+     */
+    public static void clearCache() {
+        synchronized (videoIdLockObject) {
+            if (replacementLikeDislikeSpan != null) {
+                LogHelper.printDebug(() -> "Clearing cache");
+            }
+            replacementLikeDislikeSpan = null;
+        }
+    }
+
     @Nullable
     private static String getCurrentVideoId() {
         synchronized (videoIdLockObject) {
@@ -313,15 +326,22 @@ public class ReturnYouTubeDislike {
      */
     @Nullable
     private static SpannableString waitForFetchAndUpdateReplacementSpan(@Nullable Spanned oldSpannable, boolean isSegmentedButton) {
-        if (oldSpannable == null) { // should never happen
-            LogHelper.printDebug(() -> "Cannot add dislikes (injection code was called with null Span)");
-            return null;
-        }
         try {
+            if (oldSpannable == null) { // should never happen
+                LogHelper.printDebug(() -> "Cannot add dislikes (injection code was called with null Span)");
+                return null;
+            }
             synchronized (videoIdLockObject) {
-                if (oldSpannable.equals(replacementLikeDislikeSpan)) {
+                String oldSpannableString = oldSpannable.toString();
+                if (replacementLikeDislikeSpan != null
+                        && replacementLikeDislikeSpan.toString().equals(oldSpannableString)) {
                     LogHelper.printDebug(() -> "Ignoring span that already contains dislikes");
                     return null;
+                }
+                if (originalDislikeSpan != null
+                        && originalDislikeSpan.toString().equals(oldSpannableString)) {
+                    LogHelper.printDebug(() -> "Using previously created dislike span");
+                    return replacementLikeDislikeSpan;
                 }
                 if (isSegmentedButton) {
                     if (isPreviouslyCreatedSegmentedSpan(oldSpannable)) {
@@ -412,9 +432,7 @@ public class ReturnYouTubeDislike {
                 }
             });
 
-            synchronized (videoIdLockObject) {
-                replacementLikeDislikeSpan = null; // ui values need updating
-            }
+            clearCache(); // UI needs updating
 
             // update the downloaded vote data
             Future<RYDVoteData> future = getVoteFetchFuture();
