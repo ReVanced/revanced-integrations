@@ -31,7 +31,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import java.util.concurrent.atomic.AtomicReference;
 
 import app.revanced.integrations.returnyoutubedislike.requests.RYDVoteData;
 import app.revanced.integrations.returnyoutubedislike.requests.ReturnYouTubeDislikeApi;
@@ -214,60 +213,13 @@ public class ReturnYouTubeDislike {
     }
 
     /**
-     * Injection point.
-     *
-     * Called when a litho text component is initially created or if a video is liked/disliked.
-     *
-     * This method is sometimes called on the main thread, but it usually is called _off_ the main thread.
-     * This method can be called multiple times for the same UI element (including after dislikes was added)
-     *
-     * @param textRef atomic reference should always be non null, but the spanned reference inside can be null.
-     */
-    public static void onComponentCreated(@NonNull Object conversionContext, @NonNull AtomicReference<CharSequence> textRef) {
-        try {
-            CharSequence original = textRef.get();
-            if (original instanceof Spanned) {
-                SpannableString replacement = getDislikeSpanForContext(conversionContext, (Spanned) original);
-                if (replacement != null) {
-                    textRef.set(replacement);
-                }
-            }
-        } catch (Exception ex) {
-            LogHelper.printException(() -> "onComponentCreated AtomicReference failure", ex);
-        }
-    }
-
-    /**
-     * Injection point.
-     *
-     * Identical to {@link #onComponentCreated(Object, AtomicReference)},
-     * Except this is called when a Span reappears on screen after scrolling.
-     * This is not called when a video is liked or disliked.
-     */
-    public static CharSequence onComponentCreated(@NonNull Object conversionContext, @NonNull CharSequence original) {
-        try {
-            if (original instanceof Spanned) {
-                SpannableString dislikes = getDislikeSpanForContext(conversionContext, (Spanned) original);
-                if (dislikes != null) {
-                    return dislikes;
-                }
-            }
-        } catch (Exception ex) {
-            LogHelper.printException(() -> "onComponentCreated CharSequence failure", ex);
-        }
-        return original;
-    }
-
-    /**
      * @return NULL if the span does not need changing or if RYD is not available
      */
     @Nullable
-    private static SpannableString getDislikeSpanForContext(@NonNull Object conversionContext, @NonNull Spanned original) {
+    public static SpannableString getDislikeSpanForContext(@NonNull Object conversionContext, @NonNull Spanned original) {
         try {
-            if (!SettingsEnum.RYD_ENABLED.getBoolean()) {
-                return null;
-            }
-            if (PlayerType.getCurrent().isNoneOrHidden()) {
+            if (!SettingsEnum.RYD_ENABLED.getBoolean()
+                    || PlayerType.getCurrent().isNoneOrHidden()) {
                 return null;
             }
 
@@ -299,8 +251,6 @@ public class ReturnYouTubeDislike {
     }
 
     /**
-     * Injection point.
-     *
      * Called when a Shorts dislike Spannable is created.
      */
     public static Spanned onShortsComponentCreated(@NonNull Spanned original) {
@@ -329,10 +279,6 @@ public class ReturnYouTubeDislike {
     @Nullable
     private static SpannableString waitForFetchAndUpdateReplacementSpan(@Nullable Spanned oldSpannable, boolean isSegmentedButton) {
         try {
-            if (oldSpannable == null) { // should never happen
-                LogHelper.printDebug(() -> "Cannot add dislikes (injection code was called with null Span)");
-                return null;
-            }
             synchronized (videoIdLockObject) {
                 String oldSpannableString = oldSpannable.toString();
                 if (replacementLikeDislikeSpan != null
