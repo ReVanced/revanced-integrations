@@ -223,9 +223,9 @@ public class ReturnYouTubeDislike {
      *
      * @param textRef atomic reference should always be non null, but the spanned reference inside can be null.
      */
-    public static void onComponentCreated(@NonNull Object conversionContext, @NonNull AtomicReference<Object> textRef) {
+    public static void onComponentCreated(@NonNull Object conversionContext, @NonNull AtomicReference<CharSequence> textRef) {
         try {
-            Object original = textRef.get();
+            CharSequence original = textRef.get();
             if (original instanceof Spanned) {
                 SpannableString replacement = getDislikeSpanForContext(conversionContext, (Spanned) original);
                 if (replacement != null) {
@@ -233,7 +233,7 @@ public class ReturnYouTubeDislike {
                 }
             }
         } catch (Exception ex) {
-            LogHelper.printException(() -> "onComponentCreated failure", ex);
+            LogHelper.printException(() -> "onComponentCreated AtomicReference failure", ex);
         }
     }
 
@@ -244,14 +244,16 @@ public class ReturnYouTubeDislike {
      * Except this is called when a Span reappears on screen after scrolling,
      * and this is not called after user likes/dislkes a video.
      */
-    public static SpannableString onComponentCreated(@NonNull Object conversionContext, @NonNull SpannableString original) {
+    public static CharSequence onComponentCreated(@NonNull Object conversionContext, @NonNull CharSequence original) {
         try {
-            SpannableString dislikes = getDislikeSpanForContext(conversionContext, original);
-            if (dislikes != null) {
-                return dislikes;
+            if (original instanceof Spanned) {
+                SpannableString dislikes = getDislikeSpanForContext(conversionContext, (Spanned) original);
+                if (dislikes != null) {
+                    return dislikes;
+                }
             }
         } catch (Exception ex) {
-            LogHelper.printException(() -> "overrideLikeDislikeSpan failure", ex);
+            LogHelper.printException(() -> "onComponentCreated CharSequence failure", ex);
         }
         return original;
     }
@@ -512,7 +514,7 @@ public class ReturnYouTubeDislike {
         final int separatorColor = ThemeHelper.isDarkTheme()
                 ? 0x29AAAAAA  // transparent dark gray
                 : 0xFFD9D9D9; // light gray
-        DisplayMetrics dp = ReVancedUtils.getContext().getResources().getDisplayMetrics();
+        DisplayMetrics dp = Objects.requireNonNull(ReVancedUtils.getContext()).getResources().getDisplayMetrics();
 
         if (!compactLayout) {
             // left separator
@@ -593,7 +595,7 @@ public class ReturnYouTubeDislike {
                     // such as Arabic which formats "1.2" into "١٫٢"
                     // But YouTube disregards locale specific number characters
                     // and instead shows english number characters everywhere.
-                    Locale locale = ReVancedUtils.getContext().getResources().getConfiguration().locale;
+                    Locale locale = Objects.requireNonNull(ReVancedUtils.getContext()).getResources().getConfiguration().locale;
                     LogHelper.printDebug(() -> "Locale: " + locale);
                     dislikeCountFormatter = CompactDecimalFormat.getInstance(locale, CompactDecimalFormat.CompactStyle.SHORT);
                 }
@@ -608,7 +610,7 @@ public class ReturnYouTubeDislike {
     private static String formatDislikePercentage(float dislikePercentage) {
         synchronized (ReturnYouTubeDislike.class) { // number formatter is not thread safe, must synchronize
             if (dislikePercentageFormatter == null) {
-                Locale locale = ReVancedUtils.getContext().getResources().getConfiguration().locale;
+                Locale locale = Objects.requireNonNull(ReVancedUtils.getContext()).getResources().getConfiguration().locale;
                 LogHelper.printDebug(() -> "Locale: " + locale);
                 dislikePercentageFormatter = NumberFormat.getPercentInstance(locale);
             }
