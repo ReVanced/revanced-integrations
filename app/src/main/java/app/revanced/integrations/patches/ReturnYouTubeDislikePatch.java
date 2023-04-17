@@ -30,7 +30,7 @@ public class ReturnYouTubeDislikePatch {
     /**
      * Injection point.
      *
-     * Required to update the UI after users dislikes.
+     * Required to update the UI after the user dislikes.
      *
      * @param textRef Reference to the dislike char sequence.
      */
@@ -54,7 +54,7 @@ public class ReturnYouTubeDislikePatch {
     /**
      * Injection point.
      *
-     * Called when a litho text component is initially created and when reappearing on screen after scrolling.
+     * Called when a litho text component is initially created.
      *
      * This method is sometimes called on the main thread, but it usually is called _off_ the main thread.
      * This method can be called multiple times for the same UI element (including after dislikes was added).
