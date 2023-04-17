@@ -333,28 +333,7 @@ public class ReturnYouTubeDislike {
         return null;
     }
 
-    /**
-     * Called when the like/dislike button is clicked.
-     *
-     * @param vote int that matches {@link Vote#value}
-     */
-    public static void sendVote(int vote) {
-        if (!SettingsEnum.RYD_ENABLED.getBoolean()) return;
-
-        try {
-            for (Vote v : Vote.values()) {
-                if (v.value == vote) {
-                    sendVote(v);
-                    return;
-                }
-            }
-            LogHelper.printException(() -> "Unknown vote type: " + vote);
-        } catch (Exception ex) {
-            LogHelper.printException(() -> "sendVote failure", ex);
-        }
-    }
-
-    private static void sendVote(@NonNull Vote vote) {
+    public static void sendVote(@NonNull Vote vote) {
         ReVancedUtils.verifyOnMainThread();
         Objects.requireNonNull(vote);
         try {
