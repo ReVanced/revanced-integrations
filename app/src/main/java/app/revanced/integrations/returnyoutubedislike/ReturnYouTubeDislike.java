@@ -241,8 +241,8 @@ public class ReturnYouTubeDislike {
      * Injection point.
      *
      * Identical to {@link #onComponentCreated(Object, AtomicReference)},
-     * Except this is called when a Span reappears on screen after scrolling,
-     * and this is not called after user likes/dislkes a video.
+     * Except this is called when a Span reappears on screen after scrolling.
+     * This is not called when a video is liked or disliked.
      */
     public static CharSequence onComponentCreated(@NonNull Object conversionContext, @NonNull CharSequence original) {
         try {
