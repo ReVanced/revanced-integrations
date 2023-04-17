@@ -93,7 +93,8 @@ public class ReturnYouTubeDislike {
     private static Spanned originalDislikeSpan;
 
     /**
-     * Replacement like/dislike span that includes formatted dislikes and is ready to display
+     * Replacement like/dislike span that includes formatted dislikes.
+     * Used to prevent recreating the same span multiple times.
      */
     @Nullable
     @GuardedBy("videoIdLockObject")
@@ -143,18 +144,6 @@ public class ReturnYouTubeDislike {
             lastVideoLoadedWasShort = false;
             voteFetchFuture = null;
             originalDislikeSpan = null;
-            replacementLikeDislikeSpan = null;
-        }
-    }
-
-    /**
-     * Should be called if user changes settings for dislikes appearance.
-     */
-    public static void clearCache() {
-        synchronized (videoIdLockObject) {
-            if (replacementLikeDislikeSpan != null) {
-                LogHelper.printDebug(() -> "Clearing cache");
-            }
             replacementLikeDislikeSpan = null;
         }
     }
@@ -334,10 +323,6 @@ public class ReturnYouTubeDislike {
                     LogHelper.printDebug(() -> "Ignoring span that already contains dislikes");
                     return null;
                 }
-                if (replacementLikeDislikeSpan != null) {
-                    LogHelper.printDebug(() -> "Using previously created dislike span");
-                    return replacementLikeDislikeSpan;
-                }
                 if (isSegmentedButton) {
                     if (isPreviouslyCreatedSegmentedSpan(oldSpannable)) {
                         // need to recreate using original, as oldSpannable has prior outdated dislike values
@@ -427,7 +412,9 @@ public class ReturnYouTubeDislike {
                 }
             });
 
-            clearCache(); // ui values need updating
+            synchronized (videoIdLockObject) {
+                replacementLikeDislikeSpan = null; // ui values need updating
+            }
 
             // update the downloaded vote data
             Future<RYDVoteData> future = getVoteFetchFuture();
