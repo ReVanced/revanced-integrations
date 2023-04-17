@@ -209,8 +209,8 @@ public class ReturnYouTubeDislike {
      * @return NULL if the span does not need changing or if RYD is not available.
      */
     @Nullable
-    public static SpannableString getDislikeSpanForContext(@NonNull Object conversionContext, @NonNull Spanned original) {
-        if (PlayerType.getCurrent().isNoneOrHidden()) {
+    public static SpannableString getDislikeSpanForContext(@NonNull Object conversionContext, @Nullable CharSequence original) {
+        if (original == null || PlayerType.getCurrent().isNoneOrHidden()) {
             return null;
         }
         String conversionContextString = conversionContext.toString();
@@ -233,7 +233,7 @@ public class ReturnYouTubeDislike {
             return null;
         }
 
-        return waitForFetchAndUpdateReplacementSpan(original, isSegmentedButton);
+        return waitForFetchAndUpdateReplacementSpan((Spannable) original, isSegmentedButton);
     }
 
     /**

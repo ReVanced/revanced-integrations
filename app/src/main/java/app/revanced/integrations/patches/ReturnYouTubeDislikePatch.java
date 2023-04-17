@@ -32,19 +32,17 @@ public class ReturnYouTubeDislikePatch {
      *
      * Required to update the UI after the user dislikes.
      *
-     * @param textRef Reference to the dislike char sequence.
+     * @param textRef Reference to the dislike char sequence. The CharSequence inside can be null.
      */
     public static void onComponentCreated(@NonNull Object conversionContext, @NonNull AtomicReference<CharSequence> textRef) {
         try {
             if (!SettingsEnum.RYD_ENABLED.getBoolean()) {
                 return;
             }
-            CharSequence original = textRef.get(); // CharSequence can be null
-            if (original instanceof Spanned) {
-                SpannableString replacement = ReturnYouTubeDislike.getDislikeSpanForContext(conversionContext, (Spanned) original);
-                if (replacement != null) {
-                    textRef.set(replacement);
-                }
+
+            SpannableString replacement = ReturnYouTubeDislike.getDislikeSpanForContext(conversionContext, textRef.get());
+            if (replacement != null) {
+                textRef.set(replacement);
             }
         } catch (Exception ex) {
             LogHelper.printException(() -> "onComponentCreated AtomicReference failure", ex);
@@ -64,11 +62,10 @@ public class ReturnYouTubeDislikePatch {
             if (!SettingsEnum.RYD_ENABLED.getBoolean()) {
                 return original;
             }
-            if (original instanceof Spanned) {
-                SpannableString dislikes = ReturnYouTubeDislike.getDislikeSpanForContext(conversionContext, (Spanned) original);
-                if (dislikes != null) {
-                    return dislikes;
-                }
+
+            SpannableString dislikes = ReturnYouTubeDislike.getDislikeSpanForContext(conversionContext, original);
+            if (dislikes != null) {
+                return dislikes;
             }
         } catch (Exception ex) {
             LogHelper.printException(() -> "onComponentCreated CharSequence failure", ex);
