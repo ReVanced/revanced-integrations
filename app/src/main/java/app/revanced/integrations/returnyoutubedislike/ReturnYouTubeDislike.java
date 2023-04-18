@@ -256,16 +256,16 @@ public class ReturnYouTubeDislike {
     private static SpannableString waitForFetchAndUpdateReplacementSpan(@NonNull Spanned oldSpannable, boolean isSegmentedButton) {
         try {
             synchronized (videoIdLockObject) {
-                String oldSpannableString = oldSpannable.toString();
-                if (replacementLikeDislikeSpan != null
-                        && replacementLikeDislikeSpan.toString().equals(oldSpannableString)) {
-                    LogHelper.printDebug(() -> "Ignoring previously created dislikes span");
-                    return null;
-                }
-                if (originalDislikeSpan != null
-                        && originalDislikeSpan.toString().equals(oldSpannableString)) {
-                    LogHelper.printDebug(() -> "Using previously created dislike span");
-                    return replacementLikeDislikeSpan;
+                if (replacementLikeDislikeSpan != null) {
+                    String oldSpannableString = oldSpannable.toString();
+                    if (replacementLikeDislikeSpan.toString().equals(oldSpannableString)) {
+                        LogHelper.printDebug(() -> "Ignoring previously created dislikes span");
+                        return null;
+                    }
+                    if (originalDislikeSpan != null && originalDislikeSpan.toString().equals(oldSpannableString)) {
+                        LogHelper.printDebug(() -> "Replacing span with previously created dislike span");
+                        return replacementLikeDislikeSpan;
+                    }
                 }
                 if (isSegmentedButton) {
                     if (isPreviouslyCreatedSegmentedSpan(oldSpannable)) {
