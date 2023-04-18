@@ -71,7 +71,7 @@ public class ReturnYouTubeDislikePatch {
             if (!SettingsEnum.RYD_ENABLED.getBoolean()) {
                 return original;
             }
-            Spanned replacement = ReturnYouTubeDislike.onShortsComponentCreated(original);
+            SpannableString replacement = ReturnYouTubeDislike.getDislikeSpanForShort(original);
             if (replacement != null) {
                 return replacement;
             }
