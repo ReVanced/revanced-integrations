@@ -239,7 +239,7 @@ public class ReturnYouTubeDislike {
     /**
      * Called when a Shorts dislike Spannable is created.
      */
-    public static Spanned onShortsComponentCreated(@NonNull Spanned original) {
+    public static SpannableString onShortsComponentCreated(@NonNull Spanned original) {
         lastVideoLoadedWasShort = true; // it's now certain the video and data are a short
         return waitForFetchAndUpdateReplacementSpan(original, false);
     }

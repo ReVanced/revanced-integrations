@@ -203,7 +203,7 @@ public class ReturnYouTubeDislikeApi {
     @SuppressWarnings("NonAtomicOperationOnVolatileField") // do not want to pay performance cost of full synchronization for debug fields that are only estimates anyways
     private static void updateStatistics(long timeNetworkCallStarted, long timeNetworkCallEnded, boolean connectionError, boolean rateLimitHit) {
         if (connectionError && rateLimitHit) {
-            throw new IllegalArgumentException("both connection error and rate limit parameter were true");
+            throw new IllegalArgumentException();
         }
         final long responseTimeOfFetchCall = timeNetworkCallEnded - timeNetworkCallStarted;
         fetchCallResponseTimeTotal += responseTimeOfFetchCall;
