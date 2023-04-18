@@ -32,15 +32,18 @@ public class ReturnYouTubeDislikePatch {
      *
      * Required to update the UI after the user dislikes.
      *
-     * @param textRef Reference to the dislike char sequence. The CharSequence inside can be null.
+     * @param textRef Reference to the dislike char sequence.
      */
     public static void onComponentCreated(@NonNull Object conversionContext, @NonNull AtomicReference<CharSequence> textRef) {
         try {
             if (!SettingsEnum.RYD_ENABLED.getBoolean()) {
                 return;
             }
-
-            SpannableString replacement = ReturnYouTubeDislike.getDislikeSpanForContext(conversionContext, textRef.get());
+            CharSequence original = textRef.get();
+            if (original == null) {
+                return; // value will be null during first load, and is handled by the litho creation hook
+            }
+            SpannableString replacement = ReturnYouTubeDislike.getDislikeSpanForContext(conversionContext, original);
             if (replacement != null) {
                 textRef.set(replacement);
             }
