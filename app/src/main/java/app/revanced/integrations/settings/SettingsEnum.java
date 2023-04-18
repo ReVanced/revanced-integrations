@@ -109,7 +109,7 @@ public enum SettingsEnum {
     WIDE_SEARCHBAR("revanced_wide_searchbar", BOOLEAN, FALSE, true),
 
     // Misc. Settings
-    SIGNATURE_SPOOFING("revanced_spoof_signature_verification", BOOLEAN, FALSE, "revanced_spoof_signature_verification_user_dialog_message"),
+    SIGNATURE_SPOOFING("revanced_spoof_signature_verification", BOOLEAN, TRUE, "revanced_spoof_signature_verification_user_dialog_message"),
     CAPTIONS_ENABLED("revanced_autocaptions_enabled", BOOLEAN, FALSE),
     DISABLE_ZOOM_HAPTICS("revanced_disable_zoom_haptics", BOOLEAN, TRUE),
     ENABLE_EXTERNAL_BROWSER("revanced_enable_external_browser", BOOLEAN, TRUE, true),
