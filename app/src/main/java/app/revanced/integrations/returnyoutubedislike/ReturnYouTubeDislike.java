@@ -262,22 +262,20 @@ public class ReturnYouTubeDislike {
                         LogHelper.printDebug(() -> "Ignoring previously created dislikes span");
                         return null;
                     }
-                    if (originalDislikeSpan != null && originalDislikeSpan.toString().equals(oldSpannableString)) {
+                    if (originalDislikeSpan.toString().equals(oldSpannableString)) {
                         LogHelper.printDebug(() -> "Replacing span with previously created dislike span");
                         return replacementLikeDislikeSpan;
                     }
                 }
-                if (isSegmentedButton) {
-                    if (isPreviouslyCreatedSegmentedSpan(oldSpannable)) {
-                        // need to recreate using original, as oldSpannable has prior outdated dislike values
-                        oldSpannable = originalDislikeSpan;
-                        if (oldSpannable == null) {
-                            LogHelper.printDebug(() -> "Cannot add dislikes - original span is null"); // should never happen
-                            return null;
-                        }
-                    } else {
-                        originalDislikeSpan = oldSpannable; // most up to date original
+                if (isSegmentedButton && isPreviouslyCreatedSegmentedSpan(oldSpannable)) {
+                    // need to recreate using original, as oldSpannable has prior outdated dislike values
+                    oldSpannable = originalDislikeSpan;
+                    if (oldSpannable == null) {
+                        LogHelper.printDebug(() -> "Cannot add dislikes - original span is null"); // should never happen
+                        return null;
                     }
+                } else {
+                    originalDislikeSpan = oldSpannable; // most up to date original
                 }
             }
 
