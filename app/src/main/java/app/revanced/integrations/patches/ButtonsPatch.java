@@ -11,9 +11,8 @@ final class ButtonsPatch extends Filter {
                 new BlockRule(SettingsEnum.HIDE_LIKE_BUTTON, "|like_button", "segmented_like_dislike_button"),
                 new BlockRule(SettingsEnum.HIDE_DISLIKE_BUTTON, "dislike_button"),
                 new BlockRule(SettingsEnum.HIDE_DOWNLOAD_BUTTON, "download_button"),
-                new BlockRule(SettingsEnum.HIDE_ACTION_BUTTON, "ContainerType|video_action_button"),
-                new BlockRule(SettingsEnum.HIDE_PLAYLIST_BUTTON, "save_to_playlist_button")
-                // No BlockRule for the share button, as it does not appear to be blockable with a litho filter
+                new BlockRule(SettingsEnum.HIDE_PLAYLIST_BUTTON, "save_to_playlist_button"),
+                new BlockRule(SettingsEnum.HIDE_ACTION_BUTTON, "ContainerType|video_action_button")
         );
     }
 
