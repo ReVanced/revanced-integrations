@@ -74,7 +74,7 @@ public enum SettingsEnum {
     HIDE_LIKE_DISLIKE_BUTTON("revanced_hide_like_dislike_button", BOOLEAN, FALSE),
     HIDE_DOWNLOAD_BUTTON("revanced_hide_download_button", BOOLEAN, FALSE),
     HIDE_PLAYLIST_BUTTON("revanced_hide_playlist_button", BOOLEAN, FALSE),
-    HIDE_ACTION_BUTTON("revanced_hide_action_button", BOOLEAN, FALSE),
+    HIDE_ACTION_BUTTONS("revanced_hide_action_buttons", BOOLEAN, FALSE),
 
     // Layout settings
     DISABLE_STARTUP_SHORTS_PLAYER("revanced_startup_shorts_player_enabled", BOOLEAN, FALSE),
