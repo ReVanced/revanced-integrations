@@ -8,8 +8,7 @@ final class ButtonsPatch extends Filter {
     public ButtonsPatch() {
         actionBarRule = new BlockRule(null, "video_action_bar");
         pathRegister.registerAll(
-                new BlockRule(SettingsEnum.HIDE_LIKE_BUTTON, "|like_button", "segmented_like_dislike_button"),
-                new BlockRule(SettingsEnum.HIDE_DISLIKE_BUTTON, "dislike_button"),
+                new BlockRule(SettingsEnum.HIDE_LIKE_DISLIKE_BUTTON, "|like_button", "dislike_button", "segmented_like_dislike_button"),
                 new BlockRule(SettingsEnum.HIDE_DOWNLOAD_BUTTON, "download_button"),
                 new BlockRule(SettingsEnum.HIDE_PLAYLIST_BUTTON, "save_to_playlist_button"),
                 new BlockRule(SettingsEnum.HIDE_ACTION_BUTTON, "ContainerType|video_action_button")
