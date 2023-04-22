@@ -55,6 +55,9 @@ public class SponsorBlockViewController {
         try {
             LogHelper.printDebug(() -> "initializing");
 
+            // hide any old components, just in case they somehow are still hanging around
+            hideAll();
+
             Context context = ReVancedUtils.getContext();
             RelativeLayout layout = new RelativeLayout(context);
             layout.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,RelativeLayout.LayoutParams.MATCH_PARENT));

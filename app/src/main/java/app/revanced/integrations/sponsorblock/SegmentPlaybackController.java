@@ -409,6 +409,9 @@ public class SegmentPlaybackController {
 
     private static void skipSegment(@NonNull SponsorSegment segmentToSkip, boolean userManuallySkipped) {
         try {
+            SponsorBlockViewController.hideSkipHighlightButton();
+            SponsorBlockViewController.hideSkipSegmentButton();
+
             // If trying to seek to end of the video, YouTube can seek just short of the actual end.
             // (especially if the video does not end on a whole second boundary).
             // This causes additional segment skip attempts, even though it cannot seek any closer to the desired time.
@@ -429,8 +432,6 @@ public class SegmentPlaybackController {
             if (segmentToSkip == highlightSegment) {
                 highlightSegmentInitialShowEndTime = 0;
             }
-            SponsorBlockViewController.hideSkipHighlightButton();
-            SponsorBlockViewController.hideSkipSegmentButton();
 
             final boolean seekSuccessful = VideoInformation.seekTo(segmentToSkip.end);
             if (!seekSuccessful) {
