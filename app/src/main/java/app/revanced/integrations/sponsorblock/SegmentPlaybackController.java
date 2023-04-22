@@ -431,7 +431,7 @@ public class SegmentPlaybackController {
         while (i.hasNext()) {
             SponsorSegment hiddenSegment = i.next();
             if (!hiddenSegment.containsTime(currentVideoTime)) {
-                LogHelper.printDebug(() -> "Resetting segment hide skip: " + hiddenSegment);
+                LogHelper.printDebug(() -> "Resetting hide skip button: " + hiddenSegment);
                 i.remove();
             }
         }
