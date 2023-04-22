@@ -148,6 +148,7 @@ public enum SettingsEnum {
     SB_VOTING_ENABLED("sb-voting-enabled", BOOLEAN, FALSE, SPONSOR_BLOCK, parents(SB_ENABLED)),
     SB_CREATE_NEW_SEGMENT_ENABLED("sb-new-segment-enabled", BOOLEAN, FALSE, SPONSOR_BLOCK, parents(SB_ENABLED)),
     SB_USE_COMPACT_SKIP_BUTTON("sb-use-compact-skip-button", BOOLEAN, FALSE, SPONSOR_BLOCK, parents(SB_ENABLED)),
+    SB_SHOW_SKIP_BUTTON_ENTIRE_SEGMENT("sb-show-skip-button-entire-segment", BOOLEAN, FALSE, SPONSOR_BLOCK, parents(SB_ENABLED)),
     SB_SHOW_TOAST_ON_SKIP("show-toast", BOOLEAN, TRUE, SPONSOR_BLOCK, parents(SB_ENABLED)),
     SB_TRACK_SKIP_COUNT("count-skips", BOOLEAN, TRUE, SPONSOR_BLOCK, parents(SB_ENABLED)),
     SB_UUID("uuid", STRING, "", SPONSOR_BLOCK),

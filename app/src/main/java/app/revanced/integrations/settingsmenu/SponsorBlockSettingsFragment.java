@@ -46,6 +46,7 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment {
     private SwitchPreference sbEnabled;
     private SwitchPreference addNewSegment;
     private SwitchPreference votingEnabled;
+    private SwitchPreference showSkipEntireSegment;
     private SwitchPreference compactSkipButton;
     private SwitchPreference showSkipToast;
     private SwitchPreference trackSkips;
@@ -79,6 +80,9 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment {
             votingEnabled.setChecked(SettingsEnum.SB_VOTING_ENABLED.getBoolean());
             votingEnabled.setEnabled(enabled);
 
+            showSkipEntireSegment.setChecked(SettingsEnum.SB_SHOW_SKIP_BUTTON_ENTIRE_SEGMENT.getBoolean());
+            showSkipEntireSegment.setEnabled(enabled);
+
             compactSkipButton.setChecked(SettingsEnum.SB_USE_COMPACT_SKIP_BUTTON.getBoolean());
             compactSkipButton.setEnabled(enabled);
 
@@ -91,10 +95,10 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment {
             showTimeWithoutSegments.setChecked(SettingsEnum.SB_SHOW_TIME_WITHOUT_SEGMENTS.getBoolean());
             showTimeWithoutSegments.setEnabled(enabled);
 
-            newSegmentStep.setText(String.valueOf(SettingsEnum.SB_ADJUST_NEW_SEGMENT_STEP.getInt()));
+            newSegmentStep.setText(SettingsEnum.SB_ADJUST_NEW_SEGMENT_STEP.getObjectValue().toString());
             newSegmentStep.setEnabled(enabled);
 
-            minSegmentDuration.setText(String.valueOf(SettingsEnum.SB_MIN_DURATION.getFloat()));
+            minSegmentDuration.setText(SettingsEnum.SB_MIN_DURATION.getObjectValue().toString());
             minSegmentDuration.setEnabled(enabled);
 
             privateUserId.setText(SettingsEnum.SB_UUID.getString());
@@ -161,6 +165,17 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment {
             preferenceScreen.addPreference(votingEnabled);
             votingEnabled.setOnPreferenceChangeListener((preference1, newValue) -> {
                 SettingsEnum.SB_VOTING_ENABLED.saveValue(newValue);
+                updateUI();
+                return true;
+            });
+
+            showSkipEntireSegment = new SwitchPreference(context);
+            showSkipEntireSegment.setTitle(str("sb_enable_show_skip_entire_segment"));
+            showSkipEntireSegment.setSummaryOn(str("sb_enable_show_skip_entire_segment_sum_on"));
+            showSkipEntireSegment.setSummaryOff(str("sb_enable_show_skip_entire_segment_sum_off"));
+            preferenceScreen.addPreference(showSkipEntireSegment);
+            showSkipEntireSegment.setOnPreferenceChangeListener((preference1, newValue) -> {
+                SettingsEnum.SB_SHOW_SKIP_BUTTON_ENTIRE_SEGMENT.saveValue(newValue);
                 updateUI();
                 return true;
             });

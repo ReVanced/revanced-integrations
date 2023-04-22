@@ -32,11 +32,12 @@ import app.revanced.integrations.utils.ReVancedUtils;
  */
 public class SegmentPlaybackController {
     /**
-     * Length of time to show a highlight segment manual skip.
-     * Because there is no scheduled hide of a skip to highlight,
-     * effectively this time value is rounded up to the next second.
+     * Length of time to show a skip button for a highlight segment,
+     * or for a regular segment if {@link SettingsEnum#SB_SHOW_SKIP_BUTTON_ENTIRE_SEGMENT} is not enabled.
+     *
+     * Because Effectively, this value is rounded up to the next second.
      */
-    private static final long HIGHLIGHT_SEGMENT_DURATION_TO_SHOW_SKIP_PROMPT = 3800;
+    private static final long DURATION_TO_SHOW_SKIP_PROMPT = 3800;
 
     /*
      * Highlight segments have zero length, as they are a point in time.
@@ -79,6 +80,13 @@ public class SegmentPlaybackController {
     @Nullable
     private static SponsorSegment scheduledUpcomingSegment;
 
+    /**
+     * System time (in milliseconds) of when to hide the skip button of {@link #segmentCurrentlyPlaying}.
+     * Value is zero if playback is not inside a segment,
+     * or if {@link SettingsEnum#SB_SHOW_SKIP_BUTTON_ENTIRE_SEGMENT} is enabled.
+     */
+    private static long skipSegmentButtonEndTime;
+
     @Nullable
     private static String timeWithoutSegments;
 
@@ -119,9 +127,10 @@ public class SegmentPlaybackController {
         highlightSegmentInitialShowEndTime = 0;
         timeWithoutSegments = null;
         segmentCurrentlyPlaying = null;
-        scheduledUpcomingSegment = null; // prevent any existing scheduled skip from running
+        scheduledUpcomingSegment = null;
         scheduledHideSegment = null;
-        toastSegmentSkipped = null; // prevent any scheduled skip toasts from showing
+        skipSegmentButtonEndTime = 0;
+        toastSegmentSkipped = null;
         toastNumberOfSegmentsSkipped = 0;
     }
 
@@ -203,8 +212,7 @@ public class SegmentPlaybackController {
                         skipSegment(highlightSegment, false);
                         return;
                     }
-                    highlightSegmentInitialShowEndTime = System.currentTimeMillis()
-                            + HIGHLIGHT_SEGMENT_DURATION_TO_SHOW_SKIP_PROMPT;
+                    highlightSegmentInitialShowEndTime = System.currentTimeMillis() + DURATION_TO_SHOW_SKIP_PROMPT;
                 }
                 // check for any skips now, instead of waiting for the next update to setVideoTime()
                 setVideoTime(videoTime);
@@ -258,8 +266,8 @@ public class SegmentPlaybackController {
                     if (foundCurrentSegment == null || foundCurrentSegment.containsSegment(segment)) {
                         // If the found segment is not currently displayed, then do not show if the segment is nearly over.
                         // This check prevents the skip button text from rapidly changing when multiple segments end at nearly the same time.
-                        // Also prevents showing the skip button if user seeks into the last half second of the segment.
-                        final long minMillisOfSegmentRemainingThreshold = 500;
+                        // Also prevents showing the skip button if user seeks into the last 800ms of the segment.
+                        final long minMillisOfSegmentRemainingThreshold = 800;
                         if (segmentCurrentlyPlaying == segment
                                 || !segment.endIsNear(millis, minMillisOfSegmentRemainingThreshold)) {
                             foundCurrentSegment = segment;
@@ -300,23 +308,21 @@ public class SegmentPlaybackController {
                 }
             }
 
-            if (highlightSegment != null && (millis < HIGHLIGHT_SEGMENT_DURATION_TO_SHOW_SKIP_PROMPT
-                    || System.currentTimeMillis() < highlightSegmentInitialShowEndTime)) {
-                SponsorBlockViewController.showSkipHighlightButton(highlightSegment);
-            } else {
-                SponsorBlockViewController.hideSkipHighlightButton();
+            if (highlightSegment != null) {
+                if (millis < DURATION_TO_SHOW_SKIP_PROMPT || System.currentTimeMillis() < highlightSegmentInitialShowEndTime) {
+                    SponsorBlockViewController.showSkipHighlightButton(highlightSegment);
+                } else {
+                    SponsorBlockViewController.hideSkipHighlightButton();
+                }
             }
 
             if (segmentCurrentlyPlaying != foundCurrentSegment) {
-                if (foundCurrentSegment == null) {
-                    LogHelper.printDebug(() -> "Hiding segment: " + segmentCurrentlyPlaying);
-                    segmentCurrentlyPlaying = null;
-                    SponsorBlockViewController.hideSkipSegmentButton();
-                }  else {
-                    segmentCurrentlyPlaying = foundCurrentSegment;
-                    LogHelper.printDebug(() -> "Showing segment: " + segmentCurrentlyPlaying);
-                    SponsorBlockViewController.showSkipSegmentButton(foundCurrentSegment);
-                }
+                setSegmentCurrentlyPlaying(foundCurrentSegment);
+            } else if (foundCurrentSegment != null
+                    && skipSegmentButtonEndTime != 0 && System.currentTimeMillis() > skipSegmentButtonEndTime) {
+                LogHelper.printDebug(() -> "Hiding skip button");
+                skipSegmentButtonEndTime = 0;
+                SponsorBlockViewController.hideSkipSegmentButton();
             }
 
             // must be greater than the average time between updates to VideoInformation time
@@ -392,8 +398,7 @@ public class SegmentPlaybackController {
                             skipSegment(segmentToSkip, false);
                         } else {
                             LogHelper.printDebug(() -> "Running scheduled show segment: " + segmentToSkip);
-                            segmentCurrentlyPlaying = segmentToSkip;
-                            SponsorBlockViewController.showSkipSegmentButton(segmentToSkip);
+                            setSegmentCurrentlyPlaying(segmentToSkip);
                         }
                     }, delayUntilSkip);
                 }
@@ -403,6 +408,21 @@ public class SegmentPlaybackController {
         }
     }
 
+    private static void setSegmentCurrentlyPlaying(SponsorSegment foundCurrentSegment) {
+        if (foundCurrentSegment == null) {
+            LogHelper.printDebug(() -> "Hiding segment: " + segmentCurrentlyPlaying);
+            segmentCurrentlyPlaying = null;
+            skipSegmentButtonEndTime = 0;
+            SponsorBlockViewController.hideSkipSegmentButton();
+        }  else {
+            segmentCurrentlyPlaying = foundCurrentSegment;
+            LogHelper.printDebug(() -> "Showing segment: " + segmentCurrentlyPlaying);
+            skipSegmentButtonEndTime = SettingsEnum.SB_SHOW_SKIP_BUTTON_ENTIRE_SEGMENT.getBoolean()
+                    ? 0
+                    : System.currentTimeMillis() + DURATION_TO_SHOW_SKIP_PROMPT;
+            SponsorBlockViewController.showSkipSegmentButton(foundCurrentSegment);
+        }
+    }
 
     private static SponsorSegment lastSegmentSkipped;
     private static long lastSegmentSkippedTime;
