@@ -5,6 +5,8 @@ import static app.revanced.integrations.utils.StringRef.sf;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import java.util.Objects;
+
 import app.revanced.integrations.patches.VideoInformation;
 import app.revanced.integrations.utils.StringRef;
 
@@ -113,6 +115,18 @@ public class SponsorSegment implements Comparable<SponsorSegment> {
     @Override
     public int compareTo(SponsorSegment o) {
         return (int) (this.start - o.start);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof SponsorSegment)) return false;
+        return Objects.equals(UUID, ((SponsorSegment) o).UUID);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(UUID);
     }
 
     @NonNull

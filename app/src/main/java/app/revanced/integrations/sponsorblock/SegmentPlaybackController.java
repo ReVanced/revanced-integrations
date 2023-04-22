@@ -11,7 +11,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Objects;
 
 import app.revanced.integrations.patches.VideoInformation;
@@ -81,6 +84,15 @@ public class SegmentPlaybackController {
     private static SponsorSegment scheduledUpcomingSegment;
 
     /**
+     * A collection of segments that have been automatically hidden, and all segments in this list
+     * are valid for the current video time. Used to prevent reshowing a previously hidden skip button
+     * when exiting an embedded segment.
+     *
+     * Used only when {@link SettingsEnum#SB_SHOW_SKIP_BUTTON_ENTIRE_SEGMENT} is not enabled.
+     */
+    private static final List<SponsorSegment> hiddenSegmentsForCurrentVideoTime = new ArrayList<>();
+
+    /**
      * System time (in milliseconds) of when to hide the skip button of {@link #segmentCurrentlyPlaying}.
      * Value is zero if playback is not inside a segment,
      * or if {@link SettingsEnum#SB_SHOW_SKIP_BUTTON_ENTIRE_SEGMENT} is enabled.
@@ -132,6 +144,7 @@ public class SegmentPlaybackController {
         skipSegmentButtonEndTime = 0;
         toastSegmentSkipped = null;
         toastNumberOfSegmentsSkipped = 0;
+        hiddenSegmentsForCurrentVideoTime.clear();
     }
 
     /**
@@ -236,6 +249,8 @@ public class SegmentPlaybackController {
             }
             LogHelper.printDebug(() -> "setVideoTime: " + millis);
 
+            updateHiddenSegments(millis);
+
             // to debug the timing logic, set this to a very large value (5000 or more)
             // then try manually seeking just playback reaches a skip/hide of different segments
             final long lookAheadMilliseconds = 1500; // must be larger than the average time between calls to this method
@@ -321,6 +336,7 @@ public class SegmentPlaybackController {
             } else if (foundCurrentSegment != null
                     && skipSegmentButtonEndTime != 0 && System.currentTimeMillis() > skipSegmentButtonEndTime) {
                 LogHelper.printDebug(() -> "Hiding skip button");
+                hiddenSegmentsForCurrentVideoTime.add(foundCurrentSegment);
                 skipSegmentButtonEndTime = 0;
                 SponsorBlockViewController.hideSkipSegmentButton();
             }
@@ -361,8 +377,7 @@ public class SegmentPlaybackController {
                         // Instead call back into setVideoTime to check everything again.
                         // Should not use VideoInformation time as it is less accurate,
                         // but this scheduled handler was scheduled precisely so we can just use the segment end time
-                        segmentCurrentlyPlaying = null;
-                        SponsorBlockViewController.hideSkipSegmentButton();
+                        setSegmentCurrentlyPlaying(null);
                         setVideoTime(segmentToHide.end);
                     }, delayUntilHide);
                 }
@@ -408,20 +423,38 @@ public class SegmentPlaybackController {
         }
     }
 
-    private static void setSegmentCurrentlyPlaying(SponsorSegment foundCurrentSegment) {
-        if (foundCurrentSegment == null) {
-            LogHelper.printDebug(() -> "Hiding segment: " + segmentCurrentlyPlaying);
+    /**
+     * Removes all previously hidden segments that are not longer contained in the given video time.
+     */
+    private static void updateHiddenSegments(long currentVideoTime) {
+        Iterator<SponsorSegment> i = hiddenSegmentsForCurrentVideoTime.iterator();
+        while (i.hasNext()) {
+            SponsorSegment hiddenSegment = i.next();
+            if (!hiddenSegment.containsTime(currentVideoTime)) {
+                LogHelper.printDebug(() -> "Removing hidden segment: " + hiddenSegment);
+                i.remove();
+            }
+        }
+    }
+
+    private static void setSegmentCurrentlyPlaying(@Nullable SponsorSegment segment) {
+        if (segment == null) {
+            if (segmentCurrentlyPlaying != null) LogHelper.printDebug(() -> "Hiding segment: " + segmentCurrentlyPlaying);
             segmentCurrentlyPlaying = null;
             skipSegmentButtonEndTime = 0;
             SponsorBlockViewController.hideSkipSegmentButton();
-        }  else {
-            segmentCurrentlyPlaying = foundCurrentSegment;
-            LogHelper.printDebug(() -> "Showing segment: " + segmentCurrentlyPlaying);
-            skipSegmentButtonEndTime = SettingsEnum.SB_SHOW_SKIP_BUTTON_ENTIRE_SEGMENT.getBoolean()
-                    ? 0
-                    : System.currentTimeMillis() + DURATION_TO_SHOW_SKIP_PROMPT;
-            SponsorBlockViewController.showSkipSegmentButton(foundCurrentSegment);
+            return;
         }
+        LogHelper.printDebug(() -> "Showing segment: " + segment);
+        segmentCurrentlyPlaying = segment;
+        if (SettingsEnum.SB_SHOW_SKIP_BUTTON_ENTIRE_SEGMENT.getBoolean()) {
+            skipSegmentButtonEndTime = 0;
+        } else {
+            skipSegmentButtonEndTime = hiddenSegmentsForCurrentVideoTime.contains(segment)
+                    ? skipSegmentButtonEndTime = 0 // Playback is exiting a nested segment, and skip button for outer segment was previously hidden.
+                    : System.currentTimeMillis() + DURATION_TO_SHOW_SKIP_PROMPT;
+        }
+        SponsorBlockViewController.showSkipSegmentButton(segment);
     }
 
     private static SponsorSegment lastSegmentSkipped;
@@ -446,13 +479,14 @@ public class SegmentPlaybackController {
             LogHelper.printDebug(() -> "Skipping segment: " + segmentToSkip);
             lastSegmentSkipped = segmentToSkip;
             lastSegmentSkippedTime = now;
-            segmentCurrentlyPlaying = null;
+            setSegmentCurrentlyPlaying(null);
             scheduledHideSegment = null;
             scheduledUpcomingSegment = null;
             if (segmentToSkip == highlightSegment) {
                 highlightSegmentInitialShowEndTime = 0;
             }
 
+            // If the seek is successful, then the seek causes a recursive call back into this class.
             final boolean seekSuccessful = VideoInformation.seekTo(segmentToSkip.end);
             if (!seekSuccessful) {
                 // can happen when switching videos and is normal
