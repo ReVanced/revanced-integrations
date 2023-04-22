@@ -46,8 +46,8 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment {
     private SwitchPreference sbEnabled;
     private SwitchPreference addNewSegment;
     private SwitchPreference votingEnabled;
-    private SwitchPreference showSkipEntireSegment;
     private SwitchPreference compactSkipButton;
+    private SwitchPreference autoHideSkipSegmentButton;
     private SwitchPreference showSkipToast;
     private SwitchPreference trackSkips;
     private SwitchPreference showTimeWithoutSegments;
@@ -80,11 +80,11 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment {
             votingEnabled.setChecked(SettingsEnum.SB_VOTING_ENABLED.getBoolean());
             votingEnabled.setEnabled(enabled);
 
-            showSkipEntireSegment.setChecked(SettingsEnum.SB_SHOW_SKIP_BUTTON_ENTIRE_SEGMENT.getBoolean());
-            showSkipEntireSegment.setEnabled(enabled);
-
             compactSkipButton.setChecked(SettingsEnum.SB_USE_COMPACT_SKIP_BUTTON.getBoolean());
             compactSkipButton.setEnabled(enabled);
+
+            autoHideSkipSegmentButton.setChecked(SettingsEnum.SB_AUTO_HIDE_SKIP_BUTTON.getBoolean());
+            autoHideSkipSegmentButton.setEnabled(enabled);
 
             showSkipToast.setChecked(SettingsEnum.SB_SHOW_TOAST_ON_SKIP.getBoolean());
             showSkipToast.setEnabled(enabled);
@@ -169,17 +169,6 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment {
                 return true;
             });
 
-            showSkipEntireSegment = new SwitchPreference(context);
-            showSkipEntireSegment.setTitle(str("sb_enable_show_skip_entire_segment"));
-            showSkipEntireSegment.setSummaryOn(str("sb_enable_show_skip_entire_segment_sum_on"));
-            showSkipEntireSegment.setSummaryOff(str("sb_enable_show_skip_entire_segment_sum_off"));
-            preferenceScreen.addPreference(showSkipEntireSegment);
-            showSkipEntireSegment.setOnPreferenceChangeListener((preference1, newValue) -> {
-                SettingsEnum.SB_SHOW_SKIP_BUTTON_ENTIRE_SEGMENT.saveValue(newValue);
-                updateUI();
-                return true;
-            });
-
             compactSkipButton = new SwitchPreference(context);
             compactSkipButton.setTitle(str("sb_enable_compact_skip_button"));
             compactSkipButton.setSummaryOn(str("sb_enable_compact_skip_button_sum_on"));
@@ -187,6 +176,17 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment {
             preferenceScreen.addPreference(compactSkipButton);
             compactSkipButton.setOnPreferenceChangeListener((preference1, newValue) -> {
                 SettingsEnum.SB_USE_COMPACT_SKIP_BUTTON.saveValue(newValue);
+                updateUI();
+                return true;
+            });
+
+            autoHideSkipSegmentButton = new SwitchPreference(context);
+            autoHideSkipSegmentButton.setTitle(str("sb_enable_auto_hide_skip_segment_button"));
+            autoHideSkipSegmentButton.setSummaryOn(str("sb_enable_auto_hide_skip_segment_button_sum_on"));
+            autoHideSkipSegmentButton.setSummaryOff(str("sb_enable_auto_hide_skip_segment_button_sum_off"));
+            preferenceScreen.addPreference(autoHideSkipSegmentButton);
+            autoHideSkipSegmentButton.setOnPreferenceChangeListener((preference1, newValue) -> {
+                SettingsEnum.SB_AUTO_HIDE_SKIP_BUTTON.saveValue(newValue);
                 updateUI();
                 return true;
             });

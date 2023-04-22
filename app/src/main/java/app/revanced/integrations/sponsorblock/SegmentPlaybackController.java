@@ -36,7 +36,7 @@ import app.revanced.integrations.utils.ReVancedUtils;
 public class SegmentPlaybackController {
     /**
      * Length of time to show a skip button for a highlight segment,
-     * or for a regular segment if {@link SettingsEnum#SB_SHOW_SKIP_BUTTON_ENTIRE_SEGMENT} is not enabled.
+     * or a regular segment if {@link SettingsEnum#SB_AUTO_HIDE_SKIP_BUTTON} is enabled.
      *
      * Because Effectively, this value is rounded up to the next second.
      */
@@ -84,18 +84,18 @@ public class SegmentPlaybackController {
     private static SponsorSegment scheduledUpcomingSegment;
 
     /**
-     * A collection of segments that have been automatically hidden, and all segments in this list
-     * are valid for the current video time. Used to prevent reshowing a previously hidden skip button
-     * when exiting an embedded segment.
+     * A collection of segments skip that have automatically hidden the skip button for, and all segments in this list
+     * are valid for the current video time.  When the video time exits a segment, it is removed from this list.
+     * Used to prevent reshowing a previously hidden skip button when exiting an embedded segment.
      *
-     * Used only when {@link SettingsEnum#SB_SHOW_SKIP_BUTTON_ENTIRE_SEGMENT} is not enabled.
+     * Only used when {@link SettingsEnum#SB_AUTO_HIDE_SKIP_BUTTON} is enabled.
      */
     private static final List<SponsorSegment> hiddenSegmentsForCurrentVideoTime = new ArrayList<>();
 
     /**
      * System time (in milliseconds) of when to hide the skip button of {@link #segmentCurrentlyPlaying}.
      * Value is zero if playback is not inside a segment,
-     * or if {@link SettingsEnum#SB_SHOW_SKIP_BUTTON_ENTIRE_SEGMENT} is enabled.
+     * or if {@link SettingsEnum#SB_AUTO_HIDE_SKIP_BUTTON} is not enabled.
      */
     private static long skipSegmentButtonEndTime;
 
@@ -447,12 +447,14 @@ public class SegmentPlaybackController {
         }
         LogHelper.printDebug(() -> "Showing segment: " + segment);
         segmentCurrentlyPlaying = segment;
-        if (SettingsEnum.SB_SHOW_SKIP_BUTTON_ENTIRE_SEGMENT.getBoolean()) {
-            skipSegmentButtonEndTime = 0;
+        if (SettingsEnum.SB_AUTO_HIDE_SKIP_BUTTON.getBoolean()
+                && !hiddenSegmentsForCurrentVideoTime.contains(segment)) {
+            // skip button has not yet been hidden
+            skipSegmentButtonEndTime = System.currentTimeMillis() + DURATION_TO_SHOW_SKIP_PROMPT;
         } else {
-            skipSegmentButtonEndTime = hiddenSegmentsForCurrentVideoTime.contains(segment)
-                    ? skipSegmentButtonEndTime = 0 // Playback is exiting a nested segment, and skip button for outer segment was previously hidden.
-                    : System.currentTimeMillis() + DURATION_TO_SHOW_SKIP_PROMPT;
+            // Auto hide skip button is not enabled,
+            // or playback is exiting a nested segment and the skip button for outer segment was previously hidden.
+            skipSegmentButtonEndTime = 0;
         }
         SponsorBlockViewController.showSkipSegmentButton(segment);
     }
