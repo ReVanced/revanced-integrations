@@ -79,7 +79,7 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment {
             votingEnabled.setChecked(SettingsEnum.SB_VOTING_ENABLED.getBoolean());
             votingEnabled.setEnabled(enabled);
 
-            compactSkipButton.setChecked(SettingsEnum.SB_USE_COMPACT_SKIPBUTTON.getBoolean());
+            compactSkipButton.setChecked(SettingsEnum.SB_USE_COMPACT_SKIP_BUTTON.getBoolean());
             compactSkipButton.setEnabled(enabled);
 
             showSkipToast.setChecked(SettingsEnum.SB_SHOW_TOAST_ON_SKIP.getBoolean());
@@ -171,7 +171,7 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment {
             compactSkipButton.setSummaryOff(str("sb_enable_compact_skip_button_sum_off"));
             preferenceScreen.addPreference(compactSkipButton);
             compactSkipButton.setOnPreferenceChangeListener((preference1, newValue) -> {
-                SettingsEnum.SB_USE_COMPACT_SKIPBUTTON.saveValue(newValue);
+                SettingsEnum.SB_USE_COMPACT_SKIP_BUTTON.saveValue(newValue);
                 updateUI();
                 return true;
             });
