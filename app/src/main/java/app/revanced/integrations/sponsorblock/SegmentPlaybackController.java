@@ -84,8 +84,8 @@ public class SegmentPlaybackController {
     private static SponsorSegment scheduledUpcomingSegment;
 
     /**
-     * A collection of segments skip that have automatically hidden the skip button for, and all segments in this list
-     * are valid for the current video time.  When the video time exits a segment, it is removed from this list.
+     * A collection of segments that have automatically hidden the skip button for, and all segments in this list
+     * are valid for the current video time.  When the video time becomes outside of a segment, the segment is removed from this list.
      * Used to prevent reshowing a previously hidden skip button when exiting an embedded segment.
      *
      * Only used when {@link SettingsEnum#SB_AUTO_HIDE_SKIP_BUTTON} is enabled.
