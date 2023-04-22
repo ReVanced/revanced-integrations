@@ -101,7 +101,7 @@ public class SponsorSegment implements Comparable<SponsorSegment> {
      */
     @NonNull
     public String getSkipButtonText() {
-        return category.getSkipButtonText(start, VideoInformation.getCurrentVideoLength()).toString();
+        return category.getSkipButtonText(start, VideoInformation.getVideoLength()).toString();
     }
 
     /**
@@ -109,7 +109,7 @@ public class SponsorSegment implements Comparable<SponsorSegment> {
      */
     @NonNull
     public String getSkippedToastText() {
-        return category.getSkippedToastText(start, VideoInformation.getCurrentVideoLength()).toString();
+        return category.getSkippedToastText(start, VideoInformation.getVideoLength()).toString();
     }
 
     @Override

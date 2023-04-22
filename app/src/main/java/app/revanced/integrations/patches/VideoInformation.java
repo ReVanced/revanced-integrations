@@ -141,14 +141,14 @@ public final class VideoInformation {
      * @return The id of the video. Empty string if not set yet.
      */
     @NonNull
-    public static String getCurrentVideoId() {
+    public static String getVideoId() {
         return videoId;
     }
 
     /**
      * @return The current playback speed.
      */
-    public static float getCurrentPlaybackSpeed() {
+    public static float getPlaybackSpeed() {
         return playbackSpeed;
     }
 
@@ -160,7 +160,7 @@ public final class VideoInformation {
      *         If the video is not yet loaded, or if the video is playing in the background with no video visible,
      *         then this returns zero.
      */
-    public static long getCurrentVideoLength() {
+    public static long getVideoLength() {
        return videoLength;
     }
 

@@ -218,8 +218,8 @@ public class SponsorBlockUtils {
             final String uuid = SettingsEnum.SB_UUID.getString();
             final long start = newSponsorSegmentStartMillis;
             final long end = newSponsorSegmentEndMillis;
-            final String videoId = VideoInformation.getCurrentVideoId();
-            final long videoLength = VideoInformation.getCurrentVideoLength();
+            final String videoId = VideoInformation.getVideoId();
+            final long videoLength = VideoInformation.getVideoLength();
             final SegmentCategory segmentCategory = newUserCreatedSegmentCategory;
             if (start < 0 || end < 0 || start >= end || videoLength <= 0 || videoId.isEmpty()
                      || segmentCategory == null || uuid.isEmpty()) {
@@ -297,7 +297,7 @@ public class SponsorBlockUtils {
             }
 
             // use same time formatting as shown in the video player
-            final long currentVideoLength = VideoInformation.getCurrentVideoLength();
+            final long currentVideoLength = VideoInformation.getVideoLength();
             final String formatPattern;
             if (currentVideoLength < (10 * 60 * 1000)) {
                 formatPattern = "m:ss.SSS"; // less than 10 minutes

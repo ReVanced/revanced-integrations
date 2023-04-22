@@ -254,7 +254,7 @@ public class SegmentPlaybackController {
             // to debug the timing logic, set this to a very large value (5000 or more)
             // then try manually seeking just playback reaches a skip/hide of different segments
             final long lookAheadMilliseconds = 1500; // must be larger than the average time between calls to this method
-            final float playbackSpeed = VideoInformation.getCurrentPlaybackSpeed();
+            final float playbackSpeed = VideoInformation.getPlaybackSpeed();
             final long startTimerLookAheadThreshold = millis + (long)(playbackSpeed * lookAheadMilliseconds);
 
             SponsorSegment foundCurrentSegment = null;
@@ -663,7 +663,7 @@ public class SegmentPlaybackController {
     }
 
     private static void calculateTimeWithoutSegments() {
-        final long currentVideoLength = VideoInformation.getCurrentVideoLength();
+        final long currentVideoLength = VideoInformation.getVideoLength();
         if (!SettingsEnum.SB_SHOW_TIME_WITHOUT_SEGMENTS.getBoolean() || currentVideoLength <= 0
                 || segmentsOfCurrentVideo == null || segmentsOfCurrentVideo.length == 0) {
             timeWithoutSegments = null;
@@ -701,7 +701,7 @@ public class SegmentPlaybackController {
         try {
             if (sponsorBarThickness < 0.1) return;
             if (segmentsOfCurrentVideo == null) return;
-            final long currentVideoLength = VideoInformation.getCurrentVideoLength();
+            final long currentVideoLength = VideoInformation.getVideoLength();
             if (currentVideoLength <= 0) return;
 
             final float thicknessDiv2 = sponsorBarThickness / 2;
