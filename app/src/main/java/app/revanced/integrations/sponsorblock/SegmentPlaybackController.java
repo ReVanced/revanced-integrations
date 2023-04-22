@@ -52,7 +52,7 @@ public class SegmentPlaybackController {
     @Nullable
     private static String currentVideoId;
     @Nullable
-    private static SponsorSegment[] segmentsOfCurrentVideo;
+    private static SponsorSegment[] segments;
 
     /**
      * Highlight segment, if one exists.
@@ -67,12 +67,12 @@ public class SegmentPlaybackController {
     private static long highlightSegmentInitialShowEndTime;
 
     /**
-     * Current (non-highlight) segment that user can manually skip.
+     * Currently playing (non-highlight) segment that user can manually skip.
      */
     @Nullable
     private static SponsorSegment segmentCurrentlyPlaying;
     /**
-     * Currently playing manual skip segment, that is scheduled to hide.
+     * Currently playing manual skip segment that is scheduled to hide.
      * This will always be NULL or equal to {@link #segmentCurrentlyPlaying}.
      */
     @Nullable
@@ -94,7 +94,7 @@ public class SegmentPlaybackController {
 
     /**
      * System time (in milliseconds) of when to hide the skip button of {@link #segmentCurrentlyPlaying}.
-     * Value is zero if playback is not inside a segment,
+     * Value is zero if playback is not inside a segment ({@link #segmentCurrentlyPlaying} is null),
      * or if {@link SettingsEnum#SB_AUTO_HIDE_SKIP_BUTTON} is not enabled.
      */
     private static long skipSegmentButtonEndTime;
@@ -107,16 +107,16 @@ public class SegmentPlaybackController {
     private static float sponsorBarThickness = 2f;
 
     @Nullable
-    public static SponsorSegment[] getSegmentsOfCurrentVideo() {
-        return segmentsOfCurrentVideo;
+    public static SponsorSegment[] getSegments() {
+        return segments;
     }
 
-    static void setSegmentsOfCurrentVideo(@NonNull SponsorSegment[] segments) {
-        Arrays.sort(segments);
-        segmentsOfCurrentVideo = segments;
+    static void setSegments(@NonNull SponsorSegment[] videoSegments) {
+        Arrays.sort(videoSegments);
+        segments = videoSegments;
         calculateTimeWithoutSegments();
 
-        for (SponsorSegment segment : segments) {
+        for (SponsorSegment segment : videoSegments) {
             if (segment.category == SegmentCategory.HIGHLIGHT) {
                 highlightSegment = segment;
                 return;
@@ -125,8 +125,8 @@ public class SegmentPlaybackController {
         highlightSegment = null;
     }
 
-    public static boolean currentVideoHasSegments() {
-        return segmentsOfCurrentVideo != null && segmentsOfCurrentVideo.length > 0;
+    public static boolean videoHasSegments() {
+        return segments != null && segments.length > 0;
     }
 
     /**
@@ -134,7 +134,7 @@ public class SegmentPlaybackController {
      */
     private static void clearData() {
         currentVideoId = null;
-        segmentsOfCurrentVideo = null;
+        segments = null;
         highlightSegment = null;
         highlightSegmentInitialShowEndTime = 0;
         timeWithoutSegments = null;
@@ -211,12 +211,12 @@ public class SegmentPlaybackController {
             SponsorSegment[] segments = SBRequester.getSegments(videoId);
 
             ReVancedUtils.runOnMainThread(()-> {
-                if (!videoId.equals(currentVideoId)) {
+                if (!videoId.equals(SegmentPlaybackController.currentVideoId)) {
                     // user changed videos before get segments network call could complete
                     LogHelper.printDebug(() -> "Ignoring segments for prior video: " + videoId);
                     return;
                 }
-                setSegmentsOfCurrentVideo(segments);
+                setSegments(segments);
 
                 final long videoTime = VideoInformation.getVideoTime();
                 // if the current video time is before the highlight
@@ -244,7 +244,7 @@ public class SegmentPlaybackController {
         try {
             if (!SettingsEnum.SB_ENABLED.getBoolean()
                 || PlayerType.getCurrent().isNoneOrHidden() // shorts playback
-                || segmentsOfCurrentVideo == null || segmentsOfCurrentVideo.length == 0) {
+                || segments == null || segments.length == 0) {
                 return;
             }
             LogHelper.printDebug(() -> "setVideoTime: " + millis);
@@ -257,10 +257,10 @@ public class SegmentPlaybackController {
             final float playbackSpeed = VideoInformation.getPlaybackSpeed();
             final long startTimerLookAheadThreshold = millis + (long)(playbackSpeed * lookAheadMilliseconds);
 
-            SponsorSegment foundCurrentSegment = null;
+            SponsorSegment foundSegmentCurrentlyPlaying = null;
             SponsorSegment foundUpcomingSegment = null;
 
-            for (final SponsorSegment segment : segmentsOfCurrentVideo) {
+            for (final SponsorSegment segment : segments) {
                 if (segment.category.behaviour == CategoryBehaviour.SHOW_IN_SEEKBAR
                     || segment.category.behaviour == CategoryBehaviour.IGNORE
                     || segment.category == SegmentCategory.HIGHLIGHT) {
@@ -278,14 +278,14 @@ public class SegmentPlaybackController {
                     }
 
                     // first found segment, or it's an embedded segment and fully inside the outer segment
-                    if (foundCurrentSegment == null || foundCurrentSegment.containsSegment(segment)) {
+                    if (foundSegmentCurrentlyPlaying == null || foundSegmentCurrentlyPlaying.containsSegment(segment)) {
                         // If the found segment is not currently displayed, then do not show if the segment is nearly over.
                         // This check prevents the skip button text from rapidly changing when multiple segments end at nearly the same time.
                         // Also prevents showing the skip button if user seeks into the last 800ms of the segment.
                         final long minMillisOfSegmentRemainingThreshold = 800;
                         if (segmentCurrentlyPlaying == segment
                                 || !segment.endIsNear(millis, minMillisOfSegmentRemainingThreshold)) {
-                            foundCurrentSegment = segment;
+                            foundSegmentCurrentlyPlaying = segment;
                         } else {
                             LogHelper.printDebug(() -> "Ignoring segment that ends very soon: " + segment);
                         }
@@ -307,15 +307,15 @@ public class SegmentPlaybackController {
                 // upcoming manual skip
 
                 // do not schedule upcoming segment, if it is not fully contained inside the current segment
-                if ((foundCurrentSegment == null || foundCurrentSegment.containsSegment(segment))
+                if ((foundSegmentCurrentlyPlaying == null || foundSegmentCurrentlyPlaying.containsSegment(segment))
                      // use the most inner upcoming segment
                      && (foundUpcomingSegment == null || foundUpcomingSegment.containsSegment(segment))) {
 
                     // Only schedule, if the segment start time is not near the end time of the current segment.
                     // This check is needed to prevent scheduled hide and show from clashing with each other.
                     final long minTimeBetweenStartEndOfSegments = 1000;
-                    if (foundCurrentSegment == null
-                            || !foundCurrentSegment.endIsNear(segment.start, minTimeBetweenStartEndOfSegments)) {
+                    if (foundSegmentCurrentlyPlaying == null
+                            || !foundSegmentCurrentlyPlaying.endIsNear(segment.start, minTimeBetweenStartEndOfSegments)) {
                         foundUpcomingSegment = segment;
                     } else {
                         LogHelper.printDebug(() -> "Not scheduling segment (start time is near end of current segment): " + segment);
@@ -331,12 +331,12 @@ public class SegmentPlaybackController {
                 }
             }
 
-            if (segmentCurrentlyPlaying != foundCurrentSegment) {
-                setSegmentCurrentlyPlaying(foundCurrentSegment);
-            } else if (foundCurrentSegment != null
+            if (segmentCurrentlyPlaying != foundSegmentCurrentlyPlaying) {
+                setSegmentCurrentlyPlaying(foundSegmentCurrentlyPlaying);
+            } else if (foundSegmentCurrentlyPlaying != null
                     && skipSegmentButtonEndTime != 0 && System.currentTimeMillis() > skipSegmentButtonEndTime) {
                 LogHelper.printDebug(() -> "Hiding skip button");
-                hiddenSkipSegmentsForCurrentVideoTime.add(foundCurrentSegment);
+                hiddenSkipSegmentsForCurrentVideoTime.add(foundSegmentCurrentlyPlaying);
                 skipSegmentButtonEndTime = 0;
                 SponsorBlockViewController.hideSkipSegmentButton();
             }
@@ -346,8 +346,8 @@ public class SegmentPlaybackController {
 
             // schedule a hide, only if the segment end is near
             final SponsorSegment segmentToHide =
-                    (foundCurrentSegment != null && foundCurrentSegment.endIsNear(millis, lookAheadMilliseconds))
-                    ? foundCurrentSegment
+                    (foundSegmentCurrentlyPlaying != null && foundSegmentCurrentlyPlaying.endIsNear(millis, lookAheadMilliseconds))
+                    ? foundSegmentCurrentlyPlaying
                     : null;
 
             if (scheduledHideSegment != segmentToHide) {
@@ -499,7 +499,7 @@ public class SegmentPlaybackController {
             if (!userManuallySkipped) {
                 // check for any smaller embedded segments, and count those as autoskipped
                 final boolean showSkipToast = SettingsEnum.SB_SHOW_TOAST_ON_SKIP.getBoolean();
-                for (final SponsorSegment otherSegment : segmentsOfCurrentVideo) {
+                for (final SponsorSegment otherSegment : segments) {
                     if (segmentToSkip.end < otherSegment.start) {
                         break; // no other segments can be contained
                     }
@@ -516,13 +516,13 @@ public class SegmentPlaybackController {
                 // skipped segment was a preview of unsubmitted segment
                 // remove the segment from the UI view
                 SponsorBlockUtils.setNewSponsorSegmentPreviewed();
-                SponsorSegment[] newSegments = new SponsorSegment[segmentsOfCurrentVideo.length - 1];
+                SponsorSegment[] newSegments = new SponsorSegment[segments.length - 1];
                 int i = 0;
-                for (SponsorSegment segment : segmentsOfCurrentVideo) {
+                for (SponsorSegment segment : segments) {
                     if (segment != segmentToSkip)
                         newSegments[i++] = segment;
                 }
-                setSegmentsOfCurrentVideo(newSegments);
+                setSegments(newSegments);
             } else {
                 SponsorBlockUtils.sendViewRequestAsync(segmentToSkip);
             }
@@ -665,13 +665,13 @@ public class SegmentPlaybackController {
     private static void calculateTimeWithoutSegments() {
         final long currentVideoLength = VideoInformation.getVideoLength();
         if (!SettingsEnum.SB_SHOW_TIME_WITHOUT_SEGMENTS.getBoolean() || currentVideoLength <= 0
-                || segmentsOfCurrentVideo == null || segmentsOfCurrentVideo.length == 0) {
+                || segments == null || segments.length == 0) {
             timeWithoutSegments = null;
             return;
         }
 
         long timeWithoutSegmentsValue = currentVideoLength + 500; // YouTube:tm:
-        for (SponsorSegment segment : segmentsOfCurrentVideo) {
+        for (SponsorSegment segment : segments) {
             timeWithoutSegmentsValue -= segment.length();
         }
         final long hours = timeWithoutSegmentsValue / 3600000;
@@ -700,9 +700,9 @@ public class SegmentPlaybackController {
     public static void drawSponsorTimeBars(final Canvas canvas, final float posY) {
         try {
             if (sponsorBarThickness < 0.1) return;
-            if (segmentsOfCurrentVideo == null) return;
-            final long currentVideoLength = VideoInformation.getVideoLength();
-            if (currentVideoLength <= 0) return;
+            if (segments == null) return;
+            final long videoLength = VideoInformation.getVideoLength();
+            if (videoLength <= 0) return;
 
             final float thicknessDiv2 = sponsorBarThickness / 2;
             final float top = posY - thicknessDiv2;
@@ -710,8 +710,8 @@ public class SegmentPlaybackController {
             final float absoluteLeft = sponsorBarLeft;
             final float absoluteRight = sponsorBarRight;
 
-            final float tmp1 = (1f / currentVideoLength) * (absoluteRight - absoluteLeft);
-            for (SponsorSegment segment : segmentsOfCurrentVideo) {
+            final float tmp1 = (1f / videoLength) * (absoluteRight - absoluteLeft);
+            for (SponsorSegment segment : segments) {
                 final float left = segment.start * tmp1 + absoluteLeft;
                 final float right;
                 if (segment.category == SegmentCategory.HIGHLIGHT) {

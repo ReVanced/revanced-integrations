@@ -157,13 +157,13 @@ public class SponsorBlockUtils {
     private static final DialogInterface.OnClickListener segmentVoteClickListener = (dialog, which) -> {
         try {
             final Context context = ((AlertDialog) dialog).getContext();
-            SponsorSegment[] currentSegments = SegmentPlaybackController.getSegmentsOfCurrentVideo();
-            if (currentSegments == null || currentSegments.length == 0) {
+            SponsorSegment[] segments = SegmentPlaybackController.getSegments();
+            if (segments == null || segments.length == 0) {
                 // should never be reached
                 LogHelper.printException(() -> "Segment is no longer available on the client");
                 return;
             }
-            SponsorSegment segment = currentSegments[which];
+            SponsorSegment segment = segments[which];
 
             SegmentVote[] voteOptions = (segment.category == SegmentCategory.HIGHLIGHT)
                     ? SegmentVote.voteTypesWithoutCategoryChange // highlight segments cannot change category
@@ -287,33 +287,33 @@ public class SponsorBlockUtils {
     public static void onVotingClicked(@NonNull Context context) {
         try {
             ReVancedUtils.verifyOnMainThread();
-            SponsorSegment[] currentSegments = SegmentPlaybackController.getSegmentsOfCurrentVideo();
-            if (currentSegments == null || currentSegments.length == 0) {
-                // button is hidden if no segments exist.
+            SponsorSegment[] segments = SegmentPlaybackController.getSegments();
+            if (segments == null || segments.length == 0) {
+                // Button is hidden if no segments exist.
                 // But if prior video had segments, and current video does not,
-                // then the button persists until the overlay fades out (this is intentional, as abruptly hiding the button is jarring)
+                // then the button persists until the overlay fades out (this is intentional, as abruptly hiding the button is jarring).
                 ReVancedUtils.showToastShort(str("sb_vote_no_segments"));
                 return;
             }
 
             // use same time formatting as shown in the video player
-            final long currentVideoLength = VideoInformation.getVideoLength();
+            final long videoLength = VideoInformation.getVideoLength();
             final String formatPattern;
-            if (currentVideoLength < (10 * 60 * 1000)) {
+            if (videoLength < (10 * 60 * 1000)) {
                 formatPattern = "m:ss.SSS"; // less than 10 minutes
-            } else if (currentVideoLength < (60 * 60 * 1000)) {
+            } else if (videoLength < (60 * 60 * 1000)) {
                 formatPattern = "mm:ss.SSS"; // less than 1 hour
-            } else if (currentVideoLength < (10 * 60 * 60 * 1000)) {
+            } else if (videoLength < (10 * 60 * 60 * 1000)) {
                 formatPattern = "H:mm:ss.SSS"; // less than 10 hours
             } else {
                 formatPattern = "HH:mm:ss.SSS"; // why is this on YouTube
             }
             voteSegmentTimeFormatter.applyPattern(formatPattern);
 
-            final int numberOfSegments = currentSegments.length;
+            final int numberOfSegments = segments.length;
             CharSequence[] titles = new CharSequence[numberOfSegments];
             for (int i = 0; i < numberOfSegments; i++) {
-                SponsorSegment segment = currentSegments[i];
+                SponsorSegment segment = segments[i];
                 if (segment.category == SegmentCategory.UNSUBMITTED) {
                     continue;
                 }
@@ -365,13 +365,13 @@ public class SponsorBlockUtils {
                 ReVancedUtils.showToastShort(str("sb_new_segment_start_is_before_end"));
             } else {
                 VideoInformation.seekTo(newSponsorSegmentStartMillis - 2500);
-                final SponsorSegment[] original = SegmentPlaybackController.getSegmentsOfCurrentVideo();
+                final SponsorSegment[] original = SegmentPlaybackController.getSegments();
                 final SponsorSegment[] segments = original == null ? new SponsorSegment[1] : Arrays.copyOf(original, original.length + 1);
 
                 segments[segments.length - 1] = new SponsorSegment(SegmentCategory.UNSUBMITTED, null,
                         newSponsorSegmentStartMillis, newSponsorSegmentEndMillis, false);
 
-                SegmentPlaybackController.setSegmentsOfCurrentVideo(segments);
+                SegmentPlaybackController.setSegments(segments);
             }
         } catch (Exception ex) {
             LogHelper.printException(() -> "onPreviewClicked failure", ex);
