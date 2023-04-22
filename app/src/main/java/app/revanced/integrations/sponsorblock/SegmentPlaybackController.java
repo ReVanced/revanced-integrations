@@ -40,7 +40,7 @@ public class SegmentPlaybackController {
      *
      * Because Effectively, this value is rounded up to the next second.
      */
-    private static final long DURATION_TO_SHOW_SKIP_PROMPT = 3800;
+    private static final long DURATION_TO_SHOW_SKIP_BUTTON = 3800;
 
     /*
      * Highlight segments have zero length, as they are a point in time.
@@ -85,12 +85,12 @@ public class SegmentPlaybackController {
 
     /**
      * A collection of segments that have automatically hidden the skip button for, and all segments in this list
-     * are valid for the current video time.  When the video time becomes outside of a segment, the segment is removed from this list.
-     * Used to prevent reshowing a previously hidden skip button when exiting an embedded segment.
+     * contain the current video time.  Segment are removed from this list when they no longer contain the current video time.
+     * Used to prevent re-showing a previously hidden skip button when exiting an embedded segment.
      *
      * Only used when {@link SettingsEnum#SB_AUTO_HIDE_SKIP_BUTTON} is enabled.
      */
-    private static final List<SponsorSegment> hiddenSegmentsForCurrentVideoTime = new ArrayList<>();
+    private static final List<SponsorSegment> hiddenSkipSegmentsForCurrentVideoTime = new ArrayList<>();
 
     /**
      * System time (in milliseconds) of when to hide the skip button of {@link #segmentCurrentlyPlaying}.
@@ -144,7 +144,7 @@ public class SegmentPlaybackController {
         skipSegmentButtonEndTime = 0;
         toastSegmentSkipped = null;
         toastNumberOfSegmentsSkipped = 0;
-        hiddenSegmentsForCurrentVideoTime.clear();
+        hiddenSkipSegmentsForCurrentVideoTime.clear();
     }
 
     /**
@@ -225,7 +225,7 @@ public class SegmentPlaybackController {
                         skipSegment(highlightSegment, false);
                         return;
                     }
-                    highlightSegmentInitialShowEndTime = System.currentTimeMillis() + DURATION_TO_SHOW_SKIP_PROMPT;
+                    highlightSegmentInitialShowEndTime = System.currentTimeMillis() + DURATION_TO_SHOW_SKIP_BUTTON;
                 }
                 // check for any skips now, instead of waiting for the next update to setVideoTime()
                 setVideoTime(videoTime);
@@ -324,7 +324,7 @@ public class SegmentPlaybackController {
             }
 
             if (highlightSegment != null) {
-                if (millis < DURATION_TO_SHOW_SKIP_PROMPT || System.currentTimeMillis() < highlightSegmentInitialShowEndTime) {
+                if (millis < DURATION_TO_SHOW_SKIP_BUTTON || System.currentTimeMillis() < highlightSegmentInitialShowEndTime) {
                     SponsorBlockViewController.showSkipHighlightButton(highlightSegment);
                 } else {
                     SponsorBlockViewController.hideSkipHighlightButton();
@@ -336,7 +336,7 @@ public class SegmentPlaybackController {
             } else if (foundCurrentSegment != null
                     && skipSegmentButtonEndTime != 0 && System.currentTimeMillis() > skipSegmentButtonEndTime) {
                 LogHelper.printDebug(() -> "Hiding skip button");
-                hiddenSegmentsForCurrentVideoTime.add(foundCurrentSegment);
+                hiddenSkipSegmentsForCurrentVideoTime.add(foundCurrentSegment);
                 skipSegmentButtonEndTime = 0;
                 SponsorBlockViewController.hideSkipSegmentButton();
             }
@@ -427,11 +427,11 @@ public class SegmentPlaybackController {
      * Removes all previously hidden segments that are not longer contained in the given video time.
      */
     private static void updateHiddenSegments(long currentVideoTime) {
-        Iterator<SponsorSegment> i = hiddenSegmentsForCurrentVideoTime.iterator();
+        Iterator<SponsorSegment> i = hiddenSkipSegmentsForCurrentVideoTime.iterator();
         while (i.hasNext()) {
             SponsorSegment hiddenSegment = i.next();
             if (!hiddenSegment.containsTime(currentVideoTime)) {
-                LogHelper.printDebug(() -> "Removing hidden segment: " + hiddenSegment);
+                LogHelper.printDebug(() -> "Resetting segment hide skip: " + hiddenSegment);
                 i.remove();
             }
         }
@@ -448,12 +448,12 @@ public class SegmentPlaybackController {
         LogHelper.printDebug(() -> "Showing segment: " + segment);
         segmentCurrentlyPlaying = segment;
         if (SettingsEnum.SB_AUTO_HIDE_SKIP_BUTTON.getBoolean()
-                && !hiddenSegmentsForCurrentVideoTime.contains(segment)) {
-            // skip button has not yet been hidden
-            skipSegmentButtonEndTime = System.currentTimeMillis() + DURATION_TO_SHOW_SKIP_PROMPT;
+                && !hiddenSkipSegmentsForCurrentVideoTime.contains(segment)) {
+            // Skip button has not yet been hidden.
+            skipSegmentButtonEndTime = System.currentTimeMillis() + DURATION_TO_SHOW_SKIP_BUTTON;
         } else {
             // Auto hide skip button is not enabled,
-            // or playback is exiting a nested segment and the skip button for outer segment was previously hidden.
+            // or playback exited a nested segment and the skip button for outer segment was previously hidden.
             skipSegmentButtonEndTime = 0;
         }
         SponsorBlockViewController.showSkipSegmentButton(segment);
