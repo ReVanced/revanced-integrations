@@ -451,7 +451,8 @@ public class SegmentPlaybackController {
             if (hiddenSkipSegmentsForCurrentVideoTime.contains(segment)) {
                 // Playback exited a nested segment and the outer segment skip button was previously hidden.
                 LogHelper.printDebug(() -> "Ignoring previously auto-hidden segment: " + segment);
-                return; // Do not show skip button.
+                SponsorBlockViewController.hideSkipSegmentButton();
+                return;
             }
             skipSegmentButtonEndTime = System.currentTimeMillis() + DURATION_TO_SHOW_SKIP_BUTTON;
         }
