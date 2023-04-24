@@ -142,8 +142,6 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment {
 
             segmentCategory = new PreferenceCategory(context);
             segmentCategory.setTitle(str("sb_diff_segments"));
-
-            segmentCategory.setSummary(str("sb_diff_segments_sum"));
             preferenceScreen.addPreference(segmentCategory);
             updateSegmentCategories();
 
