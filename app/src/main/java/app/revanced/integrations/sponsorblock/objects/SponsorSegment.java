@@ -1,14 +1,13 @@
 package app.revanced.integrations.sponsorblock.objects;
 
-import static app.revanced.integrations.utils.StringRef.sf;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import app.revanced.integrations.patches.VideoInformation;
+import app.revanced.integrations.utils.StringRef;
 
 import java.util.Objects;
 
-import app.revanced.integrations.patches.VideoInformation;
-import app.revanced.integrations.utils.StringRef;
+import static app.revanced.integrations.utils.StringRef.sf;
 
 public class SponsorSegment implements Comparable<SponsorSegment> {
     public enum SegmentVote {
@@ -114,13 +113,7 @@ public class SponsorSegment implements Comparable<SponsorSegment> {
 
     @Override
     public int compareTo(SponsorSegment o) {
-        int compare = (int) (this.start - o.start);
-        if (compare == 0) {
-            // Both segments have same start time.
-            // Sort using the longer of the two segments first, which keeps the seekbar drawing correct.
-            compare = (int) (o.end - this.end);
-        }
-        return compare;
+        return start == o.start ? Long.compare(o.length(), length()) : Long.compare(start, o.start);
     }
 
     @Override
