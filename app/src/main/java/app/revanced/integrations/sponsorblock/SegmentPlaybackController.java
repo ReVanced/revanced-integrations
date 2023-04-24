@@ -188,11 +188,9 @@ public class SegmentPlaybackController {
             currentVideoId = videoId;
             LogHelper.printDebug(() -> "setCurrentVideoId: " + videoId);
 
-            //noinspection UnnecessaryLocalVariable
-            String videoIdToDownload = videoId; // make a copy, to use off main thread
             ReVancedUtils.runOnBackgroundThread(() -> {
                 try {
-                    executeDownloadSegments(videoIdToDownload);
+                    executeDownloadSegments(videoId);
                 } catch (Exception e) {
                     LogHelper.printException(() -> "Failed to download segments", e);
                 }
