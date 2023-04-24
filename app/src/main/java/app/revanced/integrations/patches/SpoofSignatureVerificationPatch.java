@@ -60,7 +60,7 @@ public class SpoofSignatureVerificationPatch {
             if (isPlayingFeed) {
                 // Videos in feed won't autoplay with sound.
                 return PROTOBUF_PARAMETER_SCRIM + PROTOBUF_PARAMETER_SHORTS;
-            } else{
+            } else {
                 // Spoof the parameter to prevent playback issues.
                 return PROTOBUF_PARAMETER_SHORTS;
             }
