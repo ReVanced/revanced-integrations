@@ -311,6 +311,7 @@ public class SegmentPlaybackController {
 
                     // Only schedule, if the segment start time is not near the end time of the current segment.
                     // This check is needed to prevent scheduled hide and show from clashing with each other.
+                    // Instead the upcoming segment will be handled when the current segment scheduled hide calls back into this method.
                     final long minTimeBetweenStartEndOfSegments = 1000;
                     if (foundSegmentCurrentlyPlaying == null
                             || !foundSegmentCurrentlyPlaying.endIsNear(segment.start, minTimeBetweenStartEndOfSegments)) {
@@ -332,8 +333,8 @@ public class SegmentPlaybackController {
             if (segmentCurrentlyPlaying != foundSegmentCurrentlyPlaying) {
                 setSegmentCurrentlyPlaying(foundSegmentCurrentlyPlaying);
             } else if (foundSegmentCurrentlyPlaying != null
-                    && skipSegmentButtonEndTime != 0 && System.currentTimeMillis() > skipSegmentButtonEndTime) {
-                LogHelper.printDebug(() -> "Hiding skip button");
+                    && skipSegmentButtonEndTime != 0 && skipSegmentButtonEndTime <= System.currentTimeMillis()) {
+                LogHelper.printDebug(() -> "Auto hiding skip button for segment: " + segmentCurrentlyPlaying);
                 skipSegmentButtonEndTime = 0;
                 hiddenSkipSegmentsForCurrentVideoTime.add(foundSegmentCurrentlyPlaying);
                 SponsorBlockViewController.hideSkipSegmentButton();
