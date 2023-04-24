@@ -252,15 +252,6 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment {
             return true;
         });
 
-        Preference guidelinePreferences = new Preference(context);
-        guidelinePreferences.setTitle(str("sb_guidelines_preference_title"));
-        guidelinePreferences.setSummary(str("sb_guidelines_preference_sum"));
-        guidelinePreferences.setOnPreferenceClickListener(preference1 -> {
-            openGuidelines();
-            return true;
-        });
-        category.addPreference(guidelinePreferences);
-
         newSegmentStep = new EditTextPreference(context);
         newSegmentStep.setTitle(str("sb_general_adjusting"));
         newSegmentStep.setSummary(str("sb_general_adjusting_sum"));
@@ -275,6 +266,15 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment {
             return true;
         });
         category.addPreference(newSegmentStep);
+
+        Preference guidelinePreferences = new Preference(context);
+        guidelinePreferences.setTitle(str("sb_guidelines_preference_title"));
+        guidelinePreferences.setSummary(str("sb_guidelines_preference_sum"));
+        guidelinePreferences.setOnPreferenceClickListener(preference1 -> {
+            openGuidelines();
+            return true;
+        });
+        category.addPreference(guidelinePreferences);
     }
 
     private void addGeneralCategory(final Context context, PreferenceScreen screen) {
