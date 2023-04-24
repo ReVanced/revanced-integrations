@@ -1,8 +1,5 @@
 package app.revanced.integrations.sponsorblock.ui;
 
-import static app.revanced.integrations.utils.ReVancedUtils.getResourceDimensionPixelSize;
-import static app.revanced.integrations.utils.ReVancedUtils.getResourceIdentifier;
-
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.drawable.RippleDrawable;
@@ -11,13 +8,15 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
-
 import app.revanced.integrations.patches.VideoInformation;
 import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.sponsorblock.SponsorBlockUtils;
 import app.revanced.integrations.utils.LogHelper;
 
-public class NewSegmentLayout extends FrameLayout {
+import static app.revanced.integrations.utils.ReVancedUtils.getResourceDimensionPixelSize;
+import static app.revanced.integrations.utils.ReVancedUtils.getResourceIdentifier;
+
+public final class NewSegmentLayout extends FrameLayout {
     private static final ColorStateList rippleColorStateList = new ColorStateList(
             new int[][]{new int[]{android.R.attr.state_enabled}},
             new int[]{0x33ffffff} // sets the ripple color to white
@@ -27,78 +26,101 @@ public class NewSegmentLayout extends FrameLayout {
     final int defaultBottomMargin;
     final int ctaBottomMargin;
 
-    public NewSegmentLayout(Context context) {
+    public NewSegmentLayout(final Context context) {
         this(context, null);
     }
 
-    public NewSegmentLayout(Context context, AttributeSet attributeSet) {
+    public NewSegmentLayout(final Context context, final AttributeSet attributeSet) {
         this(context, attributeSet, 0);
     }
 
-    public NewSegmentLayout(Context context, AttributeSet attributeSet, int defStyleAttr) {
+    public NewSegmentLayout(final Context context, final AttributeSet attributeSet, final int defStyleAttr) {
         this(context, attributeSet, defStyleAttr, 0);
     }
 
-    public NewSegmentLayout(Context context, AttributeSet attributeSet, int defStyleAttr, int defStyleRes) {
+    public NewSegmentLayout(final Context context, final AttributeSet attributeSet,
+                            final int defStyleAttr, final int defStyleRes) {
         super(context, attributeSet, defStyleAttr, defStyleRes);
 
-        LayoutInflater.from(context).inflate(getResourceIdentifier(context, "new_segment", "layout"), this, true);
+        LayoutInflater.from(context).inflate(
+                getResourceIdentifier(context, "new_segment", "layout"), this, true
+        );
 
         TypedValue rippleEffect = new TypedValue();
         context.getTheme().resolveAttribute(android.R.attr.selectableItemBackground, rippleEffect, true);
         rippleEffectId = rippleEffect.resourceId;
 
-        // LinearLayout newSegmentContainer = findViewById(getResourceIdentifier(context, "sb_new_segment_container", "id"));
+        initializeButton(
+                context,
+                "sb_new_segment_rewind",
+                () -> VideoInformation.seekToRelative(-SettingsEnum.SB_ADJUST_NEW_SEGMENT_STEP.getInt()),
+                "Rewind button clicked"
+        );
 
-        ImageButton rewindButton = findViewById(getResourceIdentifier(context, "sb_new_segment_rewind", "id"));
-        setClickEffect(rewindButton);
-        rewindButton.setOnClickListener(v -> {
-            LogHelper.printDebug(() -> "Rewind button clicked");
-            VideoInformation.seekToRelative(-SettingsEnum.SB_ADJUST_NEW_SEGMENT_STEP.getInt());
-        });
+        initializeButton(
+                context,
+                "sb_new_segment_forward",
+                () -> VideoInformation.seekToRelative(SettingsEnum.SB_ADJUST_NEW_SEGMENT_STEP.getInt()),
+                "Forward button clicked"
+        );
 
-        ImageButton forwardButton = findViewById(getResourceIdentifier(context, "sb_new_segment_forward", "id"));
-        setClickEffect(forwardButton);
-        forwardButton.setOnClickListener(v -> {
-            LogHelper.printDebug(() -> "Forward button clicked");
-            VideoInformation.seekToRelative(SettingsEnum.SB_ADJUST_NEW_SEGMENT_STEP.getInt());
-        });
+        initializeButton(
+                context,
+                "sb_new_segment_adjust",
+                SponsorBlockUtils::onMarkLocationClicked,
+                "Adjust button clicked"
+        );
 
-        ImageButton adjustButton = findViewById(getResourceIdentifier(context, "sb_new_segment_adjust", "id"));
-        setClickEffect(adjustButton);
-        adjustButton.setOnClickListener(v -> {
-            LogHelper.printDebug(() -> "Adjust button clicked");
-            SponsorBlockUtils.onMarkLocationClicked();
-        });
+        initializeButton(
+                context,
+                "sb_new_segment_compare",
+                SponsorBlockUtils::onPreviewClicked,
+                "Compare button clicked"
+        );
 
-        ImageButton compareButton = findViewById(getResourceIdentifier(context, "sb_new_segment_compare", "id"));
-        setClickEffect(compareButton);
-        compareButton.setOnClickListener(v -> {
-            LogHelper.printDebug(() -> "Compare button clicked");
-            SponsorBlockUtils.onPreviewClicked();
-        });
+        initializeButton(
+                context,
+                "sb_new_segment_edit",
+                SponsorBlockUtils::onEditByHandClicked,
+                "Edit button clicked"
+        );
 
-        ImageButton editButton = findViewById(getResourceIdentifier(context, "sb_new_segment_edit", "id"));
-        setClickEffect(editButton);
-        editButton.setOnClickListener(v -> {
-            LogHelper.printDebug(() -> "Edit button clicked");
-            SponsorBlockUtils.onEditByHandClicked();
-        });
-
-        ImageButton publishButton = findViewById(getResourceIdentifier(context, "sb_new_segment_publish", "id"));
-        setClickEffect(publishButton);
-        publishButton.setOnClickListener(v -> {
-            LogHelper.printDebug(() -> "Publish button clicked");
-            SponsorBlockUtils.onPublishClicked();
-        });
+        initializeButton(
+                context,
+                "sb_new_segment_publish",
+                SponsorBlockUtils::onPublishClicked,
+                "Publish button clicked"
+        );
 
         defaultBottomMargin = getResourceDimensionPixelSize("brand_interaction_default_bottom_margin");
         ctaBottomMargin = getResourceDimensionPixelSize("brand_interaction_cta_bottom_margin");
     }
 
-    private void setClickEffect(ImageButton btn) {
-        btn.setBackgroundResource(rippleEffectId);
-        RippleDrawable rippleDrawable = (RippleDrawable) btn.getBackground();
+    /**
+     * Initializes a segment button with the given resource identifier name with the given handler and a ripple effect.
+     *
+     * @param context                The context.
+     * @param resourceIdentifierName The resource identifier name for the button.
+     * @param handler                The handler for the button's click event.
+     * @param debugMessage           The debug message to print when the button is clicked.
+     */
+    private void initializeButton(final Context context, final String resourceIdentifierName,
+                                  final ButtonOnClickHandlerFunction handler, final String debugMessage) {
+        final ImageButton button = findViewById(getResourceIdentifier(context, resourceIdentifierName, "id"));
+
+        // Add ripple effect
+        button.setBackgroundResource(rippleEffectId);
+        RippleDrawable rippleDrawable = (RippleDrawable) button.getBackground();
         rippleDrawable.setColor(rippleColorStateList);
+
+        button.setOnClickListener((v) -> {
+            handler.apply();
+            LogHelper.printDebug(() -> debugMessage);
+        });
+    }
+
+    @FunctionalInterface
+    public interface ButtonOnClickHandlerFunction {
+        void apply();
     }
 }
