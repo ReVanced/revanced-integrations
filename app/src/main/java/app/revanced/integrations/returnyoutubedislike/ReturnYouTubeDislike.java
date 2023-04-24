@@ -479,8 +479,16 @@ public class ReturnYouTubeDislike {
         }
         ForegroundColorSpan[] oneColors = one.getSpans(0, one.length(), ForegroundColorSpan.class);
         ForegroundColorSpan[] twoColors = two.getSpans(0, two.length(), ForegroundColorSpan.class);
-        return (oneColors.length == 1 && twoColors.length == 1
-                && oneColors[0].getForegroundColor() == twoColors[0].getForegroundColor());
+        final int oneLength = oneColors.length;
+        if (oneLength != twoColors.length) {
+            return false;
+        }
+        for (int i = 0; i < oneLength; i++) {
+            if (oneColors[i].getForegroundColor() != twoColors[i].getForegroundColor()) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private static SpannableString newSpannableWithDislikes(@NonNull Spanned sourceStyling, @NonNull RYDVoteData voteData) {
