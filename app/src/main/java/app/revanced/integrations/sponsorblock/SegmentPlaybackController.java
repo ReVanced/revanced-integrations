@@ -453,7 +453,7 @@ public class SegmentPlaybackController {
             skipSegmentButtonEndTime = System.currentTimeMillis() + DURATION_TO_SHOW_SKIP_BUTTON;
         } else {
             // Auto hide skip button is not enabled,
-            // or playback exited a nested segment and the skip button for outer segment was previously hidden.
+            // or playback exited a nested segment and the outer segment skip button was previously hidden.
             skipSegmentButtonEndTime = 0;
         }
         SponsorBlockViewController.showSkipSegmentButton(segment);

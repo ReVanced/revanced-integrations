@@ -106,7 +106,7 @@ public class SponsorBlockViewController {
         skipHighlight = Objects.requireNonNull(segment);
         NewSegmentLayout newSegmentLayout = newSegmentLayoutRef.get();
         // don't show highlight button if create new segment is visible
-        final boolean buttonVisibility = newSegmentLayout != null && newSegmentLayout.getVisibility() != View.VISIBLE;
+        final boolean buttonVisibility = newSegmentLayout == null || newSegmentLayout.getVisibility() != View.VISIBLE;
         updateSkipButton(skipHighlightButtonRef.get(), segment, buttonVisibility);
     }
     public static void showSkipSegmentButton(@NonNull SponsorSegment segment) {
@@ -149,11 +149,7 @@ public class SponsorBlockViewController {
 
     public static void hideNewSegmentLayout() {
         newSegmentLayoutVisible = false;
-        NewSegmentLayout newSegmentLayout = newSegmentLayoutRef.get();
-        if (newSegmentLayout == null) {
-            return;
-        }
-        setViewVisibility(newSegmentLayout, false);
+        setViewVisibility(newSegmentLayoutRef.get(), false);
     }
 
     private static void setViewVisibility(@Nullable View view, boolean visible) {
