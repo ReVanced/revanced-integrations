@@ -113,6 +113,8 @@ public class SponsorSegment implements Comparable<SponsorSegment> {
 
     @Override
     public int compareTo(SponsorSegment o) {
+        // If both segments start at the same time, then sort with the longer segment first.
+        // This keeps the seekbar drawing correct since it draws the segments using the sorted order.
         return start == o.start ? Long.compare(o.length(), length()) : Long.compare(start, o.start);
     }
 
