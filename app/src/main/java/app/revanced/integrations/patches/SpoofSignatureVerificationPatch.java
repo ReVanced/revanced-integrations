@@ -135,8 +135,8 @@ public class SpoofSignatureVerificationPatch {
         //
         // If a regular video uses a custom subtitle setting that match a default short setting,
         // then this will incorrectly replace the setting.
-        // But, if the video uses multiple subtitle settings (ie: multiple texts in different locations),
-        // then detect the non-default values, and do not replace any window settings for the video (regardless of the values).
+        // But, if the video uses multiple subtitles in different screen locations, then detect the non-default values
+        // and do not replace any window settings for the video (regardless if they match a shorts default).
         if (signatureSpoofing && !nonDefaultSubtitlesEncountered && !PlayerType.getCurrent().isNoneOrHidden()) {
             for (SubtitleWindowReplacementSettings setting : SubtitleWindowReplacementSettings.values()) {
                 if (setting.match(ap, ah, av, vs, sd)) {
