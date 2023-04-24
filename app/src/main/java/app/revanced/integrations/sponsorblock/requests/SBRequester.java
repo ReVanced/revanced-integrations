@@ -101,7 +101,7 @@ public class SBRequester {
         // Crude debug tests to verify random features
         // Could benefit from:
         // 1) collection of YouTube videos with test segment times (verify client skip timing matches the video, verify seekbar draws correctly)
-        // 2) unit tests (everything else)
+        // 2) unit tests (verify everything else)
         if (false) {
             segments.clear();
             // Test auto-hide skip button:
