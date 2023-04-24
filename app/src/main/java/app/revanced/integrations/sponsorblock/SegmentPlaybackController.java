@@ -445,17 +445,17 @@ public class SegmentPlaybackController {
             SponsorBlockViewController.hideSkipSegmentButton();
             return;
         }
-        LogHelper.printDebug(() -> "Showing segment: " + segment);
         segmentCurrentlyPlaying = segment;
-        if (SettingsEnum.SB_AUTO_HIDE_SKIP_BUTTON.getBoolean()
-                && !hiddenSkipSegmentsForCurrentVideoTime.contains(segment)) {
-            // Skip button has not yet been hidden.
+        skipSegmentButtonEndTime = 0;
+        if (SettingsEnum.SB_AUTO_HIDE_SKIP_BUTTON.getBoolean()) {
+            if (hiddenSkipSegmentsForCurrentVideoTime.contains(segment)) {
+                // Playback exited a nested segment and the outer segment skip button was previously hidden.
+                LogHelper.printDebug(() -> "Ignoring previously auto-hidden segment: " + segment);
+                return; // Do not show skip button.
+            }
             skipSegmentButtonEndTime = System.currentTimeMillis() + DURATION_TO_SHOW_SKIP_BUTTON;
-        } else {
-            // Auto hide skip button is not enabled,
-            // or playback exited a nested segment and the outer segment skip button was previously hidden.
-            skipSegmentButtonEndTime = 0;
         }
+        LogHelper.printDebug(() -> "Showing segment: " + segment);
         SponsorBlockViewController.showSkipSegmentButton(segment);
     }
 
