@@ -84,11 +84,11 @@ public class SegmentPlaybackController {
     private static SponsorSegment scheduledUpcomingSegment;
 
     /**
-     * A collection of segments that have automatically hidden the skip button for, and all segments in this list
-     * contain the current video time.  Segment are removed from this list when they no longer contain the current video time.
      * Used to prevent re-showing a previously hidden skip button when exiting an embedded segment.
-     *
      * Only used when {@link SettingsEnum#SB_AUTO_HIDE_SKIP_BUTTON} is enabled.
+     *
+     * A collection of segments that have automatically hidden the skip button for, and all segments in this list
+     * contain the current video time.  Segment are removed when playback exits the segment.
      */
     private static final List<SponsorSegment> hiddenSkipSegmentsForCurrentVideoTime = new ArrayList<>();
 
@@ -336,8 +336,8 @@ public class SegmentPlaybackController {
             } else if (foundSegmentCurrentlyPlaying != null
                     && skipSegmentButtonEndTime != 0 && System.currentTimeMillis() > skipSegmentButtonEndTime) {
                 LogHelper.printDebug(() -> "Hiding skip button");
-                hiddenSkipSegmentsForCurrentVideoTime.add(foundSegmentCurrentlyPlaying);
                 skipSegmentButtonEndTime = 0;
+                hiddenSkipSegmentsForCurrentVideoTime.add(foundSegmentCurrentlyPlaying);
                 SponsorBlockViewController.hideSkipSegmentButton();
             }
 
@@ -635,13 +635,9 @@ public class SegmentPlaybackController {
     }
 
     public static void setSponsorBarThickness(final float thickness) {
-        try {
-            if (sponsorBarThickness != thickness) {
-                LogHelper.printDebug(() -> String.format("setSponsorBarThickness: %.2f", thickness));
-                sponsorBarThickness = thickness;
-            }
-        } catch (Exception ex) {
-            LogHelper.printException(() -> "setSponsorBarThickness failure", ex);
+        if (sponsorBarThickness != thickness) {
+            LogHelper.printDebug(() -> String.format("setSponsorBarThickness: %.2f", thickness));
+            sponsorBarThickness = thickness;
         }
     }
 
