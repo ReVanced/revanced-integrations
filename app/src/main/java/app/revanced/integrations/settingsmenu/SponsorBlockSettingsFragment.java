@@ -167,6 +167,17 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment {
         screen.addPreference(category);
         category.setTitle(str("sb_appearance_category"));
 
+        votingEnabled = new SwitchPreference(context);
+        votingEnabled.setTitle(str("sb_enable_voting"));
+        votingEnabled.setSummaryOn(str("sb_enable_voting_sum_on"));
+        votingEnabled.setSummaryOff(str("sb_enable_voting_sum_off"));
+        category.addPreference(votingEnabled);
+        votingEnabled.setOnPreferenceChangeListener((preference1, newValue) -> {
+            SettingsEnum.SB_VOTING_ENABLED.saveValue(newValue);
+            updateUI();
+            return true;
+        });
+
         compactSkipButton = new SwitchPreference(context);
         compactSkipButton.setTitle(str("sb_enable_compact_skip_button"));
         compactSkipButton.setSummaryOn(str("sb_enable_compact_skip_button_sum_on"));
@@ -189,17 +200,6 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment {
             return true;
         });
 
-        showTimeWithoutSegments = new SwitchPreference(context);
-        showTimeWithoutSegments.setTitle(str("sb_general_time_without"));
-        showTimeWithoutSegments.setSummaryOn(str("sb_general_time_without_sum_on"));
-        showTimeWithoutSegments.setSummaryOff(str("sb_general_time_without_sum_off"));
-        showTimeWithoutSegments.setOnPreferenceChangeListener((preference1, newValue) -> {
-            SettingsEnum.SB_SHOW_TIME_WITHOUT_SEGMENTS.saveValue(newValue);
-            updateUI();
-            return true;
-        });
-        category.addPreference(showTimeWithoutSegments);
-
         showSkipToast = new SwitchPreference(context);
         showSkipToast.setTitle(str("sb_general_skiptoast"));
         showSkipToast.setSummaryOn(str("sb_general_skiptoast_sum_on"));
@@ -215,16 +215,16 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment {
         });
         category.addPreference(showSkipToast);
 
-        votingEnabled = new SwitchPreference(context);
-        votingEnabled.setTitle(str("sb_enable_voting"));
-        votingEnabled.setSummaryOn(str("sb_enable_voting_sum_on"));
-        votingEnabled.setSummaryOff(str("sb_enable_voting_sum_off"));
-        category.addPreference(votingEnabled);
-        votingEnabled.setOnPreferenceChangeListener((preference1, newValue) -> {
-            SettingsEnum.SB_VOTING_ENABLED.saveValue(newValue);
+        showTimeWithoutSegments = new SwitchPreference(context);
+        showTimeWithoutSegments.setTitle(str("sb_general_time_without"));
+        showTimeWithoutSegments.setSummaryOn(str("sb_general_time_without_sum_on"));
+        showTimeWithoutSegments.setSummaryOff(str("sb_general_time_without_sum_off"));
+        showTimeWithoutSegments.setOnPreferenceChangeListener((preference1, newValue) -> {
+            SettingsEnum.SB_SHOW_TIME_WITHOUT_SEGMENTS.saveValue(newValue);
             updateUI();
             return true;
         });
+        category.addPreference(showTimeWithoutSegments);
     }
 
     private void addCreateSegmentCategory(Context context, PreferenceScreen screen) {
