@@ -114,7 +114,13 @@ public class SponsorSegment implements Comparable<SponsorSegment> {
 
     @Override
     public int compareTo(SponsorSegment o) {
-        return (int) (this.start - o.start);
+        int compare = (int) (this.start - o.start);
+        if (compare == 0) {
+            // Both segments have same start time.
+            // Sort using the longer of the two segments first, which keeps the seekbar drawing correct.
+            compare = (int) (o.end - this.end);
+        }
+        return compare;
     }
 
     @Override
