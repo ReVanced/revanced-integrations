@@ -503,7 +503,8 @@ public class SegmentPlaybackController {
                     if (segmentToSkip.end < otherSegment.start) {
                         break; // no other segments can be contained
                     }
-                    if (segmentToSkip.containsSegment(otherSegment)) { // includes checking the segment against itself
+                    if (otherSegment == segmentToSkip ||
+                            (otherSegment.category != SegmentCategory.HIGHLIGHT && segmentToSkip.containsSegment(otherSegment))) {
                         otherSegment.didAutoSkipped = true; // skipped this segment as well
                         if (showSkipToast) {
                             showSkippedSegmentToast(otherSegment);
