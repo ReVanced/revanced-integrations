@@ -667,21 +667,35 @@ public class SegmentPlaybackController {
             return;
         }
 
-        long timeWithoutSegmentsValue = currentVideoLength + 500; // YouTube:tm:
+        boolean foundNonhighlightSegments = false;
+        long timeWithoutSegmentsValue = currentVideoLength;
 
         for (int i = 0, length = segments.length; i < length; i++) {
             SponsorSegment segment = segments[i];
+            if (segment.category == SegmentCategory.HIGHLIGHT) {
+                continue;
+            }
+            foundNonhighlightSegments = true;
             long start = segment.start;
             final long end = segment.end;
             // To prevent nested segments from incorrectly counting additional time,
             // check if the segment overlaps any earlier segments.
             for (int j = 0; j < i; j++) {
-                start = Math.max(start, segments[j].end);
+                SponsorSegment other = segments[j];
+                if (other.category != SegmentCategory.HIGHLIGHT) {
+                    start = Math.max(start, other.end);
+                }
             }
             if (start < end) {
                 timeWithoutSegmentsValue -= (end - start);
             }
         }
+
+        if (!foundNonhighlightSegments) {
+            timeWithoutSegments = null;
+            return;
+        }
+
         final long hours = timeWithoutSegmentsValue / 3600000;
         final long minutes = (timeWithoutSegmentsValue / 60000) % 60;
         final long seconds = (timeWithoutSegmentsValue / 1000) % 60;
