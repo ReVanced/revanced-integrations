@@ -140,12 +140,10 @@ public class SegmentPlaybackController {
         if (segments == null || segments.length == 0) {
             return;
         }
-        List<SponsorSegment> replacement = new ArrayList<>(Arrays.asList(segments));
-        Iterator<SponsorSegment> i = replacement.iterator();
-        while (i.hasNext()) {
-            SponsorSegment segment = i.next();
-            if (segment.category == SegmentCategory.UNSUBMITTED) {
-                i.remove();
+        List<SponsorSegment> replacement = new ArrayList<>();
+        for (SponsorSegment segment : segments) {
+            if (segment.category != SegmentCategory.UNSUBMITTED) {
+                replacement.add(segment);
             }
         }
         if (replacement.size() != segments.length) {
