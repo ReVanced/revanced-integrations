@@ -667,8 +667,19 @@ public class SegmentPlaybackController {
         }
 
         long timeWithoutSegmentsValue = currentVideoLength + 500; // YouTube:tm:
-        for (SponsorSegment segment : segments) {
-            timeWithoutSegmentsValue -= segment.length();
+
+        for (int i = 0, length = segments.length; i < length; i++) {
+            SponsorSegment segment = segments[i];
+            long start = segment.start;
+            final long end = segment.end;
+            // To prevent nested segments from incorrectly counting additional time,
+            // check if the segment overlaps any earlier segments.
+            for (int j = 0; j < i; j++) {
+                start = Math.max(start, segments[j].end);
+            }
+            if (start < end) {
+                timeWithoutSegmentsValue -= (end - start);
+            }
         }
         final long hours = timeWithoutSegmentsValue / 3600000;
         final long minutes = (timeWithoutSegmentsValue / 60000) % 60;
