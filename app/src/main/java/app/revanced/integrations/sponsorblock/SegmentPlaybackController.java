@@ -699,10 +699,7 @@ public class SegmentPlaybackController {
             // To prevent nested segments from incorrectly counting additional time,
             // check if the segment overlaps any earlier segments.
             for (int j = 0; j < i; j++) {
-                SponsorSegment other = segments[j];
-                if (other.category != SegmentCategory.HIGHLIGHT) {
-                    start = Math.max(start, other.end);
-                }
+                start = Math.max(start, segments[j].end);
             }
             if (start < end) {
                 timeWithoutSegmentsValue -= (end - start);
