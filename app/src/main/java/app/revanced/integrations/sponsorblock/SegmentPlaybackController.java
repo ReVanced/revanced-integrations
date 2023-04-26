@@ -107,11 +107,11 @@ public class SegmentPlaybackController {
     private static float sponsorBarThickness = 2f;
 
     @Nullable
-    public static SponsorSegment[] getSegments() {
+    static SponsorSegment[] getSegments() {
         return segments;
     }
 
-    static void setSegments(@NonNull SponsorSegment[] videoSegments) {
+    private static void setSegments(@NonNull SponsorSegment[] videoSegments) {
         Arrays.sort(videoSegments);
         segments = videoSegments;
         calculateTimeWithoutSegments();
@@ -123,6 +123,34 @@ public class SegmentPlaybackController {
             }
         }
         highlightSegment = null;
+    }
+
+    static void addUnsubmittedSegment(@NonNull SponsorSegment segment) {
+        Objects.requireNonNull(segment);
+        if (segments == null) {
+            segments = new SponsorSegment[1];
+        } else {
+            segments = Arrays.copyOf(segments, segments.length + 1);
+        }
+        segments[segments.length - 1] = segment;
+        setSegments(segments);
+    }
+
+    static void removeUnsubmittedSegments() {
+        if (segments == null || segments.length == 0) {
+            return;
+        }
+        List<SponsorSegment> replacement = new ArrayList<>(Arrays.asList(segments));
+        Iterator<SponsorSegment> i = replacement.iterator();
+        while (i.hasNext()) {
+            SponsorSegment segment = i.next();
+            if (segment.category == SegmentCategory.UNSUBMITTED) {
+                i.remove();
+            }
+        }
+        if (replacement.size() != segments.length) {
+            setSegments(replacement.toArray(new SponsorSegment[0]));
+        }
     }
 
     public static boolean videoHasSegments() {
@@ -505,7 +533,7 @@ public class SegmentPlaybackController {
                     }
                     if (otherSegment == segmentToSkip ||
                             (otherSegment.category != SegmentCategory.HIGHLIGHT && segmentToSkip.containsSegment(otherSegment))) {
-                        otherSegment.didAutoSkipped = true; // skipped this segment as well
+                        otherSegment.didAutoSkipped = true;
                         if (showSkipToast) {
                             showSkippedSegmentToast(otherSegment);
                         }
@@ -514,16 +542,8 @@ public class SegmentPlaybackController {
             }
 
             if (segmentToSkip.category == SegmentCategory.UNSUBMITTED) {
-                // skipped segment was a preview of unsubmitted segment
-                // remove the segment from the UI view
+                removeUnsubmittedSegments();
                 SponsorBlockUtils.setNewSponsorSegmentPreviewed();
-                SponsorSegment[] newSegments = new SponsorSegment[segments.length - 1];
-                int i = 0;
-                for (SponsorSegment segment : segments) {
-                    if (segment != segmentToSkip)
-                        newSegments[i++] = segment;
-                }
-                setSegments(newSegments);
             } else {
                 SponsorBlockUtils.sendViewRequestAsync(segmentToSkip);
             }

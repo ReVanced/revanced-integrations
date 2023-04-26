@@ -15,7 +15,6 @@ import java.lang.ref.WeakReference;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.Objects;
 import java.util.TimeZone;
@@ -364,14 +363,11 @@ public class SponsorBlockUtils {
             } else if (newSponsorSegmentStartMillis >= newSponsorSegmentEndMillis) {
                 ReVancedUtils.showToastShort(str("sb_new_segment_start_is_before_end"));
             } else {
+                SegmentPlaybackController.removeUnsubmittedSegments(); // If user hits preview more than once before playing.
+                SegmentPlaybackController.addUnsubmittedSegment(
+                        new SponsorSegment(SegmentCategory.UNSUBMITTED, null,
+                                newSponsorSegmentStartMillis, newSponsorSegmentEndMillis, false));
                 VideoInformation.seekTo(newSponsorSegmentStartMillis - 2500);
-                final SponsorSegment[] original = SegmentPlaybackController.getSegments();
-                final SponsorSegment[] segments = original == null ? new SponsorSegment[1] : Arrays.copyOf(original, original.length + 1);
-
-                segments[segments.length - 1] = new SponsorSegment(SegmentCategory.UNSUBMITTED, null,
-                        newSponsorSegmentStartMillis, newSponsorSegmentEndMillis, false);
-
-                SegmentPlaybackController.setSegments(segments);
             }
         } catch (Exception ex) {
             LogHelper.printException(() -> "onPreviewClicked failure", ex);
