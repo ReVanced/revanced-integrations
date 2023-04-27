@@ -11,13 +11,13 @@ import app.revanced.integrations.utils.ReVancedUtils;
 import app.revanced.integrations.utils.StringRef;
 
 public class DownloadButton extends BottomControlButton {
-    public static DownloadButton instance;
+    private static DownloadButton instance;
 
     public DownloadButton(Object obj) {
         super(
                 obj,
                 "download_button",
-                SettingsEnum.DOWNLOADS_BUTTON_SHOWN.getBoolean(),
+                SettingsEnum.DOWNLOADS_BUTTON_SHOWN,
                 DownloadButton::onDownloadClick
         );
     }
@@ -38,7 +38,6 @@ public class DownloadButton extends BottomControlButton {
 
         boolean packageEnabled = false;
         try {
-            assert context != null;
             packageEnabled = context.getPackageManager().getApplicationInfo(downloaderPackageName, 0).enabled;
         } catch (PackageManager.NameNotFoundException error) {
             LogHelper.printDebug(() -> "Downloader could not be found: " + error);
