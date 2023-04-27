@@ -12,9 +12,9 @@ public class CopyVideoUrlTimestampButton extends BottomControlButton {
     @Nullable
     private static CopyVideoUrlTimestampButton instance;
 
-    public CopyVideoUrlTimestampButton(ViewGroup viewGroup) {
+    public CopyVideoUrlTimestampButton(ViewGroup bottomControlsViewGroup) {
         super(
-                viewGroup,
+                bottomControlsViewGroup,
                 "copy_video_url_timestamp_button",
                 SettingsEnum.COPY_VIDEO_URL_TIMESTAMP_BUTTON_SHOWN,
                 view -> CopyVideoUrlPatch.copyUrl(true)
@@ -24,9 +24,9 @@ public class CopyVideoUrlTimestampButton extends BottomControlButton {
     /**
      * Injection point.
      */
-    public static void initializeButton(Object obj) {
+    public static void initializeButton(Object bottomControlsViewGroup) {
         try {
-            instance = new CopyVideoUrlTimestampButton((ViewGroup) obj);
+            instance = new CopyVideoUrlTimestampButton((ViewGroup) bottomControlsViewGroup);
         } catch (Exception ex) {
             LogHelper.printException(() -> "initializeButton failure", ex);
         }
