@@ -15,19 +15,25 @@ import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedUtils;
 
 public abstract class BottomControlButton {
-    private static Animation fadeIn;
-    private static Animation fadeOut;
-
+    private static Animation fadeIn = ReVancedUtils.getResourceAnimation("fade_in");
+    private static Animation fadeOut = ReVancedUtils.getResourceAnimation("fade_out");
     private final WeakReference<ImageView> buttonRef;
     private final SettingsEnum setting;
     protected boolean isShowing;
 
+    static {
+        fadeIn.setDuration(ReVancedUtils.getResourceInteger("fade_duration_fast"));
+        fadeOut.setDuration(ReVancedUtils.getResourceInteger("fade_duration_scheduled"));
+    }
+
     public BottomControlButton(@NonNull ViewGroup viewGroup, @NonNull String viewId,
                                @NonNull SettingsEnum booleanSetting, @NonNull View.OnClickListener onClickListener) {
         LogHelper.printDebug(() -> "Initializing button: " + viewId);
+
         if (booleanSetting.returnType != SettingsEnum.ReturnType.BOOLEAN) {
             throw new IllegalArgumentException();
         }
+
         setting = booleanSetting;
 
         ImageView imageView = Objects.requireNonNull(viewGroup.findViewById(
@@ -36,13 +42,6 @@ public abstract class BottomControlButton {
         imageView.setVisibility(View.GONE);
         buttonRef = new WeakReference<>(imageView);
         isShowing = false;
-
-        if (fadeIn == null || fadeOut == null) {
-            fadeIn = ReVancedUtils.getResourceAnimation("fade_in");
-            fadeOut = ReVancedUtils.getResourceAnimation("fade_out");
-            fadeIn.setDuration(ReVancedUtils.getResourceInteger("fade_duration_fast"));
-            fadeOut.setDuration(ReVancedUtils.getResourceInteger("fade_duration_scheduled"));
-        }
     }
 
     public void setVisibility(boolean showing) {
