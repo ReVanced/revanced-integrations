@@ -54,12 +54,11 @@ public abstract class BottomControlButton {
             return;
         }
 
+        imageView.clearAnimation();
         if (showing && setting.getBoolean()) {
-            imageView.clearAnimation();
             imageView.startAnimation(fadeIn);
             imageView.setVisibility(View.VISIBLE);
         } else if (imageView.getVisibility() == View.VISIBLE) {
-            imageView.clearAnimation();
             imageView.startAnimation(fadeOut);
             imageView.setVisibility(View.GONE);
         }
