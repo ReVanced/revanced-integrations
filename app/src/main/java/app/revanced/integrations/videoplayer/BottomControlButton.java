@@ -7,23 +7,25 @@ import android.widget.ImageView;
 
 import java.lang.ref.WeakReference;
 
+import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedUtils;
 
 public abstract class BottomControlButton {
-    WeakReference<ImageView> button = new WeakReference<>(null);
-    ConstraintLayout constraintLayout;
-    Boolean isButtonEnabled;
-    Boolean isShowing;
+    private static Animation fadeIn;
+    private static Animation fadeOut;
 
-    private Animation fadeIn;
-    private Animation fadeOut;
+    WeakReference<ConstraintLayout> constraintLayoutRef;
+    WeakReference<ImageView> buttonRef;
+    SettingsEnum setting;
+    boolean isShowing;
 
-    public BottomControlButton(Object obj, String viewId, Boolean isEnabled, View.OnClickListener onClickListener) {
+    public BottomControlButton(Object obj, String viewId, SettingsEnum booleanSetting, View.OnClickListener onClickListener) {
         try {
             LogHelper.printDebug(() -> "Initializing button with id: " + viewId);
-            constraintLayout = (ConstraintLayout) obj;
-            isButtonEnabled = isEnabled;
+            ConstraintLayout constraintLayout = (ConstraintLayout) obj;
+            constraintLayoutRef = new WeakReference<>(constraintLayout);
+            setting = booleanSetting;
 
             ImageView imageView = constraintLayout.findViewById(ReVancedUtils.getResourceIdentifier(viewId, "id"));
             if (imageView == null) {
@@ -31,12 +33,14 @@ public abstract class BottomControlButton {
                 return;
             }
             imageView.setOnClickListener(onClickListener);
-            button = new WeakReference<>(imageView);
+            buttonRef = new WeakReference<>(imageView);
 
-            fadeIn = ReVancedUtils.getResourceAnimation("fade_in");
-            fadeOut = ReVancedUtils.getResourceAnimation("fade_out");
-            fadeIn.setDuration(ReVancedUtils.getResourceInteger("fade_duration_fast"));
-            fadeOut.setDuration(ReVancedUtils.getResourceInteger("fade_duration_scheduled"));
+            if (fadeIn == null || fadeOut == null) {
+                fadeIn = ReVancedUtils.getResourceAnimation("fade_in");
+                fadeOut = ReVancedUtils.getResourceAnimation("fade_out");
+                fadeIn.setDuration(ReVancedUtils.getResourceInteger("fade_duration_fast"));
+                fadeOut.setDuration(ReVancedUtils.getResourceInteger("fade_duration_scheduled"));
+            }
 
             isShowing = true;
             setVisibility(false);
@@ -47,20 +51,25 @@ public abstract class BottomControlButton {
 
     public void setVisibility(boolean showing) {
         if (isShowing == showing) return;
-
         isShowing = showing;
-        ImageView imageView = button.get();
 
-        if (constraintLayout == null || imageView == null)
-            return;
-
-        if (showing && isButtonEnabled) {
-            LogHelper.printDebug(() -> "Fading in");
-            imageView.setVisibility(View.VISIBLE);
-            imageView.startAnimation(fadeIn);
+        if (constraintLayoutRef == null || buttonRef == null) {
+            return; // Button failed to initialize, and should never happen
         }
-        else if (imageView.getVisibility() == View.VISIBLE) {
+        ConstraintLayout constraintLayout = constraintLayoutRef.get();
+        ImageView imageView = buttonRef.get();
+        if (constraintLayout == null || imageView == null) {
+            return;
+        }
+
+        if (showing && setting.getBoolean()) {
+            LogHelper.printDebug(() -> "Fading in");
+            imageView.clearAnimation();
+            imageView.startAnimation(fadeIn);
+            imageView.setVisibility(View.VISIBLE);
+        } else if (imageView.getVisibility() == View.VISIBLE) {
             LogHelper.printDebug(() -> "Fading out");
+            imageView.clearAnimation();
             imageView.startAnimation(fadeOut);
             imageView.setVisibility(View.GONE);
         }
