@@ -31,13 +31,22 @@ public class SpoofSignatureVerificationPatch {
             "SAFg"  // Autoplay in scrim
     };
 
-    @Nullable
-    private static String currentVideoId;
+    /**
+     * The first video launch immediately after app start,
+     * YouTube sometimes sends non default subtitle window positions
+     * before it starts sending default subtitle positions.
+     *
+     * Do not enable 'pass thru mode' until this many non default subtitle settings are observed for a single video.
+     */
+    private static final int NUMBER_OF_NON_DEFAULT_SUBTITLES_BEFORE_ENABLING_PASSTHRU = 2;
 
     /**
-     * If any of the subtitles settings encountered from the current video have been non default values.
+     * The number of non default subtitle settings encountered for the current video.
      */
-    private static boolean nonDefaultSubtitlesEncountered;
+    private static int numberOfNonDefaultSettingsObserved;
+
+    @Nullable
+    private static String currentVideoId;
 
     /**
      * Injection point.
@@ -137,15 +146,19 @@ public class SpoofSignatureVerificationPatch {
         // then this will incorrectly replace the setting.
         // But, if the video uses multiple subtitles in different screen locations, then detect the non-default values
         // and do not replace any window settings for the video (regardless if they match a shorts default).
-        if (signatureSpoofing && !nonDefaultSubtitlesEncountered && !PlayerType.getCurrent().isNoneOrHidden()) {
+        if (signatureSpoofing && !PlayerType.getCurrent().isNoneOrHidden()
+                && numberOfNonDefaultSettingsObserved < NUMBER_OF_NON_DEFAULT_SUBTITLES_BEFORE_ENABLING_PASSTHRU) {
             for (SubtitleWindowReplacementSettings setting : SubtitleWindowReplacementSettings.values()) {
                 if (setting.match(ap, ah, av, vs, sd)) {
                     return setting.replacementSetting();
                 }
             }
-            // Settings appear to be custom subtitles.
-            nonDefaultSubtitlesEncountered = true;
-            LogHelper.printDebug(() -> "Non default subtitles found. Using existing settings without replacement.");
+
+            numberOfNonDefaultSettingsObserved++;
+            LogHelper.printDebug(() ->
+                    numberOfNonDefaultSettingsObserved < NUMBER_OF_NON_DEFAULT_SUBTITLES_BEFORE_ENABLING_PASSTHRU
+                    ? "Non default subtitle found."
+                    : "Multiple non default subtitles found. Allowing all subtitles for this video to pass thru unchanged.");
         }
 
         return new int[]{ap, ah, av};
@@ -160,7 +173,7 @@ public class SpoofSignatureVerificationPatch {
                 return;
             }
             currentVideoId = videoId;
-            nonDefaultSubtitlesEncountered = false;
+            numberOfNonDefaultSettingsObserved = 0;
         } catch (Exception ex) {
             LogHelper.printException(() -> "setCurrentVideoId failure", ex);
         }
