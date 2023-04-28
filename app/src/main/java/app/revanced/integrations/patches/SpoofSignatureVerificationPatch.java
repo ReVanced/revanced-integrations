@@ -37,9 +37,9 @@ public class SpoofSignatureVerificationPatch {
      * For this situation, the shorts settings must be replaced.
      *
      * But some videos use multiple text positions on screen (such as https://youtu.be/3hW1rMNC89o),
-     * and by change it uses window positions that match a default shorts position.
+     * and by chance many of the subtitles uses window positions that match a default shorts position.
      * To handle these videos, selectively allowing the shorts specific window settings to 'pass thru' unchanged,
-     * but only if the video contains multiple subtitle window positions.
+     * but only if the video contains multiple non-default subtitle window positions.
      *
      * Do not enable 'pass thru mode' until this many non default subtitle settings are observed for a single video.
      */
