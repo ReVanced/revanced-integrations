@@ -32,9 +32,14 @@ public class SpoofSignatureVerificationPatch {
     };
 
     /**
-     * The first video launch immediately after app start,
-     * YouTube sometimes sends non default subtitle window positions
-     * before it starts sending default subtitle positions.
+     * On app first start, the first video played usually contains a single non-default window setting value
+     * and all other subtitle settings for the video are (incorrect) default shorts window settings.
+     * For this situation, the shorts settings must be replaced.
+     *
+     * But some videos use multiple text positions on screen (such as https://youtu.be/3hW1rMNC89o),
+     * and by change it uses window positions that match a default shorts position.
+     * To handle these videos, selectively allowing the shorts specific window settings to 'pass thru' unchanged,
+     * but only if the video contains multiple subtitle window positions.
      *
      * Do not enable 'pass thru mode' until this many non default subtitle settings are observed for a single video.
      */
