@@ -40,7 +40,7 @@ public class ReturnYouTubeDislikePatch {
 
     /**
      * Old UI dislikes can be set multiple times by YouTube.
-     * To prevent it from reverting changes made here, this listener will override any changes YouTube makes
+     * To prevent it from reverting changes made here, this listener will override any changes YouTube makes.
      */
     private static final TextWatcher oldUiTextWatcher = new TextWatcher() {
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -48,7 +48,6 @@ public class ReturnYouTubeDislikePatch {
         public void onTextChanged(CharSequence s, int start, int before, int count) {
         }
         public void afterTextChanged(Editable s) {
-            LogHelper.printDebug(() -> "Editable: " + s);
             if (textWatcherReplacement == null || textWatcherReplacement.toString().equals(s.toString())) {
                 return;
             }
@@ -61,13 +60,13 @@ public class ReturnYouTubeDislikePatch {
      *
      * Used when spoofing the older app versions of {@link SpoofAppVersionPatch}.
      */
-    public static void setOldUILayoutDislikes(@NonNull View buttonView, @NonNull TextView textView) {
+    public static void setOldUILayoutDislikes(int buttonViewResourceId, @NonNull TextView textView) {
         try {
             if (!SettingsEnum.RYD_ENABLED.getBoolean()) {
                 return;
             }
             // The views passed in will always be a Like or Dislike action button.
-            if (buttonView.getId() != OLD_UI_DISLIKE_BUTTON_RESOURCE_ID) {
+            if (buttonViewResourceId != OLD_UI_DISLIKE_BUTTON_RESOURCE_ID) {
                 return;
             }
             // No way to check if a listener is already attached, so remove and add again.
