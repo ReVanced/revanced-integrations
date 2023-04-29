@@ -312,14 +312,6 @@ public class ReturnYouTubeDislike {
         return null;
     }
 
-    /**
-     * @return If the dislike data has been fetched.
-     */
-    public static boolean fetchDone() {
-        Future<RYDVoteData> fetchFuture = getVoteFetchFuture();
-        return fetchFuture != null && fetchFuture.isDone();
-    }
-
     public static void sendVote(@NonNull Vote vote) {
         ReVancedUtils.verifyOnMainThread();
         Objects.requireNonNull(vote);

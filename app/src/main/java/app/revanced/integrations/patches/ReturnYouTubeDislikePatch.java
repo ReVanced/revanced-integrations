@@ -67,7 +67,13 @@ public class ReturnYouTubeDislikePatch {
     /**
      * Resource identifier of old UI dislike button.
      */
-    private static int OLD_UI_DISLIKE_BUTTON_RESOURCE_ID;
+    private static final int OLD_UI_DISLIKE_BUTTON_RESOURCE_ID;
+    static {
+        OLD_UI_DISLIKE_BUTTON_RESOURCE_ID = ReVancedUtils.getResourceIdentifier("dislike_button", "id");
+        if (OLD_UI_DISLIKE_BUTTON_RESOURCE_ID == 0) {
+            LogHelper.printException(() -> "Could not find resource identifier");
+        }
+    }
 
     /**
      * Injection point.
@@ -79,30 +85,13 @@ public class ReturnYouTubeDislikePatch {
             if (!SettingsEnum.RYD_ENABLED.getBoolean()) {
                 return;
             }
-            if (OLD_UI_DISLIKE_BUTTON_RESOURCE_ID == 0) {
-                OLD_UI_DISLIKE_BUTTON_RESOURCE_ID = ReVancedUtils.getResourceIdentifier("dislike_button", "id");
-                if (OLD_UI_DISLIKE_BUTTON_RESOURCE_ID == 0) {
-                    LogHelper.printException(() -> "Could not find resource identifier");
-                    return;
-                }
-            }
             if (resourceIdentifier != OLD_UI_DISLIKE_BUTTON_RESOURCE_ID) {
                 return;
             }
-            Spanned original = (Spanned) textView.getText();
-            Runnable getDislikesAndSet = () -> {
-                Spanned dislikes = ReturnYouTubeDislike.getDislikesSpanForRegularVideo(original, false);
-                if (dislikes != null) {
-                    ReVancedUtils.runOnMainThreadNowOrLater(() -> {
-                        textView.setText(dislikes);
-                    });
-                }
-            };
-            if (ReturnYouTubeDislike.fetchDone()) {
-                getDislikesAndSet.run(); // Run everything on main thread now, since no blocking will occur.
-            } else {
-                // Run on background thread and update whenever fetch completes.
-                ReVancedUtils.runOnBackgroundThread(getDislikesAndSet);
+            Spanned dislikes = ReturnYouTubeDislike.getDislikesSpanForRegularVideo(
+                    (Spanned) textView.getText(), false);
+            if (dislikes != null) {
+                textView.setText(dislikes);
             }
         } catch (Exception ex) {
             LogHelper.printException(() -> "getOldLayoutDislikes failure", ex);
