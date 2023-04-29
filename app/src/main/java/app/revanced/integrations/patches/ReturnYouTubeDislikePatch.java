@@ -4,6 +4,7 @@ import static app.revanced.integrations.returnyoutubedislike.ReturnYouTubeDislik
 
 import android.text.SpannableString;
 import android.text.Spanned;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
@@ -12,6 +13,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import app.revanced.integrations.returnyoutubedislike.ReturnYouTubeDislike;
 import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.utils.LogHelper;
+import app.revanced.integrations.utils.ReVancedUtils;
 
 public class ReturnYouTubeDislikePatch {
 
@@ -59,6 +61,52 @@ public class ReturnYouTubeDislikePatch {
             LogHelper.printException(() -> "onLithoTextLoaded failure", ex);
         }
         return original;
+    }
+
+
+    /**
+     * Resource identifier of old UI dislike button.
+     */
+    private static int OLD_UI_DISLIKE_BUTTON_RESOURCE_ID;
+
+    /**
+     * Injection point.
+     *
+     * Used when spoofing the older app versions of {@link SpoofAppVersionPatch}.
+     */
+    public static void setOldUILayoutDislikes(int resourceIdentifier, @NonNull TextView textView) {
+        try {
+            if (!SettingsEnum.RYD_ENABLED.getBoolean()) {
+                return;
+            }
+            if (OLD_UI_DISLIKE_BUTTON_RESOURCE_ID == 0) {
+                OLD_UI_DISLIKE_BUTTON_RESOURCE_ID = ReVancedUtils.getResourceIdentifier("dislike_button", "id");
+                if (OLD_UI_DISLIKE_BUTTON_RESOURCE_ID == 0) {
+                    LogHelper.printException(() -> "Could not find resource identifier");
+                    return;
+                }
+            }
+            if (resourceIdentifier != OLD_UI_DISLIKE_BUTTON_RESOURCE_ID) {
+                return;
+            }
+            Spanned original = (Spanned) textView.getText();
+            Runnable getDislikesAndSet = () -> {
+                Spanned dislikes = ReturnYouTubeDislike.getDislikesSpanForRegularVideo(original, false);
+                if (dislikes != null) {
+                    ReVancedUtils.runOnMainThreadNowOrLater(() -> {
+                        textView.setText(dislikes);
+                    });
+                }
+            };
+            if (ReturnYouTubeDislike.fetchDone()) {
+                getDislikesAndSet.run(); // Run everything on main thread now, since no blocking will occur.
+            } else {
+                // Run on background thread and update whenever fetch completes.
+                ReVancedUtils.runOnBackgroundThread(getDislikesAndSet);
+            }
+        } catch (Exception ex) {
+            LogHelper.printException(() -> "getOldLayoutDislikes failure", ex);
+        }
     }
 
     /**

@@ -224,6 +224,11 @@ public class ReturnYouTubeDislike {
             return null;
         }
 
+        return getDislikesSpanForRegularVideo((Spannable) original, isSegmentedButton);
+    }
+
+    @Nullable
+    public static SpannableString getDislikesSpanForRegularVideo(@NonNull Spanned original, boolean isSegmentedButton) {
         if (lastVideoLoadedWasShort) {
             // user:
             // 1, opened a video
@@ -234,7 +239,7 @@ public class ReturnYouTubeDislike {
             return null;
         }
 
-        return waitForFetchAndUpdateReplacementSpan((Spannable) original, isSegmentedButton);
+        return waitForFetchAndUpdateReplacementSpan(original, isSegmentedButton);
     }
 
     /**
@@ -305,6 +310,14 @@ public class ReturnYouTubeDislike {
             LogHelper.printException(() -> "waitForFetchAndUpdateReplacementSpan failure", e); // should never happen
         }
         return null;
+    }
+
+    /**
+     * @return If the dislike data has been fetched.
+     */
+    public static boolean fetchDone() {
+        Future<RYDVoteData> fetchFuture = getVoteFetchFuture();
+        return fetchFuture != null && fetchFuture.isDone();
     }
 
     public static void sendVote(@NonNull Vote vote) {
