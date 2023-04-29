@@ -2,11 +2,15 @@ package app.revanced.integrations.patches;
 
 import static app.revanced.integrations.returnyoutubedislike.ReturnYouTubeDislike.Vote;
 
+import android.text.Editable;
 import android.text.SpannableString;
 import android.text.Spanned;
+import android.text.TextWatcher;
+import android.view.View;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -16,6 +20,69 @@ import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedUtils;
 
 public class ReturnYouTubeDislikePatch {
+
+    /**
+     * Resource identifier of old UI dislike button.
+     */
+    private static final int OLD_UI_DISLIKE_BUTTON_RESOURCE_ID;
+    static {
+        OLD_UI_DISLIKE_BUTTON_RESOURCE_ID = ReVancedUtils.getResourceIdentifier("dislike_button", "id");
+        if (OLD_UI_DISLIKE_BUTTON_RESOURCE_ID == 0) {
+            LogHelper.printException(() -> "Could not find resource identifier");
+        }
+    }
+
+    /**
+     * Span used by {@link #oldUiTextWatcher}.
+     */
+    @Nullable
+    private static Spanned textWatcherReplacement;
+
+    /**
+     * Old UI dislikes can be set multiple times by YouTube.
+     * To prevent it from reverting changes made here, this listener will override any changes YouTube makes
+     */
+    private static final TextWatcher oldUiTextWatcher = new TextWatcher() {
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        }
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+        }
+        public void afterTextChanged(Editable s) {
+            LogHelper.printDebug(() -> "Editable: " + s);
+            if (textWatcherReplacement == null || textWatcherReplacement.toString().equals(s.toString())) {
+                return;
+            }
+            s.replace(0, s.length(), textWatcherReplacement);
+        }
+    };
+
+    /**
+     * Injection point.
+     *
+     * Used when spoofing the older app versions of {@link SpoofAppVersionPatch}.
+     */
+    public static void setOldUILayoutDislikes(@NonNull View buttonView, @NonNull TextView textView) {
+        try {
+            if (!SettingsEnum.RYD_ENABLED.getBoolean()) {
+                return;
+            }
+            // The views passed in will always be a Like or Dislike action button.
+            if (buttonView.getId() != OLD_UI_DISLIKE_BUTTON_RESOURCE_ID) {
+                return;
+            }
+            // No way to check if a listener is already attached, so remove and add again.
+            textView.removeTextChangedListener(oldUiTextWatcher);
+            Spanned dislikes = ReturnYouTubeDislike.getDislikesSpanForRegularVideo(
+                    (Spanned) textView.getText(), false);
+            if (dislikes != null) {
+                textWatcherReplacement = dislikes;
+                textView.setText(dislikes);
+            }
+            textView.addTextChangedListener(oldUiTextWatcher);
+        } catch (Exception ex) {
+            LogHelper.printException(() -> "setOldUILayoutDislikes failure", ex);
+        }
+    }
 
     /**
      * Injection point.
@@ -61,41 +128,6 @@ public class ReturnYouTubeDislikePatch {
             LogHelper.printException(() -> "onLithoTextLoaded failure", ex);
         }
         return original;
-    }
-
-
-    /**
-     * Resource identifier of old UI dislike button.
-     */
-    private static final int OLD_UI_DISLIKE_BUTTON_RESOURCE_ID;
-    static {
-        OLD_UI_DISLIKE_BUTTON_RESOURCE_ID = ReVancedUtils.getResourceIdentifier("dislike_button", "id");
-        if (OLD_UI_DISLIKE_BUTTON_RESOURCE_ID == 0) {
-            LogHelper.printException(() -> "Could not find resource identifier");
-        }
-    }
-
-    /**
-     * Injection point.
-     *
-     * Used when spoofing the older app versions of {@link SpoofAppVersionPatch}.
-     */
-    public static void setOldUILayoutDislikes(int resourceIdentifier, @NonNull TextView textView) {
-        try {
-            if (!SettingsEnum.RYD_ENABLED.getBoolean()) {
-                return;
-            }
-            if (resourceIdentifier != OLD_UI_DISLIKE_BUTTON_RESOURCE_ID) {
-                return;
-            }
-            Spanned dislikes = ReturnYouTubeDislike.getDislikesSpanForRegularVideo(
-                    (Spanned) textView.getText(), false);
-            if (dislikes != null) {
-                textView.setText(dislikes);
-            }
-        } catch (Exception ex) {
-            LogHelper.printException(() -> "getOldLayoutDislikes failure", ex);
-        }
     }
 
     /**
