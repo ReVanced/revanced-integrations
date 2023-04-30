@@ -95,7 +95,7 @@ public class ReturnYouTubeDislikePatch {
                 return;
             }
             if (oldUIOriginalSpan == null) {
-                // Set value only once, to ensure it's not a recycled view that already has dislikes added.
+                // Set value only once, to ensure it's not from a recycled view that already has dislikes added.
                 oldUIOriginalSpan = (Spanned) textView.getText();
             }
             oldUIReplacementSpan = oldUIOriginalSpan;
