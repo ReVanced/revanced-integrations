@@ -24,13 +24,8 @@ public class ReturnYouTubeDislikePatch {
     /**
      * Resource identifier of old UI dislike button.
      */
-    private static final int OLD_UI_DISLIKE_BUTTON_RESOURCE_ID;
-    static {
-        OLD_UI_DISLIKE_BUTTON_RESOURCE_ID = ReVancedUtils.getResourceIdentifier("dislike_button", "id");
-        if (OLD_UI_DISLIKE_BUTTON_RESOURCE_ID == 0) {
-            LogHelper.printException(() -> "Could not find resource identifier");
-        }
-    }
+    private static final int OLD_UI_DISLIKE_BUTTON_RESOURCE_ID
+            = ReVancedUtils.getResourceIdentifier("dislike_button", "id");
 
     /**
      * Span used by {@link #oldUiTextWatcher}.
