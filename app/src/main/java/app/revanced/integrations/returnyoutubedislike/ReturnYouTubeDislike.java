@@ -253,11 +253,6 @@ public class ReturnYouTubeDislike {
         return waitForFetchAndUpdateReplacementSpan(original, false);
     }
 
-    public static boolean fetchIsDone() {
-        Future<RYDVoteData> fetchFuture = getVoteFetchFuture();
-        return fetchFuture != null && fetchFuture.isDone();
-    }
-
     // Alternatively, this could check if the span contains one of the custom created spans, but this is simple and quick.
     private static boolean isPreviouslyCreatedSegmentedSpan(@NonNull Spanned span) {
         return span.toString().indexOf(MIDDLE_SEPARATOR_CHARACTER) != -1;
