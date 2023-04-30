@@ -38,7 +38,6 @@ public class ReturnYouTubeDislikePatch {
      * Required to reset the dislikes when changing videos and RYD is not available.
      * Set only once during the first load.
      */
-    @Nullable
     private static Spanned oldUIOriginalSpan;
 
     /**
@@ -69,8 +68,6 @@ public class ReturnYouTubeDislikePatch {
         if (oldUITextView == null) {
             return;
         }
-        // No way to check if a listener is already attached, so remove and add again.
-        oldUITextView.removeTextChangedListener(oldUiTextWatcher);
         Spanned dislikes = ReturnYouTubeDislike.getDislikesSpanForRegularVideo(oldUIOriginalSpan, false);
         if (dislikes == null) { // Dislikes not available.
             // Must reset text back to original as the TextView may contain dislikes of a prior video.
@@ -80,7 +77,6 @@ public class ReturnYouTubeDislikePatch {
         if (!dislikes.equals(oldUITextView.getText())) {
             oldUITextView.setText(dislikes);
         }
-        oldUITextView.addTextChangedListener(oldUiTextWatcher);
     }
 
     /**
@@ -90,11 +86,8 @@ public class ReturnYouTubeDislikePatch {
      */
     public static void setOldUILayoutDislikes(int buttonViewResourceId, @NonNull TextView textView) {
         try {
-            if (!SettingsEnum.RYD_ENABLED.getBoolean()) {
-                return;
-            }
-            // TextView will always be a Like or Dislike action button.
-            if (buttonViewResourceId != OLD_UI_DISLIKE_BUTTON_RESOURCE_ID) {
+            if (!SettingsEnum.RYD_ENABLED.getBoolean()
+                    || buttonViewResourceId != OLD_UI_DISLIKE_BUTTON_RESOURCE_ID) {
                 return;
             }
             if (oldUIOriginalSpan == null) {
@@ -103,6 +96,10 @@ public class ReturnYouTubeDislikePatch {
                 oldUIOriginalSpan = (Spanned) textView.getText();
             }
             oldUITextViewRef = new WeakReference<>(textView);
+            // No way to check if a listener is already attached, so remove and add again.
+            textView.removeTextChangedListener(oldUiTextWatcher);
+            textView.addTextChangedListener(oldUiTextWatcher);
+
             updateOldUIDislikesTextView();
         } catch (Exception ex) {
             LogHelper.printException(() -> "setOldUILayoutDislikes failure", ex);
@@ -116,9 +113,6 @@ public class ReturnYouTubeDislikePatch {
         try {
             if (!SettingsEnum.RYD_ENABLED.getBoolean()) return;
             ReturnYouTubeDislike.newVideoLoaded(videoId);
-
-            // When changing videos no hook is called for the old UI View components so must manually update.
-            updateOldUIDislikesTextView();
         } catch (Exception ex) {
             LogHelper.printException(() -> "newVideoLoaded failure", ex);
         }
