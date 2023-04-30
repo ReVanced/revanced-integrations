@@ -65,22 +65,22 @@ public class ReturnYouTubeDislikePatch {
     };
 
     private static void updateOldUIDislikesTextView() {
-        TextView oldUIDislikes = oldUITextViewRef.get();
-        if (oldUIDislikes == null) {
+        TextView oldUITextView = oldUITextViewRef.get();
+        if (oldUITextView == null) {
             return;
         }
         // No way to check if a listener is already attached, so remove and add again.
-        oldUIDislikes.removeTextChangedListener(oldUiTextWatcher);
+        oldUITextView.removeTextChangedListener(oldUiTextWatcher);
         Spanned dislikes = ReturnYouTubeDislike.getDislikesSpanForRegularVideo(oldUIOriginalSpan, false);
         if (dislikes == null) { // Dislikes not available.
             // Must reset text back to original as the TextView may contain dislikes of a prior video.
             dislikes = oldUIOriginalSpan;
         }
         oldUIReplacementSpan = dislikes;
-        if (!dislikes.equals(oldUIDislikes.getText())) {
-            oldUIDislikes.setText(dislikes);
+        if (!dislikes.equals(oldUITextView.getText())) {
+            oldUITextView.setText(dislikes);
         }
-        oldUIDislikes.addTextChangedListener(oldUiTextWatcher);
+        oldUITextView.addTextChangedListener(oldUiTextWatcher);
     }
 
     /**
