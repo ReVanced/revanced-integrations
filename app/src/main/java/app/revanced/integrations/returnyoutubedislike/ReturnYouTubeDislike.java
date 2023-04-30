@@ -227,6 +227,9 @@ public class ReturnYouTubeDislike {
         return getDislikesSpanForRegularVideo((Spannable) original, isSegmentedButton);
     }
 
+    /**
+     * @return NULL if the span does not need changing or if RYD is not available.
+     */
     @Nullable
     public static SpannableString getDislikesSpanForRegularVideo(@NonNull Spanned original, boolean isSegmentedButton) {
         if (dislikeDataIsShort) {

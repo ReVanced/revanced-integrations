@@ -31,13 +31,21 @@ public class ReturnYouTubeDislikePatch {
      * Dislikes text label used by old UI.
      */
     @NonNull
-    private static WeakReference<TextView> oldUIDislikesRef = new WeakReference<>(null);
+    private static WeakReference<TextView> oldUITextViewRef = new WeakReference<>(null);
+
+    /**
+     * Original old UI 'Dislikes' text before patch modifications.
+     * Required to reset the dislikes when changing videos and RYD is not available.
+     * Set only once during the first load.
+     */
+    @Nullable
+    private static Spanned oldUIOriginalSpan;
 
     /**
      * Span used by {@link #oldUiTextWatcher}.
      */
     @Nullable
-    private static Spanned oldUIDislikesSpan;
+    private static Spanned oldUIReplacementSpan;
 
     /**
      * Old UI dislikes can be set multiple times by YouTube.
@@ -49,15 +57,15 @@ public class ReturnYouTubeDislikePatch {
         public void onTextChanged(CharSequence s, int start, int before, int count) {
         }
         public void afterTextChanged(Editable s) {
-            if (oldUIDislikesSpan == null || oldUIDislikesSpan.toString().equals(s.toString())) {
+            if (oldUIReplacementSpan == null || oldUIReplacementSpan.toString().equals(s.toString())) {
                 return;
             }
-            s.replace(0, s.length(), oldUIDislikesSpan);
+            s.replace(0, s.length(), oldUIReplacementSpan);
         }
     };
 
     private static void updateOldUIDislikesTextView() {
-        TextView oldUIDislikes = oldUIDislikesRef.get();
+        TextView oldUIDislikes = oldUITextViewRef.get();
         if (oldUIDislikes == null) {
             return;
         }
@@ -66,7 +74,7 @@ public class ReturnYouTubeDislikePatch {
         Spanned dislikes = ReturnYouTubeDislike.getDislikesSpanForRegularVideo(
                 (Spanned) oldUIDislikes.getText(), false);
         if (dislikes != null) {
-            oldUIDislikesSpan = dislikes;
+            oldUIReplacementSpan = dislikes;
             oldUIDislikes.setText(dislikes);
         }
         oldUIDislikes.addTextChangedListener(oldUiTextWatcher);
@@ -82,11 +90,16 @@ public class ReturnYouTubeDislikePatch {
             if (!SettingsEnum.RYD_ENABLED.getBoolean()) {
                 return;
             }
-            // The views passed in will always be a Like or Dislike action button.
+            // TextView will always be a Like or Dislike action button.
             if (buttonViewResourceId != OLD_UI_DISLIKE_BUTTON_RESOURCE_ID) {
                 return;
             }
-            oldUIDislikesRef = new WeakReference<>(textView);
+            if (oldUIOriginalSpan == null) {
+                // Set value only once, to ensure it's not a recycled view that already has dislikes added.
+                oldUIOriginalSpan = (Spanned) textView.getText();
+            }
+            oldUIReplacementSpan = oldUIOriginalSpan;
+            oldUITextViewRef = new WeakReference<>(textView);
             updateOldUIDislikesTextView();
         } catch (Exception ex) {
             LogHelper.printException(() -> "setOldUILayoutDislikes failure", ex);
@@ -96,12 +109,20 @@ public class ReturnYouTubeDislikePatch {
     /**
      * Injection point.
      */
-    public static void newVideoLoaded(String videoId) {
+    public static void newVideoLoaded(@NonNull String videoId) {
         try {
             if (!SettingsEnum.RYD_ENABLED.getBoolean()) return;
             ReturnYouTubeDislike.newVideoLoaded(videoId);
-            oldUIDislikesSpan = null;
-            updateOldUIDislikesTextView();
+
+            // Must reset old UI back to original text, in case RYD is not available for the new video.
+            // The new video id hook can be called when the video id did not change,
+            // but that causes no harm to this text resetting logic.
+            TextView oldUIDislikes = oldUITextViewRef.get();
+            if (oldUIDislikes != null) {
+                oldUIReplacementSpan = oldUIOriginalSpan;
+                oldUIDislikes.setText(oldUIOriginalSpan);
+                updateOldUIDislikesTextView();
+            }
         } catch (Exception ex) {
             LogHelper.printException(() -> "newVideoLoaded failure", ex);
         }
