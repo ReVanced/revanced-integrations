@@ -6,12 +6,12 @@ import android.text.Editable;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextWatcher;
-import android.view.View;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import java.lang.ref.WeakReference;
 import java.util.concurrent.atomic.AtomicReference;
 
 import app.revanced.integrations.returnyoutubedislike.ReturnYouTubeDislike;
@@ -28,14 +28,20 @@ public class ReturnYouTubeDislikePatch {
             = ReVancedUtils.getResourceIdentifier("dislike_button", "id");
 
     /**
+     * Dislikes text label used by old UI.
+     */
+    @NonNull
+    private static WeakReference<TextView> oldUIDislikesRef = new WeakReference<>(null);
+
+    /**
      * Span used by {@link #oldUiTextWatcher}.
      */
     @Nullable
-    private static Spanned textWatcherReplacement;
+    private static Spanned oldUIDislikesSpan;
 
     /**
      * Old UI dislikes can be set multiple times by YouTube.
-     * To prevent it from reverting changes made here, this listener will override any changes YouTube makes.
+     * To prevent it from reverting changes made here, this listener overrides any future changes YouTube makes.
      */
     private static final TextWatcher oldUiTextWatcher = new TextWatcher() {
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -43,15 +49,31 @@ public class ReturnYouTubeDislikePatch {
         public void onTextChanged(CharSequence s, int start, int before, int count) {
         }
         public void afterTextChanged(Editable s) {
-            if (textWatcherReplacement == null || textWatcherReplacement.toString().equals(s.toString())) {
+            if (oldUIDislikesSpan == null || oldUIDislikesSpan.toString().equals(s.toString())) {
                 return;
             }
-            s.replace(0, s.length(), textWatcherReplacement);
+            s.replace(0, s.length(), oldUIDislikesSpan);
         }
     };
 
+    private static void updateOldUIDislikesTextView() {
+        TextView oldUIDislikes = oldUIDislikesRef.get();
+        if (oldUIDislikes == null) {
+            return;
+        }
+        // No way to check if a listener is already attached, so remove and add again.
+        oldUIDislikes.removeTextChangedListener(oldUiTextWatcher);
+        Spanned dislikes = ReturnYouTubeDislike.getDislikesSpanForRegularVideo(
+                (Spanned) oldUIDislikes.getText(), false);
+        if (dislikes != null) {
+            oldUIDislikesSpan = dislikes;
+            oldUIDislikes.setText(dislikes);
+        }
+        oldUIDislikes.addTextChangedListener(oldUiTextWatcher);
+    }
+
     /**
-     * Injection point.
+     * Injection point.  Called on main thread.
      *
      * Used when spoofing the older app versions of {@link SpoofAppVersionPatch}.
      */
@@ -64,15 +86,8 @@ public class ReturnYouTubeDislikePatch {
             if (buttonViewResourceId != OLD_UI_DISLIKE_BUTTON_RESOURCE_ID) {
                 return;
             }
-            // No way to check if a listener is already attached, so remove and add again.
-            textView.removeTextChangedListener(oldUiTextWatcher);
-            Spanned dislikes = ReturnYouTubeDislike.getDislikesSpanForRegularVideo(
-                    (Spanned) textView.getText(), false);
-            if (dislikes != null) {
-                textWatcherReplacement = dislikes;
-                textView.setText(dislikes);
-            }
-            textView.addTextChangedListener(oldUiTextWatcher);
+            oldUIDislikesRef = new WeakReference<>(textView);
+            updateOldUIDislikesTextView();
         } catch (Exception ex) {
             LogHelper.printException(() -> "setOldUILayoutDislikes failure", ex);
         }
@@ -85,6 +100,8 @@ public class ReturnYouTubeDislikePatch {
         try {
             if (!SettingsEnum.RYD_ENABLED.getBoolean()) return;
             ReturnYouTubeDislike.newVideoLoaded(videoId);
+            oldUIDislikesSpan = null;
+            updateOldUIDislikesTextView();
         } catch (Exception ex) {
             LogHelper.printException(() -> "newVideoLoaded failure", ex);
         }
@@ -160,6 +177,7 @@ public class ReturnYouTubeDislikePatch {
             for (Vote v : Vote.values()) {
                 if (v.value == vote) {
                     ReturnYouTubeDislike.sendVote(v);
+                    updateOldUIDislikesTextView();
                     return;
                 }
             }
