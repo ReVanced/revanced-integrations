@@ -35,6 +35,11 @@ public enum SharedPrefCategory {
         preferences = Objects.requireNonNull(ReVancedUtils.getContext()).getSharedPreferences(prefName, Context.MODE_PRIVATE);
     }
 
+    private void removeConflictingPreferenceKeyValue(@NonNull String key) {
+        ReVancedUtils.showToastLong("Resetting conflicting preference: " + key);
+        preferences.edit().remove(key).apply();
+    }
+
     private void saveObjectAsString(@NonNull String key, @Nullable Object value) {
         preferences.edit().putString(key, (value == null ? null : value.toString())).apply();
     }
@@ -91,7 +96,14 @@ public enum SharedPrefCategory {
             }
             return _default;
         } catch (ClassCastException ex) {
-            return preferences.getInt(key, _default); // old data, previously stored as primitive
+            try {
+                // Old data previously stored as primitive.
+                return preferences.getInt(key, _default);
+            } catch (ClassCastException ex2) {
+                // Value is stored is a completely different type (should never happen).
+                removeConflictingPreferenceKeyValue(key);
+                return _default;
+            }
         }
     }
 
@@ -104,7 +116,12 @@ public enum SharedPrefCategory {
             }
             return _default;
         } catch (ClassCastException ex) {
-            return preferences.getLong(key, _default);
+            try {
+                return preferences.getLong(key, _default);
+            } catch (ClassCastException ex2) {
+                removeConflictingPreferenceKeyValue(key);
+                return _default;
+            }
         }
     }
 
@@ -117,7 +134,12 @@ public enum SharedPrefCategory {
             }
             return _default;
         } catch (ClassCastException ex) {
-            return preferences.getFloat(key, _default);
+            try {
+                return preferences.getFloat(key, _default);
+            } catch (ClassCastException ex2) {
+                removeConflictingPreferenceKeyValue(key);
+                return _default;
+            }
         }
     }
 
