@@ -8,6 +8,7 @@ import androidx.annotation.Nullable;
 
 import java.util.Objects;
 
+import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedUtils;
 
 /**
@@ -36,7 +37,7 @@ public enum SharedPrefCategory {
     }
 
     private void removeConflictingPreferenceKeyValue(@NonNull String key) {
-        ReVancedUtils.showToastLong("Resetting conflicting preference: " + key);
+        LogHelper.printException(() -> "Found conflicting preference: " + key);
         preferences.edit().remove(key).apply();
     }
 
