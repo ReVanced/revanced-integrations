@@ -100,7 +100,7 @@ public enum SharedPrefCategory {
                 // Old data previously stored as primitive.
                 return preferences.getInt(key, _default);
             } catch (ClassCastException ex2) {
-                // Value is stored is a completely different type (should never happen).
+                // Value stored is a completely different type (should never happen).
                 removeConflictingPreferenceKeyValue(key);
                 return _default;
             }
