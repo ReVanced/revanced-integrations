@@ -5,9 +5,9 @@ import static app.revanced.integrations.utils.ReVancedUtils.getResourceIdentifie
 import android.view.View;
 import android.view.animation.Animation;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 
 import java.lang.ref.WeakReference;
+import java.util.Objects;
 
 import app.revanced.integrations.patches.VideoInformation;
 import app.revanced.integrations.settings.SettingsEnum;
@@ -23,21 +23,16 @@ public class CreateSegmentButtonController {
     /**
      * injection point
      */
-    public static void initialize(Object viewStub) {
+    public static void initialize(View youtubeControlsLayout) {
         try {
             LogHelper.printDebug(() -> "initializing new segment button");
-
-            RelativeLayout youtubeControlsLayout = (RelativeLayout) viewStub;
-            String buttonIdentifier = "sb_sponsorblock_button";
-            ImageView imageView = youtubeControlsLayout.findViewById(getResourceIdentifier(buttonIdentifier, "id"));
-            if (imageView == null) {
-                LogHelper.printException(() -> "Couldn't find imageView with \"" + buttonIdentifier + "\"");
-                return;
-            }
+            ImageView imageView = Objects.requireNonNull(youtubeControlsLayout.findViewById(
+                    getResourceIdentifier("sb_sponsorblock_button", "id")));
+            imageView.setVisibility(View.GONE);
             imageView.setOnClickListener(v -> {
-                LogHelper.printDebug(() -> "New segment button clicked");
                 SponsorBlockViewController.toggleNewSegmentLayoutVisibility();
             });
+
             buttonReference = new WeakReference<>(imageView);
 
             // Animations

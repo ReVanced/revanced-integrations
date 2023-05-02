@@ -5,9 +5,9 @@ import static app.revanced.integrations.utils.ReVancedUtils.getResourceIdentifie
 import android.view.View;
 import android.view.animation.Animation;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 
 import java.lang.ref.WeakReference;
+import java.util.Objects;
 
 import app.revanced.integrations.patches.VideoInformation;
 import app.revanced.integrations.settings.SettingsEnum;
@@ -25,19 +25,16 @@ public class VotingButtonController {
     /**
      * injection point
      */
-    public static void initialize(Object viewStub) {
+    public static void initialize(View youtubeControlsLayout) {
         try {
             LogHelper.printDebug(() -> "initializing voting button");
-            RelativeLayout controlsLayout = (RelativeLayout) viewStub;
-            String buttonResourceName = "sb_voting_button";
-            ImageView imageView = controlsLayout.findViewById(getResourceIdentifier(buttonResourceName, "id"));
-            if (imageView == null) {
-                LogHelper.printException(() -> "Couldn't find imageView with \"" + buttonResourceName + "\"");
-                return;
-            }
+            ImageView imageView = Objects.requireNonNull(youtubeControlsLayout.findViewById(
+                    getResourceIdentifier("sb_voting_button", "id")));
+            imageView.setVisibility(View.GONE);
             imageView.setOnClickListener(v -> {
                 SponsorBlockUtils.onVotingClicked(v.getContext());
             });
+
             buttonReference = new WeakReference<>(imageView);
 
             // Animations
