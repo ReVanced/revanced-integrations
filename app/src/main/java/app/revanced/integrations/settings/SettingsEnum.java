@@ -1,17 +1,22 @@
 package app.revanced.integrations.settings;
 
+import static java.lang.Boolean.FALSE;
+import static java.lang.Boolean.TRUE;
+import static app.revanced.integrations.settings.SettingsEnum.ReturnType.BOOLEAN;
+import static app.revanced.integrations.settings.SettingsEnum.ReturnType.FLOAT;
+import static app.revanced.integrations.settings.SettingsEnum.ReturnType.INTEGER;
+import static app.revanced.integrations.settings.SettingsEnum.ReturnType.LONG;
+import static app.revanced.integrations.settings.SettingsEnum.ReturnType.STRING;
+import static app.revanced.integrations.settings.SharedPrefCategory.RETURN_YOUTUBE_DISLIKE;
+import static app.revanced.integrations.settings.SharedPrefCategory.SPONSOR_BLOCK;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import app.revanced.integrations.utils.StringRef;
-import app.revanced.integrations.patches.theme.ThemePatch;
 
 import java.util.Objects;
 
-import static app.revanced.integrations.settings.SettingsEnum.ReturnType.*;
-import static app.revanced.integrations.settings.SharedPrefCategory.RETURN_YOUTUBE_DISLIKE;
-import static app.revanced.integrations.settings.SharedPrefCategory.SPONSOR_BLOCK;
-import static java.lang.Boolean.FALSE;
-import static java.lang.Boolean.TRUE;
+import app.revanced.integrations.patches.theme.ThemePatch;
+import app.revanced.integrations.utils.StringRef;
 
 public enum SettingsEnum {
     //Download Settings
@@ -92,6 +97,7 @@ public enum SettingsEnum {
     HIDE_GET_PREMIUM("revanced_hide_get_premium", BOOLEAN, TRUE),
     HIDE_INFO_CARDS("revanced_hide_infocards", BOOLEAN, TRUE),
     HIDE_PLAYER_BUTTONS("revanced_hide_player_buttons", BOOLEAN, FALSE),
+    HIDE_PLAYER_OVERLAY("revanced_hide_player_overlay", BOOLEAN, FALSE, true),
     HIDE_PREVIEW_COMMENT("revanced_hide_preview_comment", BOOLEAN, FALSE, true),
     HIDE_SEEKBAR("revanced_hide_seekbar", BOOLEAN, FALSE),
     HIDE_HOME_BUTTON("revanced_hide_home_button", BOOLEAN, FALSE, true),
