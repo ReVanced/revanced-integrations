@@ -3,7 +3,6 @@ package app.revanced.integrations.sponsorblock.ui;
 import static app.revanced.integrations.utils.ReVancedUtils.getResourceIdentifier;
 
 import android.view.View;
-import android.view.animation.Animation;
 import android.widget.ImageView;
 
 import java.lang.ref.WeakReference;
@@ -13,11 +12,10 @@ import app.revanced.integrations.patches.VideoInformation;
 import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedUtils;
+import app.revanced.integrations.videoplayer.BottomControlButton;
 
 public class CreateSegmentButtonController {
     private static WeakReference<ImageView> buttonReference = new WeakReference<>(null);
-    private static Animation fadeIn;
-    private static Animation fadeOut;
     private static boolean isShowing;
 
     /**
@@ -34,16 +32,6 @@ public class CreateSegmentButtonController {
             });
 
             buttonReference = new WeakReference<>(imageView);
-
-            // Animations
-            if (fadeIn == null) {
-                fadeIn = ReVancedUtils.getResourceAnimation("fade_in");
-                fadeIn.setDuration(ReVancedUtils.getResourceInteger("fade_duration_fast"));
-                fadeOut = ReVancedUtils.getResourceAnimation("fade_out");
-                fadeOut.setDuration(ReVancedUtils.getResourceInteger("fade_duration_scheduled"));
-            }
-            isShowing = true;
-            changeVisibilityImmediate(false);
         } catch (Exception ex) {
             LogHelper.printException(() -> "initialize failure", ex);
         }
@@ -81,7 +69,7 @@ public class CreateSegmentButtonController {
                     return;
                 }
                 if (!immediate) {
-                    iView.startAnimation(fadeIn);
+                    iView.startAnimation(BottomControlButton.getButtonFadeIn());
                 }
                 iView.setVisibility(View.VISIBLE);
                 return;
@@ -90,7 +78,7 @@ public class CreateSegmentButtonController {
             if (iView.getVisibility() == View.VISIBLE) {
                 iView.clearAnimation();
                 if (!immediate) {
-                    iView.startAnimation(fadeOut);
+                    iView.startAnimation(BottomControlButton.getButtonFadeOut());
                 }
                 iView.setVisibility(View.GONE);
             }
