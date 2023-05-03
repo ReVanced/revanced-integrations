@@ -722,7 +722,6 @@ public class SegmentPlaybackController {
      */
     public static void drawSponsorTimeBars(final Canvas canvas, final float posY) {
         try {
-            if (sponsorBarThickness == 0) return;
             if (segments == null) return;
             final long videoLength = VideoInformation.getVideoLength();
             if (videoLength <= 0) return;
