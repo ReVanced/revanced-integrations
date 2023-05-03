@@ -103,7 +103,7 @@ public class SegmentPlaybackController {
     private static String timeWithoutSegments;
 
     private static int sponsorBarAbsoluteLeft;
-    private static int sponsorBarRight;
+    private static int sponsorAbsoluteBarRight;
     private static int sponsorBarThickness;
 
     @Nullable
@@ -630,9 +630,9 @@ public class SegmentPlaybackController {
      */
     public static void setSponsorBarAbsoluteRight(Rect rect) {
         final int right = rect.right;
-        if (sponsorBarRight != right) {
+        if (sponsorAbsoluteBarRight != right) {
             LogHelper.printDebug(() -> "setSponsorBarAbsoluteRight: " +  right);
-            sponsorBarRight = right;
+            sponsorAbsoluteBarRight = right;
         }
     }
 
