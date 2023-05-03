@@ -67,11 +67,9 @@ public class SponsorBlockSettings {
             editor.apply();
 
             String userID = settingsJson.getString("userID");
-            if (!isValidSBUserId(userID)) {
-                throw new IllegalArgumentException("userId is blank");
+            if (isValidSBUserId(userID)) { // User id does not exist if user never voted or created any segments.
+                SettingsEnum.SB_UUID.saveValue(userID);
             }
-            SettingsEnum.SB_UUID.saveValue(userID);
-
             SettingsEnum.SB_IS_VIP.saveValue(settingsJson.getBoolean("isVip"));
             SettingsEnum.SB_SHOW_TOAST_ON_SKIP.saveValue(!settingsJson.getBoolean("dontShowNotice"));
             SettingsEnum.SB_TRACK_SKIP_COUNT.saveValue(settingsJson.getBoolean("trackViewCount"));
@@ -136,7 +134,9 @@ public class SponsorBlockSettings {
                     categorySelectionsArray.put(behaviorObject);
                 }
             }
-            json.put("userID", SettingsEnum.SB_UUID.getString());
+            if (SponsorBlockSettings.userHasSBPrivateId()) {
+                json.put("userID", SettingsEnum.SB_UUID.getString());
+            }
             json.put("isVip", SettingsEnum.SB_IS_VIP.getBoolean());
             json.put("serverAddress", SettingsEnum.SB_API_URL.getString());
             json.put("dontShowNotice", !SettingsEnum.SB_SHOW_TOAST_ON_SKIP.getBoolean());
@@ -188,6 +188,21 @@ public class SponsorBlockSettings {
         }
         initialized = true;
 
+        SegmentCategory.loadFromPreferences();
+    }
+
+    /**
+     * @return if the user has ever voted, created a segment, or imported existing SB settings.
+     */
+    public static boolean userHasSBPrivateId() {
+        return !SettingsEnum.SB_UUID.getString().isEmpty();
+    }
+
+    /**
+     * Use this only if a user id is required (creating segments, voting).  Otherwise check
+     */
+    @NonNull
+    public static String getSBUserPrivateID() {
         String uuid = SettingsEnum.SB_UUID.getString();
         if (uuid.isEmpty()) {
             uuid = (UUID.randomUUID().toString() +
@@ -196,7 +211,6 @@ public class SponsorBlockSettings {
                     .replace("-", "");
             SettingsEnum.SB_UUID.saveValue(uuid);
         }
-
-        SegmentCategory.loadFromPreferences();
+        return uuid;
     }
 }

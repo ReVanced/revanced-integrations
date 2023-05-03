@@ -419,6 +419,12 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment {
     private void fetchAndDisplayStats() {
         try {
             statsCategory.removeAll();
+            if (!SponsorBlockSettings.userHasSBPrivateId()) {
+                // User has never voted or created any segments.  No stats to show.
+                addLocalUserStats();
+                return;
+            }
+
             Preference loadingPlaceholderPreference = new Preference(this.getActivity());
             loadingPlaceholderPreference.setEnabled(false);
             statsCategory.addPreference(loadingPlaceholderPreference);
@@ -428,6 +434,7 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment {
                     UserStats stats = SBRequester.retrieveUserStats();
                     ReVancedUtils.runOnMainThread(() -> { // get back on main thread to modify UI elements
                         addUserStats(loadingPlaceholderPreference, stats);
+                        addLocalUserStats();
                     });
                 });
             } else {
@@ -450,7 +457,8 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment {
             statsCategory.removeAll();
             Context context = statsCategory.getContext();
 
-            {
+            if (stats.segmentCount > 0) {
+                // if user has created no segments, there's no reason to a username
                 EditTextPreference preference = new EditTextPreference(context);
                 statsCategory.addPreference(preference);
                 String userName = stats.userName;
@@ -528,34 +536,34 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment {
                     return false;
                 });
             }
-
-            {
-                // time the user saved by using SB
-                Preference preference = new Preference(context);
-                statsCategory.addPreference(preference);
-
-                Runnable updateStatsSelfSaved = () -> {
-                    String formatted = statsNumberOfSegmentsSkippedFormatter.format(SettingsEnum.SB_SKIPPED_SEGMENTS_NUMBER_SKIPPED.getInt());
-                    preference.setTitle(fromHtml(str("sb_stats_self_saved", formatted)));
-                    String formattedSaved = SponsorBlockUtils.getTimeSavedString(SettingsEnum.SB_SKIPPED_SEGMENTS_TIME_SAVED.getLong() / 1000);
-                    preference.setSummary(fromHtml(str("sb_stats_self_saved_sum", formattedSaved)));
-                };
-                updateStatsSelfSaved.run();
-                preference.setOnPreferenceClickListener(preference1 -> {
-                    new AlertDialog.Builder(preference1.getContext())
-                            .setTitle(str("sb_stats_self_saved_reset_title"))
-                            .setPositiveButton(android.R.string.yes, (dialog, whichButton) -> {
-                                SettingsEnum.SB_SKIPPED_SEGMENTS_NUMBER_SKIPPED.saveValue(SettingsEnum.SB_SKIPPED_SEGMENTS_NUMBER_SKIPPED.defaultValue);
-                                SettingsEnum.SB_SKIPPED_SEGMENTS_TIME_SAVED.saveValue(SettingsEnum.SB_SKIPPED_SEGMENTS_TIME_SAVED.defaultValue);
-                                updateStatsSelfSaved.run();
-                            })
-                            .setNegativeButton(android.R.string.no, null).show();
-                    return true;
-                });
-            }
         } catch (Exception ex) {
-            LogHelper.printException(() -> "fetchAndDisplayStats failure", ex);
+            LogHelper.printException(() -> "addUserStats failure", ex);
         }
+    }
+
+    private void addLocalUserStats() {
+        // time the user saved by using SB
+        Preference preference = new Preference(statsCategory.getContext());
+        statsCategory.addPreference(preference);
+
+        Runnable updateStatsSelfSaved = () -> {
+            String formatted = statsNumberOfSegmentsSkippedFormatter.format(SettingsEnum.SB_SKIPPED_SEGMENTS_NUMBER_SKIPPED.getInt());
+            preference.setTitle(fromHtml(str("sb_stats_self_saved", formatted)));
+            String formattedSaved = SponsorBlockUtils.getTimeSavedString(SettingsEnum.SB_SKIPPED_SEGMENTS_TIME_SAVED.getLong() / 1000);
+            preference.setSummary(fromHtml(str("sb_stats_self_saved_sum", formattedSaved)));
+        };
+        updateStatsSelfSaved.run();
+        preference.setOnPreferenceClickListener(preference1 -> {
+            new AlertDialog.Builder(preference1.getContext())
+                    .setTitle(str("sb_stats_self_saved_reset_title"))
+                    .setPositiveButton(android.R.string.yes, (dialog, whichButton) -> {
+                        SettingsEnum.SB_SKIPPED_SEGMENTS_NUMBER_SKIPPED.saveValue(SettingsEnum.SB_SKIPPED_SEGMENTS_NUMBER_SKIPPED.defaultValue);
+                        SettingsEnum.SB_SKIPPED_SEGMENTS_TIME_SAVED.saveValue(SettingsEnum.SB_SKIPPED_SEGMENTS_TIME_SAVED.defaultValue);
+                        updateStatsSelfSaved.run();
+                    })
+                    .setNegativeButton(android.R.string.no, null).show();
+            return true;
+        });
     }
 
 }

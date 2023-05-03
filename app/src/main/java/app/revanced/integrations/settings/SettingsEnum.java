@@ -152,7 +152,7 @@ public enum SettingsEnum {
     SB_AUTO_HIDE_SKIP_BUTTON("sb-auto-hide-skip-segment-button", BOOLEAN, TRUE, SPONSOR_BLOCK, parents(SB_ENABLED)),
     SB_SHOW_TOAST_ON_SKIP("show-toast", BOOLEAN, TRUE, SPONSOR_BLOCK, parents(SB_ENABLED)),
     SB_TRACK_SKIP_COUNT("count-skips", BOOLEAN, TRUE, SPONSOR_BLOCK, parents(SB_ENABLED)),
-    SB_UUID("uuid", STRING, "", SPONSOR_BLOCK),
+    SB_UUID("uuid", STRING, "", SPONSOR_BLOCK), /** Do not use directly, instead use {@link SponsorBlockSettings} */
     SB_ADJUST_NEW_SEGMENT_STEP("new-segment-step-accuracy", INTEGER, 150, SPONSOR_BLOCK, parents(SB_ENABLED)),
     SB_MIN_DURATION("sb-min-duration", FLOAT, 0F, SPONSOR_BLOCK, parents(SB_ENABLED)),
     SB_SEEN_GUIDELINES("sb-seen-gl", BOOLEAN, FALSE, SPONSOR_BLOCK),
