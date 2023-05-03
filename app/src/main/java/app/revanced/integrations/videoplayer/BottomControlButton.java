@@ -15,6 +15,7 @@ import java.util.Objects;
 public abstract class BottomControlButton {
     private static final Animation fadeIn;
     private static final Animation fadeOut;
+
     private final WeakReference<ImageView> buttonRef;
     private final SettingsEnum setting;
     protected boolean isVisible;
@@ -45,7 +46,6 @@ public abstract class BottomControlButton {
         if (booleanSetting.returnType != SettingsEnum.ReturnType.BOOLEAN) {
             throw new IllegalArgumentException();
         }
-
         setting = booleanSetting;
 
         // Create the button.
