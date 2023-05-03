@@ -728,9 +728,9 @@ public class SegmentPlaybackController {
             if (videoLength <= 0) return;
 
             final int thicknessDiv2 = sponsorBarThickness / 2; // rounds down
-            final float top = posY - thicknessDiv2;
-            final float bottom = posY + (sponsorBarThickness - thicknessDiv2);
-            final float videoMillisecondsToPixels = (1f / videoLength) * (sponsorBarRight - sponsorBarAbsoluteLeft);
+            final float top = posY - (sponsorBarThickness - thicknessDiv2);
+            final float bottom = posY + thicknessDiv2;
+            final float videoMillisecondsToPixels = (1f / videoLength) * (sponsorAbsoluteBarRight - sponsorBarAbsoluteLeft);
             final float leftPadding = sponsorBarAbsoluteLeft;
 
             for (SponsorSegment segment : segments) {
