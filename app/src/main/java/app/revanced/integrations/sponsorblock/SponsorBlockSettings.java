@@ -169,6 +169,8 @@ public class SponsorBlockSettings {
     public static void exportCategoriesToFlatJson(@Nullable Context dialogContext,
                                                   @NonNull JSONObject json) throws JSONException {
         ReVancedUtils.verifyOnMainThread();
+        initialize();
+
         // If user has a SponsorBlock user id then show a warning.
         if (dialogContext != null && SponsorBlockSettings.userHasSBPrivateId()
                 && !SettingsEnum.SB_HIDE_EXPORT_WARNING.getBoolean()) {
@@ -192,6 +194,9 @@ public class SponsorBlockSettings {
      * @return the number of settings imported
      */
     public static int importCategoriesFromFlatJson(JSONObject json) throws JSONException {
+        ReVancedUtils.verifyOnMainThread();
+        initialize();
+
         int numberOfImportedSettings = 0;
         SharedPreferences.Editor editor = SharedPrefCategory.SPONSOR_BLOCK.preferences.edit();
         for (SegmentCategory category : SegmentCategory.categoriesWithoutUnsubmitted()) {
