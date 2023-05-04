@@ -690,10 +690,6 @@ public enum SettingsEnum {
      * for now use a simple switch statement since this method is not used outside this class.
      */
     private boolean includeWithImportExport() {
-        final boolean debug = true; // enable to import/export everything, and verify no serialization errors occur
-        if (debug) {
-            return !name().startsWith("DEPRECATED_");
-        }
         switch (this) {
             case RYD_USER_ID: // Not useful to export, no reason to include it.
             case SB_IS_VIP:
@@ -755,7 +751,7 @@ public enum SettingsEnum {
                     json.put(importExportKey, setting.getObjectValue());
                 }
             }
-            SponsorBlockSettings.exportCategoriesToFlatJson(json); // Export SB using flat JSON layout.
+            SponsorBlockSettings.exportCategoriesToFlatJson(json);
             if (json.length() == 0) {
                 return "";
             }
