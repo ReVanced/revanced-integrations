@@ -352,7 +352,13 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment {
         });
         category.addPreference(apiUrl);
 
-        importExport = new EditTextPreference(context);
+        importExport = new EditTextPreference(context) {
+            protected void onPrepareDialogBuilder(AlertDialog.Builder builder) {
+                builder.setNeutralButton(str("sb_settings_copy"), (dialog, which) -> {
+                    ReVancedUtils.setClipboard(getEditText().getText().toString());
+                });
+            }
+        };
         importExport.setTitle(str("sb_settings_ie"));
         importExport.setSummary(str("sb_settings_ie_sum"));
         importExport.getEditText().setInputType(InputType.TYPE_CLASS_TEXT
