@@ -209,7 +209,6 @@ public class SponsorBlockSettings {
         return numberOfImportedSettings;
     }
 
-
     public static boolean isValidSBUserId(@NonNull String userId) {
         return !userId.isEmpty();
     }
@@ -241,7 +240,7 @@ public class SponsorBlockSettings {
     }
 
     /**
-     * Use this only if a user id is required (creating segments, voting).  Otherwise check
+     * Use this only if a user id is required (creating segments, voting).
      */
     @NonNull
     public static String getSBUserPrivateID() {
