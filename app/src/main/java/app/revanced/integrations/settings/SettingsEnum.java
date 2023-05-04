@@ -325,7 +325,7 @@ public enum SettingsEnum {
     @Deprecated
     DEPRECATED_SB_SKIPPED_SEGMENTS_TIME_SAVED("sb-skipped-segments-time", LONG, 0L, SPONSOR_BLOCK);
     @Deprecated
-    private static SettingsEnum[][] renamedSettings = {
+    private static final SettingsEnum renamedSettings[][] = {
             {DEPRECATED_ADREMOVER_BUTTONED_REMOVAL, ADREMOVER_BUTTONED_ADS},
             {DEPRECATED_ADREMOVER_GENERAL_ADS_REMOVAL, ADREMOVER_GENERAL_ADS},
             {DEPRECATED_REMOVE_VIDEO_ADS, HIDE_VIDEO_ADS},
@@ -582,7 +582,7 @@ public enum SettingsEnum {
      *
      * This method is only to be used by the Settings preference code.
      */
-    public static void setValue(@NonNull SettingsEnum setting, @NonNull String newValue) {;
+    public static void setValue(@NonNull SettingsEnum setting, @NonNull String newValue) {
         Objects.requireNonNull(newValue);
         switch (setting.returnType) {
             case BOOLEAN:
