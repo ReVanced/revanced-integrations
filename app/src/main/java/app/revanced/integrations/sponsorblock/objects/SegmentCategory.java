@@ -280,7 +280,7 @@ public enum SegmentCategory {
     }
 
     /**
-     * Calling code is responsible for calling {@link SharedPreferences.Editor#apply()}
+     * Calling code is responsible for calling {@link #updateEnabledCategories()} and {@link SharedPreferences.Editor#apply()}
      */
     public int importFromFlatJSON(JSONObject json, SharedPreferences.Editor editor) throws JSONException {
         int numberOfSettingsImported = 0;

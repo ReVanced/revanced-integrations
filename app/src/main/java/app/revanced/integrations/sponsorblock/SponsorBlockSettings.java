@@ -198,6 +198,9 @@ public class SponsorBlockSettings {
             numberOfImportedSettings += category.importFromFlatJSON(json, editor);
         }
         editor.apply();
+
+        SegmentCategory.updateEnabledCategories();
+
         return numberOfImportedSettings;
     }
 
