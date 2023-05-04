@@ -152,7 +152,7 @@ public class SponsorBlockSettings {
             return json.toString(2);
         } catch (Exception ex) {
             LogHelper.printInfo(() -> "failed to export settings", ex); // use info level, as we are showing our own toast
-            ReVancedUtils.showToastLong(str("sb_settings_export_failed"));
+            ReVancedUtils.showToastLong(str("sb_settings_export_failed", ex));
             return "";
         }
     }
