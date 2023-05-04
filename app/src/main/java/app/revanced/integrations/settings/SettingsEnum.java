@@ -582,7 +582,7 @@ public enum SettingsEnum {
      *
      * This method is only to be used by the Settings preference code.
      */
-    public static void setValue(@NonNull SettingsEnum setting, @NonNull String newValue) {
+    public static void setValue(@NonNull SettingsEnum setting, @NonNull String newValue) {;
         Objects.requireNonNull(newValue);
         switch (setting.returnType) {
             case BOOLEAN:
@@ -608,9 +608,7 @@ public enum SettingsEnum {
      * This method is only to be used by the Settings preference code.
      */
     public static void setValue(@NonNull SettingsEnum setting, @NonNull Boolean newValue) {
-        if (!setting.returnType.matches(newValue)) {
-            throw new IllegalArgumentException();
-        }
+        setting.returnType.validate(newValue);
         setting.value = newValue;
     }
 
@@ -618,9 +616,7 @@ public enum SettingsEnum {
      * Sets the value, and persistently saves it.
      */
     public void saveValue(@NonNull Object newValue) {
-        if (!returnType.matches(newValue)) {
-            throw new IllegalArgumentException();
-        }
+        returnType.validate(newValue);
         value = newValue; // Must set before saving to preferences (otherwise importing fails to update UI correctly).
         switch (returnType) {
             case BOOLEAN:
@@ -834,6 +830,12 @@ public enum SettingsEnum {
         LONG,
         FLOAT,
         STRING;
+
+        public void validate(@Nullable Object obj) throws IllegalArgumentException {
+            if (!matches(obj)) {
+                throw new IllegalArgumentException("'" + obj + "' does not match:" + this);
+            }
+        }
 
         public boolean matches(@Nullable Object obj) {
             switch (this) {
