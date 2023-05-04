@@ -141,11 +141,11 @@ public enum SettingsEnum {
             parents(SWIPE_BRIGHTNESS, SWIPE_VOLUME)),
     SWIPE_HAPTIC_FEEDBACK("revanced_swipe_haptic_feedback", BOOLEAN, TRUE,
             parents(SWIPE_BRIGHTNESS, SWIPE_VOLUME)),
-    SWIPE_MAGNITUDE_THRESHOLD("revanced_swipe_magnitude_threshold", FLOAT, 30f, // edit: why is this a float and not an Integer?
+    SWIPE_MAGNITUDE_THRESHOLD("revanced_swipe_threshold", INTEGER, 30,
             parents(SWIPE_BRIGHTNESS, SWIPE_VOLUME)),
     SWIPE_OVERLAY_BACKGROUND_ALPHA("revanced_swipe_overlay_background_alpha", INTEGER, 127,
             parents(SWIPE_BRIGHTNESS, SWIPE_VOLUME)),
-    SWIPE_OVERLAY_TEXT_SIZE("revanced_swipe_overlay_text_size", FLOAT, 22f, // edit: why is this a float and not an Integer?
+    SWIPE_OVERLAY_TEXT_SIZE("revanced_swipe_text_overlay_size", INTEGER, 22,
             parents(SWIPE_BRIGHTNESS, SWIPE_VOLUME)),
     SWIPE_OVERLAY_TIMEOUT("revanced_swipe_overlay_timeout", LONG, 500L,
             parents(SWIPE_BRIGHTNESS, SWIPE_VOLUME)),
