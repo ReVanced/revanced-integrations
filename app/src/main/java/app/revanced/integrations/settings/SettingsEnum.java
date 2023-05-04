@@ -11,6 +11,8 @@ import static app.revanced.integrations.settings.SharedPrefCategory.RETURN_YOUTU
 import static app.revanced.integrations.settings.SharedPrefCategory.SPONSOR_BLOCK;
 import static app.revanced.integrations.utils.StringRef.str;
 
+import android.content.Context;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -735,7 +737,7 @@ public enum SettingsEnum {
     }
 
     @NonNull
-    public static String exportJSON() {
+    public static String exportJSON(@Nullable Context alertDialogContext) {
         try {
             JSONObject json = new JSONObject();
             for (SettingsEnum setting : valuesSortedForExport()) {
@@ -751,7 +753,7 @@ public enum SettingsEnum {
                     json.put(importExportKey, setting.getObjectValue());
                 }
             }
-            SponsorBlockSettings.exportCategoriesToFlatJson(json);
+            SponsorBlockSettings.exportCategoriesToFlatJson(alertDialogContext, json);
             if (json.length() == 0) {
                 return "";
             }
@@ -811,8 +813,8 @@ public enum SettingsEnum {
                     setting.saveValue(setting.defaultValue);
                 }
             }
-
             numberOfSettingsImported += SponsorBlockSettings.importCategoriesFromFlatJson(json);
+
             ReVancedUtils.showToastLong(str("revanced_settings_import_success", numberOfSettingsImported));
             return rebootSettingChanged;
         } catch (JSONException | IllegalArgumentException ex) {

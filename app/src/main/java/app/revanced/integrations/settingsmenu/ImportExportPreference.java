@@ -12,7 +12,6 @@ import android.util.TypedValue;
 import android.widget.EditText;
 
 import app.revanced.integrations.settings.SettingsEnum;
-import app.revanced.integrations.sponsorblock.SponsorBlockSettings;
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedUtils;
 
@@ -51,15 +50,9 @@ public class ImportExportPreference extends EditTextPreference implements Prefer
     @Override
     public boolean onPreferenceClick(Preference preference) {
         try {
-            existingSettings = SettingsEnum.exportJSON();
             // Must set text before preparing dialog, otherwise text is non selectable if this preference is later reopened.
+            existingSettings = SettingsEnum.exportJSON(getContext());
             getEditText().setText(existingSettings);
-
-            // If user has a SponsorBlock user id then show a warning.
-            if (SponsorBlockSettings.userHasSBPrivateId() && !SettingsEnum.SB_HIDE_EXPORT_WARNING.getBoolean()) {
-                showDoNotShareSponsorBlockUserIdDialog();
-                return true;
-            }
         } catch (Exception ex) {
             LogHelper.printException(() -> "showDialog failure", ex);
         }
@@ -73,51 +66,25 @@ public class ImportExportPreference extends EditTextPreference implements Prefer
             builder.setNeutralButton(str("revanced_settings_import_copy"), (dialog, which) -> {
                 ReVancedUtils.setClipboard(getEditText().getText().toString());
             }).setPositiveButton(str("revanced_settings_import"), (dialog, which) -> {
-                String replacementSettings = getEditText().getText().toString();
-                if (replacementSettings.equals(existingSettings)) {
-                    return;
-                }
-                String sbUserIdPath = SettingsEnum.SB_UUID.path;
-                // If user is deleting (and not replacing) their SB user id, then verify that's what they want to do.
-                if (existingSettings.contains(sbUserIdPath) && !replacementSettings.contains(sbUserIdPath)) {
-                    confirmUserWantsToDeletedSBUserId(replacementSettings);
-                } else {
-                    importSettings(replacementSettings);
-                }
+                importSettings(getEditText().getText().toString());
             });
         } catch (Exception ex) {
             LogHelper.printException(() -> "onPrepareDialogBuilder failure", ex);
         }
     }
 
-    private void showDoNotShareSponsorBlockUserIdDialog() {
-        new AlertDialog.Builder(getContext())
-                .setMessage(str("revanced_settings_import_sb_userid_present"))
-                .setNeutralButton(str("revanced_settings_import_sb_userid_present_dismiss"),
-                        (dialog, which) -> SettingsEnum.SB_HIDE_EXPORT_WARNING.saveValue(true))
-                .setPositiveButton(android.R.string.ok, null)
-                .setCancelable(false)
-                .show();
-    }
-
-    private void confirmUserWantsToDeletedSBUserId(String replacementSettings) {
-        new AlertDialog.Builder(getContext())
-                .setMessage(str("revanced_settings_import_sb_userid_removed"))
-                .setNegativeButton(android.R.string.cancel, (dialog, which) ->
-                        ReVancedUtils.showToastLong(str("revanced_settings_import_sb_userid_removed_canceled")))
-                .setPositiveButton(android.R.string.ok, (dialog, which) -> importSettings(replacementSettings))
-                .setCancelable(false)
-                .show();
-    }
-
     private void importSettings(String replacementSettings) {
-        // Import JSON settings
         try {
+            if (replacementSettings.equals(existingSettings)) {
+                return;
+            }
             ReVancedSettingsFragment.settingImportInProgress = true;
             final boolean rebootNeeded = SettingsEnum.importJSON(replacementSettings);
             if (rebootNeeded) {
                 ReVancedSettingsFragment.showRebootDialog(getContext());
             }
+        } catch (Exception ex) {
+            LogHelper.printException(() -> "importSettings failure", ex);
         } finally {
             ReVancedSettingsFragment.settingImportInProgress = false;
         }

@@ -2,10 +2,13 @@ package app.revanced.integrations.sponsorblock;
 
 import static app.revanced.integrations.utils.StringRef.str;
 
+import android.app.AlertDialog;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Patterns;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -160,7 +163,21 @@ public class SponsorBlockSettings {
     /**
      * Export the categories using flatten json (no embedded dictionaries or arrays).
      */
-    public static void exportCategoriesToFlatJson(JSONObject json) throws JSONException {
+    public static void exportCategoriesToFlatJson(@Nullable Context dialogContext,
+                                                  @NonNull JSONObject json) throws JSONException {
+        ReVancedUtils.verifyOnMainThread();
+        // If user has a SponsorBlock user id then show a warning.
+        if (dialogContext != null && SponsorBlockSettings.userHasSBPrivateId()
+                && !SettingsEnum.SB_HIDE_EXPORT_WARNING.getBoolean()) {
+            new AlertDialog.Builder(dialogContext)
+                    .setMessage(str("sb_settings_revanced_export_user_id_warning"))
+                    .setNeutralButton(str("sb_settings_revanced_export_user_id_warning_dismiss"),
+                            (dialog, which) -> SettingsEnum.SB_HIDE_EXPORT_WARNING.saveValue(true))
+                    .setPositiveButton(android.R.string.ok, null)
+                    .setCancelable(false)
+                    .show();
+        }
+
         for (SegmentCategory category : SegmentCategory.categoriesWithoutUnsubmitted()) {
             category.exportToFlatJSON(json);
         }
