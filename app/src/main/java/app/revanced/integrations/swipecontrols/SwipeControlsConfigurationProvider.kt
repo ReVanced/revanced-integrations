@@ -24,13 +24,13 @@ class SwipeControlsConfigurationProvider(
      * should swipe controls for volume be enabled?
      */
     val enableVolumeControls: Boolean
-        get() = SettingsEnum.ENABLE_SWIPE_VOLUME.boolean
+        get() = SettingsEnum.SWIPE_VOLUME.boolean
 
     /**
      * should swipe controls for volume be enabled?
      */
     val enableBrightnessControl: Boolean
-        get() = SettingsEnum.ENABLE_SWIPE_BRIGHTNESS.boolean
+        get() = SettingsEnum.SWIPE_BRIGHTNESS.boolean
 
     /**
      * is the video player currently in fullscreen mode?
@@ -52,7 +52,7 @@ class SwipeControlsConfigurationProvider(
      * should press-to-swipe be enabled?
      */
     val shouldEnablePressToSwipe: Boolean
-        get() = SettingsEnum.ENABLE_PRESS_TO_SWIPE.boolean
+        get() = SettingsEnum.SWIPE_PRESS_TO_ENGAGE.boolean
 
     /**
      * threshold for swipe detection
@@ -68,7 +68,7 @@ class SwipeControlsConfigurationProvider(
      * should the overlay enable haptic feedback?
      */
     val shouldEnableHapticFeedback: Boolean
-        get() = SettingsEnum.ENABLE_SWIPE_HAPTIC_FEEDBACK.boolean
+        get() = SettingsEnum.SWIPE_HAPTIC_FEEDBACK.boolean
 
     /**
      * how long the overlay should be shown on changes
