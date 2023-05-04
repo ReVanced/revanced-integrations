@@ -20,6 +20,7 @@ import android.preference.PreferenceScreen;
 import android.preference.SwitchPreference;
 import android.text.Html;
 import android.text.InputType;
+import android.util.TypedValue;
 import android.widget.EditText;
 
 import androidx.annotation.NonNull;
@@ -354,6 +355,10 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment {
         importExport = new EditTextPreference(context);
         importExport.setTitle(str("sb_settings_ie"));
         importExport.setSummary(str("sb_settings_ie_sum"));
+        importExport.getEditText().setInputType(InputType.TYPE_CLASS_TEXT
+                | InputType.TYPE_TEXT_FLAG_MULTI_LINE
+                | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
+        importExport.getEditText().setTextSize(TypedValue.COMPLEX_UNIT_PT, 8);
         importExport.setOnPreferenceClickListener(preference1 -> {
             importExport.getEditText().setText(SponsorBlockSettings.exportSettings());
             return true;

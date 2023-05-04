@@ -273,16 +273,19 @@ public enum SettingsEnum {
         }
     }
 
+    private static final Map<String, SettingsEnum> pathToSetting = new HashMap<>(2* values().length);
+
     static {
         loadAllSettings();
+
+        for (SettingsEnum setting : values()) {
+            pathToSetting.put(setting.path, setting);
+        }
     }
 
     @Nullable
     public static SettingsEnum settingFromPath(@NonNull String str) {
-        for (SettingsEnum setting : values()) {
-            if (setting.path.equals(str)) return setting;
-        }
-        return null;
+        return pathToSetting.get(str);
     }
 
     private static void loadAllSettings() {
@@ -347,7 +350,9 @@ public enum SettingsEnum {
      * This method is only to be used by the Settings preference code.
      */
     public static void setValue(@NonNull SettingsEnum setting, @NonNull Boolean newValue) {
-        Objects.requireNonNull(newValue);
+        if (!setting.returnType.matches(newValue)) {
+            throw new IllegalArgumentException();
+        }
         setting.value = newValue;
     }
 
@@ -355,7 +360,10 @@ public enum SettingsEnum {
      * Sets the value, and persistently saves it.
      */
     public void saveValue(@NonNull Object newValue) {
-        Objects.requireNonNull(newValue);
+        if (!returnType.matches(newValue)) {
+            throw new IllegalArgumentException();
+        }
+        value = newValue; // Must set before saving to preferences (otherwise importing fails to update UI correctly).
         switch (returnType) {
             case BOOLEAN:
                 sharedPref.saveBoolean(path, (boolean) newValue);
@@ -375,7 +383,6 @@ public enum SettingsEnum {
             default:
                 throw new IllegalStateException(name());
         }
-        value = newValue;
     }
 
     /**
@@ -422,11 +429,168 @@ public enum SettingsEnum {
         return value;
     }
 
+    /**
+     * This could be yet another field,
+     * for now use a simple switch statement since this method is not used outside this class.
+     */
+    private boolean includeWithImportExport() {
+        switch (this) {
+            case RYD_USER_ID: // Not useful to export, no reason to include it.
+            case SB_IS_VIP:
+            case SB_LAST_VIP_CHECK:
+            case SB_HIDE_EXPORT_WARNING:
+            case SB_SEEN_GUIDELINES:
+            case SB_SKIPPED_SEGMENTS_NUMBER_SKIPPED:
+            case SB_SKIPPED_SEGMENTS_TIME_SAVED:
+                return false;
+        }
+        return true;
+    }
+
+    // Begin import / export
+
+    /**
+     * The path, minus any 'revanced' prefix to keep json concise.
+     */
+    private String getImportExportKey() {
+        if (path.startsWith(OPTIONAL_REVANCED_SETTINGS_PREFIX)) {
+            return path.substring(OPTIONAL_REVANCED_SETTINGS_PREFIX.length());
+        }
+        return path;
+    }
+
+    /**
+     * If a setting path has this prefix, then remove it before importing/exporting.
+     */
+    private static final String OPTIONAL_REVANCED_SETTINGS_PREFIX = "revanced_";
+
+    private static SettingsEnum[] valuesSortedForExport() {
+        SettingsEnum sorted[] = values();
+        Arrays.sort(sorted, (SettingsEnum o1, SettingsEnum o2) -> {
+            // Organize SponsorBlock settings last.
+            final boolean o1IsSb = o1.path.startsWith("sb_");
+            final boolean o2IsSb = o2.path.startsWith("sb_");
+            if (o1IsSb != o2IsSb) {
+                return o1IsSb ? 1 : -1;
+            }
+            return o1.path.compareTo(o2.path);
+        });
+        return sorted;
+    }
+
+    @NonNull
+    public static String exportJSON() {
+        try {
+            JSONObject json = new JSONObject();
+            for (SettingsEnum setting : valuesSortedForExport()) {
+                String importExportKey = setting.getImportExportKey();
+                if (json.has(importExportKey)) {
+                    throw new IllegalArgumentException("duplicate key found");
+                }
+                if (!setting.includeWithImportExport()) {
+                    continue;
+                }
+                Object objectValue = setting.getObjectValue();
+                if (!objectValue.equals(setting.defaultValue)) {
+                    json.put(importExportKey, setting.getObjectValue());
+                }
+            }
+            SponsorBlockSettings.exportCategoriesToFlatJson(json); // Export SB using flat JSON layout.
+            if (json.length() == 0) {
+                return "";
+            }
+
+            String export = json.toString(0);
+            // Remove the outer JSON braces to make the output more compact,
+            // and leave less chance of the user forgetting to copy it
+            return export.substring(2, export.length() - 2);
+        } catch (JSONException e) {
+            LogHelper.printException(() -> "Export failure", e); // should never happen
+            return "";
+        }
+    }
+
+    /**
+     * @return if any settings that require a reboot were changed.
+     */
+    public static boolean importJSON(@NonNull String settingsJsonString) {
+        try {
+            boolean rebootSettingChanged = false;
+            if (!settingsJsonString.matches("[\\s\\S]*\\{")) {
+                settingsJsonString = '{' + settingsJsonString + '}'; // Restore outer JSON braces
+            }
+            int numberOfSettingsImported = 0;
+            JSONObject json = new JSONObject(settingsJsonString);
+            for (SettingsEnum setting : values()) {
+                String key = setting.getImportExportKey();
+                if (json.has(key)) {
+                    Object value;
+                    switch (setting.returnType) {
+                        case BOOLEAN:
+                             value = json.getBoolean(key);
+                             break;
+                        case INTEGER:
+                            value = json.getInt(key);
+                            break;
+                        case LONG:
+                            value = json.getLong(key);
+                            break;
+                        case FLOAT:
+                            value = (float) json.getDouble(key);
+                            break;
+                        case STRING:
+                            value = json.getString(key);
+                            break;
+                        default:
+                            throw new IllegalStateException();
+                    }
+                    if (!setting.getObjectValue().equals(value)) {
+                        rebootSettingChanged |= setting.rebootApp;
+                        setting.saveValue(value);
+                    }
+                    numberOfSettingsImported++;
+                } else if (setting.includeWithImportExport() && !setting.getObjectValue().equals(setting.defaultValue)) {
+                    LogHelper.printDebug(() -> "Resetting to default: " + setting);
+                    rebootSettingChanged |= setting.rebootApp;
+                    setting.saveValue(setting.defaultValue);
+                }
+            }
+
+            numberOfSettingsImported += SponsorBlockSettings.importCategoriesFromFlatJson(json);
+            ReVancedUtils.showToastLong(str("revanced_settings_import_success", numberOfSettingsImported));
+            return rebootSettingChanged;
+        } catch (JSONException | IllegalArgumentException ex) {
+            ReVancedUtils.showToastLong(str("revanced_settings_import_failure_parse", ex.getMessage()));
+            LogHelper.printInfo(() -> "", ex);
+        } catch (Exception ex) {
+            LogHelper.printException(() -> "Import failure: " + ex.getMessage(), ex); // should never happen
+        }
+        return false;
+    }
+
+    // End import / export
+
     public enum ReturnType {
         BOOLEAN,
         INTEGER,
-        STRING,
         LONG,
         FLOAT,
+        STRING;
+
+        public boolean matches(@Nullable Object obj) {
+            switch (this) {
+                case BOOLEAN:
+                    return obj instanceof Boolean;
+                case INTEGER:
+                    return obj instanceof Integer;
+                case LONG:
+                    return obj instanceof Long;
+                case FLOAT:
+                    return obj instanceof Float;
+                case STRING:
+                    return obj instanceof String;
+            }
+            return false;
+        }
     }
 }

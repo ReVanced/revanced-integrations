@@ -157,6 +157,31 @@ public class SponsorBlockSettings {
         }
     }
 
+    /**
+     * Export the categories using flatten json (no embedded dictionaries or arrays).
+     */
+    public static void exportCategoriesToFlatJson(JSONObject json) throws JSONException {
+        for (SegmentCategory category : SegmentCategory.categoriesWithoutUnsubmitted()) {
+            category.exportToFlatJSON(json);
+        }
+    }
+
+    /**
+     * Import the categories using flatten json (no embedded dictionaries or arrays).
+     *
+     * @return the number of settings imported
+     */
+    public static int importCategoriesFromFlatJson(JSONObject json) throws JSONException {
+        int numberOfImportedSettings = 0;
+        SharedPreferences.Editor editor = SharedPrefCategory.SPONSOR_BLOCK.preferences.edit();
+        for (SegmentCategory category : SegmentCategory.categoriesWithoutUnsubmitted()) {
+            numberOfImportedSettings += category.importFromFlatJSON(json, editor);
+        }
+        editor.apply();
+        return numberOfImportedSettings;
+    }
+
+
     public static boolean isValidSBUserId(@NonNull String userId) {
         return !userId.isEmpty();
     }
@@ -180,17 +205,6 @@ public class SponsorBlockSettings {
         return true;
     }
 
-    private static boolean initialized;
-
-    public static void initialize() {
-        if (initialized) {
-            return;
-        }
-        initialized = true;
-
-        SegmentCategory.loadFromPreferences();
-    }
-
     /**
      * @return if the user has ever voted, created a segment, or imported existing SB settings.
      */
@@ -212,5 +226,16 @@ public class SponsorBlockSettings {
             SettingsEnum.SB_UUID.saveValue(uuid);
         }
         return uuid;
+    }
+
+    private static boolean initialized;
+
+    public static void initialize() {
+        if (initialized) {
+            return;
+        }
+        initialized = true;
+
+        SegmentCategory.loadFromPreferences();
     }
 }
