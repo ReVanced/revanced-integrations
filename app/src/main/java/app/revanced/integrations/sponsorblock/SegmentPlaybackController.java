@@ -38,12 +38,12 @@ public class SegmentPlaybackController {
      * Length of time to show a skip button for a highlight segment,
      * or a regular segment if {@link SettingsEnum#SB_AUTO_HIDE_SKIP_BUTTON} is enabled.
      *
-     * Because Effectively, this value is rounded up to the next second.
+     * Effectively this value is rounded up to the next second.
      */
     private static final long DURATION_TO_SHOW_SKIP_BUTTON = 3800;
 
     /*
-     * Highlight segments have zero length, as they are a point in time.
+     * Highlight segments have zero length as they are a point in time.
      * Draw them on screen using a fixed width bar.
      * Value is independent of device dpi.
      */
