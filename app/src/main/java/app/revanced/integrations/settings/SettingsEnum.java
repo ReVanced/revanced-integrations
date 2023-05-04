@@ -325,7 +325,7 @@ public enum SettingsEnum {
     @Deprecated
     DEPRECATED_SB_SKIPPED_SEGMENTS_TIME_SAVED("sb-skipped-segments-time", LONG, 0L, SPONSOR_BLOCK);
     @Deprecated
-    private static final SettingsEnum renamedSettings[][] = {
+    private static final SettingsEnum[][] renamedSettings = {
             {DEPRECATED_ADREMOVER_BUTTONED_REMOVAL, ADREMOVER_BUTTONED_ADS},
             {DEPRECATED_ADREMOVER_GENERAL_ADS_REMOVAL, ADREMOVER_GENERAL_ADS},
             {DEPRECATED_REMOVE_VIDEO_ADS, HIDE_VIDEO_ADS},
@@ -719,7 +719,7 @@ public enum SettingsEnum {
     private static final String OPTIONAL_REVANCED_SETTINGS_PREFIX = "revanced_";
 
     private static SettingsEnum[] valuesSortedForExport() {
-        SettingsEnum sorted[] = values();
+        SettingsEnum[] sorted = values();
         Arrays.sort(sorted, (SettingsEnum o1, SettingsEnum o2) -> {
             // Organize SponsorBlock settings last.
             final boolean o1IsSb = o1.path.startsWith("sb_");
@@ -746,14 +746,14 @@ public enum SettingsEnum {
                 }
                 Object objectValue = setting.getObjectValue();
                 if (!objectValue.equals(setting.defaultValue)) {
-                    json.put(importExportKey, setting.getObjectValue());
+                    json.put(importExportKey, objectValue);
                 }
             }
             SponsorBlockSettings.exportCategoriesToFlatJson(alertDialogContext, json);
+
             if (json.length() == 0) {
                 return "";
             }
-
             String export = json.toString(0);
             // Remove the outer JSON braces to make the output more compact,
             // and leave less chance of the user forgetting to copy it
