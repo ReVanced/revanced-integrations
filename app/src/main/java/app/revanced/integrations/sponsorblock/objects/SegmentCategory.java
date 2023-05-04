@@ -241,10 +241,13 @@ public enum SegmentCategory {
         }
 
         String behaviorString = preferences.getString(key, null);
-        if (behaviorString != null) {
+        if (behaviorString == null) {
+            behaviour = defaultBehaviour;
+        } else {
             CategoryBehaviour preferenceBehavior = CategoryBehaviour.byStringKey(behaviorString);
             if (preferenceBehavior == null) {
                 LogHelper.printException(() -> "Unknown behavior: " + behaviorString); // should never happen
+                behaviour = defaultBehaviour;
             } else {
                 behaviour = preferenceBehavior;
             }
