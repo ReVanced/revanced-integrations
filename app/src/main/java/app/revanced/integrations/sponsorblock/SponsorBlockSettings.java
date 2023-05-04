@@ -69,9 +69,12 @@ public class SponsorBlockSettings {
             }
             editor.apply();
 
-            String userID = settingsJson.getString("userID");
-            if (isValidSBUserId(userID)) { // User id does not exist if user never voted or created any segments.
-                SettingsEnum.SB_UUID.saveValue(userID);
+            if (settingsJson.has("userID")) {
+                // User id does not exist if user never voted or created any segments.
+                String userID = settingsJson.getString("userID");
+                if (isValidSBUserId(userID)) {
+                    SettingsEnum.SB_UUID.saveValue(userID);
+                }
             }
             SettingsEnum.SB_IS_VIP.saveValue(settingsJson.getBoolean("isVip"));
             SettingsEnum.SB_SHOW_TOAST_ON_SKIP.saveValue(!settingsJson.getBoolean("dontShowNotice"));
