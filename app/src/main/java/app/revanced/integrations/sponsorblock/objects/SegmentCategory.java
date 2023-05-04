@@ -251,6 +251,18 @@ public enum SegmentCategory {
         }
     }
 
+    /**
+     * Saves the current color and behavior.
+     * Calling code is responsible for calling {@link SharedPreferences.Editor#apply()}
+     */
+    public void save(SharedPreferences.Editor editor) {
+        String colorString = (color == defaultColor)
+                ? null // remove any saved preference, so default is used on the next load
+                : colorString();
+        editor.putString(key + COLOR_PREFERENCE_KEY_SUFFIX, colorString);
+        editor.putString(key, behaviour.key);
+    }
+
     private String getFlatJsonBehaviorKey() {
         return FLAT_JSON_IMPORT_EXPORT_PREFIX + key;
     }
@@ -293,18 +305,6 @@ public enum SegmentCategory {
         }
         save(editor);
         return numberOfSettingsImported;
-    }
-
-    /**
-     * Saves the current color and behavior.
-     * Calling code is responsible for calling {@link SharedPreferences.Editor#apply()}
-     */
-    public void save(SharedPreferences.Editor editor) {
-        String colorString = (color == defaultColor)
-                ? null // remove any saved preference, so default is used on the next load
-                : colorString();
-        editor.putString(key + COLOR_PREFERENCE_KEY_SUFFIX, colorString);
-        editor.putString(key, behaviour.key);
     }
 
     /**
