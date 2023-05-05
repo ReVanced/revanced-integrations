@@ -224,9 +224,8 @@ public class SponsorBlockUtils {
                 return;
             }
             clearUnsubmittedSegmentTimes();
-            String privateUserId = SponsorBlockSettings.getSBUserPrivateID();
             ReVancedUtils.runOnBackgroundThread(() -> {
-                SBRequester.submitSegments(privateUserId, videoId, segmentCategory.key, start, end, videoLength);
+                SBRequester.submitSegments(videoId, segmentCategory.key, start, end, videoLength);
                 SegmentPlaybackController.executeDownloadSegments(videoId);
             });
         } catch (Exception e) {

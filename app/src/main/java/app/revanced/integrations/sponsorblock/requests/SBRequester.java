@@ -127,15 +127,16 @@ public class SBRequester {
         return segments.toArray(new SponsorSegment[0]);
     }
 
-    public static void submitSegments(@NonNull String userPrivateId, @NonNull String videoId, @NonNull String category,
+    public static void submitSegments(@NonNull String videoId, @NonNull String category,
                                       long startTime, long endTime, long videoLength) {
         ReVancedUtils.verifyOffMainThread();
         try {
+            String privateUserId = SponsorBlockSettings.getSBPrivateUserID();
             String start = String.format(Locale.US, TIME_TEMPLATE, startTime / 1000f);
             String end = String.format(Locale.US, TIME_TEMPLATE, endTime / 1000f);
             String duration = String.format(Locale.US, TIME_TEMPLATE, videoLength / 1000f);
 
-            HttpURLConnection connection = getConnectionFromRoute(SBRoutes.SUBMIT_SEGMENTS, userPrivateId, videoId, category, start, end, duration);
+            HttpURLConnection connection = getConnectionFromRoute(SBRoutes.SUBMIT_SEGMENTS, privateUserId, videoId, category, start, end, duration);
             final int responseCode = connection.getResponseCode();
 
             final String messageToToast;
@@ -196,7 +197,7 @@ public class SBRequester {
         ReVancedUtils.runOnBackgroundThread(() -> {
             try {
                 String segmentUuid = segment.UUID;
-                String uuid = SponsorBlockSettings.getSBUserPrivateID();
+                String uuid = SponsorBlockSettings.getSBPrivateUserID();
                 HttpURLConnection connection = (voteOption == SegmentVote.CATEGORY_CHANGE)
                         ? getConnectionFromRoute(SBRoutes.VOTE_ON_SEGMENT_CATEGORY, uuid, segmentUuid, categoryToVoteFor.key)
                         : getConnectionFromRoute(SBRoutes.VOTE_ON_SEGMENT_QUALITY, uuid, segmentUuid, String.valueOf(voteOption.apiVoteType));
@@ -230,7 +231,7 @@ public class SBRequester {
     public static UserStats retrieveUserStats() {
         ReVancedUtils.verifyOffMainThread();
         try {
-            UserStats stats = new UserStats(getJSONObject(SBRoutes.GET_USER_STATS, SponsorBlockSettings.getSBUserPrivateID()));
+            UserStats stats = new UserStats(getJSONObject(SBRoutes.GET_USER_STATS, SponsorBlockSettings.getSBPrivateUserID()));
             LogHelper.printDebug(() -> "user stats: " + stats);
             return stats;
         } catch (IOException ex) {
@@ -248,7 +249,7 @@ public class SBRequester {
     public static String setUsername(@NonNull String username) {
         ReVancedUtils.verifyOffMainThread();
         try {
-            HttpURLConnection connection = getConnectionFromRoute(SBRoutes.CHANGE_USERNAME, SponsorBlockSettings.getSBUserPrivateID(), username);
+            HttpURLConnection connection = getConnectionFromRoute(SBRoutes.CHANGE_USERNAME, SponsorBlockSettings.getSBPrivateUserID(), username);
             final int responseCode = connection.getResponseCode();
             String responseMessage = connection.getResponseMessage();
             if (responseCode == HTTP_STATUS_CODE_SUCCESS) {
@@ -271,7 +272,7 @@ public class SBRequester {
         }
         ReVancedUtils.runOnBackgroundThread(() -> {
             try {
-                JSONObject json = getJSONObject(SBRoutes.IS_USER_VIP, SponsorBlockSettings.getSBUserPrivateID());
+                JSONObject json = getJSONObject(SBRoutes.IS_USER_VIP, SponsorBlockSettings.getSBPrivateUserID());
                 boolean vip = json.getBoolean("vip");
                 SettingsEnum.SB_IS_VIP.saveValue(vip);
                 SettingsEnum.SB_LAST_VIP_CHECK.saveValue(now);

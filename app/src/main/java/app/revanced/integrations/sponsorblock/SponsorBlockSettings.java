@@ -24,6 +24,10 @@ import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedUtils;
 
 public class SponsorBlockSettings {
+    /**
+     * Minimum length a SB user id must be, as set by SB API.
+     */
+    private static final int SB_PRIVATE_USER_ID_MINIMUM_LENGTH = 30;
 
     public static void importSettings(@NonNull String json) {
         ReVancedUtils.verifyOnMainThread();
@@ -210,7 +214,7 @@ public class SponsorBlockSettings {
     }
 
     public static boolean isValidSBUserId(@NonNull String userId) {
-        return !userId.isEmpty();
+        return !userId.isEmpty() && userId.length() >= SB_PRIVATE_USER_ID_MINIMUM_LENGTH;
     }
 
     /**
@@ -243,7 +247,7 @@ public class SponsorBlockSettings {
      * Use this only if a user id is required (creating segments, voting).
      */
     @NonNull
-    public static String getSBUserPrivateID() {
+    public static String getSBPrivateUserID() {
         String uuid = SettingsEnum.SB_PRIVATE_USER_ID.getString();
         if (uuid.isEmpty()) {
             uuid = (UUID.randomUUID().toString() +
