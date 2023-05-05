@@ -73,7 +73,7 @@ public class SponsorBlockSettings {
                 // User id does not exist if user never voted or created any segments.
                 String userID = settingsJson.getString("userID");
                 if (isValidSBUserId(userID)) {
-                    SettingsEnum.SB_UUID.saveValue(userID);
+                    SettingsEnum.SB_PRIVATE_USER_ID.saveValue(userID);
                 }
             }
             SettingsEnum.SB_IS_VIP.saveValue(settingsJson.getBoolean("isVip"));
@@ -141,7 +141,7 @@ public class SponsorBlockSettings {
                 }
             }
             if (SponsorBlockSettings.userHasSBPrivateId()) {
-                json.put("userID", SettingsEnum.SB_UUID.getString());
+                json.put("userID", SettingsEnum.SB_PRIVATE_USER_ID.getString());
             }
             json.put("isVip", SettingsEnum.SB_IS_VIP.getBoolean());
             json.put("serverAddress", SettingsEnum.SB_API_URL.getString());
@@ -236,7 +236,7 @@ public class SponsorBlockSettings {
      * @return if the user has ever voted, created a segment, or imported existing SB settings.
      */
     public static boolean userHasSBPrivateId() {
-        return !SettingsEnum.SB_UUID.getString().isEmpty();
+        return !SettingsEnum.SB_PRIVATE_USER_ID.getString().isEmpty();
     }
 
     /**
@@ -244,13 +244,13 @@ public class SponsorBlockSettings {
      */
     @NonNull
     public static String getSBUserPrivateID() {
-        String uuid = SettingsEnum.SB_UUID.getString();
+        String uuid = SettingsEnum.SB_PRIVATE_USER_ID.getString();
         if (uuid.isEmpty()) {
             uuid = (UUID.randomUUID().toString() +
                     UUID.randomUUID().toString() +
                     UUID.randomUUID().toString())
                     .replace("-", "");
-            SettingsEnum.SB_UUID.saveValue(uuid);
+            SettingsEnum.SB_PRIVATE_USER_ID.saveValue(uuid);
         }
         return uuid;
     }

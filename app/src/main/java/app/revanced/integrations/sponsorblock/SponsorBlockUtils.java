@@ -214,20 +214,19 @@ public class SponsorBlockUtils {
     private static void submitNewSegment() {
         try {
             ReVancedUtils.verifyOnMainThread();
-            final String uuid = SettingsEnum.SB_UUID.getString();
             final long start = newSponsorSegmentStartMillis;
             final long end = newSponsorSegmentEndMillis;
             final String videoId = VideoInformation.getVideoId();
             final long videoLength = VideoInformation.getVideoLength();
             final SegmentCategory segmentCategory = newUserCreatedSegmentCategory;
-            if (start < 0 || end < 0 || start >= end || videoLength <= 0 || videoId.isEmpty()
-                     || segmentCategory == null || uuid.isEmpty()) {
+            if (start < 0 || end < 0 || start >= end || videoLength <= 0 || videoId.isEmpty() || segmentCategory == null) {
                 LogHelper.printException(() -> "invalid parameters");
                 return;
             }
             clearUnsubmittedSegmentTimes();
+            String privateUserId = SponsorBlockSettings.getSBUserPrivateID();
             ReVancedUtils.runOnBackgroundThread(() -> {
-                SBRequester.submitSegments(uuid, videoId, segmentCategory.key, start, end, videoLength);
+                SBRequester.submitSegments(privateUserId, videoId, segmentCategory.key, start, end, videoLength);
                 SegmentPlaybackController.executeDownloadSegments(videoId);
             });
         } catch (Exception e) {

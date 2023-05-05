@@ -102,7 +102,7 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment {
             minSegmentDuration.setText(SettingsEnum.SB_MIN_DURATION.getObjectValue().toString());
             minSegmentDuration.setEnabled(enabled);
 
-            privateUserId.setText(SettingsEnum.SB_UUID.getString());
+            privateUserId.setText(SettingsEnum.SB_PRIVATE_USER_ID.getString());
             privateUserId.setEnabled(enabled);
 
             apiUrl.setEnabled(enabled);
@@ -313,7 +313,7 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment {
                 ReVancedUtils.showToastLong(str("sb_general_uuid_invalid"));
                 return false;
             }
-            SettingsEnum.SB_UUID.saveValue(newUUID);
+            SettingsEnum.SB_PRIVATE_USER_ID.saveValue(newUUID);
             fetchAndDisplayStats();
             return true;
         });
