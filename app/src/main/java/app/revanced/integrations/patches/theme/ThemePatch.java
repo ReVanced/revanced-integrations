@@ -65,7 +65,7 @@ public final class ThemePatch {
             Color.colorToHSV(originalColor, hsv);
             final float brightnessDifference = hsv[2] - ORIGINAL_SEEKBAR_CLICKED_COLOR_BRIGHTNESS;
 
-            // Apply the saturation difference to the custom seekbar color.
+            // Apply the brightness difference to the custom seekbar color.
             hsv[0] = customSeekbarColorHSV[0];
             hsv[1] = customSeekbarColorHSV[1];
             hsv[2] = Math.max(0, customSeekbarColorHSV[2] + brightnessDifference);
