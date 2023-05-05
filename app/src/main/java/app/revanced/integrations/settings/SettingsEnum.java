@@ -768,12 +768,13 @@ public enum SettingsEnum {
      */
     public static boolean importJSON(@NonNull String settingsJsonString) {
         try {
-            boolean rebootSettingChanged = false;
             if (!settingsJsonString.matches("[\\s\\S]*\\{")) {
                 settingsJsonString = '{' + settingsJsonString + '}'; // Restore outer JSON braces
             }
-            int numberOfSettingsImported = 0;
             JSONObject json = new JSONObject(settingsJsonString);
+
+            boolean rebootSettingChanged = false;
+            int numberOfSettingsImported = 0;
             for (SettingsEnum setting : values()) {
                 String key = setting.getImportExportKey();
                 if (json.has(key)) {
