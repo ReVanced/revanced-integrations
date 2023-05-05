@@ -539,7 +539,7 @@ public enum SettingsEnum {
             SettingsEnum oldSetting = oldNewSetting[0];
             SettingsEnum newSetting = oldNewSetting[1];
 
-            if (!oldSetting.value.equals(oldSetting.defaultValue)) {
+            if (!oldSetting.isSetToDefault()) {
                 LogHelper.printInfo(() -> "Migrating old setting of '" + oldSetting.value
                         + "' from: " + oldSetting + " into replacement setting: " + newSetting);
                 newSetting.saveValue(oldSetting.value);
@@ -653,6 +653,13 @@ public enum SettingsEnum {
         return false;
     }
 
+    /**
+     * @return if the currently set value is the same as {@link #defaultValue}
+     */
+    public boolean isSetToDefault() {
+        return value.equals(defaultValue);
+    }
+
     public boolean getBoolean() {
         return (Boolean) value;
     }
@@ -740,12 +747,8 @@ public enum SettingsEnum {
                 if (json.has(importExportKey)) {
                     throw new IllegalArgumentException("duplicate key found");
                 }
-                if (!setting.includeWithImportExport()) {
-                    continue;
-                }
-                Object objectValue = setting.getObjectValue();
-                if (!objectValue.equals(setting.defaultValue)) {
-                    json.put(importExportKey, objectValue);
+                if (setting.includeWithImportExport() && !setting.isSetToDefault()) {
+                    json.put(importExportKey, setting.getObjectValue());
                 }
             }
             SponsorBlockSettings.exportCategoriesToFlatJson(alertDialogContext, json);
@@ -803,7 +806,7 @@ public enum SettingsEnum {
                         setting.saveValue(value);
                     }
                     numberOfSettingsImported++;
-                } else if (setting.includeWithImportExport() && !setting.getObjectValue().equals(setting.defaultValue)) {
+                } else if (setting.includeWithImportExport() && !setting.isSetToDefault()) {
                     LogHelper.printDebug(() -> "Resetting to default: " + setting);
                     rebootSettingChanged |= setting.rebootApp;
                     setting.saveValue(setting.defaultValue);
