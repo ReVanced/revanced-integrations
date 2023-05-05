@@ -31,13 +31,13 @@ public final class ThemePatch {
     }
 
     private static void loadCustomSeekbarColorHSV() {
-        Color.colorToHSV(Color.parseColor(SettingsEnum.SEEKBAR_COLOR.getString()), customSeekbarColorHSV);
-    }
-
-    private static void resetSeekbarColor() {
-        ReVancedUtils.showToastShort("Invalid seekbar color value. Using default value.");
-        SettingsEnum.SEEKBAR_COLOR.saveValue(SettingsEnum.SEEKBAR_COLOR.defaultValue);
-        loadCustomSeekbarColorHSV();
+        try {
+            Color.colorToHSV(Color.parseColor(SettingsEnum.SEEKBAR_COLOR.getString()), customSeekbarColorHSV);
+        } catch (Exception ex) {
+            ReVancedUtils.showToastShort("Invalid seekbar color value. Using default value.");
+            SettingsEnum.SEEKBAR_COLOR.saveValue(SettingsEnum.SEEKBAR_COLOR.defaultValue);
+            loadCustomSeekbarColorHSV();
+        }
     }
 
     /**
@@ -71,9 +71,9 @@ public final class ThemePatch {
             LogHelper.printDebug(() -> String.format("Original color: #%08X  replacement color: #%08X",
                             originalColor, replacementColor));
             return replacementColor;
-        } catch (Exception exception) {
-            resetSeekbarColor();
-            return getSeekbarColorValue(originalColor);
+        } catch (Exception ex) {
+            LogHelper.printException(() -> "getSeekbarColorValue failure", ex);
+            return originalColor;
         }
     }
 }
