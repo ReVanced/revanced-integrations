@@ -9,13 +9,15 @@ import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedUtils;
 
 public final class ThemePatch {
-
-    private static final int ORIGINAL_SEEKBAR_CLICKED_COLOR = -65536;
+    /**
+     * Default color of seekbar.
+     */
+    private static final int ORIGINAL_SEEKBAR_CLICKED_COLOR = 0xFFFF0000;
 
     /**
      * Default YouTube seekbar color brightness.
      */
-    private static final float DEFAULT_SEEKBAR_COLOR_BRIGHTNESS;
+    private static final float ORIGINAL_SEEKBAR_CLICKED_COLOR_BRIGHTNESS;
 
     /**
      * Custom seekbar hue, saturation, and brightness values.
@@ -24,8 +26,8 @@ public final class ThemePatch {
 
     static {
         float[] hsv = new float[3];
-        Color.colorToHSV(Color.parseColor((String) SettingsEnum.SEEKBAR_COLOR.defaultValue), hsv);
-        DEFAULT_SEEKBAR_COLOR_BRIGHTNESS = hsv[2];
+        Color.colorToHSV(ORIGINAL_SEEKBAR_CLICKED_COLOR, hsv);
+        ORIGINAL_SEEKBAR_CLICKED_COLOR_BRIGHTNESS = hsv[2];
 
         setCustomSeekbarColorHSV(SettingsEnum.SEEKBAR_COLOR.getString());
     }
@@ -46,7 +48,9 @@ public final class ThemePatch {
      */
     public static int getSeekbarClickedColorValue(final int colorValue) {
         // YouTube uses a specific color when the seekbar is clicked. Override in that case.
-        return colorValue == ORIGINAL_SEEKBAR_CLICKED_COLOR ? getSeekbarColorValue(colorValue) : colorValue;
+        return colorValue == ORIGINAL_SEEKBAR_CLICKED_COLOR
+                ? getSeekbarColorValue(ORIGINAL_SEEKBAR_CLICKED_COLOR)
+                : colorValue;
     }
 
     public static int getSeekbarColorValue(int originalColor) {
@@ -59,7 +63,7 @@ public final class ThemePatch {
             // The seekbar uses the same color but different brightness for different situations.
             float[] hsv = new float[3];
             Color.colorToHSV(originalColor, hsv);
-            final float brightnessDifference = hsv[2] - DEFAULT_SEEKBAR_COLOR_BRIGHTNESS;
+            final float brightnessDifference = hsv[2] - ORIGINAL_SEEKBAR_CLICKED_COLOR_BRIGHTNESS;
 
             // Apply the saturation difference to the custom seekbar color.
             hsv[0] = customSeekbarColorHSV[0];
