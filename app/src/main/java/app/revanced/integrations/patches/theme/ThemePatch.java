@@ -2,15 +2,43 @@ package app.revanced.integrations.patches.theme;
 
 import android.graphics.Color;
 
+import androidx.annotation.NonNull;
+
 import app.revanced.integrations.settings.SettingsEnum;
+import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedUtils;
 
 public final class ThemePatch {
+
     private static final int ORIGINAL_SEEKBAR_CLICKED_COLOR = -65536;
+
+    /**
+     * Default YouTube seekbar color brightness.
+     */
+    private static final float DEFAULT_SEEKBAR_COLOR_BRIGHTNESS;
+
+    /**
+     * Custom seekbar hue, saturation, and brightness values.
+     */
+    private static final float[] customSeekbarColorHSV = new float[3];
+
+    static {
+        float[] hsv = new float[3];
+        Color.colorToHSV(Color.parseColor((String) SettingsEnum.SEEKBAR_COLOR.defaultValue), hsv);
+        DEFAULT_SEEKBAR_COLOR_BRIGHTNESS = hsv[2];
+
+        setCustomSeekbarColorHSV(SettingsEnum.SEEKBAR_COLOR.getString());
+    }
+
+    private static void setCustomSeekbarColorHSV(@NonNull String colorString) {
+        Color.colorToHSV(Color.parseColor(colorString), customSeekbarColorHSV);
+    }
 
     private static void resetSeekbarColor() {
         ReVancedUtils.showToastShort("Invalid seekbar color value. Using default value.");
-        SettingsEnum.SEEKBAR_COLOR.saveValue(SettingsEnum.SEEKBAR_COLOR.defaultValue);
+        String defaultSeekbarColor = (String) SettingsEnum.SEEKBAR_COLOR.defaultValue;
+        SettingsEnum.SEEKBAR_COLOR.saveValue(defaultSeekbarColor);
+        setCustomSeekbarColorHSV(defaultSeekbarColor);
     }
 
     /**
@@ -18,15 +46,33 @@ public final class ThemePatch {
      */
     public static int getSeekbarClickedColorValue(final int colorValue) {
         // YouTube uses a specific color when the seekbar is clicked. Override in that case.
-        return colorValue == ORIGINAL_SEEKBAR_CLICKED_COLOR ? getSeekbarColorValue() : colorValue;
+        return colorValue == ORIGINAL_SEEKBAR_CLICKED_COLOR ? getSeekbarColorValue(colorValue) : colorValue;
     }
 
-    public static int getSeekbarColorValue() {
+    public static int getSeekbarColorValue(int originalColor) {
         try {
-            return Color.parseColor(SettingsEnum.SEEKBAR_COLOR.getString());
+            if (SettingsEnum.SEEKBAR_COLOR.getObjectValue().equals(SettingsEnum.SEEKBAR_COLOR.defaultValue)) {
+                return originalColor; // Nothing to do
+            }
+            final int originalAlpha = Color.alpha(originalColor);
+
+            // The seekbar uses the same color but different brightness for different situations.
+            float[] hsv = new float[3];
+            Color.colorToHSV(originalColor, hsv);
+            final float brightnessDifference = hsv[2] - DEFAULT_SEEKBAR_COLOR_BRIGHTNESS;
+
+            // Apply the saturation difference to the custom seekbar color.
+            hsv[0] = customSeekbarColorHSV[0];
+            hsv[1] = customSeekbarColorHSV[1];
+            hsv[2] = Math.max(0, customSeekbarColorHSV[2] + brightnessDifference);
+
+            final int replacementColor = Color.HSVToColor(originalAlpha, hsv);
+            LogHelper.printDebug(() -> String.format("Original color: #%08X  replacement color: #%08X",
+                            originalColor, replacementColor));
+            return replacementColor;
         } catch (Exception exception) {
             resetSeekbarColor();
-            return getSeekbarColorValue();
+            return getSeekbarColorValue(originalColor);
         }
     }
 }
