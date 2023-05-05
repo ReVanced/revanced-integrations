@@ -2,8 +2,6 @@ package app.revanced.integrations.patches.theme;
 
 import android.graphics.Color;
 
-import androidx.annotation.NonNull;
-
 import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedUtils;
@@ -29,18 +27,17 @@ public final class ThemePatch {
         Color.colorToHSV(ORIGINAL_SEEKBAR_CLICKED_COLOR, hsv);
         ORIGINAL_SEEKBAR_CLICKED_COLOR_BRIGHTNESS = hsv[2];
 
-        setCustomSeekbarColorHSV(SettingsEnum.SEEKBAR_COLOR.getString());
+        loadCustomSeekbarColorHSV();
     }
 
-    private static void setCustomSeekbarColorHSV(@NonNull String colorString) {
-        Color.colorToHSV(Color.parseColor(colorString), customSeekbarColorHSV);
+    private static void loadCustomSeekbarColorHSV() {
+        Color.colorToHSV(Color.parseColor(SettingsEnum.SEEKBAR_COLOR.getString()), customSeekbarColorHSV);
     }
 
     private static void resetSeekbarColor() {
         ReVancedUtils.showToastShort("Invalid seekbar color value. Using default value.");
-        String defaultSeekbarColor = (String) SettingsEnum.SEEKBAR_COLOR.defaultValue;
-        SettingsEnum.SEEKBAR_COLOR.saveValue(defaultSeekbarColor);
-        setCustomSeekbarColorHSV(defaultSeekbarColor);
+        SettingsEnum.SEEKBAR_COLOR.saveValue(SettingsEnum.SEEKBAR_COLOR.defaultValue);
+        loadCustomSeekbarColorHSV();
     }
 
     /**
