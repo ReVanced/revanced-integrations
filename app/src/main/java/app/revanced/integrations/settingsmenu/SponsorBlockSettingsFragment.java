@@ -468,8 +468,8 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment {
             statsCategory.removeAll();
             Context context = statsCategory.getContext();
 
-            if (stats.segmentCount > 0) {
-                // if user has created no segments, there's no reason to a username
+            if (stats.totalSegmentCountIncludingIgnored > 0) {
+                // If user has not created any segments, there's no reason to set a username.
                 EditTextPreference preference = new EditTextPreference(context);
                 statsCategory.addPreference(preference);
                 String userName = stats.userName;
@@ -501,7 +501,7 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment {
                 statsCategory.addPreference(preference);
                 String formatted = statsNumberOfSegmentsSkippedFormatter.format(stats.segmentCount);
                 preference.setTitle(fromHtml(str("sb_stats_submissions", formatted)));
-                if (stats.segmentCount == 0) {
+                if (stats.totalSegmentCountIncludingIgnored == 0) {
                     preference.setSelectable(false);
                 } else {
                     preference.setOnPreferenceClickListener(preference1 -> {
@@ -531,7 +531,7 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment {
 
                 String stats_saved;
                 String stats_saved_sum;
-                if (stats.segmentCount == 0) {
+                if (stats.totalSegmentCountIncludingIgnored == 0) {
                     stats_saved = str("sb_stats_saved_zero");
                     stats_saved_sum = str("sb_stats_saved_sum_zero");
                 } else {
