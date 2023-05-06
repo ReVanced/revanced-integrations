@@ -88,9 +88,9 @@ public final class SeekbarColorPatch {
             // Apply the brightness difference to the custom seekbar color.
             hsv[0] = customSeekbarColorHSV[0];
             hsv[1] = customSeekbarColorHSV[1];
-            hsv[2] = Math.max(0, customSeekbarColorHSV[2] + brightnessDifference);
+            hsv[2] = clamp(customSeekbarColorHSV[2] + brightnessDifference, 0, 1);
 
-            final int replacementAlpha = Math.max(0, Color.alpha(customSeekbarColor) + alphaDifference);
+            final int replacementAlpha = clamp(Color.alpha(customSeekbarColor) + alphaDifference, 0, 255);
             final int replacementColor = Color.HSVToColor(replacementAlpha, hsv);
             LogHelper.printDebug(() -> String.format("Original color: #%08X  replacement color: #%08X",
                             originalColor, replacementColor));
@@ -99,5 +99,13 @@ public final class SeekbarColorPatch {
             LogHelper.printException(() -> "getSeekbarColorValue failure", ex);
             return originalColor;
         }
+    }
+
+    static int clamp(int value, int lower, int upper) {
+        return Math.max(lower, Math.min(value, upper));
+    }
+
+    static float clamp(float value, float lower, float upper) {
+        return Math.max(lower, Math.min(value, upper));
     }
 }
