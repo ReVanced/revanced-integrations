@@ -85,7 +85,7 @@ public final class ThemePatch {
             hsv[1] = customSeekbarColorHSV[1];
             hsv[2] = Math.max(0, customSeekbarColorHSV[2] + brightnessDifference);
 
-            final int replacementAlpha = Color.alpha(customSeekbarColor) + alphaDifference;
+            final int replacementAlpha = Math.max(0, Color.alpha(customSeekbarColor) + alphaDifference);
             final int replacementColor = Color.HSVToColor(replacementAlpha, hsv);
             LogHelper.printDebug(() -> String.format("Original color: #%08X  replacement color: #%08X",
                             originalColor, replacementColor));
