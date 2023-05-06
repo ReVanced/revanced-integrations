@@ -6,7 +6,7 @@ import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedUtils;
 
-public final class ThemePatch {
+public final class SeekbarColorPatch {
 
     /**
      * Default color of seekbar.
@@ -65,7 +65,9 @@ public final class ThemePatch {
     /**
      * Injection point.
      *
-     * Unconditionally changes the color to the seekbar custom color, while retaining
+     * If {@link SettingsEnum#HIDE_SEEKBAR} is enabled, this returns a fully transparent color.
+     *
+     * Otherwise the original color is changed to the custom seekbar color, while retaining
      * the brightness and alpha changes of the parameter value compared to the original seekbar color.
      */
     public static int getSeekbarColorValue(int originalColor) {

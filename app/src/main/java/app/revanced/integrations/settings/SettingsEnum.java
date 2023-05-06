@@ -3,7 +3,6 @@ package app.revanced.integrations.settings;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import app.revanced.integrations.utils.StringRef;
-import app.revanced.integrations.patches.theme.ThemePatch;
 
 import java.util.Objects;
 

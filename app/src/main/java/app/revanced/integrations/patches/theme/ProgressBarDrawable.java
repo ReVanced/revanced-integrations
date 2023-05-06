@@ -13,7 +13,7 @@ import app.revanced.integrations.patches.HideSeekbarPatch;
 import app.revanced.integrations.settings.SettingsEnum;
 
 /**
- * Used by {@link ThemePatch} change the color of the seekbar.
+ * Used by {@link SeekbarColorPatch} change the color of the seekbar.
  * and {@link HideSeekbarPatch} to hide the seekbar of the feed and watch history.
  */
 public class ProgressBarDrawable extends Drawable {
@@ -25,7 +25,7 @@ public class ProgressBarDrawable extends Drawable {
         if (SettingsEnum.HIDE_SEEKBAR.getBoolean()) {
             return;
         }
-        paint.setColor(ThemePatch.getCustomSeekbarColor());
+        paint.setColor(SeekbarColorPatch.getCustomSeekbarColor());
         canvas.drawRect(getBounds(), paint);
     }
 
