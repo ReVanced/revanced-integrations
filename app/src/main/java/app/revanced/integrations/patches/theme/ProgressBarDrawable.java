@@ -12,7 +12,7 @@ import androidx.annotation.Nullable;
 /**
  * Used by {@link ThemePatch} to chnage the color of the seekbar.
  */
-public class SeekbarDrawableCustomColor extends Drawable {
+public class ProgressBarDrawable extends Drawable {
 
     private final Paint paint = new Paint();
 

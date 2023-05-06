@@ -70,6 +70,9 @@ public final class ThemePatch {
      */
     public static int getSeekbarColorValue(int originalColor) {
         try {
+            if (SettingsEnum.HIDE_SEEKBAR.getBoolean()) {
+                return 0x00000000;
+            }
             if (customSeekbarColor == ORIGINAL_SEEKBAR_COLOR) {
                 return originalColor; // Nothing to do
             }
