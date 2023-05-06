@@ -19,6 +19,11 @@ public final class ThemePatch {
     private static final float ORIGINAL_SEEKBAR_COLOR_BRIGHTNESS;
 
     /**
+     * Color value of {@link SettingsEnum#SEEKBAR_COLOR}
+     */
+    private static int customSeekbarColor;
+
+    /**
      * Custom seekbar hue, saturation, and brightness values.
      */
     private static final float[] customSeekbarColorHSV = new float[3];
@@ -33,12 +38,17 @@ public final class ThemePatch {
 
     private static void loadCustomSeekbarColorHSV() {
         try {
-            Color.colorToHSV(Color.parseColor(SettingsEnum.SEEKBAR_COLOR.getString()), customSeekbarColorHSV);
+            customSeekbarColor = Color.parseColor(SettingsEnum.SEEKBAR_COLOR.getString());
+            Color.colorToHSV(customSeekbarColor, customSeekbarColorHSV);
         } catch (Exception ex) {
             ReVancedUtils.showToastShort("Invalid seekbar color value. Using default value.");
             SettingsEnum.SEEKBAR_COLOR.saveValue(SettingsEnum.SEEKBAR_COLOR.defaultValue);
             loadCustomSeekbarColorHSV();
         }
+    }
+
+    public static int getCustomSeekbarColor() {
+        return customSeekbarColor;
     }
 
     /**
