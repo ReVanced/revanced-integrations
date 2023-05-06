@@ -41,7 +41,7 @@ public class ProgressBarDrawable extends Drawable {
 
     @Override
     public int getOpacity() {
-        return PixelFormat.OPAQUE;
+        return PixelFormat.TRANSLUCENT;
     }
 
 }
