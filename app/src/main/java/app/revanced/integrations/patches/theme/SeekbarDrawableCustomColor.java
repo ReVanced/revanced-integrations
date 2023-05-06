@@ -9,6 +9,9 @@ import android.graphics.drawable.Drawable;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+/**
+ * Used by {@link ThemePatch} to chnage the color of the seekbar.
+ */
 public class SeekbarDrawableCustomColor extends Drawable {
 
     private final Paint paint = new Paint();
