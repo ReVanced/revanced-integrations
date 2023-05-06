@@ -65,15 +65,15 @@ public final class ThemePatch {
     /**
      * Injection point.
      *
-     * Unconditionally changes the color to the seekbar custom color,
-     * while retaining the brightness and alpha of the parameter value.
+     * Unconditionally changes the color to the seekbar custom color, while retaining
+     * the brightness and alpha changes of the parameter value compared to the original seekbar color.
      */
     public static int getSeekbarColorValue(int originalColor) {
         try {
-            if (SettingsEnum.SEEKBAR_COLOR.getObjectValue().equals(SettingsEnum.SEEKBAR_COLOR.defaultValue)) {
+            if (customSeekbarColor == ORIGINAL_SEEKBAR_COLOR) {
                 return originalColor; // Nothing to do
             }
-            final int originalAlpha = Color.alpha(originalColor);
+            final int alphaDifference = Color.alpha(originalColor) - Color.alpha(ORIGINAL_SEEKBAR_COLOR);
 
             // The seekbar uses the same color but different brightness for different situations.
             float[] hsv = new float[3];
@@ -85,7 +85,8 @@ public final class ThemePatch {
             hsv[1] = customSeekbarColorHSV[1];
             hsv[2] = Math.max(0, customSeekbarColorHSV[2] + brightnessDifference);
 
-            final int replacementColor = Color.HSVToColor(originalAlpha, hsv);
+            final int replacementAlpha = Color.alpha(customSeekbarColor) + alphaDifference;
+            final int replacementColor = Color.HSVToColor(replacementAlpha, hsv);
             LogHelper.printDebug(() -> String.format("Original color: #%08X  replacement color: #%08X",
                             originalColor, replacementColor));
             return replacementColor;
