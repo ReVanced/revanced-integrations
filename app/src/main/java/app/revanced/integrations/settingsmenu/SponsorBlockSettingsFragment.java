@@ -364,6 +364,9 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment {
         importExport.getEditText().setInputType(InputType.TYPE_CLASS_TEXT
                 | InputType.TYPE_TEXT_FLAG_MULTI_LINE
                 | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            importExport.getEditText().setAutofillHints((String) null);
+        }
         importExport.getEditText().setTextSize(TypedValue.COMPLEX_UNIT_PT, 8);
         importExport.setOnPreferenceClickListener(preference1 -> {
             importExport.getEditText().setText(SponsorBlockSettings.exportSettings());
