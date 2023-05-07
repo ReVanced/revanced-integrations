@@ -83,34 +83,33 @@ public class SponsorBlockSettings {
             SettingsEnum.SB_IS_VIP.saveValue(settingsJson.getBoolean("isVip"));
             SettingsEnum.SB_SHOW_TOAST_ON_SKIP.saveValue(!settingsJson.getBoolean("dontShowNotice"));
             SettingsEnum.SB_TRACK_SKIP_COUNT.saveValue(settingsJson.getBoolean("trackViewCount"));
+            SettingsEnum.SB_SHOW_TIME_WITHOUT_SEGMENTS.saveValue(settingsJson.getBoolean("showTimeWithSkips"));
 
             String serverAddress = settingsJson.getString("serverAddress");
-            if (!isValidSBServerAddress(serverAddress)) {
-                throw new IllegalArgumentException(str("sb_api_url_invalid"));
+            if (isValidSBServerAddress(serverAddress)) { // Old versions of ReVanced exported wrong url format
+                SettingsEnum.SB_API_URL.saveValue(serverAddress);
             }
-            SettingsEnum.SB_API_URL.saveValue(serverAddress);
 
-            SettingsEnum.SB_SHOW_TIME_WITHOUT_SEGMENTS.saveValue(settingsJson.getBoolean("showTimeWithSkips"));
-            final float minDuration = (float)settingsJson.getDouble("minDuration");
+            final float minDuration = (float) settingsJson.getDouble("minDuration");
             if (minDuration < 0) {
                 throw new IllegalArgumentException("invalid minDuration: " + minDuration);
             }
             SettingsEnum.SB_MIN_DURATION.saveValue(minDuration);
 
-            try {
+            if (settingsJson.has("skipCount")) { // Value not exported in old versions of ReVanced
                 int skipCount = settingsJson.getInt("skipCount");
                 if (skipCount < 0) {
                     throw new IllegalArgumentException("invalid skipCount: " + skipCount);
                 }
                 SettingsEnum.SB_SKIPPED_SEGMENTS_NUMBER_SKIPPED.saveValue(skipCount);
+            }
 
+            if (settingsJson.has("minutesSaved")) {
                 final double minutesSaved = settingsJson.getDouble("minutesSaved");
                 if (minutesSaved < 0) {
                     throw new IllegalArgumentException("invalid minutesSaved: " + minutesSaved);
                 }
-                SettingsEnum.SB_SKIPPED_SEGMENTS_TIME_SAVED.saveValue((long)(minutesSaved * 60 * 1000));
-            } catch (JSONException ex) {
-                // ignore. values were not exported in prior versions of ReVanced
+                SettingsEnum.SB_SKIPPED_SEGMENTS_TIME_SAVED.saveValue((long) (minutesSaved * 60 * 1000));
             }
 
             ReVancedUtils.showToastLong(str("sb_settings_import_successful"));
