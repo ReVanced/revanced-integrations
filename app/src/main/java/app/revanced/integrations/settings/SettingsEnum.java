@@ -317,7 +317,7 @@ public enum SettingsEnum {
     @Deprecated
     DEPRECATED_SB_ADJUST_NEW_SEGMENT_STEP("new-segment-step-accuracy", INTEGER, 150, SPONSOR_BLOCK),
     @Deprecated
-    DEPRECATED_SB_LAST_VIP_CHECK("sb_last_vip_check", LONG, 0L, SPONSOR_BLOCK),
+    DEPRECATED_SB_LAST_VIP_CHECK("sb-last-vip-check", LONG, 0L, SPONSOR_BLOCK),
     @Deprecated
     DEPRECATED_SB_IS_VIP("sb-is-vip", BOOLEAN, FALSE, SPONSOR_BLOCK),
     @Deprecated
