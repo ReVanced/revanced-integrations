@@ -52,14 +52,14 @@ public enum SettingsEnum {
     //ENABLE_WHITELIST("revanced_whitelist_ads_enabled", BOOLEAN, FALSE),
 
     // Ad settings
-    ADREMOVER_BUTTONED_ADS("revanced_adremover_buttoned_ads", BOOLEAN, TRUE),
-    ADREMOVER_GENERAL_ADS("revanced_adremover_general_ads", BOOLEAN, TRUE),
-    ADREMOVER_PAID_CONTENT("revanced_adremover_paid_content", BOOLEAN, TRUE),
-    ADREMOVER_HIDE_LATEST_POSTS("revanced_adremover_latest_posts", BOOLEAN, TRUE),
-    ADREMOVER_SELF_SPONSOR("revanced_adremover_self_sponsor", BOOLEAN, TRUE),
-    ADREMOVER_CUSTOM("revanced_adremover_custom", BOOLEAN, FALSE),
-    ADREMOVER_CUSTOM_FILTERS("revanced_adremover_custom_filters", STRING, "", true, parents(ADREMOVER_CUSTOM)),
+    HIDE_BUTTONED_ADS("revanced_hide_buttoned_ads", BOOLEAN, TRUE),
+    HIDE_GENERAL_ADS("revanced_hide_general_ads", BOOLEAN, TRUE),
+    HIDE_HIDE_LATEST_POSTS("revanced_hide_latest_posts_ads", BOOLEAN, TRUE),
+    HIDE_PAID_CONTENT("revanced_hide_paid_content_ads", BOOLEAN, TRUE),
+    HIDE_SELF_SPONSOR("revanced_hide_self_sponsor_ads", BOOLEAN, TRUE),
     HIDE_VIDEO_ADS("revanced_hide_video_ads", BOOLEAN, TRUE, true),
+    CUSTOM_FILTER("revanced_custom_filter", BOOLEAN, FALSE),
+    CUSTOM_FILTER_STRINGS("revanced_custom_filter_strings", STRING, "", true, parents(CUSTOM_FILTER)),
 
     // Layout settings
     HIDE_CHANNEL_BAR("revanced_hide_channel_bar", BOOLEAN, FALSE),
@@ -129,12 +129,12 @@ public enum SettingsEnum {
     SEEKBAR_COLOR("revanced_seekbar_color", STRING, "#FF0000", true),
 
     // Misc. Settings
-    CAPTIONS_ENABLED("revanced_auto_captions", BOOLEAN, FALSE),
+    AUTO_CAPTIONS("revanced_auto_captions", BOOLEAN, FALSE),
     DISABLE_ZOOM_HAPTICS("revanced_disable_zoom_haptics", BOOLEAN, TRUE),
-    ENABLE_EXTERNAL_BROWSER("revanced_external_browser", BOOLEAN, TRUE, true),
+    EXTERNAL_BROWSER("revanced_external_browser", BOOLEAN, TRUE, true),
     PREFERRED_AUTO_REPEAT("revanced_auto_repeat", BOOLEAN, FALSE),
     TAP_SEEKING_ENABLED("revanced_tap_seeking", BOOLEAN, TRUE),
-    USE_HDR_AUTO_BRIGHTNESS("revanced_hdr_auto_brightness", BOOLEAN, TRUE),
+    HDR_AUTO_BRIGHTNESS("revanced_hdr_auto_brightness", BOOLEAN, TRUE),
     SIGNATURE_SPOOFING("revanced_spoof_signature_verification", BOOLEAN, TRUE, "revanced_spoof_signature_verification_user_dialog_message"),
 
     // Swipe controls
@@ -193,13 +193,17 @@ public enum SettingsEnum {
     @Deprecated
     DEPRECATED_ADREMOVER_GENERAL_ADS_REMOVAL("revanced_adremover_ad_removal", BOOLEAN, TRUE),
     @Deprecated
-    DEPRECATED_REMOVE_VIDEO_ADS("revanced_video_ads_removal", BOOLEAN, TRUE, true),
+    DEPRECATED_ADREMOVER_PAID_CONTENT("revanced_adremover_paid_content", BOOLEAN, TRUE),
     @Deprecated
     DEPRECATED_ADREMOVER_HIDE_LATEST_POSTS("revanced_adremover_hide_latest_posts", BOOLEAN, TRUE),
+    @Deprecated
+    DEPRECATED_ADREMOVER_SELF_SPONSOR("revanced_adremover_self_sponsor", BOOLEAN, TRUE),
     @Deprecated
     DEPRECATED_ADREMOVER_CUSTOM_ENABLED("revanced_adremover_custom_enabled", BOOLEAN, FALSE),
     @Deprecated
     DEPRECATED_ADREMOVER_CUSTOM_REMOVAL("revanced_adremover_custom_strings", STRING, "", true),
+    @Deprecated
+    DEPRECATED_REMOVE_VIDEO_ADS("revanced_video_ads_removal", BOOLEAN, TRUE, true),
 
     @Deprecated
     DEPRECATED_HIDE_CHANNEL_MEMBER_SHELF("revanced_adremover_channel_member_shelf_removal", BOOLEAN, TRUE),
@@ -464,12 +468,14 @@ public enum SettingsEnum {
         // renamed settings with new path names, but otherwise the new and old settings are identical
         //
         SettingsEnum[][] renamedSettings = {
-                {DEPRECATED_ADREMOVER_BUTTONED_REMOVAL, ADREMOVER_BUTTONED_ADS},
-                {DEPRECATED_ADREMOVER_GENERAL_ADS_REMOVAL, ADREMOVER_GENERAL_ADS},
+                {DEPRECATED_ADREMOVER_BUTTONED_REMOVAL, HIDE_BUTTONED_ADS},
+                {DEPRECATED_ADREMOVER_GENERAL_ADS_REMOVAL, HIDE_GENERAL_ADS},
+                {DEPRECATED_ADREMOVER_HIDE_LATEST_POSTS, HIDE_HIDE_LATEST_POSTS},
+                {DEPRECATED_ADREMOVER_PAID_CONTENT, HIDE_PAID_CONTENT},
+                {DEPRECATED_ADREMOVER_SELF_SPONSOR, HIDE_SELF_SPONSOR},
                 {DEPRECATED_REMOVE_VIDEO_ADS, HIDE_VIDEO_ADS},
-                {DEPRECATED_ADREMOVER_HIDE_LATEST_POSTS, ADREMOVER_HIDE_LATEST_POSTS},
-                {DEPRECATED_ADREMOVER_CUSTOM_ENABLED, ADREMOVER_CUSTOM},
-                {DEPRECATED_ADREMOVER_CUSTOM_REMOVAL, ADREMOVER_CUSTOM_FILTERS},
+                {DEPRECATED_ADREMOVER_CUSTOM_ENABLED, CUSTOM_FILTER},
+                {DEPRECATED_ADREMOVER_CUSTOM_REMOVAL, CUSTOM_FILTER_STRINGS},
 
                 {DEPRECATED_HIDE_CHANNEL_MEMBER_SHELF, HIDE_CHANNEL_MEMBER_SHELF},
                 {DEPRECATED_HIDE_CHAPTER_TEASER, HIDE_CHAPTER_TEASER},
@@ -502,7 +508,7 @@ public enum SettingsEnum {
                 {DEPRECATED_PLAYBACK_SPEED_REMEMBER_LAST_SELECTED, PLAYBACK_SPEED_REMEMBER_LAST_SELECTED},
                 {DEPRECATED_PLAYBACK_SPEED_DEFAULT, PLAYBACK_SPEED_DEFAULT},
 
-                {DEPRECATED_CAPTIONS_ENABLED, CAPTIONS_ENABLED},
+                {DEPRECATED_CAPTIONS_ENABLED, AUTO_CAPTIONS},
                 {DEPRECATED_DISABLE_STARTUP_SHORTS_PLAYER, DISABLE_RESUMING_SHORTS_PLAYER},
                 {DEPRECATED_PLAYER_POPUP_PANELS, PLAYER_POPUP_PANELS},
                 {DEPRECATED_ENABLE_SWIPE_BRIGHTNESS, SWIPE_BRIGHTNESS},
@@ -514,10 +520,10 @@ public enum SettingsEnum {
                 {DEPRECATED_DEBUG_STACKTRACE, DEBUG_STACKTRACE},
                 {DEPRECATED_DEBUG_SHOW_TOAST_ON_ERROR, DEBUG_SHOW_TOAST_ON_ERROR},
 
-                {DEPRECATED_ENABLE_EXTERNAL_BROWSER, ENABLE_EXTERNAL_BROWSER},
+                {DEPRECATED_ENABLE_EXTERNAL_BROWSER, EXTERNAL_BROWSER},
                 {DEPRECATED_PREFERRED_AUTO_REPEAT, PREFERRED_AUTO_REPEAT},
                 {DEPRECATED_TAP_SEEKING_ENABLED, TAP_SEEKING_ENABLED},
-                {DEPRECATED_USE_HDR_AUTO_BRIGHTNESS, USE_HDR_AUTO_BRIGHTNESS},
+                {DEPRECATED_USE_HDR_AUTO_BRIGHTNESS, HDR_AUTO_BRIGHTNESS},
 
                 {DEPRECATED_SB_ENABLED, SB_ENABLED},
                 {DEPRECATED_SB_VOTING_ENABLED, SB_VOTING_ENABLED},
