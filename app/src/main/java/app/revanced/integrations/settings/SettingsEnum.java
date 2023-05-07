@@ -696,7 +696,6 @@ public enum SettingsEnum {
     private boolean includeWithImportExport() {
         switch (this) {
             case RYD_USER_ID: // Not useful to export, no reason to include it.
-            case SB_IS_VIP:
             case SB_LAST_VIP_CHECK:
             case SB_HIDE_EXPORT_WARNING:
             case SB_SEEN_GUIDELINES:
