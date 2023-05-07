@@ -815,7 +815,10 @@ public enum SettingsEnum {
             }
             numberOfSettingsImported += SponsorBlockSettings.importCategoriesFromFlatJson(json);
 
-            ReVancedUtils.showToastLong(str("revanced_settings_import_success", numberOfSettingsImported));
+            ReVancedUtils.showToastLong(numberOfSettingsImported == 0
+                    ? str("revanced_settings_import_reset")
+                    : str("revanced_settings_import_success", numberOfSettingsImported));
+
             return rebootSettingChanged;
         } catch (JSONException | IllegalArgumentException ex) {
             ReVancedUtils.showToastLong(str("revanced_settings_import_failure_parse", ex.getMessage()));
