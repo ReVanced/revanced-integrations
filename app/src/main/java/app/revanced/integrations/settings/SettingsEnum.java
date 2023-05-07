@@ -745,9 +745,10 @@ public enum SettingsEnum {
             for (SettingsEnum setting : valuesSortedForExport()) {
                 String importExportKey = setting.getImportExportKey();
                 if (json.has(importExportKey)) {
-                    throw new IllegalArgumentException("duplicate key found");
+                    throw new IllegalArgumentException("duplicate key found: " + importExportKey);
                 }
-                if (setting.includeWithImportExport() && !setting.isSetToDefault()) {
+                final boolean exportDefaultValues = false; // Enable to see what all settings looks like in the UI.
+                if (setting.includeWithImportExport() && (!setting.isSetToDefault() | exportDefaultValues)) {
                     json.put(importExportKey, setting.getObjectValue());
                 }
             }
