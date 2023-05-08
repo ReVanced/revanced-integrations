@@ -739,8 +739,8 @@ public enum SettingsEnum {
         SettingsEnum[] sorted = values();
         Arrays.sort(sorted, (SettingsEnum o1, SettingsEnum o2) -> {
             // Organize SponsorBlock settings last.
-            final boolean o1IsSb = o1.path.startsWith("sb_");
-            final boolean o2IsSb = o2.path.startsWith("sb_");
+            final boolean o1IsSb = o1.sharedPref == SPONSOR_BLOCK;
+            final boolean o2IsSb = o2.sharedPref == SPONSOR_BLOCK;
             if (o1IsSb != o2IsSb) {
                 return o1IsSb ? 1 : -1;
             }
