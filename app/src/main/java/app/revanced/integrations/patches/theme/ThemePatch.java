@@ -16,17 +16,18 @@ public final class ThemePatch {
     /**
      * Injection point.
      */
-    public static int getSeekbarClickedColorValue(final int colorValue) {
+    public static int getSeekbarClickedColorValue(final int currentColorValue) {
         // YouTube uses a specific color when the seekbar is clicked. Override in that case.
-        return colorValue == ORIGINAL_SEEKBAR_CLICKED_COLOR ? getSeekbarColorValue() : colorValue;
+        return currentColorValue == ORIGINAL_SEEKBAR_CLICKED_COLOR ? getSeekbarColorValue(currentColorValue) : currentColorValue;
     }
 
-    public static int getSeekbarColorValue() {
+    public static int getSeekbarColorValue(final int currentColorValue) {
         try {
-            return Color.parseColor(SettingsEnum.SEEKBAR_COLOR.getString());
+            String seekbarColor = SettingsEnum.SEEKBAR_COLOR.getString();
+            return seekbarColor.equals("") ? currentColorValue : Color.parseColor(seekbarColor);
         } catch (Exception exception) {
             resetSeekbarColor();
-            return getSeekbarColorValue();
+            return getSeekbarColorValue(currentColorValue);
         }
     }
 }
