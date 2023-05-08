@@ -167,14 +167,15 @@ public enum SettingsEnum {
 
     // SponsorBlock settings
     SB_ENABLED("sb_enabled", BOOLEAN, TRUE, SPONSOR_BLOCK),
+    SB_PRIVATE_USER_ID("sb_private_user_id_Do_Not_Share", STRING, "", SPONSOR_BLOCK), /** Do not use directly, instead use {@link SponsorBlockSettings} */
+    DEPRECATED_SB_UUID_OLD_MIGRATION_SETTING("uuid", STRING, "", SPONSOR_BLOCK), // Delete sometime in 2024
+    SB_ADJUST_NEW_SEGMENT_STEP("sb_create_new_segment_step", INTEGER, 150, SPONSOR_BLOCK, parents(SB_ENABLED)),
     SB_VOTING_ENABLED("sb_show_voting_button", BOOLEAN, FALSE, SPONSOR_BLOCK, parents(SB_ENABLED)),
     SB_CREATE_NEW_SEGMENT_ENABLED("sb_show_create_new_segment", BOOLEAN, FALSE, SPONSOR_BLOCK, parents(SB_ENABLED)),
     SB_USE_COMPACT_SKIP_BUTTON("sb_use_compact_skip_button", BOOLEAN, FALSE, SPONSOR_BLOCK, parents(SB_ENABLED)),
     SB_AUTO_HIDE_SKIP_BUTTON("sb_auto_hide_skip_button", BOOLEAN, TRUE, SPONSOR_BLOCK, parents(SB_ENABLED)),
     SB_SHOW_TOAST_ON_SKIP("sb_show_toast", BOOLEAN, TRUE, SPONSOR_BLOCK, parents(SB_ENABLED)),
     SB_TRACK_SKIP_COUNT("sb_count_skips", BOOLEAN, TRUE, SPONSOR_BLOCK, parents(SB_ENABLED)),
-    SB_PRIVATE_USER_ID("sb_private_user_id_Do_Not_Share", STRING, "", SPONSOR_BLOCK), /** Do not use directly, instead use {@link SponsorBlockSettings} */
-    SB_ADJUST_NEW_SEGMENT_STEP("sb_create_new_segment_step", INTEGER, 150, SPONSOR_BLOCK, parents(SB_ENABLED)),
     SB_MIN_DURATION("sb_min_segment_duration", FLOAT, 0F, SPONSOR_BLOCK, parents(SB_ENABLED)),
     SB_SHOW_TIME_WITHOUT_SEGMENTS("sb_length_without_segments", BOOLEAN, TRUE, SPONSOR_BLOCK, parents(SB_ENABLED)),
     SB_API_URL("sb_api_url", STRING, "https://sponsor.ajay.app", SPONSOR_BLOCK),
@@ -318,8 +319,6 @@ public enum SettingsEnum {
     DEPRECATED_SB_AUTO_HIDE_SKIP_BUTTON("sb-auto-hide-skip-segment-button", BOOLEAN, TRUE, SPONSOR_BLOCK),
     @Deprecated
     DEPRECATED_SB_TRACK_SKIP_COUNT("count-skips", BOOLEAN, TRUE, SPONSOR_BLOCK),
-    @Deprecated
-    DEPRECATED_SB_UUID("uuid", STRING, "", SPONSOR_BLOCK),
     @Deprecated
     DEPRECATED_SB_ADJUST_NEW_SEGMENT_STEP("new-segment-step-accuracy", INTEGER, 150, SPONSOR_BLOCK),
     @Deprecated
@@ -469,6 +468,12 @@ public enum SettingsEnum {
         // renamed settings with new path names, but otherwise the new and old settings are identical
         //
         SettingsEnum[][] renamedSettings = {
+                // TODO: do _not_ delete this SB private user id migration property until sometime in 2024.
+                // This is the only setting that cannot be reconfigured if lost,
+                // and more time should be given for users who rarely upgrade.
+                {DEPRECATED_SB_UUID_OLD_MIGRATION_SETTING, SB_PRIVATE_USER_ID},
+
+                // TODO: delete the rest of these migration settings.  When to delete? Anytime.
                 {DEPRECATED_ADREMOVER_BUTTONED_REMOVAL, HIDE_BUTTONED_ADS},
                 {DEPRECATED_ADREMOVER_GENERAL_ADS_REMOVAL, HIDE_GENERAL_ADS},
                 {DEPRECATED_ADREMOVER_HIDE_LATEST_POSTS, HIDE_HIDE_LATEST_POSTS},
@@ -536,7 +541,6 @@ public enum SettingsEnum {
                 {DEPRECATED_SB_SHOW_TOAST_ON_SKIP, SB_SHOW_TOAST_ON_SKIP},
                 {DEPRECATED_SB_AUTO_HIDE_SKIP_BUTTON, SB_AUTO_HIDE_SKIP_BUTTON},
                 {DEPRECATED_SB_TRACK_SKIP_COUNT, SB_TRACK_SKIP_COUNT},
-                {DEPRECATED_SB_UUID, SB_PRIVATE_USER_ID},
                 {DEPRECATED_SB_ADJUST_NEW_SEGMENT_STEP, SB_ADJUST_NEW_SEGMENT_STEP},
                 {DEPRECATED_SB_LAST_VIP_CHECK, SB_LAST_VIP_CHECK},
                 {DEPRECATED_SB_IS_VIP, SB_IS_VIP},
