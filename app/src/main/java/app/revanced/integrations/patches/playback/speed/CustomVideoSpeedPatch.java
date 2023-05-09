@@ -21,15 +21,15 @@ public class CustomVideoSpeedPatch {
      *
      * Values are also used by {@link RememberPlaybackSpeedPatch}.
      */
-    public static float[] videoSpeeds;
+    public static float[] customVideoSpeeds;
 
     /**
-     * Minimum value of {@link #videoSpeeds}
+     * Minimum value of {@link #customVideoSpeeds}
      */
     public static float minVideoSpeed;
 
     /**
-     * Maxium value of {@link #videoSpeeds}
+     * Maxium value of {@link #customVideoSpeeds}
      */
     public static float maxVideoSpeed;
 
@@ -55,10 +55,10 @@ public class CustomVideoSpeedPatch {
             if (speedStrings.length == 0) {
                 throw new IllegalArgumentException();
             }
-            videoSpeeds = new float[speedStrings.length];
+            customVideoSpeeds = new float[speedStrings.length];
             for (int i = 0, length = speedStrings.length; i < length; i++) {
                 final float speed = Float.parseFloat(speedStrings[i]);
-                if (speed <= 0 || arrayContains(videoSpeeds, speed)) {
+                if (speed <= 0 || arrayContains(customVideoSpeeds, speed)) {
                     throw new IllegalArgumentException();
                 }
                 if (speed >= MAXIMUM_PLAYBACK_SPEED) {
@@ -69,7 +69,7 @@ public class CustomVideoSpeedPatch {
                 }
                 minVideoSpeed = Math.min(minVideoSpeed, speed);
                 maxVideoSpeed = Math.max(maxVideoSpeed, speed);
-                videoSpeeds[i] = speed;
+                customVideoSpeeds[i] = speed;
             }
         } catch (Exception ex) {
             LogHelper.printInfo(() -> "parse error", ex);
@@ -93,11 +93,10 @@ public class CustomVideoSpeedPatch {
      */
     public static void initializeListPreference(ListPreference preference) {
         if (preferenceListEntries == null) {
-            float[] videoSpeeds = CustomVideoSpeedPatch.videoSpeeds;
-            preferenceListEntries = new String[videoSpeeds.length];
-            preferenceListEntryValues = new String[videoSpeeds.length];
+            preferenceListEntries = new String[customVideoSpeeds.length];
+            preferenceListEntryValues = new String[customVideoSpeeds.length];
             int i = 0;
-            for (float speed : videoSpeeds) {
+            for (float speed : customVideoSpeeds) {
                 String speedString = String.valueOf(speed);
                 preferenceListEntries[i] = speedString + "x";
                 preferenceListEntryValues[i] = speedString;
