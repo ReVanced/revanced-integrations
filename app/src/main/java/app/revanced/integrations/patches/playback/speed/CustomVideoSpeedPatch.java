@@ -18,8 +18,6 @@ public class CustomVideoSpeedPatch {
 
     /**
      * Custom playback speeds.
-     *
-     * Values are also used by {@link RememberPlaybackSpeedPatch}.
      */
     public static float[] customVideoSpeeds;
 
@@ -49,8 +47,7 @@ public class CustomVideoSpeedPatch {
 
     private static void loadSpeeds() {
         try {
-            String[] speedStrings = SettingsEnum.PLAYBACK_SPEED_AVAILABLE.getString()
-                    .replaceAll("\\s", "").split(",");
+            String[] speedStrings = SettingsEnum.PLAYBACK_SPEED_AVAILABLE.getString().split("\\s+");
             Arrays.sort(speedStrings);
             if (speedStrings.length == 0) {
                 throw new IllegalArgumentException();
