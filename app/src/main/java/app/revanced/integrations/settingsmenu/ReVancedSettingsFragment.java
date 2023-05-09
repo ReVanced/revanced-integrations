@@ -94,10 +94,6 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
             // Use default values from SettingsEnum
             for (SettingsEnum setting : SettingsEnum.values()) {
                 Preference preference = findPreference(setting.path);
-                if (preference == null) {
-                    continue;
-                }
-                preference.setDefaultValue(setting.defaultValue);
                 if (preference instanceof ListPreference) {
                     updateListPreferenceSummary((ListPreference) preference, setting);
                 }
