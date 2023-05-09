@@ -135,10 +135,14 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
                 RememberPlaybackSpeedPatch.initializeListPreference((ListPreference) defaultSpeedPreference);
             }
 
-            // set the summary text for any ListPreferences
+            // Set current value from SettingsEnum
             for (SettingsEnum setting : SettingsEnum.values()) {
                 Preference preference = findPreference(setting.path);
-                if (preference instanceof ListPreference) {
+                if (preference instanceof SwitchPreference) {
+                    ((SwitchPreference) preference).setChecked(setting.getBoolean());
+                } else if (preference instanceof EditTextPreference) {
+                    ((EditTextPreference) preference).setText(setting.getObjectValue().toString());
+                } else if (preference instanceof ListPreference) {
                     updateListPreferenceSummary((ListPreference) preference, setting);
                 }
             }
@@ -165,9 +169,11 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
     }
 
     private void updateListPreferenceSummary(ListPreference listPreference, SettingsEnum setting) {
-        final int entryIndex = listPreference.findIndexOfValue(setting.getObjectValue().toString());
+        String objectStringValue = setting.getObjectValue().toString();
+        final int entryIndex = listPreference.findIndexOfValue(objectStringValue);
         if (entryIndex >= 0) {
             listPreference.setSummary(listPreference.getEntries()[entryIndex]);
+            listPreference.setValue(objectStringValue);
         }
     }
 

@@ -46,6 +46,13 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
             Preference pref = this.findPreference(setting.path);
             LogHelper.debug("Syncing setting '%s' with UI", setting.path);
 
+            // TODO: for a developer that uses Twitch: remove duplicated settings data
+            // 1. remove all default values from the Patches Setting preferences (SwitchPreference, TextPreference, ListPreference)
+            // 2. uncomment this code and verify the default is applied
+//            if (pref != null) {
+//                pref.setDefaultValue(setting.defaultValue);
+//            }
+
             if (pref instanceof SwitchPreference) {
                 SettingsEnum.setValue(setting, ((SwitchPreference) pref).isChecked());
             }
