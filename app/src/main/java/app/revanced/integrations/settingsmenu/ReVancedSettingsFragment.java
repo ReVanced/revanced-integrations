@@ -91,7 +91,7 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
                 RememberPlaybackSpeedPatch.initializeListPreference((ListPreference) defaultSpeedPreference);
             }
 
-            // Use default values from SettingsEnum
+            // set the summary text for any ListPreferences
             for (SettingsEnum setting : SettingsEnum.values()) {
                 Preference preference = findPreference(setting.path);
                 if (preference instanceof ListPreference) {
