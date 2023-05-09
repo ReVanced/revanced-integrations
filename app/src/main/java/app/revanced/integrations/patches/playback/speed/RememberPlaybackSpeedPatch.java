@@ -11,18 +11,16 @@ import app.revanced.integrations.utils.ReVancedUtils;
 
 public final class RememberPlaybackSpeedPatch {
 
-    @Nullable
-    private static String currentVideoId;
+    /**
+     * PreferenceList entries and values, of all available playback speeds.
+     */
+    private static String[] preferenceListEntries, preferenceListEntryValues;
 
     /**
      * Injection point.
-     * Called when a new video loads.
      */
-    public static void newVideoLoaded(@NonNull String videoId) {
-        if (videoId.equals(currentVideoId)) {
-            return;
-        }
-        currentVideoId = videoId;
+    public static void newVideoStarted(Object ignoredPlayerController) {
+        LogHelper.printDebug(() -> "newVideoStarted");
         VideoInformation.overridePlaybackSpeed(SettingsEnum.PLAYBACK_SPEED_DEFAULT.getFloat());
     }
 
@@ -47,5 +45,26 @@ public final class RememberPlaybackSpeedPatch {
         return VideoInformation.getPlaybackSpeed();
     }
 
-
+    /**
+     * Initialize a settings preference list.
+     *
+     * Normally this is done during patching by creating a static xml preference list,
+     * but the available playback speeds differ depending if {@link CustomVideoSpeedPatch} is applied or not.
+     */
+    public static void initializeListPreference(ListPreference preference) {
+        if (preferenceListEntries == null) {
+            float[] videoSpeeds = CustomVideoSpeedPatch.videoSpeeds;
+            preferenceListEntries = new String[videoSpeeds.length];
+            preferenceListEntryValues = new String[videoSpeeds.length];
+            int i = 0;
+            for (float speed : videoSpeeds) {
+                String speedString = String.valueOf(speed);
+                preferenceListEntries[i] = speedString + "x";
+                preferenceListEntryValues[i] = speedString;
+                i++;
+            }
+        }
+        preference.setEntries(preferenceListEntries);
+        preference.setEntryValues(preferenceListEntryValues);
+    }
 }
