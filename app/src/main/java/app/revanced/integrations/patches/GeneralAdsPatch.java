@@ -111,7 +111,6 @@ public final class GeneralAdsPatch extends Filter {
                 "carousel_ad"
         );
         var shorts = new BlockRule(SettingsEnum.HIDE_SHORTS,
-                "reels_player_overlay",
                 "shorts_shelf",
                 "inline_shorts",
                 "shorts_grid"

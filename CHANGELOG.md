@@ -1,3 +1,24 @@
+# [0.108.0-dev.7](https://github.com/revanced/revanced-integrations/compare/v0.108.0-dev.6...v0.108.0-dev.7) (2023-05-10)
+
+
+### Bug Fixes
+
+* **youtube/hide-ads:** don't filter for `reels_player_overlay` ([415c194](https://github.com/revanced/revanced-integrations/commit/415c1948fccdc8eb27b76b043996017c5c56eac3))
+
+# [0.108.0-dev.6](https://github.com/revanced/revanced-integrations/compare/v0.108.0-dev.5...v0.108.0-dev.6) (2023-05-09)
+
+
+### Bug Fixes
+
+* **youtube/spoof-app-version:** restore watch history preview ([#394](https://github.com/revanced/revanced-integrations/issues/394)) ([4c7f737](https://github.com/revanced/revanced-integrations/commit/4c7f737913a0c3690f8230c51f6dd217e8b04c7a))
+
+# [0.108.0-dev.5](https://github.com/revanced/revanced-integrations/compare/v0.108.0-dev.4...v0.108.0-dev.5) (2023-05-09)
+
+
+### Bug Fixes
+
+* **youtube/remember-video-quality:** fix default video quality/speed being applied when resuming app ([#392](https://github.com/revanced/revanced-integrations/issues/392)) ([c97d1b7](https://github.com/revanced/revanced-integrations/commit/c97d1b7ee5be6a0f097f2995321608bc74f5822c))
+
 # [0.108.0-dev.4](https://github.com/revanced/revanced-integrations/compare/v0.108.0-dev.3...v0.108.0-dev.4) (2023-05-07)
 
 
