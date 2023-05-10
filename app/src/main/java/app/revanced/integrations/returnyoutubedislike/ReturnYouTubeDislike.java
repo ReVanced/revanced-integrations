@@ -241,12 +241,12 @@ public class ReturnYouTubeDislike {
     private static Spanned waitForFetchAndUpdateReplacementSpan(@NonNull Spanned oldSpannable, boolean isSegmentedButton) {
         try {
             synchronized (videoIdLockObject) {
-                if (replacementLikeDislikeSpan != null) {
+                if (originalDislikeSpan != null && replacementLikeDislikeSpan != null) {
                     if (spansHaveEqualTextAndColor(replacementLikeDislikeSpan, oldSpannable)) {
                         LogHelper.printDebug(() -> "Ignoring previously created dislikes span");
                         return oldSpannable;
                     }
-                    if (spansHaveEqualTextAndColor(Objects.requireNonNull(originalDislikeSpan), oldSpannable)) {
+                    if (spansHaveEqualTextAndColor(originalDislikeSpan, oldSpannable)) {
                         LogHelper.printDebug(() -> "Replacing span with previously created dislike span");
                         return replacementLikeDislikeSpan;
                     }
@@ -289,6 +289,14 @@ public class ReturnYouTubeDislike {
             LogHelper.printException(() -> "waitForFetchAndUpdateReplacementSpan failure", e); // should never happen
         }
         return oldSpannable;
+    }
+
+    /**
+     * @return if the RYD fetch call has completed.
+     */
+    public static boolean fetchCompleted() {
+        Future<RYDVoteData> future = getVoteFetchFuture();
+        return future != null && future.isDone();
     }
 
     public static void sendVote(@NonNull Vote vote) {

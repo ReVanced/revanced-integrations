@@ -4,8 +4,10 @@ import static app.revanced.integrations.returnyoutubedislike.ReturnYouTubeDislik
 
 import android.text.Editable;
 import android.text.Spannable;
+import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextWatcher;
+import android.view.View;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -159,20 +161,60 @@ public class ReturnYouTubeDislikePatch {
     }
 
     /**
-     * Injection point.
-     *
-     * Called when a Shorts dislike Spanned is created.
+     * Last Shorts dislikes span. Used to temporarily set the shorts span while waiting on fetch call.
      */
-    public static Spanned onShortsComponentCreated(Spanned original) {
+    @Nullable
+    private static Spanned lastShortsSpan;
+
+    /**
+     * Injection point.  Called when a Shorts dislike is updated.
+     * Handles update asynchronously, otherwise Shorts video will be frozen while the UI thread is blocked.
+     *
+     * @return if RYD is enabled and the TextView was updated
+     */
+    public static boolean updateShortsDislikes(@NonNull View view) {
         try {
             if (!SettingsEnum.RYD_ENABLED.getBoolean()) {
-                return original;
+                return false;
             }
-            return ReturnYouTubeDislike.getDislikeSpanForShort(original);
+            LogHelper.printDebug(() -> "updateShortsDislikes");
+
+            TextView textView = (TextView)view;
+            CharSequence text = textView.getText();
+            Spanned textSpan = (text instanceof Spanned)
+                    ? (Spanned) text
+                    : new SpannableString(text);
+
+            String videoId = VideoInformation.getVideoId();
+            Runnable update = () -> {
+                Spanned dislikesSpan = ReturnYouTubeDislike.getDislikeSpanForShort(textSpan);
+                ReVancedUtils.runOnMainThreadNowOrLater(() -> {
+                    if (!videoId.equals(VideoInformation.getVideoId())) {
+                        // User swiped to new video before fetch completed.
+                        LogHelper.printDebug(() -> "Ignoring stale dislikes data for shorts: " + videoId);
+                        return;
+                    }
+                    lastShortsSpan = dislikesSpan;
+                    textView.setText(dislikesSpan);
+                });
+            };
+
+            if (ReturnYouTubeDislike.fetchCompleted()) {
+                update.run(); // Network call is completed, no need to wait on background thread.
+            } else {
+                // Temporarily set to the last dislikes value while loading,
+                // otherwise the text will flash "Dislike" for a moment which is annoying.
+                if (lastShortsSpan != null) {
+                    textView.setText(lastShortsSpan);
+                }
+                ReVancedUtils.runOnBackgroundThread(update);
+            }
+
+            return true;
         } catch (Exception ex) {
             LogHelper.printException(() -> "onShortsComponentCreated failure", ex);
+            return false;
         }
-        return original;
     }
 
     /**
