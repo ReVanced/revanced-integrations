@@ -48,10 +48,16 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
 
             // TODO: for a developer that uses Twitch: remove duplicated settings data
             // 1. remove all default values from the Patches Setting preferences (SwitchPreference, TextPreference, ListPreference)
-            // 2. uncomment this code and verify the default is applied
-//            if (pref != null) {
-//                pref.setDefaultValue(setting.defaultValue);
-//            }
+            // 2. enable this code and verify the default is applied
+            if (false) {
+                if (pref instanceof SwitchPreference) {
+                    ((SwitchPreference) pref).setChecked(setting.getBoolean());
+                } else if (pref instanceof EditTextPreference) {
+                    ((EditTextPreference) pref).setText(setting.getObjectValue().toString());
+                } else if (pref instanceof ListPreference) {
+                    ((ListPreference) pref).setValue(setting.getObjectValue().toString());
+                }
+            }
 
             if (pref instanceof SwitchPreference) {
                 SettingsEnum.setValue(setting, ((SwitchPreference) pref).isChecked());
