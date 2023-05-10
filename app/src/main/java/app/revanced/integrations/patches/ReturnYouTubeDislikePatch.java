@@ -172,14 +172,14 @@ public class ReturnYouTubeDislikePatch {
      *
      * @return if RYD is enabled and the TextView was updated
      */
-    public static boolean updateShortsDislikes(@NonNull View view) {
+    public static boolean updateShortsDislikes(@NonNull View likeDislikeView) {
         try {
             if (!SettingsEnum.RYD_ENABLED.getBoolean()) {
                 return false;
             }
             LogHelper.printDebug(() -> "updateShortsDislikes");
 
-            TextView textView = (TextView)view;
+            TextView textView = (TextView)likeDislikeView;
             CharSequence text = textView.getText();
             Spanned textSpan = (text instanceof Spanned)
                     ? (Spanned) text
@@ -195,15 +195,20 @@ public class ReturnYouTubeDislikePatch {
                         return;
                     }
                     lastShortsSpan = dislikesSpan;
-                    textView.setText(dislikesSpan);
+                    textView.setText(dislikesSpan); // if RYD fails, this sets the text back to "Dislike"
                 });
             };
 
             if (ReturnYouTubeDislike.fetchCompleted()) {
                 update.run(); // Network call is completed, no need to wait on background thread.
             } else {
-                // Temporarily set to the last dislikes value while loading,
-                // otherwise the text will flash "Dislike" for a moment which is annoying.
+                // When swiping thru shorts, the dislikes text view will initially show the prior values of the video,
+                // and just before this hook is called the text to 'Dislike'.
+                // If the 'dislikes' is kept while the loading happens, then the text will flicker or blink
+                // because most RYD api calls finish a few milliseconds after the text is reset to 'dislike'.
+                // To keep the UI from flickering, continue to keep the prior dislikes text visible until the api call completes.
+                // Most RYD calls take around 250ms, and after no more than 4000ms the dislikes will either be the correct value
+                // or reset back to the "Dislike" text
                 if (lastShortsSpan != null) {
                     textView.setText(lastShortsSpan);
                 }
