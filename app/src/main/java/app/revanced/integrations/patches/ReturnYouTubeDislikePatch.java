@@ -2,6 +2,7 @@ package app.revanced.integrations.patches;
 
 import static app.revanced.integrations.returnyoutubedislike.ReturnYouTubeDislike.Vote;
 import static app.revanced.integrations.returnyoutubedislike.ReturnYouTubeDislike.newSpanUsingStylingOfAnotherSpan;
+import static app.revanced.integrations.returnyoutubedislike.ReturnYouTubeDislike.stringContainsNumber;
 
 import android.graphics.Rect;
 import android.os.Build;
@@ -103,6 +104,8 @@ public class ReturnYouTubeDislikePatch {
                     || textView == null) {
                 return;
             }
+            LogHelper.printDebug(() -> "setOldUILayoutDislikes");
+
             if (oldUIOriginalSpan == null) {
                 // Use value of the first instance, as it appears TextViews can be recycled
                 // and might contain dislikes previously added by the patch.
@@ -113,7 +116,14 @@ public class ReturnYouTubeDislikePatch {
             textView.removeTextChangedListener(oldUiTextWatcher);
             textView.addTextChangedListener(oldUiTextWatcher);
 
+            /**
+             * If the patch is changed to include the dislikes button as a parameter to this method,
+             * then if the button is already selected the dislikes could be adjusted using
+             * {@link ReturnYouTubeDislike#setUserVote(Vote)}
+             */
+
             updateOldUIDislikesTextView();
+
         } catch (Exception ex) {
             LogHelper.printException(() -> "setOldUILayoutDislikes failure", ex);
         }
@@ -173,16 +183,11 @@ public class ReturnYouTubeDislikePatch {
      * Multiple TextViews are loaded at once (for the prior and next videos to swipe to).
      * Keep track of all of them, and later pick out the correct one based on their on screen position.
      */
-    @Nullable
     private static final List<WeakReference<TextView>> shortsTextViewRefs = new ArrayList<>();
 
     private static void clearRemovedShortsTextViews() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            shortsTextViewRefs.removeIf(ref -> {
-                TextView textView = ref.get();
-                // It does not appear that dislike TextViews are reused after they are removed from their parent
-                return textView == null || textView.getParent() == null;
-            });
+            shortsTextViewRefs.removeIf(ref -> ref.get() == null);
             return;
         }
         throw new IllegalStateException(); // YouTube requires Android N or greater
@@ -224,14 +229,19 @@ public class ReturnYouTubeDislikePatch {
             if (!SettingsEnum.RYD_ENABLED.getBoolean()) {
                 return false;
             }
+            LogHelper.printDebug(() -> "updateShortsDislikes");
 
             TextView textView = (TextView) likeDislikeView;
-            // Change 'Dislike' text to the loading text
-            textView.setText(getShortsLoadingSpan(textView));
-
-            clearRemovedShortsTextViews();
             shortsTextViewRefs.add(new WeakReference<>(textView));
 
+            if (isShortTextViewIsOnScreen(textView) && likeDislikeView.isSelected()) {
+                LogHelper.printDebug(() -> "Shorts dislike is already selected");
+                ReturnYouTubeDislike.setUserVote(Vote.DISLIKE);
+            }
+            if (!stringContainsNumber(textView.getText().toString())) {
+                // Change 'Dislike' text to the loading text
+                textView.setText(getShortsLoadingSpan(textView));
+            }
             updateOnScreenShortsTextView();
 
             return true;
@@ -256,23 +266,19 @@ public class ReturnYouTubeDislikePatch {
                 Spanned dislikesSpan = ReturnYouTubeDislike.getDislikeSpanForShort(loadingSpan);
                 ReVancedUtils.runOnMainThreadNowOrLater(() -> {
                     if (!videoId.equals(VideoInformation.getVideoId())) {
-                        // User swiped to new video before fetch completed.
-                        // Or the Shorts hook was called before the video id hook (very common when swiping thru shorts).
-                        // If the shorts hook was called early, then this code will run again after the dislikes are updated.
+                        // User swiped to new video before fetch completed
                         LogHelper.printDebug(() -> "Ignoring stale dislikes data for shorts: " + videoId);
                         return;
                     }
-                    // Update only the text views that are on screen
+                    // Update text views that appear to be visible on screen.
+                    // Only 1 will be the actual textview for the current Short,
+                    // but discarded and not yet garbage collected views can remain.
+                    // So must set the dislike span on all views that match.
                     for (WeakReference<TextView> textViewRef : shortsTextViewRefs) {
                         TextView textView = textViewRef.get();
-                        if (textView == null) {
-                            continue;
-                        }
-                        Rect bounds = new Rect();
-                        textView.getGlobalVisibleRect(bounds);
-                        if (!bounds.isEmpty()) {
+                        if (isShortTextViewIsOnScreen(textView)) {
                             textView.setText(dislikesSpan);
-                        } // else, the view is off screen.
+                        }
                     }
                 });
             };
@@ -284,6 +290,22 @@ public class ReturnYouTubeDislikePatch {
         } catch (Exception ex) {
             LogHelper.printException(() -> "updateShortsTextViewsOnScreen failure", ex);
         }
+    }
+
+    private static boolean isShortTextViewIsOnScreen(@Nullable View view) {
+        if (view == null) {
+            return false;
+        }
+        // If a Shorts TextView is off screen, it appears to always have a window position of [0, 0]
+        final int[] location = new int[2];
+        view.getLocationInWindow(location);
+        if (location[0] <= 0 && location[1] <= 0) {
+            return false;
+        }
+        // Also check if it's within the window bounds, even though this check does not seem to be needed.
+        Rect windowRect = new Rect();
+        view.getWindowVisibleDisplayFrame(windowRect);
+        return location[0] < windowRect.width() && location[1] < windowRect.height();
     }
 
     /**
