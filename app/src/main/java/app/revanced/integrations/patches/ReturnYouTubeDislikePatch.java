@@ -35,9 +35,6 @@ import app.revanced.integrations.utils.ReVancedUtils;
  */
 public class ReturnYouTubeDislikePatch {
 
-    @Nullable
-    private static String currentVideoId;
-
     /**
      * Resource identifier of old UI dislike button.
      */
@@ -213,7 +210,7 @@ public class ReturnYouTubeDislikePatch {
             }
         }
         // No TextViews are loaded.
-        // Use a generic span that lacks styling of the TextView - this should never be reached.
+        // Use a generic span that lacks existing styling of the dislikes TextView - this should never be reached.
         return new SpannableString(SHORTS_LOADING_TEXT);
     }
 
@@ -232,14 +229,14 @@ public class ReturnYouTubeDislikePatch {
 
             TextView textView = (TextView) likeDislikeView;
             shortsTextViewRefs.add(new WeakReference<>(textView));
+            // Change 'Dislike' text to the loading text
+            textView.setText(getShortsLoadingSpan(textView));
 
             if (isShortTextViewIsOnScreen(textView) && likeDislikeView.isSelected()) {
                 LogHelper.printDebug(() -> "Shorts dislike is already selected");
                 ReturnYouTubeDislike.setUserVote(Vote.DISLIKE);
             }
 
-            // Change 'Dislike' text to the loading text
-            textView.setText(getShortsLoadingSpan(textView));
             updateOnScreenShortsTextView();
 
             return true;
@@ -313,18 +310,6 @@ public class ReturnYouTubeDislikePatch {
         try {
             if (!SettingsEnum.RYD_ENABLED.getBoolean()) return;
             ReturnYouTubeDislike.newVideoLoaded(videoId);
-
-            if (!videoId.equals(currentVideoId)) {
-                currentVideoId = videoId;
-                if (PlayerType.getCurrent().isNoneOrHidden()) {
-                    // When swiping to a new short, the short hook is called before the video id hook.
-                    // Must manually update the shorts dislike text views.
-                    updateOnScreenShortsTextView();
-                } else if (!shortsTextViewRefs.isEmpty()) {
-                    LogHelper.printDebug(() -> "Clearing Shorts TextView");
-                    shortsTextViewRefs.clear(); // Shorts player is no longer opened.
-                }
-            }
         } catch (Exception ex) {
             LogHelper.printException(() -> "newVideoLoaded failure", ex);
         }
