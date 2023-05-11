@@ -171,7 +171,7 @@ public class ReturnYouTubeDislikePatch {
     /**
      * Replacement text to use for "Dislikes" while RYD is fetching.
      */
-    private static final String SHORTS_LOADING_TEXT = "-";
+    private static final SpannableString SHORTS_LOADING_TEXT = new SpannableString("-");
 
     /**
      * Dislikes TextViews used by Shorts.
@@ -201,19 +201,6 @@ public class ReturnYouTubeDislikePatch {
         return newSpanUsingStylingOfAnotherSpan(textSpan, SHORTS_LOADING_TEXT);
     }
 
-    @NonNull
-    private static Spanned getShortsLoadingSpan() {
-        for (WeakReference<TextView> textViewRef : shortsTextViewRefs) {
-            TextView textView = textViewRef.get();
-            if (textView != null) {
-                return getShortsLoadingSpan(textView);
-            }
-        }
-        // No TextViews are loaded.
-        // Use a generic span that lacks existing styling of the dislikes TextView - this should never be reached.
-        return new SpannableString(SHORTS_LOADING_TEXT);
-    }
-
     /**
      * Injection point.  Called when a Shorts dislike is updated.
      * Handles update asynchronously, otherwise Shorts video will be frozen while the UI thread is blocked.
@@ -232,7 +219,7 @@ public class ReturnYouTubeDislikePatch {
             // Change 'Dislike' text to the loading text
             textView.setText(getShortsLoadingSpan(textView));
 
-            if (isShortTextViewIsOnScreen(textView) && likeDislikeView.isSelected()) {
+            if (isShortTextViewOnScreen(textView) && likeDislikeView.isSelected()) {
                 LogHelper.printDebug(() -> "Shorts dislike is already selected");
                 ReturnYouTubeDislike.setUserVote(Vote.DISLIKE);
             }
@@ -255,10 +242,9 @@ public class ReturnYouTubeDislikePatch {
 
             LogHelper.printDebug(() -> "updateShortsTextViewsOnScreen");
             String videoId = VideoInformation.getVideoId();
-            Spanned loadingSpan = getShortsLoadingSpan();
 
             Runnable update = () -> {
-                Spanned dislikesSpan = ReturnYouTubeDislike.getDislikeSpanForShort(loadingSpan);
+                Spanned dislikesSpan = ReturnYouTubeDislike.getDislikeSpanForShort(SHORTS_LOADING_TEXT);
                 ReVancedUtils.runOnMainThreadNowOrLater(() -> {
                     if (!videoId.equals(VideoInformation.getVideoId())) {
                         // User swiped to new video before fetch completed
@@ -271,7 +257,7 @@ public class ReturnYouTubeDislikePatch {
                     // So must set the dislike span on all views that match.
                     for (WeakReference<TextView> textViewRef : shortsTextViewRefs) {
                         TextView textView = textViewRef.get();
-                        if (isShortTextViewIsOnScreen(textView)) {
+                        if (isShortTextViewOnScreen(textView)) {
                             textView.setText(dislikesSpan);
                         }
                     }
@@ -287,7 +273,7 @@ public class ReturnYouTubeDislikePatch {
         }
     }
 
-    private static boolean isShortTextViewIsOnScreen(@Nullable View view) {
+    private static boolean isShortTextViewOnScreen(@Nullable View view) {
         if (view == null) {
             return false;
         }
@@ -335,7 +321,9 @@ public class ReturnYouTubeDislikePatch {
                     updateOldUIDislikesTextView();
                     // Shorts TextView hook is called when disliked,
                     // but manually update here in case they liked and dislike percentages is turned on.
-                    updateOnScreenShortsTextView();
+                    if (vote == Vote.LIKE.value) {
+                        updateOnScreenShortsTextView();
+                    }
                     return;
                 }
             }
