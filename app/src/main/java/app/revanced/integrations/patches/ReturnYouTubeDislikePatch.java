@@ -1,7 +1,9 @@
 package app.revanced.integrations.patches;
 
 import static app.revanced.integrations.returnyoutubedislike.ReturnYouTubeDislike.Vote;
+import static app.revanced.integrations.returnyoutubedislike.ReturnYouTubeDislike.newSpanUsingStylingOfAnotherSpan;
 
+import android.os.Build;
 import android.text.Editable;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -14,15 +16,26 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 import app.revanced.integrations.returnyoutubedislike.ReturnYouTubeDislike;
+import app.revanced.integrations.returnyoutubedislike.requests.ReturnYouTubeDislikeApi;
 import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.shared.PlayerType;
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedUtils;
 
+/**
+ * Handles all interaction of UI patch components.
+ *
+ * Does not handle creating dislike spans or anything to do with {@link ReturnYouTubeDislikeApi}.
+ */
 public class ReturnYouTubeDislikePatch {
+
+    @Nullable
+    private static String currentVideoId;
 
     /**
      * Resource identifier of old UI dislike button.
@@ -107,18 +120,6 @@ public class ReturnYouTubeDislikePatch {
 
     /**
      * Injection point.
-     */
-    public static void newVideoLoaded(@NonNull String videoId) {
-        try {
-            if (!SettingsEnum.RYD_ENABLED.getBoolean()) return;
-            ReturnYouTubeDislike.newVideoLoaded(videoId);
-        } catch (Exception ex) {
-            LogHelper.printException(() -> "newVideoLoaded failure", ex);
-        }
-    }
-
-    /**
-     * Injection point.
      *
      * Called when a litho text component is initially created,
      * and also when a Span is later reused again (such as scrolling off/on screen).
@@ -161,10 +162,56 @@ public class ReturnYouTubeDislikePatch {
     }
 
     /**
-     * Last Shorts dislikes span. Used to temporarily set the shorts span while waiting on fetch call.
+     * Replacement text to use for "Dislikes" while RYD fetch is completing.
+     */
+    private static final String SHORTS_LOADING_TEXT = "-";
+
+    /**
+     * Dislikes TextViews used by Shorts.
+     *
+     * Because multiple TextViews are loaded at once (for the prior and next videos to swipe to),
+     * and there's no way to distinguish which button goes to which video (and they can be loaded out of order),
+     * and the Shorts text hook and the video id hooks can be called out of order,
+     * The only simple solution is to apply the current video dislike to all of these text views.
+     *
+     * This means that when swiping to a new video, the dislikes of the prior video will show up for a moment.
      */
     @Nullable
-    private static Spanned lastShortsSpan;
+    private static final List<WeakReference<TextView>> shortsTextViewRefs = new ArrayList<>();
+
+    private static void removeDisposedShortsTextViews() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) { // YouTube requires Android N or greater
+            shortsTextViewRefs.removeIf(ref -> ref.get() == null );
+            return;
+        }
+        throw new IllegalStateException();
+    }
+
+    private static void setShortsDislikeText(CharSequence span) {
+        for (WeakReference<TextView> textViewRef : shortsTextViewRefs) {
+            TextView textView = textViewRef.get();
+            if (textView == null) {
+                continue;
+            }
+            textView.setText(span);
+        }
+    }
+
+    private static Spanned getShortsDislikeLoadingSpan() {
+        for (WeakReference<TextView> textViewRef : shortsTextViewRefs) {
+            TextView textView = textViewRef.get();
+            if (textView == null) {
+                continue;
+            }
+            CharSequence text = textView.getText();
+            Spanned textSpan = (text instanceof Spanned)
+                    ? (Spanned) text
+                    : new SpannableString(text);
+            return newSpanUsingStylingOfAnotherSpan(textSpan, SHORTS_LOADING_TEXT);
+        }
+        // lacks styling of the TextView, but this should never be reached.
+        return new SpannableString(SHORTS_LOADING_TEXT);
+    }
 
     /**
      * Injection point.  Called when a Shorts dislike is updated.
@@ -177,48 +224,74 @@ public class ReturnYouTubeDislikePatch {
             if (!SettingsEnum.RYD_ENABLED.getBoolean()) {
                 return false;
             }
-            LogHelper.printDebug(() -> "updateShortsDislikes");
 
-            TextView textView = (TextView)likeDislikeView;
-            CharSequence text = textView.getText();
-            Spanned textSpan = (text instanceof Spanned)
-                    ? (Spanned) text
-                    : new SpannableString(text);
-
-            String videoId = VideoInformation.getVideoId();
-            Runnable update = () -> {
-                Spanned dislikesSpan = ReturnYouTubeDislike.getDislikeSpanForShort(textSpan);
-                ReVancedUtils.runOnMainThreadNowOrLater(() -> {
-                    if (!videoId.equals(VideoInformation.getVideoId())) {
-                        // User swiped to new video before fetch completed.
-                        LogHelper.printDebug(() -> "Ignoring stale dislikes data for shorts: " + videoId);
-                        return;
-                    }
-                    lastShortsSpan = dislikesSpan;
-                    textView.setText(dislikesSpan); // if RYD fails, this sets the text back to "Dislike"
-                });
-            };
-
-            if (ReturnYouTubeDislike.fetchCompleted()) {
-                update.run(); // Network call is completed, no need to wait on background thread.
-            } else {
-                // When swiping thru shorts, the dislikes text view will initially show the prior values of the video,
-                // and just before this hook is called the text to 'Dislike'.
-                // If the 'dislikes' is kept while the loading happens, then the text will flicker or blink
-                // because most RYD api calls finish a few milliseconds after the text is reset to 'dislike'.
-                // To keep the UI from flickering, continue to keep the prior dislikes text visible until the api call completes.
-                // Most RYD calls take around 250ms, and after no more than 4000ms the dislikes will either be the correct value
-                // or reset back to the "Dislike" text
-                if (lastShortsSpan != null) {
-                    textView.setText(lastShortsSpan);
-                }
-                ReVancedUtils.runOnBackgroundThread(update);
-            }
+            removeDisposedShortsTextViews();
+            shortsTextViewRefs.add(new WeakReference<>((TextView) likeDislikeView));
+            updateAllShortsTextViews();
 
             return true;
         } catch (Exception ex) {
-            LogHelper.printException(() -> "onShortsComponentCreated failure", ex);
+            LogHelper.printException(() -> "updateShortsDislikes failure", ex);
             return false;
+        }
+    }
+
+    private static void updateAllShortsTextViews() {
+        try {
+            removeDisposedShortsTextViews();
+            if (shortsTextViewRefs.isEmpty()) {
+                return;
+            }
+
+            LogHelper.printDebug(() -> "updateAllShortsTextViews");
+            String videoId = VideoInformation.getVideoId();
+            Spanned loadingSpan = getShortsDislikeLoadingSpan();
+
+            Runnable update = () -> {
+                Spanned dislikesSpan = ReturnYouTubeDislike.getDislikeSpanForShort(loadingSpan);
+                ReVancedUtils.runOnMainThreadNowOrLater(() -> {
+                    if (!videoId.equals(VideoInformation.getVideoId())) {
+                        // User swiped to new video before fetch completed.
+                        // Or the Shorts hook was called before the video id hook (very common when swiping thru shorts).
+                        // If the shorts hook was called early, then this code will run again after the dislikes are updated.
+                        LogHelper.printDebug(() -> "Ignoring stale dislikes data for shorts: " + videoId);
+                        return;
+                    }
+                    setShortsDislikeText(dislikesSpan);
+                });
+            };
+            if (ReturnYouTubeDislike.fetchCompleted()) {
+                update.run(); // Network call is completed, no need to wait on background thread.
+            } else {
+                setShortsDislikeText(loadingSpan);
+                ReVancedUtils.runOnBackgroundThread(update);
+            }
+        } catch (Exception ex) {
+            LogHelper.printException(() -> "updateAllShortsTextViews failure", ex);
+        }
+    }
+
+    /**
+     * Injection point.
+     */
+    public static void newVideoLoaded(@NonNull String videoId) {
+        try {
+            if (!SettingsEnum.RYD_ENABLED.getBoolean()) return;
+            ReturnYouTubeDislike.newVideoLoaded(videoId);
+
+            if (!videoId.equals(currentVideoId)) {
+                currentVideoId = videoId;
+                if (PlayerType.getCurrent().isNoneOrHidden()) {
+                    // When swiping to a new short, the short hook is called before the video id hook.
+                    // Must manually update the shorts dislike text views.
+                    updateAllShortsTextViews();
+                } else if (!shortsTextViewRefs.isEmpty()) {
+                    LogHelper.printDebug(() -> "Clearing Shorts TextView");
+                    shortsTextViewRefs.clear(); // Shorts player is no longer opened.
+                }
+            }
+        } catch (Exception ex) {
+            LogHelper.printException(() -> "newVideoLoaded failure", ex);
         }
     }
 
@@ -238,7 +311,9 @@ public class ReturnYouTubeDislikePatch {
             for (Vote v : Vote.values()) {
                 if (v.value == vote) {
                     ReturnYouTubeDislike.sendVote(v);
+
                     updateOldUIDislikesTextView();
+                    updateAllShortsTextViews();
                     return;
                 }
             }

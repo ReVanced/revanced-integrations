@@ -453,7 +453,7 @@ public class ReturnYouTubeDislike {
      *
      * @return if the string contains at least 1 number.
      */
-    private static boolean stringContainsNumber(@NonNull String text) {
+    public static boolean stringContainsNumber(@NonNull String text) {
         for (int index = 0, length = text.length(); index < length; index++) {
             if (Character.isDigit(text.codePointAt(index))) {
                 return true;
@@ -490,7 +490,7 @@ public class ReturnYouTubeDislike {
                         : formatDislikeCount(voteData.getDislikeCount()));
     }
 
-    private static SpannableString newSpanUsingStylingOfAnotherSpan(@NonNull Spanned sourceStyle, @NonNull String newSpanText) {
+    public static SpannableString newSpanUsingStylingOfAnotherSpan(@NonNull Spanned sourceStyle, @NonNull CharSequence newSpanText) {
         SpannableString destination = new SpannableString(newSpanText);
         Object[] spans = sourceStyle.getSpans(0, sourceStyle.length(), Object.class);
         for (Object span : spans) {
