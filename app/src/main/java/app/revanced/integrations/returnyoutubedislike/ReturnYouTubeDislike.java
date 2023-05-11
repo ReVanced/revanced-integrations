@@ -26,7 +26,9 @@ import androidx.annotation.Nullable;
 
 import java.text.NumberFormat;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -46,6 +48,38 @@ import app.revanced.integrations.utils.ThemeHelper;
  * Because Litho creates spans using multiple threads, this entire class supports multithreading as well.
  */
 public class ReturnYouTubeDislike {
+
+    /**
+     * Simple wrapper to store a Future for future lookup.
+     */
+    private static class RYDCachedFetch {
+        /**
+         * How long to retain cached RYD fetches.
+         */
+        private static final long CACHE_TIMEOUT_MILLISECONDS = 3 * 60 * 1000; // 3 Minutes
+
+        @NonNull
+        final Future<RYDVoteData> future;
+        final long timeFetched;
+        RYDCachedFetch(@NonNull Future<RYDVoteData> future) {
+            this.future = Objects.requireNonNull(future);
+            this.timeFetched = System.currentTimeMillis();
+        }
+
+        boolean cacheIsValid(long now) {
+            return (now - timeFetched) >= CACHE_TIMEOUT_MILLISECONDS;
+        }
+
+        boolean futureInProgressOrFinishedSuccessfully() {
+            try {
+                return !future.isDone() || future.get(MAX_MILLISECONDS_TO_BLOCK_UI_WAITING_FOR_FETCH, TimeUnit.MILLISECONDS) != null;
+            } catch (ExecutionException | InterruptedException | TimeoutException ex) {
+                LogHelper.printInfo(() -> "failed to lookup cache", ex); // will never happen
+            }
+            return false;
+        }
+    }
+
     /**
      * Maximum amount of time to block the UI from updates while waiting for network call to complete.
      *
@@ -59,6 +93,11 @@ public class ReturnYouTubeDislike {
      * Can be any almost any non-visible character.
      */
     private static final char MIDDLE_SEPARATOR_CHARACTER = '\u2009'; // 'narrow space' character
+
+    /**
+     * Cached lookup of FYD fetches.
+     */
+    private static final Map<String, RYDCachedFetch> cache = new ConcurrentHashMap<>();
 
     /**
      * Used to send votes, one by one, in the same order the user created them.
@@ -92,7 +131,6 @@ public class ReturnYouTubeDislike {
     @Nullable
     @GuardedBy("videoIdLockObject")
     private static Vote userVote;
-
 
     /**
      * Original dislike span, before modifications.
@@ -148,6 +186,13 @@ public class ReturnYouTubeDislike {
         synchronized (videoIdLockObject) {
             if (videoId == null && currentVideoId != null) {
                 LogHelper.printDebug(() -> "Clearing data");
+            }
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                final long now = System.currentTimeMillis();
+                cache.values().removeIf(value -> value.cacheIsValid(now));
+            } else {
+                throw new IllegalStateException(); // YouTube requires Android N or greater
             }
             currentVideoId = videoId;
             dislikeDataIsShort = false;
@@ -210,9 +255,15 @@ public class ReturnYouTubeDislike {
             // while both a regular video and a short are on screen.
             dislikeDataIsShort = PlayerType.getCurrent().isNoneOrHidden();
 
-            // No need to wrap the call in a try/catch,
-            // as any exceptions are propagated out in the later Future#Get call.
-            voteFetchFuture = ReVancedUtils.submitOnBackgroundThread(() -> ReturnYouTubeDislikeApi.fetchVotes(videoId));
+            RYDCachedFetch entry = cache.get(videoId);
+            if (entry != null && entry.futureInProgressOrFinishedSuccessfully()) {
+                LogHelper.printDebug(() -> "Using cached RYD fetch");
+                voteFetchFuture = entry.future;
+                return;
+            }
+            entry = new RYDCachedFetch(ReVancedUtils.submitOnBackgroundThread(() -> ReturnYouTubeDislikeApi.fetchVotes(videoId)));
+            cache.put(videoId, entry);
+            voteFetchFuture = entry.future;
         }
     }
 
