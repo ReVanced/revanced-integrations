@@ -1,3 +1,17 @@
+# [0.108.0-dev.9](https://github.com/revanced/revanced-integrations/compare/v0.108.0-dev.8...v0.108.0-dev.9) (2023-05-11)
+
+
+### Features
+
+* **youtube/video-speed:** change custom video speeds inside app settings ([#393](https://github.com/revanced/revanced-integrations/issues/393)) ([b42790f](https://github.com/revanced/revanced-integrations/commit/b42790fbca0f6c854d41871834fd6266dd2ea106))
+
+# [0.108.0-dev.8](https://github.com/revanced/revanced-integrations/compare/v0.108.0-dev.7...v0.108.0-dev.8) (2023-05-11)
+
+
+### Bug Fixes
+
+* **youtube/theme:** apply custom seekbar color to video thumbnails ([#391](https://github.com/revanced/revanced-integrations/issues/391)) ([ae99408](https://github.com/revanced/revanced-integrations/commit/ae994086360b45340ed1ed896c35917d785bb4f9))
+
 # [0.108.0-dev.7](https://github.com/revanced/revanced-integrations/compare/v0.108.0-dev.6...v0.108.0-dev.7) (2023-05-10)
 
 
