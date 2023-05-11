@@ -41,10 +41,10 @@ public enum SettingsEnum {
 
     // Video settings
     OLD_STYLE_VIDEO_QUALITY_PLAYER_SETTINGS("revanced_video_show_old_menu", BOOLEAN, TRUE),
-    VIDEO_QUALITY_REMEMBER_LAST_SELECTED("revanced_video_remember_last_selected", BOOLEAN, TRUE),
+    VIDEO_QUALITY_REMEMBER_LAST_SELECTED("revanced_remember_video_quality_last_selected", BOOLEAN, TRUE),
     VIDEO_QUALITY_DEFAULT_WIFI("revanced_video_default_quality_wifi", INTEGER, -2),
     VIDEO_QUALITY_DEFAULT_MOBILE("revanced_video_default_quality_mobile", INTEGER, -2),
-    PLAYBACK_SPEED_REMEMBER_LAST_SELECTED("revanced_speed_remember_last_selected", BOOLEAN, TRUE),
+    PLAYBACK_SPEED_REMEMBER_LAST_SELECTED("revanced_remember_playback_speed_last_selected", BOOLEAN, TRUE),
     PLAYBACK_SPEED_DEFAULT("revanced_speed_default", FLOAT, 1.0f),
     PLAYBACK_SPEED_AVAILABLE("revanced_custom_video_speeds", STRING,
             "0.25\n0.5\n0.75\n0.9\n0.95\n1.0\n1.05\n1.1\n1.25\n1.5\n1.75\n2.0\n3.0\n4.0\n5.0", true),
@@ -255,13 +255,9 @@ public enum SettingsEnum {
     @Deprecated
     DEPRECATED_OLD_STYLE_VIDEO_QUALITY_PLAYER_SETTINGS("revanced_use_old_style_quality_settings", BOOLEAN, TRUE),
     @Deprecated
-    DEPRECATED_VIDEO_QUALITY_REMEMBER_LAST_SELECTED("revanced_remember_video_quality_last_selected", BOOLEAN, TRUE),
-    @Deprecated
     DEPRECATED_VIDEO_QUALITY_DEFAULT_WIFI("revanced_default_video_quality_wifi", INTEGER, -2),
     @Deprecated
     DEPRECATED_VIDEO_QUALITY_DEFAULT_MOBILE("revanced_default_video_quality_mobile", INTEGER, -2),
-    @Deprecated
-    DEPRECATED_PLAYBACK_SPEED_REMEMBER_LAST_SELECTED("revanced_remember_playback_speed_last_selected", BOOLEAN, TRUE),
     @Deprecated
     DEPRECATED_PLAYBACK_SPEED_DEFAULT("revanced_default_playback_speed", FLOAT, 1.0f),
 
@@ -510,10 +506,8 @@ public enum SettingsEnum {
                 {DEPRECATED_COPY_VIDEO_URL_TIMESTAMP_BUTTON_SHOWN, COPY_VIDEO_URL_TIMESTAMP_BUTTON_SHOWN},
 
                 {DEPRECATED_OLD_STYLE_VIDEO_QUALITY_PLAYER_SETTINGS, OLD_STYLE_VIDEO_QUALITY_PLAYER_SETTINGS},
-                {DEPRECATED_VIDEO_QUALITY_REMEMBER_LAST_SELECTED, VIDEO_QUALITY_REMEMBER_LAST_SELECTED},
                 {DEPRECATED_VIDEO_QUALITY_DEFAULT_WIFI, VIDEO_QUALITY_DEFAULT_WIFI},
                 {DEPRECATED_VIDEO_QUALITY_DEFAULT_MOBILE, VIDEO_QUALITY_DEFAULT_MOBILE},
-                {DEPRECATED_PLAYBACK_SPEED_REMEMBER_LAST_SELECTED, PLAYBACK_SPEED_REMEMBER_LAST_SELECTED},
                 {DEPRECATED_PLAYBACK_SPEED_DEFAULT, PLAYBACK_SPEED_DEFAULT},
 
                 {DEPRECATED_CAPTIONS_ENABLED, AUTO_CAPTIONS},
