@@ -176,9 +176,13 @@ public class ReturnYouTubeDislikePatch {
     @Nullable
     private static final List<WeakReference<TextView>> shortsTextViewRefs = new ArrayList<>();
 
-    private static void removeDisposedShortsTextViews() {
+    private static void clearRemovedShortsTextViews() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            shortsTextViewRefs.removeIf(ref -> ref.get() == null );
+            shortsTextViewRefs.removeIf(ref -> {
+                TextView textView = ref.get();
+                // It does not appear that dislike TextViews are reused after they are removed from their parent
+                return textView == null || textView.getParent() == null;
+            });
             return;
         }
         throw new IllegalStateException(); // YouTube requires Android N or greater
@@ -225,7 +229,7 @@ public class ReturnYouTubeDislikePatch {
             // Change 'Dislike' text to the loading text
             textView.setText(getShortsLoadingSpan(textView));
 
-            removeDisposedShortsTextViews();
+            clearRemovedShortsTextViews();
             shortsTextViewRefs.add(new WeakReference<>(textView));
 
             updateOnScreenShortsTextView();
@@ -239,7 +243,7 @@ public class ReturnYouTubeDislikePatch {
 
     private static void updateOnScreenShortsTextView() {
         try {
-            removeDisposedShortsTextViews();
+            clearRemovedShortsTextViews();
             if (shortsTextViewRefs.isEmpty()) {
                 return;
             }
@@ -266,10 +270,9 @@ public class ReturnYouTubeDislikePatch {
                         }
                         Rect bounds = new Rect();
                         textView.getGlobalVisibleRect(bounds);
-                        if (bounds.isEmpty()) {
-                            continue; // View is off screen.
-                        }
-                        textView.setText(dislikesSpan);
+                        if (!bounds.isEmpty()) {
+                            textView.setText(dislikesSpan);
+                        } // else, the view is off screen.
                     }
                 });
             };
