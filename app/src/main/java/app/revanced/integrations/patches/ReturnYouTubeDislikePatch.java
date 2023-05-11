@@ -2,7 +2,6 @@ package app.revanced.integrations.patches;
 
 import static app.revanced.integrations.returnyoutubedislike.ReturnYouTubeDislike.Vote;
 import static app.revanced.integrations.returnyoutubedislike.ReturnYouTubeDislike.newSpanUsingStylingOfAnotherSpan;
-import static app.revanced.integrations.returnyoutubedislike.ReturnYouTubeDislike.stringContainsNumber;
 
 import android.graphics.Rect;
 import android.os.Build;
@@ -238,10 +237,9 @@ public class ReturnYouTubeDislikePatch {
                 LogHelper.printDebug(() -> "Shorts dislike is already selected");
                 ReturnYouTubeDislike.setUserVote(Vote.DISLIKE);
             }
-            if (!stringContainsNumber(textView.getText().toString())) {
-                // Change 'Dislike' text to the loading text
-                textView.setText(getShortsLoadingSpan(textView));
-            }
+
+            // Change 'Dislike' text to the loading text
+            textView.setText(getShortsLoadingSpan(textView));
             updateOnScreenShortsTextView();
 
             return true;
