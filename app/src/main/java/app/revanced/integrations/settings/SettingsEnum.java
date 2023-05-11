@@ -46,6 +46,8 @@ public enum SettingsEnum {
     VIDEO_QUALITY_DEFAULT_MOBILE("revanced_video_default_quality_mobile", INTEGER, -2),
     PLAYBACK_SPEED_REMEMBER_LAST_SELECTED("revanced_speed_remember_last_selected", BOOLEAN, TRUE),
     PLAYBACK_SPEED_DEFAULT("revanced_speed_default", FLOAT, 1.0f),
+    PLAYBACK_SPEED_AVAILABLE("revanced_custom_video_speeds", STRING,
+            "0.25\n0.5\n0.75\n0.9\n0.95\n1.0\n1.05\n1.1\n1.25\n1.5\n1.75\n2.0\n3.0\n4.0\n5.0", true),
 
     // TODO: Unused currently
     // Whitelist settings
@@ -113,7 +115,7 @@ public enum SettingsEnum {
     HIDE_PLAYER_BUTTONS("revanced_hide_player_buttons", BOOLEAN, FALSE),
     HIDE_PLAYER_OVERLAY("revanced_hide_player_overlay", BOOLEAN, FALSE, true),
     HIDE_PREVIEW_COMMENT("revanced_hide_preview_comment", BOOLEAN, FALSE, true),
-    HIDE_SEEKBAR("revanced_hide_seekbar", BOOLEAN, FALSE),
+    HIDE_SEEKBAR("revanced_hide_seekbar", BOOLEAN, FALSE, true),
     HIDE_HOME_BUTTON("revanced_hide_home_button", BOOLEAN, FALSE, true),
     HIDE_SHORTS_BUTTON("revanced_hide_shorts_button", BOOLEAN, TRUE, true),
     HIDE_SUBSCRIPTIONS_BUTTON("revanced_hide_subscriptions_button", BOOLEAN, FALSE, true),
