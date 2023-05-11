@@ -165,7 +165,7 @@ public class ReturnYouTubeDislikePatch {
     /**
      * Replacement text to use for "Dislikes" while RYD is fetching.
      */
-    private static final String SHORTS_LOADING_TEXT = "■";
+    private static final String SHORTS_LOADING_TEXT = "-";
 
     /**
      * Dislikes TextViews used by Shorts.
