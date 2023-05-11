@@ -30,30 +30,29 @@ import app.revanced.integrations.utils.ReVancedUtils;
 import app.revanced.integrations.utils.StringRef;
 
 public enum SettingsEnum {
-    //Download Settings
-    EXTERNAL_DOWNLOADER_BUTTON_SHOWN("revanced_external_downloader", BOOLEAN, TRUE),
+    // External downloader
+    EXTERNAL_DOWNLOADER("revanced_external_downloader", BOOLEAN, TRUE),
     EXTERNAL_DOWNLOADER_PACKAGE_NAME("revanced_external_downloader_name", STRING,
-            "org.schabi.newpipe" /* NewPipe */, parents(EXTERNAL_DOWNLOADER_BUTTON_SHOWN)),
+            "org.schabi.newpipe" /* NewPipe */, parents(EXTERNAL_DOWNLOADER)),
 
-    // Copy video URL settings
-    COPY_VIDEO_URL_BUTTON_SHOWN("revanced_copy_video_url", BOOLEAN, TRUE),
-    COPY_VIDEO_URL_TIMESTAMP_BUTTON_SHOWN("revanced_copy_video_url_timestamp", BOOLEAN, TRUE),
+    // Copy video URL
+    COPY_VIDEO_URL("revanced_copy_video_url", BOOLEAN, TRUE),
+    COPY_VIDEO_URL_TIMESTAMP("revanced_copy_video_url_timestamp", BOOLEAN, TRUE),
 
-    // Video settings
-    OLD_STYLE_VIDEO_QUALITY_PLAYER_SETTINGS("revanced_show_old_video_menu", BOOLEAN, TRUE),
-    VIDEO_QUALITY_REMEMBER_LAST_SELECTED("revanced_remember_video_quality_last_selected", BOOLEAN, TRUE),
+    // Video
+    SHOW_OLD_VIDEO_MENU("revanced_show_old_video_menu", BOOLEAN, TRUE),
+    REMEMBER_VIDEO_QUALITY_LAST_SELECTED("revanced_remember_video_quality_last_selected", BOOLEAN, TRUE),
     VIDEO_QUALITY_DEFAULT_WIFI("revanced_video_quality_default_wifi", INTEGER, -2),
     VIDEO_QUALITY_DEFAULT_MOBILE("revanced_video_quality_default_mobile", INTEGER, -2),
-    PLAYBACK_SPEED_REMEMBER_LAST_SELECTED("revanced_remember_playback_speed_last_selected", BOOLEAN, TRUE),
+    REMEMBER_PLAYBACK_SPEED_LAST_SELECTED("revanced_remember_playback_speed_last_selected", BOOLEAN, TRUE),
     PLAYBACK_SPEED_DEFAULT("revanced_playback_speed_default", FLOAT, 1.0f),
     CUSTOM_PLAYBACK_SPEEDS("revanced_custom_playback_speeds", STRING,
             "0.25\n0.5\n0.75\n0.9\n0.95\n1.0\n1.05\n1.1\n1.25\n1.5\n1.75\n2.0\n3.0\n4.0\n5.0", true),
 
-    // TODO: Unused currently
-    // Whitelist settings
-    //ENABLE_WHITELIST("revanced_whitelist_ads_enabled", BOOLEAN, FALSE),
+    // Whitelist
+    //WHITELIST("revanced_whitelist_ads", BOOLEAN, FALSE), // TODO: Unused currently
 
-    // Ad settings
+    // Ads
     HIDE_BUTTONED_ADS("revanced_hide_buttoned_ads", BOOLEAN, TRUE),
     HIDE_GENERAL_ADS("revanced_hide_general_ads", BOOLEAN, TRUE),
     HIDE_HIDE_LATEST_POSTS("revanced_hide_latest_posts_ads", BOOLEAN, TRUE),
@@ -63,7 +62,7 @@ public enum SettingsEnum {
     CUSTOM_FILTER("revanced_custom_filter", BOOLEAN, FALSE),
     CUSTOM_FILTER_STRINGS("revanced_custom_filter_strings", STRING, "", true, parents(CUSTOM_FILTER)),
 
-    // Layout settings
+    // Layout
     HIDE_CHANNEL_BAR("revanced_hide_channel_bar", BOOLEAN, FALSE),
     HIDE_CHANNEL_MEMBER_SHELF("revanced_hide_channel_member_shelf", BOOLEAN, TRUE),
     HIDE_CHAPTER_TEASER("revanced_hide_chapter_teaser", BOOLEAN, TRUE),
@@ -93,7 +92,7 @@ public enum SettingsEnum {
     HIDE_CLIP_BUTTON("revanced_hide_clip_button", BOOLEAN, FALSE, "revanced_hide_clip_button_user_dialog_message"),
     HIDE_ACTION_BUTTONS("revanced_hide_action_buttons", BOOLEAN, FALSE),
 
-    // Layout settings
+    // Layout
     DISABLE_RESUMING_SHORTS_PLAYER("revanced_disable_resuming_shorts_player", BOOLEAN, FALSE),
     HIDE_ALBUM_CARDS("revanced_hide_album_cards", BOOLEAN, FALSE, true),
     HIDE_ARTIST_CARDS("revanced_hide_artist_cards", BOOLEAN, FALSE),
@@ -110,7 +109,7 @@ public enum SettingsEnum {
     HIDE_FLOATING_MICROPHONE_BUTTON("revanced_hide_floating_microphone_button", BOOLEAN, TRUE, true),
     HIDE_FULLSCREEN_PANELS("revanced_hide_fullscreen_panels", BOOLEAN, TRUE),
     HIDE_GET_PREMIUM("revanced_hide_get_premium", BOOLEAN, TRUE),
-    HIDE_INFO_CARDS("revanced_hide_infocards", BOOLEAN, TRUE),
+    HIDE_INFO_CARDS("revanced_hide_info_cards", BOOLEAN, TRUE),
     HIDE_LOAD_MORE_BUTTON("revanced_hide_load_more_button", BOOLEAN, TRUE, true),
     HIDE_PLAYER_BUTTONS("revanced_hide_player_buttons", BOOLEAN, FALSE),
     HIDE_PLAYER_OVERLAY("revanced_hide_player_overlay", BOOLEAN, FALSE, true),
@@ -131,14 +130,14 @@ public enum SettingsEnum {
     WIDE_SEARCHBAR("revanced_wide_searchbar", BOOLEAN, FALSE, true),
     SEEKBAR_COLOR("revanced_seekbar_color", STRING, "#FF0000", true),
 
-    // Misc. Settings
+    // Misc
     AUTO_CAPTIONS("revanced_auto_captions", BOOLEAN, FALSE),
     DISABLE_ZOOM_HAPTICS("revanced_disable_zoom_haptics", BOOLEAN, TRUE),
     EXTERNAL_BROWSER("revanced_external_browser", BOOLEAN, TRUE, true),
-    PREFERRED_AUTO_REPEAT("revanced_auto_repeat", BOOLEAN, FALSE),
-    TAP_SEEKING_ENABLED("revanced_tap_seeking", BOOLEAN, TRUE),
+    AUTO_REPEAT("revanced_auto_repeat", BOOLEAN, FALSE),
+    TAP_SEEKING("revanced_tap_seeking", BOOLEAN, TRUE),
     HDR_AUTO_BRIGHTNESS("revanced_hdr_auto_brightness", BOOLEAN, TRUE),
-    SIGNATURE_SPOOFING("revanced_spoof_signature_verification", BOOLEAN, TRUE, "revanced_spoof_signature_verification_user_dialog_message"),
+    SPOOF_SIGNATURE_VERIFICATION("revanced_spoof_signature_verification", BOOLEAN, TRUE, "revanced_spoof_signature_verification_user_dialog_message"),
 
     // Swipe controls
     SWIPE_BRIGHTNESS("revanced_swipe_brightness", BOOLEAN, TRUE),
@@ -156,38 +155,38 @@ public enum SettingsEnum {
     SWIPE_OVERLAY_TIMEOUT("revanced_swipe_overlay_timeout", LONG, 500L,
             parents(SWIPE_BRIGHTNESS, SWIPE_VOLUME)),
 
-    // Debug settings
+    // Debugging
     DEBUG("revanced_debug", BOOLEAN, FALSE),
     DEBUG_STACKTRACE("revanced_debug_stacktrace", BOOLEAN, FALSE, parents(DEBUG)),
-    DEBUG_SHOW_TOAST_ON_ERROR("revanced_debug_toast_on_error", BOOLEAN, TRUE, "revanced_debug_toast_on_error_user_dialog_message"),
+    DEBUG_TOAST_ON_ERROR("revanced_debug_toast_on_error", BOOLEAN, TRUE, "revanced_debug_toast_on_error_user_dialog_message"),
 
-    // ReturnYoutubeDislike settings
+    // ReturnYoutubeDislike
     RYD_ENABLED("ryd_enabled", BOOLEAN, TRUE, RETURN_YOUTUBE_DISLIKE),
-    RYD_USER_ID("ryd_userId", STRING, "", RETURN_YOUTUBE_DISLIKE),
-    RYD_SHOW_DISLIKE_PERCENTAGE("ryd_show_dislike_percentage", BOOLEAN, FALSE, RETURN_YOUTUBE_DISLIKE, parents(RYD_ENABLED)),
-    RYD_USE_COMPACT_LAYOUT("ryd_use_compact_layout", BOOLEAN, FALSE, RETURN_YOUTUBE_DISLIKE, parents(RYD_ENABLED)),
+    RYD_USER_ID("ryd_user_id", STRING, "", RETURN_YOUTUBE_DISLIKE),
+    RYD_DISLIKE_PERCENTAGE("ryd_dislike_percentage", BOOLEAN, FALSE, RETURN_YOUTUBE_DISLIKE, parents(RYD_ENABLED)),
+    RYD_COMPACT_LAYOUT("ryd_compact_layout", BOOLEAN, FALSE, RETURN_YOUTUBE_DISLIKE, parents(RYD_ENABLED)),
 
-    // SponsorBlock settings
+    // SponsorBlock
     SB_ENABLED("sb_enabled", BOOLEAN, TRUE, SPONSOR_BLOCK),
     SB_PRIVATE_USER_ID("sb_private_user_id_Do_Not_Share", STRING, "", SPONSOR_BLOCK), /** Do not use directly, instead use {@link SponsorBlockSettings} */
     DEPRECATED_SB_UUID_OLD_MIGRATION_SETTING("uuid", STRING, "", SPONSOR_BLOCK), // Delete sometime in 2024
-    SB_ADJUST_NEW_SEGMENT_STEP("sb_create_new_segment_step", INTEGER, 150, SPONSOR_BLOCK, parents(SB_ENABLED)),
-    SB_VOTING_ENABLED("sb_show_voting_button", BOOLEAN, FALSE, SPONSOR_BLOCK, parents(SB_ENABLED)),
-    SB_CREATE_NEW_SEGMENT_ENABLED("sb_show_create_new_segment", BOOLEAN, FALSE, SPONSOR_BLOCK, parents(SB_ENABLED)),
-    SB_USE_COMPACT_SKIP_BUTTON("sb_use_compact_skip_button", BOOLEAN, FALSE, SPONSOR_BLOCK, parents(SB_ENABLED)),
+    SB_CREATE_NEW_SEGMENT_STEP("sb_create_new_segment_step", INTEGER, 150, SPONSOR_BLOCK, parents(SB_ENABLED)),
+    SB_VOTING_BUTTON("sb_voting_button", BOOLEAN, FALSE, SPONSOR_BLOCK, parents(SB_ENABLED)),
+    SB_CREATE_NEW_SEGMENT("sb_create_new_segment", BOOLEAN, FALSE, SPONSOR_BLOCK, parents(SB_ENABLED)),
+    SB_COMPACT_SKIP_BUTTON("sb_compact_skip_button", BOOLEAN, FALSE, SPONSOR_BLOCK, parents(SB_ENABLED)),
     SB_AUTO_HIDE_SKIP_BUTTON("sb_auto_hide_skip_button", BOOLEAN, TRUE, SPONSOR_BLOCK, parents(SB_ENABLED)),
-    SB_SHOW_TOAST_ON_SKIP("sb_show_toast", BOOLEAN, TRUE, SPONSOR_BLOCK, parents(SB_ENABLED)),
-    SB_TRACK_SKIP_COUNT("sb_count_skips", BOOLEAN, TRUE, SPONSOR_BLOCK, parents(SB_ENABLED)),
-    SB_MIN_DURATION("sb_min_segment_duration", FLOAT, 0F, SPONSOR_BLOCK, parents(SB_ENABLED)),
-    SB_SHOW_TIME_WITHOUT_SEGMENTS("sb_length_without_segments", BOOLEAN, TRUE, SPONSOR_BLOCK, parents(SB_ENABLED)),
+    SB_TOAST_ON_SKIP("sb_toast_on_skip", BOOLEAN, TRUE, SPONSOR_BLOCK, parents(SB_ENABLED)),
+    SB_TRACK_SKIP_COUNT("sb_track_skip_count", BOOLEAN, TRUE, SPONSOR_BLOCK, parents(SB_ENABLED)),
+    SB_SEGMENT_MIN_DURATION("sb_min_segment_duration", FLOAT, 0F, SPONSOR_BLOCK, parents(SB_ENABLED)),
+    SB_VIDEO_LENGTH_WITHOUT_SEGMENTS("sb_video_length_without_segments", BOOLEAN, TRUE, SPONSOR_BLOCK, parents(SB_ENABLED)),
     SB_API_URL("sb_api_url", STRING, "https://sponsor.ajay.app", SPONSOR_BLOCK),
+    SB_USER_IS_VIP("sb_user_is_vip", BOOLEAN, FALSE, SPONSOR_BLOCK),
     // SB settings not exported
+    SB_LAST_VIP_CHECK("sb_last_vip_check", LONG, 0L, SPONSOR_BLOCK),
     SB_HIDE_EXPORT_WARNING("sb_hide_export_warning", BOOLEAN, FALSE, SPONSOR_BLOCK),
     SB_SEEN_GUIDELINES("sb_seen_guidelines", BOOLEAN, FALSE, SPONSOR_BLOCK),
-    SB_LAST_VIP_CHECK("sb_last_vip_check", LONG, 0L, SPONSOR_BLOCK),
-    SB_IS_VIP("sb_user_is_vip", BOOLEAN, FALSE, SPONSOR_BLOCK),
-    SB_SKIPPED_SEGMENTS_NUMBER_SKIPPED("sb_skipped_segments_number", INTEGER, 0, SPONSOR_BLOCK),
-    SB_SKIPPED_SEGMENTS_TIME_SAVED("sb_skipped_segments_time", LONG, 0L, SPONSOR_BLOCK),
+    SB_LOCAL_TIME_SAVED_NUMBER_SEGMENTS("sb_local_time_saved_number_segments", INTEGER, 0, SPONSOR_BLOCK),
+    SB_LOCAL_TIME_SAVED_MILLISECONDS("sb_local_time_saved_milliseconds", LONG, 0L, SPONSOR_BLOCK),
 
     //
     // TODO: eventually, delete these
@@ -242,18 +241,20 @@ public enum SettingsEnum {
     @Deprecated
     DEPRECATED_HIDE_WEB_SEARCH_RESULTS("revanced_adremover_web_search_result", BOOLEAN, TRUE),
     @Deprecated
-    DEPRECATED_HIDE_SHORTS_REMOVAL("revanced_adremover_shorts", BOOLEAN, TRUE, true),
+    DEPRECATED_HIDE_SHORTS("revanced_adremover_shorts", BOOLEAN, TRUE, true),
+    @Deprecated
+    DEPRECATED_HIDE_INFO_CARDS("revanced_hide_infocards", BOOLEAN, TRUE),
 
     @Deprecated
     DEPRECATED_DISABLE_RESUMING_SHORTS_PLAYER("revanced_disable_startup_shorts_player", BOOLEAN, FALSE),
 
     @Deprecated
-    DEPRECATED_DOWNLOADS_BUTTON_SHOWN("revanced_downloads_enabled", BOOLEAN, TRUE),
+    DEPRECATED_ETERNAL_DOWNLOADER("revanced_downloads_enabled", BOOLEAN, TRUE),
     @Deprecated
-    DEPRECATED_DOWNLOADS_PACKAGE_NAME("revanced_downloads_package_name", STRING, "org.schabi.newpipe"),
+    DEPRECATED_EXTERNAL_DOWNLOADER_PACKAGE_NAME("revanced_downloads_package_name", STRING, "org.schabi.newpipe"),
 
     @Deprecated
-    DEPRECATED_OLD_STYLE_VIDEO_QUALITY_PLAYER_SETTINGS("revanced_use_old_style_quality_settings", BOOLEAN, TRUE),
+    DEPRECATED_SHOW_OLD_VIDEO_MENU("revanced_use_old_style_quality_settings", BOOLEAN, TRUE),
     @Deprecated
     DEPRECATED_VIDEO_QUALITY_DEFAULT_WIFI("revanced_default_video_quality_wifi", INTEGER, -2),
     @Deprecated
@@ -262,57 +263,62 @@ public enum SettingsEnum {
     DEPRECATED_PLAYBACK_SPEED_DEFAULT("revanced_default_playback_speed", FLOAT, 1.0f),
 
     @Deprecated
-    DEPRECATED_COPY_VIDEO_URL_BUTTON_SHOWN("revanced_copy_video_url_enabled", BOOLEAN, TRUE),
+    DEPRECATED_COPY_VIDEO_URL("revanced_copy_video_url_enabled", BOOLEAN, TRUE),
     @Deprecated
-    DEPRECATED_COPY_VIDEO_URL_TIMESTAMP_BUTTON_SHOWN("revanced_copy_video_url_timestamp_enabled", BOOLEAN, TRUE),
+    DEPRECATED_COPY_VIDEO_URL_TIMESTAMP("revanced_copy_video_url_timestamp_enabled", BOOLEAN, TRUE),
 
     @Deprecated
-    DEPRECATED_CAPTIONS_ENABLED("revanced_autocaptions_enabled", BOOLEAN, FALSE),
-    @Deprecated
-    DEPRECATED_DISABLE_STARTUP_SHORTS_PLAYER("revanced_startup_shorts_player_enabled", BOOLEAN, FALSE),
+    DEPRECATED_AUTO_CAPTIONS("revanced_autocaptions_enabled", BOOLEAN, FALSE),
     @Deprecated
     DEPRECATED_PLAYER_POPUP_PANELS("revanced_player_popup_panels_enabled", BOOLEAN, FALSE),
     @Deprecated
-    DEPRECATED_ENABLE_SWIPE_BRIGHTNESS("revanced_enable_swipe_brightness", BOOLEAN, TRUE),
+    DEPRECATED_SWIPE_BRIGHTNESS("revanced_enable_swipe_brightness", BOOLEAN, TRUE),
     @Deprecated
-    DEPRECATED_ENABLE_SWIPE_VOLUME("revanced_enable_swipe_volume", BOOLEAN, TRUE),
+    DEPRECATED_SWIPE_VOLUME("revanced_enable_swipe_volume", BOOLEAN, TRUE),
     @Deprecated
-    DEPRECATED_ENABLE_PRESS_TO_SWIPE("revanced_enable_press_to_swipe", BOOLEAN, FALSE),
+    DEPRECATED_PRESS_TO_SWIPE("revanced_enable_press_to_swipe", BOOLEAN, FALSE),
     @Deprecated
-    DEPRECATED_ENABLE_SWIPE_HAPTIC_FEEDBACK("revanced_enable_swipe_haptic_feedback", BOOLEAN, TRUE),
+    DEPRECATED_SWIPE_HAPTIC_FEEDBACK("revanced_enable_swipe_haptic_feedback", BOOLEAN, TRUE),
 
     @Deprecated
     DEPRECATED_DEBUG("revanced_debug_enabled", BOOLEAN, FALSE),
     @Deprecated
     DEPRECATED_DEBUG_STACKTRACE("revanced_debug_stacktrace_enabled", BOOLEAN, FALSE),
     @Deprecated
-    DEPRECATED_DEBUG_SHOW_TOAST_ON_ERROR("revanced_debug_toast_on_error_enabled", BOOLEAN, TRUE),
+    DEPRECATED_DEBUG_TOAST_ON_ERROR("revanced_debug_toast_on_error_enabled", BOOLEAN, TRUE),
 
     @Deprecated
-    DEPRECATED_ENABLE_EXTERNAL_BROWSER("revanced_enable_external_browser", BOOLEAN, TRUE),
+    DEPRECATED_EXTERNAL_BROWSER("revanced_enable_external_browser", BOOLEAN, TRUE),
     @Deprecated
-    DEPRECATED_PREFERRED_AUTO_REPEAT("revanced_pref_auto_repeat", BOOLEAN, FALSE),
+    DEPRECATED_AUTO_REPEAT("revanced_pref_auto_repeat", BOOLEAN, FALSE),
     @Deprecated
-    DEPRECATED_TAP_SEEKING_ENABLED("revanced_enable_tap_seeking", BOOLEAN, TRUE),
+    DEPRECATED_TAP_SEEKING("revanced_enable_tap_seeking", BOOLEAN, TRUE),
     @Deprecated
-    DEPRECATED_USE_HDR_AUTO_BRIGHTNESS("revanced_pref_hdr_autobrightness", BOOLEAN, TRUE),
+    DEPRECATED_HDR_AUTO_BRIGHTNESS("revanced_pref_hdr_autobrightness", BOOLEAN, TRUE),
+
+    @Deprecated
+    DEPRECATED_RYD_USER_ID("ryd_userId", STRING, "", RETURN_YOUTUBE_DISLIKE),
+    @Deprecated
+    DEPRECATED_RYD_DISLIKE_PERCENTAGE("ryd_show_dislike_percentage", BOOLEAN, FALSE, RETURN_YOUTUBE_DISLIKE),
+    @Deprecated
+    DEPRECATED_RYD_COMPACT_LAYOUT("ryd_use_compact_layout", BOOLEAN, FALSE, RETURN_YOUTUBE_DISLIKE),
 
     @Deprecated
     DEPRECATED_SB_ENABLED("sb-enabled", BOOLEAN, TRUE, SPONSOR_BLOCK),
     @Deprecated
-    DEPRECATED_SB_VOTING_ENABLED("sb-voting-enabled", BOOLEAN, FALSE, SPONSOR_BLOCK),
+    DEPRECATED_SB_VOTING_BUTTON("sb-voting-enabled", BOOLEAN, FALSE, SPONSOR_BLOCK),
     @Deprecated
-    DEPRECATED_SB_CREATE_NEW_SEGMENT_ENABLED("sb-new-segment-enabled", BOOLEAN, FALSE, SPONSOR_BLOCK),
+    DEPRECATED_SB_CREATE_NEW_SEGMENT("sb-new-segment-enabled", BOOLEAN, FALSE, SPONSOR_BLOCK),
     @Deprecated
-    DEPRECATED_SB_USE_COMPACT_SKIP_BUTTON("sb-use-compact-skip-button", BOOLEAN, FALSE, SPONSOR_BLOCK),
+    DEPRECATED_SB_COMPACT_SKIP_BUTTON("sb-use-compact-skip-button", BOOLEAN, FALSE, SPONSOR_BLOCK),
     @Deprecated
     DEPRECATED_SB_MIN_DURATION("sb-min-duration", FLOAT, 0F, SPONSOR_BLOCK),
     @Deprecated
-    DEPRECATED_SB_SHOW_TIME_WITHOUT_SEGMENTS("sb-length-without-segments", BOOLEAN, TRUE, SPONSOR_BLOCK),
+    DEPRECATED_SB_VIDEO_LENGTH_WITHOUT_SEGMENTS("sb-length-without-segments", BOOLEAN, TRUE, SPONSOR_BLOCK),
     @Deprecated
     DEPRECATED_SB_API_URL("sb-api-host-url", STRING, "https://sponsor.ajay.app", SPONSOR_BLOCK),
     @Deprecated
-    DEPRECATED_SB_SHOW_TOAST_ON_SKIP("show-toast", BOOLEAN, TRUE, SPONSOR_BLOCK),
+    DEPRECATED_SB_TOAST_ON_SKIP("show-toast", BOOLEAN, TRUE, SPONSOR_BLOCK),
     @Deprecated
     DEPRECATED_SB_AUTO_HIDE_SKIP_BUTTON("sb-auto-hide-skip-segment-button", BOOLEAN, TRUE, SPONSOR_BLOCK),
     @Deprecated
@@ -324,9 +330,9 @@ public enum SettingsEnum {
     @Deprecated
     DEPRECATED_SB_IS_VIP("sb-is-vip", BOOLEAN, FALSE, SPONSOR_BLOCK),
     @Deprecated
-    DEPRECATED_SB_SKIPPED_SEGMENTS_NUMBER_SKIPPED("sb-skipped-segments", INTEGER, 0, SPONSOR_BLOCK),
+    DEPRECATED_SB_LOCAL_TIME_SAVED_NUMBER_SEGMENTS("sb-skipped-segments", INTEGER, 0, SPONSOR_BLOCK),
     @Deprecated
-    DEPRECATED_SB_SKIPPED_SEGMENTS_TIME_SAVED("sb-skipped-segments-time", LONG, 0L, SPONSOR_BLOCK);
+    DEPRECATED_SB_LOCAL_TIME_SAVED_MILLISECONDS("sb-skipped-segments-time", LONG, 0L, SPONSOR_BLOCK);
     //
     // TODO END
     //
@@ -497,51 +503,55 @@ public enum SettingsEnum {
                 {DEPRECATED_HIDE_SUBSCRIBERS_COMMUNITY_GUIDELINES_REMOVAL, HIDE_SUBSCRIBERS_COMMUNITY_GUIDELINES},
                 {DEPRECATED_HIDE_VIEW_PRODUCTS, HIDE_PRODUCTS_BANNER},
                 {DEPRECATED_HIDE_WEB_SEARCH_RESULTS, HIDE_WEB_SEARCH_RESULTS},
-                {DEPRECATED_HIDE_SHORTS_REMOVAL, HIDE_SHORTS},
+                {DEPRECATED_HIDE_SHORTS, HIDE_SHORTS},
                 {DEPRECATED_DISABLE_RESUMING_SHORTS_PLAYER, DISABLE_RESUMING_SHORTS_PLAYER},
+                {DEPRECATED_HIDE_INFO_CARDS, HIDE_INFO_CARDS},
 
-                {DEPRECATED_DOWNLOADS_BUTTON_SHOWN, EXTERNAL_DOWNLOADER_BUTTON_SHOWN},
-                {DEPRECATED_DOWNLOADS_PACKAGE_NAME, EXTERNAL_DOWNLOADER_PACKAGE_NAME},
-                {DEPRECATED_COPY_VIDEO_URL_BUTTON_SHOWN, COPY_VIDEO_URL_BUTTON_SHOWN},
-                {DEPRECATED_COPY_VIDEO_URL_TIMESTAMP_BUTTON_SHOWN, COPY_VIDEO_URL_TIMESTAMP_BUTTON_SHOWN},
+                {DEPRECATED_ETERNAL_DOWNLOADER, EXTERNAL_DOWNLOADER},
+                {DEPRECATED_EXTERNAL_DOWNLOADER_PACKAGE_NAME, EXTERNAL_DOWNLOADER_PACKAGE_NAME},
+                {DEPRECATED_COPY_VIDEO_URL, COPY_VIDEO_URL},
+                {DEPRECATED_COPY_VIDEO_URL_TIMESTAMP, COPY_VIDEO_URL_TIMESTAMP},
 
-                {DEPRECATED_OLD_STYLE_VIDEO_QUALITY_PLAYER_SETTINGS, OLD_STYLE_VIDEO_QUALITY_PLAYER_SETTINGS},
+                {DEPRECATED_SHOW_OLD_VIDEO_MENU, SHOW_OLD_VIDEO_MENU},
                 {DEPRECATED_VIDEO_QUALITY_DEFAULT_WIFI, VIDEO_QUALITY_DEFAULT_WIFI},
                 {DEPRECATED_VIDEO_QUALITY_DEFAULT_MOBILE, VIDEO_QUALITY_DEFAULT_MOBILE},
                 {DEPRECATED_PLAYBACK_SPEED_DEFAULT, PLAYBACK_SPEED_DEFAULT},
 
-                {DEPRECATED_CAPTIONS_ENABLED, AUTO_CAPTIONS},
-                {DEPRECATED_DISABLE_STARTUP_SHORTS_PLAYER, DISABLE_RESUMING_SHORTS_PLAYER},
+                {DEPRECATED_AUTO_CAPTIONS, AUTO_CAPTIONS},
                 {DEPRECATED_PLAYER_POPUP_PANELS, PLAYER_POPUP_PANELS},
-                {DEPRECATED_ENABLE_SWIPE_BRIGHTNESS, SWIPE_BRIGHTNESS},
-                {DEPRECATED_ENABLE_SWIPE_VOLUME, SWIPE_VOLUME},
-                {DEPRECATED_ENABLE_PRESS_TO_SWIPE, SWIPE_PRESS_TO_ENGAGE},
-                {DEPRECATED_ENABLE_SWIPE_HAPTIC_FEEDBACK, SWIPE_HAPTIC_FEEDBACK},
+                {DEPRECATED_SWIPE_BRIGHTNESS, SWIPE_BRIGHTNESS},
+                {DEPRECATED_SWIPE_VOLUME, SWIPE_VOLUME},
+                {DEPRECATED_PRESS_TO_SWIPE, SWIPE_PRESS_TO_ENGAGE},
+                {DEPRECATED_SWIPE_HAPTIC_FEEDBACK, SWIPE_HAPTIC_FEEDBACK},
 
                 {DEPRECATED_DEBUG, DEBUG},
                 {DEPRECATED_DEBUG_STACKTRACE, DEBUG_STACKTRACE},
-                {DEPRECATED_DEBUG_SHOW_TOAST_ON_ERROR, DEBUG_SHOW_TOAST_ON_ERROR},
+                {DEPRECATED_DEBUG_TOAST_ON_ERROR, DEBUG_TOAST_ON_ERROR},
 
-                {DEPRECATED_ENABLE_EXTERNAL_BROWSER, EXTERNAL_BROWSER},
-                {DEPRECATED_PREFERRED_AUTO_REPEAT, PREFERRED_AUTO_REPEAT},
-                {DEPRECATED_TAP_SEEKING_ENABLED, TAP_SEEKING_ENABLED},
-                {DEPRECATED_USE_HDR_AUTO_BRIGHTNESS, HDR_AUTO_BRIGHTNESS},
+                {DEPRECATED_EXTERNAL_BROWSER, EXTERNAL_BROWSER},
+                {DEPRECATED_AUTO_REPEAT, AUTO_REPEAT},
+                {DEPRECATED_TAP_SEEKING, TAP_SEEKING},
+                {DEPRECATED_HDR_AUTO_BRIGHTNESS, HDR_AUTO_BRIGHTNESS},
+
+                {DEPRECATED_RYD_USER_ID, RYD_USER_ID},
+                {DEPRECATED_RYD_DISLIKE_PERCENTAGE, RYD_DISLIKE_PERCENTAGE},
+                {DEPRECATED_RYD_COMPACT_LAYOUT, RYD_COMPACT_LAYOUT},
 
                 {DEPRECATED_SB_ENABLED, SB_ENABLED},
-                {DEPRECATED_SB_VOTING_ENABLED, SB_VOTING_ENABLED},
-                {DEPRECATED_SB_CREATE_NEW_SEGMENT_ENABLED, SB_CREATE_NEW_SEGMENT_ENABLED},
-                {DEPRECATED_SB_USE_COMPACT_SKIP_BUTTON, SB_USE_COMPACT_SKIP_BUTTON},
-                {DEPRECATED_SB_MIN_DURATION, SB_MIN_DURATION},
-                {DEPRECATED_SB_SHOW_TIME_WITHOUT_SEGMENTS, SB_SHOW_TIME_WITHOUT_SEGMENTS},
+                {DEPRECATED_SB_VOTING_BUTTON, SB_VOTING_BUTTON},
+                {DEPRECATED_SB_CREATE_NEW_SEGMENT, SB_CREATE_NEW_SEGMENT},
+                {DEPRECATED_SB_COMPACT_SKIP_BUTTON, SB_COMPACT_SKIP_BUTTON},
+                {DEPRECATED_SB_MIN_DURATION, SB_SEGMENT_MIN_DURATION},
+                {DEPRECATED_SB_VIDEO_LENGTH_WITHOUT_SEGMENTS, SB_VIDEO_LENGTH_WITHOUT_SEGMENTS},
                 {DEPRECATED_SB_API_URL, SB_API_URL},
-                {DEPRECATED_SB_SHOW_TOAST_ON_SKIP, SB_SHOW_TOAST_ON_SKIP},
+                {DEPRECATED_SB_TOAST_ON_SKIP, SB_TOAST_ON_SKIP},
                 {DEPRECATED_SB_AUTO_HIDE_SKIP_BUTTON, SB_AUTO_HIDE_SKIP_BUTTON},
                 {DEPRECATED_SB_TRACK_SKIP_COUNT, SB_TRACK_SKIP_COUNT},
-                {DEPRECATED_SB_ADJUST_NEW_SEGMENT_STEP, SB_ADJUST_NEW_SEGMENT_STEP},
+                {DEPRECATED_SB_ADJUST_NEW_SEGMENT_STEP, SB_CREATE_NEW_SEGMENT_STEP},
                 {DEPRECATED_SB_LAST_VIP_CHECK, SB_LAST_VIP_CHECK},
-                {DEPRECATED_SB_IS_VIP, SB_IS_VIP},
-                {DEPRECATED_SB_SKIPPED_SEGMENTS_NUMBER_SKIPPED, SB_SKIPPED_SEGMENTS_NUMBER_SKIPPED},
-                {DEPRECATED_SB_SKIPPED_SEGMENTS_TIME_SAVED, SB_SKIPPED_SEGMENTS_TIME_SAVED},
+                {DEPRECATED_SB_IS_VIP, SB_USER_IS_VIP},
+                {DEPRECATED_SB_LOCAL_TIME_SAVED_NUMBER_SEGMENTS, SB_LOCAL_TIME_SAVED_NUMBER_SEGMENTS},
+                {DEPRECATED_SB_LOCAL_TIME_SAVED_MILLISECONDS, SB_LOCAL_TIME_SAVED_MILLISECONDS},
         };
         for (SettingsEnum[] oldNewSetting : renamedSettings) {
             SettingsEnum oldSetting = oldNewSetting[0];
@@ -707,8 +717,8 @@ public enum SettingsEnum {
             case SB_LAST_VIP_CHECK:
             case SB_HIDE_EXPORT_WARNING:
             case SB_SEEN_GUIDELINES:
-            case SB_SKIPPED_SEGMENTS_NUMBER_SKIPPED:
-            case SB_SKIPPED_SEGMENTS_TIME_SAVED:
+            case SB_LOCAL_TIME_SAVED_NUMBER_SEGMENTS:
+            case SB_LOCAL_TIME_SAVED_MILLISECONDS:
                 return false;
         }
         return true;

@@ -21,7 +21,7 @@ public class DownloadButton extends BottomControlButton {
         super(
                 viewGroup,
                 "download_button",
-                SettingsEnum.EXTERNAL_DOWNLOADER_BUTTON_SHOWN,
+                SettingsEnum.EXTERNAL_DOWNLOADER,
                 DownloadButton::onDownloadClick
         );
     }

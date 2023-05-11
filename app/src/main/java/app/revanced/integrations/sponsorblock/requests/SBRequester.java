@@ -59,7 +59,7 @@ public class SBRequester {
 
             if (responseCode == HTTP_STATUS_CODE_SUCCESS) {
                 JSONArray responseArray = Requester.parseJSONArray(connection);
-                final long minSegmentDuration = (long) (SettingsEnum.SB_MIN_DURATION.getFloat() * 1000);
+                final long minSegmentDuration = (long) (SettingsEnum.SB_SEGMENT_MIN_DURATION.getFloat() * 1000);
                 for (int i = 0, length = responseArray.length(); i < length; i++) {
                     JSONObject obj = (JSONObject) responseArray.get(i);
                     JSONArray segment = obj.getJSONArray("segment");
@@ -274,7 +274,7 @@ public class SBRequester {
             try {
                 JSONObject json = getJSONObject(SBRoutes.IS_USER_VIP, SponsorBlockSettings.getSBPrivateUserID());
                 boolean vip = json.getBoolean("vip");
-                SettingsEnum.SB_IS_VIP.saveValue(vip);
+                SettingsEnum.SB_USER_IS_VIP.saveValue(vip);
                 SettingsEnum.SB_LAST_VIP_CHECK.saveValue(now);
             } catch (IOException ex) {
                 LogHelper.printInfo(() -> "Failed to check VIP (network error)", ex); // info, so no error toast is shown

@@ -80,10 +80,10 @@ public class SponsorBlockSettings {
                     SettingsEnum.SB_PRIVATE_USER_ID.saveValue(userID);
                 }
             }
-            SettingsEnum.SB_IS_VIP.saveValue(settingsJson.getBoolean("isVip"));
-            SettingsEnum.SB_SHOW_TOAST_ON_SKIP.saveValue(!settingsJson.getBoolean("dontShowNotice"));
+            SettingsEnum.SB_USER_IS_VIP.saveValue(settingsJson.getBoolean("isVip"));
+            SettingsEnum.SB_TOAST_ON_SKIP.saveValue(!settingsJson.getBoolean("dontShowNotice"));
             SettingsEnum.SB_TRACK_SKIP_COUNT.saveValue(settingsJson.getBoolean("trackViewCount"));
-            SettingsEnum.SB_SHOW_TIME_WITHOUT_SEGMENTS.saveValue(settingsJson.getBoolean("showTimeWithSkips"));
+            SettingsEnum.SB_VIDEO_LENGTH_WITHOUT_SEGMENTS.saveValue(settingsJson.getBoolean("showTimeWithSkips"));
 
             String serverAddress = settingsJson.getString("serverAddress");
             if (isValidSBServerAddress(serverAddress)) { // Old versions of ReVanced exported wrong url format
@@ -94,14 +94,14 @@ public class SponsorBlockSettings {
             if (minDuration < 0) {
                 throw new IllegalArgumentException("invalid minDuration: " + minDuration);
             }
-            SettingsEnum.SB_MIN_DURATION.saveValue(minDuration);
+            SettingsEnum.SB_SEGMENT_MIN_DURATION.saveValue(minDuration);
 
             if (settingsJson.has("skipCount")) { // Value not exported in old versions of ReVanced
                 int skipCount = settingsJson.getInt("skipCount");
                 if (skipCount < 0) {
                     throw new IllegalArgumentException("invalid skipCount: " + skipCount);
                 }
-                SettingsEnum.SB_SKIPPED_SEGMENTS_NUMBER_SKIPPED.saveValue(skipCount);
+                SettingsEnum.SB_LOCAL_TIME_SAVED_NUMBER_SEGMENTS.saveValue(skipCount);
             }
 
             if (settingsJson.has("minutesSaved")) {
@@ -109,7 +109,7 @@ public class SponsorBlockSettings {
                 if (minutesSaved < 0) {
                     throw new IllegalArgumentException("invalid minutesSaved: " + minutesSaved);
                 }
-                SettingsEnum.SB_SKIPPED_SEGMENTS_TIME_SAVED.saveValue((long) (minutesSaved * 60 * 1000));
+                SettingsEnum.SB_LOCAL_TIME_SAVED_MILLISECONDS.saveValue((long) (minutesSaved * 60 * 1000));
             }
 
             ReVancedUtils.showToastLong(str("sb_settings_import_successful"));
@@ -146,14 +146,14 @@ public class SponsorBlockSettings {
             if (SponsorBlockSettings.userHasSBPrivateId()) {
                 json.put("userID", SettingsEnum.SB_PRIVATE_USER_ID.getString());
             }
-            json.put("isVip", SettingsEnum.SB_IS_VIP.getBoolean());
+            json.put("isVip", SettingsEnum.SB_USER_IS_VIP.getBoolean());
             json.put("serverAddress", SettingsEnum.SB_API_URL.getString());
-            json.put("dontShowNotice", !SettingsEnum.SB_SHOW_TOAST_ON_SKIP.getBoolean());
-            json.put("showTimeWithSkips", SettingsEnum.SB_SHOW_TIME_WITHOUT_SEGMENTS.getBoolean());
-            json.put("minDuration", SettingsEnum.SB_MIN_DURATION.getFloat());
+            json.put("dontShowNotice", !SettingsEnum.SB_TOAST_ON_SKIP.getBoolean());
+            json.put("showTimeWithSkips", SettingsEnum.SB_VIDEO_LENGTH_WITHOUT_SEGMENTS.getBoolean());
+            json.put("minDuration", SettingsEnum.SB_SEGMENT_MIN_DURATION.getFloat());
             json.put("trackViewCount", SettingsEnum.SB_TRACK_SKIP_COUNT.getBoolean());
-            json.put("skipCount", SettingsEnum.SB_SKIPPED_SEGMENTS_NUMBER_SKIPPED.getInt());
-            json.put("minutesSaved", SettingsEnum.SB_SKIPPED_SEGMENTS_TIME_SAVED.getLong() / (60f * 1000));
+            json.put("skipCount", SettingsEnum.SB_LOCAL_TIME_SAVED_NUMBER_SEGMENTS.getInt());
+            json.put("minutesSaved", SettingsEnum.SB_LOCAL_TIME_SAVED_MILLISECONDS.getLong() / (60f * 1000));
 
             json.put("categorySelections", categorySelectionsArray);
             json.put("barTypes", barTypesObject);

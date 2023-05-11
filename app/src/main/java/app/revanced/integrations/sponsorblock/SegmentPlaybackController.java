@@ -524,7 +524,7 @@ public class SegmentPlaybackController {
 
             if (!userManuallySkipped) {
                 // check for any smaller embedded segments, and count those as autoskipped
-                final boolean showSkipToast = SettingsEnum.SB_SHOW_TOAST_ON_SKIP.getBoolean();
+                final boolean showSkipToast = SettingsEnum.SB_TOAST_ON_SKIP.getBoolean();
                 for (final SponsorSegment otherSegment : Objects.requireNonNull(segments)) {
                     if (segmentToSkip.end < otherSegment.start) {
                         break; // no other segments can be contained
@@ -651,7 +651,7 @@ public class SegmentPlaybackController {
      */
     public static String appendTimeWithoutSegments(String totalTime) {
         try {
-            if (SettingsEnum.SB_ENABLED.getBoolean() && SettingsEnum.SB_SHOW_TIME_WITHOUT_SEGMENTS.getBoolean()
+            if (SettingsEnum.SB_ENABLED.getBoolean() && SettingsEnum.SB_VIDEO_LENGTH_WITHOUT_SEGMENTS.getBoolean()
                     && !TextUtils.isEmpty(totalTime) && !TextUtils.isEmpty(timeWithoutSegments)) {
                 // Force LTR layout, to match the same LTR video time/length layout YouTube uses for all languages
                 return "\u202D" + totalTime + timeWithoutSegments; // u202D = left to right override
@@ -665,7 +665,7 @@ public class SegmentPlaybackController {
 
     private static void calculateTimeWithoutSegments() {
         final long currentVideoLength = VideoInformation.getVideoLength();
-        if (!SettingsEnum.SB_SHOW_TIME_WITHOUT_SEGMENTS.getBoolean() || currentVideoLength <= 0
+        if (!SettingsEnum.SB_VIDEO_LENGTH_WITHOUT_SEGMENTS.getBoolean() || currentVideoLength <= 0
                 || segments == null || segments.length == 0) {
             timeWithoutSegments = null;
             return;
