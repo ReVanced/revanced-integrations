@@ -35,6 +35,9 @@ import app.revanced.integrations.utils.ReVancedUtils;
  */
 public class ReturnYouTubeDislikePatch {
 
+    @Nullable
+    private static String currentVideoId;
+
     /**
      * Resource identifier of old UI dislike button.
      */
@@ -224,6 +227,8 @@ public class ReturnYouTubeDislikePatch {
                 ReturnYouTubeDislike.setUserVote(Vote.DISLIKE);
             }
 
+            // For the first short played, this shorts hook is called after the video id hook.
+            // All other times this hook is called before the video id (which is not preferred).
             updateOnScreenShortsTextView();
 
             return true;
@@ -296,6 +301,20 @@ public class ReturnYouTubeDislikePatch {
         try {
             if (!SettingsEnum.RYD_ENABLED.getBoolean()) return;
             ReturnYouTubeDislike.newVideoLoaded(videoId);
+
+            if (!videoId.equals(currentVideoId)) {
+                currentVideoId = videoId;
+                if (PlayerType.getCurrent().isNoneOrHidden()) {
+                    // When swiping to a new short, the short hook can be called before the video id hook.
+                    // Must manually update the shorts dislike text views to fix these situations,
+                    // otherwise the video will incorrectly show the dislikes of the prior short.
+                    updateOnScreenShortsTextView();
+                } else if (!shortsTextViewRefs.isEmpty()) {
+                    // Shorts player was closed
+                    LogHelper.printDebug(() -> "Clearing Shorts TextView");
+                    shortsTextViewRefs.clear();
+                }
+            }
         } catch (Exception ex) {
             LogHelper.printException(() -> "newVideoLoaded failure", ex);
         }
@@ -319,11 +338,6 @@ public class ReturnYouTubeDislikePatch {
                     ReturnYouTubeDislike.sendVote(v);
 
                     updateOldUIDislikesTextView();
-                    // Shorts TextView hook is called when disliked,
-                    // but manually update here in case they liked and dislike percentages is turned on.
-                    if (vote == Vote.LIKE.value) {
-                        updateOnScreenShortsTextView();
-                    }
                     return;
                 }
             }
