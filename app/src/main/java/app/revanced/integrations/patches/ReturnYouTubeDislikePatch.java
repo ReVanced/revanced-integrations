@@ -333,6 +333,8 @@ public class ReturnYouTubeDislikePatch {
                     ReturnYouTubeDislike.sendVote(v);
 
                     updateOldUIDislikesTextView();
+                    // Shorts TextView hook is called when disliked,
+                    // but manually update here in case they liked and dislike percentages is turned on.
                     updateOnScreenShortsTextView();
                     return;
                 }
