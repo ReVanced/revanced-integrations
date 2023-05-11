@@ -56,7 +56,7 @@ public class ReturnYouTubeDislike {
         /**
          * How long to retain cached RYD fetches.
          */
-        private static final long CACHE_TIMEOUT_MILLISECONDS = 3 * 60 * 1000; // 3 Minutes
+        private static final long CACHE_TIMEOUT_MILLISECONDS = 2 * 60 * 1000; // 2 Minutes
 
         @NonNull
         final Future<RYDVoteData> future;
