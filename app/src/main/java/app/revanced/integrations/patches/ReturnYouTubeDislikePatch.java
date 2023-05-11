@@ -128,6 +128,7 @@ public class ReturnYouTubeDislikePatch {
         }
     }
 
+
     /**
      * Injection point.
      *
@@ -171,10 +172,30 @@ public class ReturnYouTubeDislikePatch {
         return original;
     }
 
+
     /**
      * Replacement text to use for "Dislikes" while RYD is fetching.
      */
     private static final SpannableString SHORTS_LOADING_TEXT = new SpannableString("-");
+
+    @Nullable
+    private static boolean firstShortHasBeenPlayed;
+
+    @Nullable
+    private static Spanned currentShortsDislikesSpan;
+
+    private static final TextWatcher shortsTextWatcher = new TextWatcher() {
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        }
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+        }
+        public void afterTextChanged(Editable s) {
+            if (currentShortsDislikesSpan == null || currentShortsDislikesSpan.toString().equals(s.toString())) {
+                return;
+            }
+            s.replace(0, s.length(), currentShortsDislikesSpan);
+        }
+    };
 
     /**
      * Dislikes TextViews used by Shorts.
@@ -227,9 +248,15 @@ public class ReturnYouTubeDislikePatch {
                 ReturnYouTubeDislike.setUserVote(Vote.DISLIKE);
             }
 
-            // For the first short played, this shorts hook is called after the video id hook.
-            // All other times this hook is called before the video id (which is not preferred).
-            updateOnScreenShortsTextView();
+            // For first short played, the shorts dislike hook is called after the video id hook
+            // all other times this hook is called before the video id (which is not preferred).
+            // Only update the shorts text views, if this is the first short played.
+            // If the textviews are always updated here, then when changing shorts the next short
+            // will momentarily show the prior shorts dislike count.
+            if (!firstShortHasBeenPlayed) {
+                firstShortHasBeenPlayed = true;
+                updateOnScreenShortsTextView();
+            }
 
             return true;
         } catch (Exception ex) {
@@ -249,21 +276,29 @@ public class ReturnYouTubeDislikePatch {
             String videoId = VideoInformation.getVideoId();
 
             Runnable update = () -> {
-                Spanned dislikesSpan = ReturnYouTubeDislike.getDislikeSpanForShort(SHORTS_LOADING_TEXT);
+                currentShortsDislikesSpan = ReturnYouTubeDislike.getDislikeSpanForShort(SHORTS_LOADING_TEXT);
                 ReVancedUtils.runOnMainThreadNowOrLater(() -> {
                     if (!videoId.equals(VideoInformation.getVideoId())) {
                         // User swiped to new video before fetch completed
                         LogHelper.printDebug(() -> "Ignoring stale dislikes data for shorts: " + videoId);
                         return;
                     }
+
                     // Update text views that appear to be visible on screen.
                     // Only 1 will be the actual textview for the current Short,
                     // but discarded and not yet garbage collected views can remain.
                     // So must set the dislike span on all views that match.
                     for (WeakReference<TextView> textViewRef : shortsTextViewRefs) {
                         TextView textView = textViewRef.get();
+                        if (textView == null) {
+                            continue;
+                        }
+                        // Cannot check if a listener is already added, so remove and add again.
+                        textView.removeTextChangedListener(shortsTextWatcher);
                         if (isShortTextViewOnScreen(textView)) {
-                            textView.setText(dislikesSpan);
+                            textView.setText(currentShortsDislikesSpan);
+                             // Prevent the text from being changed.
+                            textView.addTextChangedListener(shortsTextWatcher);
                         }
                     }
                 });
@@ -278,10 +313,7 @@ public class ReturnYouTubeDislikePatch {
         }
     }
 
-    private static boolean isShortTextViewOnScreen(@Nullable View view) {
-        if (view == null) {
-            return false;
-        }
+    private static boolean isShortTextViewOnScreen(@NonNull View view) {
         // If a Shorts TextView is off screen, it appears to always have a window position of [0, 0]
         final int[] location = new int[2];
         view.getLocationInWindow(location);
@@ -309,10 +341,8 @@ public class ReturnYouTubeDislikePatch {
                     // Must manually update the shorts dislike text views to fix these situations,
                     // otherwise the video will incorrectly show the dislikes of the prior short.
                     updateOnScreenShortsTextView();
-                } else if (!shortsTextViewRefs.isEmpty()) {
-                    // Shorts player was closed
-                    LogHelper.printDebug(() -> "Clearing Shorts TextView");
-                    shortsTextViewRefs.clear();
+                } else {
+                    firstShortHasBeenPlayed = false; // Shorts player was closed
                 }
             }
         } catch (Exception ex) {
@@ -338,6 +368,7 @@ public class ReturnYouTubeDislikePatch {
                     ReturnYouTubeDislike.sendVote(v);
 
                     updateOldUIDislikesTextView();
+                    updateOnScreenShortsTextView();
                     return;
                 }
             }
