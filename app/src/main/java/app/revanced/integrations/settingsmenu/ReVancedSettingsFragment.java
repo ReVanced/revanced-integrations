@@ -69,8 +69,11 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
             if (setting == null) {
                 return;
             }
-            Preference pref = this.findPreference(str);
+            Preference pref = findPreference(str);
             LogHelper.printDebug(() -> setting.name() + ": " + " setting value:" + setting.getObjectValue()  + " pref:" + pref);
+            if (pref == null) {
+                return;
+            }
 
             if (pref instanceof SwitchPreference) {
                 SwitchPreference switchPref = (SwitchPreference) pref;
