@@ -27,6 +27,7 @@ import androidx.annotation.Nullable;
 import java.text.NumberFormat;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -51,7 +52,7 @@ public class ReturnYouTubeDislike {
      * Must be less than 5 seconds, as per:
      * https://developer.android.com/topic/performance/vitals/anr
      */
-    private static final long MAX_MILLISECONDS_TO_BLOCK_UI_WHILE_WAITING_FOR_FETCH_VOTES_TO_COMPLETE = 4000;
+    private static final long MAX_MILLISECONDS_TO_BLOCK_UI_WAITING_FOR_FETCH = 4000;
 
     /**
      * Unique placeholder character, used to detect if a segmented span already has dislikes added to it.
@@ -84,6 +85,14 @@ public class ReturnYouTubeDislike {
     @Nullable
     @GuardedBy("videoIdLockObject")
     private static Future<RYDVoteData> voteFetchFuture;
+
+    /**
+     * Optional current vote status of the UI.  Used to apply a user vote that was done on a previous video viewing.
+     */
+    @Nullable
+    @GuardedBy("videoIdLockObject")
+    private static Vote userVote;
+
 
     /**
      * Original dislike span, before modifications.
@@ -142,6 +151,7 @@ public class ReturnYouTubeDislike {
             }
             currentVideoId = videoId;
             dislikeDataIsShort = false;
+            userVote = null;
             voteFetchFuture = null;
             originalDislikeSpan = null;
             replacementLikeDislikeSpan = null;
@@ -268,10 +278,16 @@ public class ReturnYouTubeDislike {
                 LogHelper.printDebug(() -> "fetch future not available (user enabled RYD while video was playing?)");
                 return oldSpannable;
             }
-            RYDVoteData votingData = fetchFuture.get(MAX_MILLISECONDS_TO_BLOCK_UI_WHILE_WAITING_FOR_FETCH_VOTES_TO_COMPLETE, TimeUnit.MILLISECONDS);
+            RYDVoteData votingData = fetchFuture.get(MAX_MILLISECONDS_TO_BLOCK_UI_WAITING_FOR_FETCH, TimeUnit.MILLISECONDS);
             if (votingData == null) {
                 LogHelper.printDebug(() -> "Cannot add dislike to UI (RYD data not available)");
                 return oldSpannable;
+            }
+
+            synchronized (videoIdLockObject) {
+                if (userVote != null) {
+                    votingData.updateUsingVote(userVote);
+                }
             }
 
             SpannableString replacement = createDislikeSpan(oldSpannable, isSegmentedButton, votingData);
@@ -324,24 +340,45 @@ public class ReturnYouTubeDislike {
                 }
             });
 
-            clearCache(); // UI needs updating
-
-            // Update the downloaded vote data.
-            Future<RYDVoteData> future = getVoteFetchFuture();
-            if (future == null) {
-                LogHelper.printException(() -> "Cannot update UI dislike count - vote fetch is null");
-                return;
-            }
-            // The future should always be completed before user can like/dislike, but use a timeout just in case.
-            RYDVoteData voteData = future.get(MAX_MILLISECONDS_TO_BLOCK_UI_WHILE_WAITING_FOR_FETCH_VOTES_TO_COMPLETE, TimeUnit.MILLISECONDS);
-            if (voteData == null) {
-                // RYD fetch failed
-                LogHelper.printDebug(() -> "Cannot update UI (vote data not available)");
-                return;
-            }
-            voteData.updateUsingVote(vote);
+            setUserVote(vote);
         } catch (Exception ex) {
             LogHelper.printException(() -> "Error trying to send vote", ex);
+        }
+    }
+
+    public static void setUserVote(@NonNull Vote vote) {
+        Objects.requireNonNull(vote);
+        try {
+            LogHelper.printDebug(() -> "setUserVote: " + vote);
+            
+            // Update the downloaded vote data.
+            Future<RYDVoteData> future = getVoteFetchFuture();
+            if (future != null && future.isDone()) {
+                RYDVoteData voteData;
+                try {
+                    voteData = future.get(MAX_MILLISECONDS_TO_BLOCK_UI_WAITING_FOR_FETCH, TimeUnit.MILLISECONDS);
+                } catch (ExecutionException | InterruptedException | TimeoutException ex) {
+                    // Should never happen
+                    LogHelper.printInfo(() -> "Could not update vote data", ex);
+                    return;
+                }
+                if (voteData == null) {
+                    // RYD fetch failed
+                    LogHelper.printDebug(() -> "Cannot update UI (vote data not available)");
+                    return;
+                }
+
+                voteData.updateUsingVote(vote);
+            } // Else, vote will be applied after vote data is received
+
+            synchronized (videoIdLockObject) {
+                if (userVote != vote) {
+                    userVote = vote;
+                    clearCache(); // UI needs updating
+                }
+            }
+        } catch (Exception ex) {
+            LogHelper.printException(() -> "setUserVote failure", ex);
         }
     }
 
