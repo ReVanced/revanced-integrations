@@ -40,13 +40,13 @@ public enum SettingsEnum {
     COPY_VIDEO_URL_TIMESTAMP_BUTTON_SHOWN("revanced_copy_video_url_timestamp", BOOLEAN, TRUE),
 
     // Video settings
-    OLD_STYLE_VIDEO_QUALITY_PLAYER_SETTINGS("revanced_video_show_old_menu", BOOLEAN, TRUE),
+    OLD_STYLE_VIDEO_QUALITY_PLAYER_SETTINGS("revanced_show_old_video_menu", BOOLEAN, TRUE),
     VIDEO_QUALITY_REMEMBER_LAST_SELECTED("revanced_remember_video_quality_last_selected", BOOLEAN, TRUE),
-    VIDEO_QUALITY_DEFAULT_WIFI("revanced_video_default_quality_wifi", INTEGER, -2),
-    VIDEO_QUALITY_DEFAULT_MOBILE("revanced_video_default_quality_mobile", INTEGER, -2),
+    VIDEO_QUALITY_DEFAULT_WIFI("revanced_video_quality_default_wifi", INTEGER, -2),
+    VIDEO_QUALITY_DEFAULT_MOBILE("revanced_video_quality_default_mobile", INTEGER, -2),
     PLAYBACK_SPEED_REMEMBER_LAST_SELECTED("revanced_remember_playback_speed_last_selected", BOOLEAN, TRUE),
-    PLAYBACK_SPEED_DEFAULT("revanced_speed_default", FLOAT, 1.0f),
-    PLAYBACK_SPEED_AVAILABLE("revanced_custom_video_speeds", STRING,
+    PLAYBACK_SPEED_DEFAULT("revanced_playback_speed_default", FLOAT, 1.0f),
+    CUSTOM_PLAYBACK_SPEEDS("revanced_custom_playback_speeds", STRING,
             "0.25\n0.5\n0.75\n0.9\n0.95\n1.0\n1.05\n1.1\n1.25\n1.5\n1.75\n2.0\n3.0\n4.0\n5.0", true),
 
     // TODO: Unused currently
