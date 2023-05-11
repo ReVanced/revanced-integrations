@@ -258,8 +258,6 @@ public class ReturnYouTubeDislike {
                         return oldSpannable;
                     }
                     oldSpannable = originalDislikeSpan;
-                } else {
-                    originalDislikeSpan = oldSpannable; // most up to date original
                 }
             }
 
@@ -278,6 +276,7 @@ public class ReturnYouTubeDislike {
 
             SpannableString replacement = createDislikeSpan(oldSpannable, isSegmentedButton, votingData);
             synchronized (videoIdLockObject) {
+                originalDislikeSpan = oldSpannable;
                 replacementLikeDislikeSpan = replacement;
             }
             final Spanned oldSpannableLogging = oldSpannable;

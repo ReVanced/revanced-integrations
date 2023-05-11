@@ -3,6 +3,7 @@ package app.revanced.integrations.patches;
 import static app.revanced.integrations.returnyoutubedislike.ReturnYouTubeDislike.Vote;
 import static app.revanced.integrations.returnyoutubedislike.ReturnYouTubeDislike.newSpanUsingStylingOfAnotherSpan;
 
+import android.graphics.Rect;
 import android.os.Build;
 import android.text.Editable;
 import android.text.Spannable;
@@ -162,19 +163,15 @@ public class ReturnYouTubeDislikePatch {
     }
 
     /**
-     * Replacement text to use for "Dislikes" while RYD fetch is completing.
+     * Replacement text to use for "Dislikes" while RYD is fetching.
      */
-    private static final String SHORTS_LOADING_TEXT = "-";
+    private static final String SHORTS_LOADING_TEXT = "■";
 
     /**
      * Dislikes TextViews used by Shorts.
      *
-     * Because multiple TextViews are loaded at once (for the prior and next videos to swipe to),
-     * and there's no way to distinguish which button goes to which video (and they can be loaded out of order),
-     * and the Shorts text hook and the video id hooks can be called out of order,
-     * The only simple solution is to apply the current video dislike to all of these text views.
-     *
-     * This means that when swiping to a new video, the dislikes of the prior video will show up for a moment.
+     * Multiple TextViews are loaded at once (for the prior and next videos to swipe to).
+     * Keep track of all of them, and later pick out the correct one based on their on screen position.
      */
     @Nullable
     private static final List<WeakReference<TextView>> shortsTextViewRefs = new ArrayList<>();
@@ -187,29 +184,29 @@ public class ReturnYouTubeDislikePatch {
         throw new IllegalStateException();
     }
 
-    private static void setShortsDislikeText(CharSequence span) {
-        for (WeakReference<TextView> textViewRef : shortsTextViewRefs) {
-            TextView textView = textViewRef.get();
-            if (textView == null) {
-                continue;
-            }
-            textView.setText(span);
-        }
+    /**
+     * @return {@link #SHORTS_LOADING_TEXT} with the same styling as the TextView.
+     */
+    @NonNull
+    private static SpannableString getShortsLoadingSpan(@NonNull TextView textView) {
+        CharSequence text = textView.getText();
+        Spanned textSpan = (text instanceof Spanned)
+                ? (Spanned) text
+                : new SpannableString(text);
+        return newSpanUsingStylingOfAnotherSpan(textSpan, SHORTS_LOADING_TEXT);
     }
 
-    private static Spanned getShortsDislikeLoadingSpan() {
+    @NonNull
+    private static Spanned getShortsLoadingSpan() {
         for (WeakReference<TextView> textViewRef : shortsTextViewRefs) {
             TextView textView = textViewRef.get();
             if (textView == null) {
                 continue;
             }
-            CharSequence text = textView.getText();
-            Spanned textSpan = (text instanceof Spanned)
-                    ? (Spanned) text
-                    : new SpannableString(text);
-            return newSpanUsingStylingOfAnotherSpan(textSpan, SHORTS_LOADING_TEXT);
+            return getShortsLoadingSpan(textView);
         }
-        // lacks styling of the TextView, but this should never be reached.
+        // No TextViews are loaded.
+        // Use a generic span that lacks styling of the TextView - this should never be reached.
         return new SpannableString(SHORTS_LOADING_TEXT);
     }
 
@@ -227,7 +224,11 @@ public class ReturnYouTubeDislikePatch {
 
             removeDisposedShortsTextViews();
             shortsTextViewRefs.add(new WeakReference<>((TextView) likeDislikeView));
-            updateAllShortsTextViews();
+
+            // Change 'Dislike' text to a briefer loading text
+            TextView textView = (TextView)likeDislikeView;
+            textView.setText(getShortsLoadingSpan(textView));
+            updateOnScreenShortsTextViews();
 
             return true;
         } catch (Exception ex) {
@@ -236,16 +237,16 @@ public class ReturnYouTubeDislikePatch {
         }
     }
 
-    private static void updateAllShortsTextViews() {
+    private static void updateOnScreenShortsTextViews() {
         try {
             removeDisposedShortsTextViews();
             if (shortsTextViewRefs.isEmpty()) {
                 return;
             }
 
-            LogHelper.printDebug(() -> "updateAllShortsTextViews");
+            LogHelper.printDebug(() -> "updateShortsTextViewsOnScreen");
             String videoId = VideoInformation.getVideoId();
-            Spanned loadingSpan = getShortsDislikeLoadingSpan();
+            Spanned loadingSpan = getShortsLoadingSpan();
 
             Runnable update = () -> {
                 Spanned dislikesSpan = ReturnYouTubeDislike.getDislikeSpanForShort(loadingSpan);
@@ -257,17 +258,28 @@ public class ReturnYouTubeDislikePatch {
                         LogHelper.printDebug(() -> "Ignoring stale dislikes data for shorts: " + videoId);
                         return;
                     }
-                    setShortsDislikeText(dislikesSpan);
+                    // Update only the text view that is on screen
+                    for (WeakReference<TextView> textViewRef : shortsTextViewRefs) {
+                        TextView textView = textViewRef.get();
+                        if (textView == null) {
+                            continue;
+                        }
+                        Rect bounds = new Rect();
+                        textView.getGlobalVisibleRect(bounds);
+                        if (bounds.isEmpty()) {
+                            continue; // View is off screen.
+                        }
+                        textView.setText(dislikesSpan);
+                    }
                 });
             };
             if (ReturnYouTubeDislike.fetchCompleted()) {
                 update.run(); // Network call is completed, no need to wait on background thread.
             } else {
-                setShortsDislikeText(loadingSpan);
                 ReVancedUtils.runOnBackgroundThread(update);
             }
         } catch (Exception ex) {
-            LogHelper.printException(() -> "updateAllShortsTextViews failure", ex);
+            LogHelper.printException(() -> "updateShortsTextViewsOnScreen failure", ex);
         }
     }
 
@@ -284,7 +296,7 @@ public class ReturnYouTubeDislikePatch {
                 if (PlayerType.getCurrent().isNoneOrHidden()) {
                     // When swiping to a new short, the short hook is called before the video id hook.
                     // Must manually update the shorts dislike text views.
-                    updateAllShortsTextViews();
+                    updateOnScreenShortsTextViews();
                 } else if (!shortsTextViewRefs.isEmpty()) {
                     LogHelper.printDebug(() -> "Clearing Shorts TextView");
                     shortsTextViewRefs.clear(); // Shorts player is no longer opened.
@@ -313,7 +325,7 @@ public class ReturnYouTubeDislikePatch {
                     ReturnYouTubeDislike.sendVote(v);
 
                     updateOldUIDislikesTextView();
-                    updateAllShortsTextViews();
+                    updateOnScreenShortsTextViews();
                     return;
                 }
             }
