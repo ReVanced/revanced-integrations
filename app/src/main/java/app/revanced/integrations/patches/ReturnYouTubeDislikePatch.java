@@ -177,11 +177,11 @@ public class ReturnYouTubeDislikePatch {
     private static final List<WeakReference<TextView>> shortsTextViewRefs = new ArrayList<>();
 
     private static void removeDisposedShortsTextViews() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) { // YouTube requires Android N or greater
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             shortsTextViewRefs.removeIf(ref -> ref.get() == null );
             return;
         }
-        throw new IllegalStateException();
+        throw new IllegalStateException(); // YouTube requires Android N or greater
     }
 
     /**
@@ -200,10 +200,9 @@ public class ReturnYouTubeDislikePatch {
     private static Spanned getShortsLoadingSpan() {
         for (WeakReference<TextView> textViewRef : shortsTextViewRefs) {
             TextView textView = textViewRef.get();
-            if (textView == null) {
-                continue;
+            if (textView != null) {
+                return getShortsLoadingSpan(textView);
             }
-            return getShortsLoadingSpan(textView);
         }
         // No TextViews are loaded.
         // Use a generic span that lacks styling of the TextView - this should never be reached.
@@ -222,13 +221,14 @@ public class ReturnYouTubeDislikePatch {
                 return false;
             }
 
-            removeDisposedShortsTextViews();
-            shortsTextViewRefs.add(new WeakReference<>((TextView) likeDislikeView));
-
-            // Change 'Dislike' text to a briefer loading text
-            TextView textView = (TextView)likeDislikeView;
+            TextView textView = (TextView) likeDislikeView;
+            // Change 'Dislike' text to the loading text
             textView.setText(getShortsLoadingSpan(textView));
-            updateOnScreenShortsTextViews();
+
+            removeDisposedShortsTextViews();
+            shortsTextViewRefs.add(new WeakReference<>(textView));
+
+            updateOnScreenShortsTextView();
 
             return true;
         } catch (Exception ex) {
@@ -237,7 +237,7 @@ public class ReturnYouTubeDislikePatch {
         }
     }
 
-    private static void updateOnScreenShortsTextViews() {
+    private static void updateOnScreenShortsTextView() {
         try {
             removeDisposedShortsTextViews();
             if (shortsTextViewRefs.isEmpty()) {
@@ -258,7 +258,7 @@ public class ReturnYouTubeDislikePatch {
                         LogHelper.printDebug(() -> "Ignoring stale dislikes data for shorts: " + videoId);
                         return;
                     }
-                    // Update only the text view that is on screen
+                    // Update only the text views that are on screen
                     for (WeakReference<TextView> textViewRef : shortsTextViewRefs) {
                         TextView textView = textViewRef.get();
                         if (textView == null) {
@@ -296,7 +296,7 @@ public class ReturnYouTubeDislikePatch {
                 if (PlayerType.getCurrent().isNoneOrHidden()) {
                     // When swiping to a new short, the short hook is called before the video id hook.
                     // Must manually update the shorts dislike text views.
-                    updateOnScreenShortsTextViews();
+                    updateOnScreenShortsTextView();
                 } else if (!shortsTextViewRefs.isEmpty()) {
                     LogHelper.printDebug(() -> "Clearing Shorts TextView");
                     shortsTextViewRefs.clear(); // Shorts player is no longer opened.
@@ -325,7 +325,7 @@ public class ReturnYouTubeDislikePatch {
                     ReturnYouTubeDislike.sendVote(v);
 
                     updateOldUIDislikesTextView();
-                    updateOnScreenShortsTextViews();
+                    updateOnScreenShortsTextView();
                     return;
                 }
             }
