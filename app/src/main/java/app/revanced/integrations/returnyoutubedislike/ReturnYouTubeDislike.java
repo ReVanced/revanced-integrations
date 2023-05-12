@@ -369,7 +369,8 @@ public class ReturnYouTubeDislike {
         try {
             // Must make a local copy of videoId, since it may change between now and when the vote thread runs.
             String videoIdToVoteFor = getCurrentVideoId();
-            if (videoIdToVoteFor == null || dislikeDataIsShort != PlayerType.getCurrent().isNoneOrHidden()) {
+            if (videoIdToVoteFor == null ||
+                    (SettingsEnum.RYD_SHORTS.getBoolean() && dislikeDataIsShort != PlayerType.getCurrent().isNoneOrHidden())) {
                 // User enabled RYD after starting playback of a video.
                 // Or shorts was loaded with regular video present, then shorts was closed,
                 // and then user voted on the now visible original video.
@@ -456,6 +457,7 @@ public class ReturnYouTubeDislike {
     /**
      * @param isSegmentedButton If UI is using the segmented single UI component for both like and dislike.
      */
+    @NonNull
     private static SpannableString createDislikeSpan(@NonNull Spanned oldSpannable, boolean isSegmentedButton, @NonNull RYDVoteData voteData) {
         if (!isSegmentedButton) {
             // Simple replacement of 'dislike' with a number/percentage.
