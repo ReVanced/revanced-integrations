@@ -560,12 +560,9 @@ public class ReturnYouTubeDislike {
         ForegroundColorSpan[] twoColors = two.getSpans(0, two.length(), ForegroundColorSpan.class);
         final int oneLength = oneColors.length;
         if (oneLength != twoColors.length) {
-            LogHelper.printDebug(() -> "Different lengths: " + oneLength + " two:  " + twoColors.length);
             return false;
         }
         for (int i = 0; i < oneLength; i++) {
-            final int logi = i;
-            LogHelper.printDebug(() -> "color1: " + oneColors[logi].getForegroundColor() + " two:  " + twoColors[logi].getForegroundColor());
             if (oneColors[i].getForegroundColor() != twoColors[i].getForegroundColor()) {
                 return false;
             }
