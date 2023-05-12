@@ -301,6 +301,21 @@ public class ReturnYouTubeDislike {
     @NonNull
     private static Spanned waitForFetchAndUpdateReplacementSpan(@NonNull Spanned oldSpannable, boolean isSegmentedButton) {
         try {
+            Future<RYDVoteData> fetchFuture = getVoteFetchFuture();
+            if (fetchFuture == null) {
+                LogHelper.printDebug(() -> "fetch future not available (user enabled RYD while video was playing?)");
+                return oldSpannable;
+            }
+            // Absolutely cannot be holding any lock during get().
+            RYDVoteData votingData = fetchFuture.get(MAX_MILLISECONDS_TO_BLOCK_UI_WAITING_FOR_FETCH, TimeUnit.MILLISECONDS);
+            if (votingData == null) {
+                LogHelper.printDebug(() -> "Cannot add dislike to UI (RYD data not available)");
+                return oldSpannable;
+            }
+
+            // Must check against existing replacements, after the fetch,
+            // otherwise concurrent threads can create the same replacement same multiple times.
+            // Also do the replacement comparison and creation in a single synchronized block.
             synchronized (videoIdLockObject) {
                 if (originalDislikeSpan != null && replacementLikeDislikeSpan != null) {
                     if (spansHaveEqualTextAndColor(replacementLikeDislikeSpan, oldSpannable)) {
@@ -320,35 +335,18 @@ public class ReturnYouTubeDislike {
                     }
                     oldSpannable = originalDislikeSpan;
                 }
-            }
 
-            // Must block the current thread until fetching is done.
-            // There's no known way to edit the text after creation yet.
-            Future<RYDVoteData> fetchFuture = getVoteFetchFuture();
-            if (fetchFuture == null) {
-                LogHelper.printDebug(() -> "fetch future not available (user enabled RYD while video was playing?)");
-                return oldSpannable;
-            }
-            RYDVoteData votingData = fetchFuture.get(MAX_MILLISECONDS_TO_BLOCK_UI_WAITING_FOR_FETCH, TimeUnit.MILLISECONDS);
-            if (votingData == null) {
-                LogHelper.printDebug(() -> "Cannot add dislike to UI (RYD data not available)");
-                return oldSpannable;
-            }
+                // No replacement span exist, create it now.
 
-            synchronized (videoIdLockObject) {
                 if (userVote != null) {
                     votingData.updateUsingVote(userVote);
                 }
-            }
-
-            SpannableString replacement = createDislikeSpan(oldSpannable, isSegmentedButton, votingData);
-            synchronized (videoIdLockObject) {
                 originalDislikeSpan = oldSpannable;
-                replacementLikeDislikeSpan = replacement;
+                replacementLikeDislikeSpan = createDislikeSpan(oldSpannable, isSegmentedButton, votingData);
+                LogHelper.printDebug(() -> "Replaced: '" + originalDislikeSpan + "' with: '" + replacementLikeDislikeSpan + "'");
+
+                return replacementLikeDislikeSpan;
             }
-            final Spanned oldSpannableLogging = oldSpannable;
-            LogHelper.printDebug(() -> "Replaced: '" + oldSpannableLogging + "' with: '" + replacement + "'");
-            return replacement;
         } catch (TimeoutException e) {
             LogHelper.printDebug(() -> "UI timed out while waiting for fetch votes to complete"); // show no toast
         } catch (Exception e) {
