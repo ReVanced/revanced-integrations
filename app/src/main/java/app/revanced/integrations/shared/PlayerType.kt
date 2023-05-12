@@ -13,7 +13,7 @@ enum class PlayerType {
     NONE,
     /**
      * A Shorts or Stories, if a regular video is minimized and a Short/Story is then opened.
-     * If using an old layout, sometimes [WATCH_WHILE_MINIMIZED] is used instead of Hidden.
+     * If a Short is starting to open, this can show as [WATCH_WHILE_MINIMIZED] until the Shorts player fully opens.
      */
     HIDDEN,
     WATCH_WHILE_MINIMIZED,
