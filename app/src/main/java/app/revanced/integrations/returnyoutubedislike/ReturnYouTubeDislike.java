@@ -318,11 +318,11 @@ public class ReturnYouTubeDislike {
             // Also do the replacement comparison and creation in a single synchronized block.
             synchronized (videoIdLockObject) {
                 if (originalDislikeSpan != null && replacementLikeDislikeSpan != null) {
-                    if (spansHaveEqualTextAndColor(replacementLikeDislikeSpan, oldSpannable)) {
+                    if (spansHaveEqualTextAndColor(oldSpannable, replacementLikeDislikeSpan)) {
                         LogHelper.printDebug(() -> "Ignoring previously created dislikes span");
                         return oldSpannable;
                     }
-                    if (spansHaveEqualTextAndColor(originalDislikeSpan, oldSpannable)) {
+                    if (spansHaveEqualTextAndColor(oldSpannable, originalDislikeSpan)) {
                         LogHelper.printDebug(() -> "Replacing span with previously created dislike span");
                         return replacementLikeDislikeSpan;
                     }
