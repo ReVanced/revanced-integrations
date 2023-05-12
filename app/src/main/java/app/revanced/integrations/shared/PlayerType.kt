@@ -41,7 +41,7 @@ enum class PlayerType {
          */
         @JvmStatic
         fun safeParseFromString(name: String): PlayerType? {
-            return nameToPlayerType.get(name)
+            return nameToPlayerType[name]
         }
 
         /**
