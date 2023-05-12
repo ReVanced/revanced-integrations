@@ -34,6 +34,10 @@ import app.revanced.integrations.utils.ReVancedUtils;
  */
 public class ReturnYouTubeDislikePatch {
 
+    @Nullable
+    private static String currentVideoId;
+
+
     /**
      * Resource identifier of old UI dislike button.
      */
@@ -212,7 +216,10 @@ public class ReturnYouTubeDislikePatch {
                 ReturnYouTubeDislike.setUserVote(Vote.DISLIKE);
             }
 
-            updateOnScreenShortsTextViews();
+            // For the first short played, the shorts dislike hook is called after the video id hook.
+            // But for most other times this hook is called before the video id (which is not ideal).
+            // Must update the TextViews here, and also after the videoId changes.
+            updateOnScreenShortsTextViews(false);
 
             return true;
         } catch (Exception ex) {
@@ -221,7 +228,11 @@ public class ReturnYouTubeDislikePatch {
         }
     }
 
-    private static void updateOnScreenShortsTextViews() {
+    /**
+     * @param forceUpdate if false, then only update the 'loading text views.
+     *                    If true, update all on screen text views.
+     */
+    private static void updateOnScreenShortsTextViews(boolean forceUpdate) {
         try {
             clearRemovedShortsTextViews();
             if (shortsTextViewRefs.isEmpty()) {
@@ -236,7 +247,7 @@ public class ReturnYouTubeDislikePatch {
                 ReVancedUtils.runOnMainThreadNowOrLater(() -> {
                     if (!videoId.equals(VideoInformation.getVideoId())) {
                         // User swiped to new video before fetch completed
-                        LogHelper.printDebug(() -> "Ignoring stale dislikes data for shorts: " + videoId);
+                        LogHelper.printDebug(() -> "Ignoring stale dislikes data for short: " + videoId);
                         return;
                     }
 
@@ -250,7 +261,7 @@ public class ReturnYouTubeDislikePatch {
                             continue;
                         }
                         if (isShortTextViewOnScreen(textView)
-                                && textView.getText().toString().equals(SHORTS_LOADING_SPAN.toString())) {
+                                && (forceUpdate || textView.getText().toString().equals(SHORTS_LOADING_SPAN.toString()))) {
                             LogHelper.printDebug(() -> "Setting Shorts TextView to: " + shortsDislikesSpan);
                             textView.setText(shortsDislikesSpan);
                         }
@@ -267,16 +278,17 @@ public class ReturnYouTubeDislikePatch {
         }
     }
 
+    /**
+     * Check if a view is within the screen bounds.
+     */
     private static boolean isShortTextViewOnScreen(@NonNull View view) {
-        // If a Shorts TextView is off screen, it appears to always have a window position of [0, 0]
         final int[] location = new int[2];
         view.getLocationInWindow(location);
-        if (location[0] <= 0 && location[1] <= 0) {
+        if (location[0] <= 0 && location[1] <= 0) { // Lower bound
             return false;
         }
-        // Also check if it's within the window bounds, even though this check does not seem to be needed.
         Rect windowRect = new Rect();
-        view.getWindowVisibleDisplayFrame(windowRect);
+        view.getWindowVisibleDisplayFrame(windowRect); // Upper bound
         return location[0] < windowRect.width() && location[1] < windowRect.height();
     }
 
@@ -287,6 +299,15 @@ public class ReturnYouTubeDislikePatch {
         try {
             if (!SettingsEnum.RYD_ENABLED.getBoolean()) return;
             ReturnYouTubeDislike.newVideoLoaded(videoId);
+
+            if (!videoId.equals(currentVideoId)) {
+                currentVideoId = videoId;
+                if (PlayerType.getCurrent().isNoneHiddenOrDismissed()) {
+                    // Shorts TextView hook can be called out of order with the video id hook.
+                    // Must manually update again here.
+                    updateOnScreenShortsTextViews(true);
+                }
+            }
         } catch (Exception ex) {
             LogHelper.printException(() -> "newVideoLoaded failure", ex);
         }
@@ -310,7 +331,6 @@ public class ReturnYouTubeDislikePatch {
                     ReturnYouTubeDislike.sendVote(v);
 
                     updateOldUIDislikesTextView();
-//                    updateOnScreenShortsTextView();
                     return;
                 }
             }
