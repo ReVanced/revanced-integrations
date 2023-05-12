@@ -21,7 +21,7 @@ enum class PlayerType {
     WATCH_WHILE_SLIDING_MAXIMIZED_FULLSCREEN,
     WATCH_WHILE_SLIDING_MINIMIZED_MAXIMIZED,
     /**
-     * When opening a short while a regular video is opened, the type can momentarily be this.
+     * When opening a short while a regular video is minimized, the type can momentarily be this.
      */
     WATCH_WHILE_SLIDING_MINIMIZED_DISMISSED,
     WATCH_WHILE_SLIDING_FULLSCREEN_DISMISSED,
