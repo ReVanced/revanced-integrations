@@ -25,10 +25,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import java.text.NumberFormat;
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -99,7 +99,8 @@ public class ReturnYouTubeDislike {
     /**
      * Cached lookup of FYD fetches.
      */
-    private static final Map<String, RYDCachedFetch> cache = new ConcurrentHashMap<>();
+    @GuardedBy("videoIdLockObject")
+    private static final Map<String, RYDCachedFetch> futureCache = new HashMap<>();
 
     /**
      * Used to send votes, one by one, in the same order the user created them.
@@ -192,7 +193,7 @@ public class ReturnYouTubeDislike {
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 final long now = System.currentTimeMillis();
-                cache.values().removeIf(value -> {
+                futureCache.values().removeIf(value -> {
                     final boolean expired = value.isExpired(now);
                     if (expired) LogHelper.printDebug(() -> "Removing expired fetch: " + value.videoId);
                     return expired;
@@ -215,7 +216,7 @@ public class ReturnYouTubeDislike {
     public static void clearCache() {
         synchronized (videoIdLockObject) {
             if (replacementLikeDislikeSpan != null) {
-                LogHelper.printDebug(() -> "Clearing cache");
+                LogHelper.printDebug(() -> "Clearing replacement spans");
             }
             replacementLikeDislikeSpan = null;
         }
@@ -261,14 +262,14 @@ public class ReturnYouTubeDislike {
             // while both a regular video and a short are on screen.
             dislikeDataIsShort = PlayerType.getCurrent().isNoneOrHidden();
 
-            RYDCachedFetch entry = cache.get(videoId);
+            RYDCachedFetch entry = futureCache.get(videoId);
             if (entry != null && entry.futureInProgressOrFinishedSuccessfully()) {
                 LogHelper.printDebug(() -> "Using cached RYD fetch: "+ entry.videoId);
                 voteFetchFuture = entry.future;
                 return;
             }
             voteFetchFuture = ReVancedUtils.submitOnBackgroundThread(() -> ReturnYouTubeDislikeApi.fetchVotes(videoId));
-            cache.put(videoId, new RYDCachedFetch(voteFetchFuture, videoId));
+            futureCache.put(videoId, new RYDCachedFetch(voteFetchFuture, videoId));
         }
     }
 
