@@ -56,18 +56,20 @@ public class ReturnYouTubeDislike {
         /**
          * How long to retain cached RYD fetches.
          */
-        private static final long CACHE_TIMEOUT_MILLISECONDS = 4 * 60 * 1000; // 4 Minutes
+        static final long CACHE_TIMEOUT_MILLISECONDS = 4 * 60 * 1000; // 4 Minutes
 
         @NonNull
         final Future<RYDVoteData> future;
+        final String videoId;
         final long timeFetched;
-        RYDCachedFetch(@NonNull Future<RYDVoteData> future) {
+        RYDCachedFetch(@NonNull Future<RYDVoteData> future, @NonNull String videoId) {
             this.future = Objects.requireNonNull(future);
+            this.videoId = Objects.requireNonNull(videoId);
             this.timeFetched = System.currentTimeMillis();
         }
 
-        boolean cacheIsValid(long now) {
-            return (now - timeFetched) >= CACHE_TIMEOUT_MILLISECONDS;
+        boolean isExpired(long now) {
+            return (now - timeFetched) > CACHE_TIMEOUT_MILLISECONDS;
         }
 
         boolean futureInProgressOrFinishedSuccessfully() {
@@ -190,7 +192,11 @@ public class ReturnYouTubeDislike {
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 final long now = System.currentTimeMillis();
-                cache.values().removeIf(value -> value.cacheIsValid(now));
+                cache.values().removeIf(value -> {
+                    final boolean expired = value.isExpired(now);
+                    if (expired) LogHelper.printDebug(() -> "Removing expired fetch: " + value.videoId);
+                    return expired;
+                });
             } else {
                 throw new IllegalStateException(); // YouTube requires Android N or greater
             }
@@ -257,13 +263,12 @@ public class ReturnYouTubeDislike {
 
             RYDCachedFetch entry = cache.get(videoId);
             if (entry != null && entry.futureInProgressOrFinishedSuccessfully()) {
-                LogHelper.printDebug(() -> "Using cached RYD fetch");
+                LogHelper.printDebug(() -> "Using cached RYD fetch: "+ entry.videoId);
                 voteFetchFuture = entry.future;
                 return;
             }
-            entry = new RYDCachedFetch(ReVancedUtils.submitOnBackgroundThread(() -> ReturnYouTubeDislikeApi.fetchVotes(videoId)));
-            cache.put(videoId, entry);
-            voteFetchFuture = entry.future;
+            voteFetchFuture = ReVancedUtils.submitOnBackgroundThread(() -> ReturnYouTubeDislikeApi.fetchVotes(videoId));
+            cache.put(videoId, new RYDCachedFetch(voteFetchFuture, videoId));
         }
     }
 
