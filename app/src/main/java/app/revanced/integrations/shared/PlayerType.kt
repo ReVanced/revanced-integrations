@@ -67,7 +67,7 @@ enum class PlayerType {
     /**
      * Check if the current player type is [NONE] or [HIDDEN]
      *
-     * Does not include the first second after a short is opened when a regular video was already on screen.
+     * Does not include the first moment after a short is opened when a regular video is minimized on screen.
      * To include that situation instead use [isNoneHiddenOrDismissed].
      */
     fun isNoneOrHidden(): Boolean {
