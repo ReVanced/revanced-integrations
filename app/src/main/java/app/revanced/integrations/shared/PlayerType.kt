@@ -13,7 +13,6 @@ enum class PlayerType {
     NONE,
     /**
      * A Shorts or Stories, if a regular video is minimized and a Short/Story is then opened.
-     * If a Short is starting to open, this can show as [WATCH_WHILE_MINIMIZED] until the Shorts player fully opens.
      */
     HIDDEN,
     WATCH_WHILE_MINIMIZED,
@@ -31,6 +30,9 @@ enum class PlayerType {
     WATCH_WHILE_PICTURE_IN_PICTURE;
 
     companion object {
+
+        private val nameToPlayerType = values().associateBy { it.name }
+
         /**
          * safely parse from a string
          *
@@ -39,11 +41,11 @@ enum class PlayerType {
          */
         @JvmStatic
         fun safeParseFromString(name: String): PlayerType? {
-            return values().firstOrNull { it.name == name }
+            return nameToPlayerType.get(name)
         }
 
         /**
-         * the current player type, as reported by [app.revanced.integrations.patches.PlayerTypeHookPatch.YouTubePlayerOverlaysLayout_updatePlayerTypeHookEX]
+         * The current player type.
          */
         @JvmStatic
         var current
