@@ -540,7 +540,7 @@ public class ReturnYouTubeDislike {
      *
      * @return if the string contains at least 1 number.
      */
-    public static boolean stringContainsNumber(@NonNull String text) {
+    private static boolean stringContainsNumber(@NonNull String text) {
         for (int index = 0, length = text.length(); index < length; index++) {
             if (Character.isDigit(text.codePointAt(index))) {
                 return true;
