@@ -76,7 +76,7 @@ public class ReturnYouTubeDislikePatch {
             if (oldUIReplacementSpan == null || oldUIReplacementSpan.toString().equals(s.toString())) {
                 return;
             }
-            s.replace(0, s.length(), oldUIReplacementSpan);
+            s.replace(0, s.length(), oldUIReplacementSpan); // Causes a recursive call back into this listener
         }
     };
 
@@ -178,12 +178,20 @@ public class ReturnYouTubeDislikePatch {
      */
     private static final SpannableString SHORTS_LOADING_TEXT = new SpannableString("-");
 
-    @Nullable
+    /**
+     * If at least one short has been played in the shorts player.
+     */
     private static boolean firstShortHasBeenPlayed;
 
+    /**
+     * Dislikes span for the current short. Used by {@link #shortsTextWatcher}
+     */
     @Nullable
     private static Spanned currentShortsDislikesSpan;
 
+    /**
+     * Used to prevent the Shorts dislike string from being changed by outside code.
+     */
     private static final TextWatcher shortsTextWatcher = new TextWatcher() {
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
         }
@@ -193,7 +201,7 @@ public class ReturnYouTubeDislikePatch {
             if (currentShortsDislikesSpan == null || currentShortsDislikesSpan.toString().equals(s.toString())) {
                 return;
             }
-            s.replace(0, s.length(), currentShortsDislikesSpan);
+            s.replace(0, s.length(), currentShortsDislikesSpan); // Causes a recursive call back into this listener
         }
     };
 
@@ -251,7 +259,7 @@ public class ReturnYouTubeDislikePatch {
             // For first short played, the shorts dislike hook is called after the video id hook
             // all other times this hook is called before the video id (which is not preferred).
             // Only update the shorts text views, if this is the first short played.
-            // If the textviews are always updated here, then when changing shorts the next short
+            // If the TextViews are always updated here, then when changing shorts the next short
             // will momentarily show the prior shorts dislike count.
             if (!firstShortHasBeenPlayed) {
                 firstShortHasBeenPlayed = true;
@@ -296,7 +304,9 @@ public class ReturnYouTubeDislikePatch {
                         // Cannot check if a listener is already added, so remove and add again.
                         textView.removeTextChangedListener(shortsTextWatcher);
                         if (isShortTextViewOnScreen(textView)) {
-                            textView.setText(currentShortsDislikesSpan);
+                            if (!textView.getText().equals(currentShortsDislikesSpan)) {
+                                textView.setText(currentShortsDislikesSpan);
+                            }
                              // Prevent the text from being changed.
                             textView.addTextChangedListener(shortsTextWatcher);
                         }
@@ -334,7 +344,11 @@ public class ReturnYouTubeDislikePatch {
             if (!SettingsEnum.RYD_ENABLED.getBoolean()) return;
             ReturnYouTubeDislike.newVideoLoaded(videoId);
 
-            if (!videoId.equals(currentVideoId)) {
+            // Compare using reference equality, and not equals()
+            // This ensures this code runs if the user closes and then reopens the same video again.
+            // And still prevents excessive updates when the same video id is passed in from duplicate videoId hook calls.
+            // noinspection StringEquality
+            if (currentVideoId != videoId) {
                 currentVideoId = videoId;
                 if (PlayerType.getCurrent().isNoneOrHidden()) {
                     // When swiping to a new short, the short hook can be called before the video id hook.

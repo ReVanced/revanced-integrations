@@ -50,13 +50,13 @@ import app.revanced.integrations.utils.ThemeHelper;
 public class ReturnYouTubeDislike {
 
     /**
-     * Simple wrapper to store a Future for future lookup.
+     * Simple wrapper to cache a Future.
      */
     private static class RYDCachedFetch {
         /**
          * How long to retain cached RYD fetches.
          */
-        private static final long CACHE_TIMEOUT_MILLISECONDS = 2 * 60 * 1000; // 2 Minutes
+        private static final long CACHE_TIMEOUT_MILLISECONDS = 4 * 60 * 1000; // 4 Minutes
 
         @NonNull
         final Future<RYDVoteData> future;
@@ -560,9 +560,12 @@ public class ReturnYouTubeDislike {
         ForegroundColorSpan[] twoColors = two.getSpans(0, two.length(), ForegroundColorSpan.class);
         final int oneLength = oneColors.length;
         if (oneLength != twoColors.length) {
+            LogHelper.printDebug(() -> "Different lengths: " + oneLength + " two:  " + twoColors.length);
             return false;
         }
         for (int i = 0; i < oneLength; i++) {
+            final int logi = i;
+            LogHelper.printDebug(() -> "color1: " + oneColors[logi].getForegroundColor() + " two:  " + twoColors[logi].getForegroundColor());
             if (oneColors[i].getForegroundColor() != twoColors[i].getForegroundColor()) {
                 return false;
             }
