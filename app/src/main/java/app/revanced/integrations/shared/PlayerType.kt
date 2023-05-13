@@ -15,6 +15,10 @@ enum class PlayerType {
      * A Shorts or Stories, if a regular video is minimized and a Short/Story is then opened.
      */
     HIDDEN,
+    /**
+     * When spoofing to an old version of YouTube, and watching a short with a regular video in the background,
+     * the type will be this (and not [HIDDEN]).
+     */
     WATCH_WHILE_MINIMIZED,
     WATCH_WHILE_MAXIMIZED,
     WATCH_WHILE_FULLSCREEN,
@@ -71,22 +75,27 @@ enum class PlayerType {
      * Check if the current player type is [NONE] or [HIDDEN].
      * Useful to check if a short is currently playing.
      *
-     * Does not include the first moment after a short is opened when a regular video is minimized on screen.
-     * To include that situation instead use [isNoneHiddenOrDismissed].
+     * Does not include the first moment after a short is opened when a regular video is minimized on screen,
+     * or while watching a short with a regular video present on a spoofed old version of YouTube.
+     * To include those situations instead use [isNoneHiddenOrMinimized].
      */
     fun isNoneOrHidden(): Boolean {
         return this == NONE || this == HIDDEN
     }
 
     /**
-     * Check if the current player type is [NONE], [HIDDEN], or [WATCH_WHILE_SLIDING_MINIMIZED_DISMISSED]
-     * Useful to check if a short is being opened or is currently playing.
+     * Check if the current player type is [NONE], [HIDDEN], [WATCH_WHILE_MINIMIZED], [WATCH_WHILE_SLIDING_MINIMIZED_DISMISSED].
+     *
+     * Useful to check if a Short is being played,
+     * although can return false positive if the player is minimized.
      *
      * @return If nothing, a Short, a Story,
      *         or a regular minimized video is sliding off screen to a dismissed or hidden state.
      */
-    fun isNoneHiddenOrDismissed(): Boolean {
-        return this == NONE || this == HIDDEN || this == WATCH_WHILE_SLIDING_MINIMIZED_DISMISSED
+    fun isNoneHiddenOrMinimized(): Boolean {
+        return this == NONE || this == HIDDEN
+                || this == WATCH_WHILE_MINIMIZED
+                || this == WATCH_WHILE_SLIDING_MINIMIZED_DISMISSED
     }
 
 }
