@@ -40,6 +40,7 @@ public enum SettingsEnum {
     COPY_VIDEO_URL_TIMESTAMP("revanced_copy_video_url_timestamp", BOOLEAN, TRUE),
 
     // Video
+    HDR_AUTO_BRIGHTNESS("revanced_hdr_auto_brightness", BOOLEAN, TRUE),
     SHOW_OLD_VIDEO_MENU("revanced_show_old_video_menu", BOOLEAN, TRUE),
     REMEMBER_VIDEO_QUALITY_LAST_SELECTED("revanced_remember_video_quality_last_selected", BOOLEAN, TRUE),
     VIDEO_QUALITY_DEFAULT_WIFI("revanced_video_quality_default_wifi", INTEGER, -2),
@@ -139,7 +140,6 @@ public enum SettingsEnum {
     EXTERNAL_BROWSER("revanced_external_browser", BOOLEAN, TRUE, true),
     AUTO_REPEAT("revanced_auto_repeat", BOOLEAN, FALSE),
     TAP_SEEKING("revanced_tap_seeking", BOOLEAN, TRUE),
-    HDR_AUTO_BRIGHTNESS("revanced_hdr_auto_brightness", BOOLEAN, TRUE),
     SPOOF_SIGNATURE_VERIFICATION("revanced_spoof_signature_verification", BOOLEAN, TRUE, "revanced_spoof_signature_verification_user_dialog_message"),
 
     // Swipe controls
