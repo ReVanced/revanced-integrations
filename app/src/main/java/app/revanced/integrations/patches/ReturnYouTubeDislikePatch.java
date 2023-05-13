@@ -331,6 +331,10 @@ public class ReturnYouTubeDislikePatch {
             if (!SettingsEnum.RYD_ENABLED.getBoolean()) {
                 return;
             }
+            if (!SettingsEnum.RYD_SHORTS.getBoolean()
+                    && PlayerType.getCurrent().isNoneHiddenOrDismissed()) {
+                return;
+            }
 
             for (Vote v : Vote.values()) {
                 if (v.value == vote) {
