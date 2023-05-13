@@ -129,6 +129,9 @@ public enum SettingsEnum {
     USE_TABLET_MINIPLAYER("revanced_tablet_miniplayer", BOOLEAN, FALSE, true),
     WIDE_SEARCHBAR("revanced_wide_searchbar", BOOLEAN, FALSE, true),
     SEEKBAR_COLOR("revanced_seekbar_color", STRING, "#FF0000", true),
+    HIDE_FILTER_BAR_FEED_IN_FEED("revanced_hide_filter_bar_feed_in_feed", BOOLEAN, FALSE, true),
+    HIDE_FILTER_BAR_FEED_IN_SEARCH("revanced_hide_filter_bar_feed_in_search", BOOLEAN, FALSE, true),
+    HIDE_FILTER_BAR_FEED_IN_RELATED_VIDEOS("revanced_hide_filter_bar_feed_in_related_videos", BOOLEAN, FALSE, true),
 
     // Misc
     AUTO_CAPTIONS("revanced_auto_captions", BOOLEAN, FALSE),

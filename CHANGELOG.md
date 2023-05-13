@@ -1,3 +1,17 @@
+# [0.108.0-dev.11](https://github.com/revanced/revanced-integrations/compare/v0.108.0-dev.10...v0.108.0-dev.11) (2023-05-12)
+
+
+### Features
+
+* **twitch:** add `auto-claim-channel-points` patch ([#398](https://github.com/revanced/revanced-integrations/issues/398)) ([d7f050b](https://github.com/revanced/revanced-integrations/commit/d7f050ba2ff513c91cccbf0095fc7756dbb47400))
+
+# [0.108.0-dev.10](https://github.com/revanced/revanced-integrations/compare/v0.108.0-dev.9...v0.108.0-dev.10) (2023-05-12)
+
+
+### Features
+
+* **youtube:** add `hide-filter-bar` patch ([9649c3d](https://github.com/revanced/revanced-integrations/commit/9649c3dbc8406c3639c4fff9dd179d6d29886e60))
+
 # [0.108.0-dev.9](https://github.com/revanced/revanced-integrations/compare/v0.108.0-dev.8...v0.108.0-dev.9) (2023-05-11)
 
 
