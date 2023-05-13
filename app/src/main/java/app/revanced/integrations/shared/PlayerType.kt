@@ -25,7 +25,10 @@ enum class PlayerType {
      */
     WATCH_WHILE_SLIDING_MINIMIZED_DISMISSED,
     WATCH_WHILE_SLIDING_FULLSCREEN_DISMISSED,
-    INLINE_MINIMAL, // home feed video playback
+    /**
+     * Home feed video playback.
+     */
+    INLINE_MINIMAL,
     VIRTUAL_REALITY_FULLSCREEN,
     WATCH_WHILE_PICTURE_IN_PICTURE;
 
@@ -65,7 +68,8 @@ enum class PlayerType {
     }
 
     /**
-     * Check if the current player type is [NONE] or [HIDDEN]
+     * Check if the current player type is [NONE] or [HIDDEN].
+     * Useful to check if a short is currently playing.
      *
      * Does not include the first moment after a short is opened when a regular video is minimized on screen.
      * To include that situation instead use [isNoneHiddenOrDismissed].
@@ -76,10 +80,10 @@ enum class PlayerType {
 
     /**
      * Check if the current player type is [NONE], [HIDDEN], or [WATCH_WHILE_SLIDING_MINIMIZED_DISMISSED]
-     * Useful to check if a short is playing.
+     * Useful to check if a short is being opened or is currently playing.
      *
      * @return If nothing, a Short, a Story,
-     *         or a regular minimized video is sliding off screen to a dismissed or hidden state
+     *         or a regular minimized video is sliding off screen to a dismissed or hidden state.
      */
     fun isNoneHiddenOrDismissed(): Boolean {
         return this == NONE || this == HIDDEN || this == WATCH_WHILE_SLIDING_MINIMIZED_DISMISSED
