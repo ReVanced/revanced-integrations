@@ -299,7 +299,10 @@ public class ReturnYouTubeDislikePatch {
         try {
             if (!SettingsEnum.RYD_ENABLED.getBoolean()) return;
             final boolean noneHiddenOrDismissed = PlayerType.getCurrent().isNoneHiddenOrDismissed();
-            if (noneHiddenOrDismissed && !SettingsEnum.RYD_SHORTS.getBoolean()) return;
+            if (noneHiddenOrDismissed && !SettingsEnum.RYD_SHORTS.getBoolean()) {
+                ReturnYouTubeDislike.setCurrentVideoId(null);
+                return;
+            }
 
             ReturnYouTubeDislike.newVideoLoaded(videoId);
 

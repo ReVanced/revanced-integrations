@@ -185,7 +185,7 @@ public class ReturnYouTubeDislike {
         }
     }
 
-    private static void setCurrentVideoId(@Nullable String videoId) {
+    public static void setCurrentVideoId(@Nullable String videoId) {
         synchronized (videoIdLockObject) {
             if (videoId == null && currentVideoId != null) {
                 LogHelper.printDebug(() -> "Clearing data");
