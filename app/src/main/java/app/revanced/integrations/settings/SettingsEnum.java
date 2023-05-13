@@ -145,7 +145,7 @@ public enum SettingsEnum {
     // Swipe controls
     SWIPE_BRIGHTNESS("revanced_swipe_brightness", BOOLEAN, TRUE),
     SWIPE_VOLUME("revanced_swipe_volume", BOOLEAN, TRUE),
-    SWIPE_PRESS_TO_ENGAGE("revanced_swipe_press_to_engage", BOOLEAN, FALSE,
+    SWIPE_PRESS_TO_ENGAGE("revanced_swipe_press_to_engage", BOOLEAN, FALSE, true,
             parents(SWIPE_BRIGHTNESS, SWIPE_VOLUME)),
     SWIPE_HAPTIC_FEEDBACK("revanced_swipe_haptic_feedback", BOOLEAN, TRUE,
             parents(SWIPE_BRIGHTNESS, SWIPE_VOLUME)),
