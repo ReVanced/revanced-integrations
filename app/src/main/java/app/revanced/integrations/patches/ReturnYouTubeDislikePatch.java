@@ -298,17 +298,19 @@ public class ReturnYouTubeDislikePatch {
     public static void newVideoLoaded(@NonNull String videoId) {
         try {
             if (!SettingsEnum.RYD_ENABLED.getBoolean()) return;
-            final boolean noneHiddenOrDismissed = PlayerType.getCurrent().isNoneHiddenOrMinimized();
-            if (noneHiddenOrDismissed && !SettingsEnum.RYD_SHORTS.getBoolean()) {
-                ReturnYouTubeDislike.setCurrentVideoId(null);
-                return;
-            }
-
-            ReturnYouTubeDislike.newVideoLoaded(videoId);
 
             if (!videoId.equals(currentVideoId)) {
                 currentVideoId = videoId;
-                if (noneHiddenOrDismissed) {
+
+                final boolean noneHiddenOrMinimized = PlayerType.getCurrent().isNoneHiddenOrMinimized();
+                if (noneHiddenOrMinimized && !SettingsEnum.RYD_SHORTS.getBoolean()) {
+                    ReturnYouTubeDislike.setCurrentVideoId(null);
+                    return;
+                }
+
+                ReturnYouTubeDislike.newVideoLoaded(videoId);
+
+                if (noneHiddenOrMinimized) {
                     // Shorts TextView hook can be called out of order with the video id hook.
                     // Must manually update again here.
                     updateOnScreenShortsTextViews(true);
