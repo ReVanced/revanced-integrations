@@ -1,6 +1,7 @@
 package app.revanced.integrations.shared
 
 import app.revanced.integrations.utils.LogHelper
+import app.revanced.integrations.patches.VideoInformation
 
 /**
  * VideoState playback state.
@@ -11,6 +12,9 @@ enum class VideoState {
     PAUSED,
     RECOVERABLE_ERROR,
     UNRECOVERABLE_ERROR,
+    /**
+     * @see [VideoInformation.isAtEndOfVideo]
+     */
     ENDED;
 
     companion object {
@@ -22,7 +26,7 @@ enum class VideoState {
             val state = nameToVideoState[enumName]
             if (state == null) {
                 LogHelper.printException { "Unknown VideoState encountered: $enumName" }
-            } else {
+            } else if (currentVideoState != state) {
                 currentVideoState = state
                 LogHelper.printDebug { "VideoState changed to: $state" }
             }
