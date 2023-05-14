@@ -5,7 +5,6 @@ import app.revanced.integrations.utils.Event
 /**
  * WatchWhile player type
  */
-@Suppress("unused")
 enum class PlayerType {
     /**
      * Includes Shorts and Stories playback.

@@ -20,6 +20,7 @@ import java.util.Objects;
 import app.revanced.integrations.patches.VideoInformation;
 import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.shared.PlayerType;
+import app.revanced.integrations.shared.VideoState;
 import app.revanced.integrations.sponsorblock.objects.CategoryBehaviour;
 import app.revanced.integrations.sponsorblock.objects.SegmentCategory;
 import app.revanced.integrations.sponsorblock.objects.SponsorSegment;
@@ -522,7 +523,11 @@ public class SegmentPlaybackController {
                 return;
             }
 
-            if (!userManuallySkipped) {
+            // Do not show a toast if the video is paused and user is scrubbing thru the paused video.
+            // Cannot do this playback state check in setTime or earlier in this method, as the video state may not be up to date.
+            // So instead, only hide any skip toasts because all other skip logic done while paused causes no harm.
+            final boolean videoIsPaused = VideoState.getCurrent() == VideoState.PAUSED;
+            if (!userManuallySkipped && !videoIsPaused) {
                 // check for any smaller embedded segments, and count those as autoskipped
                 final boolean showSkipToast = SettingsEnum.SB_SHOW_TOAST_ON_SKIP.getBoolean();
                 for (final SponsorSegment otherSegment : Objects.requireNonNull(segments)) {
@@ -542,7 +547,7 @@ public class SegmentPlaybackController {
             if (segmentToSkip.category == SegmentCategory.UNSUBMITTED) {
                 removeUnsubmittedSegments();
                 SponsorBlockUtils.setNewSponsorSegmentPreviewed();
-            } else {
+            } else if (!videoIsPaused) {
                 SponsorBlockUtils.sendViewRequestAsync(segmentToSkip);
             }
         } catch (Exception ex) {
