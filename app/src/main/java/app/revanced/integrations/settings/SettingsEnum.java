@@ -731,6 +731,11 @@ public enum SettingsEnum {
     // Begin import / export
 
     /**
+     * If a setting path has this prefix, then remove it before importing/exporting.
+     */
+    private static final String OPTIONAL_REVANCED_SETTINGS_PREFIX = "revanced_";
+
+    /**
      * The path, minus any 'revanced' prefix to keep json concise.
      */
     private String getImportExportKey() {
@@ -739,11 +744,6 @@ public enum SettingsEnum {
         }
         return path;
     }
-
-    /**
-     * If a setting path has this prefix, then remove it before importing/exporting.
-     */
-    private static final String OPTIONAL_REVANCED_SETTINGS_PREFIX = "revanced_";
 
     private static SettingsEnum[] valuesSortedForExport() {
         SettingsEnum[] sorted = values();
