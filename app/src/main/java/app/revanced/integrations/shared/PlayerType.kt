@@ -1,6 +1,7 @@
 package app.revanced.integrations.shared
 
 import app.revanced.integrations.utils.Event
+import app.revanced.integrations.utils.LogHelper
 
 /**
  * WatchWhile player type
@@ -39,15 +40,15 @@ enum class PlayerType {
 
         private val nameToPlayerType = values().associateBy { it.name }
 
-        /**
-         * safely parse from a string
-         *
-         * @param name the name to find
-         * @return the enum constant, or null if not found
-         */
         @JvmStatic
-        fun safeParseFromString(name: String): PlayerType? {
-            return nameToPlayerType[name]
+        fun setFromString(enumName: String) {
+            val newType = nameToPlayerType[enumName]
+            if (newType == null) {
+                LogHelper.printException { "Unknown PlayerType encountered: $enumName" }
+            } else {
+                current = newType
+                LogHelper.printDebug { "PlayerType was updated to: $newType" }
+            }
         }
 
         /**
@@ -56,7 +57,7 @@ enum class PlayerType {
         @JvmStatic
         var current
             get() = currentPlayerType
-            set(value) {
+            private set(value) {
                 currentPlayerType = value
                 onChange(currentPlayerType)
             }
