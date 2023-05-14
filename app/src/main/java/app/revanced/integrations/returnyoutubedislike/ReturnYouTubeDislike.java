@@ -97,7 +97,7 @@ public class ReturnYouTubeDislike {
     private static final char MIDDLE_SEPARATOR_CHARACTER = '\u2009'; // 'narrow space' character
 
     /**
-     * Cached lookup of FYD fetches.
+     * Cached lookup of RYD fetches.
      */
     @GuardedBy("videoIdLockObject")
     private static final Map<String, RYDCachedFetch> futureCache = new HashMap<>();
