@@ -30,7 +30,7 @@ enum class VideoState {
 
         /**
          * Depending on which hook this is called from,
-         * this value may or may not be up to date with the actual playback state.
+         * this value may not be up to date with the actual playback state.
          */
         @JvmStatic
         var current: VideoState?

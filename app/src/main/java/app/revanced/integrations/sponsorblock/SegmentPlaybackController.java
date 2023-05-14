@@ -523,8 +523,8 @@ public class SegmentPlaybackController {
                 return;
             }
 
-            // Do not show a toast if the video is paused and user is scrubbing thru the paused video.
-            // Cannot do this playback state check in setTime or earlier in this method, as the video state may not be up to date.
+            // Do not show a toast if the user is scrubbing thru a paused video.
+            // Cannot do this video state check in setTime or earlier in this method, as the video state may not be up to date.
             // So instead, only hide any skip toasts because all other skip logic done while paused causes no harm.
             final boolean videoIsPaused = VideoState.getCurrent() == VideoState.PAUSED;
             if (!userManuallySkipped && !videoIsPaused) {
