@@ -10,10 +10,10 @@ public class PlayerTypeHookPatch {
     /**
      * Injection point.
      */
-    public static void setPlayerType(@Nullable Enum<?> type) {
-        if (type == null) return;
+    public static void setPlayerType(@Nullable Enum<?> youTubePlayerType) {
+        if (youTubePlayerType == null) return;
 
-        PlayerType.setFromString(type.name());
+        PlayerType.setFromString(youTubePlayerType.name());
     }
 
     /**
