@@ -1,3 +1,17 @@
+# [0.108.0-dev.14](https://github.com/revanced/revanced-integrations/compare/v0.108.0-dev.13...v0.108.0-dev.14) (2023-05-14)
+
+
+### Bug Fixes
+
+* **youtube/return-youtube-dislikes:** fix temporarily frozen video after opening a shorts ([#396](https://github.com/revanced/revanced-integrations/issues/396)) ([6a94bd2](https://github.com/revanced/revanced-integrations/commit/6a94bd2237be9cde6256c83fcec72b3f0de83496))
+
+# [0.108.0-dev.13](https://github.com/revanced/revanced-integrations/compare/v0.108.0-dev.12...v0.108.0-dev.13) (2023-05-13)
+
+
+### Bug Fixes
+
+* **youtube/remember-video-quality:** do not show 'auto' in video resolution picker if a default quality is set ([#400](https://github.com/revanced/revanced-integrations/issues/400)) ([e30d120](https://github.com/revanced/revanced-integrations/commit/e30d1201c992f4896a0b7106230377d78506cd6f))
+
 # [0.108.0-dev.12](https://github.com/revanced/revanced-integrations/compare/v0.108.0-dev.11...v0.108.0-dev.12) (2023-05-13)
 
 
