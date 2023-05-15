@@ -287,6 +287,8 @@ public class ReturnYouTubeDislikeApi {
             connection.disconnect(); // something went wrong, might as well disconnect
         } catch (SocketTimeoutException ex) { // connection timed out, response timeout, or some other network error
             handleConnectionError((str("revanced_ryd_failure_connection_timeout")), ex);
+        } catch (IOException ex) {
+            handleConnectionError((str("revanced_ryd_failure_generic", ex.getMessage())), ex);
         } catch (Exception ex) {
             // should never happen
             LogHelper.printException(() -> "Failed to fetch votes", ex, str("revanced_ryd_failure_generic", ex.getMessage()));
@@ -329,6 +331,8 @@ public class ReturnYouTubeDislikeApi {
             }
             handleConnectionError(str("revanced_ryd_failure_connection_status_code", responseCode), null);
             connection.disconnect();
+        } catch (SocketTimeoutException ex) {
+            handleConnectionError(str("revanced_ryd_failure_connection_timeout"), ex);
         } catch (IOException ex) {
             handleConnectionError(str("revanced_ryd_failure_generic", "registration failed"), ex);
         } catch (Exception ex) {
@@ -374,6 +378,8 @@ public class ReturnYouTubeDislikeApi {
                     + " solution: " + solution + " responseCode: " + responseCode + " responseString: " + resultLog);
             handleConnectionError(str("revanced_ryd_failure_connection_status_code", responseCode), null);
             connection.disconnect(); // something went wrong, might as well disconnect
+        } catch (SocketTimeoutException ex) {
+            handleConnectionError(str("revanced_ryd_failure_connection_timeout"), ex);
         } catch (IOException ex) {
             handleConnectionError(str("revanced_ryd_failure_generic", "confirm registration failed"), ex);
         } catch (Exception ex) {
@@ -421,6 +427,8 @@ public class ReturnYouTubeDislikeApi {
                     + " response code was: " + responseCode);
             handleConnectionError(str("revanced_ryd_failure_connection_status_code", responseCode), null);
             connection.disconnect(); // something went wrong, might as well disconnect
+        } catch (SocketTimeoutException ex) {
+            handleConnectionError(str("revanced_ryd_failure_connection_timeout"), ex);
         } catch (IOException ex) {
             handleConnectionError(str("revanced_ryd_failure_generic", "send vote failed"), ex);
         } catch (Exception ex) {
@@ -467,6 +475,8 @@ public class ReturnYouTubeDislikeApi {
                     + " solution: " + solution + " responseCode: " + responseCode + " responseString: " + resultLog);
             handleConnectionError(str("revanced_ryd_failure_connection_status_code", responseCode), null);
             connection.disconnect(); // something went wrong, might as well disconnect
+        } catch (SocketTimeoutException ex) {
+            handleConnectionError(str("revanced_ryd_failure_connection_timeout"), ex);
         } catch (IOException ex) {
             handleConnectionError(str("revanced_ryd_failure_generic", "confirm vote failed"), ex);
         } catch (Exception ex) {
