@@ -226,7 +226,9 @@ public class ReturnYouTubeDislikeApi {
         if (SettingsEnum.RYD_TOAST_ON_CONNECTION_ERROR.getBoolean()) {
             ReVancedUtils.showToastShort(toastMessage);
         }
-        LogHelper.printInfo(() -> toastMessage, ex);
+        if (ex != null) {
+            LogHelper.printInfo(() -> toastMessage, ex);
+        }
     }
 
     /**
