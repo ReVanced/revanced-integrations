@@ -45,7 +45,7 @@ enum class PlayerType {
             val newType = nameToPlayerType[enumName]
             if (newType == null) {
                 LogHelper.printException { "Unknown PlayerType encountered: $enumName" }
-            } else {
+            } else if (current != newType) {
                 current = newType
                 LogHelper.printDebug { "PlayerType was updated to: $newType" }
             }
@@ -90,7 +90,7 @@ enum class PlayerType {
      * although can return false positive if the player is minimized.
      *
      * @return If nothing, a Short, a Story,
-     *         or a regular minimized video is sliding off screen to a dismissed or hidden state.
+     *         or a regular video is minimized video or sliding off screen to a dismissed or hidden state.
      */
     fun isNoneHiddenOrMinimized(): Boolean {
         return this == NONE || this == HIDDEN
