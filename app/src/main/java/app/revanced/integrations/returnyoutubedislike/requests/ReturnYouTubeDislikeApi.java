@@ -346,7 +346,7 @@ public class ReturnYouTubeDislikeApi {
             if (checkIfRateLimitInEffect("confirmRegistration")) {
                 return null;
             }
-            LogHelper.printDebug(() -> "Trying to confirm registration with solution:" + solution);
+            LogHelper.printDebug(() -> "Trying to confirm registration with solution: " + solution);
 
             HttpURLConnection connection = getRYDConnectionFromRoute(ReturnYouTubeDislikeRoutes.CONFIRM_REGISTRATION, userId);
             applyCommonPostRequestSettings(connection);
