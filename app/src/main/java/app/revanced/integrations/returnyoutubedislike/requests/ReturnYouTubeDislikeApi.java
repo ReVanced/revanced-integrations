@@ -271,10 +271,10 @@ public class ReturnYouTubeDislikeApi {
                 try {
                     RYDVoteData votingData = new RYDVoteData(json);
                     updateStatistics(timeNetworkCallStarted, timeNetworkCallEnded, false, false);
-                    LogHelper.printDebug(() -> "Voting data fetched:" + votingData);
+                    LogHelper.printDebug(() -> "Voting data fetched: " + votingData);
                     return votingData;
                 } catch (JSONException ex) {
-                    LogHelper.printException(() -> "Failed to parse video:" + videoId + " json:" + json, ex);
+                    LogHelper.printException(() -> "Failed to parse video: " + videoId + " json: " + json, ex);
                     // fall thru to update statistics
                 }
             } else if (responseCode == HTTP_STATUS_CODE_NOT_FOUND) {
@@ -307,7 +307,7 @@ public class ReturnYouTubeDislikeApi {
                 return null;
             }
             String userId = randomString(36);
-            LogHelper.printDebug(() -> "Trying to register new user:" + userId);
+            LogHelper.printDebug(() -> "Trying to register new user: " + userId);
 
             HttpURLConnection connection = getRYDConnectionFromRoute(ReturnYouTubeDislikeRoutes.GET_REGISTRATION, userId);
             connection.setRequestProperty("Accept", "application/json");
@@ -370,8 +370,8 @@ public class ReturnYouTubeDislikeApi {
                 }
             }
             final String resultLog = result;
-            LogHelper.printInfo(() -> "Failed to confirm registration for user:" + userId
-                    + " solution:" + solution + " responseCode:" + responseCode + " responseString:" + resultLog);
+            LogHelper.printInfo(() -> "Failed to confirm registration for user: " + userId
+                    + " solution: " + solution + " responseCode: " + responseCode + " responseString: " + resultLog);
             handleConnectionError(str("revanced_ryd_failure_connection_status_code", responseCode), null);
             connection.disconnect(); // something went wrong, might as well disconnect
         } catch (IOException ex) {
@@ -393,7 +393,7 @@ public class ReturnYouTubeDislikeApi {
             if (checkIfRateLimitInEffect("sendVote")) {
                 return false;
             }
-            LogHelper.printDebug(() -> "Trying to vote for video:" + videoId + " with vote:" + vote);
+            LogHelper.printDebug(() -> "Trying to vote for video: " + videoId + " with vote: " + vote);
 
             HttpURLConnection connection = getRYDConnectionFromRoute(ReturnYouTubeDislikeRoutes.SEND_VOTE);
             applyCommonPostRequestSettings(connection);
@@ -417,15 +417,15 @@ public class ReturnYouTubeDislikeApi {
                 String solution = solvePuzzle(challenge, difficulty);
                 return confirmVote(videoId, userId, solution);
             }
-            LogHelper.printInfo(() -> "Failed to send vote for video:" + videoId + " vote:" + vote
-                    + " response code was:" + responseCode);
+            LogHelper.printInfo(() -> "Failed to send vote for video: " + videoId + " vote: " + vote
+                    + " response code was: " + responseCode);
             handleConnectionError(str("revanced_ryd_failure_connection_status_code", responseCode), null);
             connection.disconnect(); // something went wrong, might as well disconnect
         } catch (IOException ex) {
             handleConnectionError(str("revanced_ryd_failure_generic", "send vote failed"), ex);
         } catch (Exception ex) {
             // should never happen
-            LogHelper.printException(() -> "Failed to send vote for video:" + videoId + " vote:" + vote, ex);
+            LogHelper.printException(() -> "Failed to send vote for video: " + videoId + " vote: " + vote, ex);
         }
         return false;
     }
@@ -463,7 +463,7 @@ public class ReturnYouTubeDislikeApi {
                 }
             }
             final String resultLog = result;
-            LogHelper.printInfo(() -> "Failed to confirm vote for video:" + videoId
+            LogHelper.printInfo(() -> "Failed to confirm vote for video: " + videoId
                     + " solution: " + solution + " responseCode: " + responseCode + " responseString: " + resultLog);
             handleConnectionError(str("revanced_ryd_failure_connection_status_code", responseCode), null);
             connection.disconnect(); // something went wrong, might as well disconnect
@@ -513,14 +513,14 @@ public class ReturnYouTubeDislikeApi {
 
             if (countLeadingZeroes(messageDigest) >= difficulty) {
                 String solution = Base64.encodeToString(new byte[]{buffer[0], buffer[1], buffer[2], buffer[3]}, Base64.NO_WRAP);
-                LogHelper.printDebug(() -> "Found puzzle solution: " + solution + " of difficulty:" + difficulty
-                        + " in:" + (System.currentTimeMillis() - timeSolveStarted) + " ms");
+                LogHelper.printDebug(() -> "Found puzzle solution: " + solution + " of difficulty: " + difficulty
+                        + " in: " + (System.currentTimeMillis() - timeSolveStarted) + " ms");
                 return solution;
             }
         }
 
         // should never be reached
-        throw new IllegalStateException("Failed to solve puzzle challenge:" + challenge + " difficulty:" + difficulty);
+        throw new IllegalStateException("Failed to solve puzzle challenge: " + challenge + " difficulty: " + difficulty);
     }
 
     // https://stackoverflow.com/a/157202
