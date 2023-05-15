@@ -373,7 +373,7 @@ public class ReturnYouTubeDislikeApi {
                     return userId;
                 }
             }
-            final String resultLog = result;
+            final String resultLog = result == null ? "(no response)" : result;
             LogHelper.printInfo(() -> "Failed to confirm registration for user: " + userId
                     + " solution: " + solution + " responseCode: " + responseCode + " responseString: " + resultLog);
             handleConnectionError(str("revanced_ryd_failure_connection_status_code", responseCode), null);
@@ -470,7 +470,7 @@ public class ReturnYouTubeDislikeApi {
                     return true;
                 }
             }
-            final String resultLog = result;
+            final String resultLog = result == null ? "(no response)" : result;
             LogHelper.printInfo(() -> "Failed to confirm vote for video: " + videoId
                     + " solution: " + solution + " responseCode: " + responseCode + " responseString: " + resultLog);
             handleConnectionError(str("revanced_ryd_failure_connection_status_code", responseCode), null);
