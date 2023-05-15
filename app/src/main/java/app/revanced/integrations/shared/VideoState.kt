@@ -27,8 +27,8 @@ enum class VideoState {
             if (state == null) {
                 LogHelper.printException { "Unknown VideoState encountered: $enumName" }
             } else if (currentVideoState != state) {
-                currentVideoState = state
                 LogHelper.printDebug { "VideoState changed to: $state" }
+                currentVideoState = state
             }
         }
 

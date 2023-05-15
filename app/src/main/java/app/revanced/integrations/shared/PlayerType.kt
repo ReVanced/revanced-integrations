@@ -46,8 +46,8 @@ enum class PlayerType {
             if (newType == null) {
                 LogHelper.printException { "Unknown PlayerType encountered: $enumName" }
             } else if (current != newType) {
+                LogHelper.printDebug { "PlayerType changed to: $newType" }
                 current = newType
-                LogHelper.printDebug { "PlayerType was updated to: $newType" }
             }
         }
 
