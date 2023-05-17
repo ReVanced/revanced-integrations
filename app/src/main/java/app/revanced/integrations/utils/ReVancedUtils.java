@@ -99,6 +99,25 @@ public class ReVancedUtils {
         return getContext().getResources().getDimension(getResourceIdentifier(resourceIdentifierName, "dimen"));
     }
 
+    /**
+     * @return The first child view that matches the filter.
+     */
+    @Nullable
+    public static <T extends View> T getChildView(ViewGroup viewGroup, MatchFilter filter) {
+        if (viewGroup == null) return null;
+        for (int i = 0, childCount = viewGroup.getChildCount(); i < childCount; i++) {
+            View childAt = viewGroup.getChildAt(i);
+            if (filter.matches(childAt)) {
+                return (T) childAt;
+            }
+        }
+        return null;
+    }
+
+    public interface MatchFilter<T> {
+        boolean matches(T object);
+    }
+
     public static Context getContext() {
         if (context != null) {
             return context;
