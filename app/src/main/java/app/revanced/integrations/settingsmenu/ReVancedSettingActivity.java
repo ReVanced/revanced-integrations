@@ -3,12 +3,15 @@ package app.revanced.integrations.settingsmenu;
 import static app.revanced.integrations.utils.ReVancedUtils.getChildView;
 import static app.revanced.integrations.utils.ReVancedUtils.getResourceIdentifier;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
+
+import java.util.Objects;
 
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ThemeHelper;
@@ -57,13 +60,14 @@ public class ReVancedSettingActivity extends Activity {
 
     private void setToolbarTitle(String toolbarTitleResourceName) {
         ViewGroup toolbar = findViewById(getToolbarResourceId());
-        TextView toolbarTextView = getChildView(toolbar, view -> view instanceof TextView);
+        TextView toolbarTextView = Objects.requireNonNull(getChildView(toolbar, view -> view instanceof TextView));
         toolbarTextView.setText(getResourceIdentifier(toolbarTitleResourceName, "string"));
     }
 
+    @SuppressLint("UseCompatLoadingForDrawables")
     private void setBackButton() {
         ViewGroup toolbar = findViewById(getToolbarResourceId());
-        ImageButton imageButton = getChildView(toolbar, view -> view instanceof ImageButton);
+        ImageButton imageButton = Objects.requireNonNull(getChildView(toolbar, view -> view instanceof ImageButton));
         final int backButtonResource = getResourceIdentifier(ThemeHelper.isDarkTheme()
                         ? "yt_outline_arrow_left_white_24"
                         : "yt_outline_arrow_left_black_24",
