@@ -37,7 +37,6 @@ public enum SettingsEnum {
 
     // Copy video URL
     COPY_VIDEO_URL("revanced_copy_video_url", BOOLEAN, TRUE),
-    COPY_VIDEO_URL_TIMESTAMP("revanced_copy_video_url_timestamp", BOOLEAN, TRUE),
 
     // Video
     HDR_AUTO_BRIGHTNESS("revanced_hdr_auto_brightness", BOOLEAN, TRUE),
@@ -270,8 +269,6 @@ public enum SettingsEnum {
 
     @Deprecated
     DEPRECATED_COPY_VIDEO_URL("revanced_copy_video_url_enabled", BOOLEAN, TRUE),
-    @Deprecated
-    DEPRECATED_COPY_VIDEO_URL_TIMESTAMP("revanced_copy_video_url_timestamp_enabled", BOOLEAN, TRUE),
 
     @Deprecated
     DEPRECATED_AUTO_CAPTIONS("revanced_autocaptions_enabled", BOOLEAN, FALSE),
@@ -516,7 +513,6 @@ public enum SettingsEnum {
                 {DEPRECATED_ETERNAL_DOWNLOADER, EXTERNAL_DOWNLOADER},
                 {DEPRECATED_EXTERNAL_DOWNLOADER_PACKAGE_NAME, EXTERNAL_DOWNLOADER_PACKAGE_NAME},
                 {DEPRECATED_COPY_VIDEO_URL, COPY_VIDEO_URL},
-                {DEPRECATED_COPY_VIDEO_URL_TIMESTAMP, COPY_VIDEO_URL_TIMESTAMP},
 
                 {DEPRECATED_SHOW_OLD_VIDEO_MENU, SHOW_OLD_VIDEO_MENU},
                 {DEPRECATED_VIDEO_QUALITY_DEFAULT_WIFI, VIDEO_QUALITY_DEFAULT_WIFI},
