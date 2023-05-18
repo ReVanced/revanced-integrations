@@ -5,7 +5,6 @@ import static app.revanced.integrations.utils.ReVancedUtils.getResourceIdentifie
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.os.Bundle;
 import android.preference.PreferenceFragment;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
@@ -16,19 +15,21 @@ import java.util.Objects;
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ThemeHelper;
 
-public class ReVancedSettingActivity extends Activity {
+public class ReVancedSettingActivity {
 
-    @Override
-    public void onCreate(Bundle bundle) {
-        super.onCreate(bundle);
+    /**
+     * Injection point.
+     */
+    public static void initializeSettings(Activity licenseActivity) {
         try {
-            ThemeHelper.setActivityTheme(this);
-            setContentView(getResourceIdentifier("revanced_settings_with_toolbar", "layout"));
-            setBackButton();
+            ThemeHelper.setActivityTheme(licenseActivity);
+            licenseActivity.setContentView(
+                    getResourceIdentifier("revanced_settings_with_toolbar", "layout"));
+            setBackButton(licenseActivity);
 
             PreferenceFragment fragment;
             String toolbarTitleResourceName;
-            String dataString = getIntent().getDataString();
+            String dataString = licenseActivity.getIntent().getDataString();
             switch (dataString) {
                 case "sponsorblock_settings":
                     toolbarTitleResourceName = "revanced_sponsorblock_settings_title";
@@ -47,33 +48,32 @@ public class ReVancedSettingActivity extends Activity {
                     return;
             }
 
-            setToolbarTitle(toolbarTitleResourceName);
-            getFragmentManager()
+            setToolbarTitle(licenseActivity, toolbarTitleResourceName);
+            licenseActivity.getFragmentManager()
                     .beginTransaction()
                     .replace(getResourceIdentifier("revanced_settings_fragments", "id"), fragment)
                     .commit();
-
         } catch (Exception ex) {
             LogHelper.printException(() -> "onCreate failure", ex);
         }
     }
 
-    private void setToolbarTitle(String toolbarTitleResourceName) {
-        ViewGroup toolbar = findViewById(getToolbarResourceId());
+    private static void setToolbarTitle(Activity activity, String toolbarTitleResourceName) {
+        ViewGroup toolbar = activity.findViewById(getToolbarResourceId());
         TextView toolbarTextView = Objects.requireNonNull(getChildView(toolbar, view -> view instanceof TextView));
         toolbarTextView.setText(getResourceIdentifier(toolbarTitleResourceName, "string"));
     }
 
     @SuppressLint("UseCompatLoadingForDrawables")
-    private void setBackButton() {
-        ViewGroup toolbar = findViewById(getToolbarResourceId());
+    private static void setBackButton(Activity activity) {
+        ViewGroup toolbar = activity.findViewById(getToolbarResourceId());
         ImageButton imageButton = Objects.requireNonNull(getChildView(toolbar, view -> view instanceof ImageButton));
         final int backButtonResource = getResourceIdentifier(ThemeHelper.isDarkTheme()
                         ? "yt_outline_arrow_left_white_24"
                         : "yt_outline_arrow_left_black_24",
                 "drawable");
-        imageButton.setImageDrawable(getResources().getDrawable(backButtonResource));
-        imageButton.setOnClickListener(view -> onBackPressed());
+        imageButton.setImageDrawable(activity.getResources().getDrawable(backButtonResource));
+        imageButton.setOnClickListener(view -> activity.onBackPressed());
     }
 
     private static int getToolbarResourceId() {
