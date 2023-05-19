@@ -5,18 +5,12 @@ import android.app.Activity;
 public class ThemeHelper {
     private static int themeValue;
 
-    public static void setTheme(int value) {
-        if (themeValue != value) {
-            themeValue = value;
-            LogHelper.printDebug(() -> "Theme value: " + themeValue);
-        }
-    }
-
-    /**
-     * Injection point.
-     */
     public static void setTheme(Object value) {
-        setTheme(((Enum) value).ordinal());
+        final int newOrdinalValue = ((Enum) value).ordinal();
+        if (themeValue != newOrdinalValue) {
+            themeValue = newOrdinalValue;
+            LogHelper.printDebug(() -> "Theme value: " + newOrdinalValue);
+        }
     }
 
     public static boolean isDarkTheme() {
