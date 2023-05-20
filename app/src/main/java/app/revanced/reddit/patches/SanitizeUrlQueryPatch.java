@@ -1,9 +1,8 @@
 package app.revanced.reddit.patches;
 
-public class UrlSanitizer {
-    public static String removeTrackingParameters(String url) {
-        Pattern pattern = Pattern.compile(".?utm_source=.+")
-        Matcher matcher = pattern.matcher(url)
-        return matcher.replaceAll("")
+public final class SanitizeUrlQueryPatch {
+	private static final Pattern SANITIZE_PATTERN = Pattern.compile(".?utm_source=.+");
+    public static String removeTrackingParameters(final String url) {
+        return SANITIZE_PATTERN.matcher(url).replaceAll("");
     }
 }
