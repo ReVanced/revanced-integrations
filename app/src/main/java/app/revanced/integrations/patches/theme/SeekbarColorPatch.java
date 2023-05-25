@@ -14,6 +14,11 @@ public final class SeekbarColorPatch {
     private static final int ORIGINAL_SEEKBAR_COLOR = 0xFFFF0000;
 
     /**
+     * Default color of unfocused seekbar in dark mode.
+     */
+    private static final int ORIGINAL_SEEKBAR_COLOR_DARK_MODE_UNFOCUSED = 0xCCFFFFFF;
+
+    /**
      * Default YouTube seekbar color brightness.
      */
     private static final float ORIGINAL_SEEKBAR_COLOR_BRIGHTNESS;
@@ -51,33 +56,62 @@ public final class SeekbarColorPatch {
         return customSeekbarColor;
     }
 
+
     /**
      * Injection point.
      *
-     * Overrides color when seekbar is clicked, and all Litho components that use the YouTube seekbar color.
+     * Overrides all Litho components that use the YouTube seekbar color.
+     * Used only for the seekbar shown in view thumbnails.
+     *
+     * If {@link SettingsEnum#HIDE_SEEKBAR_THUMBNAIL} is enabled, this returns a fully transparent color.
      */
-    public static int getSeekbarColorOverride(int colorValue) {
-        return colorValue == ORIGINAL_SEEKBAR_COLOR
-                ? getSeekbarColorValue(ORIGINAL_SEEKBAR_COLOR)
-                : colorValue;
+    public static int getLithoColorOverride(int colorValue) {
+        if (colorValue == ORIGINAL_SEEKBAR_COLOR) {
+            if (SettingsEnum.HIDE_SEEKBAR_THUMBNAIL.getBoolean()) {
+                return 0x00000000;
+            }
+            return getSeekbarColorValue(ORIGINAL_SEEKBAR_COLOR);
+        }
+        return colorValue;
     }
 
     /**
      * Injection point.
      *
-     * If {@link SettingsEnum#HIDE_SEEKBAR} is enabled, this returns a fully transparent color.
+     * Overrides color when video player seekbar is clicked.
+     */
+    public static int getVideoPlayerSeekbarClickedColorOverride(int colorValue) {
+        return colorValue == ORIGINAL_SEEKBAR_COLOR
+                ? getSeekbarColorValue(ORIGINAL_SEEKBAR_COLOR)
+                : colorValue;
+    }
+
+
+    /**
+     * Injection point.
      *
-     * Otherwise the original color is changed to the custom seekbar color, while retaining
+     * Used for video player seekbar.
+     */
+    public static int getVideoPlayerSeekbarColorOverride(int originalColor) {
+        // In dark mode the unfocused seekbar appears as white.
+        // Retain the dark mode color, if the user has not enabled custom dark mode seekbar color.
+        if (originalColor == ORIGINAL_SEEKBAR_COLOR_DARK_MODE_UNFOCUSED) {
+            if (!SettingsEnum.SEEKBAR_COLOR_DARK_MODE.getBoolean()) {
+                return originalColor;
+            }
+        } else if (customSeekbarColor == ORIGINAL_SEEKBAR_COLOR) {
+            return originalColor; // nothing to do
+        }
+        return getSeekbarColorValue(originalColor);
+    }
+
+
+    /**
+     * Color parameter is changed to the custom seekbar color, while retaining
      * the brightness and alpha changes of the parameter value compared to the original seekbar color.
      */
-    public static int getSeekbarColorValue(int originalColor) {
+    private static int getSeekbarColorValue(int originalColor) {
         try {
-            if (SettingsEnum.HIDE_SEEKBAR.getBoolean()) {
-                return 0x00000000;
-            }
-            if (customSeekbarColor == ORIGINAL_SEEKBAR_COLOR) {
-                return originalColor; // Nothing to do
-            }
             final int alphaDifference = Color.alpha(originalColor) - Color.alpha(ORIGINAL_SEEKBAR_COLOR);
 
             // The seekbar uses the same color but different brightness for different situations.
