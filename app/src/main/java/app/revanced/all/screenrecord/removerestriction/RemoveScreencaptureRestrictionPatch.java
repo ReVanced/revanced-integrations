@@ -2,7 +2,7 @@ package app.revanced.all.screenrecord.removerestriction;
 
 import android.media.AudioAttributes;
 
-public class RemoveScreenrecordRestrictionPatch {
+public class RemoveScreencaptureRestrictionPatch {
     // Member of AudioAttributes.Builder
     public static AudioAttributes.Builder setAllowedCapturePolicy(AudioAttributes.Builder builder, int capturePolicy) {
         // No operation
