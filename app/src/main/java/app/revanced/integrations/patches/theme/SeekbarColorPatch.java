@@ -14,11 +14,6 @@ public final class SeekbarColorPatch {
     private static final int ORIGINAL_SEEKBAR_COLOR = 0xFFFF0000;
 
     /**
-     * Default color of unfocused seekbar in dark mode.
-     */
-    private static final int ORIGINAL_SEEKBAR_COLOR_DARK_MODE_UNFOCUSED = 0xCCFFFFFF;
-
-    /**
      * Default YouTube seekbar color brightness.
      */
     private static final float ORIGINAL_SEEKBAR_COLOR_BRIGHTNESS;
@@ -86,25 +81,14 @@ public final class SeekbarColorPatch {
                 : colorValue;
     }
 
-
     /**
      * Injection point.
      *
      * Used for video player seekbar.
      */
     public static int getVideoPlayerSeekbarColorOverride(int originalColor) {
-        // In dark mode the unfocused seekbar appears as white.
-        // Retain the dark mode color, if the user has not enabled custom dark mode seekbar color.
-        if (originalColor == ORIGINAL_SEEKBAR_COLOR_DARK_MODE_UNFOCUSED) {
-            if (!SettingsEnum.SEEKBAR_COLOR_DARK_MODE.getBoolean()) {
-                return originalColor;
-            }
-        } else if (customSeekbarColor == ORIGINAL_SEEKBAR_COLOR) {
-            return originalColor; // nothing to do
-        }
         return getSeekbarColorValue(originalColor);
     }
-
 
     /**
      * Color parameter is changed to the custom seekbar color, while retaining
@@ -112,6 +96,9 @@ public final class SeekbarColorPatch {
      */
     private static int getSeekbarColorValue(int originalColor) {
         try {
+            if (customSeekbarColor == ORIGINAL_SEEKBAR_COLOR) {
+                return originalColor; // nothing to do
+            }
             final int alphaDifference = Color.alpha(originalColor) - Color.alpha(ORIGINAL_SEEKBAR_COLOR);
 
             // The seekbar uses the same color but different brightness for different situations.
