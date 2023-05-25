@@ -1,4 +1,4 @@
-package app.revanced.all.screenrecord.removerestriction;
+package app.revanced.all.screencapture.removerestriction;
 
 import android.media.AudioAttributes;
 
