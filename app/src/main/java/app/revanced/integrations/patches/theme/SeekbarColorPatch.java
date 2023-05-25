@@ -60,7 +60,7 @@ public final class SeekbarColorPatch {
      *
      * If {@link SettingsEnum#HIDE_SEEKBAR_THUMBNAIL} is enabled, this returns a fully transparent color.
      */
-    public static int getLithoColorOverride(int colorValue) {
+    public static int getLithoColor(int colorValue) {
         if (colorValue == ORIGINAL_SEEKBAR_COLOR) {
             if (SettingsEnum.HIDE_SEEKBAR_THUMBNAIL.getBoolean()) {
                 return 0x00000000;
@@ -75,7 +75,7 @@ public final class SeekbarColorPatch {
      *
      * Overrides color when video player seekbar is clicked.
      */
-    public static int getVideoPlayerSeekbarClickedColorOverride(int colorValue) {
+    public static int getVideoPlayerSeekbarClickedColor(int colorValue) {
         return colorValue == ORIGINAL_SEEKBAR_COLOR
                 ? getSeekbarColorValue(ORIGINAL_SEEKBAR_COLOR)
                 : colorValue;
@@ -86,7 +86,7 @@ public final class SeekbarColorPatch {
      *
      * Used for video player seekbar.
      */
-    public static int getVideoPlayerSeekbarColorOverride(int originalColor) {
+    public static int getVideoPlayerSeekbarColor(int originalColor) {
         return getSeekbarColorValue(originalColor);
     }
 
