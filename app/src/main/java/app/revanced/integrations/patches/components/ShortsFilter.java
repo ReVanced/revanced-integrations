@@ -10,6 +10,7 @@ import android.view.View;
 import com.google.android.libraries.youtube.rendering.ui.pivotbar.PivotBar;
 
 import app.revanced.integrations.settings.SettingsEnum;
+import app.revanced.integrations.utils.LogHelper;
 
 public final class ShortsFilter extends Filter {
     public static PivotBar pivotBar;
@@ -18,6 +19,11 @@ public final class ShortsFilter extends Filter {
     private final StringFilterGroup reelChannelBar = new StringFilterGroup(
             null,
             "reel_channel_bar"
+    );
+
+    private final StringFilterGroup infoPanel = new StringFilterGroup(
+            SettingsEnum.HIDE_SHORTS_INFO_PANEL,
+            "shorts_info_panel_overview"
     );
 
     public ShortsFilter() {
@@ -54,6 +60,9 @@ public final class ShortsFilter extends Filter {
         // Filter the path only when reelChannelBar is visible.
         if (reelChannelBar.check(path).isFiltered())
             if (this.pathFilterGroups.contains(path)) return true;
+
+        // Shorts info panel path appears outside of reelChannelBar path.
+        if (infoPanel.isEnabled() && infoPanel.check(path).isFiltered()) return true;
 
         return this.identifierFilterGroups.contains(identifier);
     }
