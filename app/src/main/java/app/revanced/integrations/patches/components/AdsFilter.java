@@ -60,7 +60,8 @@ public final class AdsFilter extends Filter {
 
         final var medicalPanel = new StringFilterGroup(
                 SettingsEnum.HIDE_MEDICAL_PANELS,
-                "medical_panel"
+                "medical_panel",
+                "shorts_info_panel_overview"
         );
 
         final var paidContent = new StringFilterGroup(
