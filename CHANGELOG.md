@@ -1,3 +1,17 @@
+## [0.108.1-dev.2](https://github.com/revanced/revanced-integrations/compare/v0.108.1-dev.1...v0.108.1-dev.2) (2023-05-26)
+
+
+### Bug Fixes
+
+* **youtube/downloads:** rename patch to `external-downloads` ([#414](https://github.com/revanced/revanced-integrations/issues/414)) ([b3c7e7f](https://github.com/revanced/revanced-integrations/commit/b3c7e7f63828d299199f80d09c1349de22d8d198))
+
+## [0.108.1-dev.1](https://github.com/revanced/revanced-integrations/compare/v0.108.0...v0.108.1-dev.1) (2023-05-25)
+
+
+### Bug Fixes
+
+* **youtube/hide-player-buttons:** fix previous/next button showing if previous video exists ([#412](https://github.com/revanced/revanced-integrations/issues/412)) ([60f25a2](https://github.com/revanced/revanced-integrations/commit/60f25a2af0bee0301bb84ac69b586343485003bb))
+
 # [0.108.0](https://github.com/revanced/revanced-integrations/compare/v0.107.0...v0.108.0) (2023-05-24)
 
 
