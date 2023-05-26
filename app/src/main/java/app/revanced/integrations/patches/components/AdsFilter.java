@@ -76,7 +76,8 @@ public final class AdsFilter extends Filter {
         final var infoPanel = new StringFilterGroup(
                 SettingsEnum.HIDE_HIDE_INFO_PANELS,
                 "publisher_transparency_panel",
-                "single_item_information_panel"
+                "single_item_information_panel",
+                "shorts_info_panel_overview"
         );
 
         final var latestPosts = new StringFilterGroup(
