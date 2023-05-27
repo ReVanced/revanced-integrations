@@ -10,7 +10,6 @@ import android.view.View;
 import com.google.android.libraries.youtube.rendering.ui.pivotbar.PivotBar;
 
 import app.revanced.integrations.settings.SettingsEnum;
-import app.revanced.integrations.utils.LogHelper;
 
 public final class ShortsFilter extends Filter {
     public static PivotBar pivotBar;
