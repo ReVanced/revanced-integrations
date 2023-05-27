@@ -56,7 +56,7 @@ public final class SeekbarColorPatch {
      * Injection point.
      *
      * Overrides all Litho components that use the YouTube seekbar color.
-     * Used only for the seekbar shown in view thumbnails.
+     * Used only for the video thumbnails seekbar.
      *
      * If {@link SettingsEnum#HIDE_SEEKBAR_THUMBNAIL} is enabled, this returns a fully transparent color.
      */
@@ -84,7 +84,7 @@ public final class SeekbarColorPatch {
     /**
      * Injection point.
      *
-     * Used for video player seekbar.
+     * Overrides color used for the video player seekbar.
      */
     public static int getVideoPlayerSeekbarColor(int originalColor) {
         return getSeekbarColorValue(originalColor);
