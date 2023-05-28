@@ -2,6 +2,8 @@ package app.revanced.integrations.patches.components;
 
 import android.os.Build;
 
+import androidx.annotation.RequiresApi;
+
 import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.utils.ReVancedUtils;
 
@@ -9,9 +11,8 @@ public class PlayerFlyoutMenuItemsFilter extends Filter {
     private static StringFilterGroup playerFlyoutPanelRule;
     private static String[] exceptions;
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public PlayerFlyoutMenuItemsFilter() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) return;
-
         playerFlyoutPanelRule = new StringFilterGroup(
                 null,
                 "overflow_menu_item"
