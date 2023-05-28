@@ -73,8 +73,8 @@ public class PlayerFlyoutMenuItemsFilter extends Filter {
     boolean isFiltered(String path, String identifier, byte[] _protobufBufferArray) {
         if (ReVancedUtils.containsAny(path, exceptions)) return false;
 
-        if(isEveryFilterGroupEnabled())
-            if(playerFlyoutPanelRule.check(identifier).isFiltered()) return true;
+        if (isEveryFilterGroupEnabled())
+            if (playerFlyoutPanelRule.check(identifier).isFiltered()) return true;
 
         return super.isFiltered(path, identifier, _protobufBufferArray);
     }
