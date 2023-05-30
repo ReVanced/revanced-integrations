@@ -20,6 +20,7 @@ public class PlayerFlyoutMenuItemsFilter extends Filter {
 
         exceptions = new String[]{
                 "comment",
+                "CellType|",
                 "_sheet_"
         };
 
