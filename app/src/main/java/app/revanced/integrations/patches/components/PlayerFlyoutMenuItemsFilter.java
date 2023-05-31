@@ -13,9 +13,13 @@ public class PlayerFlyoutMenuItemsFilter extends Filter {
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     public PlayerFlyoutMenuItemsFilter() {
+        /**
+         *  It filters the identifier of the player flyout panel based on the string "overflow_menu_item".
+         *  If the identifier matches this string, it will be considered as a filtered item.
+         */
         playerFlyoutPanelRule = new StringFilterGroup(
                 null,
-                "overflow_menu_item"
+                "overflow_menu_item"    //player flyout menu panel
         );
 
         exceptions = new String[]{
