@@ -1,3 +1,10 @@
+# [0.110.0-dev.2](https://github.com/revanced/revanced-integrations/compare/v0.110.0-dev.1...v0.110.0-dev.2) (2023-05-31)
+
+
+### Features
+
+* **youtube/hide-ads:** hide mix playlists ([56b856f](https://github.com/revanced/revanced-integrations/commit/56b856f6e720fb83e23602d47a33fa7a910189e8))
+
 # [0.110.0-dev.1](https://github.com/revanced/revanced-integrations/compare/v0.109.1-dev.1...v0.110.0-dev.1) (2023-05-31)
 
 
