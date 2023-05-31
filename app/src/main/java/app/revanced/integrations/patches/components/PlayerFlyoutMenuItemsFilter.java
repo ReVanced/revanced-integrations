@@ -8,25 +8,22 @@ import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.utils.ReVancedUtils;
 
 public class PlayerFlyoutMenuItemsFilter extends Filter {
-    private static StringFilterGroup playerFlyoutPanelRule;
     private static String[] exceptions;
+
+    private static StringFilterGroup flyoutPanelGroup;
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     public PlayerFlyoutMenuItemsFilter() {
-        /**
-         *  It filters the identifier of the player flyout panel based on the string "overflow_menu_item".
-         *  If the identifier matches this string, it will be considered as a filtered item.
-         */
-        playerFlyoutPanelRule = new StringFilterGroup(
-                null,
-                "overflow_menu_item"    //player flyout menu panel
-        );
-
         exceptions = new String[]{
                 "comment",
                 "CellType|",
                 "_sheet_"
         };
+
+        flyoutPanelGroup = new StringFilterGroup(
+                null,
+                "overflow_menu_item"
+        );
 
         protobufBufferFilterGroups.addAll(
                 new ByteArrayAsStringFilterGroup(
@@ -69,8 +66,8 @@ public class PlayerFlyoutMenuItemsFilter extends Filter {
     }
 
     private boolean isEveryFilterGroupEnabled() {
-        for (ByteArrayFilterGroup rule : protobufBufferFilterGroups)
-            if (!rule.isEnabled()) return false;
+        for (ByteArrayFilterGroup group : protobufBufferFilterGroups)
+            if (!group.isEnabled()) return false;
 
         return true;
     }
@@ -79,8 +76,8 @@ public class PlayerFlyoutMenuItemsFilter extends Filter {
     boolean isFiltered(String path, String identifier, byte[] _protobufBufferArray) {
         if (ReVancedUtils.containsAny(path, exceptions)) return false;
 
-        if (isEveryFilterGroupEnabled())
-            if (playerFlyoutPanelRule.check(identifier).isFiltered()) return true;
+        // Hide the entire flyout panel if every filter group is enabled
+        if (isEveryFilterGroupEnabled() && flyoutPanelGroup.check(identifier).isFiltered()) return true;
 
         return super.isFiltered(path, identifier, _protobufBufferArray);
     }
