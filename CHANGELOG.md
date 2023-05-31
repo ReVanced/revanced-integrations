@@ -1,3 +1,10 @@
+# [0.110.0-dev.1](https://github.com/revanced/revanced-integrations/compare/v0.109.1-dev.1...v0.110.0-dev.1) (2023-05-31)
+
+
+### Features
+
+* **youtube/swipe-controls:** add option to save and restore brightness ([741dae5](https://github.com/revanced/revanced-integrations/commit/741dae5345596dfde0a553b75b37eed67b624592))
+
 ## [0.109.1-dev.1](https://github.com/revanced/revanced-integrations/compare/v0.109.0...v0.109.1-dev.1) (2023-05-31)
 
 
