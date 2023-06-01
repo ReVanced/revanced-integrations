@@ -13,10 +13,10 @@ public class PlayerFlyoutMenuItemsFilter extends Filter {
     @RequiresApi(api = Build.VERSION_CODES.N)
     public PlayerFlyoutMenuItemsFilter() {
         exceptions = new String[]{
-                "comment",
-                "CellType|",
-                "_sheet_",
-                "video_with_context"
+                "comment",    //skip blocking anything related to comment section
+                "CellType|",    //prevent comment filter from being hidden on top of comment section
+                "_sheet_",    //comment flyout panel for reporting and replying options
+                "video_with_context"    //video player lags sometimes when new video is started
         };
 
         protobufBufferFilterGroups.addAll(
