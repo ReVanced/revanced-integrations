@@ -14,7 +14,7 @@ public class PlayerFlyoutMenuItemsFilter extends Filter {
     public PlayerFlyoutMenuItemsFilter() {
         exceptions = new String[]{
                 "comment", // Anything related to comment section.
-                "CellType|", // Prevent comment filter from being hidden on top of comment section.
+                "CellType|", // Comment filter chips on top of comment section.
                 "_sheet_", // Comment flyout panel for reporting and replying options.
                 "video_with_context" // Prevent video player lags sometimes when new video is started.
         };
