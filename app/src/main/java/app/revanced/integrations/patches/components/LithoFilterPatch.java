@@ -238,7 +238,8 @@ public final class LithoFilterPatch {
             new AdsFilter(),
             new ButtonsFilter(),
             new CommentsFilter(),
-            new ShortsFilter()
+            new ShortsFilter(),
+            new PlayerFlyoutMenuItemsFilter()
     };
 
     @SuppressWarnings("unused")
