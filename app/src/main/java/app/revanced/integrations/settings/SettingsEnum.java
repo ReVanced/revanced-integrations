@@ -146,6 +146,7 @@ public enum SettingsEnum {
     HIDE_SHORTS("revanced_hide_shorts", BOOLEAN, FALSE, true),
 
     //Player flyout menu panel items
+    HIDE_QUALITY_MENU("revanced_player_flyout_menu_items_quality", BOOLEAN, FALSE),
     HIDE_CAPTIONS_MENU("revanced_player_flyout_menu_items_captions", BOOLEAN, FALSE),
     HIDE_LOOP_VIDEO_MENU("revanced_player_flyout_menu_items_loop_video", BOOLEAN, FALSE),
     HIDE_AMBIENT_MODE_MENU("revanced_player_flyout_menu_items_ambient_mode", BOOLEAN, FALSE),

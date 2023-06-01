@@ -27,6 +27,10 @@ public class PlayerFlyoutMenuItemsFilter extends Filter {
 
         protobufBufferFilterGroups.addAll(
                 new ByteArrayAsStringFilterGroup(
+                        SettingsEnum.HIDE_QUALITY_MENU,
+                        "yt_outline_gear"
+                ),
+                new ByteArrayAsStringFilterGroup(
                         SettingsEnum.HIDE_CAPTIONS_MENU,
                         "yt_outline_closed_caption"
                 ),
