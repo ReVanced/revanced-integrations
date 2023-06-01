@@ -10,20 +10,14 @@ import app.revanced.integrations.utils.ReVancedUtils;
 public class PlayerFlyoutMenuItemsFilter extends Filter {
     private static String[] exceptions;
 
-    private static StringFilterGroup flyoutPanelGroup;
-
     @RequiresApi(api = Build.VERSION_CODES.N)
     public PlayerFlyoutMenuItemsFilter() {
         exceptions = new String[]{
                 "comment",
                 "CellType|",
-                "_sheet_"
+                "_sheet_",
+                "video_with_context"
         };
-
-        flyoutPanelGroup = new StringFilterGroup(
-                null,
-                "overflow_menu_item"
-        );
 
         protobufBufferFilterGroups.addAll(
                 new ByteArrayAsStringFilterGroup(
@@ -69,19 +63,9 @@ public class PlayerFlyoutMenuItemsFilter extends Filter {
         );
     }
 
-    private boolean isEveryFilterGroupEnabled() {
-        for (ByteArrayFilterGroup group : protobufBufferFilterGroups)
-            if (!group.isEnabled()) return false;
-
-        return true;
-    }
-
     @Override
     boolean isFiltered(String path, String identifier, byte[] _protobufBufferArray) {
         if (ReVancedUtils.containsAny(path, exceptions)) return false;
-
-        // Hide the entire flyout panel if every filter group is enabled
-        if (isEveryFilterGroupEnabled() && flyoutPanelGroup.check(identifier).isFiltered()) return true;
 
         return super.isFiltered(path, identifier, _protobufBufferArray);
     }
