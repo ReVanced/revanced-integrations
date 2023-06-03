@@ -66,14 +66,10 @@ public class PlayerFlyoutMenuItemsFilter extends Filter {
 
     @Override
     boolean isFiltered(String path, String identifier, byte[] _protobufBufferArray) {
-        if (ReVancedUtils.containsAny(path, exceptions) ||
-                PlayerType.getCurrent().isNoneHiddenOrMinimized() ||
-                PlayerType.getCurrent() == PlayerType.INLINE_MINIMAL ||
-                PlayerType.getCurrent() == PlayerType.VIRTUAL_REALITY_FULLSCREEN ||
-                PlayerType.getCurrent() == PlayerType.WATCH_WHILE_PICTURE_IN_PICTURE
-        )
-            return false;
+        if (ReVancedUtils.containsAny(path, exceptions)) return false;
 
-        return super.isFiltered(path, identifier, _protobufBufferArray);
+        if (PlayerType.getCurrent() == PlayerType.WATCH_WHILE_MAXIMIZED || PlayerType.getCurrent() == PlayerType.WATCH_WHILE_FULLSCREEN)
+            return super.isFiltered(path, identifier, _protobufBufferArray);
+        return false;
     }
 }
