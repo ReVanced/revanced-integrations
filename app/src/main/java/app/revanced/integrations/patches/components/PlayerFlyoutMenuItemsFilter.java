@@ -5,6 +5,7 @@ import android.os.Build;
 import androidx.annotation.RequiresApi;
 
 import app.revanced.integrations.settings.SettingsEnum;
+import app.revanced.integrations.shared.PlayerType;
 import app.revanced.integrations.utils.ReVancedUtils;
 
 public class PlayerFlyoutMenuItemsFilter extends Filter {
@@ -65,7 +66,13 @@ public class PlayerFlyoutMenuItemsFilter extends Filter {
 
     @Override
     boolean isFiltered(String path, String identifier, byte[] _protobufBufferArray) {
-        if (ReVancedUtils.containsAny(path, exceptions)) return false;
+        if (ReVancedUtils.containsAny(path, exceptions) ||
+                PlayerType.getCurrent().isNoneHiddenOrMinimized() ||
+                PlayerType.getCurrent() == PlayerType.INLINE_MINIMAL ||
+                PlayerType.getCurrent() == PlayerType.VIRTUAL_REALITY_FULLSCREEN ||
+                PlayerType.getCurrent() == PlayerType.WATCH_WHILE_PICTURE_IN_PICTURE
+        )
+            return false;
 
         return super.isFiltered(path, identifier, _protobufBufferArray);
     }
