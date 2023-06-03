@@ -68,7 +68,8 @@ public class PlayerFlyoutMenuItemsFilter extends Filter {
     boolean isFiltered(String path, String identifier, byte[] _protobufBufferArray) {
         if (ReVancedUtils.containsAny(path, exceptions)) return false;
 
-        if (PlayerType.getCurrent() == PlayerType.WATCH_WHILE_MAXIMIZED || PlayerType.getCurrent() == PlayerType.WATCH_WHILE_FULLSCREEN)
+        var currentPlayerType = PlayerType.getCurrent();
+        if (currentPlayerType == PlayerType.WATCH_WHILE_MAXIMIZED || currentPlayerType == PlayerType.WATCH_WHILE_FULLSCREEN)
             return super.isFiltered(path, identifier, _protobufBufferArray);
         return false;
     }
