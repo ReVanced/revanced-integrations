@@ -150,6 +150,8 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
                 }
             }
 
+            SettingsUtils.sortPreferenceScreenByTitle(getPreferenceScreen());
+
             preferenceManager.getSharedPreferences().registerOnSharedPreferenceChangeListener(listener);
         } catch (Exception ex) {
             LogHelper.printException(() -> "onActivityCreated() failure", ex);

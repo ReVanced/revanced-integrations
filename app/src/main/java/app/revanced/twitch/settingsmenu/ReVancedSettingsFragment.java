@@ -114,6 +114,14 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
     }
 
     @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        // TODO: uncomment this line, to sort the preferences by title
+        //SettingsUtils.sortPreferenceScreenByTitle(getPreferenceScreen());
+    }
+
+    @Override
     public void onDestroy() {
         if (this.registered) {
             getPreferenceManager().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this.listener);
