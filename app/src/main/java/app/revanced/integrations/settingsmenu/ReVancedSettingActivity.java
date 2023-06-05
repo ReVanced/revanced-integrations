@@ -31,15 +31,15 @@ public class ReVancedSettingActivity {
             String toolbarTitleResourceName;
             String dataString = licenseActivity.getIntent().getDataString();
             switch (dataString) {
-                case "sponsorblock_settings":
+                case "sponsorblock_settings_intent":
                     toolbarTitleResourceName = "revanced_sponsorblock_settings_title";
                     fragment = new SponsorBlockSettingsFragment();
                     break;
-                case "ryd_settings":
+                case "ryd_settings_intent":
                     toolbarTitleResourceName = "revanced_ryd_settings_title";
                     fragment = new ReturnYouTubeDislikeSettingsFragment();
                     break;
-                case "revanced_settings":
+                case "revanced_settings_intent":
                     toolbarTitleResourceName = "revanced_settings_title";
                     fragment = new ReVancedSettingsFragment();
                     break;
