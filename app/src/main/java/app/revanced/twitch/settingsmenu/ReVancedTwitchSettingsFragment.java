@@ -19,6 +19,7 @@ import android.preference.SwitchPreference;
 
 import androidx.annotation.Nullable;
 
+import app.revanced.integrations.settingsmenu.SettingsUtils;
 import app.revanced.twitch.settings.SettingsEnum;
 import app.revanced.twitch.utils.LogHelper;
 import app.revanced.twitch.utils.ReVancedTwitchUtils;
@@ -117,8 +118,7 @@ public class ReVancedTwitchSettingsFragment extends PreferenceFragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        // TODO: uncomment this line, to sort the preferences by title
-        //SettingsUtils.sortPreferenceScreenByTitle(getPreferenceScreen());
+        SettingsUtils.sortPreferenceScreenByTitle(getPreferenceScreen());
     }
 
     @Override

@@ -10,8 +10,12 @@ import java.util.List;
 /**
  * Class is used across multiple target apps.
  *
- * This entire class can _not_ reference {@link app.revanced.integrations.settings.SettingsEnum},
- * {@link app.revanced.integrations.utils.ReVancedUtils}, or any other code that references these.
+ * This entire class can _not_ reference:
+ * {@link app.revanced.integrations.settings.SettingsEnum}
+ * {@link app.revanced.twitch.settings.SettingsEnum}
+ * {@link app.revanced.tiktok.settings.SettingsEnum}
+ *
+ * or any other code that references these app specific integration code.
  */
 public class SettingsUtils {
 
