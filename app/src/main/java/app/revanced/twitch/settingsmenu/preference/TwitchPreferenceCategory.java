@@ -7,8 +7,8 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.TextView;
 
-public class CustomPreferenceCategory extends PreferenceCategory {
-    public CustomPreferenceCategory(Context context, AttributeSet attrs) {
+public class TwitchPreferenceCategory extends PreferenceCategory {
+    public TwitchPreferenceCategory(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
