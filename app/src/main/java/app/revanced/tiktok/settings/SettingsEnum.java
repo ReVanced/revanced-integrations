@@ -11,7 +11,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 
 import app.revanced.tiktok.utils.LogHelper;
-import app.revanced.tiktok.utils.ReVancedUtils;
+import app.revanced.tiktok.utils.ReVancedTikTokUtils;
 
 public enum SettingsEnum {
     //TikTok Settings
@@ -61,7 +61,7 @@ public enum SettingsEnum {
 
     private static void loadAllSettings() {
         try {
-            Context context = ReVancedUtils.getAppContext();
+            Context context = ReVancedTikTokUtils.getAppContext();
             if (context == null) {
                 Log.e("revanced: SettingsEnum", "Context returned null! Settings NOT initialized");
                 return;
@@ -110,7 +110,7 @@ public enum SettingsEnum {
     }
 
     public void saveValue(Object newValue) {
-        Context context = ReVancedUtils.getAppContext();
+        Context context = ReVancedTikTokUtils.getAppContext();
         if (context == null) {
             LogHelper.printException(SettingsEnum.class, "Context on SaveValue is null!");
             return;

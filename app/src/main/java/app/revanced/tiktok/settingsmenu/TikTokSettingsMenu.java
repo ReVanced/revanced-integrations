@@ -10,10 +10,10 @@ import android.widget.LinearLayout;
 import com.bytedance.ies.ugc.aweme.commercialize.compliance.personalization.AdPersonalizationActivity;
 
 import app.revanced.tiktok.utils.LogHelper;
-import app.revanced.tiktok.utils.ReVancedUtils;
+import app.revanced.tiktok.utils.ReVancedTikTokUtils;
 
 
-public class SettingsMenu {
+public class TikTokSettingsMenu {
     public static void initializeSettings(AdPersonalizationActivity base) {
         SettingsStatus.load();
         LinearLayout linearLayout = new LinearLayout(base);
@@ -27,18 +27,18 @@ public class SettingsMenu {
         fragment.setId(fragmentId);
         linearLayout.addView(fragment);
         base.setContentView(linearLayout);
-        PreferenceFragment preferenceFragment = new ReVancedSettingsFragment();
+        PreferenceFragment preferenceFragment = new TikTokReVancedSettingsFragment();
         base.getFragmentManager().beginTransaction().replace(fragmentId, preferenceFragment).commit();
     }
 
     public static void startSettingsActivity() {
-        Context appContext = ReVancedUtils.getAppContext();
+        Context appContext = ReVancedTikTokUtils.getAppContext();
         if (appContext != null) {
             Intent intent = new Intent(appContext, AdPersonalizationActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             appContext.startActivity(intent);
         } else {
-            LogHelper.debug(SettingsMenu.class, "ReVancedUtils.getAppContext() return null");
+            LogHelper.debug(TikTokSettingsMenu.class, "ReVancedUtils.getAppContext() return null");
         }
     }
 }

@@ -23,9 +23,9 @@ import com.ss.android.ugc.aweme.splash.SplashActivity;
 import app.revanced.tiktok.settings.SettingsEnum;
 import app.revanced.tiktok.settings.SharedPrefCategory;
 import app.revanced.tiktok.settingsmenu.preference.DownloadPathPreference;
-import app.revanced.tiktok.utils.ReVancedUtils;
+import app.revanced.tiktok.utils.ReVancedTikTokUtils;
 
-public class ReVancedSettingsFragment extends PreferenceFragment {
+public class TikTokReVancedSettingsFragment extends PreferenceFragment {
 
     private boolean Registered = false;
     private boolean settingsInitialized = false;
@@ -34,7 +34,7 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
         for (SettingsEnum setting : SettingsEnum.values()) {
             if (!setting.path.equals(str)) continue;
 
-            if (ReVancedUtils.getAppContext() != null && this.settingsInitialized && setting.rebootApp) {
+            if (ReVancedTikTokUtils.getAppContext() != null && this.settingsInitialized && setting.rebootApp) {
                 rebootDialog(getActivity());
             }
         }

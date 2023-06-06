@@ -2,7 +2,7 @@ package app.revanced.tiktok.utils;
 
 import android.content.Context;
 
-public class ReVancedUtils {
+public class ReVancedTikTokUtils {
 
     //Used by TiktokIntegrations patch
     public static Context context;
@@ -12,7 +12,7 @@ public class ReVancedUtils {
         if (context != null) {
             return context;
         }
-        LogHelper.printException(ReVancedUtils.class, "Context is null!");
+        LogHelper.printException(ReVancedTikTokUtils.class, "Context is null!");
         return null;
     }
 }

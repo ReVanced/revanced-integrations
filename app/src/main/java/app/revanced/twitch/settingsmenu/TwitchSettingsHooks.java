@@ -1,7 +1,7 @@
 package app.revanced.twitch.settingsmenu;
 
-import static app.revanced.twitch.utils.ReVancedUtils.getIdentifier;
-import static app.revanced.twitch.utils.ReVancedUtils.getStringId;
+import static app.revanced.twitch.utils.ReVancedTwitchUtils.getIdentifier;
+import static app.revanced.twitch.utils.ReVancedTwitchUtils.getStringId;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,14 +12,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.util.ArrayList;
 import java.util.List;
 
-import app.revanced.twitch.utils.ReVancedUtils;
+import app.revanced.twitch.utils.ReVancedTwitchUtils;
 import app.revanced.twitch.utils.LogHelper;
 import tv.twitch.android.feature.settings.menu.SettingsMenuGroup;
 import tv.twitch.android.settings.SettingsActivity;
 
-public class SettingsHooks {
+public class TwitchSettingsHooks {
     private static final int REVANCED_SETTINGS_MENU_ITEM_ID = 0x7;
-    private static final String EXTRA_REVANCED_SETTINGS = "app.revanced.twitch.settings";
+    private static final String REVANCED_TWITCH_SETTINGS_INTENT_NAME = "app.revanced.twitch.settings";
 
     /**
      * Launches SettingsActivity and show ReVanced settings
@@ -27,10 +27,10 @@ public class SettingsHooks {
     public static void startSettingsActivity() {
         LogHelper.debug("Launching ReVanced settings");
 
-        ReVancedUtils.ifContextAttached((c) -> {
+        ReVancedTwitchUtils.ifContextAttached((c) -> {
             Intent intent = new Intent(c, SettingsActivity.class);
             Bundle bundle = new Bundle();
-            bundle.putBoolean(EXTRA_REVANCED_SETTINGS, true);
+            bundle.putBoolean(REVANCED_TWITCH_SETTINGS_INTENT_NAME, true);
             intent.putExtras(bundle);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             c.startActivity(intent);
@@ -90,13 +90,13 @@ public class SettingsHooks {
      * @return Returns true if the revanced settings have been requested by the user, otherwise false
      */
     public static boolean handleSettingsCreation(AppCompatActivity base) {
-        if(!base.getIntent().getBooleanExtra(EXTRA_REVANCED_SETTINGS, false)) {
+        if(!base.getIntent().getBooleanExtra(REVANCED_TWITCH_SETTINGS_INTENT_NAME, false)) {
             LogHelper.debug("Revanced settings not requested");
             return false; // User wants to enter another settings fragment
         }
         LogHelper.debug("ReVanced settings requested");
 
-        ReVancedSettingsFragment fragment = new ReVancedSettingsFragment();
+        ReVancedTwitchSettingsFragment fragment = new ReVancedTwitchSettingsFragment();
         ActionBar supportActionBar = base.getSupportActionBar();
         if(supportActionBar != null)
             supportActionBar.setTitle(getStringId("revanced_settings"));

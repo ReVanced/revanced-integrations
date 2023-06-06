@@ -1,7 +1,6 @@
 package app.revanced.twitch.utils;
 
 import android.util.Log;
-import android.widget.Toast;
 
 import app.revanced.twitch.settings.SettingsEnum;
 
@@ -49,7 +48,7 @@ public class LogHelper {
 
     private static void showDebugToast(String msg) {
         if(SettingsEnum.DEBUG_MODE.getBoolean()) {
-            ReVancedUtils.toast(msg, false);
+            ReVancedTwitchUtils.toast(msg, false);
         }
     }
 }
