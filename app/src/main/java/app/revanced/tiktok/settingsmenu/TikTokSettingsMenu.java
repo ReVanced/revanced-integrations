@@ -12,7 +12,6 @@ import com.bytedance.ies.ugc.aweme.commercialize.compliance.personalization.AdPe
 import app.revanced.tiktok.utils.LogHelper;
 import app.revanced.tiktok.utils.ReVancedTikTokUtils;
 
-
 public class TikTokSettingsMenu {
     public static void initializeSettings(AdPersonalizationActivity base) {
         SettingsStatus.load();
@@ -38,7 +37,7 @@ public class TikTokSettingsMenu {
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             appContext.startActivity(intent);
         } else {
-            LogHelper.debug(TikTokSettingsMenu.class, "ReVancedUtils.getAppContext() return null");
+            LogHelper.printException(TikTokSettingsMenu.class, "Context is null");
         }
     }
 }
