@@ -37,7 +37,7 @@ public class MicroGSupport {
             context.getPackageManager().getPackageInfo(MICROG_PACKAGE_NAME, PackageManager.GET_ACTIVITIES);
         } catch (PackageManager.NameNotFoundException exception) {
             LogHelper.printInfo(() -> "Vanced MicroG was not found", exception);
-            startIntent(context, VANCED_MICROG_DOWNLOAD_LINK, str("microg_not_installed_warning"));
+            startIntent(context, VANCED_MICROG_DOWNLOAD_LINK, str("revanced_microg_not_installed_warning"));
 
             // Gracefully exit the app, so it does not crash.
             System.exit(0);
@@ -47,7 +47,7 @@ public class MicroGSupport {
         try (var client = context.getContentResolver().acquireContentProviderClient(VANCED_MICROG_PROVIDER)) {
             if (client != null) return;
             LogHelper.printInfo(() -> "Vanced MicroG is not running in the background");
-            startIntent(context, DONT_KILL_MY_APP_LINK, str("microg_not_running_warning"));
+            startIntent(context, DONT_KILL_MY_APP_LINK, str("revanced_microg_not_running_warning"));
         }
     }
 }
