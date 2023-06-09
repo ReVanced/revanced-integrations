@@ -7,15 +7,20 @@ import java.util.List;
 
 public final class FilterPromotedLinksPatch {
     /**
-     * Filters away all ILinks which are labeled as promoted.
+     * Filters list from promoted links.
      **/
     public static List<?> filterChildren(final Iterable<?> links) {
-        List<Object> filteredList = new ArrayList<>();
+        final List<Object> filteredList = new ArrayList<>();
+
         for (Object item : links) {
-            if (!(item instanceof ILink) || !((ILink) item).getPromoted()) {
-                filteredList.add(item);
-            }
+            if (!(item instanceof ILink)) continue;
+
+            final var link = (ILink) item;
+            final var isPromotedAd = link.getPromoted();
+
+            if (!isPromotedAd) filteredList.add(item);
         }
+
         return filteredList;
     }
 }
