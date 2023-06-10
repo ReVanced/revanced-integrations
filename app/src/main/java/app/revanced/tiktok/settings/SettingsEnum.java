@@ -9,6 +9,7 @@ import android.content.Context;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import app.revanced.tiktok.utils.LogHelper;
 import app.revanced.tiktok.utils.TikTokUtils;
@@ -105,7 +106,7 @@ public enum SettingsEnum {
      * when {@link #saveValue(Object)} was intended.
      */
     public static void setValue(SettingsEnum setting, Object newValue) {
-        // FIXME: this should validate the parameter matches the return type
+        setting.returnType.validate(newValue);
         setting.value = newValue;
     }
 
@@ -149,6 +150,28 @@ public enum SettingsEnum {
         INTEGER,
         LONG,
         FLOAT,
-        STRING,
+        STRING;
+
+        public void validate(@Nullable Object obj) throws IllegalArgumentException {
+            if (!matches(obj)) {
+                throw new IllegalArgumentException("'" + obj + "' does not match:" + this);
+            }
+        }
+
+        public boolean matches(@Nullable Object obj) {
+            switch (this) {
+                case BOOLEAN:
+                    return obj instanceof Boolean;
+                case INTEGER:
+                    return obj instanceof Integer;
+                case LONG:
+                    return obj instanceof Long;
+                case FLOAT:
+                    return obj instanceof Float;
+                case STRING:
+                    return obj instanceof String;
+            }
+            return false;
+        }
     }
 }
