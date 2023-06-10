@@ -48,7 +48,7 @@ public class LogHelper {
 
     private static void showDebugToast(String msg) {
         if(SettingsEnum.DEBUG_MODE.getBoolean()) {
-            ReVancedTwitchUtils.toast(msg, false);
+            TwitchUtils.toast(msg, false);
         }
     }
 }

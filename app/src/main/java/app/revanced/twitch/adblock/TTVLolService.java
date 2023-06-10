@@ -4,14 +4,14 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import app.revanced.twitch.utils.LogHelper;
-import app.revanced.twitch.utils.ReVancedTwitchUtils;
+import app.revanced.twitch.utils.TwitchUtils;
 import okhttp3.HttpUrl;
 import okhttp3.Request;
 
 public class TTVLolService implements IAdblockService {
     @Override
     public String friendlyName() {
-        return ReVancedTwitchUtils.getString("revanced_proxy_ttv_lol");
+        return TwitchUtils.getString("revanced_proxy_ttv_lol");
     }
 
     // TTV.lol is sometimes unstable

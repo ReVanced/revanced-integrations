@@ -22,7 +22,7 @@ import androidx.annotation.Nullable;
 import app.revanced.integrations.settingsmenu.SettingsUtils;
 import app.revanced.twitch.settings.SettingsEnum;
 import app.revanced.twitch.utils.LogHelper;
-import app.revanced.twitch.utils.ReVancedTwitchUtils;
+import app.revanced.twitch.utils.TwitchUtils;
 import tv.twitch.android.app.core.LandingActivity;
 
 public class TwitchSettingsFragment extends PreferenceFragment {
@@ -62,7 +62,7 @@ public class TwitchSettingsFragment extends PreferenceFragment {
                 LogHelper.error("Setting '%s' cannot be handled!", pref);
             }
 
-            if (ReVancedTwitchUtils.getContext() != null && key != null && settingsInitialized && setting.rebootApp) {
+            if (TwitchUtils.getContext() != null && key != null && settingsInitialized && setting.rebootApp) {
                 rebootDialog(getActivity());
             }
 
@@ -140,9 +140,9 @@ public class TwitchSettingsFragment extends PreferenceFragment {
 
     private void rebootDialog(final Activity activity) {
         new AlertDialog.Builder(activity).
-                setMessage(ReVancedTwitchUtils.getString("revanced_reboot_message")).
-                setPositiveButton(ReVancedTwitchUtils.getString("revanced_reboot"), (dialog, i) -> reboot(activity))
-                .setNegativeButton(ReVancedTwitchUtils.getString("revanced_cancel"), null)
+                setMessage(TwitchUtils.getString("revanced_reboot_message")).
+                setPositiveButton(TwitchUtils.getString("revanced_reboot"), (dialog, i) -> reboot(activity))
+                .setNegativeButton(TwitchUtils.getString("revanced_cancel"), null)
                 .show();
     }
 }

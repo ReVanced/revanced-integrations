@@ -1,7 +1,7 @@
 package app.revanced.twitch.settingsmenu;
 
-import static app.revanced.twitch.utils.ReVancedTwitchUtils.getIdentifier;
-import static app.revanced.twitch.utils.ReVancedTwitchUtils.getStringId;
+import static app.revanced.twitch.utils.TwitchUtils.getIdentifier;
+import static app.revanced.twitch.utils.TwitchUtils.getStringId;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,7 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.util.ArrayList;
 import java.util.List;
 
-import app.revanced.twitch.utils.ReVancedTwitchUtils;
+import app.revanced.twitch.utils.TwitchUtils;
 import app.revanced.twitch.utils.LogHelper;
 import tv.twitch.android.feature.settings.menu.SettingsMenuGroup;
 import tv.twitch.android.settings.SettingsActivity;
@@ -27,7 +27,7 @@ public class TwitchSettingsHooks {
     public static void startSettingsActivity() {
         LogHelper.debug("Launching ReVanced settings");
 
-        ReVancedTwitchUtils.ifContextAttached((c) -> {
+        TwitchUtils.ifContextAttached((c) -> {
             Intent intent = new Intent(c, SettingsActivity.class);
             Bundle bundle = new Bundle();
             bundle.putBoolean(REVANCED_TWITCH_SETTINGS_INTENT_NAME, true);

@@ -11,7 +11,7 @@ import android.content.SharedPreferences;
 import androidx.annotation.NonNull;
 
 import app.revanced.twitch.utils.LogHelper;
-import app.revanced.twitch.utils.ReVancedTwitchUtils;
+import app.revanced.twitch.utils.TwitchUtils;
 
 public enum SettingsEnum {
     /* Ads */
@@ -57,7 +57,7 @@ public enum SettingsEnum {
     }
 
     private static void loadAllSettings() {
-        ReVancedTwitchUtils.ifContextAttached((context -> {
+        TwitchUtils.ifContextAttached((context -> {
             try {
                 SharedPreferences prefs = context.getSharedPreferences(REVANCED_PREFS, Context.MODE_PRIVATE);
                 for (SettingsEnum setting : values()) {
@@ -123,7 +123,7 @@ public enum SettingsEnum {
     }
 
     public void saveValue(Object newValue) {
-        ReVancedTwitchUtils.ifContextAttached((context) -> {
+        TwitchUtils.ifContextAttached((context) -> {
             SharedPreferences prefs = context.getSharedPreferences(REVANCED_PREFS, Context.MODE_PRIVATE);
             if (returnType == BOOLEAN) {
                 prefs.edit().putBoolean(path, (Boolean)newValue).apply();

@@ -5,7 +5,7 @@ import java.util.Map;
 
 import app.revanced.twitch.api.RetrofitClient;
 import app.revanced.twitch.utils.LogHelper;
-import app.revanced.twitch.utils.ReVancedTwitchUtils;
+import app.revanced.twitch.utils.TwitchUtils;
 import okhttp3.HttpUrl;
 import okhttp3.Request;
 import okhttp3.ResponseBody;
@@ -18,7 +18,7 @@ public class PurpleAdblockService implements IAdblockService {
 
     @Override
     public String friendlyName() {
-        return ReVancedTwitchUtils.getString("revanced_proxy_purpleadblock");
+        return TwitchUtils.getString("revanced_proxy_purpleadblock");
     }
 
     @Override

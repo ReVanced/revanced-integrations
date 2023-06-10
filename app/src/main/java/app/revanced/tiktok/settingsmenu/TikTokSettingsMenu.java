@@ -10,7 +10,7 @@ import android.widget.LinearLayout;
 import com.bytedance.ies.ugc.aweme.commercialize.compliance.personalization.AdPersonalizationActivity;
 
 import app.revanced.tiktok.utils.LogHelper;
-import app.revanced.tiktok.utils.ReVancedTikTokUtils;
+import app.revanced.tiktok.utils.TikTokUtils;
 
 public class TikTokSettingsMenu {
     public static void initializeSettings(AdPersonalizationActivity base) {
@@ -31,7 +31,7 @@ public class TikTokSettingsMenu {
     }
 
     public static void startSettingsActivity() {
-        Context appContext = ReVancedTikTokUtils.getAppContext();
+        Context appContext = TikTokUtils.getAppContext();
         if (appContext != null) {
             Intent intent = new Intent(appContext, AdPersonalizationActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
