@@ -25,7 +25,7 @@ import app.revanced.tiktok.settings.SharedPrefCategory;
 import app.revanced.tiktok.settingsmenu.preference.DownloadPathPreference;
 import app.revanced.tiktok.utils.ReVancedTikTokUtils;
 
-public class TikTokReVancedSettingsFragment extends PreferenceFragment {
+public class TikTokSettingsFragment extends PreferenceFragment {
 
     private boolean Registered = false;
     private boolean settingsInitialized = false;

@@ -25,7 +25,7 @@ import app.revanced.twitch.utils.LogHelper;
 import app.revanced.twitch.utils.ReVancedTwitchUtils;
 import tv.twitch.android.app.core.LandingActivity;
 
-public class ReVancedTwitchSettingsFragment extends PreferenceFragment {
+public class TwitchSettingsFragment extends PreferenceFragment {
 
     private boolean registered = false;
     private boolean settingsInitialized = false;

@@ -15,7 +15,7 @@ import java.util.Objects;
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ThemeHelper;
 
-public class ReVancedSettingActivity {
+public class YouTubeSettingActivity {
 
     /**
      * Injection point.
@@ -41,7 +41,7 @@ public class ReVancedSettingActivity {
                     break;
                 case "revanced_settings_intent":
                     toolbarTitleResourceName = "revanced_settings_title";
-                    fragment = new ReVancedSettingsFragment();
+                    fragment = new YouTubeSettingsFragment();
                     break;
                 default:
                     LogHelper.printException(() -> "Unknown setting: " + dataString);

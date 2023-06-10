@@ -30,7 +30,7 @@ import app.revanced.integrations.settings.SharedPrefCategory;
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedUtils;
 
-public class ReVancedSettingsFragment extends PreferenceFragment {
+public class YouTubeSettingsFragment extends PreferenceFragment {
     /**
      * Indicates that if a preference changes,
      * to apply the change from the Setting to the UI component.

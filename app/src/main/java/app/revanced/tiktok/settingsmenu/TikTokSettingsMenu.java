@@ -26,7 +26,7 @@ public class TikTokSettingsMenu {
         fragment.setId(fragmentId);
         linearLayout.addView(fragment);
         base.setContentView(linearLayout);
-        PreferenceFragment preferenceFragment = new TikTokReVancedSettingsFragment();
+        PreferenceFragment preferenceFragment = new TikTokSettingsFragment();
         base.getFragmentManager().beginTransaction().replace(fragmentId, preferenceFragment).commit();
     }
 
