@@ -54,7 +54,7 @@ public class TikTokSettingsFragment extends PreferenceFragment {
         //Feed filter
         if (SettingsStatus.feedFilter) {
             PreferenceCategory feedFilter = new PreferenceCategory(context);
-            feedFilter.setTitle(TikTokUtils.getString("revanced_tik_feed_filter_screen_title"));
+            feedFilter.setTitle("Feed filter");
             preferenceScreen.addPreference(feedFilter);
 
             //Remove ads toggle
@@ -64,10 +64,13 @@ public class TikTokSettingsFragment extends PreferenceFragment {
                 preference.setKey(SettingsEnum.TIK_REMOVE_ADS.path);
                 preference.setDefaultValue(SettingsEnum.TIK_REMOVE_ADS.defaultValue);
                 preference.setChecked(SettingsEnum.TIK_REMOVE_ADS.getBoolean());
-                preference.setTitle(TikTokUtils.getString("revanced_tik_remove_ads_title"));
-                preference.setSummary(TikTokUtils.getString("revanced_tik_remove_ads_summary"));
+                preference.setTitle("Remove feed ads");
+                preference.setSummary("Remove ads from feed.");
                 preference.setOnPreferenceChangeListener((pref, newValue) -> {
-                    SettingsEnum.setValue(SettingsEnum.TIK_REMOVE_ADS, newValue);
+                    // FIXME: the value is already saved in the preferences.
+                    // instead of saving again, simple call SettingsEnum#setValue()
+                    final boolean value = (Boolean) newValue;
+                    SettingsEnum.TIK_REMOVE_ADS.saveValue(value);
                     return true;
                 });
             }
@@ -78,8 +81,8 @@ public class TikTokSettingsFragment extends PreferenceFragment {
                 preference.setKey(SettingsEnum.TIK_HIDE_LIVE.path);
                 preference.setDefaultValue(SettingsEnum.TIK_HIDE_LIVE.defaultValue);
                 preference.setChecked(SettingsEnum.TIK_HIDE_LIVE.getBoolean());
-                preference.setTitle(TikTokUtils.getString("revanced_tik_hide_live_title"));
-                preference.setSummary(TikTokUtils.getString("revanced_tik_hide_live_summary"));
+                preference.setTitle("Hide livestreams");
+                preference.setSummary("Hide livestreams from feed.");
                 preference.setOnPreferenceChangeListener((pref, newValue) -> {
                     final boolean value = (Boolean) newValue;
                     SettingsEnum.TIK_HIDE_LIVE.saveValue(value);
@@ -91,7 +94,7 @@ public class TikTokSettingsFragment extends PreferenceFragment {
         //Download
         if (SettingsStatus.download) {
             PreferenceCategory download = new PreferenceCategory(context);
-            download.setTitle(TikTokUtils.getString("revanced_tik_down_screen_title"));
+            download.setTitle("Download");
             preferenceScreen.addPreference(download);
             //Download path
             {
@@ -100,7 +103,7 @@ public class TikTokSettingsFragment extends PreferenceFragment {
                 preference.setKey(SettingsEnum.TIK_DOWN_PATH.path);
                 preference.setDefaultValue(SettingsEnum.TIK_DOWN_PATH.defaultValue);
                 preference.setValue(SettingsEnum.TIK_DOWN_PATH.getString());
-                preference.setTitle(TikTokUtils.getString("revanced_tik_down_path_title"));
+                preference.setTitle("Download path");
                 preference.setSummary(Environment.getExternalStorageDirectory().getPath() + "/" + preference.getValue());
                 preference.setOnPreferenceChangeListener((pref, newValue) -> {
                     final String value = (String) newValue;
@@ -115,7 +118,7 @@ public class TikTokSettingsFragment extends PreferenceFragment {
                 preference.setKey(SettingsEnum.TIK_DOWN_WATERMARK.path);
                 preference.setDefaultValue(SettingsEnum.TIK_DOWN_WATERMARK.defaultValue);
                 preference.setChecked(SettingsEnum.TIK_DOWN_WATERMARK.getBoolean());
-                preference.setTitle(TikTokUtils.getString("revanced_tik_down_watermark_title"));
+                preference.setTitle("Remove watermark");
                 preference.setOnPreferenceChangeListener((pref, newValue) -> {
                     final boolean value = (Boolean) newValue;
                     SettingsEnum.TIK_DOWN_WATERMARK.saveValue(value);
@@ -127,7 +130,7 @@ public class TikTokSettingsFragment extends PreferenceFragment {
         // SpoofSimPatch
         if(SettingsStatus.simSpoof) {
             PreferenceCategory simSpoof = new PreferenceCategory(context);
-            simSpoof.setTitle(TikTokUtils.getString("revanced_tik_simspoof_screen_title"));
+            simSpoof.setTitle("Bypass regional restriction");
             preferenceScreen.addPreference(simSpoof);
             //Global Switch
             {
@@ -136,8 +139,8 @@ public class TikTokSettingsFragment extends PreferenceFragment {
                 preference.setKey(SettingsEnum.TIK_SIMSPOOF.path);
                 preference.setDefaultValue(SettingsEnum.TIK_SIMSPOOF.defaultValue);
                 preference.setChecked(SettingsEnum.TIK_SIMSPOOF.getBoolean());
-                preference.setTitle(TikTokUtils.getString("revanced_tik_simspoof_title"));
-                preference.setSummary(TikTokUtils.getString("revanced_tik_simspoof_summary"));
+                preference.setTitle("Fake sim card info");
+                preference.setSummary("Bypass regional restriction by fake sim card information.");
                 preference.setOnPreferenceChangeListener((pref, newValue) -> {
                     final boolean value = (Boolean) newValue;
                     SettingsEnum.TIK_SIMSPOOF.saveValue(value);
@@ -151,8 +154,8 @@ public class TikTokSettingsFragment extends PreferenceFragment {
                 preference.setKey(SettingsEnum.TIK_SIMSPOOF_ISO.path);
                 preference.setDefaultValue(SettingsEnum.TIK_SIMSPOOF_ISO.defaultValue);
                 preference.setText(SettingsEnum.TIK_SIMSPOOF_ISO.getString());
-                preference.setTitle(TikTokUtils.getString("revanced_tik_simspoof_iso_title"));
-                preference.setSummary(TikTokUtils.getString("revanced_tik_simspoof_iso_summary"));
+                preference.setTitle("Country ISO");
+                preference.setSummary("us, uk, jp, ...");
                 preference.setOnPreferenceChangeListener((pref, newValue) -> {
                     final String value = (String) newValue;
                     SettingsEnum.TIK_SIMSPOOF_ISO.saveValue(value);
@@ -166,8 +169,8 @@ public class TikTokSettingsFragment extends PreferenceFragment {
                 preference.setKey(SettingsEnum.TIK_SIMSPOOF_MCCMNC.path);
                 preference.setDefaultValue(SettingsEnum.TIK_SIMSPOOF_MCCMNC.defaultValue);
                 preference.setText(SettingsEnum.TIK_SIMSPOOF_MCCMNC.getString());
-                preference.setTitle(TikTokUtils.getString("revanced_tik_simspoof_mccmnc_title"));
-                preference.setSummary(TikTokUtils.getString("revanced_tik_simspoof_mccmnc_summary"));
+                preference.setTitle("Operator mcc+mnc");
+                preference.setSummary("mcc+mnc");
                 preference.setOnPreferenceChangeListener((pref, newValue) -> {
                     final String value = (String) newValue;
                     SettingsEnum.TIK_SIMSPOOF_MCCMNC.saveValue(value);
@@ -181,8 +184,8 @@ public class TikTokSettingsFragment extends PreferenceFragment {
                 preference.setKey(SettingsEnum.TIK_SIMSPOOF_OP_NAME.path);
                 preference.setDefaultValue(SettingsEnum.TIK_SIMSPOOF_OP_NAME.defaultValue);
                 preference.setText(SettingsEnum.TIK_SIMSPOOF_OP_NAME.getString());
-                preference.setTitle(TikTokUtils.getString("revanced_tik_simspoof_op_name_title"));
-                preference.setSummary(TikTokUtils.getString("revanced_tik_simspoof_op_name_summary"));
+                preference.setTitle("Operator name");
+                preference.setSummary("Name of the operator");
                 preference.setOnPreferenceChangeListener((pref, newValue) -> {
                     final String value = (String) newValue;
                     SettingsEnum.TIK_SIMSPOOF_OP_NAME.saveValue(value);
@@ -202,8 +205,8 @@ public class TikTokSettingsFragment extends PreferenceFragment {
             preference.setKey(SettingsEnum.TIK_DEBUG.path);
             preference.setDefaultValue(SettingsEnum.TIK_DEBUG.defaultValue);
             preference.setChecked(SettingsEnum.TIK_DEBUG.getBoolean());
-            preference.setTitle(TikTokUtils.getString("revanced_tik_debug_title"));
-            preference.setSummary(TikTokUtils.getString("revanced_tik_debug_summary"));
+            preference.setTitle("Enable debug log");
+            preference.setSummary("Show integration debug log.");
             preference.setOnPreferenceChangeListener((pref, newValue) -> {
                 final boolean value = (Boolean) newValue;
                 SettingsEnum.TIK_DEBUG.saveValue(value);
@@ -231,9 +234,9 @@ public class TikTokSettingsFragment extends PreferenceFragment {
 
     private void rebootDialog(final Activity activity) {
         new AlertDialog.Builder(activity).
-                setMessage(TikTokUtils.getString("revanced_tik_settings_restart_title")).
-                setPositiveButton(TikTokUtils.getString("revanced_tik_settings_restart_button_text"), (dialog, i) -> reboot(activity))
-                .setNegativeButton(android.R.string.cancel, null)
+                setMessage("Refresh and restart").
+                setPositiveButton("RESTART", (dialog, i) -> reboot(activity))
+                .setNegativeButton("CANCEL", null)
                 .show();
     }
 }
