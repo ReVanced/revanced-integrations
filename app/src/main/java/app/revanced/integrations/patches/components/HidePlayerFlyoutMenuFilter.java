@@ -8,11 +8,11 @@ import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.shared.PlayerType;
 import app.revanced.integrations.utils.ReVancedUtils;
 
-public class PlayerFlyoutMenuItemsFilter extends Filter {
+public class HidePlayerFlyoutMenuFilter extends Filter {
     private static String[] exceptions;
 
     @RequiresApi(api = Build.VERSION_CODES.N)
-    public PlayerFlyoutMenuItemsFilter() {
+    public HidePlayerFlyoutMenuFilter() {
         exceptions = new String[]{
                 "comment", // Anything related to comment section.
                 "CellType|", // Comment filter chips on top of comment section.
