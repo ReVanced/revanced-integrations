@@ -376,7 +376,7 @@ public class ReturnYouTubeDislike {
                 // Or shorts was loaded with regular video present, then shorts was closed,
                 // and then user voted on the now visible original video.
                 // Cannot send a vote, because the loaded videoId is for the wrong video.
-                ReVancedUtils.showToastLong(str("ryd_failure_ryd_enabled_while_playing_video_then_user_voted"));
+                ReVancedUtils.showToastLong(str("revanced_ryd_failure_ryd_enabled_while_playing_video_then_user_voted"));
                 return;
             }
 
@@ -484,7 +484,7 @@ public class ReturnYouTubeDislike {
             // RYD data: https://returnyoutubedislikeapi.com/votes?videoId=UnrU5vxCHxw
             //
             // Change the "Likes" string to show that likes and dislikes are hidden.
-            String hiddenMessageString = str("ryd_video_likes_hidden_by_video_owner");
+            String hiddenMessageString = str("revanced_ryd_video_likes_hidden_by_video_owner");
             return newSpanUsingStylingOfAnotherSpan(oldSpannable, hiddenMessageString);
         }
 
