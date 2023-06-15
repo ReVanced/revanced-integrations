@@ -74,7 +74,7 @@ public class SponsorBlockUtils {
                 SegmentCategory category = SegmentCategory.categoriesWithoutHighlights()[which];
                 final boolean enableButton;
                 if (category.behaviour == CategoryBehaviour.IGNORE) {
-                    ReVancedUtils.showToastLong(str("sb_new_segment_disabled_category"));
+                    ReVancedUtils.showToastLong(str("revanced_sb_new_segment_disabled_category"));
                     enableButton = false;
                 } else {
                     newUserCreatedSegmentCategory = category;
@@ -105,7 +105,7 @@ public class SponsorBlockUtils {
 
                 newUserCreatedSegmentCategory = null;
                 new AlertDialog.Builder(context)
-                        .setTitle(str("sb_new_segment_choose_category"))
+                        .setTitle(str("revanced_sb_new_segment_choose_category"))
                         .setSingleChoiceItems(titles, -1, segmentTypeListener)
                         .setNegativeButton(android.R.string.cancel, null)
                         .setPositiveButton(android.R.string.ok, segmentCategorySelectedDialogListener)
@@ -141,7 +141,7 @@ public class SponsorBlockUtils {
             editByHandSaveDialogListener.settingStart = isStart;
             editByHandSaveDialogListener.editText = new WeakReference<>(textView);
             new AlertDialog.Builder(context)
-                    .setTitle(str(isStart ? "sb_new_segment_time_start" : "sb_new_segment_time_end"))
+                    .setTitle(str(isStart ? "revanced_sb_new_segment_time_start" : "sb_new_segment_time_end"))
                     .setView(textView)
                     .setNegativeButton(android.R.string.cancel, null)
                     .setNeutralButton(str("sb_new_segment_now"), editByHandSaveDialogListener)

@@ -571,7 +571,7 @@ public class SegmentPlaybackController {
                 }
                 ReVancedUtils.showToastShort(toastNumberOfSegmentsSkipped == 1
                         ? toastSegmentSkipped.getSkippedToastText()
-                        : str("sb_skipped_multiple_segments"));
+                        : str("revanced_sb_skipped_multiple_segments"));
             } catch (Exception ex) {
                 LogHelper.printException(() -> "showSkippedSegmentToast failure", ex);
             } finally {

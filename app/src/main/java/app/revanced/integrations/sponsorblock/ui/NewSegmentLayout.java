@@ -52,14 +52,14 @@ public final class NewSegmentLayout extends FrameLayout {
 
         initializeButton(
                 context,
-                "sb_new_segment_rewind",
+                "revanced_sb_new_segment_rewind",
                 () -> VideoInformation.seekToRelative(-SettingsEnum.SB_CREATE_NEW_SEGMENT_STEP.getInt()),
                 "Rewind button clicked"
         );
 
         initializeButton(
                 context,
-                "sb_new_segment_forward",
+                "revanced_sb_new_segment_forward",
                 () -> VideoInformation.seekToRelative(SettingsEnum.SB_CREATE_NEW_SEGMENT_STEP.getInt()),
                 "Forward button clicked"
         );

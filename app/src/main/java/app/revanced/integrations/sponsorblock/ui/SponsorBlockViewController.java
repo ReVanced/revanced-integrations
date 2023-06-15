@@ -81,11 +81,11 @@ public class SponsorBlockViewController {
             youtubeOverlaysLayoutRef = new WeakReference<>(viewGroup);
 
             skipHighlightButtonRef = new WeakReference<>(
-                    Objects.requireNonNull(layout.findViewById(getResourceIdentifier("sb_skip_highlight_button", "id"))));
+                    Objects.requireNonNull(layout.findViewById(getResourceIdentifier("revanced_sb_skip_highlight_button", "id"))));
             skipSponsorButtonRef = new WeakReference<>(
-                    Objects.requireNonNull(layout.findViewById(getResourceIdentifier("sb_skip_sponsor_button", "id"))));
+                    Objects.requireNonNull(layout.findViewById(getResourceIdentifier("revanced_sb_skip_sponsor_button", "id"))));
             newSegmentLayoutRef = new WeakReference<>(
-                    Objects.requireNonNull(layout.findViewById(getResourceIdentifier("sb_new_segment_view", "id"))));
+                    Objects.requireNonNull(layout.findViewById(getResourceIdentifier("revanced_sb_new_segment_view", "id"))));
 
             newSegmentLayoutVisible = false;
             skipHighlight = null;

@@ -31,7 +31,7 @@ import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.StringRef;
 
 public enum SegmentCategory {
-    SPONSOR("sponsor", sf("sb_segments_sponsor"), sf("sb_segments_sponsor_sum"), sf("sb_skip_button_sponsor"), sf("sb_skipped_sponsor"),
+    SPONSOR("sponsor", sf("revanced_sb_segments_sponsor"), sf("sb_segments_sponsor_sum"), sf("sb_skip_button_sponsor"), sf("sb_skipped_sponsor"),
             SKIP_AUTOMATICALLY_ONCE, 0x00D400),
     SELF_PROMO("selfpromo", sf("sb_segments_selfpromo"), sf("sb_segments_selfpromo_sum"), sf("sb_skip_button_selfpromo"), sf("sb_skipped_selfpromo"),
             MANUAL_SKIP, 0xFFFF00),

@@ -11,7 +11,7 @@ import app.revanced.integrations.utils.ReVancedUtils;
 import app.revanced.integrations.utils.StringRef;
 
 public enum CategoryBehaviour {
-    SKIP_AUTOMATICALLY("skip", 2, true, sf("sb_skip_automatically")),
+    SKIP_AUTOMATICALLY("skip", 2, true, sf("revanced_sb_skip_automatically")),
     // desktop does not have skip-once behavior. Key is unique to ReVanced
     SKIP_AUTOMATICALLY_ONCE("skip-once", 3, true, sf("sb_skip_automatically_once")),
     MANUAL_SKIP("manual-skip", 1, false, sf("sb_skip_showbutton")),

@@ -112,10 +112,10 @@ public class SponsorBlockSettings {
                 SettingsEnum.SB_LOCAL_TIME_SAVED_MILLISECONDS.saveValue((long) (minutesSaved * 60 * 1000));
             }
 
-            ReVancedUtils.showToastLong(str("sb_settings_import_successful"));
+            ReVancedUtils.showToastLong(str("revanced_sb_settings_import_successful"));
         } catch (Exception ex) {
             LogHelper.printInfo(() -> "failed to import settings", ex); // use info level, as we are showing our own toast
-            ReVancedUtils.showToastLong(str("sb_settings_import_failed", ex.getMessage()));
+            ReVancedUtils.showToastLong(str("revanced_sb_settings_import_failed", ex.getMessage()));
         }
     }
 
@@ -161,7 +161,7 @@ public class SponsorBlockSettings {
             return json.toString(2);
         } catch (Exception ex) {
             LogHelper.printInfo(() -> "failed to export settings", ex); // use info level, as we are showing our own toast
-            ReVancedUtils.showToastLong(str("sb_settings_export_failed", ex));
+            ReVancedUtils.showToastLong(str("revanced_sb_settings_export_failed", ex));
             return "";
         }
     }
@@ -178,8 +178,8 @@ public class SponsorBlockSettings {
         if (dialogContext != null && SponsorBlockSettings.userHasSBPrivateId()
                 && !SettingsEnum.SB_HIDE_EXPORT_WARNING.getBoolean()) {
             new AlertDialog.Builder(dialogContext)
-                    .setMessage(str("sb_settings_revanced_export_user_id_warning"))
-                    .setNeutralButton(str("sb_settings_revanced_export_user_id_warning_dismiss"),
+                    .setMessage(str("revanced_sb_settings_revanced_export_user_id_warning"))
+                    .setNeutralButton(str("revanced_sb_settings_revanced_export_user_id_warning_dismiss"),
                             (dialog, which) -> SettingsEnum.SB_HIDE_EXPORT_WARNING.saveValue(true))
                     .setPositiveButton(android.R.string.ok, null)
                     .setCancelable(false)
