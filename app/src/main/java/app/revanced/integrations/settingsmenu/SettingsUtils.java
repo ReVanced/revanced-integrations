@@ -3,9 +3,8 @@ package app.revanced.integrations.settingsmenu;
 import android.preference.Preference;
 import android.preference.PreferenceGroup;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 /**
  * Class is used across multiple target apps.
@@ -30,21 +29,17 @@ public class SettingsUtils {
     public static void sortPreferenceGroupByTitle(PreferenceGroup group, int menuDepthToSort) {
         if (menuDepthToSort == 0) return;
 
-        final int prefCount = group.getPreferenceCount();
-        List<Preference> preferences = new ArrayList<>(prefCount);
-        for (int i = 0; i < prefCount; i++) {
+        SortedMap<String, Preference> preferences = new TreeMap<>();
+        for (int i = 0, prefCount = group.getPreferenceCount(); i < prefCount; i++) {
             Preference preference = group.getPreference(i);
             if (preference instanceof PreferenceGroup) {
                 sortPreferenceGroupByTitle((PreferenceGroup) preference, menuDepthToSort - 1);
             }
-            preferences.add(preference);
+            preferences.put(preference.getTitle().toString().toLowerCase(), preference);
         }
-        Collections.sort(preferences, (pref1, pref2) ->
-                pref1.getTitle().toString().toLowerCase().compareTo(pref2.getTitle().toString().toLowerCase())
-        );
 
         int prefIndex = 0;
-        for (Preference pref : preferences) {
+        for (Preference pref : preferences.values()) {
             pref.setOrder(prefIndex++);
         }
     }
