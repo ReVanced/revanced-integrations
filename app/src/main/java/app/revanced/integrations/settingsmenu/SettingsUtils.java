@@ -1,7 +1,7 @@
 package app.revanced.integrations.settingsmenu;
 
 import android.preference.Preference;
-import android.preference.PreferenceScreen;
+import android.preference.PreferenceGroup;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -25,13 +25,13 @@ public class SettingsUtils {
      * Android Preferences are automatically sorted by title,
      * but if using a localized string key it sorts on the key and not the actual title text that's used at runtime.
      */
-    public static void sortPreferenceScreenByTitle(PreferenceScreen screen) {
-        final int prefCount = screen.getPreferenceCount();
+    public static void sortPreferenceGroupByTitle(PreferenceGroup group) {
+        final int prefCount = group.getPreferenceCount();
         List<Preference> preferences = new ArrayList<>(prefCount);
         for (int i = 0; i < prefCount; i++) {
-            Preference preference = screen.getPreference(i);
-            if (preference instanceof PreferenceScreen) {
-                sortPreferenceScreenByTitle((PreferenceScreen)preference);
+            Preference preference = group.getPreference(i);
+            if (preference instanceof PreferenceGroup) {
+                sortPreferenceGroupByTitle((PreferenceGroup)preference);
             }
             preferences.add(preference);
         }

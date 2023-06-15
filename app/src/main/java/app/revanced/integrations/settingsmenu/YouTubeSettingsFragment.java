@@ -150,7 +150,7 @@ public class YouTubeSettingsFragment extends PreferenceFragment {
                 }
             }
 
-            SettingsUtils.sortPreferenceScreenByTitle(getPreferenceScreen());
+            SettingsUtils.sortPreferenceGroupByTitle(getPreferenceScreen());
 
             preferenceManager.getSharedPreferences().registerOnSharedPreferenceChangeListener(listener);
         } catch (Exception ex) {

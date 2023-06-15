@@ -118,7 +118,7 @@ public class TwitchSettingsFragment extends PreferenceFragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        SettingsUtils.sortPreferenceScreenByTitle(getPreferenceScreen());
+        SettingsUtils.sortPreferenceGroupByTitle(getPreferenceScreen());
     }
 
     @Override
