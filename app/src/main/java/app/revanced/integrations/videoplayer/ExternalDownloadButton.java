@@ -60,7 +60,7 @@ public class ExternalDownloadButton extends BottomControlButton {
 
         // If the package is not installed, show the toast
         if (!packageEnabled) {
-            ReVancedUtils.showToastLong(downloaderPackageName + " " + StringRef.str("revanced_external_downloader_not_installed_warning"));
+            ReVancedUtils.showToastLong(StringRef.str("revanced_external_downloader_not_installed_warning", downloaderPackageName));
             return;
         }
 
