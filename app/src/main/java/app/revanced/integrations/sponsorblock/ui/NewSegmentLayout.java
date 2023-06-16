@@ -66,28 +66,28 @@ public final class NewSegmentLayout extends FrameLayout {
 
         initializeButton(
                 context,
-                "sb_new_segment_adjust",
+                "revanced_sb_new_segment_adjust",
                 SponsorBlockUtils::onMarkLocationClicked,
                 "Adjust button clicked"
         );
 
         initializeButton(
                 context,
-                "sb_new_segment_compare",
+                "revanced_sb_new_segment_compare",
                 SponsorBlockUtils::onPreviewClicked,
                 "Compare button clicked"
         );
 
         initializeButton(
                 context,
-                "sb_new_segment_edit",
+                "revanced_sb_new_segment_edit",
                 SponsorBlockUtils::onEditByHandClicked,
                 "Edit button clicked"
         );
 
         initializeButton(
                 context,
-                "sb_new_segment_publish",
+                "revanced_sb_new_segment_publish",
                 SponsorBlockUtils::onPublishClicked,
                 "Publish button clicked"
         );

@@ -31,41 +31,41 @@ import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.StringRef;
 
 public enum SegmentCategory {
-    SPONSOR("sponsor", sf("revanced_sb_segments_sponsor"), sf("sb_segments_sponsor_sum"), sf("sb_skip_button_sponsor"), sf("sb_skipped_sponsor"),
+    SPONSOR("sponsor", sf("revanced_sb_segments_sponsor"), sf("revanced_sb_segments_sponsor_sum"), sf("revanced_sb_skip_button_sponsor"), sf("revanced_sb_skipped_sponsor"),
             SKIP_AUTOMATICALLY_ONCE, 0x00D400),
-    SELF_PROMO("selfpromo", sf("sb_segments_selfpromo"), sf("sb_segments_selfpromo_sum"), sf("sb_skip_button_selfpromo"), sf("sb_skipped_selfpromo"),
+    SELF_PROMO("selfpromo", sf("revanced_sb_segments_selfpromo"), sf("revanced_sb_segments_selfpromo_sum"), sf("revanced_sb_skip_button_selfpromo"), sf("revanced_sb_skipped_selfpromo"),
             MANUAL_SKIP, 0xFFFF00),
-    INTERACTION("interaction", sf("sb_segments_interaction"), sf("sb_segments_interaction_sum"), sf("sb_skip_button_interaction"), sf("sb_skipped_interaction"),
+    INTERACTION("interaction", sf("revanced_sb_segments_interaction"), sf("revanced_sb_segments_interaction_sum"), sf("revanced_sb_skip_button_interaction"), sf("revanced_sb_skipped_interaction"),
             MANUAL_SKIP, 0xCC00FF),
     /**
      * Unique category that is treated differently than the rest.
      */
-    HIGHLIGHT("poi_highlight", sf("sb_segments_highlight"), sf("sb_segments_highlight_sum"), sf("sb_skip_button_highlight"), sf("sb_skipped_highlight"),
+    HIGHLIGHT("poi_highlight", sf("revanced_sb_segments_highlight"), sf("revanced_sb_segments_highlight_sum"), sf("revanced_sb_skip_button_highlight"), sf("revanced_sb_skipped_highlight"),
             MANUAL_SKIP, 0xFF1684),
-    INTRO("intro", sf("sb_segments_intro"), sf("sb_segments_intro_sum"),
-            sf("sb_skip_button_intro_beginning"), sf("sb_skip_button_intro_middle"), sf("sb_skip_button_intro_end"),
-            sf("sb_skipped_intro_beginning"), sf("sb_skipped_intro_middle"), sf("sb_skipped_intro_end"),
+    INTRO("intro", sf("revanced_sb_segments_intro"), sf("revanced_sb_segments_intro_sum"),
+            sf("revanced_sb_skip_button_intro_beginning"), sf("revanced_sb_skip_button_intro_middle"), sf("revanced_sb_skip_button_intro_end"),
+            sf("revanced_sb_skipped_intro_beginning"), sf("revanced_sb_skipped_intro_middle"), sf("revanced_sb_skipped_intro_end"),
             MANUAL_SKIP, 0x00FFFF),
-    OUTRO("outro", sf("sb_segments_outro"), sf("sb_segments_outro_sum"), sf("sb_skip_button_outro"), sf("sb_skipped_outro"),
+    OUTRO("outro", sf("revanced_sb_segments_outro"), sf("revanced_sb_segments_outro_sum"), sf("revanced_sb_skip_button_outro"), sf("revanced_sb_skipped_outro"),
             MANUAL_SKIP, 0x0202ED),
-    PREVIEW("preview", sf("sb_segments_preview"), sf("sb_segments_preview_sum"),
-            sf("sb_skip_button_preview_beginning"), sf("sb_skip_button_preview_middle"), sf("sb_skip_button_preview_end"),
-            sf("sb_skipped_preview_beginning"), sf("sb_skipped_preview_middle"), sf("sb_skipped_preview_end"),
+    PREVIEW("preview", sf("revanced_sb_segments_preview"), sf("revanced_sb_segments_preview_sum"),
+            sf("revanced_sb_skip_button_preview_beginning"), sf("revanced_sb_skip_button_preview_middle"), sf("revanced_sb_skip_button_preview_end"),
+            sf("revanced_sb_skipped_preview_beginning"), sf("revanced_sb_skipped_preview_middle"), sf("revanced_sb_skipped_preview_end"),
             IGNORE, 0x008FD6),
-    FILLER("filler", sf("sb_segments_filler"), sf("sb_segments_filler_sum"), sf("sb_skip_button_filler"), sf("sb_skipped_filler"),
+    FILLER("filler", sf("revanced_sb_segments_filler"), sf("revanced_sb_segments_filler_sum"), sf("revanced_sb_skip_button_filler"), sf("revanced_sb_skipped_filler"),
             IGNORE, 0x7300FF),
-    MUSIC_OFFTOPIC("music_offtopic", sf("sb_segments_nomusic"), sf("sb_segments_nomusic_sum"), sf("sb_skip_button_nomusic"), sf("sb_skipped_nomusic"),
+    MUSIC_OFFTOPIC("music_offtopic", sf("revanced_sb_segments_nomusic"), sf("revanced_sb_segments_nomusic_sum"), sf("revanced_sb_skip_button_nomusic"), sf("revanced_sb_skipped_nomusic"),
             MANUAL_SKIP, 0xFF9900),
-    UNSUBMITTED("unsubmitted", StringRef.empty, StringRef.empty, sf("sb_skip_button_unsubmitted"), sf("sb_skipped_unsubmitted"),
+    UNSUBMITTED("unsubmitted", StringRef.empty, StringRef.empty, sf("revanced_sb_skip_button_unsubmitted"), sf("revanced_sb_skipped_unsubmitted"),
             SKIP_AUTOMATICALLY, 0xFFFFFF);
 
-    private static final StringRef skipSponsorTextCompact = sf("sb_skip_button_compact");
-    private static final StringRef skipSponsorTextCompactHighlight = sf("sb_skip_button_compact_highlight");
+    private static final StringRef skipSponsorTextCompact = sf("revanced_sb_skip_button_compact");
+    private static final StringRef skipSponsorTextCompactHighlight = sf("revanced_sb_skip_button_compact_highlight");
 
     /**
      * Prefix to use when serializing to flat JSON layout used with ReVanced import/export.
      */
-    private static final String FLAT_JSON_IMPORT_EXPORT_PREFIX = "sb_";
+    private static final String FLAT_JSON_IMPORT_EXPORT_PREFIX = "revanced_sb_";
 
     private static final SegmentCategory[] categoriesWithoutHighlights = new SegmentCategory[]{
             SPONSOR,

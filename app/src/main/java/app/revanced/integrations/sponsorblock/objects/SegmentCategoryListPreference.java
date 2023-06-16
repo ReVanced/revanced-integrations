@@ -54,7 +54,7 @@ public class SegmentCategoryListPreference extends ListPreference {
             TableRow row = new TableRow(context);
 
             TextView colorTextLabel = new TextView(context);
-            colorTextLabel.setText(str("sb_color_dot_label"));
+            colorTextLabel.setText(str("revanced_sb_color_dot_label"));
             row.addView(colorTextLabel);
 
             TextView colorDotView = new TextView(context);
@@ -103,14 +103,14 @@ public class SegmentCategoryListPreference extends ListPreference {
             builder.setPositiveButton(android.R.string.ok, (dialog, which) -> {
                 onClick(dialog, DialogInterface.BUTTON_POSITIVE);
             });
-            builder.setNeutralButton(str("sb_reset_color"), (dialog, which) -> {
+            builder.setNeutralButton(str("revanced_sb_reset_color"), (dialog, which) -> {
                 try {
                     SharedPreferences.Editor editor = getSharedPreferences().edit();
                     category.setColor(category.defaultColor);
                     category.save(editor);
                     editor.apply();
                     updateTitle();
-                    ReVancedUtils.showToastShort(str("sb_color_reset"));
+                    ReVancedUtils.showToastShort(str("revanced_sb_color_reset"));
                 } catch (Exception ex) {
                     LogHelper.printException(() -> "setNeutralButton failure", ex);
                 }
@@ -139,10 +139,10 @@ public class SegmentCategoryListPreference extends ListPreference {
                     final int color = Color.parseColor(colorString) & 0xFFFFFF;
                     if (color != category.color) {
                         category.setColor(color);
-                        ReVancedUtils.showToastShort(str("sb_color_changed"));
+                        ReVancedUtils.showToastShort(str("revanced_sb_color_changed"));
                     }
                 } catch (IllegalArgumentException ex) {
-                    ReVancedUtils.showToastShort(str("sb_color_invalid"));
+                    ReVancedUtils.showToastShort(str("revanced_sb_color_invalid"));
                 }
                 // behavior is already saved, but color needs to be saved
                 SharedPreferences.Editor editor = getSharedPreferences().edit();

@@ -467,7 +467,7 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment {
                     });
                 });
             } else {
-                loadingPlaceholderPreference.setTitle(str("sb_stats_sb_disabled"));
+                loadingPlaceholderPreference.setTitle(str("revanced_sb_stats_sb_disabled"));
             }
         } catch (Exception ex) {
             LogHelper.printException(() -> "fetchAndDisplayStats failure", ex);
@@ -480,7 +480,7 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment {
         ReVancedUtils.verifyOnMainThread();
         try {
             if (stats == null) {
-                loadingPlaceholder.setTitle(str("sb_stats_connection_failure"));
+                loadingPlaceholder.setTitle(str("revanced_sb_stats_connection_failure"));
                 return;
             }
             statsCategory.removeAll();
@@ -491,8 +491,8 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment {
                 EditTextPreference preference = new EditTextPreference(context);
                 statsCategory.addPreference(preference);
                 String userName = stats.userName;
-                preference.setTitle(fromHtml(str("sb_stats_username", userName)));
-                preference.setSummary(str("sb_stats_username_change"));
+                preference.setTitle(fromHtml(str("revanced_sb_stats_username", userName)));
+                preference.setSummary(str("revanced_sb_stats_username_change"));
                 preference.setText(userName);
                 preference.setOnPreferenceChangeListener((preference1, value) -> {
                     ReVancedUtils.runOnBackgroundThread(() -> {
@@ -500,9 +500,9 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment {
                         String errorMessage = SBRequester.setUsername(newUserName);
                         ReVancedUtils.runOnMainThread(() -> {
                             if (errorMessage == null) {
-                                preference.setTitle(fromHtml(str("sb_stats_username", newUserName)));
+                                preference.setTitle(fromHtml(str("revanced_sb_stats_username", newUserName)));
                                 preference.setText(newUserName);
-                                ReVancedUtils.showToastLong(str("sb_stats_username_changed"));
+                                ReVancedUtils.showToastLong(str("revanced_sb_stats_username_changed"));
                             } else {
                                 preference.setText(userName); // revert to previous
                                 ReVancedUtils.showToastLong(errorMessage);
@@ -518,7 +518,7 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment {
                 Preference preference = new Preference(context);
                 statsCategory.addPreference(preference);
                 String formatted = statsNumberOfSegmentsSkippedFormatter.format(stats.segmentCount);
-                preference.setTitle(fromHtml(str("sb_stats_submissions", formatted)));
+                preference.setTitle(fromHtml(str("revanced_sb_stats_submissions", formatted)));
                 if (stats.totalSegmentCountIncludingIgnored == 0) {
                     preference.setSelectable(false);
                 } else {
@@ -535,7 +535,7 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment {
                 // "user reputation".  Usually not useful, since it appears most users have zero reputation.
                 // But if there is a reputation, then show it here
                 Preference preference = new Preference(context);
-                preference.setTitle(fromHtml(str("sb_stats_reputation", stats.reputation)));
+                preference.setTitle(fromHtml(str("revanced_sb_stats_reputation", stats.reputation)));
                 preference.setSelectable(false);
                 if (stats.reputation != 0) {
                     statsCategory.addPreference(preference);
@@ -550,11 +550,11 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment {
                 String stats_saved;
                 String stats_saved_sum;
                 if (stats.totalSegmentCountIncludingIgnored == 0) {
-                    stats_saved = str("sb_stats_saved_zero");
-                    stats_saved_sum = str("sb_stats_saved_sum_zero");
+                    stats_saved = str("revanced_sb_stats_saved_zero");
+                    stats_saved_sum = str("revanced_sb_stats_saved_sum_zero");
                 } else {
-                    stats_saved = str("sb_stats_saved", statsNumberOfSegmentsSkippedFormatter.format(stats.viewCount));
-                    stats_saved_sum = str("sb_stats_saved_sum", SponsorBlockUtils.getTimeSavedString((long) (60 * stats.minutesSaved)));
+                    stats_saved = str("revanced_sb_stats_saved", statsNumberOfSegmentsSkippedFormatter.format(stats.viewCount));
+                    stats_saved_sum = str("revanced_sb_stats_saved_sum", SponsorBlockUtils.getTimeSavedString((long) (60 * stats.minutesSaved)));
                 }
                 preference.setTitle(fromHtml(stats_saved));
                 preference.setSummary(fromHtml(stats_saved_sum));
@@ -577,14 +577,14 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment {
 
         Runnable updateStatsSelfSaved = () -> {
             String formatted = statsNumberOfSegmentsSkippedFormatter.format(SettingsEnum.SB_LOCAL_TIME_SAVED_NUMBER_SEGMENTS.getInt());
-            preference.setTitle(fromHtml(str("sb_stats_self_saved", formatted)));
+            preference.setTitle(fromHtml(str("revanced_sb_stats_self_saved", formatted)));
             String formattedSaved = SponsorBlockUtils.getTimeSavedString(SettingsEnum.SB_LOCAL_TIME_SAVED_MILLISECONDS.getLong() / 1000);
-            preference.setSummary(fromHtml(str("sb_stats_self_saved_sum", formattedSaved)));
+            preference.setSummary(fromHtml(str("revanced_sb_stats_self_saved_sum", formattedSaved)));
         };
         updateStatsSelfSaved.run();
         preference.setOnPreferenceClickListener(preference1 -> {
             new AlertDialog.Builder(preference1.getContext())
-                    .setTitle(str("sb_stats_self_saved_reset_title"))
+                    .setTitle(str("revanced_sb_stats_self_saved_reset_title"))
                     .setPositiveButton(android.R.string.yes, (dialog, whichButton) -> {
                         SettingsEnum.SB_LOCAL_TIME_SAVED_NUMBER_SEGMENTS.saveValue(SettingsEnum.SB_LOCAL_TIME_SAVED_NUMBER_SEGMENTS.defaultValue);
                         SettingsEnum.SB_LOCAL_TIME_SAVED_MILLISECONDS.saveValue(SettingsEnum.SB_LOCAL_TIME_SAVED_MILLISECONDS.defaultValue);

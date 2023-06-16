@@ -57,7 +57,7 @@ public class SkipSponsorButton extends FrameLayout {
         border.setColor(getResourceColor("skip_ad_button_border_color"));  // color:skip_ad_button_border_color);
         border.setStrokeWidth(getResourceDimension("ad_skip_ad_button_border_width"));  // dimen:ad_skip_ad_button_border_width);
         border.setStyle(Paint.Style.STROKE);
-        skipSponsorTextView = Objects.requireNonNull((TextView) findViewById(getResourceIdentifier(context, "sb_skip_sponsor_button_text", "id")));  // id:skip_ad_button_text;
+        skipSponsorTextView = Objects.requireNonNull((TextView) findViewById(getResourceIdentifier(context, "revanced_sb_skip_sponsor_button_text", "id")));  // id:skip_ad_button_text;
         defaultBottomMargin = getResourceDimensionPixelSize("skip_button_default_bottom_margin");  // dimen:skip_button_default_bottom_margin
         ctaBottomMargin = getResourceDimensionPixelSize("skip_button_cta_bottom_margin");  // dimen:skip_button_cta_bottom_margin
 
