@@ -24,7 +24,8 @@ public class SettingsUtils {
      * Android Preferences are automatically sorted by title,
      * but if using a localized string key it sorts on the key and not the actual title text that's used at runtime.
      *
-     * @param menuDepthToSort Maximum menu depth to sort. Menus deep than this value will show it's preferences in the order created in patches.
+     * @param menuDepthToSort Maximum menu depth to sort. Menus deeper than this value
+     *                        will show preferences in the order created in patches.
      */
     public static void sortPreferenceGroupByTitle(PreferenceGroup group, int menuDepthToSort) {
         if (menuDepthToSort == 0) return;
