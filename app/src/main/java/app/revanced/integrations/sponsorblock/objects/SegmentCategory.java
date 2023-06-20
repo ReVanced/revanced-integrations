@@ -64,7 +64,7 @@ public enum SegmentCategory {
 
     /**
      * Prefix to use when serializing to flat JSON layout used with ReVanced import/export.
-     * Should match the naming scheme as SB settings in {@link SettingsEnum}.
+     * Should match the naming scheme of SB settings in {@link SettingsEnum}.
      */
     private static final String FLAT_JSON_IMPORT_EXPORT_PREFIX = "sb_";
 
