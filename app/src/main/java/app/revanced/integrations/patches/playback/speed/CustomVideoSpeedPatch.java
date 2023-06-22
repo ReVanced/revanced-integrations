@@ -1,5 +1,7 @@
 package app.revanced.integrations.patches.playback.speed;
 
+import static app.revanced.integrations.utils.StringRef.str;
+
 import android.preference.ListPreference;
 
 import androidx.annotation.NonNull;
@@ -70,7 +72,7 @@ public class CustomVideoSpeedPatch {
             }
         } catch (Exception ex) {
             LogHelper.printInfo(() -> "parse error", ex);
-            resetCustomSpeeds("Invalid custom video speeds. Using default values.");
+            resetCustomSpeeds(str("revanced_custom_playback_speeds_invalid"));
             loadSpeeds();
         }
     }

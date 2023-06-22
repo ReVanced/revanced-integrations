@@ -1,13 +1,15 @@
 package app.revanced.integrations.patches;
 
+import static app.revanced.integrations.utils.ReVancedUtils.containsAny;
+import static app.revanced.integrations.utils.StringRef.str;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
 import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.shared.PlayerType;
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedUtils;
-
-import static app.revanced.integrations.utils.ReVancedUtils.containsAny;
 
 public class SpoofSignatureVerificationPatch {
     /**
@@ -113,7 +115,7 @@ public class SpoofSignatureVerificationPatch {
             }
 
             SettingsEnum.SPOOF_SIGNATURE_VERIFICATION.saveValue(true);
-            ReVancedUtils.showToastLong("Spoofing app signature to prevent playback issues");
+            ReVancedUtils.showToastLong(str("revanced_spoof_signature_verification_toast"));
             // it would be great if the video could be forcefully reloaded, but currently there is no code to do this
 
         } catch (Exception ex) {

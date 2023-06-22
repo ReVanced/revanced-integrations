@@ -1,5 +1,7 @@
 package app.revanced.integrations.patches.theme;
 
+import static app.revanced.integrations.utils.StringRef.str;
+
 import android.graphics.Color;
 
 import app.revanced.integrations.settings.SettingsEnum;
@@ -41,7 +43,7 @@ public final class SeekbarColorPatch {
             customSeekbarColor = Color.parseColor(SettingsEnum.SEEKBAR_COLOR.getString());
             Color.colorToHSV(customSeekbarColor, customSeekbarColorHSV);
         } catch (Exception ex) {
-            ReVancedUtils.showToastShort("Invalid seekbar color value. Using default value.");
+            ReVancedUtils.showToastShort(str("revanced_seekbar_color_invalid"));
             SettingsEnum.SEEKBAR_COLOR.saveValue(SettingsEnum.SEEKBAR_COLOR.defaultValue);
             loadCustomSeekbarColorHSV();
         }

@@ -1,6 +1,7 @@
 package app.revanced.integrations.patches.playback.quality;
 
 import static app.revanced.integrations.utils.ReVancedUtils.NetworkType;
+import static app.revanced.integrations.utils.StringRef.str;
 
 import androidx.annotation.Nullable;
 
@@ -41,13 +42,13 @@ public class RememberVideoQualityPatch {
         String networkTypeMessage;
         if (ReVancedUtils.getNetworkType() == NetworkType.MOBILE) {
             mobileQualitySetting.saveValue(defaultQuality);
-            networkTypeMessage = "mobile";
+            networkTypeMessage = str("revanced_remember_video_quality_mobile");
         } else {
             wifiQualitySetting.saveValue(defaultQuality);
-            networkTypeMessage = "Wi-Fi";
+            networkTypeMessage = str("revanced_remember_video_quality_wifi");
         }
-        ReVancedUtils.showToastShort("Changed default " + networkTypeMessage
-                + " quality to: " + defaultQuality +"p");
+        ReVancedUtils.showToastShort(
+                str("revanced_remember_video_quality_toast", networkTypeMessage, (defaultQuality + "p")));
     }
 
     /**
