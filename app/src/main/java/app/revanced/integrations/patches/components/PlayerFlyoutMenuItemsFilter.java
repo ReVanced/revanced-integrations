@@ -5,21 +5,11 @@ import android.os.Build;
 import androidx.annotation.RequiresApi;
 
 import app.revanced.integrations.settings.SettingsEnum;
-import app.revanced.integrations.shared.PlayerType;
-import app.revanced.integrations.utils.ReVancedUtils;
 
 public class PlayerFlyoutMenuItemsFilter extends Filter {
-    private static String[] exceptions;
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     public PlayerFlyoutMenuItemsFilter() {
-        exceptions = new String[]{
-                "comment", // Anything related to comment section.
-                "CellType|", // Comment filter chips on top of comment section.
-                "_sheet_", // Comment flyout panel for reporting and replying options.
-                "video_with_context" // Prevent video player lags sometimes when new video is started.
-        };
-
         protobufBufferFilterGroups.addAll(
                 new ByteArrayAsStringFilterGroup(
                         SettingsEnum.HIDE_QUALITY_MENU,
@@ -66,11 +56,9 @@ public class PlayerFlyoutMenuItemsFilter extends Filter {
 
     @Override
     boolean isFiltered(String path, String identifier, byte[] _protobufBufferArray) {
-        if (ReVancedUtils.containsAny(path, exceptions)) return false;
-
-        var currentPlayerType = PlayerType.getCurrent();
-        if (currentPlayerType == PlayerType.WATCH_WHILE_MAXIMIZED || currentPlayerType == PlayerType.WATCH_WHILE_FULLSCREEN)
+        if (path.contains("overflow_menu_item"))
             return super.isFiltered(path, identifier, _protobufBufferArray);
+
         return false;
     }
 }
