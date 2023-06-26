@@ -85,7 +85,7 @@ class ByteArrayFilterGroup extends FilterGroup<byte[]> {
     private int indexOf(final byte[] data, final byte[] pattern) {
         // Computes the failure function using a boot-strapping process,
         // where the pattern is matched against itself.
-
+	if (data.length == 0) return -1;
         final int[] failure = new int[pattern.length];
 
         int j = 0;
@@ -103,7 +103,6 @@ class ByteArrayFilterGroup extends FilterGroup<byte[]> {
         // KMP matching algorithm.
 
         j = 0;
-        if (data.length == 0) return -1;
 
         for (int i = 0; i < data.length; i++) {
             while (j > 0 && pattern[j] != data[i]) {
