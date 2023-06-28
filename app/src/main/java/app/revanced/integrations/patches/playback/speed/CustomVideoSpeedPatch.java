@@ -61,8 +61,7 @@ public class CustomVideoSpeedPatch {
                     throw new IllegalArgumentException();
                 }
                 if (speed >= MAXIMUM_PLAYBACK_SPEED) {
-                    resetCustomSpeeds("Custom speeds must be less than " + MAXIMUM_PLAYBACK_SPEED
-                            + ".  Using default values.");
+                    resetCustomSpeeds(str("revanced_custom_playback_speeds_invalid", MAXIMUM_PLAYBACK_SPEED));
                     loadSpeeds();
                     return;
                 }
@@ -72,7 +71,7 @@ public class CustomVideoSpeedPatch {
             }
         } catch (Exception ex) {
             LogHelper.printInfo(() -> "parse error", ex);
-            resetCustomSpeeds(str("revanced_custom_playback_speeds_invalid"));
+            resetCustomSpeeds(str("revanced_custom_playback_speeds_parse_exception"));
             loadSpeeds();
         }
     }
