@@ -7,7 +7,6 @@ import androidx.annotation.RequiresApi;
 import app.revanced.integrations.settings.SettingsEnum;
 
 public class PlayerFlyoutMenuItemsFilter extends Filter {
-
     @RequiresApi(api = Build.VERSION_CODES.N)
     public PlayerFlyoutMenuItemsFilter() {
         protobufBufferFilterGroups.addAll(
