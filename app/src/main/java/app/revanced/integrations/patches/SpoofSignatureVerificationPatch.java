@@ -1,12 +1,10 @@
 package app.revanced.integrations.patches;
 
 import static app.revanced.integrations.utils.ReVancedUtils.containsAny;
-import static app.revanced.integrations.utils.StringRef.str;
 
 import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.shared.PlayerType;
 import app.revanced.integrations.utils.LogHelper;
-import app.revanced.integrations.utils.ReVancedUtils;
 
 public class SpoofSignatureVerificationPatch {
     /**
@@ -67,35 +65,6 @@ public class SpoofSignatureVerificationPatch {
         }
 
         return originalValue;
-    }
-
-
-    /**
-     * Injection point. Runs off the main thread.
-     * <p>
-     * Used to check the response code of video playback requests made by YouTube.
-     * Response code of interest is 403 that indicate a signature verification failure for the current request
-     *
-     * @param responseCode HTTP status code of the completed YouTube connection
-     */
-    public static void onResponse(int responseCode) {
-        try {
-            if (responseCode < 400 || responseCode >= 500) {
-                return; // everything normal
-            }
-            LogHelper.printDebug(() -> "YouTube HTTP status code: " + responseCode);
-
-            if (SettingsEnum.SPOOF_SIGNATURE_VERIFICATION.getBoolean()) {
-                return;  // already enabled
-            }
-
-            SettingsEnum.SPOOF_SIGNATURE_VERIFICATION.saveValue(true);
-            ReVancedUtils.showToastLong(str("revanced_spoof_signature_verification_toast"));
-            // it would be great if the video could be forcefully reloaded, but currently there is no code to do this
-
-        } catch (Exception ex) {
-            LogHelper.printException(() -> "onResponse failure", ex);
-        }
     }
 
 }
