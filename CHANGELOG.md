@@ -1,3 +1,32 @@
+# [0.112.0-dev.1](https://github.com/revanced/revanced-integrations/compare/v0.111.3-dev.1...v0.112.0-dev.1) (2023-07-05)
+
+
+### Features
+
+* remove unnecessary notice ([be3955f](https://github.com/revanced/revanced-integrations/commit/be3955fee45d22966006156a5475ef91b6f2b981))
+
+## [0.111.3-dev.1](https://github.com/revanced/revanced-integrations/compare/v0.111.2...v0.111.3-dev.1) (2023-07-05)
+
+
+### Bug Fixes
+
+* **youtube/hide-ads:** remove duplicate filter ([#432](https://github.com/revanced/revanced-integrations/issues/432)) ([ea7ee56](https://github.com/revanced/revanced-integrations/commit/ea7ee56276a4a88f156a06c8f614360561231908))
+
+## [0.111.2](https://github.com/revanced/revanced-integrations/compare/v0.111.1...v0.111.2) (2023-07-03)
+
+
+### Bug Fixes
+
+* **reddit/sanitize-sharing-links:** update patch to support latest app version ([#430](https://github.com/revanced/revanced-integrations/issues/430)) ([d947de2](https://github.com/revanced/revanced-integrations/commit/d947de2e03683889f11fc461dc53e08fee735ca8))
+* **youtube/spoof-signature-verification:** remove auto re-enable functionality ([#428](https://github.com/revanced/revanced-integrations/issues/428)) ([8afe82c](https://github.com/revanced/revanced-integrations/commit/8afe82c0e078880d58e3adef23618a6feaf52e7e))
+
+## [0.111.2-dev.2](https://github.com/revanced/revanced-integrations/compare/v0.111.2-dev.1...v0.111.2-dev.2) (2023-07-03)
+
+
+### Bug Fixes
+
+* **reddit/sanitize-sharing-links:** update patch to support latest app version ([#430](https://github.com/revanced/revanced-integrations/issues/430)) ([d947de2](https://github.com/revanced/revanced-integrations/commit/d947de2e03683889f11fc461dc53e08fee735ca8))
+
 ## [0.111.2-dev.1](https://github.com/revanced/revanced-integrations/compare/v0.111.1...v0.111.2-dev.1) (2023-07-02)
 
 
