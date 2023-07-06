@@ -361,6 +361,9 @@ public enum SettingsEnum {
         // endregion
     }
 
+    /**
+     * Migrate a setting value if the path is renamed but otherwise the old and new settings are identical.
+     */
     private static void migrateOldSettingToNew(SettingsEnum oldSetting, SettingsEnum newSetting) {
         if (!oldSetting.isSetToDefault()) {
             LogHelper.printInfo(() -> "Migrating old setting of '" + oldSetting.value
