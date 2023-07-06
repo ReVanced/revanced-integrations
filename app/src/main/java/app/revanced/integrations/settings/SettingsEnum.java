@@ -348,30 +348,26 @@ public enum SettingsEnum {
             setting.load();
         }
 
-        // TODO: eventually delete this.
         // region Migration
 
-        SettingsEnum[][] renamedSettings = {
-                // TODO: do _not_ delete this SB private user id migration property until sometime in 2024.
-                // This is the only setting that cannot be reconfigured if lost,
-                // and more time should be given for users who rarely upgrade.
-                {DEPRECATED_SB_UUID_OLD_MIGRATION_SETTING, SB_PRIVATE_USER_ID},
-                {DEPRECATED_SHOW_OLD_VIDEO_QUALITY_MENU, SHOW_OLD_VIDEO_QUALITY_MENU},
-        };
+        // TODO: do _not_ delete this SB private user id migration property until sometime in 2024.
+        // This is the only setting that cannot be reconfigured if lost,
+        // and more time should be given for users who rarely upgrade.
+        migrateOldSettingToNew(DEPRECATED_SB_UUID_OLD_MIGRATION_SETTING, SB_PRIVATE_USER_ID);
 
-        for (SettingsEnum[] oldNewSetting : renamedSettings) {
-            SettingsEnum oldSetting = oldNewSetting[0];
-            SettingsEnum newSetting = oldNewSetting[1];
-
-            if (!oldSetting.isSetToDefault()) {
-                LogHelper.printInfo(() -> "Migrating old setting of '" + oldSetting.value
-                        + "' from: " + oldSetting + " into replacement setting: " + newSetting);
-                newSetting.saveValue(oldSetting.value);
-                oldSetting.saveValue(oldSetting.defaultValue); // reset old value
-            }
-        }
+        // TODO: delete DEPRECATED_SHOW_OLD_VIDEO_QUALITY_MENU (When? anytime).
+        migrateOldSettingToNew(DEPRECATED_SHOW_OLD_VIDEO_QUALITY_MENU, SHOW_OLD_VIDEO_QUALITY_MENU);
 
         // endregion
+    }
+
+    private static void migrateOldSettingToNew(SettingsEnum oldSetting, SettingsEnum newSetting) {
+        if (!oldSetting.isSetToDefault()) {
+            LogHelper.printInfo(() -> "Migrating old setting of '" + oldSetting.value
+                    + "' from: " + oldSetting + " into replacement setting: " + newSetting);
+            newSetting.saveValue(oldSetting.value);
+            oldSetting.saveValue(oldSetting.defaultValue); // reset old value
+        }
     }
 
     private void load() {
