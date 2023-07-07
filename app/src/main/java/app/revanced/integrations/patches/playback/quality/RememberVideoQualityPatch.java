@@ -38,13 +38,8 @@ public class RememberVideoQualityPatch {
     private static List<Integer> videoQualities;
 
     private static void changeDefaultQuality(int defaultQuality) {
-        NetworkType networkType = ReVancedUtils.getNetworkType();
-        if (networkType == NetworkType.NONE) {
-            ReVancedUtils.showToastShort("No internet connection");
-            return;
-        }
         String networkTypeMessage;
-        if (networkType == NetworkType.MOBILE) {
+        if (ReVancedUtils.getNetworkType() == NetworkType.MOBILE) {
             mobileQualitySetting.saveValue(defaultQuality);
             networkTypeMessage = "mobile";
         } else {
