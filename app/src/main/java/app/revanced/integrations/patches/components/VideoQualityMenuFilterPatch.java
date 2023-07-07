@@ -4,7 +4,8 @@ import app.revanced.integrations.settings.SettingsEnum;
 
 // Abuse LithoFilter for OldVideoQualityMenuPatch.
 public final class VideoQualityMenuFilterPatch extends Filter {
-    public static boolean isVideoQualityMenuVisible;
+    // Must be volatile or synchronized, as litho filtering runs off main thread and this field is then access from the main thread.
+    public static volatile boolean isVideoQualityMenuVisible;
 
     public VideoQualityMenuFilterPatch() {
         pathFilterGroups.addAll(new StringFilterGroup(

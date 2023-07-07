@@ -2,7 +2,8 @@ package app.revanced.integrations.patches.components;
 
 // Abuse LithoFilter for CustomVideoSpeedPatch.
 public final class VideoSpeedMenuFilterPatch extends Filter {
-    public static boolean isVideoSpeedMenuVisible;
+    // Must be volatile or synchronized, as litho filtering runs off main thread and this field is then access from the main thread.
+    public static volatile boolean isVideoSpeedMenuVisible;
 
     public VideoSpeedMenuFilterPatch() {
         pathFilterGroups.addAll(new StringFilterGroup(

@@ -210,7 +210,7 @@ abstract class Filter {
 
     /**
      * Check if the given path, identifier or protobuf buffer is filtered by any
-     * {@link FilterGroup}.
+     * {@link FilterGroup}.  Method is called off the main thread.
      *
      * @return True if filtered, false otherwise.
      */
@@ -241,9 +241,12 @@ public final class LithoFilterPatch {
             new DummyFilter() // Replaced by patch.
     };
 
+    /**
+     * Injection point.  Called off the main thread.
+     */
     @SuppressWarnings("unused")
     public static boolean filter(final StringBuilder pathBuilder, final String identifier,
-            final ByteBuffer protobufBuffer) {
+                                 final ByteBuffer protobufBuffer) {
         // TODO: Maybe this can be moved to the Filter class, to prevent unnecessary
         // string creation
         // because some filters might not need the path.
