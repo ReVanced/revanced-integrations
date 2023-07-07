@@ -134,13 +134,22 @@ public class RememberVideoQualityPatch {
     }
 
     /**
-     * Injection point.
+     * Injection point.  Old quality menu.
      */
-    public static void userChangedQuality(int selectedQuality) {
+    public static void userChangedQuality(int selectedQualityIndex) {
         if (!SettingsEnum.REMEMBER_VIDEO_QUALITY_LAST_SELECTED.getBoolean()) return;
 
-        userSelectedQualityIndex = selectedQuality;
+        userSelectedQualityIndex = selectedQualityIndex;
         userChangedDefaultQuality = true;
+    }
+
+    /**
+     * Injection point.  New quality menu.
+     */
+    public static void userChangedQualityInNewFlyout(int selectedQuality) {
+        if (!SettingsEnum.REMEMBER_VIDEO_QUALITY_LAST_SELECTED.getBoolean()) return;
+
+        changeDefaultQuality(selectedQuality); // Quality is human readable resolution (ie: 1080).
     }
 
     /**
