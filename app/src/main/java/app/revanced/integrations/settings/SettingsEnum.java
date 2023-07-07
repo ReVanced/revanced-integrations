@@ -50,8 +50,11 @@ public enum SettingsEnum {
     VIDEO_QUALITY_DEFAULT_MOBILE("revanced_video_quality_default_mobile", INTEGER, -2),
     REMEMBER_PLAYBACK_SPEED_LAST_SELECTED("revanced_remember_playback_speed_last_selected", BOOLEAN, TRUE),
     PLAYBACK_SPEED_DEFAULT("revanced_playback_speed_default", FLOAT, 1.0f),
-    CUSTOM_PLAYBACK_SPEEDS("revanced_custom_playback_speeds", STRING,
+    CUSTOM_PLAYBACK_SPEEDS_LIST("revanced_custom_playback_speeds_list", STRING,
             "0.25\n0.5\n0.75\n0.9\n0.95\n1.0\n1.05\n1.1\n1.25\n1.5\n1.75\n2.0\n3.0\n4.0\n5.0", true),
+    DEPRECATED_CUSTOM_PLAYBACK_SPEEDS("revanced_custom_playback_speeds", STRING, "", true),
+    // TODO: Control custom playback speeds in the "old" video speed menu patch using this as well.
+    CUSTOM_PLAYBACK_SPEEDS_ENABLED("revanced_custom_playback_speeds_enabled", BOOLEAN, TRUE),
 
     // Ads
     HIDE_BUTTONED_ADS("revanced_hide_buttoned_ads", BOOLEAN, TRUE),
@@ -357,6 +360,9 @@ public enum SettingsEnum {
 
         // TODO: delete DEPRECATED_SHOW_OLD_VIDEO_QUALITY_MENU (When? anytime).
         migrateOldSettingToNew(DEPRECATED_SHOW_OLD_VIDEO_QUALITY_MENU, SHOW_OLD_VIDEO_QUALITY_MENU);
+
+        // TODO: delete DEPRECATED_CUSTOM_PLAYBACK_SPEEDS (When? anytime).
+        migrateOldSettingToNew(DEPRECATED_CUSTOM_PLAYBACK_SPEEDS, CUSTOM_PLAYBACK_SPEEDS_LIST);
 
         // endregion
     }

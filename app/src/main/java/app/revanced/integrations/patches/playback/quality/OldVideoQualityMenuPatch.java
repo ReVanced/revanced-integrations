@@ -16,7 +16,7 @@ import kotlin.Deprecated;
 // Two methods are required, because the quality menu is a RecyclerView in the new YouTube version
 // and a ListView in the old one.
 public final class OldVideoQualityMenuPatch {
-    public static void showOldVideoQualityMenu(final LinearLayout linearLayout) {
+    public static void onFlyoutMenuCreate(final LinearLayout linearLayout) {
         if (!SettingsEnum.SHOW_OLD_VIDEO_QUALITY_MENU.getBoolean()) return;
 
         // The quality menu is a RecyclerView with 3 children. The third child is the "Advanced" quality menu.
@@ -31,8 +31,6 @@ public final class OldVideoQualityMenuPatch {
                 new ViewTreeObserver.OnGlobalLayoutListener() {
                     @Override
                     public void onGlobalLayout() {
-                        LogHelper.printDebug(() -> "Added view tree observer");
-
                         // Check if the current view is the quality menu.
                         if (VideoQualityMenuFilterPatch.isVideoQualityMenuVisible) {// Hide the video quality menu.
                             linearLayout.setVisibility(View.GONE);

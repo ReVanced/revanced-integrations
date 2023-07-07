@@ -12,4 +12,8 @@ public class RecyclerView extends View {
     public View getChildAt(@SuppressWarnings("unused") final int index) {
         return null;
     }
+
+    public int getChildCount() {
+        return 0;
+    }
 }
