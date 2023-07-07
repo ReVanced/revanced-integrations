@@ -1,10 +1,10 @@
 package app.revanced.integrations.patches.playback.speed;
 
+import static app.revanced.integrations.patches.playback.quality.OldVideoQualityMenuPatch.addRecyclerListener;
+
 import android.preference.ListPreference;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
@@ -109,39 +109,26 @@ public class CustomVideoSpeedPatch {
         preference.setEntryValues(preferenceListEntryValues);
     }
 
+    /*
+     * To reduce copy paste between two similar code paths.
+     */
     public static void onFlyoutMenuCreate(final LinearLayout linearLayout) {
         // The playback rate menu is a RecyclerView with 2 children. The third child is the "Advanced" quality menu.
+        addRecyclerListener(linearLayout, 2, 1, recyclerView -> {
+            if (VideoSpeedMenuFilterPatch.isVideoSpeedMenuVisible &&
+                    recyclerView.getChildCount() == 1 &&
+                    recyclerView.getChildAt(0) instanceof ComponentHost
+            ) {
+                linearLayout.setVisibility(View.GONE);
 
-        if (linearLayout.getChildCount() != 2) return;
+                // Close the new video speed menu and instead show the old one.
+                showOldVideoSpeedMenu();
 
-        var view = linearLayout.getChildAt(1);
-        if (!(view instanceof RecyclerView)) return;
-        final var recyclerView = (RecyclerView) view;
-
-        recyclerView.getViewTreeObserver().addOnGlobalLayoutListener(
-                new ViewTreeObserver.OnGlobalLayoutListener() {
-                    @Override
-                    public void onGlobalLayout() {
-                        // ComponentHost is placed on the 1st ChildView.
-                        if (VideoSpeedMenuFilterPatch.isVideoSpeedMenuVisible &&
-                                recyclerView.getChildCount() == 1 &&
-                                recyclerView.getChildAt(0) instanceof ComponentHost
-                        ) {
-                            linearLayout.setVisibility(View.GONE);
-
-                            // Close the new video speed menu and instead show the old one.
-                            showOldVideoSpeedMenu();
-
-                            // DismissView [R.id.touch_outside] is the 1st ChildView of the 3rd ParentView.
-                            ((ViewGroup) linearLayout.getParent().getParent().getParent())
-                                    .getChildAt(0).performClick();
-                        }
-
-                        // Remove the listener because it will be added again.
-                        recyclerView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                    }
-                }
-        );
+                // DismissView [R.id.touch_outside] is the 1st ChildView of the 3rd ParentView.
+                ((ViewGroup) linearLayout.getParent().getParent().getParent())
+                        .getChildAt(0).performClick();
+            }
+        });
     }
 
     public static void showOldVideoSpeedMenu() {
