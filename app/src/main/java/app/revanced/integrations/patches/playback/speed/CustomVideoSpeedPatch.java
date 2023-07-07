@@ -6,14 +6,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.LinearLayout;
+
 import androidx.annotation.NonNull;
+
+import com.facebook.litho.ComponentHost;
+
+import java.util.Arrays;
+
 import app.revanced.integrations.patches.components.VideoSpeedMenuFilterPatch;
 import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedUtils;
-import com.facebook.litho.ComponentHost;
-
-import java.util.Arrays;
 
 public class CustomVideoSpeedPatch {
     /**
@@ -22,19 +25,19 @@ public class CustomVideoSpeedPatch {
     public static final float MAXIMUM_PLAYBACK_SPEED = 10;
 
     /**
-     * Custom playback speeds.
+     * Available playback speeds.
      */
-    public static float[] customVideoSpeeds;
+    public static float[] videoSpeeds = {0.25f, 0.5f, 0.75f, 1.0f, 1.25f, 1.5f, 1.75f, 2.0f}; // YouTube default
 
     /**
-     * Minimum value of {@link #customVideoSpeeds}
+     * Minimum value of {@link #videoSpeeds}
      */
-    public static float minVideoSpeed;
+    public static float minVideoSpeed = 0.25f; // YouTube default
 
     /**
-     * Maxium value of {@link #customVideoSpeeds}
+     * Maxium value of {@link #videoSpeeds}
      */
-    public static float maxVideoSpeed;
+    public static float maxVideoSpeed = 2.0f; // YouTube Default
 
     /**
      * PreferenceList entries and values, of all available playback speeds.
@@ -42,7 +45,14 @@ public class CustomVideoSpeedPatch {
     private static String[] preferenceListEntries, preferenceListEntryValues;
 
     static {
-        loadSpeeds();
+        if (SettingsEnum.CUSTOM_PLAYBACK_SPEEDS_ENABLED.getBoolean()) {
+            loadCustomSpeeds();
+        }
+        // Default speed must be a available playback speed, otherwise the flyout speed menu doesn't work.
+        if (!arrayContains(videoSpeeds, SettingsEnum.PLAYBACK_SPEED_DEFAULT.getFloat())) {
+            LogHelper.printDebug(() -> "Resetting default playback speed");
+            SettingsEnum.PLAYBACK_SPEED_DEFAULT.saveValue(SettingsEnum.PLAYBACK_SPEED_DEFAULT.defaultValue);
+        }
     }
 
     private static void resetCustomSpeeds(@NonNull String toastMessage) {
@@ -50,33 +60,33 @@ public class CustomVideoSpeedPatch {
         SettingsEnum.CUSTOM_PLAYBACK_SPEEDS_LIST.saveValue(SettingsEnum.CUSTOM_PLAYBACK_SPEEDS_LIST.defaultValue);
     }
 
-    private static void loadSpeeds() {
+    private static void loadCustomSpeeds() {
         try {
             String[] speedStrings = SettingsEnum.CUSTOM_PLAYBACK_SPEEDS_LIST.getString().split("\\s+");
             Arrays.sort(speedStrings);
             if (speedStrings.length == 0) {
                 throw new IllegalArgumentException();
             }
-            customVideoSpeeds = new float[speedStrings.length];
+            videoSpeeds = new float[speedStrings.length];
             for (int i = 0, length = speedStrings.length; i < length; i++) {
                 final float speed = Float.parseFloat(speedStrings[i]);
-                if (speed <= 0 || arrayContains(customVideoSpeeds, speed)) {
+                if (speed <= 0 || arrayContains(videoSpeeds, speed)) {
                     throw new IllegalArgumentException();
                 }
                 if (speed >= MAXIMUM_PLAYBACK_SPEED) {
                     resetCustomSpeeds("Custom speeds must be less than " + MAXIMUM_PLAYBACK_SPEED
                             + ".  Using default values.");
-                    loadSpeeds();
+                    loadCustomSpeeds();
                     return;
                 }
                 minVideoSpeed = Math.min(minVideoSpeed, speed);
                 maxVideoSpeed = Math.max(maxVideoSpeed, speed);
-                customVideoSpeeds[i] = speed;
+                videoSpeeds[i] = speed;
             }
         } catch (Exception ex) {
             LogHelper.printInfo(() -> "parse error", ex);
             resetCustomSpeeds("Invalid custom video speeds. Using default values.");
-            loadSpeeds();
+            loadCustomSpeeds();
         }
     }
 
@@ -92,10 +102,10 @@ public class CustomVideoSpeedPatch {
      */
     public static void initializeListPreference(ListPreference preference) {
         if (preferenceListEntries == null) {
-            preferenceListEntries = new String[customVideoSpeeds.length];
-            preferenceListEntryValues = new String[customVideoSpeeds.length];
+            preferenceListEntries = new String[videoSpeeds.length];
+            preferenceListEntryValues = new String[videoSpeeds.length];
             int i = 0;
-            for (float speed : customVideoSpeeds) {
+            for (float speed : videoSpeeds) {
                 String speedString = String.valueOf(speed);
                 preferenceListEntries[i] = speedString + "x";
                 preferenceListEntryValues[i] = speedString;
