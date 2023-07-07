@@ -1,11 +1,9 @@
 package app.revanced.integrations.patches.components;
 
 import android.os.Build;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
-import app.revanced.integrations.settings.SettingsEnum;
-import app.revanced.integrations.utils.LogHelper;
-import app.revanced.integrations.utils.ReVancedUtils;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -13,6 +11,10 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Spliterator;
 import java.util.function.Consumer;
+
+import app.revanced.integrations.settings.SettingsEnum;
+import app.revanced.integrations.utils.LogHelper;
+import app.revanced.integrations.utils.ReVancedUtils;
 
 abstract class FilterGroup<T> {
     final static class FilterGroupResult {
@@ -49,7 +51,7 @@ abstract class FilterGroup<T> {
     }
 
     public boolean isEnabled() {
-        return setting.getBoolean();
+        return setting == null || setting.getBoolean();
     }
 
     public abstract FilterGroupResult check(final T stack);
