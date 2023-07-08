@@ -182,6 +182,11 @@ public class YouTubeSettingsFragment extends PreferenceFragment {
         if (entryIndex >= 0) {
             listPreference.setSummary(listPreference.getEntries()[entryIndex]);
             listPreference.setValue(objectStringValue);
+        } else {
+            // Value is not an available option.
+            // User manually edited import data, or options changed and current selection is no longer available.
+            // Still show the value in the summary so it's clear that something is selected.
+            listPreference.setSummary(objectStringValue);
         }
     }
 
