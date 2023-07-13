@@ -24,7 +24,7 @@ public final class VideoInformation {
     @NonNull
     private static String videoId = "";
     private static long videoLength = 0;
-    private static volatile long videoTime = -1; // must be volatile. Value is set off main thread from high precision patch hook
+    private static long videoTime = -1;
     /**
      * The current playback speed
      */
@@ -98,17 +98,17 @@ public final class VideoInformation {
 
     /**
      * Injection point.
-     * Called off the main thread approximately every 50ms to 100ms
+     * Called on the main thread every 1000ms.
      *
      * @param currentPlaybackTime The current playback time of the video in milliseconds.
      */
-    public static void setVideoTimeHighPrecision(final long currentPlaybackTime) {
+    public static void setVideoTime(final long currentPlaybackTime) {
         videoTime = currentPlaybackTime;
     }
 
     /**
      * Seek on the current video.
-     * Does not function for playback of Shorts or Stories.
+     * Does not function for playback of Shorts.
      *
      * Caution: If called from a videoTimeHook() callback,
      * this will cause a recursive call into the same videoTimeHook() callback.
@@ -137,7 +137,7 @@ public final class VideoInformation {
     }
 
     /**
-     * Id of the current video playing.  Includes Shorts and YouTube Stories.
+     * Id of the current video playing.  Includes Shorts.
      *
      * @return The id of the video. Empty string if not set yet.
      */
@@ -154,7 +154,7 @@ public final class VideoInformation {
     }
 
     /**
-     * Length of the current video playing.  Includes Shorts and YouTube Stories.
+     * Length of the current video playing.  Includes Shorts.
      *
      * @return The length of the video in milliseconds.
      *         If the video is not yet loaded, or if the video is playing in the background with no video visible,
@@ -166,13 +166,9 @@ public final class VideoInformation {
 
     /**
      * Playback time of the current video playing.
-     * Value can lag up to approximately 100ms behind the actual current video playback time.
+     * Value can lag up to 1 second behind the actual current video playback time.
      *
-     * Note: Code inside a videoTimeHook patch callback
-     * should use the callback video time and avoid using this method
-     * (in situations of recursive hook callbacks, the value returned here may be outdated).
-     *
-     * Includes Shorts and YouTube Stories.
+     * Includes Shorts.
      *
      * @return The time of the video in milliseconds. -1 if not set yet.
      */
@@ -192,7 +188,7 @@ public final class VideoInformation {
      * @see VideoState
      */
     public static boolean isAtEndOfVideo() {
-        return videoTime > 0 && videoLength > 0 && videoTime >= videoLength;
+        return videoTime >= videoLength && videoLength > 0;
     }
 
 }
