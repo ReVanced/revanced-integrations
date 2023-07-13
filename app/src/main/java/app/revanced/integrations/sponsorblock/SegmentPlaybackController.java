@@ -247,8 +247,9 @@ public class SegmentPlaybackController {
                             skipSegment(highlightSegment, false);
                             return;
                         }
-                        highlightSegmentInitialShowEndTime = System.currentTimeMillis()
-                                + Math.min(timeUntilHighlight, DURATION_TO_SHOW_SKIP_BUTTON);
+                        highlightSegmentInitialShowEndTime = System.currentTimeMillis() + Math.min(
+                                (long) (timeUntilHighlight / VideoInformation.getPlaybackSpeed()),
+                                DURATION_TO_SHOW_SKIP_BUTTON);
                     }
                 }
 
