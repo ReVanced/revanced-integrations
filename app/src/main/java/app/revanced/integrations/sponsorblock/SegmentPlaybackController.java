@@ -58,6 +58,7 @@ public class SegmentPlaybackController {
     /**
      * Because loading can take time, show the skip to highlight for a few seconds after the segments load.
      * This is the system time (in milliseconds) to no longer show the initial display skip to highlight.
+     * Value will be zero if no highlight segment exists, or if the system time to show the highlight has passed.
      */
     private static long highlightSegmentInitialShowEndTime;
 
@@ -345,9 +346,11 @@ public class SegmentPlaybackController {
             }
 
             if (highlightSegment != null) {
-                if (millis < DURATION_TO_SHOW_SKIP_BUTTON || System.currentTimeMillis() < highlightSegmentInitialShowEndTime) {
+                if (millis < DURATION_TO_SHOW_SKIP_BUTTON || (highlightSegmentInitialShowEndTime != 0
+                            && System.currentTimeMillis() < highlightSegmentInitialShowEndTime)) {
                     SponsorBlockViewController.showSkipHighlightButton(highlightSegment);
                 } else {
+                    highlightSegmentInitialShowEndTime = 0;
                     SponsorBlockViewController.hideSkipHighlightButton();
                 }
             }
