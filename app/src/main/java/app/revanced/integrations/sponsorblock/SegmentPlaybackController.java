@@ -277,8 +277,14 @@ public class SegmentPlaybackController {
             updateHiddenSegments(millis);
 
             final float playbackSpeed = VideoInformation.getPlaybackSpeed();
-            // To debug the timing logic, set this to a very large value (5000 or more)
-            // then try manually seeking just before playback reaches a skip/hide of different segments.
+            // Amount of time to look ahead for the next segment,
+            // and the threshold to determine if a scheduled show/hide is at the correct video time when it's run.
+            //
+            // This value must be greater than largest time between calls to this method (1000ms),
+            // and must be adjusted for the video speed.
+            //
+            // To debug the stale skip logic, set this to a very large value (5000 or more)
+            // then try manually seeking just before playback reaches a segment skip.
             final long speedAdjustedTimeThreshold = (long)(playbackSpeed * 1200);
             final long startTimerLookAheadThreshold = millis + speedAdjustedTimeThreshold;
 
