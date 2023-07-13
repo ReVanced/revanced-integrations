@@ -279,9 +279,8 @@ public class SegmentPlaybackController {
             final float playbackSpeed = VideoInformation.getPlaybackSpeed();
             // To debug the timing logic, set this to a very large value (5000 or more)
             // then try manually seeking just before playback reaches a skip/hide of different segments.
-            // Lookahead must be greater than largest time between calls to this method (which is 1000ms)
-            final long speedAdjustedLookedAheadMillis = (long)(playbackSpeed * 1200);
-            final long startTimerLookAheadThreshold = millis + speedAdjustedLookedAheadMillis;
+            final long speedAdjustedTimeThreshold = (long)(playbackSpeed * 1200);
+            final long startTimerLookAheadThreshold = millis + speedAdjustedTimeThreshold;
 
             SponsorSegment foundSegmentCurrentlyPlaying = null;
             SponsorSegment foundUpcomingSegment = null;
@@ -372,7 +371,7 @@ public class SegmentPlaybackController {
 
             // schedule a hide, only if the segment end is near
             final SponsorSegment segmentToHide =
-                    (foundSegmentCurrentlyPlaying != null && foundSegmentCurrentlyPlaying.endIsNear(millis, speedAdjustedLookedAheadMillis))
+                    (foundSegmentCurrentlyPlaying != null && foundSegmentCurrentlyPlaying.endIsNear(millis, speedAdjustedTimeThreshold))
                     ? foundSegmentCurrentlyPlaying
                     : null;
 
@@ -396,7 +395,7 @@ public class SegmentPlaybackController {
                         }
 
                         final long videoTime = VideoInformation.getVideoTime();
-                        if (!segmentToHide.endIsNear(videoTime, speedAdjustedLookedAheadMillis)) {
+                        if (!segmentToHide.endIsNear(videoTime, speedAdjustedTimeThreshold)) {
                             // current video time is not what's expected.  User paused playback
                             LogHelper.printDebug(() -> "Ignoring outdated scheduled hide: " + segmentToHide
                                     + " videoInformation time: " + videoTime);
@@ -435,7 +434,7 @@ public class SegmentPlaybackController {
                         }
 
                         final long videoTime = VideoInformation.getVideoTime();
-                        if (!segmentToSkip.startIsNear(videoTime, speedAdjustedLookedAheadMillis)) {
+                        if (!segmentToSkip.startIsNear(videoTime, speedAdjustedTimeThreshold)) {
                             // current video time is not what's expected.  User paused playback
                             LogHelper.printDebug(() -> "Ignoring outdated scheduled segment: " + segmentToSkip
                                     + " videoInformation time: " + videoTime);
