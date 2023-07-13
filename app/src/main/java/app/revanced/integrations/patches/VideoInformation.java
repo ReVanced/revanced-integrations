@@ -118,11 +118,6 @@ public final class VideoInformation {
      */
     public static boolean seekTo(final long millisecond) {
         ReVancedUtils.verifyOnMainThread();
-        if (seekMethod == null) {
-            LogHelper.printException(() -> "seekMethod was null");
-            return false;
-        }
-
         try {
             LogHelper.printDebug(() -> "Seeking to " + millisecond);
             return (Boolean) seekMethod.invoke(playerControllerRef.get(), millisecond);
@@ -165,10 +160,14 @@ public final class VideoInformation {
     }
 
     /**
-     * Playback time of the current video playing.
-     * Value can lag up to 1 second behind the actual current video playback time.
+     * Playback time of the current video playing.  Includes Shorts.
      *
-     * Includes Shorts.
+     * Value will lag behind the actual playback time by a variable amount based on the playback speed.
+     *
+     * If playback speed is 2.0x, this value may be up to 2000ms behind the actual playback time.
+     * If playback speed is 1.0x, this value may be up to 1000ms behind the actual playback time.
+     * If playback speed is 0.5x, this value may be up to 500ms behind the actual playback time.
+     * Etc.
      *
      * @return The time of the video in milliseconds. -1 if not set yet.
      */
