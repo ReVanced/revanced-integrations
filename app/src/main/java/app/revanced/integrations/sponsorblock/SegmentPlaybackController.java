@@ -239,14 +239,19 @@ public class SegmentPlaybackController {
                 setSegments(segments);
 
                 final long videoTime = VideoInformation.getVideoTime();
-                // if the current video time is before the highlight
-                if (highlightSegment != null && videoTime < highlightSegment.end) {
-                    if (highlightSegment.shouldAutoSkip()) {
-                        skipSegment(highlightSegment, false);
-                        return;
+                if (highlightSegment != null) {
+                    // If the current video time is before the highlight.
+                    final long timeUntilHighlight = highlightSegment.start - videoTime;
+                    if (timeUntilHighlight > 0) {
+                        if (highlightSegment.shouldAutoSkip()) {
+                            skipSegment(highlightSegment, false);
+                            return;
+                        }
+                        highlightSegmentInitialShowEndTime = System.currentTimeMillis()
+                                + Math.min(timeUntilHighlight, DURATION_TO_SHOW_SKIP_BUTTON);
                     }
-                    highlightSegmentInitialShowEndTime = System.currentTimeMillis() + DURATION_TO_SHOW_SKIP_BUTTON;
                 }
+
                 // check for any skips now, instead of waiting for the next update to setVideoTime()
                 setVideoTime(videoTime);
             });
