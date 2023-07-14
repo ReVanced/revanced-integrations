@@ -78,7 +78,7 @@ public class CustomPlaybackSpeedPatch {
             }
         } catch (Exception ex) {
             LogHelper.printInfo(() -> "parse error", ex);
-            resetCustomSpeeds("Invalid custom Playback speeds. Using default values.");
+            resetCustomSpeeds("Invalid custom playback speeds. Using default values.");
             loadCustomSpeeds();
         }
     }
