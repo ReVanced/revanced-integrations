@@ -84,15 +84,11 @@ public class SpoofSignatureVerificationPatch {
      * @param view seekbar thumbnail view.  Includes both shorts and regular videos.
      */
     public static void seekbarImageViewCreated(ImageView view) {
-        try {
-            if (SettingsEnum.SPOOF_SIGNATURE_VERIFICATION.getBoolean()) {
-                view.setVisibility(View.GONE);
-                // Also hide the white border around the thumbnail (otherwise a 1 pixel wide bordered frame is visible).
-                ViewGroup parentLayout = (ViewGroup) view.getParent();
-                parentLayout.setPadding(0, 0, 0, 0);
-            }
-        } catch (Exception ex) {
-            LogHelper.printException(() -> "seekbarImageViewCreated failure", ex);
+        if (SettingsEnum.SPOOF_SIGNATURE_VERIFICATION.getBoolean()) {
+            view.setVisibility(View.GONE);
+            // Also hide the border around the thumbnail (otherwise a 1 pixel wide bordered frame is visible).
+            ViewGroup parentLayout = (ViewGroup) view.getParent();
+            parentLayout.setPadding(0, 0, 0, 0);
         }
     }
 
