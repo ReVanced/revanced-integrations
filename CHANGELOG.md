@@ -1,3 +1,31 @@
+# [0.113.0-dev.2](https://github.com/ReVanced/revanced-integrations/compare/v0.113.0-dev.1...v0.113.0-dev.2) (2023-07-16)
+
+
+### Features
+
+* **YouTube - Hide ads:** hide new type of buttoned ad ([9f21c72](https://github.com/ReVanced/revanced-integrations/commit/9f21c7268e5a08f542f5b090316486aadf4a5acd))
+
+# [0.113.0-dev.1](https://github.com/revanced/revanced-integrations/compare/v0.112.1-dev.2...v0.113.0-dev.1) (2023-07-15)
+
+
+### Features
+
+* **youtube:** rename `video-speed` to `playback-speed` ([#438](https://github.com/revanced/revanced-integrations/issues/438)) ([630776f](https://github.com/revanced/revanced-integrations/commit/630776fd3514435dd83ef1c765a4f5b007e8e2f2))
+
+## [0.112.1-dev.2](https://github.com/revanced/revanced-integrations/compare/v0.112.1-dev.1...v0.112.1-dev.2) (2023-07-15)
+
+
+### Bug Fixes
+
+* **YouTube - Hide Shorts Components:** hide sound button ([a2b1630](https://github.com/revanced/revanced-integrations/commit/a2b1630df8d330f3c0cbf77e9ea46b9d1c51adde))
+
+## [0.112.1-dev.1](https://github.com/revanced/revanced-integrations/compare/v0.112.0...v0.112.1-dev.1) (2023-07-14)
+
+
+### Bug Fixes
+
+* **youtube/sponsorblock:** fix some segments skipping slightly too late ([#436](https://github.com/revanced/revanced-integrations/issues/436)) ([f694928](https://github.com/revanced/revanced-integrations/commit/f69492819e52e0fd99c4e10390fd39f26c3a9c48))
+
 # [0.112.0](https://github.com/revanced/revanced-integrations/compare/v0.111.2...v0.112.0) (2023-07-08)
 
 
