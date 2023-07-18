@@ -9,11 +9,27 @@ import android.widget.LinearLayout;
 
 import com.bytedance.ies.ugc.aweme.commercialize.compliance.personalization.AdPersonalizationActivity;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+
 import app.revanced.tiktok.utils.LogHelper;
 import app.revanced.tiktok.utils.ReVancedUtils;
 
 
 public class SettingsMenu {
+    public static Object createSettingsEntry(String entryClazzName, String entryInfoClazzName) {
+        try {
+            Class<?> entryClazz = Class.forName(entryClazzName);
+            Class<?> entryInfoClazz = Class.forName(entryInfoClazzName);
+            Constructor<?> entryConstructor = entryClazz.getConstructor(entryInfoClazz);
+            Constructor<?> entryInfoConstructor = entryInfoClazz.getDeclaredConstructors()[0];
+            Object buttonInfo = entryInfoConstructor.newInstance("Revanced settings", null, (View.OnClickListener) view -> startSettingsActivity());
+            return entryConstructor.newInstance(buttonInfo);
+        } catch (ClassNotFoundException | NoSuchMethodException | InvocationTargetException | IllegalAccessException | InstantiationException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public static void initializeSettings(AdPersonalizationActivity base) {
         SettingsStatus.load();
         LinearLayout linearLayout = new LinearLayout(base);
@@ -31,7 +47,7 @@ public class SettingsMenu {
         base.getFragmentManager().beginTransaction().replace(fragmentId, preferenceFragment).commit();
     }
 
-    public static void startSettingsActivity() {
+    private static void startSettingsActivity() {
         Context appContext = ReVancedUtils.getAppContext();
         if (appContext != null) {
             Intent intent = new Intent(appContext, AdPersonalizationActivity.class);
