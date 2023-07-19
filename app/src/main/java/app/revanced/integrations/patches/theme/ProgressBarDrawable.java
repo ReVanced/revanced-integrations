@@ -18,6 +18,7 @@ import app.revanced.integrations.settings.SettingsEnum;
  */
 public class ProgressBarDrawable extends Drawable {
 
+
     private final Paint paint = new Paint();
 
     @Override
