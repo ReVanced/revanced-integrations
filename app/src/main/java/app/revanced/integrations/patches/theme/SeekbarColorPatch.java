@@ -9,6 +9,7 @@ import app.revanced.integrations.utils.ReVancedUtils;
 public final class SeekbarColorPatch {
 
     private static final boolean USE_SEEKBAR_CUSTOM_COLOR = SettingsEnum.SEEKBAR_CUSTOM_COLOR.getBoolean();
+    private static final boolean HIDE_SEEKBAR_THUMBNAIL = SettingsEnum.HIDE_SEEKBAR_THUMBNAIL.getBoolean();
 
     /**
      * Default color of the seekbar.
@@ -70,7 +71,7 @@ public final class SeekbarColorPatch {
      */
     public static int getLithoColor(int colorValue) {
         if (colorValue == ORIGINAL_SEEKBAR_COLOR) {
-            if (SettingsEnum.HIDE_SEEKBAR_THUMBNAIL.getBoolean()) {
+            if (HIDE_SEEKBAR_THUMBNAIL) {
                 return 0x00000000;
             }
             return getSeekbarColorValue(ORIGINAL_SEEKBAR_COLOR);
