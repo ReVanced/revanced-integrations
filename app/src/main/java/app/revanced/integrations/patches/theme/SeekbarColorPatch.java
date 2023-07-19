@@ -104,7 +104,7 @@ public final class SeekbarColorPatch {
      */
     private static int getSeekbarColorValue(int originalColor) {
         try {
-            if (!USE_SEEKBAR_CUSTOM_COLOR || originalColor == ORIGINAL_SEEKBAR_COLOR) {
+            if (!USE_SEEKBAR_CUSTOM_COLOR) {
                 return originalColor; // nothing to do
             }
             final int alphaDifference = Color.alpha(originalColor) - Color.alpha(ORIGINAL_SEEKBAR_COLOR);
