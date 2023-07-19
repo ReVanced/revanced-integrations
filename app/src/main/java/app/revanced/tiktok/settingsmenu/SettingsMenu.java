@@ -30,21 +30,25 @@ public class SettingsMenu {
         }
     }
 
-    public static void initializeSettings(AdPersonalizationActivity base) {
-        SettingsStatus.load();
-        LinearLayout linearLayout = new LinearLayout(base);
-        linearLayout.setLayoutParams(new LinearLayout.LayoutParams(-1, -1));
-        linearLayout.setOrientation(LinearLayout.VERTICAL);
-        linearLayout.setFitsSystemWindows(true);
-        linearLayout.setTransitionGroup(true);
-        FrameLayout fragment = new FrameLayout(base);
-        fragment.setLayoutParams(new FrameLayout.LayoutParams(-1, -1));
-        int fragmentId = View.generateViewId();
-        fragment.setId(fragmentId);
-        linearLayout.addView(fragment);
-        base.setContentView(linearLayout);
-        PreferenceFragment preferenceFragment = new ReVancedSettingsFragment();
-        base.getFragmentManager().beginTransaction().replace(fragmentId, preferenceFragment).commit();
+    public static boolean initializeSettings(AdPersonalizationActivity base) {
+        if (base.getIntent().getExtras().getBoolean("revanced", false)) {
+            SettingsStatus.load();
+            LinearLayout linearLayout = new LinearLayout(base);
+            linearLayout.setLayoutParams(new LinearLayout.LayoutParams(-1, -1));
+            linearLayout.setOrientation(LinearLayout.VERTICAL);
+            linearLayout.setFitsSystemWindows(true);
+            linearLayout.setTransitionGroup(true);
+            FrameLayout fragment = new FrameLayout(base);
+            fragment.setLayoutParams(new FrameLayout.LayoutParams(-1, -1));
+            int fragmentId = View.generateViewId();
+            fragment.setId(fragmentId);
+            linearLayout.addView(fragment);
+            base.setContentView(linearLayout);
+            PreferenceFragment preferenceFragment = new ReVancedSettingsFragment();
+            base.getFragmentManager().beginTransaction().replace(fragmentId, preferenceFragment).commit();
+            return true;
+        }
+        return false;
     }
 
     private static void startSettingsActivity() {
@@ -52,6 +56,7 @@ public class SettingsMenu {
         if (appContext != null) {
             Intent intent = new Intent(appContext, AdPersonalizationActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.putExtra("revanced", true);
             appContext.startActivity(intent);
         } else {
             LogHelper.debug(SettingsMenu.class, "ReVancedUtils.getAppContext() return null");
