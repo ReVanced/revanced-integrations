@@ -18,13 +18,12 @@ import app.revanced.integrations.settings.SettingsEnum;
  */
 public class ProgressBarDrawable extends Drawable {
 
-    private static final boolean HIDE_SEEKBAR_THUMBNAIL = SettingsEnum.HIDE_SEEKBAR_THUMBNAIL.getBoolean();
 
     private final Paint paint = new Paint();
 
     @Override
     public void draw(@NonNull Canvas canvas) {
-        if (HIDE_SEEKBAR_THUMBNAIL) {
+        if (SettingsEnum.HIDE_SEEKBAR_THUMBNAIL.getBoolean()) {
             return;
         }
         paint.setColor(SeekbarColorPatch.getSeekbarColor());
