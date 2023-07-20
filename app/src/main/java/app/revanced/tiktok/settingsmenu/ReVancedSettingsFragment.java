@@ -62,7 +62,6 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
                 SwitchPreference preference = new SwitchPreference(context);
                 feedFilter.addPreference(preference);
                 preference.setKey(SettingsEnum.TIK_REMOVE_ADS.path);
-                preference.setDefaultValue(SettingsEnum.TIK_REMOVE_ADS.defaultValue);
                 preference.setChecked(SettingsEnum.TIK_REMOVE_ADS.getBoolean());
                 preference.setTitle("Remove feed ads");
                 preference.setSummary("Remove ads from feed.");
@@ -79,7 +78,6 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
                 SwitchPreference preference = new SwitchPreference(context);
                 feedFilter.addPreference(preference);
                 preference.setKey(SettingsEnum.TIK_HIDE_LIVE.path);
-                preference.setDefaultValue(SettingsEnum.TIK_HIDE_LIVE.defaultValue);
                 preference.setChecked(SettingsEnum.TIK_HIDE_LIVE.getBoolean());
                 preference.setTitle("Hide livestreams");
                 preference.setSummary("Hide livestreams from feed.");
@@ -94,7 +92,6 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
                 SwitchPreference preference = new SwitchPreference(context);
                 feedFilter.addPreference(preference);
                 preference.setKey(SettingsEnum.TIK_HIDE_STORY.path);
-                preference.setDefaultValue(SettingsEnum.TIK_HIDE_STORY.defaultValue);
                 preference.setChecked(SettingsEnum.TIK_HIDE_STORY.getBoolean());
                 preference.setTitle("Hide story");
                 preference.setSummary("Hide story from feed.");
@@ -109,7 +106,6 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
                 SwitchPreference preference = new SwitchPreference(context);
                 feedFilter.addPreference(preference);
                 preference.setKey(SettingsEnum.TIK_HIDE_IMAGE.path);
-                preference.setDefaultValue(SettingsEnum.TIK_HIDE_IMAGE.defaultValue);
                 preference.setChecked(SettingsEnum.TIK_HIDE_IMAGE.getBoolean());
                 preference.setTitle("Hide image video");
                 preference.setSummary("Hide image video from feed.");
@@ -127,7 +123,6 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
                 EditTextPreference preference = new EditTextPreference(context);
                 feedFilter.addPreference(preference);
                 preference.setKey(SettingsEnum.TIK_HIDE_PLAY_COUNT_MIN.path);
-                preference.setDefaultValue(SettingsEnum.TIK_HIDE_PLAY_COUNT_MIN.defaultValue);
                 preference.setText(Long.toString(SettingsEnum.TIK_HIDE_PLAY_COUNT_MIN.getLong()));
                 preference.setTitle("Min view count");
                 preference.setSummary("If app show error, please reduce the value or press retry few times");
@@ -145,7 +140,6 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
                 EditTextPreference preference = new EditTextPreference(context);
                 feedFilter.addPreference(preference);
                 preference.setKey(SettingsEnum.TIK_HIDE_PLAY_COUNT_MAX.path);
-                preference.setDefaultValue(SettingsEnum.TIK_HIDE_PLAY_COUNT_MAX.defaultValue);
                 preference.setText(Long.toString(SettingsEnum.TIK_HIDE_PLAY_COUNT_MAX.getLong()));
                 preference.setTitle("Max view count");
                 preference.setSummary("If app show error, please increase the value or press retry few times");
@@ -164,7 +158,6 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
                 EditTextPreference preference = new EditTextPreference(context);
                 feedFilter.addPreference(preference);
                 preference.setKey(SettingsEnum.TIK_HIDE_LIKE_COUNT_MIN.path);
-                preference.setDefaultValue(SettingsEnum.TIK_HIDE_LIKE_COUNT_MIN.defaultValue);
                 preference.setText(Long.toString(SettingsEnum.TIK_HIDE_LIKE_COUNT_MIN.getLong()));
                 preference.setTitle("Min like count");
                 preference.setSummary("If app show error, please reduce the value or press retry few times");
@@ -182,7 +175,6 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
                 EditTextPreference preference = new EditTextPreference(context);
                 feedFilter.addPreference(preference);
                 preference.setKey(SettingsEnum.TIK_HIDE_LIKE_COUNT_MAX.path);
-                preference.setDefaultValue(SettingsEnum.TIK_HIDE_LIKE_COUNT_MAX.defaultValue);
                 preference.setText(Long.toString(SettingsEnum.TIK_HIDE_LIKE_COUNT_MAX.getLong()));
                 preference.setTitle("Max like count");
                 preference.setSummary("If app show error, please reduce the value or press retry few times");
@@ -208,7 +200,6 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
                 DownloadPathPreference preference = new DownloadPathPreference(context);
                 download.addPreference(preference);
                 preference.setKey(SettingsEnum.TIK_DOWN_PATH.path);
-                preference.setDefaultValue(SettingsEnum.TIK_DOWN_PATH.defaultValue);
                 preference.setValue(SettingsEnum.TIK_DOWN_PATH.getString());
                 preference.setTitle("Download path");
                 preference.setSummary(Environment.getExternalStorageDirectory().getPath() + "/" + preference.getValue());
@@ -223,7 +214,6 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
                 SwitchPreference preference = new SwitchPreference(context);
                 download.addPreference(preference);
                 preference.setKey(SettingsEnum.TIK_DOWN_WATERMARK.path);
-                preference.setDefaultValue(SettingsEnum.TIK_DOWN_WATERMARK.defaultValue);
                 preference.setChecked(SettingsEnum.TIK_DOWN_WATERMARK.getBoolean());
                 preference.setTitle("Remove watermark");
                 preference.setOnPreferenceChangeListener((pref, newValue) -> {
@@ -244,7 +234,6 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
                 SwitchPreference preference = new SwitchPreference(context);
                 simSpoof.addPreference(preference);
                 preference.setKey(SettingsEnum.TIK_SIMSPOOF.path);
-                preference.setDefaultValue(SettingsEnum.TIK_SIMSPOOF.defaultValue);
                 preference.setChecked(SettingsEnum.TIK_SIMSPOOF.getBoolean());
                 preference.setTitle("Fake sim card info");
                 preference.setSummary("Bypass regional restriction by fake sim card information.");
@@ -259,7 +248,6 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
                 EditTextPreference preference = new EditTextPreference(context);
                 simSpoof.addPreference(preference);
                 preference.setKey(SettingsEnum.TIK_SIMSPOOF_ISO.path);
-                preference.setDefaultValue(SettingsEnum.TIK_SIMSPOOF_ISO.defaultValue);
                 preference.setText(SettingsEnum.TIK_SIMSPOOF_ISO.getString());
                 preference.setTitle("Country ISO");
                 preference.setSummary("us, uk, jp, ...");
@@ -274,7 +262,6 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
                 EditTextPreference preference = new EditTextPreference(context);
                 simSpoof.addPreference(preference);
                 preference.setKey(SettingsEnum.TIK_SIMSPOOF_MCCMNC.path);
-                preference.setDefaultValue(SettingsEnum.TIK_SIMSPOOF_MCCMNC.defaultValue);
                 preference.setText(SettingsEnum.TIK_SIMSPOOF_MCCMNC.getString());
                 preference.setTitle("Operator mcc+mnc");
                 preference.setSummary("mcc+mnc");
@@ -289,7 +276,6 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
                 EditTextPreference preference = new EditTextPreference(context);
                 simSpoof.addPreference(preference);
                 preference.setKey(SettingsEnum.TIK_SIMSPOOF_OP_NAME.path);
-                preference.setDefaultValue(SettingsEnum.TIK_SIMSPOOF_OP_NAME.defaultValue);
                 preference.setText(SettingsEnum.TIK_SIMSPOOF_OP_NAME.getString());
                 preference.setTitle("Operator name");
                 preference.setSummary("Name of the operator");
@@ -310,7 +296,6 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
             SwitchPreference preference = new SwitchPreference(context);
             integration.addPreference(preference);
             preference.setKey(SettingsEnum.TIK_DEBUG.path);
-            preference.setDefaultValue(SettingsEnum.TIK_DEBUG.defaultValue);
             preference.setChecked(SettingsEnum.TIK_DEBUG.getBoolean());
             preference.setTitle("Enable debug log");
             preference.setSummary("Show integration debug log.");
