@@ -70,7 +70,7 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
                     // FIXME: the value is already saved in the preferences.
                     // instead of saving again, simple call SettingsEnum#setValue()
                     final boolean value = (Boolean) newValue;
-                    SettingsEnum.TIK_REMOVE_ADS.saveValue(value);
+                    SettingsEnum.setValue(SettingsEnum.TIK_REMOVE_ADS, value);
                     return true;
                 });
             }
@@ -85,8 +85,115 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
                 preference.setSummary("Hide livestreams from feed.");
                 preference.setOnPreferenceChangeListener((pref, newValue) -> {
                     final boolean value = (Boolean) newValue;
-                    SettingsEnum.TIK_HIDE_LIVE.saveValue(value);
+                    SettingsEnum.setValue(SettingsEnum.TIK_HIDE_LIVE, value);
                     return true;
+                });
+            }
+            //Hide Story toggle
+            {
+                SwitchPreference preference = new SwitchPreference(context);
+                feedFilter.addPreference(preference);
+                preference.setKey(SettingsEnum.TIK_HIDE_STORY.path);
+                preference.setDefaultValue(SettingsEnum.TIK_HIDE_STORY.defaultValue);
+                preference.setChecked(SettingsEnum.TIK_HIDE_STORY.getBoolean());
+                preference.setTitle("Hide story");
+                preference.setSummary("Hide story from feed.");
+                preference.setOnPreferenceChangeListener((pref, newValue) -> {
+                    final boolean value = (Boolean) newValue;
+                    SettingsEnum.setValue(SettingsEnum.TIK_HIDE_STORY, value);
+                    return true;
+                });
+            }
+            //Hide Image video toggle
+            {
+                SwitchPreference preference = new SwitchPreference(context);
+                feedFilter.addPreference(preference);
+                preference.setKey(SettingsEnum.TIK_HIDE_IMAGE.path);
+                preference.setDefaultValue(SettingsEnum.TIK_HIDE_IMAGE.defaultValue);
+                preference.setChecked(SettingsEnum.TIK_HIDE_IMAGE.getBoolean());
+                preference.setTitle("Hide image video");
+                preference.setSummary("Hide image video from feed.");
+                preference.setOnPreferenceChangeListener((pref, newValue) -> {
+                    final boolean value = (Boolean) newValue;
+                    SettingsEnum.setValue(SettingsEnum.TIK_HIDE_IMAGE, value);
+                    return true;
+                });
+            }
+            {
+
+            }
+            //Filter base on play count
+            {
+                EditTextPreference preference = new EditTextPreference(context);
+                feedFilter.addPreference(preference);
+                preference.setKey(SettingsEnum.TIK_HIDE_PLAY_COUNT_MIN.path);
+                preference.setDefaultValue(SettingsEnum.TIK_HIDE_PLAY_COUNT_MIN.defaultValue);
+                preference.setText(Long.toString(SettingsEnum.TIK_HIDE_PLAY_COUNT_MIN.getLong()));
+                preference.setTitle("Min view count");
+                preference.setSummary("If app show error, please reduce the value or press retry few times");
+                preference.setOnPreferenceChangeListener((pref, newValue) -> {
+                    try {
+                        final long value = Long.parseLong((String) newValue);
+                        SettingsEnum.setValue(SettingsEnum.TIK_HIDE_PLAY_COUNT_MIN, value);
+                        return true;
+                    } catch (NumberFormatException e) {
+                        return false;
+                    }
+                });
+            }
+            {
+                EditTextPreference preference = new EditTextPreference(context);
+                feedFilter.addPreference(preference);
+                preference.setKey(SettingsEnum.TIK_HIDE_PLAY_COUNT_MAX.path);
+                preference.setDefaultValue(SettingsEnum.TIK_HIDE_PLAY_COUNT_MAX.defaultValue);
+                preference.setText(Long.toString(SettingsEnum.TIK_HIDE_PLAY_COUNT_MAX.getLong()));
+                preference.setTitle("Max view count");
+                preference.setSummary("If app show error, please increase the value or press retry few times");
+                preference.setOnPreferenceChangeListener((pref, newValue) -> {
+                    try {
+                        final long value = Long.parseLong((String) newValue);
+                        SettingsEnum.setValue(SettingsEnum.TIK_HIDE_PLAY_COUNT_MAX, value);
+                        return true;
+                    } catch (NumberFormatException e) {
+                        return false;
+                    }
+                });
+            }
+            //Filter base on like count
+            {
+                EditTextPreference preference = new EditTextPreference(context);
+                feedFilter.addPreference(preference);
+                preference.setKey(SettingsEnum.TIK_HIDE_LIKE_COUNT_MIN.path);
+                preference.setDefaultValue(SettingsEnum.TIK_HIDE_LIKE_COUNT_MIN.defaultValue);
+                preference.setText(Long.toString(SettingsEnum.TIK_HIDE_LIKE_COUNT_MIN.getLong()));
+                preference.setTitle("Min like count");
+                preference.setSummary("If app show error, please reduce the value or press retry few times");
+                preference.setOnPreferenceChangeListener((pref, newValue) -> {
+                    try {
+                        final long value = Long.parseLong((String) newValue);
+                        SettingsEnum.setValue(SettingsEnum.TIK_HIDE_LIKE_COUNT_MIN, value);
+                        return true;
+                    } catch (NumberFormatException e) {
+                        return false;
+                    }
+                });
+            }
+            {
+                EditTextPreference preference = new EditTextPreference(context);
+                feedFilter.addPreference(preference);
+                preference.setKey(SettingsEnum.TIK_HIDE_LIKE_COUNT_MAX.path);
+                preference.setDefaultValue(SettingsEnum.TIK_HIDE_LIKE_COUNT_MAX.defaultValue);
+                preference.setText(Long.toString(SettingsEnum.TIK_HIDE_LIKE_COUNT_MAX.getLong()));
+                preference.setTitle("Max like count");
+                preference.setSummary("If app show error, please reduce the value or press retry few times");
+                preference.setOnPreferenceChangeListener((pref, newValue) -> {
+                    try {
+                        final long value = Long.parseLong((String) newValue);
+                        SettingsEnum.setValue(SettingsEnum.TIK_HIDE_LIKE_COUNT_MAX, value);
+                        return true;
+                    } catch (NumberFormatException e) {
+                        return false;
+                    }
                 });
             }
         }
@@ -107,7 +214,7 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
                 preference.setSummary(Environment.getExternalStorageDirectory().getPath() + "/" + preference.getValue());
                 preference.setOnPreferenceChangeListener((pref, newValue) -> {
                     final String value = (String) newValue;
-                    SettingsEnum.TIK_DOWN_PATH.saveValue(value);
+                    SettingsEnum.setValue(SettingsEnum.TIK_DOWN_PATH, value);
                     return true;
                 });
             }
@@ -121,14 +228,14 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
                 preference.setTitle("Remove watermark");
                 preference.setOnPreferenceChangeListener((pref, newValue) -> {
                     final boolean value = (Boolean) newValue;
-                    SettingsEnum.TIK_DOWN_WATERMARK.saveValue(value);
+                    SettingsEnum.setValue(SettingsEnum.TIK_DOWN_WATERMARK, value);
                     return true;
                 });
             }
         }
 
         // SpoofSimPatch
-        if(SettingsStatus.simSpoof) {
+        if (SettingsStatus.simSpoof) {
             PreferenceCategory simSpoof = new PreferenceCategory(context);
             simSpoof.setTitle("Bypass regional restriction");
             preferenceScreen.addPreference(simSpoof);
@@ -143,7 +250,7 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
                 preference.setSummary("Bypass regional restriction by fake sim card information.");
                 preference.setOnPreferenceChangeListener((pref, newValue) -> {
                     final boolean value = (Boolean) newValue;
-                    SettingsEnum.TIK_SIMSPOOF.saveValue(value);
+                    SettingsEnum.setValue(SettingsEnum.TIK_SIMSPOOF, value);
                     return true;
                 });
             }
@@ -158,7 +265,7 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
                 preference.setSummary("us, uk, jp, ...");
                 preference.setOnPreferenceChangeListener((pref, newValue) -> {
                     final String value = (String) newValue;
-                    SettingsEnum.TIK_SIMSPOOF_ISO.saveValue(value);
+                    SettingsEnum.setValue(SettingsEnum.TIK_SIMSPOOF_ISO, value);
                     return true;
                 });
             }
@@ -173,7 +280,7 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
                 preference.setSummary("mcc+mnc");
                 preference.setOnPreferenceChangeListener((pref, newValue) -> {
                     final String value = (String) newValue;
-                    SettingsEnum.TIK_SIMSPOOF_MCCMNC.saveValue(value);
+                    SettingsEnum.setValue(SettingsEnum.TIK_SIMSPOOF_MCCMNC, value);
                     return true;
                 });
             }
@@ -188,7 +295,7 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
                 preference.setSummary("Name of the operator");
                 preference.setOnPreferenceChangeListener((pref, newValue) -> {
                     final String value = (String) newValue;
-                    SettingsEnum.TIK_SIMSPOOF_OP_NAME.saveValue(value);
+                    SettingsEnum.setValue(SettingsEnum.TIK_SIMSPOOF_OP_NAME, value);
                     return true;
                 });
             }
@@ -209,7 +316,7 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
             preference.setSummary("Show integration debug log.");
             preference.setOnPreferenceChangeListener((pref, newValue) -> {
                 final boolean value = (Boolean) newValue;
-                SettingsEnum.TIK_DEBUG.saveValue(value);
+                SettingsEnum.setValue(SettingsEnum.TIK_DEBUG, value);
                 return true;
             });
         }
@@ -233,10 +340,6 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
     }
 
     private void rebootDialog(final Activity activity) {
-        new AlertDialog.Builder(activity).
-                setMessage("Refresh and restart").
-                setPositiveButton("RESTART", (dialog, i) -> reboot(activity))
-                .setNegativeButton("CANCEL", null)
-                .show();
+        new AlertDialog.Builder(activity).setMessage("Refresh and restart").setPositiveButton("RESTART", (dialog, i) -> reboot(activity)).setNegativeButton("CANCEL", null).show();
     }
 }
