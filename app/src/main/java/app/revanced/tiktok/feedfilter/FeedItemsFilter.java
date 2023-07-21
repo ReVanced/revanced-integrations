@@ -16,10 +16,10 @@ public class FeedItemsFilter {
         boolean live = SettingsEnum.TIK_HIDE_LIVE.getBoolean();
         boolean story = SettingsEnum.TIK_HIDE_STORY.getBoolean();
         boolean image = SettingsEnum.TIK_HIDE_IMAGE.getBoolean();
-        long minView = SettingsEnum.TIK_HIDE_PLAY_COUNT_MIN.getLong();
-        long maxView = SettingsEnum.TIK_HIDE_PLAY_COUNT_MAX.getLong();
-        long minLike = SettingsEnum.TIK_HIDE_LIKE_COUNT_MIN.getLong();
-        long maxLike = SettingsEnum.TIK_HIDE_LIKE_COUNT_MAX.getLong();
+        long minView = Long.parseLong(SettingsEnum.TIK_HIDE_PLAY_COUNT.getString().split("-")[0]);
+        long maxView = Long.parseLong(SettingsEnum.TIK_HIDE_PLAY_COUNT.getString().split("-")[1]);
+        long minLike = Long.parseLong(SettingsEnum.TIK_HIDE_LIKE_COUNT.getString().split("-")[0]);
+        long maxLike = Long.parseLong(SettingsEnum.TIK_HIDE_LIKE_COUNT.getString().split("-")[1]);
 
         List<Aweme> items = feedItemList.items;
         Iterator<Aweme> it = items.iterator();

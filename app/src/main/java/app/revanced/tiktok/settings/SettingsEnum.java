@@ -3,13 +3,16 @@ package app.revanced.tiktok.settings;
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
 import static app.revanced.tiktok.settings.SettingsEnum.ReturnType.BOOLEAN;
-import static app.revanced.tiktok.settings.SettingsEnum.ReturnType.LONG;
 import static app.revanced.tiktok.settings.SettingsEnum.ReturnType.STRING;
 
 import android.content.Context;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import app.revanced.tiktok.utils.LogHelper;
 import app.revanced.tiktok.utils.ReVancedUtils;
@@ -21,10 +24,8 @@ public enum SettingsEnum {
     TIK_HIDE_LIVE("tik_hide_live", BOOLEAN, FALSE, true),
     TIK_HIDE_STORY("tik_hide_story", BOOLEAN, FALSE, true),
     TIK_HIDE_IMAGE("tik_hide_image", BOOLEAN, FALSE, true),
-    TIK_HIDE_PLAY_COUNT_MIN("tik_hide_play_count_min", LONG, 0L, true),
-    TIK_HIDE_PLAY_COUNT_MAX("tik_hide_play_count_max", LONG, Long.MAX_VALUE, true),
-    TIK_HIDE_LIKE_COUNT_MIN("tik_hide_like_count_min", LONG, 0L, true),
-    TIK_HIDE_LIKE_COUNT_MAX("tik_hide_like_count_max", LONG, Long.MAX_VALUE, true),
+    TIK_HIDE_PLAY_COUNT("tik_hide_play_count", STRING, "0-100000000000", true),
+    TIK_HIDE_LIKE_COUNT("tik_hide_like_count", STRING, "0-100000000000", true),
     TIK_DOWN_PATH("tik_down_path", STRING, "DCIM/TikTok"),
     TIK_DOWN_WATERMARK("tik_down_watermark", BOOLEAN, TRUE),
     TIK_SIMSPOOF("tik_simspoof", BOOLEAN, TRUE, true),
@@ -32,8 +33,13 @@ public enum SettingsEnum {
     TIK_SIMSPOOF_MCCMNC("tik_simspoof_mccmnc", STRING, "310160"),
     TIK_SIMSPOOF_OP_NAME("tik_simspoof_op_name", STRING, "T-Mobile");
 
+    private static final Map<String, SettingsEnum> pathToSetting = new HashMap<>(2 * values().length);
+
     static {
         loadAllSettings();
+        for (SettingsEnum setting : values()) {
+            pathToSetting.put(setting.path, setting);
+        }
     }
 
     @NonNull
@@ -54,16 +60,22 @@ public enum SettingsEnum {
     SettingsEnum(String path, ReturnType returnType, Object defaultValue) {
         this(path, returnType, defaultValue, SharedPrefCategory.TIKTOK_PREFS, false);
     }
+
     SettingsEnum(String path, ReturnType returnType, Object defaultValue, boolean rebootApp) {
         this(path, returnType, defaultValue, SharedPrefCategory.TIKTOK_PREFS, rebootApp);
     }
-    SettingsEnum(@NonNull String path, @NonNull ReturnType returnType, @NonNull Object defaultValue,
-                 @NonNull SharedPrefCategory prefName, boolean rebootApp) {
+
+    SettingsEnum(@NonNull String path, @NonNull ReturnType returnType, @NonNull Object defaultValue, @NonNull SharedPrefCategory prefName, boolean rebootApp) {
         this.path = path;
         this.returnType = returnType;
         this.defaultValue = defaultValue;
         this.sharedPref = prefName;
         this.rebootApp = rebootApp;
+    }
+
+    @Nullable
+    public static SettingsEnum settingFromPath(@NonNull String str) {
+        return pathToSetting.get(str);
     }
 
     private static void loadAllSettings() {
@@ -151,11 +163,15 @@ public enum SettingsEnum {
         return (String) value;
     }
 
+    /**
+     * @return the value of this setting as as generic object type.
+     */
+    @NonNull
+    public Object getObjectValue() {
+        return value;
+    }
+
     public enum ReturnType {
-        BOOLEAN,
-        INTEGER,
-        LONG,
-        FLOAT,
-        STRING,
+        BOOLEAN, INTEGER, LONG, FLOAT, STRING,
     }
 }

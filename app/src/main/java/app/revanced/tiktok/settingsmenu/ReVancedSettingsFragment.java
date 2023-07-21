@@ -8,9 +8,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Process;
 import android.preference.EditTextPreference;
+import android.preference.ListPreference;
+import android.preference.Preference;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceScreen;
@@ -20,9 +21,13 @@ import androidx.annotation.Nullable;
 
 import com.ss.android.ugc.aweme.splash.SplashActivity;
 
+import app.revanced.integrations.utils.LogHelper;
 import app.revanced.tiktok.settings.SettingsEnum;
 import app.revanced.tiktok.settings.SharedPrefCategory;
 import app.revanced.tiktok.settingsmenu.preference.DownloadPathPreference;
+import app.revanced.tiktok.settingsmenu.preference.InputTextPreference;
+import app.revanced.tiktok.settingsmenu.preference.RangeValuePreference;
+import app.revanced.tiktok.settingsmenu.preference.TogglePreference;
 import app.revanced.tiktok.utils.ReVancedUtils;
 
 public class ReVancedSettingsFragment extends PreferenceFragment {
@@ -31,14 +36,53 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
     private boolean settingsInitialized = false;
 
     SharedPreferences.OnSharedPreferenceChangeListener listener = (sharedPreferences, str) -> {
-        for (SettingsEnum setting : SettingsEnum.values()) {
-            if (!setting.path.equals(str)) continue;
-
+        try {
+            SettingsEnum setting = SettingsEnum.settingFromPath(str);
+            if (setting == null) {
+                return;
+            }
+            Preference pref = findPreference(str);
+            if (pref == null) {
+                return;
+            }
+            if (pref instanceof SwitchPreference) {
+                SwitchPreference switchPref = (SwitchPreference) pref;
+                SettingsEnum.setValue(setting, switchPref.isChecked());
+            } else if (pref instanceof EditTextPreference) {
+                EditTextPreference editPreference = (EditTextPreference) pref;
+                SettingsEnum.setValue(setting, editPreference.getText());
+            } else if (pref instanceof ListPreference) {
+                ListPreference listPref = (ListPreference) pref;
+                SettingsEnum.setValue(setting, listPref.getValue());
+                updateListPreferenceSummary((ListPreference) pref, setting);
+            } else if (pref instanceof RangeValuePreference) {
+                RangeValuePreference rangeValuePref = (RangeValuePreference) pref;
+                SettingsEnum.setValue(setting, rangeValuePref.getValue());
+            } else if (pref instanceof DownloadPathPreference) {
+                DownloadPathPreference downloadPathPref = (DownloadPathPreference) pref;
+                SettingsEnum.setValue(setting, downloadPathPref.getValue());
+            } else {
+                LogHelper.printException(() -> "Setting cannot be handled: " + pref.getClass() + " " + pref);
+                return;
+            }
             if (ReVancedUtils.getAppContext() != null && this.settingsInitialized && setting.rebootApp) {
                 rebootDialog(getActivity());
             }
+        } catch (Exception ex) {
+            LogHelper.printException(() -> "OnSharedPreferenceChangeListener failure", ex);
         }
     };
+
+    private void updateListPreferenceSummary(ListPreference listPreference, SettingsEnum setting) {
+        String objectStringValue = setting.getObjectValue().toString();
+        final int entryIndex = listPreference.findIndexOfValue(objectStringValue);
+        if (entryIndex >= 0) {
+            listPreference.setSummary(listPreference.getEntries()[entryIndex]);
+            listPreference.setValue(objectStringValue);
+        } else {
+            listPreference.setSummary(objectStringValue);
+        }
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -56,138 +100,12 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
             PreferenceCategory feedFilter = new PreferenceCategory(context);
             feedFilter.setTitle("Feed filter");
             preferenceScreen.addPreference(feedFilter);
-
-            //Remove ads toggle
-            {
-                SwitchPreference preference = new SwitchPreference(context);
-                feedFilter.addPreference(preference);
-                preference.setKey(SettingsEnum.TIK_REMOVE_ADS.path);
-                preference.setChecked(SettingsEnum.TIK_REMOVE_ADS.getBoolean());
-                preference.setTitle("Remove feed ads");
-                preference.setSummary("Remove ads from feed.");
-                preference.setOnPreferenceChangeListener((pref, newValue) -> {
-                    // FIXME: the value is already saved in the preferences.
-                    // instead of saving again, simple call SettingsEnum#setValue()
-                    final boolean value = (Boolean) newValue;
-                    SettingsEnum.setValue(SettingsEnum.TIK_REMOVE_ADS, value);
-                    return true;
-                });
-            }
-            //Hide LiveStreams toggle
-            {
-                SwitchPreference preference = new SwitchPreference(context);
-                feedFilter.addPreference(preference);
-                preference.setKey(SettingsEnum.TIK_HIDE_LIVE.path);
-                preference.setChecked(SettingsEnum.TIK_HIDE_LIVE.getBoolean());
-                preference.setTitle("Hide livestreams");
-                preference.setSummary("Hide livestreams from feed.");
-                preference.setOnPreferenceChangeListener((pref, newValue) -> {
-                    final boolean value = (Boolean) newValue;
-                    SettingsEnum.setValue(SettingsEnum.TIK_HIDE_LIVE, value);
-                    return true;
-                });
-            }
-            //Hide Story toggle
-            {
-                SwitchPreference preference = new SwitchPreference(context);
-                feedFilter.addPreference(preference);
-                preference.setKey(SettingsEnum.TIK_HIDE_STORY.path);
-                preference.setChecked(SettingsEnum.TIK_HIDE_STORY.getBoolean());
-                preference.setTitle("Hide story");
-                preference.setSummary("Hide story from feed.");
-                preference.setOnPreferenceChangeListener((pref, newValue) -> {
-                    final boolean value = (Boolean) newValue;
-                    SettingsEnum.setValue(SettingsEnum.TIK_HIDE_STORY, value);
-                    return true;
-                });
-            }
-            //Hide Image video toggle
-            {
-                SwitchPreference preference = new SwitchPreference(context);
-                feedFilter.addPreference(preference);
-                preference.setKey(SettingsEnum.TIK_HIDE_IMAGE.path);
-                preference.setChecked(SettingsEnum.TIK_HIDE_IMAGE.getBoolean());
-                preference.setTitle("Hide image video");
-                preference.setSummary("Hide image video from feed.");
-                preference.setOnPreferenceChangeListener((pref, newValue) -> {
-                    final boolean value = (Boolean) newValue;
-                    SettingsEnum.setValue(SettingsEnum.TIK_HIDE_IMAGE, value);
-                    return true;
-                });
-            }
-            {
-
-            }
-            //Filter base on play count
-            {
-                EditTextPreference preference = new EditTextPreference(context);
-                feedFilter.addPreference(preference);
-                preference.setKey(SettingsEnum.TIK_HIDE_PLAY_COUNT_MIN.path);
-                preference.setText(Long.toString(SettingsEnum.TIK_HIDE_PLAY_COUNT_MIN.getLong()));
-                preference.setTitle("Min view count");
-                preference.setSummary("If app show error, please reduce the value or press retry few times");
-                preference.setOnPreferenceChangeListener((pref, newValue) -> {
-                    try {
-                        final long value = Long.parseLong((String) newValue);
-                        SettingsEnum.setValue(SettingsEnum.TIK_HIDE_PLAY_COUNT_MIN, value);
-                        return true;
-                    } catch (NumberFormatException e) {
-                        return false;
-                    }
-                });
-            }
-            {
-                EditTextPreference preference = new EditTextPreference(context);
-                feedFilter.addPreference(preference);
-                preference.setKey(SettingsEnum.TIK_HIDE_PLAY_COUNT_MAX.path);
-                preference.setText(Long.toString(SettingsEnum.TIK_HIDE_PLAY_COUNT_MAX.getLong()));
-                preference.setTitle("Max view count");
-                preference.setSummary("If app show error, please increase the value or press retry few times");
-                preference.setOnPreferenceChangeListener((pref, newValue) -> {
-                    try {
-                        final long value = Long.parseLong((String) newValue);
-                        SettingsEnum.setValue(SettingsEnum.TIK_HIDE_PLAY_COUNT_MAX, value);
-                        return true;
-                    } catch (NumberFormatException e) {
-                        return false;
-                    }
-                });
-            }
-            //Filter base on like count
-            {
-                EditTextPreference preference = new EditTextPreference(context);
-                feedFilter.addPreference(preference);
-                preference.setKey(SettingsEnum.TIK_HIDE_LIKE_COUNT_MIN.path);
-                preference.setText(Long.toString(SettingsEnum.TIK_HIDE_LIKE_COUNT_MIN.getLong()));
-                preference.setTitle("Min like count");
-                preference.setSummary("If app show error, please reduce the value or press retry few times");
-                preference.setOnPreferenceChangeListener((pref, newValue) -> {
-                    try {
-                        final long value = Long.parseLong((String) newValue);
-                        SettingsEnum.setValue(SettingsEnum.TIK_HIDE_LIKE_COUNT_MIN, value);
-                        return true;
-                    } catch (NumberFormatException e) {
-                        return false;
-                    }
-                });
-            }
-            {
-                EditTextPreference preference = new EditTextPreference(context);
-                feedFilter.addPreference(preference);
-                preference.setKey(SettingsEnum.TIK_HIDE_LIKE_COUNT_MAX.path);
-                preference.setText(Long.toString(SettingsEnum.TIK_HIDE_LIKE_COUNT_MAX.getLong()));
-                preference.setTitle("Max like count");
-                preference.setSummary("If app show error, please reduce the value or press retry few times");
-                preference.setOnPreferenceChangeListener((pref, newValue) -> {
-                    try {
-                        final long value = Long.parseLong((String) newValue);
-                        SettingsEnum.setValue(SettingsEnum.TIK_HIDE_LIKE_COUNT_MAX, value);
-                        return true;
-                    } catch (NumberFormatException e) {
-                        return false;
-                    }
-                });
-            }
+            feedFilter.addPreference(new TogglePreference(context, "Remove feed ads", "Remove ads from feed.", SettingsEnum.TIK_REMOVE_ADS));
+            feedFilter.addPreference(new TogglePreference(context, "Hide livestreams", "Hide livestreams from feed.", SettingsEnum.TIK_HIDE_LIVE));
+            feedFilter.addPreference(new TogglePreference(context, "Hide story", "Hide story from feed.", SettingsEnum.TIK_HIDE_STORY));
+            feedFilter.addPreference(new TogglePreference(context, "Hide image video", "Hide image video from feed.", SettingsEnum.TIK_HIDE_IMAGE));
+            feedFilter.addPreference(new RangeValuePreference(context, "View count", "If app show error, please change value or refresh few times", SettingsEnum.TIK_HIDE_PLAY_COUNT));
+            feedFilter.addPreference(new RangeValuePreference(context, "Like count", "If app show error, please change value or refresh few times", SettingsEnum.TIK_HIDE_LIKE_COUNT));
         }
 
         //Download
@@ -195,33 +113,8 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
             PreferenceCategory download = new PreferenceCategory(context);
             download.setTitle("Download");
             preferenceScreen.addPreference(download);
-            //Download path
-            {
-                DownloadPathPreference preference = new DownloadPathPreference(context);
-                download.addPreference(preference);
-                preference.setKey(SettingsEnum.TIK_DOWN_PATH.path);
-                preference.setValue(SettingsEnum.TIK_DOWN_PATH.getString());
-                preference.setTitle("Download path");
-                preference.setSummary(Environment.getExternalStorageDirectory().getPath() + "/" + preference.getValue());
-                preference.setOnPreferenceChangeListener((pref, newValue) -> {
-                    final String value = (String) newValue;
-                    SettingsEnum.setValue(SettingsEnum.TIK_DOWN_PATH, value);
-                    return true;
-                });
-            }
-            //Download watermark
-            {
-                SwitchPreference preference = new SwitchPreference(context);
-                download.addPreference(preference);
-                preference.setKey(SettingsEnum.TIK_DOWN_WATERMARK.path);
-                preference.setChecked(SettingsEnum.TIK_DOWN_WATERMARK.getBoolean());
-                preference.setTitle("Remove watermark");
-                preference.setOnPreferenceChangeListener((pref, newValue) -> {
-                    final boolean value = (Boolean) newValue;
-                    SettingsEnum.setValue(SettingsEnum.TIK_DOWN_WATERMARK, value);
-                    return true;
-                });
-            }
+            download.addPreference(new DownloadPathPreference(context, "Download path", SettingsEnum.TIK_DOWN_PATH));
+            download.addPreference(new TogglePreference(context, "Remove watermark", "", SettingsEnum.TIK_DOWN_WATERMARK));
         }
 
         // SpoofSimPatch
@@ -229,82 +122,17 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
             PreferenceCategory simSpoof = new PreferenceCategory(context);
             simSpoof.setTitle("Bypass regional restriction");
             preferenceScreen.addPreference(simSpoof);
-            //Global Switch
-            {
-                SwitchPreference preference = new SwitchPreference(context);
-                simSpoof.addPreference(preference);
-                preference.setKey(SettingsEnum.TIK_SIMSPOOF.path);
-                preference.setChecked(SettingsEnum.TIK_SIMSPOOF.getBoolean());
-                preference.setTitle("Fake sim card info");
-                preference.setSummary("Bypass regional restriction by fake sim card information.");
-                preference.setOnPreferenceChangeListener((pref, newValue) -> {
-                    final boolean value = (Boolean) newValue;
-                    SettingsEnum.setValue(SettingsEnum.TIK_SIMSPOOF, value);
-                    return true;
-                });
-            }
-            //Country ISO
-            {
-                EditTextPreference preference = new EditTextPreference(context);
-                simSpoof.addPreference(preference);
-                preference.setKey(SettingsEnum.TIK_SIMSPOOF_ISO.path);
-                preference.setText(SettingsEnum.TIK_SIMSPOOF_ISO.getString());
-                preference.setTitle("Country ISO");
-                preference.setSummary("us, uk, jp, ...");
-                preference.setOnPreferenceChangeListener((pref, newValue) -> {
-                    final String value = (String) newValue;
-                    SettingsEnum.setValue(SettingsEnum.TIK_SIMSPOOF_ISO, value);
-                    return true;
-                });
-            }
-            //Operator mcc+mnc
-            {
-                EditTextPreference preference = new EditTextPreference(context);
-                simSpoof.addPreference(preference);
-                preference.setKey(SettingsEnum.TIK_SIMSPOOF_MCCMNC.path);
-                preference.setText(SettingsEnum.TIK_SIMSPOOF_MCCMNC.getString());
-                preference.setTitle("Operator mcc+mnc");
-                preference.setSummary("mcc+mnc");
-                preference.setOnPreferenceChangeListener((pref, newValue) -> {
-                    final String value = (String) newValue;
-                    SettingsEnum.setValue(SettingsEnum.TIK_SIMSPOOF_MCCMNC, value);
-                    return true;
-                });
-            }
-            //Operator name
-            {
-                EditTextPreference preference = new EditTextPreference(context);
-                simSpoof.addPreference(preference);
-                preference.setKey(SettingsEnum.TIK_SIMSPOOF_OP_NAME.path);
-                preference.setText(SettingsEnum.TIK_SIMSPOOF_OP_NAME.getString());
-                preference.setTitle("Operator name");
-                preference.setSummary("Name of the operator");
-                preference.setOnPreferenceChangeListener((pref, newValue) -> {
-                    final String value = (String) newValue;
-                    SettingsEnum.setValue(SettingsEnum.TIK_SIMSPOOF_OP_NAME, value);
-                    return true;
-                });
-            }
+            simSpoof.addPreference(new TogglePreference(context, "Fake sim card info", "Bypass regional restriction by fake sim card information.", SettingsEnum.TIK_SIMSPOOF));
+            simSpoof.addPreference(new InputTextPreference(context, "Country ISO", "us, uk, jp, ...", SettingsEnum.TIK_SIMSPOOF_ISO));
+            simSpoof.addPreference(new InputTextPreference(context, "Operator mcc+mnc", "mcc+mnc", SettingsEnum.TIK_SIMSPOOF_MCCMNC));
+            simSpoof.addPreference(new InputTextPreference(context, "Operator name", "Name of the operator", SettingsEnum.TIK_SIMSPOOF_OP_NAME));
         }
 
         //Integration
         PreferenceCategory integration = new PreferenceCategory(context);
         integration.setTitle("Integration");
         preferenceScreen.addPreference(integration);
-        //Enable DebugLog toggle
-        {
-            SwitchPreference preference = new SwitchPreference(context);
-            integration.addPreference(preference);
-            preference.setKey(SettingsEnum.TIK_DEBUG.path);
-            preference.setChecked(SettingsEnum.TIK_DEBUG.getBoolean());
-            preference.setTitle("Enable debug log");
-            preference.setSummary("Show integration debug log.");
-            preference.setOnPreferenceChangeListener((pref, newValue) -> {
-                final boolean value = (Boolean) newValue;
-                SettingsEnum.setValue(SettingsEnum.TIK_DEBUG, value);
-                return true;
-            });
-        }
+        integration.addPreference(new TogglePreference(context, "Enable debug log", "Show integration debug log.", SettingsEnum.TIK_DEBUG));
         this.settingsInitialized = true;
     }
 
