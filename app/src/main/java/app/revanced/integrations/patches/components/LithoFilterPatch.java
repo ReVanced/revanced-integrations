@@ -287,7 +287,7 @@ public final class LithoFilterPatch {
     private static <T> void addFilterToSearchTree(TrieSearch<T> pathSearchTree,
                                                   Filter filter, FilterGroupList list, FilterGroup<T> group) {
         for (T pattern : group.filters) {
-            pathSearchTree.addPattern(pattern, (TrieSearch.TriePatternMatchedCallback)
+            pathSearchTree.addPattern(pattern, (TrieSearch.TriePatternMatchedCallback<T>)
                     (searchText, matchedStartIndex, matchedPatternLength) ->
                             filter.isFiltered(path, identifier, protobufBufferArray, list, group)
             );

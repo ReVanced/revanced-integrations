@@ -2,6 +2,8 @@ package app.revanced.integrations.patches.components;
 
 import androidx.annotation.NonNull;
 
+import java.util.Objects;
+
 public class ByteTrieSearch extends TrieSearch<byte[]> {
 
     private static class ByteTrieNode extends TrieNode<byte[]> {
@@ -27,7 +29,7 @@ public class ByteTrieSearch extends TrieSearch<byte[]> {
 
     @Override
     public void addPattern(@NonNull byte[] pattern, @NonNull TriePatternMatchedCallback<byte[]> callback) {
-        super.addPattern(pattern, pattern.length, callback);
+        super.addPattern(pattern, pattern.length, Objects.requireNonNull(callback));
     }
 
     @Override

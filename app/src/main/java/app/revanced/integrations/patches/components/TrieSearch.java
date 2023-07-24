@@ -1,6 +1,7 @@
 package app.revanced.integrations.patches.components;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -31,14 +32,6 @@ public abstract class TrieSearch<T> {
         boolean patternMatched(T searchText, int matchedStartIndex, int matchedEndIndex);
     }
 
-    /**
-     * Default callback if none is specified,
-     * where any matched pattern will halt the search and return a positive search result.
-     */
-    @SuppressWarnings("rawtypes")
-    protected static TriePatternMatchedCallback defaultPrefixMatchedCallback =
-            (searchText, matchedStartIndex, matchedEndIndex) -> true;
-
     protected static abstract class TrieNode<T> {
         static final int CHAR_RANGE = 128; // Support only ASCII range.
         TrieNode<T>[] children;
@@ -55,9 +48,10 @@ public abstract class TrieSearch<T> {
          * @param pattern       Pattern to add.
          * @param patternIndex  Current recursive index of the pattern.
          * @param patternLength Length of the pattern.
+         * @param callback      Callback, where a value of NULL indicates to always accept a pattern match.
          */
         private void addPattern(@NonNull T pattern, int patternIndex, int patternLength,
-                                @NonNull TriePatternMatchedCallback<T> callback) {
+                                @Nullable TriePatternMatchedCallback<T> callback) {
             if (patternIndex == patternLength) { // Reached the end of the string.
                 if (endOfPatternCallback == null) {
                     endOfPatternCallback = new ArrayList<>(1);
@@ -90,8 +84,8 @@ public abstract class TrieSearch<T> {
         private boolean matches(T searchText, int searchTextLength, int searchTextIndex, int currentMatchLength) {
             if (endOfPatternCallback != null) {
                 final int matchStartIndex = searchTextIndex - currentMatchLength;
-                for (TriePatternMatchedCallback<T> callback : endOfPatternCallback) {
-                    if (callback.patternMatched(searchText, matchStartIndex, searchTextIndex)) {
+                for (@Nullable TriePatternMatchedCallback<T> callback : endOfPatternCallback) {
+                    if (callback == null || callback.patternMatched(searchText, matchStartIndex, searchTextIndex)) {
                         return true; // Callback confirms the match.
                     }
                 }
@@ -150,10 +144,10 @@ public abstract class TrieSearch<T> {
     }
 
     protected void addPattern(@NonNull T pattern, int patternLength) {
-        addPattern(pattern, patternLength, defaultPrefixMatchedCallback);
+        addPattern(pattern, patternLength, null);
     }
 
-    protected void addPattern(@NonNull T pattern, int patternLength, @NonNull TriePatternMatchedCallback<T> callback) {
+    protected void addPattern(@NonNull T pattern, int patternLength, @Nullable TriePatternMatchedCallback<T> callback) {
         if (patternLength == 0) return; // Nothing to match
 
         minPatternLength = (minPatternLength == 0)
@@ -180,9 +174,9 @@ public abstract class TrieSearch<T> {
     }
 
     /**
-     * Adds a pattern with a default callback to always return a positive match if a pattern is found.
+     * Adds a pattern that will always return a positive match if found.
      *
-     * @param pattern Pattern to add. Calling this with an empty pattern (zero length) does nothing.
+     * @param pattern Pattern to add. Calling this with a zero length pattern does nothing.
      */
     public abstract void addPattern(@NonNull T pattern);
 

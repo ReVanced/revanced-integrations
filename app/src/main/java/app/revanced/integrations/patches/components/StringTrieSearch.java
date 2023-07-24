@@ -2,6 +2,8 @@ package app.revanced.integrations.patches.components;
 
 import androidx.annotation.NonNull;
 
+import java.util.Objects;
+
 /**
  * Text pattern searching using a prefix tree (trie).
  * Can significantly speed up searching for multiple patterns.
@@ -31,7 +33,7 @@ public class StringTrieSearch extends TrieSearch<String> {
 
     @Override
     public void addPattern(@NonNull String pattern, @NonNull TriePatternMatchedCallback<String> callback) {
-        super.addPattern(pattern, pattern.length(), callback);
+        super.addPattern(pattern, pattern.length(), Objects.requireNonNull(callback));
     }
 
     @Override
