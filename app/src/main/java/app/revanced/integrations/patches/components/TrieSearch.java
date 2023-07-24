@@ -12,10 +12,6 @@ import app.revanced.integrations.utils.ReVancedUtils;
 
 /**
  * Searches for a group of different patterns using a trie (prefix tree).
- *
- * If searching for only 1 or 2 strings, it's slightly faster using {@link ReVancedUtils#containsAny(String, String...)}.
- * But when using 3 or more strings the performance scales linearly.
- * A 5x speed up as been seen when searching for 20 strings compared to using an iterative per string searching.
  */
 public abstract class TrieSearch<T> {
 
@@ -93,7 +89,7 @@ public abstract class TrieSearch<T> {
             }
 
             if (searchTextIndex == searchTextLength) {
-                return false; // Reached end of search range and found no matches.
+                return false; // Reached end of the text and found no matches.
             }
             if (children == null) {
                 // Reached end of a pattern and the end of the tree,
@@ -128,11 +124,6 @@ public abstract class TrieSearch<T> {
      */
     private final List<T> patterns = new ArrayList<>();
 
-    /**
-     * The shortest pattern ever added.
-     */
-    private int minPatternLength;
-
     protected TrieSearch(@NonNull TrieNode<T> root) {
         this.root = Objects.requireNonNull(root);
     }
@@ -150,20 +141,15 @@ public abstract class TrieSearch<T> {
     protected void addPattern(@NonNull T pattern, int patternLength, @Nullable TriePatternMatchedCallback<T> callback) {
         if (patternLength == 0) return; // Nothing to match
 
-        minPatternLength = (minPatternLength == 0)
-                ? patternLength
-                : Math.min(minPatternLength, patternLength);
         patterns.add(pattern);
         root.addPattern(pattern, callback);
     }
 
     protected boolean matches(@NonNull T textToSearch, int textToSearchLength) {
-        if (minPatternLength == 0) {
+        if (patterns.size() == 0) {
             return false; // No patterns were added.
         }
-        // Can stop searching when the remaining search text is shorter than the shortest pattern.
-        final int searchMaxStartIndex = textToSearchLength - minPatternLength;
-        for (int i = 0; i <= searchMaxStartIndex; i++) {
+        for (int i = 0; i < textToSearchLength; i++) {
             if (root.matches(textToSearch, textToSearchLength, i, 0)) return true;
         }
         return false;
