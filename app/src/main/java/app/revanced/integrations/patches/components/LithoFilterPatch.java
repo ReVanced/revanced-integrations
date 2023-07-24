@@ -223,26 +223,26 @@ abstract class Filter {
 
     /**
      * Called after a filter has been matched.
-     * Default implementation is to filter the matched item if the group is enabled.
+     * Default implementation is to filter the matched item if the matchedGroup is enabled.
      * Subclasses can perform additional checks if needed.
      *
      * Method is called off the main thread.
      *
-     * @param list  The group list the filter belongs to.
-     * @param group The actual filter that matched.
+     * @param matchedList  The matchedGroup matchedList the filter belongs to.
+     * @param matchedGroup The actual filter that matched.
      * @return True if the litho item should be hidden.
      */
     @SuppressWarnings("rawtypes")
     boolean isFiltered(final String path, final String identifier, final byte[] protobufBufferArray,
-                       FilterGroupList list, FilterGroup group) {
-        final boolean isEnabled = group.isEnabled();
+                       FilterGroupList matchedList, FilterGroup matchedGroup) {
+        final boolean isEnabled = matchedGroup.isEnabled();
 
         if (SettingsEnum.DEBUG.getBoolean()) {
-            if (pathFilterGroups == list) {
+            if (pathFilterGroups == matchedList) {
                 LogHelper.printDebug(() -> getClass().getSimpleName() + " filtered path: " + path);
-            } else if (identifierFilterGroups == list) {
+            } else if (identifierFilterGroups == matchedList) {
                 LogHelper.printDebug(() -> getClass().getSimpleName() + " filtered identifier: " + identifier);
-            } else if (protobufBufferFilterGroups == list) {
+            } else if (protobufBufferFilterGroups == matchedList) {
                 LogHelper.printDebug(() -> getClass().getSimpleName() + " filtered from protobuf-buffer");
             }
         }

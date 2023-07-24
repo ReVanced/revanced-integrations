@@ -47,11 +47,11 @@ final class ButtonsFilter extends Filter {
 
     @Override
     public boolean isFiltered(final String path, final String identifier, final byte[] _protobufBufferArray,
-                              FilterGroupList list, FilterGroup group) {
-        if (group == actionBarRule) {
+                              FilterGroupList matchedList, FilterGroup matchedGroup) {
+        if (matchedGroup == actionBarRule) {
             return isEveryFilterGroupEnabled();
         }
 
-        return super.isFiltered(path, identifier, _protobufBufferArray, list, group);
+        return super.isFiltered(path, identifier, _protobufBufferArray, matchedList, matchedGroup);
     }
 }

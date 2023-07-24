@@ -161,13 +161,13 @@ public final class LayoutComponentsFilter extends Filter {
 
     @Override
     public boolean isFiltered(final String path, final String identifier, final byte[] _protobufBufferArray,
-                              FilterGroupList list, FilterGroup group) {
-        if (group == custom && custom.isEnabled()) return true;
+                              FilterGroupList matchedList, FilterGroup matchedGroup) {
+        if (matchedGroup == custom && custom.isEnabled()) return true;
 
         if (exceptions.matches(path))
             return false; // Exceptions are not filtered.
 
-        return super.isFiltered(path, identifier, _protobufBufferArray, list, group);
+        return super.isFiltered(path, identifier, _protobufBufferArray, matchedList, matchedGroup);
     }
 
 

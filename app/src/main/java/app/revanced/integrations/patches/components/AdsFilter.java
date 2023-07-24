@@ -96,11 +96,11 @@ public final class AdsFilter extends Filter {
 
     @Override
     public boolean isFiltered(final String path, final String identifier, final byte[] _protobufBufferArray,
-                              FilterGroupList list, FilterGroup group) {
+                              FilterGroupList matchedList, FilterGroup matchedGroup) {
         if (exceptions.matches(path))
            return false;
 
-        return super.isFiltered(path, identifier, _protobufBufferArray, list, group);
+        return super.isFiltered(path, identifier, _protobufBufferArray, matchedList, matchedGroup);
     }
 
     /**

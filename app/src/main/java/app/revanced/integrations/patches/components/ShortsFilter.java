@@ -62,16 +62,16 @@ public final class ShortsFilter extends Filter {
 
     @Override
     boolean isFiltered(final String path, final String identifier, final byte[] protobufBufferArray,
-                       FilterGroupList list, FilterGroup group) {
-        if (!group.isEnabled()) return false;
-        if (group == soundButton || group == infoPanel) return true;
+                       FilterGroupList matchedList, FilterGroup matchedGroup) {
+        if (!matchedGroup.isEnabled()) return false;
+        if (matchedGroup == soundButton || matchedGroup == infoPanel) return true;
 
         // Filter the path only when reelChannelBar is visible.
-        if (pathFilterGroups == list) {
+        if (pathFilterGroups == matchedList) {
             return reelChannelBar.check(path).isFiltered();
         }
 
-        return identifierFilterGroups == list;
+        return identifierFilterGroups == matchedList;
     }
 
     public static void hideShortsShelf(final View shortsShelfView) {
