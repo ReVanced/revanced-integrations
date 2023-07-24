@@ -3,6 +3,7 @@ package app.revanced.integrations.patches.components;
 import android.os.Build;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 
 import java.nio.ByteBuffer;
@@ -83,31 +84,17 @@ final class CustomFilterGroup extends StringFilterGroup {
 }
 
 class ByteArrayFilterGroup extends FilterGroup<byte[]> {
+
+    private final int[][] failurePatterns;
+
     // Modified implementation from https://stackoverflow.com/a/1507813
-    private int indexOf(final byte[] data, final byte[] pattern) {
+    private int indexOf(final byte[] data, final byte[] pattern, final int[] failure) {
         if (data.length == 0)
             return -1;
-        // Computes the failure function using a boot-strapping process,
-        // where the pattern is matched against itself.
-        final int[] failure = new int[pattern.length];
-
-        int j = 0;
-        for (int i = 1; i < pattern.length; i++) {
-            while (j > 0 && pattern[j] != pattern[i]) {
-                j = failure[j - 1];
-            }
-            if (pattern[j] == pattern[i]) {
-                j++;
-            }
-            failure[i] = j;
-        }
 
         // Finds the first occurrence of the pattern in the byte array using
         // KMP matching algorithm.
-
-        j = 0;
-
-        for (int i = 0; i < data.length; i++) {
+        for (int i = 0, j = 0, dataLength = data.length; i < dataLength; i++) {
             while (j > 0 && pattern[j] != data[i]) {
                 j = failure[j - 1];
             }
@@ -121,26 +108,48 @@ class ByteArrayFilterGroup extends FilterGroup<byte[]> {
         return -1;
     }
 
+    private static int[] createFailurePattern(byte[] pattern) {
+        // Computes the failure function using a boot-strapping process,
+        // where the pattern is matched against itself.
+        final int patternLength = pattern.length;
+        final int[] failure = new int[patternLength];
+
+        for (int i = 1, j = 0; i < patternLength; i++) {
+            while (j > 0 && pattern[j] != pattern[i]) {
+                j = failure[j - 1];
+            }
+            if (pattern[j] == pattern[i]) {
+                j++;
+            }
+            failure[i] = j;
+        }
+        return failure;
+    }
+
     /**
      * {@link FilterGroup#FilterGroup(SettingsEnum, Object[])}
      */
     public ByteArrayFilterGroup(final SettingsEnum setting, final byte[]... filters) {
         super(setting, filters);
+        failurePatterns = new int[filters.length][];
+        int i = 0;
+        for (byte[] pattern : filters) {
+            failurePatterns[i++] = createFailurePattern(pattern);
+        }
     }
 
     @Override
     public FilterGroupResult check(final byte[] bytes) {
         var matched = false;
-        for (byte[] filter : filters) {
-            if (indexOf(bytes, filter) == -1)
+        for (int i = 0, length = filters.length; i < length; i++) {
+            if (indexOf(bytes, filters[i], failurePatterns[i]) == -1)
                 continue;
 
             matched = true;
             break;
         }
 
-        final var filtered = matched;
-        return new FilterGroupResult(setting, filtered);
+        return new FilterGroupResult(setting, matched);
     }
 }
 
@@ -204,33 +213,41 @@ final class ByteArrayFilterGroupList extends FilterGroupList<byte[], ByteArrayFi
 }
 
 abstract class Filter {
+    /*
+     * All group filters must be set before the constructor call completes.
+     * Otherwise the filter will never be called when the group matches.
+     */
     final protected StringFilterGroupList pathFilterGroups = new StringFilterGroupList();
     final protected StringFilterGroupList identifierFilterGroups = new StringFilterGroupList();
     final protected ByteArrayFilterGroupList protobufBufferFilterGroups = new ByteArrayFilterGroupList();
 
     /**
-     * Check if the given path, identifier or protobuf buffer is filtered by any
-     * {@link FilterGroup}.  Method is called off the main thread.
+     * Called after a filter has been matched.
+     * Default implementation is to filter the matched item if the group is enabled.
+     * Subclasses can perform additional checks if needed.
      *
-     * @return True if filtered, false otherwise.
+     * Method is called off the main thread.
+     *
+     * @param list  The group list the filter belongs to.
+     * @param group The actual filter that matched.
+     * @return True if the litho item should be hidden.
      */
-    boolean isFiltered(final String path, final String identifier, final byte[] protobufBufferArray) {
-        if (pathFilterGroups.contains(path)) {
-            LogHelper.printDebug(() -> String.format("Filtered path: %s", path));
-            return true;
+    @SuppressWarnings("rawtypes")
+    boolean isFiltered(final String path, final String identifier, final byte[] protobufBufferArray,
+                       FilterGroupList list, FilterGroup group) {
+        final boolean isEnabled = group.isEnabled();
+
+        if (SettingsEnum.DEBUG.getBoolean()) {
+            if (pathFilterGroups == list) {
+                LogHelper.printDebug(() -> getClass().getSimpleName() + " filtered path: " + path);
+            } else if (identifierFilterGroups == list) {
+                LogHelper.printDebug(() -> getClass().getSimpleName() + " filtered identifier: " + identifier);
+            } else if (protobufBufferFilterGroups == list) {
+                LogHelper.printDebug(() -> getClass().getSimpleName() + " filtered from protobuf-buffer");
+            }
         }
 
-        if (identifierFilterGroups.contains(identifier)) {
-            LogHelper.printDebug(() -> String.format("Filtered identifier: %s", identifier));
-            return true;
-        }
-
-        if (protobufBufferFilterGroups.contains(protobufBufferArray)) {
-            LogHelper.printDebug(() -> "Filtered from protobuf-buffer");
-            return true;
-        }
-
-        return false;
+        return isEnabled;
     }
 }
 
@@ -241,35 +258,71 @@ public final class LithoFilterPatch {
             new DummyFilter() // Replaced by patch.
     };
 
+    private static final StringTrieSearch pathSearchTree = new StringTrieSearch();
+    private static final StringTrieSearch identifierSearchTree = new StringTrieSearch();
+    private static final ByteTrieSearch protoSearchTree = new ByteTrieSearch();
+
+    private static String path;
+    private static String identifier;
+    private static byte[] protobufBufferArray;
+
+    static {
+        for (Filter filter : filters) {
+            for (StringFilterGroup group : filter.pathFilterGroups) {
+                addFilterToSearchTree(pathSearchTree, filter, filter.pathFilterGroups, group);
+            }
+            for (StringFilterGroup group : filter.identifierFilterGroups) {
+                addFilterToSearchTree(identifierSearchTree, filter, filter.identifierFilterGroups, group);
+            }
+            for (ByteArrayFilterGroup group : filter.protobufBufferFilterGroups) {
+                addFilterToSearchTree(protoSearchTree, filter, filter.protobufBufferFilterGroups, group);
+            }
+        }
+
+        LogHelper.printDebug(() -> "Using: " + (pathSearchTree.getPatterns().size()
+                + identifierSearchTree.getPatterns().size()
+                + protoSearchTree.getPatterns().size()) + " litho pattern filters");
+    }
+
+    private static <T> void addFilterToSearchTree(TrieSearch<T> pathSearchTree,
+                                                  Filter filter, FilterGroupList list, FilterGroup<T> group) {
+        for (T pattern : group.filters) {
+            pathSearchTree.addPattern(pattern, (TrieSearch.TriePatternMatchedCallback)
+                    (searchText, matchedStartIndex, matchedPatternLength) ->
+                            filter.isFiltered(path, identifier, protobufBufferArray, list, group)
+            );
+        }
+    }
+
     /**
      * Injection point.  Called off the main thread.
      */
     @SuppressWarnings("unused")
-    public static boolean filter(final StringBuilder pathBuilder, final String identifier,
-                                 final ByteBuffer protobufBuffer) {
-        // TODO: Maybe this can be moved to the Filter class, to prevent unnecessary
-        // string creation
-        // because some filters might not need the path.
-        var path = pathBuilder.toString();
+    public static boolean filter(@NonNull StringBuilder pathBuilder, @Nullable String lithoIdentifier,
+                                 @NonNull ByteBuffer protobufBuffer) {
+        try {
+            // TODO: Maybe this can be moved to the Filter class, to prevent unnecessary
+            // string creation
+            // because some filters might not need the path.
+            path = pathBuilder.toString();
 
-        // It is assumed that protobufBuffer is empty as well in this case.
-        if (path.isEmpty())
-            return false;
+            // It is assumed that protobufBuffer is empty as well in this case.
+            if (path.isEmpty())
+                return false;
 
-        LogHelper.printDebug(() -> String.format(
-                "Searching (ID: %s, Buffer-size: %s): %s",
-                identifier, protobufBuffer.remaining(), path));
+            identifier = lithoIdentifier;
 
-        var protobufBufferArray = protobufBuffer.array();
+            LogHelper.printDebug(() -> String.format(
+                    "Searching (ID: %s, Buffer-size: %s): %s",
+                    identifier, protobufBuffer.remaining(), path));
 
-        for (var filter : filters) {
-            var filtered = filter.isFiltered(path, identifier, protobufBufferArray);
+            protobufBufferArray = protobufBuffer.array();
 
-            LogHelper.printDebug(
-                    () -> String.format("%s (ID: %s): %s", filtered ? "Filtered" : "Unfiltered", identifier, path));
-
-            if (filtered)
-                return true;
+            if (pathSearchTree.matches(path)) return true;
+            if (identifier != null && identifierSearchTree.matches(identifier)) return true;
+            if (protoSearchTree.matches(protobufBufferArray)) return true;
+        } catch (Exception ex) {
+            LogHelper.printException(() -> "Litho filter failure", ex);
         }
 
         return false;

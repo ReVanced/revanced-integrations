@@ -7,16 +7,16 @@ import app.revanced.integrations.utils.ReVancedUtils;
 
 
 public final class AdsFilter extends Filter {
-    private final String[] exceptions;
+    private final StringTrieSearch exceptions = new StringTrieSearch();
 
     public AdsFilter() {
-        exceptions = new String[]{
+        exceptions.addPatterns(
                 "home_video_with_context", // Don't filter anything in the home page video component.
                 "related_video_with_context", // Don't filter anything in the related video component.
                 "comment_thread", // Don't filter anything in the comments.
                 "|comment.", // Don't filter anything in the comments replies.
-                "library_recent_shelf",
-        };
+                "library_recent_shelf"
+        );
 
         final var buttonedAd = new StringFilterGroup(
                 SettingsEnum.HIDE_BUTTONED_ADS,
@@ -95,11 +95,12 @@ public final class AdsFilter extends Filter {
     }
 
     @Override
-    public boolean isFiltered(final String path, final String identifier, final byte[] _protobufBufferArray) {
-        if (ReVancedUtils.containsAny(path, exceptions))
+    public boolean isFiltered(final String path, final String identifier, final byte[] _protobufBufferArray,
+                              FilterGroupList list, FilterGroup group) {
+        if (exceptions.matches(path))
            return false;
 
-        return super.isFiltered(path, identifier, _protobufBufferArray);
+        return super.isFiltered(path, identifier, _protobufBufferArray, list, group);
     }
 
     /**

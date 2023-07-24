@@ -128,6 +128,7 @@ public class CustomPlaybackSpeedPatch {
                 ((ViewGroup) linearLayout.getParent().getParent().getParent())
                         .getChildAt(0).performClick();
             }
+            PlaybackSpeedMenuFilterPatch.isPlaybackSpeedMenuVisible = false;
         });
     }
 

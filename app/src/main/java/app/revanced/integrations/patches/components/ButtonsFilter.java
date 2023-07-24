@@ -33,7 +33,8 @@ final class ButtonsFilter extends Filter {
                         SettingsEnum.HIDE_ACTION_BUTTONS,
                         "ContainerType|video_action_button",
                         "|CellType|CollectionType|CellType|ContainerType|button.eml|"
-                )
+                ),
+                actionBarRule
         );
     }
 
@@ -45,10 +46,12 @@ final class ButtonsFilter extends Filter {
     }
 
     @Override
-    public boolean isFiltered(final String path, final String identifier, final byte[] _protobufBufferArray) {
-        if (isEveryFilterGroupEnabled())
-            if (actionBarRule.check(identifier).isFiltered()) return true;
+    public boolean isFiltered(final String path, final String identifier, final byte[] _protobufBufferArray,
+                              FilterGroupList list, FilterGroup group) {
+        if (group == actionBarRule) {
+            return isEveryFilterGroupEnabled();
+        }
 
-        return super.isFiltered(path, identifier, _protobufBufferArray);
+        return super.isFiltered(path, identifier, _protobufBufferArray, list, group);
     }
 }
