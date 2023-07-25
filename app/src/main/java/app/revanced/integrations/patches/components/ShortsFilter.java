@@ -8,16 +8,18 @@ import static app.revanced.integrations.utils.ReVancedUtils.hideViewBy1dpUnderCo
 import static app.revanced.integrations.utils.ReVancedUtils.hideViewUnderCondition;
 
 public final class ShortsFilter extends Filter {
-    // Set by patch.
-    public static PivotBar pivotBar;
+    private final String REEL_CHANNEL_BAR_PATH = "reel_channel_bar";
+    public static PivotBar pivotBar; // Set by patch.
+    private final StringFilterGroup channelBar;
     private final StringFilterGroup soundButton;
     private final StringFilterGroup infoPanel;
-    private final StringFilterGroup reelChannelBar = new StringFilterGroup(
-            null,
-            "reel_channel_bar"
-    );
 
     public ShortsFilter() {
+        channelBar = new StringFilterGroup(
+                SettingsEnum.HIDE_SHORTS_CHANNEL_BAR,
+                "reel_channel_bar"
+        );
+
         soundButton = new StringFilterGroup(
                 SettingsEnum.HIDE_SHORTS_SOUND_BUTTON,
                 "reel_pivot_button"
@@ -43,11 +45,6 @@ public final class ShortsFilter extends Filter {
                 "sponsor_button"
         );
 
-        final var channelBar = new StringFilterGroup(
-                SettingsEnum.HIDE_SHORTS_CHANNEL_BAR,
-                "reel_channel_bar"
-        );
-
         final var shorts = new StringFilterGroup(
                 SettingsEnum.HIDE_SHORTS,
                 "shorts_shelf",
@@ -64,11 +61,11 @@ public final class ShortsFilter extends Filter {
     boolean isFiltered(final String path, final String identifier, final byte[] protobufBufferArray,
                        FilterGroupList matchedList, FilterGroup matchedGroup) {
         if (!matchedGroup.isEnabled()) return false;
-        if (matchedGroup == soundButton || matchedGroup == infoPanel) return true;
+        if (matchedGroup == soundButton || matchedGroup == infoPanel || matchedGroup == channelBar) return true;
 
         // Filter the path only when reelChannelBar is visible.
         if (pathFilterGroups == matchedList) {
-            return reelChannelBar.check(path).isFiltered();
+            return path.contains(REEL_CHANNEL_BAR_PATH);
         }
 
         return identifierFilterGroups == matchedList;
