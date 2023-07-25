@@ -55,7 +55,7 @@ public class PlayerFlyoutMenuItemsFilter extends Filter {
 
     @Override
     boolean isFiltered(String path, String identifier, byte[] _protobufBufferArray) {
-        if (identifier != null && path.contains("overflow_menu_item"))
+        if (identifier != null && identifier.startsWith("overflow_menu_item.eml|"))
             return super.isFiltered(path, identifier, _protobufBufferArray);
 
         return false;
