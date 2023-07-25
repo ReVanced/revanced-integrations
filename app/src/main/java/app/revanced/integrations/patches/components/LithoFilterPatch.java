@@ -279,8 +279,8 @@ public final class LithoFilterPatch {
             }
         }
 
-        LogHelper.printDebug(() -> "Using: " + pathSearchTree.getPatterns().size() + " path "
-                + identifierSearchTree.getPatterns().size() + " identifier "
+        LogHelper.printDebug(() -> "Using: " + pathSearchTree.getPatterns().size() + " path, "
+                + identifierSearchTree.getPatterns().size() + " identifier, "
                 + protoSearchTree.getPatterns().size() + " litho filters");
     }
 
