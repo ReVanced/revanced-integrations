@@ -300,9 +300,13 @@ public final class LithoFilterPatch {
             addFilterToSearchTree(protoSearchTree, filter, filter.protobufBufferFilterGroups);
         }
 
-        LogHelper.printDebug(() -> "Using: " + pathSearchTree.getPatterns().size() + " path, "
-                + identifierSearchTree.getPatterns().size() + " identifier, "
-                + protoSearchTree.getPatterns().size() + " protobuffer filters");
+        LogHelper.printDebug(() -> "Using: "
+                + pathSearchTree.getPatterns().size() + " path filters"
+                + " (" + pathSearchTree.getEstimatedMemorySize() + " KB), "
+                + identifierSearchTree.getPatterns().size() + " identifier filters"
+                + " (" + identifierSearchTree.getEstimatedMemorySize() + " KB), "
+                + protoSearchTree.getPatterns().size() + " protobuffer filters"
+                + " (" + protoSearchTree.getEstimatedMemorySize() + " KB)");
     }
 
     private static <T> void addFilterToSearchTree(TrieSearch<T> pathSearchTree,

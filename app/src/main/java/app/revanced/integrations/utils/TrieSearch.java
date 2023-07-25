@@ -101,10 +101,25 @@ public abstract class TrieSearch<T> {
                     currentMatchLength + 1);
         }
 
+        /**
+         * @return Number of node arrays created, starting from this node and including all children.
+         */
+        protected int findNumberOfChildArrays() {
+            if (children == null) {
+                return 0;
+            }
+            int numChildArrays = 1;
+            for (TrieNode<T> child : children) {
+                if (child != null) {
+                    numChildArrays += child.findNumberOfChildArrays();
+                }
+            }
+            return numChildArrays;
+        }
+
         abstract TrieNode<T> createNode();
         abstract char getCharValue(T text, int index);
     }
-
 
     /**
      * Root node, and it's children represent the first pattern characters.
@@ -143,6 +158,19 @@ public abstract class TrieSearch<T> {
         }
         return false;
     }
+
+    /**
+     * @return Estimated memory size (in kilobytes) of this instance.
+     */
+    public int getEstimatedMemorySize() {
+        // Assume the device has less than 32GB of ram (and can use pointer compression),
+        // or the device is 32-bit.
+        final int numberOfBytesPerPointer = 4;
+        // This ignores the memory size of object garbage collection entries,
+        // and ignores the leaf node 1 element callback function arraylist.
+        return (numberOfBytesPerPointer * root.findNumberOfChildArrays() * TrieNode.CHAR_RANGE) / 1024;
+    }
+
 
     public int numberOfPatterns() {
         return patterns.size();
