@@ -188,6 +188,7 @@ abstract class FilterGroupList<V, T extends FilterGroup<V>> implements Iterable<
     }
 
     protected final void buildSearch() {
+        LogHelper.printDebug(() -> search == null ? "Rebuilding search tree" : "Creating search tree");
         search = createSearchGraph();
         for (T group : filterGroups) {
             for (V pattern : group.filters) {
