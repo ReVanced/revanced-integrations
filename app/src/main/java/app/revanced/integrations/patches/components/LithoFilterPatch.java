@@ -317,8 +317,6 @@ public final class LithoFilterPatch {
         }
     }
 
-    static long total, min, num;
-
     /**
      * Injection point.  Called off the main thread.
      */
@@ -346,12 +344,6 @@ public final class LithoFilterPatch {
             if (protoSearchTree.matches(protobufBufferArray)) return true;
         } catch (Exception ex) {
             LogHelper.printException(() -> "Litho filter failure", ex);
-        } finally {
-            num++;
-            start = System.nanoTime() - start;
-            total += start;
-            if (min == 0) min = start; else min = Math.min(min, start);
-            LogHelper.printDebug(() -> "Average: " + (total / num) + " min: " + min);
         }
 
         return false;
