@@ -303,7 +303,7 @@ public final class LithoFilterPatch {
 
         LogHelper.printDebug(() -> "Using: " + pathSearchTree.getPatterns().size() + " path, "
                 + identifierSearchTree.getPatterns().size() + " identifier, "
-                + protoSearchTree.getPatterns().size() + " litho filters");
+                + protoSearchTree.getPatterns().size() + " protobuffer filters");
     }
 
     @SuppressWarnings("rawtypes")
