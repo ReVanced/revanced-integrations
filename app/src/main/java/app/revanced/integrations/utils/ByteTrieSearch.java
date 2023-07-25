@@ -13,9 +13,6 @@ public final class ByteTrieSearch extends TrieSearch<byte[]> {
         char getCharValue(byte[] text, int index) {
             return (char) text[index];
         }
-        int getLength(byte[] text) {
-            return text.length;
-        }
     }
 
     public ByteTrieSearch() {

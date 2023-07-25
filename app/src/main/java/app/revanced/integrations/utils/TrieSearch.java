@@ -36,18 +36,14 @@ public abstract class TrieSearch<T> {
         @Nullable
         List<TriePatternMatchedCallback<T>> endOfPatternCallback;
 
-        void addPattern(@NonNull T pattern, @Nullable TriePatternMatchedCallback<T> callback) {
-            addPattern(pattern, getLength(pattern), 0, callback);
-        }
-
         /**
          * @param pattern       Pattern to add.
          * @param patternLength Length of the pattern.
          * @param patternIndex  Current recursive index of the pattern.
          * @param callback      Callback, where a value of NULL indicates to always accept a pattern match.
          */
-        private void addPattern(@NonNull T pattern, int patternLength, int patternIndex,
-                                @Nullable TriePatternMatchedCallback<T> callback) {
+        void addPattern(@NonNull T pattern, int patternLength, int patternIndex,
+                        @Nullable TriePatternMatchedCallback<T> callback) {
             if (patternIndex == patternLength) { // Reached the end of the string.
                 if (endOfPatternCallback == null) {
                     endOfPatternCallback = new ArrayList<>(1);
@@ -107,7 +103,6 @@ public abstract class TrieSearch<T> {
 
         abstract TrieNode<T> createNode();
         abstract char getCharValue(T text, int index);
-        abstract int getLength(T text);
     }
 
 
@@ -140,7 +135,7 @@ public abstract class TrieSearch<T> {
         if (patternLength == 0) return; // Nothing to match
 
         patterns.add(pattern);
-        root.addPattern(pattern, callback);
+        root.addPattern(pattern, patternLength, 0, callback);
     }
 
     protected boolean matches(@NonNull T textToSearch, int textToSearchLength) {
@@ -169,8 +164,8 @@ public abstract class TrieSearch<T> {
     public abstract void addPattern(@NonNull T pattern);
 
     /**
-     * @param pattern  Pattern to add. Calling this with an empty pattern (zero length) does nothing.
-     * @param callback Callback to determine if searching should halt and a match is found.
+     * @param pattern  Pattern to add. Calling this with a zero length pattern does nothing.
+     * @param callback Callback to determine if searching should halt when a match is found.
      */
     public abstract void addPattern(@NonNull T pattern, @NonNull TriePatternMatchedCallback<T> callback);
 

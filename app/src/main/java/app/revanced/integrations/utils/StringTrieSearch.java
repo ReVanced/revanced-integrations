@@ -16,9 +16,6 @@ public final class StringTrieSearch extends TrieSearch<String> {
         char getCharValue(String text, int index) {
             return text.charAt(index);
         }
-        int getLength(String text) {
-            return text.length();
-        }
     }
 
     public StringTrieSearch() {
