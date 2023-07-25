@@ -24,7 +24,7 @@ public final class StringTrieSearch extends TrieSearch<String> {
 
     @Override
     public void addPattern(@NonNull String pattern) {
-        super.addPattern(pattern, pattern.length());
+        super.addPattern(pattern, pattern.length(), null);
     }
 
     @Override

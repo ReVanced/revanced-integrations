@@ -127,10 +127,6 @@ public abstract class TrieSearch<T> {
         }
     }
 
-    protected void addPattern(@NonNull T pattern, int patternLength) {
-        addPattern(pattern, patternLength, null);
-    }
-
     protected void addPattern(@NonNull T pattern, int patternLength, @Nullable TriePatternMatchedCallback<T> callback) {
         if (patternLength == 0) return; // Nothing to match
 

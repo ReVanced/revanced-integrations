@@ -21,7 +21,7 @@ public final class ByteTrieSearch extends TrieSearch<byte[]> {
 
     @Override
     public void addPattern(@NonNull byte[] pattern) {
-        super.addPattern(pattern, pattern.length);
+        super.addPattern(pattern, pattern.length, null);
     }
 
     @Override
