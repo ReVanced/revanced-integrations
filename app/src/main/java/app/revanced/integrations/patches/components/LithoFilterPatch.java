@@ -239,11 +239,11 @@ abstract class Filter {
 
         if (isEnabled && SettingsEnum.DEBUG.getBoolean()) {
             if (pathFilterGroups == matchedList) {
-                LogHelper.printDebug(() -> getClass().getSimpleName() + " filtered path: " + path);
+                LogHelper.printDebug(() -> getClass().getSimpleName() + " Filtered path: " + path);
             } else if (identifierFilterGroups == matchedList) {
-                LogHelper.printDebug(() -> getClass().getSimpleName() + " filtered identifier: " + identifier);
+                LogHelper.printDebug(() -> getClass().getSimpleName() + " Filtered identifier: " + identifier);
             } else if (protobufBufferFilterGroups == matchedList) {
-                LogHelper.printDebug(() -> getClass().getSimpleName() + " filtered from protobuf-buffer");
+                LogHelper.printDebug(() -> getClass().getSimpleName() + " Filtered from protobuf-buffer");
             }
         }
 
@@ -284,6 +284,7 @@ public final class LithoFilterPatch {
                 + protoSearchTree.getPatterns().size() + " litho filters");
     }
 
+    @SuppressWarnings("rawtypes")
     private static <T> void addFilterToSearchTree(TrieSearch<T> pathSearchTree,
                                                   Filter filter, FilterGroupList list, FilterGroup<T> group) {
         for (T pattern : group.filters) {
@@ -301,9 +302,6 @@ public final class LithoFilterPatch {
     public static boolean filter(@NonNull StringBuilder pathBuilder, @Nullable String lithoIdentifier,
                                  @NonNull ByteBuffer protobufBuffer) {
         try {
-            // TODO: Maybe this can be moved to the Filter class, to prevent unnecessary
-            // string creation
-            // because some filters might not need the path.
             path = pathBuilder.toString();
 
             // It is assumed that protobufBuffer is empty as well in this case.
