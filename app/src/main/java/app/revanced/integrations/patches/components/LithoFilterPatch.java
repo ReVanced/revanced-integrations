@@ -239,13 +239,14 @@ final class ByteArrayFilterGroupList extends FilterGroupList<byte[], ByteArrayFi
 }
 
 abstract class Filter {
-    /*
+    /**
      * All group filters must be set before the constructor call completes.
-     * Otherwise the filter will never be called when the group matches.
+     * Otherwise {@link #isFiltered(String, String, byte[], FilterGroupList, FilterGroup)}
+     * will never be called for any matches.
      */
-    final protected StringFilterGroupList pathFilterGroups = new StringFilterGroupList();
-    final protected StringFilterGroupList identifierFilterGroups = new StringFilterGroupList();
-    final protected ByteArrayFilterGroupList protobufBufferFilterGroups = new ByteArrayFilterGroupList();
+    protected final StringFilterGroupList pathFilterGroups = new StringFilterGroupList();
+    protected final StringFilterGroupList identifierFilterGroups = new StringFilterGroupList();
+    protected final ByteArrayFilterGroupList protobufBufferFilterGroups = new ByteArrayFilterGroupList();
 
     /**
      * Called after a filter has been matched (both when enabled and disabled).
@@ -316,12 +317,15 @@ public final class LithoFilterPatch {
         }
     }
 
+    static long total, min, num;
+
     /**
      * Injection point.  Called off the main thread.
      */
     @SuppressWarnings("unused")
     public static boolean filter(@NonNull StringBuilder pathBuilder, @Nullable String lithoIdentifier,
                                  @NonNull ByteBuffer protobufBuffer) {
+        long start = System.nanoTime();
         try {
             path = pathBuilder.toString();
 
@@ -342,6 +346,12 @@ public final class LithoFilterPatch {
             if (protoSearchTree.matches(protobufBufferArray)) return true;
         } catch (Exception ex) {
             LogHelper.printException(() -> "Litho filter failure", ex);
+        } finally {
+            num++;
+            start = System.nanoTime() - start;
+            total += start;
+            if (min == 0) min = start; else min = Math.min(min, start);
+            LogHelper.printDebug(() -> "Average: " + (total / num) + " min: " + min);
         }
 
         return false;
