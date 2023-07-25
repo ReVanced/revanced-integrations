@@ -237,7 +237,7 @@ abstract class Filter {
                        FilterGroupList matchedList, FilterGroup matchedGroup) {
         final boolean isEnabled = matchedGroup.isEnabled();
 
-        if (SettingsEnum.DEBUG.getBoolean()) {
+        if (isEnabled && SettingsEnum.DEBUG.getBoolean()) {
             if (pathFilterGroups == matchedList) {
                 LogHelper.printDebug(() -> getClass().getSimpleName() + " filtered path: " + path);
             } else if (identifierFilterGroups == matchedList) {
@@ -279,16 +279,16 @@ public final class LithoFilterPatch {
             }
         }
 
-        LogHelper.printDebug(() -> "Using: " + (pathSearchTree.getPatterns().size()
-                + identifierSearchTree.getPatterns().size()
-                + protoSearchTree.getPatterns().size()) + " litho pattern filters");
+        LogHelper.printDebug(() -> "Using: " + pathSearchTree.getPatterns().size() + " path "
+                + identifierSearchTree.getPatterns().size() + " identifier "
+                + protoSearchTree.getPatterns().size() + " litho filters");
     }
 
     private static <T> void addFilterToSearchTree(TrieSearch<T> pathSearchTree,
                                                   Filter filter, FilterGroupList list, FilterGroup<T> group) {
         for (T pattern : group.filters) {
             pathSearchTree.addPattern(pattern, (TrieSearch.TriePatternMatchedCallback<T>)
-                    (searchText, matchedStartIndex, matchedPatternLength) ->
+                    (searchText, matchedStartIndex, matchedEndIndex) ->
                             filter.isFiltered(path, identifier, protobufBufferArray, list, group)
             );
         }
