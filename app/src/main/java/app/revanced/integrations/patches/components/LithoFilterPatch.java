@@ -15,8 +15,11 @@ import java.util.Spliterator;
 import java.util.function.Consumer;
 
 import app.revanced.integrations.settings.SettingsEnum;
+import app.revanced.integrations.utils.ByteTrieSearch;
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedUtils;
+import app.revanced.integrations.utils.StringTrieSearch;
+import app.revanced.integrations.utils.TrieSearch;
 
 abstract class FilterGroup<T> {
     final static class FilterGroupResult {

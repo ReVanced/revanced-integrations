@@ -1,4 +1,4 @@
-package app.revanced.integrations.patches.components;
+package app.revanced.integrations.utils;
 
 import androidx.annotation.NonNull;
 

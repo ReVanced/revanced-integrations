@@ -2,8 +2,10 @@ package app.revanced.integrations.patches.components;
 
 
 import android.view.View;
+
 import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.utils.ReVancedUtils;
+import app.revanced.integrations.utils.StringTrieSearch;
 
 
 public final class AdsFilter extends Filter {

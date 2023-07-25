@@ -1,4 +1,4 @@
-package app.revanced.integrations.patches.components;
+package app.revanced.integrations.utils;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -14,7 +14,7 @@ import java.util.Objects;
  */
 public abstract class TrieSearch<T> {
 
-    interface TriePatternMatchedCallback<T> {
+    public interface TriePatternMatchedCallback<T> {
         /**
          * Called when a pattern is matched.
          *
