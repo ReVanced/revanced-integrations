@@ -10,6 +10,7 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Spliterator;
 import java.util.function.Consumer;
 
@@ -165,11 +166,31 @@ final class ByteArrayAsStringFilterGroup extends ByteArrayFilterGroup {
 }
 
 abstract class FilterGroupList<V, T extends FilterGroup<V>> implements Iterable<T> {
-    private final ArrayList<T> filterGroups = new ArrayList<>();
+    private final List<T> filterGroups = new ArrayList<>();
+    /**
+     * Search graph. Created only if needed.
+     */
+    private TrieSearch<V> search;
+    /**
+     * Total number of patterns for all groups added to this instance.
+     */
+    private int numberOfGroupPatterns;
 
     @SafeVarargs
-    protected final void addAll(final T... filterGroups) {
-        this.filterGroups.addAll(Arrays.asList(filterGroups));
+    protected final void addAll(final T... groups) {
+        for (T group : groups) {
+            filterGroups.add(group);
+            numberOfGroupPatterns += group.filters.length;
+        }
+    }
+
+    protected final void buildSearch() {
+        search = createSearchGraph();
+        for (T group : filterGroups) {
+            for (V pattern : group.filters) {
+                search.addPattern(pattern, (searchText, matchedStartIndex, matchedEndIndex) -> group.isEnabled());
+            }
+        }
     }
 
     @NonNull
@@ -192,24 +213,25 @@ abstract class FilterGroupList<V, T extends FilterGroup<V>> implements Iterable<
     }
 
     protected boolean contains(final V stack) {
-        for (T filterGroup : this) {
-            if (!filterGroup.isEnabled())
-                continue;
-
-            var result = filterGroup.check(stack);
-            if (result.isFiltered()) {
-                return true;
-            }
+        if (search == null || search.numberOfPatterns() != numberOfGroupPatterns) {
+            buildSearch(); // Lazy load the search
         }
-
-        return false;
+        return search.matches(stack);
     }
+
+    protected abstract TrieSearch<V> createSearchGraph();
 }
 
 final class StringFilterGroupList extends FilterGroupList<String, StringFilterGroup> {
+    protected StringTrieSearch createSearchGraph() {
+        return new StringTrieSearch();
+    }
 }
 
 final class ByteArrayFilterGroupList extends FilterGroupList<byte[], ByteArrayFilterGroup> {
+    protected ByteTrieSearch createSearchGraph() {
+        return new ByteTrieSearch();
+    }
 }
 
 abstract class Filter {
