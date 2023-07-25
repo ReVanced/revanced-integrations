@@ -8,10 +8,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-import app.revanced.integrations.utils.ReVancedUtils;
-
 /**
  * Searches for a group of different patterns using a trie (prefix tree).
+ * Can significantly speed up searching for multiple patterns.
  */
 public abstract class TrieSearch<T> {
 
@@ -34,19 +33,20 @@ public abstract class TrieSearch<T> {
         /**
          * Callbacks for all patterns that end at this node.
          */
+        @Nullable
         List<TriePatternMatchedCallback<T>> endOfPatternCallback;
 
-        void addPattern(@NonNull T pattern, @NonNull TriePatternMatchedCallback<T> callback) {
-            addPattern(pattern, 0, getLength(pattern), callback);
+        void addPattern(@NonNull T pattern, @Nullable TriePatternMatchedCallback<T> callback) {
+            addPattern(pattern, getLength(pattern), 0, callback);
         }
 
         /**
          * @param pattern       Pattern to add.
-         * @param patternIndex  Current recursive index of the pattern.
          * @param patternLength Length of the pattern.
+         * @param patternIndex  Current recursive index of the pattern.
          * @param callback      Callback, where a value of NULL indicates to always accept a pattern match.
          */
-        private void addPattern(@NonNull T pattern, int patternIndex, int patternLength,
+        private void addPattern(@NonNull T pattern, int patternLength, int patternIndex,
                                 @Nullable TriePatternMatchedCallback<T> callback) {
             if (patternIndex == patternLength) { // Reached the end of the string.
                 if (endOfPatternCallback == null) {
@@ -67,7 +67,7 @@ public abstract class TrieSearch<T> {
                 child = createNode();
                 children[character] = child;
             }
-            child.addPattern(pattern, patternIndex + 1, patternLength, callback);
+            child.addPattern(pattern, patternLength, patternIndex + 1, callback);
         }
 
         /**
@@ -85,16 +85,13 @@ public abstract class TrieSearch<T> {
                         return true; // Callback confirms the match.
                     }
                 }
-                // Else, no callbacks stop the search.  Continue to search for another match.
+                if (children == null) {
+                    return false; // Reached a graph end point, and there's no further patterns to search.
+                }
             }
 
             if (searchTextIndex == searchTextLength) {
-                return false; // Reached end of the text and found no matches.
-            }
-            if (children == null) {
-                // Reached end of a pattern and the end of the tree,
-                // but the callback did not declare it a match.
-                return false;
+                return false; // Reached end of the search text and found no matches.
             }
             final char character = getCharValue(searchText, searchTextIndex);
             if (character >= CHAR_RANGE) {
@@ -109,7 +106,7 @@ public abstract class TrieSearch<T> {
         }
 
         abstract TrieNode<T> createNode();
-        abstract char getCharValue(T textToSearch, int index);
+        abstract char getCharValue(T text, int index);
         abstract int getLength(T text);
     }
 
@@ -128,7 +125,8 @@ public abstract class TrieSearch<T> {
         this.root = Objects.requireNonNull(root);
     }
 
-    public void addPatterns(@NonNull T ... patterns) {
+    @SafeVarargs
+    public final void addPatterns(@NonNull T... patterns) {
         for (T pattern : patterns) {
             addPattern(pattern);
         }
@@ -153,6 +151,10 @@ public abstract class TrieSearch<T> {
             if (root.matches(textToSearch, textToSearchLength, i, 0)) return true;
         }
         return false;
+    }
+
+    public int numberOfPatterns() {
+        return patterns.size();
     }
 
     public List<T> getPatterns() {

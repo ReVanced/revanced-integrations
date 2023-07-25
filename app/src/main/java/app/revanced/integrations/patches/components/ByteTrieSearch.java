@@ -4,14 +4,14 @@ import androidx.annotation.NonNull;
 
 import java.util.Objects;
 
-public class ByteTrieSearch extends TrieSearch<byte[]> {
+public final class ByteTrieSearch extends TrieSearch<byte[]> {
 
-    private static class ByteTrieNode extends TrieNode<byte[]> {
+    private static final class ByteTrieNode extends TrieNode<byte[]> {
         TrieNode<byte[]> createNode() {
             return new ByteTrieNode();
         }
-        char getCharValue(byte[] textToSearch, int index) {
-            return (char) textToSearch[index];
+        char getCharValue(byte[] text, int index) {
+            return (char) text[index];
         }
         int getLength(byte[] text) {
             return text.length;

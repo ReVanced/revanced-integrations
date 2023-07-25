@@ -6,16 +6,15 @@ import java.util.Objects;
 
 /**
  * Text pattern searching using a prefix tree (trie).
- * Can significantly speed up searching for multiple patterns.
  */
-public class StringTrieSearch extends TrieSearch<String> {
+public final class StringTrieSearch extends TrieSearch<String> {
 
-    private static class StringTrieNode extends TrieNode<String> {
+    private static final class StringTrieNode extends TrieNode<String> {
         TrieNode<String> createNode() {
             return new StringTrieNode();
         }
-        char getCharValue(String textToSearch, int index) {
-            return textToSearch.charAt(index);
+        char getCharValue(String text, int index) {
+            return text.charAt(index);
         }
         int getLength(String text) {
             return text.length();
