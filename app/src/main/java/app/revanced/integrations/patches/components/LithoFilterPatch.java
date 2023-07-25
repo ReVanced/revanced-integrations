@@ -247,9 +247,9 @@ abstract class Filter {
     final protected ByteArrayFilterGroupList protobufBufferFilterGroups = new ByteArrayFilterGroupList();
 
     /**
-     * Called after a filter has been matched.
+     * Called after a filter has been matched (both when enabled and disabled).
      * Default implementation is to filter the matched item if the matchedGroup is enabled.
-     * Subclasses can perform additional checks if needed.
+     * Subclasses can perform additional or different checks if needed.
      *
      * Method is called off the main thread.
      *
@@ -293,15 +293,9 @@ public final class LithoFilterPatch {
 
     static {
         for (Filter filter : filters) {
-            for (StringFilterGroup group : filter.pathFilterGroups) {
-                addFilterToSearchTree(pathSearchTree, filter, filter.pathFilterGroups, group);
-            }
-            for (StringFilterGroup group : filter.identifierFilterGroups) {
-                addFilterToSearchTree(identifierSearchTree, filter, filter.identifierFilterGroups, group);
-            }
-            for (ByteArrayFilterGroup group : filter.protobufBufferFilterGroups) {
-                addFilterToSearchTree(protoSearchTree, filter, filter.protobufBufferFilterGroups, group);
-            }
+            addFilterToSearchTree(pathSearchTree, filter, filter.pathFilterGroups);
+            addFilterToSearchTree(identifierSearchTree, filter, filter.identifierFilterGroups);
+            addFilterToSearchTree(protoSearchTree, filter, filter.protobufBufferFilterGroups);
         }
 
         LogHelper.printDebug(() -> "Using: " + pathSearchTree.getPatterns().size() + " path, "
@@ -309,14 +303,15 @@ public final class LithoFilterPatch {
                 + protoSearchTree.getPatterns().size() + " protobuffer filters");
     }
 
-    @SuppressWarnings("rawtypes")
     private static <T> void addFilterToSearchTree(TrieSearch<T> pathSearchTree,
-                                                  Filter filter, FilterGroupList list, FilterGroup<T> group) {
-        for (T pattern : group.filters) {
-            pathSearchTree.addPattern(pattern, (TrieSearch.TriePatternMatchedCallback<T>)
-                    (searchText, matchedStartIndex, matchedEndIndex) ->
-                            filter.isFiltered(path, identifier, protobufBufferArray, list, group)
-            );
+                                                  Filter filter, FilterGroupList<T, ? extends FilterGroup<T>> list) {
+        for (FilterGroup<T> group : list) {
+            for (T pattern : group.filters) {
+                pathSearchTree.addPattern(pattern, (TrieSearch.TriePatternMatchedCallback<T>)
+                        (searchText, matchedStartIndex, matchedEndIndex) ->
+                                filter.isFiltered(path, identifier, protobufBufferArray, list, group)
+                );
+            }
         }
     }
 
