@@ -174,21 +174,15 @@ abstract class FilterGroupList<V, T extends FilterGroup<V>> implements Iterable<
      * Search graph. Created only if needed.
      */
     private TrieSearch<V> search;
-    /**
-     * Total number of patterns for all groups added to this instance.
-     */
-    private int numberOfGroupPatterns;
 
     @SafeVarargs
     protected final void addAll(final T... groups) {
-        for (T group : groups) {
-            filterGroups.add(group);
-            numberOfGroupPatterns += group.filters.length;
-        }
+        filterGroups.addAll(Arrays.asList(groups));
+        search = null; // Rebuild, if already created.
     }
 
     protected final void buildSearch() {
-        LogHelper.printDebug(() -> search == null ? "Rebuilding search tree" : "Creating search tree");
+        LogHelper.printDebug(() -> "Creating prefix search tree");
         search = createSearchGraph();
         for (T group : filterGroups) {
             for (V pattern : group.filters) {
@@ -217,7 +211,7 @@ abstract class FilterGroupList<V, T extends FilterGroup<V>> implements Iterable<
     }
 
     protected boolean contains(final V stack) {
-        if (search == null || search.numberOfPatterns() != numberOfGroupPatterns) {
+        if (search == null) {
             buildSearch(); // Lazy load the search
         }
         return search.matches(stack);
