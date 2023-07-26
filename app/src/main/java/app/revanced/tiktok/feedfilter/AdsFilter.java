@@ -1,15 +1,16 @@
 package app.revanced.tiktok.feedfilter;
 
-import com.ss.android.ugc.aweme.feed.model.Aweme;
-
-import java.util.Iterator;
-
 import app.revanced.tiktok.settings.SettingsEnum;
+import com.ss.android.ugc.aweme.feed.model.Aweme;
 
 public class AdsFilter implements IFilter {
     @Override
-    public void process(Iterator<Aweme> list, Aweme item) {
-        boolean ads = SettingsEnum.REMOVE_ADS.getBoolean();
-        if (ads && (item.isAd() || item.isWithPromotionalMusic())) list.remove();
+    public boolean getEnabled() {
+        return SettingsEnum.REMOVE_ADS.getBoolean();
+    }
+
+    @Override
+    public boolean getFiltered(Aweme item) {
+        return item.isAd() || item.isWithPromotionalMusic();
     }
 }

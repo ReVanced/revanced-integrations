@@ -1,21 +1,32 @@
 package app.revanced.tiktok.feedfilter;
 
+import app.revanced.tiktok.settings.SettingsEnum;
 import com.ss.android.ugc.aweme.feed.model.Aweme;
 import com.ss.android.ugc.aweme.feed.model.AwemeStatistics;
 
-import java.util.Iterator;
+import static app.revanced.tiktok.utils.ReVancedUtils.parseMinMax;
 
-import app.revanced.tiktok.settings.SettingsEnum;
+public final class LikeCountFilter implements IFilter {
+    final long minLike;
+    final long maxLike;
 
-public class LikeCountFilter implements IFilter {
+    LikeCountFilter() {
+        long[] minMax = parseMinMax(SettingsEnum.MIN_MAX_LIKES);
+        minLike = minMax[0];
+        maxLike = minMax[1];
+    }
+
     @Override
-    public void process(Iterator<Aweme> list, Aweme item) {
-        long minLike = Long.parseLong(SettingsEnum.MIN_MAX_LIKES.getString().split("-")[0]);
-        long maxLike = Long.parseLong(SettingsEnum.MIN_MAX_LIKES.getString().split("-")[1]);
+    public boolean getEnabled() {
+        return true;
+    }
+
+    @Override
+    public boolean getFiltered(Aweme item) {
         AwemeStatistics statistics = item.getStatistics();
-        if (statistics != null) {
-            long likeCount = statistics.getDiggCount();
-            if (likeCount < minLike || likeCount > maxLike) list.remove();
-        }
+        if (statistics == null) return false;
+
+        long likeCount = statistics.getDiggCount();
+        return likeCount < minLike || likeCount > maxLike;
     }
 }

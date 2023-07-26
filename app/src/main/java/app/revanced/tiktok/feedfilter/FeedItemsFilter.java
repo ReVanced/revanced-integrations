@@ -6,17 +6,27 @@ import com.ss.android.ugc.aweme.feed.model.FeedItemList;
 import java.util.Iterator;
 import java.util.List;
 
-public class FeedItemsFilter {
+public final class FeedItemsFilter {
+    private static final List<IFilter> FILTERS = List.of(
+            new AdsFilter(),
+            new LiveFilter(),
+            new StoryFilter(),
+            new ImageVideoFilter(),
+            new ViewCountFilter(),
+            new LikeCountFilter()
+    );
 
     public static void filter(FeedItemList feedItemList) {
-        List<IFilter> filters = List.of(new AdsFilter(), new LiveFilter(), new StoryFilter(), new ImageVideoFilter(), new ViewCountFilter(), new LikeCountFilter());
-        List<Aweme> items = feedItemList.items;
-        Iterator<Aweme> it = items.iterator();
-        while (it.hasNext()) {
-            Aweme item = it.next();
-            if (item != null) {
-                for (IFilter filter : filters) {
-                    filter.process(it, item);
+        Iterator<Aweme> feedItemListIterator = feedItemList.items.iterator();
+        while (feedItemListIterator.hasNext()) {
+            Aweme item = feedItemListIterator.next();
+            if (item == null) continue;
+
+            for (IFilter filter : FILTERS) {
+                boolean enabled = filter.getEnabled();
+                if (enabled && filter.getFiltered(item)) {
+                    feedItemListIterator.remove();
+                    break;
                 }
             }
         }
