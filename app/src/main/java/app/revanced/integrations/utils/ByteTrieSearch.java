@@ -1,6 +1,7 @@
 package app.revanced.integrations.utils;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import java.util.Objects;
 
@@ -30,8 +31,8 @@ public final class ByteTrieSearch extends TrieSearch<byte[]> {
     }
 
     @Override
-    public boolean matches(@NonNull byte[] textToSearch) {
-        return super.matches(textToSearch, textToSearch.length);
+    public boolean matches(@NonNull byte[] textToSearch, @Nullable Object callbackParameter) {
+        return super.matches(textToSearch, textToSearch.length, Objects.requireNonNull(callbackParameter));
     }
 
 }

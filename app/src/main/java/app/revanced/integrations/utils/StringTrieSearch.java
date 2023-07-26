@@ -1,6 +1,7 @@
 package app.revanced.integrations.utils;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import java.util.Objects;
 
@@ -33,7 +34,7 @@ public final class StringTrieSearch extends TrieSearch<String> {
     }
 
     @Override
-    public boolean matches(@NonNull String textToSearch) {
-        return super.matches(textToSearch, textToSearch.length());
+    public boolean matches(@NonNull String textToSearch, @Nullable Object callbackParameter) {
+        return super.matches(textToSearch, textToSearch.length(), Objects.requireNonNull(callbackParameter));
     }
 }

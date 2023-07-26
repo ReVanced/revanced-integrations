@@ -19,12 +19,13 @@ public abstract class TrieSearch<T> {
          * Called when a pattern is matched.
          *
          * @param searchedText      The text that was searched.
-         * @param matchedStartIndex Start index of the search text, where the pattern was matched
+         * @param matchedStartIndex Start index of the search text, where the pattern was matched.
          * @param matchedEndIndex   Exclusive end index of the search text, where the pattern was matched.
+         * @param callbackParameter Optional parameter passed into {@link TrieSearch#matches(Object, Object)}.
          * @return True, if the search should stop here.
          *         If false, searching will continue to look for other matches.
          */
-        boolean patternMatched(T searchedText, int matchedStartIndex, int matchedEndIndex);
+        boolean patternMatched(T searchedText, int matchedStartIndex, int matchedEndIndex, Object callbackParameter);
     }
 
     protected static abstract class TrieNode<T> {
@@ -73,12 +74,16 @@ public abstract class TrieSearch<T> {
          * @param currentMatchLength current search depth, and also the length of the current pattern match.
          * @return If any pattern matches and it's associated callback halted the search.
          */
-        private boolean matches(T searchText, int searchTextLength, int searchTextIndex, int currentMatchLength) {
+        private boolean matches(T searchText, int searchTextLength, int searchTextIndex, int currentMatchLength,
+                                Object callbackParameter) {
             if (endOfPatternCallback != null) {
                 final int matchStartIndex = searchTextIndex - currentMatchLength;
                 for (@Nullable TriePatternMatchedCallback<T> callback : endOfPatternCallback) {
-                    if (callback == null || callback.patternMatched(searchText, matchStartIndex, searchTextIndex)) {
-                        return true; // Callback confirms the match.
+                    if (callback == null) {
+                        return true; // No callback, and all matches are valid.
+                    }
+                    if (callback.patternMatched(searchText, matchStartIndex, searchTextIndex, callbackParameter)) {
+                        return true; // Callback confirmed the match.
                     }
                 }
                 if (children == null) {
@@ -98,7 +103,7 @@ public abstract class TrieSearch<T> {
                 return false;
             }
             return child.matches(searchText, searchTextLength, searchTextIndex + 1,
-                    currentMatchLength + 1);
+                    currentMatchLength + 1, callbackParameter);
         }
 
         /**
@@ -149,12 +154,12 @@ public abstract class TrieSearch<T> {
         root.addPattern(pattern, patternLength, 0, callback);
     }
 
-    protected boolean matches(@NonNull T textToSearch, int textToSearchLength) {
+    protected boolean matches(@NonNull T textToSearch, int textToSearchLength, @Nullable Object callbackParameter) {
         if (patterns.size() == 0) {
             return false; // No patterns were added.
         }
         for (int i = 0; i < textToSearchLength; i++) {
-            if (root.matches(textToSearch, textToSearchLength, i, 0)) return true;
+            if (root.matches(textToSearch, textToSearchLength, i, 0, callbackParameter)) return true;
         }
         return false;
     }
@@ -197,7 +202,15 @@ public abstract class TrieSearch<T> {
      * Searches thru text, looking for any substring that matches any pattern in this tree.
      *
      * @param textToSearch Text to search thru.
+     * @param callbackParameter Optional parameter passed to the callbacks.
      * @return If any pattern matched, and it's callback halted searching.
      */
-    public abstract boolean matches(@NonNull T textToSearch);
+    public abstract boolean matches(@NonNull T textToSearch, @Nullable Object callbackParameter);
+
+    /**
+     * Identical to {@link #matches(Object, Object)} but with a null callback parameter.
+     */
+    public final boolean matches(@NonNull T textToSearch) {
+        return matches(textToSearch, null);
+    }
 }
