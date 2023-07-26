@@ -35,7 +35,7 @@ public abstract class TrieSearch<T> {
         // Support only ASCII letters/numbers/symbols and filter out all control characters.
         static final char MIN_VALID_CHAR = 32; // Space character.
         static final char MAX_VALID_CHAR = 126; // 127 = delete character.
-        static final int CHILDREN_RANGE = MAX_VALID_CHAR - MIN_VALID_CHAR;
+        static final int NUMBER_OF_CHILDREN = MAX_VALID_CHAR - MIN_VALID_CHAR + 1;
 
         private static boolean isInvalidRange(char character) {
             return character < MIN_VALID_CHAR || character > MAX_VALID_CHAR;
@@ -64,7 +64,7 @@ public abstract class TrieSearch<T> {
                 return;
             }
             if (children == null) {
-                children = new TrieNode[CHILDREN_RANGE];
+                children = new TrieNode[NUMBER_OF_CHILDREN];
             }
             char character = getCharValue(pattern, patternIndex);
             if (isInvalidRange(character)) {
@@ -128,7 +128,7 @@ public abstract class TrieSearch<T> {
             if (children == null) {
                 return numberOfFieldsInClass;
             }
-            int numChildArrays = CHILDREN_RANGE + numberOfFieldsInClass;
+            int numChildArrays = NUMBER_OF_CHILDREN + numberOfFieldsInClass;
             for (TrieNode<T> child : children) {
                 if (child != null) {
                     numChildArrays += child.estimatedNumberOfPointersUsed();
