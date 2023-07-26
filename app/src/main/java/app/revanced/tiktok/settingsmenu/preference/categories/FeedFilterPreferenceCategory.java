@@ -37,13 +37,13 @@ public class FeedFilterPreferenceCategory extends ConditionalPreferenceCategory 
         ));
         addPreference(new RangeValuePreference(
                 context,
-                "Hide view count", "If app show error, please change value or refresh few times.",
-                SettingsEnum.HIDE_PLAY_COUNT
+                "Min/Max views", "If app show error, please change value or refresh few times.",
+                SettingsEnum.MIN_MAX_VIEWS
         ));
         addPreference(new RangeValuePreference(
                 context,
-                "Hide like count", "If app show error, please change value or refresh few times.",
-                SettingsEnum.HIDE_LIKE_COUNT
+                "Min/Max likes", "If app show error, please change value or refresh few times.",
+                SettingsEnum.MIN_MAX_LIKES
         ));
     }
 
