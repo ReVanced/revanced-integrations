@@ -11,10 +11,16 @@ import app.revanced.tiktok.settingsmenu.preference.TogglePreference;
 public class FeedFilterPreferenceCategory extends ConditionalPreferenceCategory {
     public FeedFilterPreferenceCategory(Context context, PreferenceScreen screen) {
         super(context, screen);
-
-
         setTitle("Feed filter");
+    }
 
+    @Override
+    public boolean getSettingsStatus() {
+        return SettingsStatus.feedFilterEnabled;
+    }
+
+    @Override
+    public void implementationCategory(Context context) {
         addPreference(new TogglePreference(
                 context,
                 "Remove feed ads", "Remove ads from feed.",
@@ -45,10 +51,5 @@ public class FeedFilterPreferenceCategory extends ConditionalPreferenceCategory 
                 "Min/Max likes", "If app show error, please change value or refresh few times.",
                 SettingsEnum.MIN_MAX_LIKES
         ));
-    }
-
-    @Override
-    public boolean getSettingsStatus() {
-        return SettingsStatus.feedFilterEnabled;
     }
 }

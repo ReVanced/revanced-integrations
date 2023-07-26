@@ -11,9 +11,16 @@ import app.revanced.tiktok.settingsmenu.preference.TogglePreference;
 public class DownloadsPreferenceCategory extends ConditionalPreferenceCategory {
     public DownloadsPreferenceCategory(Context context, PreferenceScreen screen) {
         super(context, screen);
-
         setTitle("Downloads");
+    }
 
+    @Override
+    public boolean getSettingsStatus() {
+        return SettingsStatus.downloadEnabled;
+    }
+
+    @Override
+    public void implementationCategory(Context context) {
         addPreference(new DownloadPathPreference(
                 context,
                 "Download path",
@@ -24,10 +31,5 @@ public class DownloadsPreferenceCategory extends ConditionalPreferenceCategory {
                 "Remove watermark", "",
                 SettingsEnum.DOWNLOAD_WATERMARK
         ));
-    }
-
-    @Override
-    public boolean getSettingsStatus() {
-        return SettingsStatus.downloadEnabled;
     }
 }
