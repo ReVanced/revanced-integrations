@@ -311,7 +311,53 @@ public final class LithoFilterPatch {
         @NonNull
         @Override
         public String toString() {
-            return String.format("(ID: %s, Buffer-size: %s): %s", identifier, protobuffer.length, path);
+            // Estimated percentage of the buffer that are Strings.
+            StringBuilder builder = new StringBuilder(protoBuffer.limit() / 4);
+            builder.append( "ID: ");
+            builder.append(identifier);
+            builder.append(" Path: ");
+            builder.append(path);
+            builder.append(" BufferStrings: ");
+            // TODO: allow turning on/off proto buffer logging with a debug setting?
+            findAsciiStrings(builder, protoBuffer.array(), protoBuffer.position(), protoBuffer.limit());
+
+            return builder.toString();
+        }
+
+        /**
+         * Search thru a byte array for all ASCII strings.
+         */
+        private static void findAsciiStrings(StringBuilder builder, byte[] buffer, int minIndex, int maxIndex) {
+            // Valid ASCII value (filter out the character control characters).
+            final int minimumAscii = 32;
+            final int maximumAscii = 126; // 127 = delete character.
+            final char delimitingCharacter = '❙'; // Non ascii character, to allow easier log filtering.
+            final int minimumAsciiStringLengthToLog = 4; // Minimum length of a ASCII string to include.
+
+            int asciiStartIndex = -1;
+            int stringLength = 0;
+            for (int i = minIndex; i < maxIndex; i++) {
+                char character = (char) buffer[i];
+                if (character < minimumAscii || maximumAscii < character) { // Not a letter, number, or symbol.
+                    if (asciiStartIndex >= 0) {
+                        if (i - asciiStartIndex >= minimumAsciiStringLengthToLog) {
+                            builder.append(delimitingCharacter); // Use unicode character and not ascii, to allow easier regex split.
+                            for (int j = asciiStartIndex; j < i; j++) {
+                                builder.append((char) buffer[j]);
+                            }
+                            builder.append(delimitingCharacter).append(' ');
+                        }
+                        asciiStartIndex = -1;
+                    }
+                    continue;
+                }
+                if (asciiStartIndex < 0) {
+                    asciiStartIndex = i;
+                }
+            }
+            if (asciiStartIndex >= 0) {
+                builder.append(delimitingCharacter); // Closing indicator.
+            }
         }
     }
 
