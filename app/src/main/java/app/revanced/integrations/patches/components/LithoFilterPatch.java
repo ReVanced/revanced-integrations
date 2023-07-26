@@ -185,7 +185,8 @@ abstract class FilterGroupList<V, T extends FilterGroup<V>> implements Iterable<
         search = createSearchGraph();
         for (T group : filterGroups) {
             for (V pattern : group.filters) {
-                search.addPattern(pattern, (searchedText, matchedStartIndex, matchedEndIndex) -> group.isEnabled());
+                search.addPattern(pattern, (searchedText, matchedStartIndex, matchedEndIndex, callbackParameter)
+                        -> group.isEnabled());
             }
         }
     }
@@ -282,9 +283,26 @@ public final class LithoFilterPatch {
     private static final StringTrieSearch identifierSearchTree = new StringTrieSearch();
     private static final ByteTrieSearch protoSearchTree = new ByteTrieSearch();
 
-    private static String path;
-    private static String identifier;
-    private static byte[] protobufBufferArray;
+    /**
+     * Simple wrapper to pass the litho parameters thur the prefix search.
+     */
+    private static final class LithoFilterParameters {
+        public final String path;
+        public final String identifier;
+        public final byte[] protobuffer;
+
+        LithoFilterParameters(StringBuilder lithoPath, String lithoIdentifier, ByteBuffer protobuffer) {
+            this.path = lithoPath.toString();
+            this.identifier = lithoIdentifier;
+            this.protobuffer = protobuffer.array();
+        }
+
+        @NonNull
+        @Override
+        public String toString() {
+            return String.format("ID: %s, Buffer-size: %s): %s", identifier, protobuffer.length, path);
+        }
+    }
 
     static {
         for (Filter filter : filters) {
@@ -306,8 +324,10 @@ public final class LithoFilterPatch {
                                                   Filter filter, FilterGroupList<T, ? extends FilterGroup<T>> list) {
         for (FilterGroup<T> group : list) {
             for (T pattern : group.filters) {
-                pathSearchTree.addPattern(pattern, (searchedText, matchedStartIndex, matchedEndIndex) ->
-                        filter.isFiltered(path, identifier, protobufBufferArray, list, group)
+                pathSearchTree.addPattern(pattern, (searchedText, matchedStartIndex, matchedEndIndex, callbackParameter) -> {
+                            LithoFilterParameters parameters = (LithoFilterParameters) callbackParameter;
+                            return filter.isFiltered(parameters.path, parameters.identifier, parameters.protobuffer, list, group);
+                        }
                 );
             }
         }
@@ -320,23 +340,16 @@ public final class LithoFilterPatch {
     public static boolean filter(@NonNull StringBuilder pathBuilder, @Nullable String lithoIdentifier,
                                  @NonNull ByteBuffer protobufBuffer) {
         try {
-            path = pathBuilder.toString();
-
             // It is assumed that protobufBuffer is empty as well in this case.
-            if (path.isEmpty())
+            if (pathBuilder.length() == 0)
                 return false;
 
-            identifier = lithoIdentifier;
+            LithoFilterParameters parameter = new LithoFilterParameters(pathBuilder, lithoIdentifier, protobufBuffer);
+            LogHelper.printDebug(() -> "Searching " + parameter);
 
-            LogHelper.printDebug(() -> String.format(
-                    "Searching (ID: %s, Buffer-size: %s): %s",
-                    identifier, protobufBuffer.remaining(), path));
-
-            protobufBufferArray = protobufBuffer.array();
-
-            if (pathSearchTree.matches(path)) return true;
-            if (identifier != null && identifierSearchTree.matches(identifier)) return true;
-            if (protoSearchTree.matches(protobufBufferArray)) return true;
+            if (pathSearchTree.matches(parameter.path, parameter)) return true;
+            if (parameter.identifier != null && identifierSearchTree.matches(parameter.identifier, parameter)) return true;
+            if (protoSearchTree.matches(parameter.protobuffer, parameter)) return true;
         } catch (Exception ex) {
             LogHelper.printException(() -> "Litho filter failure", ex);
         }
