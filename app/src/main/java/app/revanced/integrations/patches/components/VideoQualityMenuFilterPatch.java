@@ -1,7 +1,5 @@
 package app.revanced.integrations.patches.components;
 
-import java.nio.ByteBuffer;
-
 import app.revanced.integrations.settings.SettingsEnum;
 
 // Abuse LithoFilter for OldVideoQualityMenuPatch.
@@ -17,7 +15,7 @@ public final class VideoQualityMenuFilterPatch extends Filter {
     }
 
     @Override
-    boolean isFiltered(final String path, final String identifier, final ByteBuffer protobuf,
+    boolean isFiltered(final String path, final String identifier, final byte[] protobufBufferArray,
                        FilterGroupList matchedList, FilterGroup matchedGroup) {
         isVideoQualityMenuVisible = true;
 

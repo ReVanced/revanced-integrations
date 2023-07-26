@@ -3,17 +3,16 @@ package app.revanced.integrations.utils;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import java.nio.ByteBuffer;
 import java.util.Objects;
 
-public final class ByteTrieSearch extends TrieSearch<ByteBuffer> {
+public final class ByteTrieSearch extends TrieSearch<byte[]> {
 
-    private static final class ByteTrieNode extends TrieNode<ByteBuffer> {
-        TrieNode<ByteBuffer> createNode() {
+    private static final class ByteTrieNode extends TrieNode<byte[]> {
+        TrieNode<byte[]> createNode() {
             return new ByteTrieNode();
         }
-        char getCharValue(ByteBuffer text, int index) {
-            return text.getChar(index);
+        char getCharValue(byte[] text, int index) {
+            return (char) text[index];
         }
     }
 
@@ -22,18 +21,18 @@ public final class ByteTrieSearch extends TrieSearch<ByteBuffer> {
     }
 
     @Override
-    public void addPattern(@NonNull ByteBuffer pattern) {
-        super.addPattern(pattern, pattern.position(), pattern.limit(), null);
+    public void addPattern(@NonNull byte[] pattern) {
+        super.addPattern(pattern, pattern.length, null);
     }
 
     @Override
-    public void addPattern(@NonNull ByteBuffer pattern, @NonNull TriePatternMatchedCallback<ByteBuffer> callback) {
-        super.addPattern(pattern, pattern.position(), pattern.limit(), Objects.requireNonNull(callback));
+    public void addPattern(@NonNull byte[] pattern, @NonNull TriePatternMatchedCallback<byte[]> callback) {
+        super.addPattern(pattern, pattern.length, Objects.requireNonNull(callback));
     }
 
     @Override
-    public boolean matches(@NonNull ByteBuffer textToSearch,  @Nullable Object callbackParameter) {
-        return super.matches(textToSearch, textToSearch.position(), textToSearch.limit(), callbackParameter);
+    public boolean matches(@NonNull byte[] textToSearch, @Nullable Object callbackParameter) {
+        return super.matches(textToSearch, textToSearch.length, callbackParameter);
     }
 
 }

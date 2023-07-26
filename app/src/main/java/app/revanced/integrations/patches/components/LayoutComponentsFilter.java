@@ -5,8 +5,6 @@ import android.os.Build;
 
 import androidx.annotation.RequiresApi;
 
-import java.nio.ByteBuffer;
-
 import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.utils.StringTrieSearch;
 
@@ -165,7 +163,7 @@ public final class LayoutComponentsFilter extends Filter {
     }
 
     @Override
-    public boolean isFiltered(final String path, final String identifier, final ByteBuffer _protobufBufferArray,
+    public boolean isFiltered(final String path, final String identifier, final byte[] _protobufBufferArray,
                               FilterGroupList matchedList, FilterGroup matchedGroup) {
         if (matchedGroup != custom && exceptions.matches(path))
             return false; // Exceptions are not filtered.
@@ -180,6 +178,6 @@ public final class LayoutComponentsFilter extends Filter {
      * Called from a different place then the other filters.
      */
     public static boolean filterMixPlaylists(final byte[] bytes) {
-        return mixPlaylists.isEnabled() && mixPlaylists.check(ByteBuffer.wrap(bytes)).isFiltered();
+        return mixPlaylists.isEnabled() && mixPlaylists.check(bytes).isFiltered();
     }
 }

@@ -1,7 +1,5 @@
 package app.revanced.integrations.patches.components;
 
-import java.nio.ByteBuffer;
-
 import app.revanced.integrations.settings.SettingsEnum;
 
 final class ButtonsFilter extends Filter {
@@ -48,7 +46,7 @@ final class ButtonsFilter extends Filter {
     }
 
     @Override
-    public boolean isFiltered(final String path, final String identifier, final ByteBuffer _protobufBufferArray,
+    public boolean isFiltered(final String path, final String identifier, final byte[] _protobufBufferArray,
                               FilterGroupList matchedList, FilterGroup matchedGroup) {
         if (matchedGroup == actionBarRule) {
             return isEveryFilterGroupEnabled();

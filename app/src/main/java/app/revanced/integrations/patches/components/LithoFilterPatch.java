@@ -64,6 +64,9 @@ abstract class FilterGroup<T> {
 
 class StringFilterGroup extends FilterGroup<String> {
 
+    /**
+     * {@link FilterGroup#FilterGroup(SettingsEnum, Object[])}
+     */
     public StringFilterGroup(final SettingsEnum setting, final String... filters) {
         super(setting, filters);
     }
@@ -86,42 +89,40 @@ final class CustomFilterGroup extends StringFilterGroup {
  * this class should filtered using a {@link ByteArrayFilterGroupList},
  * which uses a prefix tree to give better performance.
  */
-@RequiresApi(api = Build.VERSION_CODES.N)
-class ByteArrayFilterGroup extends FilterGroup<ByteBuffer> {
+class ByteArrayFilterGroup extends FilterGroup<byte[]> {
+
+    private final int[][] failurePatterns;
 
     // Modified implementation from https://stackoverflow.com/a/1507813
-    private static int indexOf(ByteBuffer searchTarget, ByteBuffer pattern, int[] failure) {
-        // Finds the first occurrence of the pattern in the buffer using
+    private static int indexOf(final byte[] data, final byte[] pattern, final int[] failure) {
+        // Finds the first occurrence of the pattern in the byte array using
         // KMP matching algorithm.
-        int i = searchTarget.position();
-        int j = pattern.position();
-        int patternLimit = pattern.limit();
-        for (int searchLength = searchTarget.limit(); i < searchLength; i++) {
-            while (j > 0 && pattern.getChar(j) != searchTarget.getChar(i)) {
+        int patternLength = pattern.length;
+        for (int i = 0, j = 0, dataLength = data.length; i < dataLength; i++) {
+            while (j > 0 && pattern[j] != data[i]) {
                 j = failure[j - 1];
             }
-            if (pattern.getChar(j) == searchTarget.getChar(i)) {
+            if (pattern[j] == data[i]) {
                 j++;
             }
-            if (j == patternLimit) {
-                return i - patternLimit + 1;
+            if (j == patternLength) {
+                return i - patternLength + 1;
             }
         }
         return -1;
     }
 
-    private static int[] createFailurePattern(ByteBuffer pattern) {
+    private static int[] createFailurePattern(byte[] pattern) {
         // Computes the failure function using a boot-strapping process,
         // where the pattern is matched against itself.
-        final int patternLimit = pattern.limit();
-        int[] failure = new int[patternLimit];
-        int j = pattern.position();
-        int i = j + 1;
-        for (; i < patternLimit; i++) {
-            while (j > 0 && pattern.getChar(j) != pattern.getChar(i)) {
+        final int patternLength = pattern.length;
+        final int[] failure = new int[patternLength];
+
+        for (int i = 1, j = 0; i < patternLength; i++) {
+            while (j > 0 && pattern[j] != pattern[i]) {
                 j = failure[j - 1];
             }
-            if (pattern.getChar(j) == pattern.getChar(i)) {
+            if (pattern[j] == pattern[i]) {
                 j++;
             }
             failure[i] = j;
@@ -129,22 +130,20 @@ class ByteArrayFilterGroup extends FilterGroup<ByteBuffer> {
         return failure;
     }
 
-    private final int[][] failurePatterns;
-
-    public ByteArrayFilterGroup(SettingsEnum setting, ByteBuffer[] filters) {
+    public ByteArrayFilterGroup(SettingsEnum setting, byte[]... filters) {
         super(setting, filters);
         failurePatterns = new int[filters.length][];
         int i = 0;
-        for (ByteBuffer pattern : filters) {
+        for (byte[] pattern : filters) {
             failurePatterns[i++] = createFailurePattern(pattern);
         }
     }
 
     @Override
-    public FilterGroupResult check(ByteBuffer searchTarget) {
+    public FilterGroupResult check(final byte[] bytes) {
         var matched = false;
         for (int i = 0, length = filters.length; i < length; i++) {
-            if (indexOf(searchTarget, filters[i], failurePatterns[i]) >= 0) {
+            if (indexOf(bytes, filters[i], failurePatterns[i]) >= 0) {
                 matched = true;
                 break;
             }
@@ -152,37 +151,14 @@ class ByteArrayFilterGroup extends FilterGroup<ByteBuffer> {
 
         return new FilterGroupResult(setting, matched);
     }
-
-    /**
-     * Alternate simple linear search implementation.
-     */
-    public FilterGroupResult checkNonKMPSearch(ByteBuffer bytes) {
-        var matched = false;
-        for (ByteBuffer filter : filters) {
-            if (filter.compareTo(bytes) == 0) {
-                matched = true;
-                break;
-            }
-        }
-        return new FilterGroupResult(setting, matched);
-    }
-
 }
 
-@RequiresApi(api = Build.VERSION_CODES.N)
+
 final class ByteArrayAsStringFilterGroup extends ByteArrayFilterGroup {
 
-    private static ByteBuffer[] convertStringsToBuffers(String[] filters) {
-        ByteBuffer[] byteFilters = new ByteBuffer[filters.length];
-        int i = 0;
-        for (String filter : filters) {
-            byteFilters[i++] = ByteBuffer.wrap(filter.getBytes());
-        }
-        return byteFilters;
-    }
-
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public ByteArrayAsStringFilterGroup(SettingsEnum setting, String... filters) {
-        super(setting, convertStringsToBuffers(filters));
+        super(setting, Arrays.stream(filters).map(String::getBytes).toArray(byte[][]::new));
     }
 }
 
@@ -245,7 +221,7 @@ final class StringFilterGroupList extends FilterGroupList<String, StringFilterGr
     }
 }
 
-final class ByteArrayFilterGroupList extends FilterGroupList<ByteBuffer, ByteArrayFilterGroup> {
+final class ByteArrayFilterGroupList extends FilterGroupList<byte[], ByteArrayFilterGroup> {
     protected ByteTrieSearch createSearchGraph() {
         return new ByteTrieSearch();
     }
@@ -254,7 +230,7 @@ final class ByteArrayFilterGroupList extends FilterGroupList<ByteBuffer, ByteArr
 abstract class Filter {
     /**
      * All group filters must be set before the constructor call completes.
-     * Otherwise {@link #isFiltered(String, String, ByteBuffer, FilterGroupList, FilterGroup)}
+     * Otherwise {@link #isFiltered(String, String, byte[], FilterGroupList, FilterGroup)}
      * will never be called for any matches.
      */
     protected final StringFilterGroupList pathFilterGroups = new StringFilterGroupList();
@@ -273,7 +249,7 @@ abstract class Filter {
      * @return True if the litho item should be hidden.
      */
     @SuppressWarnings("rawtypes")
-    boolean isFiltered(String path, String identifier, ByteBuffer protobuf,
+    boolean isFiltered(final String path, final String identifier, final byte[] protobufBufferArray,
                        FilterGroupList matchedList, FilterGroup matchedGroup) {
         final boolean isEnabled = matchedGroup.isEnabled();
 
@@ -300,26 +276,26 @@ public final class LithoFilterPatch {
     private static final class LithoFilterParameters {
         public final String path;
         public final String identifier;
-        public final ByteBuffer protoBuffer;
+        public final byte[] protobuffer;
 
-        LithoFilterParameters(StringBuilder lithoPath, String lithoIdentifier, ByteBuffer protoBuffer) {
+        LithoFilterParameters(StringBuilder lithoPath, String lithoIdentifier, ByteBuffer protobuffer) {
             this.path = lithoPath.toString();
             this.identifier = lithoIdentifier;
-            this.protoBuffer = protoBuffer;
+            this.protobuffer = protobuffer.array();
         }
 
         @NonNull
         @Override
         public String toString() {
             // Estimated percentage of the buffer that are Strings.
-            StringBuilder builder = new StringBuilder(protoBuffer.limit() / 4);
+            StringBuilder builder = new StringBuilder(protobuffer.length / 4);
             builder.append( "ID: ");
             builder.append(identifier);
             builder.append(" Path: ");
             builder.append(path);
             builder.append(" BufferStrings: ");
             // TODO: allow turning on/off proto buffer logging with a debug setting?
-            findAsciiStrings(builder, protoBuffer.array(), protoBuffer.position(), protoBuffer.limit());
+            findAsciiStrings(builder, protobuffer);
 
             return builder.toString();
         }
@@ -327,7 +303,7 @@ public final class LithoFilterPatch {
         /**
          * Search thru a byte array for all ASCII strings.
          */
-        private static void findAsciiStrings(StringBuilder builder, byte[] buffer, int minIndex, int maxIndex) {
+        private static void findAsciiStrings(StringBuilder builder, byte[] buffer) {
             // Valid ASCII value (filter out the character control characters).
             final int minimumAscii = 32;
             final int maximumAscii = 126; // 127 = delete character.
@@ -336,7 +312,7 @@ public final class LithoFilterPatch {
 
             int asciiStartIndex = -1;
             int stringLength = 0;
-            for (int i = minIndex; i < maxIndex; i++) {
+            for (int i = 0, length = buffer.length; i < length; i++) {
                 char character = (char) buffer[i];
                 if (character < minimumAscii || maximumAscii < character) { // Not a letter, number, or symbol.
                     if (asciiStartIndex >= 0) {
@@ -391,7 +367,7 @@ public final class LithoFilterPatch {
             for (T pattern : group.filters) {
                 pathSearchTree.addPattern(pattern, (searchedText, matchedStartIndex, matchedEndIndex, callbackParameter) -> {
                             LithoFilterParameters parameters = (LithoFilterParameters) callbackParameter;
-                            return filter.isFiltered(parameters.path, parameters.identifier, parameters.protoBuffer, list, group);
+                            return filter.isFiltered(parameters.path, parameters.identifier, parameters.protobuffer, list, group);
                         }
                 );
             }
@@ -416,7 +392,7 @@ public final class LithoFilterPatch {
             if (parameter.identifier != null) {
                 if (identifierSearchTree.matches(parameter.identifier, parameter)) return true;
             }
-            if (protoSearchTree.matches(parameter.protoBuffer, parameter)) return true;
+            if (protoSearchTree.matches(parameter.protobuffer, parameter)) return true;
         } catch (Exception ex) {
             LogHelper.printException(() -> "Litho filter failure", ex);
         }
