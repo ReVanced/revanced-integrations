@@ -300,7 +300,7 @@ public final class LithoFilterPatch {
         @NonNull
         @Override
         public String toString() {
-            return String.format("ID: %s, Buffer-size: %s): %s", identifier, protobuffer.length, path);
+            return String.format("(ID: %s, Buffer-size: %s): %s", identifier, protobuffer.length, path);
         }
     }
 
