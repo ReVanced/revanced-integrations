@@ -107,16 +107,18 @@ public abstract class TrieSearch<T> {
         }
 
         /**
-         * @return Number of node arrays created, starting from this node and including all children.
+         * @return Estimated number of memory pointers used, starting from this node and including all children.
          */
-        protected int findNumberOfChildArrays() {
+        protected int estimatedNumberOfPointersUsed() {
+            // Number of fields in this class (Callback list and empty children pointer)
+            final int numberOfFieldsInClass = 2;
             if (children == null) {
-                return 0;
+                return numberOfFieldsInClass;
             }
-            int numChildArrays = 1;
+            int numChildArrays = CHILDREN_RANGE + numberOfFieldsInClass;
             for (TrieNode<T> child : children) {
                 if (child != null) {
-                    numChildArrays += child.findNumberOfChildArrays();
+                    numChildArrays += child.estimatedNumberOfPointersUsed();
                 }
             }
             return numChildArrays;
@@ -208,7 +210,7 @@ public abstract class TrieSearch<T> {
         final int numberOfBytesPerPointer = 4;
         // This ignores the memory size of object garbage collection entries,
         // and ignores the leaf node 1 element callback function arraylist.
-        return (numberOfBytesPerPointer * root.findNumberOfChildArrays() * TrieNode.CHAR_RANGE) / 1024;
+        return (numberOfBytesPerPointer * root.estimatedNumberOfPointersUsed()) / 1024;
     }
 
     public int numberOfPatterns() {
