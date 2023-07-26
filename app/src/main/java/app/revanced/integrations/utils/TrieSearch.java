@@ -11,6 +11,9 @@ import java.util.Objects;
 /**
  * Searches for a group of different patterns using a trie (prefix tree).
  * Can significantly speed up searching for multiple patterns.
+ *
+ * Currently only supports ASCII non-control characters (letters/numbers/symbols).
+ * But could be modified to also support UTF-8 unicode.
  */
 public abstract class TrieSearch<T> {
 
@@ -29,7 +32,15 @@ public abstract class TrieSearch<T> {
     }
 
     protected static abstract class TrieNode<T> {
-        static final int CHAR_RANGE = 128; // Support only ASCII range.
+        // Support only ASCII letters/numbers/symbols and filter out all control characters.
+        static final char MIN_VALID_CHAR = 32; // Space character.
+        static final char MAX_VALID_CHAR = 126; // 127 = delete character.
+        static final int CHILDREN_RANGE = MAX_VALID_CHAR - MIN_VALID_CHAR;
+
+        private static boolean isInvalidRange(char character) {
+            return character < MIN_VALID_CHAR || character > MAX_VALID_CHAR;
+        }
+
         TrieNode<T>[] children;
         /**
          * Callbacks for all patterns that end at this node.
@@ -53,12 +64,13 @@ public abstract class TrieSearch<T> {
                 return;
             }
             if (children == null) {
-                children = new TrieNode[CHAR_RANGE];
+                children = new TrieNode[CHILDREN_RANGE];
             }
-            final char character = getCharValue(pattern, patternIndex);
-            if (character >= CHAR_RANGE) {
-                throw new IllegalArgumentException();
+            char character = getCharValue(pattern, patternIndex);
+            if (isInvalidRange(character)) {
+                throw new IllegalArgumentException("invalid character at index " + patternIndex + ": " + pattern);
             }
+            character -= MIN_VALID_CHAR; // Adjust to the array range.
             TrieNode<T> child = children[character];
             if (child == null) {
                 child = createNode();
@@ -94,10 +106,11 @@ public abstract class TrieSearch<T> {
             if (searchTextIndex == searchTextLength) {
                 return false; // Reached end of the search text and found no matches.
             }
-            final char character = getCharValue(searchText, searchTextIndex);
-            if (character >= CHAR_RANGE) {
-                return false; // Non ascii character
+            char character = getCharValue(searchText, searchTextIndex);
+            if (isInvalidRange(character)) {
+                return false; // Not an ASCII letter/number/symbol.
             }
+            character -= MIN_VALID_CHAR; // Adjust to the array range.
             TrieNode<T> child = children[character];
             if (child == null) {
                 return false;
