@@ -20,7 +20,7 @@ public class FeedFilterPreferenceCategory extends ConditionalPreferenceCategory 
     }
 
     @Override
-    public void implementationCategory(Context context) {
+    public void implementCategory(Context context) {
         addPreference(new TogglePreference(
                 context,
                 "Remove feed ads", "Remove ads from feed.",

@@ -18,7 +18,7 @@ public class IntegrationsPreferenceCategory extends ConditionalPreferenceCategor
     }
 
     @Override
-    public void implementationCategory(Context context) {
+    public void implementCategory(Context context) {
         addPreference(new TogglePreference(context,
                 "Enable debug log",
                 "Show integration debug log.",

@@ -21,7 +21,7 @@ public class SimSpoofPreferenceCategory extends ConditionalPreferenceCategory {
     }
 
     @Override
-    public void implementationCategory(Context context) {
+    public void implementCategory(Context context) {
         addPreference(new TogglePreference(
                 context,
                 "Fake sim card info",

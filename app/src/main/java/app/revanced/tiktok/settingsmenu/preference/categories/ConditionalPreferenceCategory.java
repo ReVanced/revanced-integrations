@@ -11,12 +11,12 @@ public abstract class ConditionalPreferenceCategory extends PreferenceCategory {
 
         if (getSettingsStatus())  {
             screen.addPreference(this);
-            implementationCategory(context);
+            implementCategory(context);
         }
     }
 
     public abstract boolean getSettingsStatus();
 
-    public abstract void implementationCategory(Context context);
+    public abstract void implementCategory(Context context);
 }
 
