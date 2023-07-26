@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import app.revanced.tiktok.settings.SettingsEnum;
 
+@SuppressWarnings("deprecation")
 public class RangeValuePreference extends DialogPreference {
     private final Context context;
 

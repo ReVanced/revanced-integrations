@@ -1,37 +1,34 @@
 package app.revanced.tiktok.settings;
 
-import static java.lang.Boolean.FALSE;
-import static java.lang.Boolean.TRUE;
-import static app.revanced.tiktok.settings.SettingsEnum.ReturnType.BOOLEAN;
-import static app.revanced.tiktok.settings.SettingsEnum.ReturnType.STRING;
-
 import android.content.Context;
 import android.util.Log;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import app.revanced.tiktok.utils.LogHelper;
+import app.revanced.tiktok.utils.ReVancedUtils;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import app.revanced.tiktok.utils.LogHelper;
-import app.revanced.tiktok.utils.ReVancedUtils;
+import static app.revanced.tiktok.settings.SettingsEnum.ReturnType.BOOLEAN;
+import static app.revanced.tiktok.settings.SettingsEnum.ReturnType.STRING;
+import static java.lang.Boolean.FALSE;
+import static java.lang.Boolean.TRUE;
 
 public enum SettingsEnum {
-    //TikTok Settings
-    TIK_DEBUG("tik_debug", BOOLEAN, FALSE), // must be first value, otherwise logging during loading will not work
-    TIK_REMOVE_ADS("tik_remove_ads", BOOLEAN, TRUE, true),
-    TIK_HIDE_LIVE("tik_hide_live", BOOLEAN, FALSE, true),
-    TIK_HIDE_STORY("tik_hide_story", BOOLEAN, FALSE, true),
-    TIK_HIDE_IMAGE("tik_hide_image", BOOLEAN, FALSE, true),
-    TIK_HIDE_PLAY_COUNT("tik_hide_play_count", STRING, "0-100000000000", true),
-    TIK_HIDE_LIKE_COUNT("tik_hide_like_count", STRING, "0-100000000000", true),
-    TIK_DOWN_PATH("tik_down_path", STRING, "DCIM/TikTok"),
-    TIK_DOWN_WATERMARK("tik_down_watermark", BOOLEAN, TRUE),
-    TIK_SIMSPOOF("tik_simspoof", BOOLEAN, TRUE, true),
-    TIK_SIMSPOOF_ISO("tik_simspoof_iso", STRING, "us"),
-    TIK_SIMSPOOF_MCCMNC("tik_simspoof_mccmnc", STRING, "310160"),
-    TIK_SIMSPOOF_OP_NAME("tik_simspoof_op_name", STRING, "T-Mobile");
+    DEBUG("debug", BOOLEAN, FALSE), // Must be first value, otherwise logging during loading will not work.
+    REMOVE_ADS("remove_ads", BOOLEAN, TRUE, true),
+    HIDE_LIVE("hide_live", BOOLEAN, FALSE, true),
+    HIDE_STORY("hide_story", BOOLEAN, FALSE, true),
+    HIDE_IMAGE("hide_image", BOOLEAN, FALSE, true),
+    HIDE_PLAY_COUNT("hide_play_count", STRING, "0-100000000000", true),
+    HIDE_LIKE_COUNT("hide_like_count", STRING, "0-100000000000", true),
+    DOWNLOAD_PATH("down_path", STRING, "DCIM/TikTok"),
+    DOWNLOAD_WATERMARK("down_watermark", BOOLEAN, TRUE),
+    SIM_SPOOF("simspoof", BOOLEAN, TRUE, true),
+    SIM_SPOOF_ISO("simspoof_iso", STRING, "us"),
+    SIMSPOOF_MCCMNC("simspoof_mccmnc", STRING, "310160"),
+    SIMSPOOF_OP_NAME("simspoof_op_name", STRING, "T-Mobile");
 
     private static final Map<String, SettingsEnum> pathToSetting = new HashMap<>(2 * values().length);
 
@@ -74,7 +71,7 @@ public enum SettingsEnum {
     }
 
     @Nullable
-    public static SettingsEnum settingFromPath(@NonNull String str) {
+    public static SettingsEnum getSettingsFromPath(@NonNull String str) {
         return pathToSetting.get(str);
     }
 

@@ -5,6 +5,7 @@ import android.preference.SwitchPreference;
 
 import app.revanced.tiktok.settings.SettingsEnum;
 
+@SuppressWarnings("deprecation")
 public class TogglePreference extends SwitchPreference {
     public TogglePreference(Context context, String title, String summary, SettingsEnum setting) {
         super(context);

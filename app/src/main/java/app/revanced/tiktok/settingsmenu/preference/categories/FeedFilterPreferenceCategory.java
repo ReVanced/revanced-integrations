@@ -1,0 +1,54 @@
+package app.revanced.tiktok.settingsmenu.preference.categories;
+
+import android.content.Context;
+import android.preference.PreferenceScreen;
+import app.revanced.tiktok.settings.SettingsEnum;
+import app.revanced.tiktok.settingsmenu.SettingsStatus;
+import app.revanced.tiktok.settingsmenu.preference.RangeValuePreference;
+import app.revanced.tiktok.settingsmenu.preference.TogglePreference;
+
+@SuppressWarnings("deprecation")
+public class FeedFilterPreferenceCategory extends ConditionalPreferenceCategory {
+    public FeedFilterPreferenceCategory(Context context, PreferenceScreen screen) {
+        super(context, screen);
+
+
+        setTitle("Feed filter");
+
+        addPreference(new TogglePreference(
+                context,
+                "Remove feed ads", "Remove ads from feed.",
+                SettingsEnum.REMOVE_ADS
+        ));
+        addPreference(new TogglePreference(
+                context,
+                "Hide livestreams", "Hide livestreams from feed.",
+                SettingsEnum.HIDE_LIVE
+        ));
+        addPreference(new TogglePreference(
+                context,
+                "Hide story", "Hide story from feed.",
+                SettingsEnum.HIDE_STORY
+        ));
+        addPreference(new TogglePreference(
+                context,
+                "Hide image video", "Hide image video from feed.",
+                SettingsEnum.HIDE_IMAGE
+        ));
+        addPreference(new RangeValuePreference(
+                context,
+                "Hide view count", "If app show error, please change value or refresh few times.",
+                SettingsEnum.HIDE_PLAY_COUNT
+        ));
+        addPreference(new RangeValuePreference(
+                context,
+                "Hide like count", "If app show error, please change value or refresh few times.",
+                SettingsEnum.HIDE_LIKE_COUNT
+        ));
+    }
+
+    @Override
+    public boolean getSettingsStatus() {
+        return SettingsStatus.feedFilterEnabled;
+    }
+}

@@ -12,14 +12,14 @@ import app.revanced.tiktok.settings.SettingsEnum;
 public class FeedItemsFilter {
 
     public static void filter(FeedItemList feedItemList) {
-        boolean ads = SettingsEnum.TIK_REMOVE_ADS.getBoolean();
-        boolean live = SettingsEnum.TIK_HIDE_LIVE.getBoolean();
-        boolean story = SettingsEnum.TIK_HIDE_STORY.getBoolean();
-        boolean image = SettingsEnum.TIK_HIDE_IMAGE.getBoolean();
-        long minView = Long.parseLong(SettingsEnum.TIK_HIDE_PLAY_COUNT.getString().split("-")[0]);
-        long maxView = Long.parseLong(SettingsEnum.TIK_HIDE_PLAY_COUNT.getString().split("-")[1]);
-        long minLike = Long.parseLong(SettingsEnum.TIK_HIDE_LIKE_COUNT.getString().split("-")[0]);
-        long maxLike = Long.parseLong(SettingsEnum.TIK_HIDE_LIKE_COUNT.getString().split("-")[1]);
+        boolean ads = SettingsEnum.REMOVE_ADS.getBoolean();
+        boolean live = SettingsEnum.HIDE_LIVE.getBoolean();
+        boolean story = SettingsEnum.HIDE_STORY.getBoolean();
+        boolean image = SettingsEnum.HIDE_IMAGE.getBoolean();
+        long minView = Long.parseLong(SettingsEnum.HIDE_PLAY_COUNT.getString().split("-")[0]);
+        long maxView = Long.parseLong(SettingsEnum.HIDE_PLAY_COUNT.getString().split("-")[1]);
+        long minLike = Long.parseLong(SettingsEnum.HIDE_LIKE_COUNT.getString().split("-")[0]);
+        long maxLike = Long.parseLong(SettingsEnum.HIDE_LIKE_COUNT.getString().split("-")[1]);
 
         List<Aweme> items = feedItemList.items;
         Iterator<Aweme> it = items.iterator();

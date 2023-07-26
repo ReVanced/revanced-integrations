@@ -17,6 +17,7 @@ import android.widget.RadioGroup;
 
 import app.revanced.tiktok.settings.SettingsEnum;
 
+@SuppressWarnings("deprecation")
 public class DownloadPathPreference extends DialogPreference {
     private final Context context;
     private final String[] entryValues = {"DCIM", "Movies", "Pictures"};
