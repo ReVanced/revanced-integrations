@@ -319,7 +319,6 @@ public final class LithoFilterPatch {
     @SuppressWarnings("unused")
     public static boolean filter(@NonNull StringBuilder pathBuilder, @Nullable String lithoIdentifier,
                                  @NonNull ByteBuffer protobufBuffer) {
-        long start = System.nanoTime();
         try {
             path = pathBuilder.toString();
 
