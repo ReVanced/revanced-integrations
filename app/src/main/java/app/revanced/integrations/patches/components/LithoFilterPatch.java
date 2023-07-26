@@ -275,16 +275,8 @@ abstract class Filter {
 @RequiresApi(api = Build.VERSION_CODES.N)
 @SuppressWarnings("unused")
 public final class LithoFilterPatch {
-    private static final Filter[] filters = new Filter[] {
-            new DummyFilter() // Replaced by patch.
-    };
-
-    private static final StringTrieSearch pathSearchTree = new StringTrieSearch();
-    private static final StringTrieSearch identifierSearchTree = new StringTrieSearch();
-    private static final ByteTrieSearch protoSearchTree = new ByteTrieSearch();
-
     /**
-     * Simple wrapper to pass the litho parameters thur the prefix search.
+     * Simple wrapper to pass the litho parameters thru the prefix search.
      */
     private static final class LithoFilterParameters {
         public final String path;
@@ -303,6 +295,14 @@ public final class LithoFilterPatch {
             return String.format("(ID: %s, Buffer-size: %s): %s", identifier, protobuffer.length, path);
         }
     }
+
+    private static final Filter[] filters = new Filter[] {
+            new DummyFilter() // Replaced by patch.
+    };
+
+    private static final StringTrieSearch pathSearchTree = new StringTrieSearch();
+    private static final StringTrieSearch identifierSearchTree = new StringTrieSearch();
+    private static final ByteTrieSearch protoSearchTree = new ByteTrieSearch();
 
     static {
         for (Filter filter : filters) {
