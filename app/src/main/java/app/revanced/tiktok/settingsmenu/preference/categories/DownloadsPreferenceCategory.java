@@ -20,7 +20,7 @@ public class DownloadsPreferenceCategory extends ConditionalPreferenceCategory {
     }
 
     @Override
-    public void implementCategory(Context context) {
+    public void addPreferences(Context context) {
         addPreference(new DownloadPathPreference(
                 context,
                 "Download path",
