@@ -186,7 +186,7 @@ abstract class FilterGroupList<V, T extends FilterGroup<V>> implements Iterable<
         search = createSearchGraph();
         for (T group : filterGroups) {
             for (V pattern : group.filters) {
-                search.addPattern(pattern, (searchText, matchedStartIndex, matchedEndIndex) -> group.isEnabled());
+                search.addPattern(pattern, (searchedText, matchedStartIndex, matchedEndIndex) -> group.isEnabled());
             }
         }
     }
@@ -308,7 +308,7 @@ public final class LithoFilterPatch {
         for (FilterGroup<T> group : list) {
             for (T pattern : group.filters) {
                 pathSearchTree.addPattern(pattern, (TrieSearch.TriePatternMatchedCallback<T>)
-                        (searchText, matchedStartIndex, matchedEndIndex) ->
+                        (searchedText, matchedStartIndex, matchedEndIndex) ->
                                 filter.isFiltered(path, identifier, protobufBufferArray, list, group)
                 );
             }

@@ -18,13 +18,13 @@ public abstract class TrieSearch<T> {
         /**
          * Called when a pattern is matched.
          *
-         * @param searchText        The text that was searched.
+         * @param searchedText      The text that was searched.
          * @param matchedStartIndex Start index of the search text, where the pattern was matched
          * @param matchedEndIndex   Exclusive end index of the search text, where the pattern was matched.
          * @return True, if the search should stop here.
          *         If false, searching will continue to look for other matches.
          */
-        boolean patternMatched(T searchText, int matchedStartIndex, int matchedEndIndex);
+        boolean patternMatched(T searchedText, int matchedStartIndex, int matchedEndIndex);
     }
 
     protected static abstract class TrieNode<T> {
