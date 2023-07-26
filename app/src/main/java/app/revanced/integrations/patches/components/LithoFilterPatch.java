@@ -306,9 +306,8 @@ public final class LithoFilterPatch {
                                                   Filter filter, FilterGroupList<T, ? extends FilterGroup<T>> list) {
         for (FilterGroup<T> group : list) {
             for (T pattern : group.filters) {
-                pathSearchTree.addPattern(pattern, (TrieSearch.TriePatternMatchedCallback<T>)
-                        (searchedText, matchedStartIndex, matchedEndIndex) ->
-                                filter.isFiltered(path, identifier, protobufBufferArray, list, group)
+                pathSearchTree.addPattern(pattern, (searchedText, matchedStartIndex, matchedEndIndex) ->
+                        filter.isFiltered(path, identifier, protobufBufferArray, list, group)
                 );
             }
         }
