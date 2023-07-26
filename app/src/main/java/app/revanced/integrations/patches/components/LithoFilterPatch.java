@@ -92,7 +92,7 @@ class ByteArrayFilterGroup extends FilterGroup<byte[]> {
     private final int[][] failurePatterns;
 
     // Modified implementation from https://stackoverflow.com/a/1507813
-    private int indexOf(final byte[] data, final byte[] pattern, final int[] failure) {
+    private static int indexOf(final byte[] data, final byte[] pattern, final int[] failure) {
         if (data.length == 0)
             return -1;
 
@@ -146,11 +146,10 @@ class ByteArrayFilterGroup extends FilterGroup<byte[]> {
     public FilterGroupResult check(final byte[] bytes) {
         var matched = false;
         for (int i = 0, length = filters.length; i < length; i++) {
-            if (indexOf(bytes, filters[i], failurePatterns[i]) == -1)
-                continue;
-
-            matched = true;
-            break;
+            if (indexOf(bytes, filters[i], failurePatterns[i]) >= 0) {
+                matched = true;
+                break;
+            }
         }
 
         return new FilterGroupResult(setting, matched);
