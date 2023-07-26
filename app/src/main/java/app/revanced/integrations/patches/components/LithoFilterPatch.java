@@ -64,9 +64,6 @@ abstract class FilterGroup<T> {
 
 class StringFilterGroup extends FilterGroup<String> {
 
-    /**
-     * {@link FilterGroup#FilterGroup(SettingsEnum, Object[])}
-     */
     public StringFilterGroup(final SettingsEnum setting, final String... filters) {
         super(setting, filters);
     }
@@ -79,50 +76,52 @@ class StringFilterGroup extends FilterGroup<String> {
 
 final class CustomFilterGroup extends StringFilterGroup {
 
-    /**
-     * {@link FilterGroup#FilterGroup(SettingsEnum, Object[])}
-     */
     public CustomFilterGroup(final SettingsEnum setting, final SettingsEnum filter) {
         super(setting, filter.getString().split(","));
     }
 }
 
-class ByteArrayFilterGroup extends FilterGroup<byte[]> {
-
-    private final int[][] failurePatterns;
+/**
+ * If you have more than 1 filter patterns, then all instances of
+ * this class should filtered using a {@link ByteArrayFilterGroupList},
+ * which uses a prefix tree to give better performance.
+ */
+@RequiresApi(api = Build.VERSION_CODES.N)
+class ByteArrayFilterGroup extends FilterGroup<ByteBuffer> {
 
     // Modified implementation from https://stackoverflow.com/a/1507813
-    private static int indexOf(final byte[] data, final byte[] pattern, final int[] failure) {
-        if (data.length == 0)
-            return -1;
-
-        // Finds the first occurrence of the pattern in the byte array using
+    private static int indexOf(ByteBuffer searchTarget, ByteBuffer pattern, int[] failure) {
+        // Finds the first occurrence of the pattern in the buffer using
         // KMP matching algorithm.
-        for (int i = 0, j = 0, dataLength = data.length; i < dataLength; i++) {
-            while (j > 0 && pattern[j] != data[i]) {
+        int i = searchTarget.position();
+        int j = pattern.position();
+        int patternLimit = pattern.limit();
+        for (int searchLength = searchTarget.limit(); i < searchLength; i++) {
+            while (j > 0 && pattern.getChar(j) != searchTarget.getChar(i)) {
                 j = failure[j - 1];
             }
-            if (pattern[j] == data[i]) {
+            if (pattern.getChar(j) == searchTarget.getChar(i)) {
                 j++;
             }
-            if (j == pattern.length) {
-                return i - pattern.length + 1;
+            if (j == patternLimit) {
+                return i - patternLimit + 1;
             }
         }
         return -1;
     }
 
-    private static int[] createFailurePattern(byte[] pattern) {
+    private static int[] createFailurePattern(ByteBuffer pattern) {
         // Computes the failure function using a boot-strapping process,
         // where the pattern is matched against itself.
-        final int patternLength = pattern.length;
-        final int[] failure = new int[patternLength];
-
-        for (int i = 1, j = 0; i < patternLength; i++) {
-            while (j > 0 && pattern[j] != pattern[i]) {
+        final int patternLimit = pattern.limit();
+        int[] failure = new int[patternLimit];
+        int j = pattern.position();
+        int i = j + 1;
+        for (; i < patternLimit; i++) {
+            while (j > 0 && pattern.getChar(j) != pattern.getChar(i)) {
                 j = failure[j - 1];
             }
-            if (pattern[j] == pattern[i]) {
+            if (pattern.getChar(j) == pattern.getChar(i)) {
                 j++;
             }
             failure[i] = j;
@@ -130,23 +129,22 @@ class ByteArrayFilterGroup extends FilterGroup<byte[]> {
         return failure;
     }
 
-    /**
-     * {@link FilterGroup#FilterGroup(SettingsEnum, Object[])}
-     */
-    public ByteArrayFilterGroup(final SettingsEnum setting, final byte[]... filters) {
+    private final int[][] failurePatterns;
+
+    public ByteArrayFilterGroup(SettingsEnum setting, ByteBuffer[] filters) {
         super(setting, filters);
         failurePatterns = new int[filters.length][];
         int i = 0;
-        for (byte[] pattern : filters) {
+        for (ByteBuffer pattern : filters) {
             failurePatterns[i++] = createFailurePattern(pattern);
         }
     }
 
     @Override
-    public FilterGroupResult check(final byte[] bytes) {
+    public FilterGroupResult check(ByteBuffer searchTarget) {
         var matched = false;
         for (int i = 0, length = filters.length; i < length; i++) {
-            if (indexOf(bytes, filters[i], failurePatterns[i]) >= 0) {
+            if (indexOf(searchTarget, filters[i], failurePatterns[i]) >= 0) {
                 matched = true;
                 break;
             }
@@ -154,16 +152,37 @@ class ByteArrayFilterGroup extends FilterGroup<byte[]> {
 
         return new FilterGroupResult(setting, matched);
     }
-}
-
-final class ByteArrayAsStringFilterGroup extends ByteArrayFilterGroup {
 
     /**
-     * {@link ByteArrayFilterGroup#ByteArrayFilterGroup(SettingsEnum, byte[]...)}
+     * Alternate simple linear search implementation.
      */
-    @RequiresApi(api = Build.VERSION_CODES.N)
+    public FilterGroupResult checkNonKMPSearch(ByteBuffer bytes) {
+        var matched = false;
+        for (ByteBuffer filter : filters) {
+            if (filter.compareTo(bytes) == 0) {
+                matched = true;
+                break;
+            }
+        }
+        return new FilterGroupResult(setting, matched);
+    }
+
+}
+
+@RequiresApi(api = Build.VERSION_CODES.N)
+final class ByteArrayAsStringFilterGroup extends ByteArrayFilterGroup {
+
+    private static ByteBuffer[] convertStringsToBuffers(String[] filters) {
+        ByteBuffer[] byteFilters = new ByteBuffer[filters.length];
+        int i = 0;
+        for (String filter : filters) {
+            byteFilters[i++] = ByteBuffer.wrap(filter.getBytes());
+        }
+        return byteFilters;
+    }
+
     public ByteArrayAsStringFilterGroup(SettingsEnum setting, String... filters) {
-        super(setting, Arrays.stream(filters).map(String::getBytes).toArray(byte[][]::new));
+        super(setting, convertStringsToBuffers(filters));
     }
 }
 
@@ -226,7 +245,7 @@ final class StringFilterGroupList extends FilterGroupList<String, StringFilterGr
     }
 }
 
-final class ByteArrayFilterGroupList extends FilterGroupList<byte[], ByteArrayFilterGroup> {
+final class ByteArrayFilterGroupList extends FilterGroupList<ByteBuffer, ByteArrayFilterGroup> {
     protected ByteTrieSearch createSearchGraph() {
         return new ByteTrieSearch();
     }
@@ -235,7 +254,7 @@ final class ByteArrayFilterGroupList extends FilterGroupList<byte[], ByteArrayFi
 abstract class Filter {
     /**
      * All group filters must be set before the constructor call completes.
-     * Otherwise {@link #isFiltered(String, String, byte[], FilterGroupList, FilterGroup)}
+     * Otherwise {@link #isFiltered(String, String, ByteBuffer, FilterGroupList, FilterGroup)}
      * will never be called for any matches.
      */
     protected final StringFilterGroupList pathFilterGroups = new StringFilterGroupList();
@@ -254,7 +273,7 @@ abstract class Filter {
      * @return True if the litho item should be hidden.
      */
     @SuppressWarnings("rawtypes")
-    boolean isFiltered(final String path, final String identifier, final byte[] protobufBufferArray,
+    boolean isFiltered(String path, String identifier, ByteBuffer protobuf,
                        FilterGroupList matchedList, FilterGroup matchedGroup) {
         final boolean isEnabled = matchedGroup.isEnabled();
 
@@ -281,12 +300,12 @@ public final class LithoFilterPatch {
     private static final class LithoFilterParameters {
         public final String path;
         public final String identifier;
-        public final byte[] protobuffer;
+        public final ByteBuffer protoBuffer;
 
-        LithoFilterParameters(StringBuilder lithoPath, String lithoIdentifier, ByteBuffer protobuffer) {
+        LithoFilterParameters(StringBuilder lithoPath, String lithoIdentifier, ByteBuffer protoBuffer) {
             this.path = lithoPath.toString();
             this.identifier = lithoIdentifier;
-            this.protobuffer = protobuffer.array();
+            this.protoBuffer = protoBuffer;
         }
 
         @NonNull
@@ -326,7 +345,7 @@ public final class LithoFilterPatch {
             for (T pattern : group.filters) {
                 pathSearchTree.addPattern(pattern, (searchedText, matchedStartIndex, matchedEndIndex, callbackParameter) -> {
                             LithoFilterParameters parameters = (LithoFilterParameters) callbackParameter;
-                            return filter.isFiltered(parameters.path, parameters.identifier, parameters.protobuffer, list, group);
+                            return filter.isFiltered(parameters.path, parameters.identifier, parameters.protoBuffer, list, group);
                         }
                 );
             }
@@ -348,8 +367,10 @@ public final class LithoFilterPatch {
             LogHelper.printDebug(() -> "Searching " + parameter);
 
             if (pathSearchTree.matches(parameter.path, parameter)) return true;
-            if (parameter.identifier != null && identifierSearchTree.matches(parameter.identifier, parameter)) return true;
-            if (protoSearchTree.matches(parameter.protobuffer, parameter)) return true;
+            if (parameter.identifier != null) {
+                if (identifierSearchTree.matches(parameter.identifier, parameter)) return true;
+            }
+            if (protoSearchTree.matches(parameter.protoBuffer, parameter)) return true;
         } catch (Exception ex) {
             LogHelper.printException(() -> "Litho filter failure", ex);
         }

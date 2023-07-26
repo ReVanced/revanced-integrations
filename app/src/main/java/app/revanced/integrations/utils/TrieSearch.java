@@ -147,42 +147,11 @@ public abstract class TrieSearch<T> {
         }
     }
 
-    protected void addPattern(@NonNull T pattern, int patternLength, @Nullable TriePatternMatchedCallback<T> callback) {
+    protected void addPattern(@NonNull T pattern, int patternStartIndex, int patternLength, @Nullable TriePatternMatchedCallback<T> callback) {
         if (patternLength == 0) return; // Nothing to match
 
         patterns.add(pattern);
-        root.addPattern(pattern, patternLength, 0, callback);
-    }
-
-    protected boolean matches(@NonNull T textToSearch, int textToSearchLength, @Nullable Object callbackParameter) {
-        if (patterns.size() == 0) {
-            return false; // No patterns were added.
-        }
-        for (int i = 0; i < textToSearchLength; i++) {
-            if (root.matches(textToSearch, textToSearchLength, i, 0, callbackParameter)) return true;
-        }
-        return false;
-    }
-
-    /**
-     * @return Estimated memory size (in kilobytes) of this instance.
-     */
-    public int getEstimatedMemorySize() {
-        // Assume the device has less than 32GB of ram (and can use pointer compression),
-        // or the device is 32-bit.
-        final int numberOfBytesPerPointer = 4;
-        // This ignores the memory size of object garbage collection entries,
-        // and ignores the leaf node 1 element callback function arraylist.
-        return (numberOfBytesPerPointer * root.findNumberOfChildArrays() * TrieNode.CHAR_RANGE) / 1024;
-    }
-
-
-    public int numberOfPatterns() {
-        return patterns.size();
-    }
-
-    public List<T> getPatterns() {
-        return Collections.unmodifiableList(patterns);
+        root.addPattern(pattern, patternLength, patternStartIndex, callback);
     }
 
     /**
@@ -199,6 +168,29 @@ public abstract class TrieSearch<T> {
     public abstract void addPattern(@NonNull T pattern, @NonNull TriePatternMatchedCallback<T> callback);
 
     /**
+     * @param textToSearchStartIndex Inclusive start index.
+     * @param textToSearchEndIndex Exclusive end index.
+     */
+    protected final boolean matches(@NonNull T textToSearch,
+                                    int textToSearchStartIndex, int textToSearchEndIndex,
+                                    @Nullable Object callbackParameter) {
+        if (patterns.size() == 0) {
+            return false; // No patterns were added.
+        }
+        for (int i = textToSearchStartIndex; i < textToSearchEndIndex; i++) {
+            if (root.matches(textToSearch, textToSearchEndIndex, i, 0, callbackParameter)) return true;
+        }
+        return false;
+    }
+
+    /**
+     * Identical to {@link #matches(Object, Object)} but with a null callback parameter.
+     */
+    public final boolean matches(@NonNull T textToSearch) {
+        return matches(textToSearch, null);
+    }
+
+    /**
      * Searches thru text, looking for any substring that matches any pattern in this tree.
      *
      * @param textToSearch Text to search thru.
@@ -208,9 +200,22 @@ public abstract class TrieSearch<T> {
     public abstract boolean matches(@NonNull T textToSearch, @Nullable Object callbackParameter);
 
     /**
-     * Identical to {@link #matches(Object, Object)} but with a null callback parameter.
+     * @return Estimated memory size (in kilobytes) of this instance.
      */
-    public final boolean matches(@NonNull T textToSearch) {
-        return matches(textToSearch, null);
+    public int getEstimatedMemorySize() {
+        // Assume the device has less than 32GB of ram (and can use pointer compression),
+        // or the device is 32-bit.
+        final int numberOfBytesPerPointer = 4;
+        // This ignores the memory size of object garbage collection entries,
+        // and ignores the leaf node 1 element callback function arraylist.
+        return (numberOfBytesPerPointer * root.findNumberOfChildArrays() * TrieNode.CHAR_RANGE) / 1024;
+    }
+
+    public int numberOfPatterns() {
+        return patterns.size();
+    }
+
+    public List<T> getPatterns() {
+        return Collections.unmodifiableList(patterns);
     }
 }
