@@ -43,12 +43,12 @@ public class FeedFilterPreferenceCategory extends ConditionalPreferenceCategory 
         ));
         addPreference(new RangeValuePreference(
                 context,
-                "Min/Max views", "If app show error, please change value or refresh few times.",
+                "Min/Max views", "The minimum or maximum views of a video to show.",
                 SettingsEnum.MIN_MAX_VIEWS
         ));
         addPreference(new RangeValuePreference(
                 context,
-                "Min/Max likes", "If app show error, please change value or refresh few times.",
+                "Min/Max likes", "The minimum or maximum likes of a video to show.",
                 SettingsEnum.MIN_MAX_LIKES
         ));
     }
