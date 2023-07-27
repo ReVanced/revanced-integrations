@@ -304,10 +304,10 @@ public final class LithoFilterPatch {
          * Search thru a byte array for all ASCII strings.
          */
         private static void findAsciiStrings(StringBuilder builder, byte[] buffer) {
-            // Valid ASCII value (filter out the character control characters).
+            // Valid ASCII value (ignore control characters).
             final int minimumAscii = 32;  // 32 = space character
             final int maximumAscii = 126; // 127 = delete character
-            final int minimumAsciiStringLengthToLog = 4; // Minimum length of a ASCII string to include.
+            final int minimumAsciiStringLength = 4; // Minimum length of a ASCII string to include.
             String delimitingCharacter = "❙"; // Non ascii character, to allow easier log filtering.
 
             int asciiStartIndex = -1;
@@ -316,7 +316,7 @@ public final class LithoFilterPatch {
                 char character = (char) buffer[i];
                 if (character < minimumAscii || maximumAscii < character) { // Not a letter, number, or symbol.
                     if (asciiStartIndex >= 0) {
-                        if (i - asciiStartIndex >= minimumAsciiStringLengthToLog) {
+                        if (i - asciiStartIndex >= minimumAsciiStringLength) {
                             builder.append(delimitingCharacter); // Use unicode character and not ascii, to allow easier regex split.
                             for (int j = asciiStartIndex; j < i; j++) {
                                 builder.append((char) buffer[j]);
