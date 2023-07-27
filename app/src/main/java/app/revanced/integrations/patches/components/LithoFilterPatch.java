@@ -59,6 +59,14 @@ abstract class FilterGroup<T> {
         return setting == null || setting.getBoolean();
     }
 
+    /**
+     * @return If {@link FilterGroupList} should include this group when searching.
+     * By default, all filters are included except non enabled settings that require reboot.
+     */
+    public boolean includeInSearch() {
+        return setting == null || !setting.rebootApp || setting.getBoolean();
+    }
+
     public abstract FilterGroupResult check(final T stack);
 }
 
@@ -179,6 +187,9 @@ abstract class FilterGroupList<V, T extends FilterGroup<V>> implements Iterable<
         LogHelper.printDebug(() -> "Creating prefix search tree");
         search = createSearchGraph();
         for (T group : filterGroups) {
+            if (!group.includeInSearch()) {
+                continue;
+            }
             for (V pattern : group.filters) {
                 search.addPattern(pattern, (matchedStartIndex, callbackParameter)
                         -> group.isEnabled());
@@ -348,9 +359,9 @@ public final class LithoFilterPatch {
 
     static {
         for (Filter filter : filters) {
-            addFilterToSearchTree(pathSearchTree, filter, filter.pathFilterGroups);
-            addFilterToSearchTree(identifierSearchTree, filter, filter.identifierFilterGroups);
-            addFilterToSearchTree(protoSearchTree, filter, filter.protobufBufferFilterGroups);
+            filterGroupLists(pathSearchTree, filter, filter.pathFilterGroups);
+            filterGroupLists(identifierSearchTree, filter, filter.identifierFilterGroups);
+            filterGroupLists(protoSearchTree, filter, filter.protobufBufferFilterGroups);
         }
 
         LogHelper.printDebug(() -> "Using: "
@@ -362,9 +373,12 @@ public final class LithoFilterPatch {
                 + " (" + protoSearchTree.getEstimatedMemorySize() + " KB)");
     }
 
-    private static <T> void addFilterToSearchTree(TrieSearch<T> pathSearchTree,
-                                                  Filter filter, FilterGroupList<T, ? extends FilterGroup<T>> list) {
+    private static <T> void filterGroupLists(TrieSearch<T> pathSearchTree,
+                                             Filter filter, FilterGroupList<T, ? extends FilterGroup<T>> list) {
         for (FilterGroup<T> group : list) {
+            if (!group.includeInSearch()) {
+                continue;
+            }
             for (T pattern : group.filters) {
                 pathSearchTree.addPattern(pattern, (matchedStartIndex, callbackParameter) -> {
                             LithoFilterParameters parameters = (LithoFilterParameters) callbackParameter;
