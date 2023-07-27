@@ -230,7 +230,7 @@ final class ByteArrayFilterGroupList extends FilterGroupList<byte[], ByteArrayFi
 abstract class Filter {
     /**
      * All group filters must be set before the constructor call completes.
-     * Otherwise {@link #isFiltered(String, String, byte[], FilterGroupList, FilterGroup)}
+     * Otherwise {@link #isFiltered(String, String, byte[], FilterGroupList, FilterGroup, int)}
      * will never be called for any matches.
      */
     protected final StringFilterGroupList pathFilterGroups = new StringFilterGroupList();
@@ -246,11 +246,12 @@ abstract class Filter {
      *
      * @param matchedList  The matchedGroup matchedList the filter belongs to.
      * @param matchedGroup The actual filter that matched.
+     * @param matchedIndex Matched index of string/array.
      * @return True if the litho item should be hidden.
      */
     @SuppressWarnings("rawtypes")
     boolean isFiltered(final String path, final String identifier, final byte[] protobufBufferArray,
-                       FilterGroupList matchedList, FilterGroup matchedGroup) {
+                       FilterGroupList matchedList, FilterGroup matchedGroup, int matchedIndex) {
         final boolean isEnabled = matchedGroup.isEnabled();
 
         if (isEnabled && SettingsEnum.DEBUG.getBoolean()) {
@@ -367,7 +368,8 @@ public final class LithoFilterPatch {
             for (T pattern : group.filters) {
                 pathSearchTree.addPattern(pattern, (matchedStartIndex, callbackParameter) -> {
                             LithoFilterParameters parameters = (LithoFilterParameters) callbackParameter;
-                            return filter.isFiltered(parameters.path, parameters.identifier, parameters.protobuffer, list, group);
+                            return filter.isFiltered(parameters.path, parameters.identifier, parameters.protobuffer,
+                                    list, group, matchedStartIndex);
                         }
                 );
             }
