@@ -21,14 +21,12 @@ public abstract class TrieSearch<T> {
         /**
          * Called when a pattern is matched.
          *
-         * @param searchedText      The text that was searched.
          * @param matchedStartIndex Start index of the search text, where the pattern was matched.
-         * @param matchedEndIndex   Exclusive end index of the search text, where the pattern was matched.
          * @param callbackParameter Optional parameter passed into {@link TrieSearch#matches(Object, Object)}.
          * @return True, if the search should stop here.
          *         If false, searching will continue to look for other matches.
          */
-        boolean patternMatched(T searchedText, int matchedStartIndex, int matchedEndIndex, Object callbackParameter);
+        boolean patternMatched(int matchedStartIndex, Object callbackParameter);
     }
 
     protected static abstract class TrieNode<T> {
@@ -94,7 +92,7 @@ public abstract class TrieSearch<T> {
                     if (callback == null) {
                         return true; // No callback, and all matches are valid.
                     }
-                    if (callback.patternMatched(searchText, matchStartIndex, searchTextIndex, callbackParameter)) {
+                    if (callback.patternMatched(matchStartIndex, callbackParameter)) {
                         return true; // Callback confirmed the match.
                     }
                 }
@@ -190,7 +188,6 @@ public abstract class TrieSearch<T> {
         // and ignores the leaf node 1 element callback function arraylist.
         return (numberOfBytesPerPointer * root.estimatedNumberOfPointersUsed()) / 1024;
     }
-
 
     public int numberOfPatterns() {
         return patterns.size();

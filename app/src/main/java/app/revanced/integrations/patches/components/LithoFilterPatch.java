@@ -180,7 +180,7 @@ abstract class FilterGroupList<V, T extends FilterGroup<V>> implements Iterable<
         search = createSearchGraph();
         for (T group : filterGroups) {
             for (V pattern : group.filters) {
-                search.addPattern(pattern, (searchedText, matchedStartIndex, matchedEndIndex, callbackParameter)
+                search.addPattern(pattern, (matchedStartIndex, callbackParameter)
                         -> group.isEnabled());
             }
         }
@@ -293,8 +293,8 @@ public final class LithoFilterPatch {
             builder.append(identifier);
             builder.append(" Path: ");
             builder.append(path);
-            builder.append(" BufferStrings: ");
             // TODO: allow turning on/off proto buffer logging with a debug setting?
+            builder.append(" BufferStrings: ");
             findAsciiStrings(builder, protobuffer);
 
             return builder.toString();
@@ -304,10 +304,10 @@ public final class LithoFilterPatch {
          * Search thru a byte array for all ASCII strings.
          */
         private static void findAsciiStrings(StringBuilder builder, byte[] buffer) {
-            // Valid ASCII value (ignore control characters).
+            // Valid ASCII values (ignore control characters).
             final int minimumAscii = 32;  // 32 = space character
             final int maximumAscii = 126; // 127 = delete character
-            final int minimumAsciiStringLength = 4; // Minimum length of a ASCII string to include.
+            final int minimumAsciiStringLength = 4; // Minimum length of an ASCII string to include.
             String delimitingCharacter = "❙"; // Non ascii character, to allow easier log filtering.
 
             int asciiStartIndex = -1;
@@ -317,7 +317,7 @@ public final class LithoFilterPatch {
                 if (character < minimumAscii || maximumAscii < character) { // Not a letter, number, or symbol.
                     if (asciiStartIndex >= 0) {
                         if (i - asciiStartIndex >= minimumAsciiStringLength) {
-                            builder.append(delimitingCharacter); // Use unicode character and not ascii, to allow easier regex split.
+                            builder.append(delimitingCharacter);
                             for (int j = asciiStartIndex; j < i; j++) {
                                 builder.append((char) buffer[j]);
                             }
@@ -332,7 +332,7 @@ public final class LithoFilterPatch {
                 }
             }
             if (asciiStartIndex >= 0) {
-                builder.append(delimitingCharacter); // Closing indicator.
+                builder.append(delimitingCharacter);
             }
         }
     }
@@ -357,7 +357,7 @@ public final class LithoFilterPatch {
                 + " (" + pathSearchTree.getEstimatedMemorySize() + " KB), "
                 + identifierSearchTree.getPatterns().size() + " identifier filters"
                 + " (" + identifierSearchTree.getEstimatedMemorySize() + " KB), "
-                + protoSearchTree.getPatterns().size() + " protobuffer filters"
+                + protoSearchTree.getPatterns().size() + " buffer filters"
                 + " (" + protoSearchTree.getEstimatedMemorySize() + " KB)");
     }
 
@@ -365,7 +365,7 @@ public final class LithoFilterPatch {
                                                   Filter filter, FilterGroupList<T, ? extends FilterGroup<T>> list) {
         for (FilterGroup<T> group : list) {
             for (T pattern : group.filters) {
-                pathSearchTree.addPattern(pattern, (searchedText, matchedStartIndex, matchedEndIndex, callbackParameter) -> {
+                pathSearchTree.addPattern(pattern, (matchedStartIndex, callbackParameter) -> {
                             LithoFilterParameters parameters = (LithoFilterParameters) callbackParameter;
                             return filter.isFiltered(parameters.path, parameters.identifier, parameters.protobuffer, list, group);
                         }
