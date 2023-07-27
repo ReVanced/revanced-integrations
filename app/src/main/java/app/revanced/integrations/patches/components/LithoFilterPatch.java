@@ -305,10 +305,10 @@ public final class LithoFilterPatch {
          */
         private static void findAsciiStrings(StringBuilder builder, byte[] buffer) {
             // Valid ASCII value (filter out the character control characters).
-            final int minimumAscii = 32;
-            final int maximumAscii = 126; // 127 = delete character.
-            final char delimitingCharacter = '❙'; // Non ascii character, to allow easier log filtering.
+            final int minimumAscii = 32;  // 32 = space character
+            final int maximumAscii = 126; // 127 = delete character
             final int minimumAsciiStringLengthToLog = 4; // Minimum length of a ASCII string to include.
+            String delimitingCharacter = "❙"; // Non ascii character, to allow easier log filtering.
 
             int asciiStartIndex = -1;
             int stringLength = 0;
