@@ -365,11 +365,11 @@ public final class LithoFilterPatch {
         }
 
         LogHelper.printDebug(() -> "Using: "
-                + pathSearchTree.getPatterns().size() + " path filters"
+                + pathSearchTree.numberOfPatterns() + " path filters"
                 + " (" + pathSearchTree.getEstimatedMemorySize() + " KB), "
-                + identifierSearchTree.getPatterns().size() + " identifier filters"
+                + identifierSearchTree.numberOfPatterns() + " identifier filters"
                 + " (" + identifierSearchTree.getEstimatedMemorySize() + " KB), "
-                + protoSearchTree.getPatterns().size() + " buffer filters"
+                + protoSearchTree.numberOfPatterns() + " buffer filters"
                 + " (" + protoSearchTree.getEstimatedMemorySize() + " KB)");
     }
 
