@@ -114,6 +114,6 @@ public class ReVancedPreferenceFragment extends PreferenceFragment {
     }
 
     private void rebootDialog(final Activity activity) {
-        new AlertDialog.Builder(activity).setMessage("Refresh and restart").setPositiveButton("RESTART", (dialog, i) -> reboot(activity)).setNegativeButton("CANCEL", null).show();
+        new AlertDialog.Builder(activity).setMessage("Refresh and restart").setPositiveButton("Restart", (dialog, i) -> reboot(activity)).setNegativeButton("Cancel", null).show();
     }
 }
