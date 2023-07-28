@@ -1,3 +1,24 @@
+# [0.115.0-dev.3](https://github.com/ReVanced/revanced-integrations/compare/v0.115.0-dev.2...v0.115.0-dev.3) (2023-07-27)
+
+
+### Bug Fixes
+
+* **YouTube - Spoof App Version:** Remove 17.30.35 target ([e906c6d](https://github.com/ReVanced/revanced-integrations/commit/e906c6d3a2195c94c926f9903f1e4e66c3714e3e))
+
+# [0.115.0-dev.2](https://github.com/ReVanced/revanced-integrations/compare/v0.115.0-dev.1...v0.115.0-dev.2) (2023-07-26)
+
+
+### Bug Fixes
+
+* **YouTube - SponsorBlock:** Fix skip highlight button showing when set to 'show in seekbar' ([ea7bc57](https://github.com/ReVanced/revanced-integrations/commit/ea7bc5737584ce967becd5b9e5d0d57f5d2fbc49))
+
+# [0.115.0-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v0.114.0...v0.115.0-dev.1) (2023-07-26)
+
+
+### Features
+
+* **YouTube - Hide layout components:** Hide `chips shelf` ([#448](https://github.com/ReVanced/revanced-integrations/issues/448)) ([c7d2a9b](https://github.com/ReVanced/revanced-integrations/commit/c7d2a9b3101439b241218c45d0c4b64012adab65))
+
 # [0.114.0](https://github.com/ReVanced/revanced-integrations/compare/v0.113.0...v0.114.0) (2023-07-21)
 
 
