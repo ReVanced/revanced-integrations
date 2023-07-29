@@ -24,7 +24,7 @@ import androidx.annotation.Nullable;
 
 import com.google.android.apps.youtube.app.application.Shell_HomeActivity;
 
-import app.revanced.integrations.patches.playback.speed.CustomVideoSpeedPatch;
+import app.revanced.integrations.patches.playback.speed.CustomPlaybackSpeedPatch;
 import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.settings.SharedPrefCategory;
 import app.revanced.integrations.utils.LogHelper;
@@ -135,7 +135,7 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
             // if the preference was included, then initialize it based on the available playback speed
             Preference defaultSpeedPreference = findPreference(SettingsEnum.PLAYBACK_SPEED_DEFAULT.path);
             if (defaultSpeedPreference instanceof ListPreference) {
-                CustomVideoSpeedPatch.initializeListPreference((ListPreference) defaultSpeedPreference);
+                CustomPlaybackSpeedPatch.initializeListPreference((ListPreference) defaultSpeedPreference);
             }
 
             // Set current value from SettingsEnum
@@ -180,6 +180,11 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
         if (entryIndex >= 0) {
             listPreference.setSummary(listPreference.getEntries()[entryIndex]);
             listPreference.setValue(objectStringValue);
+        } else {
+            // Value is not an available option.
+            // User manually edited import data, or options changed and current selection is no longer available.
+            // Still show the value in the summary so it's clear that something is selected.
+            listPreference.setSummary(objectStringValue);
         }
     }
 

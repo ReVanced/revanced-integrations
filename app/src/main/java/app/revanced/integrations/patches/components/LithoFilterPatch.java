@@ -1,11 +1,9 @@
 package app.revanced.integrations.patches.components;
 
 import android.os.Build;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
-import app.revanced.integrations.settings.SettingsEnum;
-import app.revanced.integrations.utils.LogHelper;
-import app.revanced.integrations.utils.ReVancedUtils;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -13,6 +11,10 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Spliterator;
 import java.util.function.Consumer;
+
+import app.revanced.integrations.settings.SettingsEnum;
+import app.revanced.integrations.utils.LogHelper;
+import app.revanced.integrations.utils.ReVancedUtils;
 
 abstract class FilterGroup<T> {
     final static class FilterGroupResult {
@@ -49,7 +51,7 @@ abstract class FilterGroup<T> {
     }
 
     public boolean isEnabled() {
-        return setting.getBoolean();
+        return setting == null || setting.getBoolean();
     }
 
     public abstract FilterGroupResult check(final T stack);
@@ -83,9 +85,10 @@ final class CustomFilterGroup extends StringFilterGroup {
 class ByteArrayFilterGroup extends FilterGroup<byte[]> {
     // Modified implementation from https://stackoverflow.com/a/1507813
     private int indexOf(final byte[] data, final byte[] pattern) {
+        if (data.length == 0)
+            return -1;
         // Computes the failure function using a boot-strapping process,
         // where the pattern is matched against itself.
-
         final int[] failure = new int[pattern.length];
 
         int j = 0;
@@ -103,7 +106,6 @@ class ByteArrayFilterGroup extends FilterGroup<byte[]> {
         // KMP matching algorithm.
 
         j = 0;
-        if (data.length == 0) return -1;
 
         for (int i = 0; i < data.length; i++) {
             while (j > 0 && pattern[j] != data[i]) {
@@ -130,7 +132,8 @@ class ByteArrayFilterGroup extends FilterGroup<byte[]> {
     public FilterGroupResult check(final byte[] bytes) {
         var matched = false;
         for (byte[] filter : filters) {
-            if (indexOf(bytes, filter) == -1) continue;
+            if (indexOf(bytes, filter) == -1)
+                continue;
 
             matched = true;
             break;
@@ -181,7 +184,8 @@ abstract class FilterGroupList<V, T extends FilterGroup<V>> implements Iterable<
 
     protected boolean contains(final V stack) {
         for (T filterGroup : this) {
-            if (!filterGroup.isEnabled()) continue;
+            if (!filterGroup.isEnabled())
+                continue;
 
             var result = filterGroup.check(stack);
             if (result.isFiltered()) {
@@ -205,7 +209,8 @@ abstract class Filter {
     final protected ByteArrayFilterGroupList protobufBufferFilterGroups = new ByteArrayFilterGroupList();
 
     /**
-     * Check if the given path, identifier or protobuf buffer is filtered by any {@link FilterGroup}.
+     * Check if the given path, identifier or protobuf buffer is filtered by any
+     * {@link FilterGroup}.  Method is called off the main thread.
      *
      * @return True if filtered, false otherwise.
      */
@@ -232,26 +237,40 @@ abstract class Filter {
 @RequiresApi(api = Build.VERSION_CODES.N)
 @SuppressWarnings("unused")
 public final class LithoFilterPatch {
-    private static final Filter[] filters = new Filter[]{
-          new DummyFilter() // Replaced by patch.
+    private static final Filter[] filters = new Filter[] {
+            new DummyFilter() // Replaced by patch.
     };
 
+    /**
+     * Injection point.  Called off the main thread.
+     */
     @SuppressWarnings("unused")
-    public static boolean filter(final StringBuilder pathBuilder, final String identifier, final ByteBuffer protobufBuffer) {
+    public static boolean filter(final StringBuilder pathBuilder, final String identifier,
+                                 final ByteBuffer protobufBuffer) {
+        // TODO: Maybe this can be moved to the Filter class, to prevent unnecessary
+        // string creation
+        // because some filters might not need the path.
         var path = pathBuilder.toString();
+
         // It is assumed that protobufBuffer is empty as well in this case.
-        if (path.isEmpty()) return false;
+        if (path.isEmpty())
+            return false;
 
         LogHelper.printDebug(() -> String.format(
                 "Searching (ID: %s, Buffer-size: %s): %s",
-                identifier, protobufBuffer.remaining(), path
-        ));
+                identifier, protobufBuffer.remaining(), path));
 
         var protobufBufferArray = protobufBuffer.array();
 
-        // check if any filter-group
-        for (var filter : filters)
-            if (filter.isFiltered(path, identifier, protobufBufferArray)) return true;
+        for (var filter : filters) {
+            var filtered = filter.isFiltered(path, identifier, protobufBufferArray);
+
+            LogHelper.printDebug(
+                    () -> String.format("%s (ID: %s): %s", filtered ? "Filtered" : "Unfiltered", identifier, path));
+
+            if (filtered)
+                return true;
+        }
 
         return false;
     }
