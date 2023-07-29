@@ -16,7 +16,7 @@ public class PlayerFlyoutMenuItemsFilter extends Filter {
                 ),
                 new ByteArrayAsStringFilterGroup(
                         SettingsEnum.HIDE_CAPTIONS_MENU,
-                        "yt_outline_closed_caption"
+                        "closed_caption"
                 ),
                 new ByteArrayAsStringFilterGroup(
                         SettingsEnum.HIDE_LOOP_VIDEO_MENU,
