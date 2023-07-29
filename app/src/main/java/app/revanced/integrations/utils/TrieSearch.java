@@ -29,6 +29,44 @@ public abstract class TrieSearch<T> {
         boolean patternMatched(int matchedStartIndex, Object callbackParameter);
     }
 
+    /**
+     * Represents a compressed tree path for a single pattern that shares no sibling nodes.
+     *
+     * For example, if a tree contains the patterns: "foobar", "football", "feet",
+     * it would contain 3 compressed paths of: "bar", "tball", "eet".
+     *
+     * And the tree would contain children arrays only for the first level containing 'f'
+     * and the second level containing 'o'.
+     *
+     * This is done to reduce memory usage, which can be substantial if many long and unique patterns are used.
+     */
+    private static final class TrieCompressedPath<T> {
+        final T pattern;
+        final int patternLength;
+        final int patternStartIndex;
+        final TriePatternMatchedCallback<T> callback;
+
+        TrieCompressedPath(T pattern, int patternLength, int patternStartIndex, TriePatternMatchedCallback<T> callback) {
+            this.pattern = pattern;
+            this.patternLength = patternLength;
+            this.patternStartIndex = patternStartIndex;
+            this.callback = callback;
+        }
+        boolean matches(TrieNode<T> enclosingNode, // Used only for the get character method.
+                        T searchText, int searchTextLength, int searchTextIndex, Object callbackParameter) {
+            if (searchTextLength - searchTextIndex < patternLength - patternStartIndex) {
+                return false; // Remaining search text is shorter than the remaining leaf pattern and they cannot match.
+            }
+            for (int i = searchTextIndex, j = patternStartIndex; j < patternLength; i++, j++) {
+                if (enclosingNode.getCharValue(searchText, i) != enclosingNode.getCharValue(pattern, j)) {
+                    return false;
+                }
+            }
+            return callbackParameter == null
+                    || callback.patternMatched(searchTextIndex - patternStartIndex, callbackParameter);
+        }
+    }
+
     protected static abstract class TrieNode<T> {
         // Support only ASCII letters/numbers/symbols and filter out all control characters.
         static final char MIN_VALID_CHAR = 32; // Space character.
@@ -39,7 +77,20 @@ public abstract class TrieSearch<T> {
             return character < MIN_VALID_CHAR || character > MAX_VALID_CHAR;
         }
 
+        /**
+         * A compressed graph path that represents the remaining pattern characters of a single child node.
+         *
+         * If present then child array is always null, although callbacks for other
+         * end of patterns can also exist on this same node.
+         */
+        @Nullable
+        TrieCompressedPath<T> leaf;
+
+        /**
+         * All child nodes. Only present if no compressed leaf exist.
+         */
         TrieNode<T>[] children;
+
         /**
          * Callbacks for all patterns that end at this node.
          */
@@ -61,8 +112,18 @@ public abstract class TrieSearch<T> {
                 endOfPatternCallback.add(callback);
                 return;
             }
-            if (children == null) {
+            if (leaf != null) {
+                // Reached end of the graph, and a leaf exist.
+                // Recursively call back into this method and push the existing leaf down 1 level.
+                if (children != null) throw new IllegalStateException();
                 children = new TrieNode[NUMBER_OF_CHILDREN];
+                TrieCompressedPath<T> temp = leaf;
+                leaf = null;
+                addPattern(temp.pattern, temp.patternLength, temp.patternStartIndex, temp.callback);
+                // Continue onward and add the parameter pattern.
+            } else if (children == null) {
+                leaf = new TrieCompressedPath<>(pattern, patternLength, patternIndex, callback);
+                return;
             }
             char character = getCharValue(pattern, patternIndex);
             if (isInvalidRange(character)) {
@@ -86,6 +147,10 @@ public abstract class TrieSearch<T> {
          */
         private boolean matches(T searchText, int searchTextLength, int searchTextIndex, int currentMatchLength,
                                 Object callbackParameter) {
+            if (leaf != null && leaf.matches(this,
+                    searchText, searchTextLength, searchTextIndex, callbackParameter)) {
+                return true; // Leaf exists and it matched the search text.
+            }
             if (endOfPatternCallback != null) {
                 final int matchStartIndex = searchTextIndex - currentMatchLength;
                 for (@Nullable TriePatternMatchedCallback<T> callback : endOfPatternCallback) {
@@ -96,14 +161,15 @@ public abstract class TrieSearch<T> {
                         return true; // Callback confirmed the match.
                     }
                 }
-                if (children == null) {
-                    return false; // Reached a graph end point, and there's no further patterns to search.
-                }
+            }
+            if (children == null) {
+                return false; // Reached a graph end point and there's no further patterns to search.
             }
 
             if (searchTextIndex == searchTextLength) {
                 return false; // Reached end of the search text and found no matches.
             }
+
             char character = getCharValue(searchText, searchTextIndex);
             if (isInvalidRange(character)) {
                 return false; // Not an ASCII letter/number/symbol.
@@ -118,21 +184,27 @@ public abstract class TrieSearch<T> {
         }
 
         /**
+         * Gives an approximate memory usage.
+         *
          * @return Estimated number of memory pointers used, starting from this node and including all children.
          */
         protected int estimatedNumberOfPointersUsed() {
-            // Number of fields in this class (callback list and empty children pointer).
-            final int numberOfFieldsInClass = 2;
-            if (children == null) {
-                return numberOfFieldsInClass;
+            int numberOfPointers = 3; // Number of fields in this class.
+            if (leaf != null) {
+                numberOfPointers += 4; // Number of fields in leaf node.
             }
-            int numChildArrays = NUMBER_OF_CHILDREN + numberOfFieldsInClass;
-            for (TrieNode<T> child : children) {
-                if (child != null) {
-                    numChildArrays += child.estimatedNumberOfPointersUsed();
+            if (endOfPatternCallback != null) {
+                numberOfPointers += endOfPatternCallback.size();
+            }
+            if (children != null) {
+                numberOfPointers += NUMBER_OF_CHILDREN;
+                for (TrieNode<T> child : children) {
+                    if (child != null) {
+                        numberOfPointers += child.estimatedNumberOfPointersUsed();
+                    }
                 }
             }
-            return numChildArrays;
+            return numberOfPointers;
         }
 
         abstract TrieNode<T> createNode();
@@ -181,12 +253,13 @@ public abstract class TrieSearch<T> {
      * @return Estimated memory size (in kilobytes) of this instance.
      */
     public int getEstimatedMemorySize() {
+        if (patterns.size() == 0) {
+            return 0;
+        }
         // Assume the device has less than 32GB of ram (and can use pointer compression),
         // or the device is 32-bit.
         final int numberOfBytesPerPointer = 4;
-        // This ignores the memory size of object garbage collection entries,
-        // and ignores the leaf node 1 element callback function arraylist.
-        return (numberOfBytesPerPointer * root.estimatedNumberOfPointersUsed()) / 1024;
+        return (int) Math.ceil((numberOfBytesPerPointer * root.estimatedNumberOfPointersUsed()) / 1024.0);
     }
 
     public int numberOfPatterns() {
