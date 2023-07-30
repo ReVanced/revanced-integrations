@@ -2,6 +2,7 @@ package app.revanced.integrations.patches.components;
 
 import android.os.Build;
 
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 
 import app.revanced.integrations.settings.SettingsEnum;
@@ -10,13 +11,13 @@ public class PlayerFlyoutMenuItemsFilter extends Filter {
 
     // Search the buffer only if the flyout menu identifier is found.
     // Handle the searching in this class instead of adding to the global filter group (which searches all the time)
-    private final ByteArrayFilterGroupList flyoutFilterGroup = new ByteArrayFilterGroupList();
+    private final ByteArrayFilterGroupList flyoutFilterGroupList = new ByteArrayFilterGroupList();
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     public PlayerFlyoutMenuItemsFilter() {
         identifierFilterGroups.addAll(new StringFilterGroup(null, "overflow_menu_item.eml|"));
 
-        flyoutFilterGroup.addAll(
+        flyoutFilterGroupList.addAll(
                 new ByteArrayAsStringFilterGroup(
                         SettingsEnum.HIDE_QUALITY_MENU,
                         "yt_outline_gear"
@@ -61,10 +62,10 @@ public class PlayerFlyoutMenuItemsFilter extends Filter {
     }
 
     @Override
-    boolean isFiltered(String path, String identifier, byte[] protobufBufferArray,
+    boolean isFiltered(String path, @Nullable String identifier, byte[] protobufBufferArray,
                        FilterGroupList matchedList, FilterGroup matchedGroup, int matchedIndex) {
         // Only 1 group is added to the parent class, so the matched group must be the overflow menu.
-        if (flyoutFilterGroup.contains(protobufBufferArray)) {
+        if (matchedIndex == 0 && flyoutFilterGroupList.contains(protobufBufferArray)) {
             // Super class handles logging.
             return super.isFiltered(path, identifier, protobufBufferArray, matchedList, matchedGroup, matchedIndex);
         }

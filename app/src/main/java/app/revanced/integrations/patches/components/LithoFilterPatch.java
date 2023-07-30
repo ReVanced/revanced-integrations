@@ -53,6 +53,9 @@ abstract class FilterGroup<T> {
     public FilterGroup(final SettingsEnum setting, final T... filters) {
         this.setting = setting;
         this.filters = filters;
+        if (filters.length == 0) {
+            throw new IllegalArgumentException("Must use one or more filter patterns (zero specified)");
+        }
     }
 
     public boolean isEnabled() {
@@ -191,7 +194,7 @@ abstract class FilterGroupList<V, T extends FilterGroup<V>> implements Iterable<
                 continue;
             }
             for (V pattern : group.filters) {
-                search.addPattern(pattern, (matchedStartIndex, callbackParameter)
+                search.addPattern(pattern, (textSearched, matchedStartIndex, callbackParameter)
                         -> group.isEnabled());
             }
         }
