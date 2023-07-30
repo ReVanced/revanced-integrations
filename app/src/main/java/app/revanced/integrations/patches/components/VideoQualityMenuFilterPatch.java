@@ -1,5 +1,7 @@
 package app.revanced.integrations.patches.components;
 
+import androidx.annotation.Nullable;
+
 import app.revanced.integrations.settings.SettingsEnum;
 
 // Abuse LithoFilter for OldVideoQualityMenuPatch.
@@ -15,7 +17,7 @@ public final class VideoQualityMenuFilterPatch extends Filter {
     }
 
     @Override
-    boolean isFiltered(final String path, final String identifier, final byte[] protobufBufferArray,
+    boolean isFiltered(String path, @Nullable String identifier, byte[] protobufBufferArray,
                        FilterGroupList matchedList, FilterGroup matchedGroup, int matchedIndex) {
         isVideoQualityMenuVisible = true;
 

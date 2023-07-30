@@ -7,6 +7,8 @@ import com.google.android.libraries.youtube.rendering.ui.pivotbar.PivotBar;
 import static app.revanced.integrations.utils.ReVancedUtils.hideViewBy1dpUnderCondition;
 import static app.revanced.integrations.utils.ReVancedUtils.hideViewUnderCondition;
 
+import androidx.annotation.Nullable;
+
 public final class ShortsFilter extends Filter {
     private final String REEL_CHANNEL_BAR_PATH = "reel_channel_bar";
     public static PivotBar pivotBar; // Set by patch.
@@ -58,7 +60,7 @@ public final class ShortsFilter extends Filter {
     }
 
     @Override
-    boolean isFiltered(final String path, final String identifier, final byte[] protobufBufferArray,
+    boolean isFiltered(String path, @Nullable String identifier, byte[] protobufBufferArray,
                        FilterGroupList matchedList, FilterGroup matchedGroup, int matchedIndex) {
         if (!matchedGroup.isEnabled()) return false;
         if (matchedGroup == soundButton || matchedGroup == infoPanel || matchedGroup == channelBar) return true;

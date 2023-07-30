@@ -261,8 +261,8 @@ abstract class Filter {
      * @return True if the litho item should be hidden.
      */
     @SuppressWarnings("rawtypes")
-    boolean isFiltered(@NonNull String path, @Nullable String identifier, @NonNull byte[] protobufBufferArray,
-                       @NonNull FilterGroupList matchedList, @NonNull FilterGroup matchedGroup, int matchedIndex) {
+    boolean isFiltered(String path, @Nullable String identifier, byte[] protobufBufferArray,
+                       FilterGroupList matchedList, FilterGroup matchedGroup, int matchedIndex) {
         final boolean isEnabled = matchedGroup.isEnabled();
 
         if (isEnabled && SettingsEnum.DEBUG.getBoolean()) {
