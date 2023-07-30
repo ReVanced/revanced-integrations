@@ -63,8 +63,8 @@ public abstract class TrieSearch<T> {
                     return false;
                 }
             }
-            return callbackParameter == null
-                    || callback.patternMatched(searchTextIndex - patternStartIndex, callbackParameter);
+            return callback == null
+                    || callback.patternMatched(searchText, searchTextIndex - patternStartIndex, callbackParameter);
         }
     }
 
