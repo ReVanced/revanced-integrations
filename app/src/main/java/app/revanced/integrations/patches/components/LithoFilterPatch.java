@@ -70,14 +70,17 @@ abstract class FilterGroup<T> {
         return setting == null || !setting.rebootApp || setting.getBoolean();
     }
 
+    @NonNull
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + ": " + (setting == null ? "(null setting)" : setting);
+    }
+
     public abstract FilterGroupResult check(final T stack);
 }
 
 class StringFilterGroup extends FilterGroup<String> {
 
-    /**
-     * {@link FilterGroup#FilterGroup(SettingsEnum, Object[])}
-     */
     public StringFilterGroup(final SettingsEnum setting, final String... filters) {
         super(setting, filters);
     }
@@ -97,7 +100,7 @@ final class CustomFilterGroup extends StringFilterGroup {
 
 /**
  * If you have more than 1 filter patterns, then all instances of
- * this class should filtered using a {@link ByteArrayFilterGroupList},
+ * this class should filtered using a {@link ByteArrayFilterGroupList#contains(byte[])},
  * which uses a prefix tree to give better performance.
  */
 class ByteArrayFilterGroup extends FilterGroup<byte[]> {
@@ -145,7 +148,7 @@ class ByteArrayFilterGroup extends FilterGroup<byte[]> {
         super(setting, filters);
     }
 
-    private void buildFailureArrays() {
+    private void buildFailurePatterns() {
         LogHelper.printDebug(() -> "Building failure array for: " + this);
         failurePatterns = new int[filters.length][];
         int i = 0;
@@ -157,7 +160,7 @@ class ByteArrayFilterGroup extends FilterGroup<byte[]> {
     @Override
     public FilterGroupResult check(final byte[] bytes) {
         if (failurePatterns == null) {
-            buildFailureArrays(); // Lazy load.
+            buildFailurePatterns(); // Lazy load.
         }
         var matched = false;
         for (int i = 0, length = filters.length; i < length; i++) {
@@ -194,7 +197,7 @@ abstract class FilterGroupList<V, T extends FilterGroup<V>> implements Iterable<
     }
 
     protected final void buildSearch() {
-        LogHelper.printDebug(() -> "Creating prefix search tree");
+        LogHelper.printDebug(() -> "Creating prefix search tree for: " + this);
         search = createSearchGraph();
         for (T group : filterGroups) {
             if (!group.includeInSearch()) {
@@ -228,7 +231,7 @@ abstract class FilterGroupList<V, T extends FilterGroup<V>> implements Iterable<
 
     protected boolean contains(final V stack) {
         if (search == null) {
-            buildSearch(); // Lazy load the search
+            buildSearch(); // Lazy load.
         }
         return search.matches(stack);
     }
@@ -242,6 +245,11 @@ final class StringFilterGroupList extends FilterGroupList<String, StringFilterGr
     }
 }
 
+/**
+ * If searching for a single byte pattern, filtering it is slightly better to instead use
+ * {@link ByteArrayFilterGroup#check(byte[])} as it uses KMP which is slightly faster
+ * than a prefix tree to search for only 1 pattern.
+ */
 final class ByteArrayFilterGroupList extends FilterGroupList<byte[], ByteArrayFilterGroup> {
     protected ByteTrieSearch createSearchGraph() {
         return new ByteTrieSearch();
@@ -254,8 +262,19 @@ abstract class Filter {
      * Otherwise {@link #isFiltered(String, String, byte[], FilterGroupList, FilterGroup, int)}
      * will never be called for any matches.
      */
+
     protected final StringFilterGroupList pathFilterGroups = new StringFilterGroupList();
     protected final StringFilterGroupList identifierFilterGroups = new StringFilterGroupList();
+    /**
+     * A collection of {@link ByteArrayFilterGroup} that are always searched for (no matter what).
+     *
+     * If possible, avoid adding values to this list and instead use a path or identifier filter
+     * for the item you are looking for. Then inside
+     * {@link #isFiltered(String, String, byte[], FilterGroupList, FilterGroup, int)},
+     * when the path/identifier is found, the buffer can then be searched using using a
+     * {@link ByteArrayFilterGroupList} or a {@link ByteArrayFilterGroup}.
+     * This way, the expensive buffer searching only occurs if the cheap and fast path/identifier is already found.
+     */
     protected final ByteArrayFilterGroupList protobufBufferFilterGroups = new ByteArrayFilterGroupList();
 
     /**
@@ -265,10 +284,10 @@ abstract class Filter {
      *
      * Method is called off the main thread.
      *
-     * @param matchedList  The matchedGroup matchedList the filter belongs to.
+     * @param matchedList  The list the group filter belongs to.
      * @param matchedGroup The actual filter that matched.
      * @param matchedIndex Matched index of string/array.
-     * @return True if the litho item should be hidden.
+     * @return True if the litho item should be filtered out.
      */
     @SuppressWarnings("rawtypes")
     boolean isFiltered(String path, @Nullable String identifier, byte[] protobufBufferArray,
@@ -296,28 +315,28 @@ public final class LithoFilterPatch {
      * Simple wrapper to pass the litho parameters thru the prefix search.
      */
     private static final class LithoFilterParameters {
-        public final String path;
-        public final String identifier;
-        public final byte[] protobuffer;
+        final String path;
+        final String identifier;
+        final byte[] protoBuffer;
 
-        LithoFilterParameters(StringBuilder lithoPath, String lithoIdentifier, ByteBuffer protobuffer) {
+        LithoFilterParameters(StringBuilder lithoPath, String lithoIdentifier, ByteBuffer protoBuffer) {
             this.path = lithoPath.toString();
             this.identifier = lithoIdentifier;
-            this.protobuffer = protobuffer.array();
+            this.protoBuffer = protoBuffer.array();
         }
 
         @NonNull
         @Override
         public String toString() {
             // Estimated percentage of the buffer that are Strings.
-            StringBuilder builder = new StringBuilder(protobuffer.length / 4);
+            StringBuilder builder = new StringBuilder(protoBuffer.length / 2);
             builder.append( "ID: ");
             builder.append(identifier);
             builder.append(" Path: ");
             builder.append(path);
-            // TODO: allow turning on/off proto buffer logging with a debug setting?
+            // TODO: allow turning on/off buffer logging with a debug setting?
             builder.append(" BufferStrings: ");
-            findAsciiStrings(builder, protobuffer);
+            findAsciiStrings(builder, protoBuffer);
 
             return builder.toString();
         }
@@ -333,7 +352,6 @@ public final class LithoFilterPatch {
             String delimitingCharacter = "❙"; // Non ascii character, to allow easier log filtering.
 
             int asciiStartIndex = -1;
-            int stringLength = 0;
             for (int i = 0, length = buffer.length; i < length; i++) {
                 char character = (char) buffer[i];
                 if (character < minimumAscii || maximumAscii < character) { // Not a letter, number, or symbol.
@@ -392,7 +410,7 @@ public final class LithoFilterPatch {
             for (T pattern : group.filters) {
                 pathSearchTree.addPattern(pattern, (textSearched, matchedStartIndex, callbackParameter) -> {
                             LithoFilterParameters parameters = (LithoFilterParameters) callbackParameter;
-                            return filter.isFiltered(parameters.path, parameters.identifier, parameters.protobuffer,
+                            return filter.isFiltered(parameters.path, parameters.identifier, parameters.protoBuffer,
                                     list, group, matchedStartIndex);
                         }
                 );
@@ -418,7 +436,7 @@ public final class LithoFilterPatch {
             if (parameter.identifier != null) {
                 if (identifierSearchTree.matches(parameter.identifier, parameter)) return true;
             }
-            if (protoSearchTree.matches(parameter.protobuffer, parameter)) return true;
+            if (protoSearchTree.matches(parameter.protoBuffer, parameter)) return true;
         } catch (Exception ex) {
             LogHelper.printException(() -> "Litho filter failure", ex);
         }
