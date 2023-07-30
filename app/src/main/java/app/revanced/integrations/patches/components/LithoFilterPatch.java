@@ -102,7 +102,7 @@ final class CustomFilterGroup extends StringFilterGroup {
  */
 class ByteArrayFilterGroup extends FilterGroup<byte[]> {
 
-    private final int[][] failurePatterns;
+    private int[][] failurePatterns;
 
     // Modified implementation from https://stackoverflow.com/a/1507813
     private static int indexOf(final byte[] data, final byte[] pattern, final int[] failure) {
@@ -143,6 +143,10 @@ class ByteArrayFilterGroup extends FilterGroup<byte[]> {
 
     public ByteArrayFilterGroup(SettingsEnum setting, byte[]... filters) {
         super(setting, filters);
+    }
+
+    private void buildFailureArrays() {
+        LogHelper.printDebug(() -> "Building failure array for: " + this);
         failurePatterns = new int[filters.length][];
         int i = 0;
         for (byte[] pattern : filters) {
@@ -152,6 +156,9 @@ class ByteArrayFilterGroup extends FilterGroup<byte[]> {
 
     @Override
     public FilterGroupResult check(final byte[] bytes) {
+        if (failurePatterns == null) {
+            buildFailureArrays(); // Lazy load.
+        }
         var matched = false;
         for (int i = 0, length = filters.length; i < length; i++) {
             if (indexOf(bytes, filters[i], failurePatterns[i]) >= 0) {
@@ -383,7 +390,7 @@ public final class LithoFilterPatch {
                 continue;
             }
             for (T pattern : group.filters) {
-                pathSearchTree.addPattern(pattern, (matchedStartIndex, callbackParameter) -> {
+                pathSearchTree.addPattern(pattern, (textSearched, matchedStartIndex, callbackParameter) -> {
                             LithoFilterParameters parameters = (LithoFilterParameters) callbackParameter;
                             return filter.isFiltered(parameters.path, parameters.identifier, parameters.protobuffer,
                                     list, group, matchedStartIndex);
@@ -393,12 +400,15 @@ public final class LithoFilterPatch {
         }
     }
 
+    static long total, num, max;
+
     /**
      * Injection point.  Called off the main thread.
      */
     @SuppressWarnings("unused")
     public static boolean filter(@NonNull StringBuilder pathBuilder, @Nullable String lithoIdentifier,
                                  @NonNull ByteBuffer protobufBuffer) {
+        long start = System.nanoTime();
         try {
             // It is assumed that protobufBuffer is empty as well in this case.
             if (pathBuilder.length() == 0)
@@ -414,6 +424,12 @@ public final class LithoFilterPatch {
             if (protoSearchTree.matches(parameter.protobuffer, parameter)) return true;
         } catch (Exception ex) {
             LogHelper.printException(() -> "Litho filter failure", ex);
+        } finally {
+            num++;
+            start = System.nanoTime() - start;
+            total += start;
+            max = (long) (0.95f * Math.max(start, max) + 0.05f * start);
+            LogHelper.printDebug(() -> "Average: " + (total / num) + " max: " + max);
         }
 
         return false;
