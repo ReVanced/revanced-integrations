@@ -400,15 +400,12 @@ public final class LithoFilterPatch {
         }
     }
 
-    static long total, num, max;
-
     /**
      * Injection point.  Called off the main thread.
      */
     @SuppressWarnings("unused")
     public static boolean filter(@NonNull StringBuilder pathBuilder, @Nullable String lithoIdentifier,
                                  @NonNull ByteBuffer protobufBuffer) {
-        long start = System.nanoTime();
         try {
             // It is assumed that protobufBuffer is empty as well in this case.
             if (pathBuilder.length() == 0)
@@ -424,12 +421,6 @@ public final class LithoFilterPatch {
             if (protoSearchTree.matches(parameter.protobuffer, parameter)) return true;
         } catch (Exception ex) {
             LogHelper.printException(() -> "Litho filter failure", ex);
-        } finally {
-            num++;
-            start = System.nanoTime() - start;
-            total += start;
-            max = (long) (0.95f * Math.max(start, max) + 0.05f * start);
-            LogHelper.printDebug(() -> "Average: " + (total / num) + " max: " + max);
         }
 
         return false;
