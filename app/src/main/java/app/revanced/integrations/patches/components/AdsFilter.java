@@ -3,6 +3,8 @@ package app.revanced.integrations.patches.components;
 
 import android.view.View;
 
+import androidx.annotation.Nullable;
+
 import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.utils.ReVancedUtils;
 import app.revanced.integrations.utils.StringTrieSearch;
@@ -97,12 +99,12 @@ public final class AdsFilter extends Filter {
     }
 
     @Override
-    public boolean isFiltered(final String path, final String identifier, final byte[] _protobufBufferArray,
+    public boolean isFiltered(String path, @Nullable String identifier, byte[] protobufBufferArray,
                               FilterGroupList matchedList, FilterGroup matchedGroup, int matchedIndex) {
         if (exceptions.matches(path))
            return false;
 
-        return super.isFiltered(path, identifier, _protobufBufferArray, matchedList, matchedGroup, matchedIndex);
+        return super.isFiltered(path, identifier, protobufBufferArray, matchedList, matchedGroup, matchedIndex);
     }
 
     /**

@@ -3,6 +3,7 @@ package app.revanced.integrations.patches.components;
 
 import android.os.Build;
 
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 
 import app.revanced.integrations.settings.SettingsEnum;
@@ -171,12 +172,12 @@ public final class LayoutComponentsFilter extends Filter {
     }
 
     @Override
-    public boolean isFiltered(final String path, final String identifier, final byte[] _protobufBufferArray,
+    public boolean isFiltered(String path, @Nullable String identifier, byte[] protobufBufferArray,
                               FilterGroupList matchedList, FilterGroup matchedGroup, int matchedIndex) {
         if (matchedGroup != custom && exceptions.matches(path))
             return false; // Exceptions are not filtered.
 
-        return super.isFiltered(path, identifier, _protobufBufferArray, matchedList, matchedGroup, matchedIndex);
+        return super.isFiltered(path, identifier, protobufBufferArray, matchedList, matchedGroup, matchedIndex);
     }
 
 
