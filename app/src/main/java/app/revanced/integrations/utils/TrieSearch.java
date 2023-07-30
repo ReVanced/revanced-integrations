@@ -35,8 +35,9 @@ public abstract class TrieSearch<T> {
      * For example, if a tree contains the patterns: "foobar", "football", "feet",
      * it would contain 3 compressed paths of: "bar", "tball", "eet".
      *
-     * And the tree would contain children arrays only for the first level containing 'f'
-     * and the second level containing 'o'.
+     * And the tree would contain children arrays only for the first level containing 'f',
+     * the second level containing 'o',
+     * and the third level containing 'o'.
      *
      * This is done to reduce memory usage, which can be substantial if many long and unique patterns are used.
      */
