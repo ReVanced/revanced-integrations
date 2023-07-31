@@ -1,17 +1,20 @@
 package app.revanced.integrations.patches.components;
 
-import android.view.View;
-import app.revanced.integrations.settings.SettingsEnum;
-import com.google.android.libraries.youtube.rendering.ui.pivotbar.PivotBar;
-
 import static app.revanced.integrations.utils.ReVancedUtils.hideViewBy1dpUnderCondition;
 import static app.revanced.integrations.utils.ReVancedUtils.hideViewUnderCondition;
 
+import android.view.View;
+
 import androidx.annotation.Nullable;
 
+import com.google.android.libraries.youtube.rendering.ui.pivotbar.PivotBar;
+
+import app.revanced.integrations.settings.SettingsEnum;
+
 public final class ShortsFilter extends Filter {
-    private final String REEL_CHANNEL_BAR_PATH = "reel_channel_bar";
+    private static final String REEL_CHANNEL_BAR_PATH = "reel_channel_bar";
     public static PivotBar pivotBar; // Set by patch.
+
     private final StringFilterGroup channelBar;
     private final StringFilterGroup soundButton;
     private final StringFilterGroup infoPanel;
@@ -19,7 +22,7 @@ public final class ShortsFilter extends Filter {
     public ShortsFilter() {
         channelBar = new StringFilterGroup(
                 SettingsEnum.HIDE_SHORTS_CHANNEL_BAR,
-                "reel_channel_bar"
+                REEL_CHANNEL_BAR_PATH
         );
 
         soundButton = new StringFilterGroup(
