@@ -278,8 +278,8 @@ abstract class Filter {
     protected final ByteArrayFilterGroupList protobufBufferFilterGroups = new ByteArrayFilterGroupList();
 
     /**
-     * Called after a filter has been matched (both when enabled and disabled).
-     * Default implementation is to filter the matched item if the matchedGroup is enabled.
+     * Called after an enabled filter has been matched.
+     * Default implementation is to always filter the matched item.
      * Subclasses can perform additional or different checks if needed.
      *
      * Method is called off the main thread.
@@ -292,9 +292,7 @@ abstract class Filter {
     @SuppressWarnings("rawtypes")
     boolean isFiltered(String path, @Nullable String identifier, byte[] protobufBufferArray,
                        FilterGroupList matchedList, FilterGroup matchedGroup, int matchedIndex) {
-        final boolean isEnabled = matchedGroup.isEnabled();
-
-        if (isEnabled && SettingsEnum.DEBUG.getBoolean()) {
+        if (SettingsEnum.DEBUG.getBoolean()) {
             if (pathFilterGroups == matchedList) {
                 LogHelper.printDebug(() -> getClass().getSimpleName() + " Filtered path: " + path);
             } else if (identifierFilterGroups == matchedList) {
@@ -303,8 +301,7 @@ abstract class Filter {
                 LogHelper.printDebug(() -> getClass().getSimpleName() + " Filtered from protobuf-buffer");
             }
         }
-
-        return isEnabled;
+        return true;
     }
 }
 
@@ -409,6 +406,7 @@ public final class LithoFilterPatch {
             }
             for (T pattern : group.filters) {
                 pathSearchTree.addPattern(pattern, (textSearched, matchedStartIndex, callbackParameter) -> {
+                            if (!group.isEnabled()) return false;
                             LithoFilterParameters parameters = (LithoFilterParameters) callbackParameter;
                             return filter.isFiltered(parameters.path, parameters.identifier, parameters.protoBuffer,
                                     list, group, matchedStartIndex);

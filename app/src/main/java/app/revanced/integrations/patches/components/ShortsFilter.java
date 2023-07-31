@@ -65,7 +65,6 @@ public final class ShortsFilter extends Filter {
     @Override
     boolean isFiltered(String path, @Nullable String identifier, byte[] protobufBufferArray,
                        FilterGroupList matchedList, FilterGroup matchedGroup, int matchedIndex) {
-        if (!matchedGroup.isEnabled()) return false;
         if (matchedGroup == soundButton || matchedGroup == infoPanel || matchedGroup == channelBar) return true;
 
         // Filter the path only when reelChannelBar is visible.

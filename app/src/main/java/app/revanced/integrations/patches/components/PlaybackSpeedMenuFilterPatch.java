@@ -17,7 +17,7 @@ public final class PlaybackSpeedMenuFilterPatch extends Filter {
     @Override
     boolean isFiltered(String path, @Nullable String identifier, byte[] protobufBufferArray,
                        FilterGroupList matchedList, FilterGroup matchedGroup, int matchedIndex) {
-        isPlaybackSpeedMenuVisible = matchedGroup.isEnabled();
+        isPlaybackSpeedMenuVisible = true;
 
         return false;
     }
