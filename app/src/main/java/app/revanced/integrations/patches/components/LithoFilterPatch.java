@@ -23,17 +23,16 @@ import app.revanced.integrations.utils.TrieSearch;
 
 abstract class FilterGroup<T> {
     final static class FilterGroupResult {
-        @Nullable
         SettingsEnum setting;
         boolean filtered;
 
-        FilterGroupResult(@Nullable SettingsEnum setting, boolean filtered) {
+        FilterGroupResult(SettingsEnum setting, boolean filtered) {
             this.setting = setting;
             this.filtered = filtered;
         }
 
         /**
-         * Will be a null value if the group has no setting,
+         * A null value if the group has no setting,
          * or if no match is returned from {@link FilterGroupList#check(Object)}.
          */
         public SettingsEnum getSetting() {
@@ -261,8 +260,8 @@ final class StringFilterGroupList extends FilterGroupList<String, StringFilterGr
 }
 
 /**
- * If searching for a single byte pattern, filtering it is slightly better to instead use
- * {@link ByteArrayFilterGroup#check(byte[])} as it uses KMP which is slightly faster
+ * If searching for a single byte pattern, it is slightly better to use
+ * {@link ByteArrayFilterGroup#check(byte[])} instead as it uses KMP which is faster
  * than a prefix tree to search for only 1 pattern.
  */
 final class ByteArrayFilterGroupList extends FilterGroupList<byte[], ByteArrayFilterGroup> {
@@ -286,7 +285,7 @@ abstract class Filter {
      * If possible, avoid adding values to this list and instead use a path or identifier filter
      * for the item you are looking for. Then inside
      * {@link #isFiltered(String, String, byte[], FilterGroupList, FilterGroup, int)},
-     * when the path/identifier is found, the buffer can then be searched using using a
+     * the buffer can then be searched using using a
      * {@link ByteArrayFilterGroupList} or a {@link ByteArrayFilterGroup}.
      * This way, the expensive buffer searching only occurs if the cheap and fast path/identifier is already found.
      */
