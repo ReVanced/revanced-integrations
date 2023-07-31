@@ -187,6 +187,6 @@ public final class LayoutComponentsFilter extends Filter {
      * Called from a different place then the other filters.
      */
     public static boolean filterMixPlaylists(final byte[] bytes) {
-        return mixPlaylists.isEnabled() && mixPlaylists.check(bytes).isFiltered();
+        return mixPlaylists.check(bytes).isFiltered();
     }
 }

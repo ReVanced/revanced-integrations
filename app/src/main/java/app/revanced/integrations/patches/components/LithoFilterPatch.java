@@ -91,7 +91,8 @@ class StringFilterGroup extends FilterGroup<String> {
 
     @Override
     public FilterGroupResult check(final String string) {
-        return new FilterGroupResult(setting, string != null && ReVancedUtils.containsAny(string, filters));
+        return new FilterGroupResult(setting,
+                (setting == null || setting.getBoolean()) && ReVancedUtils.containsAny(string, filters));
     }
 }
 
@@ -163,17 +164,18 @@ class ByteArrayFilterGroup extends FilterGroup<byte[]> {
 
     @Override
     public FilterGroupResult check(final byte[] bytes) {
-        if (failurePatterns == null) {
-            buildFailurePatterns(); // Lazy load.
-        }
         var matched = false;
-        for (int i = 0, length = filters.length; i < length; i++) {
-            if (indexOf(bytes, filters[i], failurePatterns[i]) >= 0) {
-                matched = true;
-                break;
+        if (setting == null || setting.getBoolean()) {
+            if (failurePatterns == null) {
+                buildFailurePatterns(); // Lazy load.
+            }
+            for (int i = 0, length = filters.length; i < length; i++) {
+                if (indexOf(bytes, filters[i], failurePatterns[i]) >= 0) {
+                    matched = true;
+                    break;
+                }
             }
         }
-
         return new FilterGroupResult(setting, matched);
     }
 }
