@@ -19,7 +19,7 @@ public final class VideoQualityMenuFilterPatch extends Filter {
     @Override
     boolean isFiltered(String path, @Nullable String identifier, byte[] protobufBufferArray,
                        FilterGroupList matchedList, FilterGroup matchedGroup, int matchedIndex) {
-        isVideoQualityMenuVisible = true;
+        isVideoQualityMenuVisible = matchedGroup.isEnabled();
 
         return false;
     }
