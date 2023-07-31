@@ -23,14 +23,19 @@ import app.revanced.integrations.utils.TrieSearch;
 
 abstract class FilterGroup<T> {
     final static class FilterGroupResult {
-        private final boolean filtered;
-        private final SettingsEnum setting;
+        @Nullable
+        SettingsEnum setting;
+        boolean filtered;
 
-        public FilterGroupResult(final SettingsEnum setting, final boolean filtered) {
+        FilterGroupResult(@Nullable SettingsEnum setting, boolean filtered) {
             this.setting = setting;
             this.filtered = filtered;
         }
 
+        /**
+         * Will be a null value if the group has no setting,
+         * or if no match is returned from {@link FilterGroupList#check(Object)}.
+         */
         public SettingsEnum getSetting() {
             return setting;
         }
@@ -100,7 +105,7 @@ final class CustomFilterGroup extends StringFilterGroup {
 
 /**
  * If you have more than 1 filter patterns, then all instances of
- * this class should filtered using a {@link ByteArrayFilterGroupList#contains(byte[])},
+ * this class should filtered using a {@link ByteArrayFilterGroupList#check(byte[])},
  * which uses a prefix tree to give better performance.
  */
 class ByteArrayFilterGroup extends FilterGroup<byte[]> {
@@ -184,6 +189,7 @@ final class ByteArrayAsStringFilterGroup extends ByteArrayFilterGroup {
 }
 
 abstract class FilterGroupList<V, T extends FilterGroup<V>> implements Iterable<T> {
+
     private final List<T> filterGroups = new ArrayList<>();
     /**
      * Search graph. Created only if needed.
@@ -204,8 +210,15 @@ abstract class FilterGroupList<V, T extends FilterGroup<V>> implements Iterable<
                 continue;
             }
             for (V pattern : group.filters) {
-                search.addPattern(pattern, (textSearched, matchedStartIndex, callbackParameter)
-                        -> group.isEnabled());
+                search.addPattern(pattern, (textSearched, matchedStartIndex, callbackParameter) -> {
+                    if (group.isEnabled()) {
+                        FilterGroup.FilterGroupResult result = (FilterGroup.FilterGroupResult) callbackParameter;
+                        result.setting = group.setting;
+                        result.filtered = true;
+                        return true;
+                    }
+                    return false;
+                });
             }
         }
     }
@@ -229,11 +242,13 @@ abstract class FilterGroupList<V, T extends FilterGroup<V>> implements Iterable<
         return filterGroups.spliterator();
     }
 
-    protected boolean contains(final V stack) {
+    protected FilterGroup.FilterGroupResult check(V stack) {
         if (search == null) {
             buildSearch(); // Lazy load.
         }
-        return search.matches(stack);
+        FilterGroup.FilterGroupResult result = new FilterGroup.FilterGroupResult(null, false);
+        search.matches(stack, result);
+        return result;
     }
 
     protected abstract TrieSearch<V> createSearchGraph();
