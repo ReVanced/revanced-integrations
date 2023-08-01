@@ -143,9 +143,9 @@ public abstract class TrieSearch<T> {
         /**
          * @param searchText         Text to search for patterns in.
          * @param searchTextLength   Length of the search text.
-         * @param searchTextIndex    Current recursive search text index.  Also the end index of the current pattern match.
+         * @param searchTextIndex    Current recursive search text index. Also, the end index of the current pattern match.
          * @param currentMatchLength current search depth, and also the length of the current pattern match.
-         * @return If any pattern matches and it's associated callback halted the search.
+         * @return If any pattern matches, and it's associated callback halted the search.
          */
         private boolean matches(T searchText, int searchTextLength, int searchTextIndex, int currentMatchLength,
                                 Object callbackParameter) {
@@ -157,7 +157,7 @@ public abstract class TrieSearch<T> {
                 final int matchStartIndex = searchTextIndex - currentMatchLength;
                 for (@Nullable TriePatternMatchedCallback<T> callback : endOfPatternCallback) {
                     if (callback == null) {
-                        return true; // No callback, and all matches are valid.
+                        return true; // No callback and all matches are valid.
                     }
                     if (callback.patternMatched(searchText, matchStartIndex, callbackParameter)) {
                         return true; // Callback confirmed the match.
@@ -286,9 +286,9 @@ public abstract class TrieSearch<T> {
     public abstract void addPattern(@NonNull T pattern, @NonNull TriePatternMatchedCallback<T> callback);
 
     /**
-     * Searches thru text, looking for any substring that matches any pattern in this tree.
+     * Searches through text, looking for any substring that matches any pattern in this tree.
      *
-     * @param textToSearch Text to search thru.
+     * @param textToSearch Text to search through.
      * @param callbackParameter Optional parameter passed to the callbacks.
      * @return If any pattern matched, and it's callback halted searching.
      */
