@@ -95,7 +95,7 @@ final class CustomFilterGroup extends StringFilterGroup {
 
 /**
  * If you have more than 1 filter patterns, then all instances of
- * this class should filtered using a {@link ByteArrayFilterGroupList#check(byte[])},
+ * this class should filtered using {@link ByteArrayFilterGroupList#check(byte[])},
  * which uses a prefix tree to give better performance.
  */
 class ByteArrayFilterGroup extends FilterGroup<byte[]> {
@@ -155,7 +155,7 @@ class ByteArrayFilterGroup extends FilterGroup<byte[]> {
     @Override
     public FilterGroupResult check(final byte[] bytes) {
         var matched = false;
-        if (setting == null || setting.getBoolean()) {
+        if (isEnabled()) {
             if (failurePatterns == null) {
                 buildFailurePatterns(); // Lazy load.
             }
@@ -252,8 +252,8 @@ final class StringFilterGroupList extends FilterGroupList<String, StringFilterGr
 }
 
 /**
- * If searching for a single byte pattern, it is slightly better to use
- * {@link ByteArrayFilterGroup#check(byte[])} instead as it uses KMP which is faster
+ * If searching for a single byte pattern, then it is slightly better to use
+ * {@link ByteArrayFilterGroup#check(byte[])} as it uses KMP which is faster
  * than a prefix tree to search for only 1 pattern.
  */
 final class ByteArrayFilterGroupList extends FilterGroupList<byte[], ByteArrayFilterGroup> {
@@ -315,7 +315,7 @@ abstract class Filter {
 @SuppressWarnings("unused")
 public final class LithoFilterPatch {
     /**
-     * Simple wrapper to pass the litho parameters thru the prefix search.
+     * Simple wrapper to pass the litho parameters through the prefix search.
      */
     private static final class LithoFilterParameters {
         final String path;
@@ -354,12 +354,12 @@ public final class LithoFilterPatch {
             final int minimumAsciiStringLength = 4; // Minimum length of an ASCII string to include.
             String delimitingCharacter = "❙"; // Non ascii character, to allow easier log filtering.
 
-            int length = buffer.length;
+            final int length = buffer.length;
             int start = 0;
             int end = 0;
             while (end < length) {
                 int value = buffer[end];
-                if (value < minimumAscii || value > maximumAscii) {
+                if (value < minimumAscii || value > maximumAscii || end == length - 1) {
                     if (end - start >= minimumAsciiStringLength) {
                         builder.append(new String(buffer, start, end - start));
                         builder.append(delimitingCharacter);
@@ -367,10 +367,6 @@ public final class LithoFilterPatch {
                     start = end + 1;
                 }
                 end++;
-            }
-            if (end - start >= minimumAsciiStringLength) {
-                builder.append(new String(buffer, start, end - start));
-                builder.append(delimitingCharacter);
             }
         }
     }
