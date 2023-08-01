@@ -71,7 +71,7 @@ abstract class FilterGroup<T> {
      * By default, all filters are included except non enabled settings that require reboot.
      */
     public boolean includeInSearch() {
-        return setting == null || !setting.rebootApp || setting.getBoolean();
+        return isEnabled() || !setting.rebootApp;
     }
 
     @NonNull
