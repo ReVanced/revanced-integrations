@@ -100,6 +100,7 @@ public enum SettingsEnum {
     HIDE_SHOP_BUTTON("revanced_hide_shop_button", BOOLEAN, TRUE),
 
     // Layout
+    CHANGE_PLAYER_OVERLAY_OPACITY("revanced_player_overlay_opacity", STRING, "255", true),
     DISABLE_RESUMING_SHORTS_PLAYER("revanced_disable_resuming_shorts_player", BOOLEAN, FALSE),
     HIDE_ALBUM_CARDS("revanced_hide_album_cards", BOOLEAN, FALSE, true),
     HIDE_ARTIST_CARDS("revanced_hide_artist_cards", BOOLEAN, FALSE),
