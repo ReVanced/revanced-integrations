@@ -277,7 +277,7 @@ abstract class Filter {
      * If possible, avoid adding values to this list and instead use a path or identifier filter
      * for the item you are looking for. Then inside
      * {@link #isFiltered(String, String, byte[], FilterGroupList, FilterGroup, int)},
-     * the buffer can then be searched using using a
+     * the buffer can then be searched using using a different
      * {@link ByteArrayFilterGroupList} or a {@link ByteArrayFilterGroup}.
      * This way, the expensive buffer searching only occurs if the cheap and fast path/identifier is already found.
      */
@@ -331,7 +331,7 @@ public final class LithoFilterPatch {
         @NonNull
         @Override
         public String toString() {
-            // Estimated percentage of the buffer that are Strings.
+            // Estimate the percentage of the buffer that are Strings.
             StringBuilder builder = new StringBuilder(protoBuffer.length / 2);
             builder.append( "ID: ");
             builder.append(identifier);

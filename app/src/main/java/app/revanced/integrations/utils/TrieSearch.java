@@ -40,7 +40,7 @@ public abstract class TrieSearch<T> {
      * the second level containing 'o',
      * and the third level containing 'o'.
      *
-     * This is done to reduce memory usage, which can be substantial if many long and unique patterns are used.
+     * This is done to reduce memory usage, which can be substantial if many long patterns are used.
      */
     private static final class TrieCompressedPath<T> {
         final T pattern;
@@ -69,11 +69,11 @@ public abstract class TrieSearch<T> {
         }
     }
 
-    protected static abstract class TrieNode<T> {
+    static abstract class TrieNode<T> {
         // Support only ASCII letters/numbers/symbols and filter out all control characters.
-        static final char MIN_VALID_CHAR = 32; // Space character.
-        static final char MAX_VALID_CHAR = 126; // 127 = delete character.
-        static final int NUMBER_OF_CHILDREN = MAX_VALID_CHAR - MIN_VALID_CHAR + 1;
+        private static final char MIN_VALID_CHAR = 32; // Space character.
+        private static final char MAX_VALID_CHAR = 126; // 127 = delete character.
+        private static final int NUMBER_OF_CHILDREN = MAX_VALID_CHAR - MIN_VALID_CHAR + 1;
 
         private static boolean isInvalidRange(char character) {
             return character < MIN_VALID_CHAR || character > MAX_VALID_CHAR;
@@ -86,18 +86,19 @@ public abstract class TrieSearch<T> {
          * end of patterns can also exist on this same node.
          */
         @Nullable
-        TrieCompressedPath<T> leaf;
+        private TrieCompressedPath<T> leaf;
 
         /**
          * All child nodes. Only present if no compressed leaf exist.
          */
-        TrieNode<T>[] children;
+        @Nullable
+        private TrieNode<T>[] children;
 
         /**
          * Callbacks for all patterns that end at this node.
          */
         @Nullable
-        List<TriePatternMatchedCallback<T>> endOfPatternCallback;
+        private List<TriePatternMatchedCallback<T>> endOfPatternCallback;
 
         /**
          * @param pattern       Pattern to add.
@@ -105,9 +106,9 @@ public abstract class TrieSearch<T> {
          * @param patternIndex  Current recursive index of the pattern.
          * @param callback      Callback, where a value of NULL indicates to always accept a pattern match.
          */
-        void addPattern(@NonNull T pattern, int patternLength, int patternIndex,
-                        @Nullable TriePatternMatchedCallback<T> callback) {
-            if (patternIndex == patternLength) { // Reached the end of the string.
+        private void addPattern(@NonNull T pattern, int patternLength, int patternIndex,
+                                @Nullable TriePatternMatchedCallback<T> callback) {
+            if (patternIndex == patternLength) { // Reached the end of the pattern.
                 if (endOfPatternCallback == null) {
                     endOfPatternCallback = new ArrayList<>(1);
                 }
@@ -115,9 +116,10 @@ public abstract class TrieSearch<T> {
                 return;
             }
             if (leaf != null) {
-                // Reached end of the graph, and a leaf exist.
+                // Reached end of the graph and a leaf exist.
                 // Recursively call back into this method and push the existing leaf down 1 level.
                 if (children != null) throw new IllegalStateException();
+                //noinspection unchecked
                 children = new TrieNode[NUMBER_OF_CHILDREN];
                 TrieCompressedPath<T> temp = leaf;
                 leaf = null;
@@ -190,7 +192,7 @@ public abstract class TrieSearch<T> {
          *
          * @return Estimated number of memory pointers used, starting from this node and including all children.
          */
-        protected int estimatedNumberOfPointersUsed() {
+        private int estimatedNumberOfPointersUsed() {
             int numberOfPointers = 3; // Number of fields in this class.
             if (leaf != null) {
                 numberOfPointers += 4; // Number of fields in leaf node.
@@ -223,7 +225,7 @@ public abstract class TrieSearch<T> {
      */
     private final List<T> patterns = new ArrayList<>();
 
-    protected TrieSearch(@NonNull TrieNode<T> root) {
+    TrieSearch(@NonNull TrieNode<T> root) {
         this.root = Objects.requireNonNull(root);
     }
 
@@ -234,14 +236,14 @@ public abstract class TrieSearch<T> {
         }
     }
 
-    protected void addPattern(@NonNull T pattern, int patternLength, @Nullable TriePatternMatchedCallback<T> callback) {
+    void addPattern(@NonNull T pattern, int patternLength, @Nullable TriePatternMatchedCallback<T> callback) {
         if (patternLength == 0) return; // Nothing to match
 
         patterns.add(pattern);
         root.addPattern(pattern, patternLength, 0, callback);
     }
 
-    protected boolean matches(@NonNull T textToSearch, int textToSearchLength, @Nullable Object callbackParameter) {
+    boolean matches(@NonNull T textToSearch, int textToSearchLength, @Nullable Object callbackParameter) {
         if (patterns.size() == 0) {
             return false; // No patterns were added.
         }
