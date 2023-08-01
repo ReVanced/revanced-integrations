@@ -1,25 +1,15 @@
 package app.revanced.integrations.patches.components;
 
 import android.os.Build;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import app.revanced.integrations.settings.SettingsEnum;
+import app.revanced.integrations.utils.*;
 
 import java.nio.ByteBuffer;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Spliterator;
+import java.util.*;
 import java.util.function.Consumer;
-
-import app.revanced.integrations.settings.SettingsEnum;
-import app.revanced.integrations.utils.ByteTrieSearch;
-import app.revanced.integrations.utils.LogHelper;
-import app.revanced.integrations.utils.ReVancedUtils;
-import app.revanced.integrations.utils.StringTrieSearch;
-import app.revanced.integrations.utils.TrieSearch;
 
 abstract class FilterGroup<T> {
     final static class FilterGroupResult {
@@ -355,7 +345,7 @@ public final class LithoFilterPatch {
         }
 
         /**
-         * Search thru a byte array for all ASCII strings.
+         * Search through a byte array for all ASCII strings.
          */
         private static void findAsciiStrings(StringBuilder builder, byte[] buffer) {
             // Valid ASCII values (ignore control characters).
@@ -364,27 +354,22 @@ public final class LithoFilterPatch {
             final int minimumAsciiStringLength = 4; // Minimum length of an ASCII string to include.
             String delimitingCharacter = "❙"; // Non ascii character, to allow easier log filtering.
 
-            int asciiStartIndex = -1;
-            for (int i = 0, length = buffer.length; i < length; i++) {
-                char character = (char) buffer[i];
-                if (character < minimumAscii || maximumAscii < character) { // Not a letter, number, or symbol.
-                    if (asciiStartIndex >= 0) {
-                        if (i - asciiStartIndex >= minimumAsciiStringLength) {
-                            builder.append(delimitingCharacter);
-                            for (int j = asciiStartIndex; j < i; j++) {
-                                builder.append((char) buffer[j]);
-                            }
-                            builder.append(delimitingCharacter).append(' ');
-                        }
-                        asciiStartIndex = -1;
+            int length = buffer.length;
+            int start = 0;
+            int end = 0;
+            while (end < length) {
+                int value = buffer[end];
+                if (value < minimumAscii || value > maximumAscii) {
+                    if (end - start >= minimumAsciiStringLength) {
+                        builder.append(new String(buffer, start, end - start));
+                        builder.append(delimitingCharacter);
                     }
-                    continue;
+                    start = end + 1;
                 }
-                if (asciiStartIndex < 0) {
-                    asciiStartIndex = i;
-                }
+                end++;
             }
-            if (asciiStartIndex >= 0) {
+            if (end - start >= minimumAsciiStringLength) {
+                builder.append(new String(buffer, start, end - start));
                 builder.append(delimitingCharacter);
             }
         }
