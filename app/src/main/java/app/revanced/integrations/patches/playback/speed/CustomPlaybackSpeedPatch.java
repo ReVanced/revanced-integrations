@@ -110,23 +110,24 @@ public class CustomPlaybackSpeedPatch {
     }
 
     /*
-     * To reduce copy paste between two similar code paths.
+     * To reduce copy and paste between two similar code paths.
      */
     public static void onFlyoutMenuCreate(final LinearLayout linearLayout) {
         // The playback rate menu is a RecyclerView with 2 children. The third child is the "Advanced" quality menu.
         addRecyclerListener(linearLayout, 2, 1, recyclerView -> {
-            if (PlaybackSpeedMenuFilterPatch.isPlaybackSpeedMenuVisible &&
-                    recyclerView.getChildCount() == 1 &&
-                    recyclerView.getChildAt(0) instanceof ComponentHost
-            ) {
-                linearLayout.setVisibility(View.GONE);
+            if (PlaybackSpeedMenuFilterPatch.isPlaybackSpeedMenuVisible) {
+                PlaybackSpeedMenuFilterPatch.isPlaybackSpeedMenuVisible = false;
 
-                // Close the new Playback speed menu and instead show the old one.
-                showOldPlaybackSpeedMenu();
+                if (recyclerView.getChildCount() == 1 && recyclerView.getChildAt(0) instanceof ComponentHost) {
+                    linearLayout.setVisibility(View.GONE);
 
-                // DismissView [R.id.touch_outside] is the 1st ChildView of the 3rd ParentView.
-                ((ViewGroup) linearLayout.getParent().getParent().getParent())
-                        .getChildAt(0).performClick();
+                    // Close the new Playback speed menu and instead show the old one.
+                    showOldPlaybackSpeedMenu();
+
+                    // DismissView [R.id.touch_outside] is the 1st ChildView of the 3rd ParentView.
+                    ((ViewGroup) linearLayout.getParent().getParent().getParent())
+                            .getChildAt(0).performClick();
+                }
             }
         });
     }
