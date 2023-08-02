@@ -1,16 +1,25 @@
 package app.revanced.integrations.patches.components;
 
 import android.os.Build;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
-import app.revanced.integrations.settings.SettingsEnum;
-import app.revanced.integrations.utils.*;
 
-import java.lang.ref.WeakReference;
 import java.nio.ByteBuffer;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Spliterator;
 import java.util.function.Consumer;
+
+import app.revanced.integrations.settings.SettingsEnum;
+import app.revanced.integrations.utils.ByteTrieSearch;
+import app.revanced.integrations.utils.LogHelper;
+import app.revanced.integrations.utils.ReVancedUtils;
+import app.revanced.integrations.utils.StringTrieSearch;
+import app.revanced.integrations.utils.TrieSearch;
 
 abstract class FilterGroup<T> {
     final static class FilterGroupResult {
