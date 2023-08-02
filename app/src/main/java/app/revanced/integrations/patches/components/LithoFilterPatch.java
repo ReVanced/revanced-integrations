@@ -7,6 +7,7 @@ import androidx.annotation.RequiresApi;
 import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.utils.*;
 
+import java.lang.ref.WeakReference;
 import java.nio.ByteBuffer;
 import java.util.*;
 import java.util.function.Consumer;
@@ -384,6 +385,12 @@ public final class LithoFilterPatch {
     private static final StringTrieSearch identifierSearchTree = new StringTrieSearch();
     private static final ByteTrieSearch protoSearchTree = new ByteTrieSearch();
 
+    /**
+     * Because litho filtering is multi-threaded and the buffer is passed in from a different injection point,
+     * the buffer is saved to a ThreadLocal so each calling thread does not interfere with other threads.
+     */
+    private static final ThreadLocal<ByteBuffer> bufferThreadLocal = new ThreadLocal<>();
+
     static {
         for (Filter filter : filters) {
             filterGroupLists(pathSearchTree, filter, filter.pathFilterGroups);
@@ -418,27 +425,39 @@ public final class LithoFilterPatch {
         }
     }
 
+    public static void setProtoBuffer(@NonNull ByteBuffer protobufBuffer) {
+        bufferThreadLocal.set(protobufBuffer);
+    }
+
     /**
-     * Injection point.  Called off the main thread.
+     * Injection point.  Called off the main thread, and commonly called by multiple threads at the same time.
      */
     @SuppressWarnings("unused")
-    public static boolean filter(@NonNull StringBuilder pathBuilder, @Nullable String lithoIdentifier,
-                                 @NonNull ByteBuffer protobufBuffer) {
+    public static boolean filter(@NonNull StringBuilder pathBuilder, @Nullable String lithoIdentifier) {
         try {
             // It is assumed that protobufBuffer is empty as well in this case.
             if (pathBuilder.length() == 0)
                 return false;
 
+            ByteBuffer protobufBuffer = bufferThreadLocal.get();
+            if (protobufBuffer == null) {
+                LogHelper.printException(() -> "Proto buffer is null"); // Should never happen
+                return false;
+            }
             LithoFilterParameters parameter = new LithoFilterParameters(pathBuilder, lithoIdentifier, protobufBuffer);
             LogHelper.printDebug(() -> "Searching " + parameter);
 
-            if (pathSearchTree.matches(parameter.path, parameter)) return true;
             if (parameter.identifier != null) {
                 if (identifierSearchTree.matches(parameter.identifier, parameter)) return true;
             }
+            if (pathSearchTree.matches(parameter.path, parameter)) return true;
             if (protoSearchTree.matches(parameter.protoBuffer, parameter)) return true;
         } catch (Exception ex) {
             LogHelper.printException(() -> "Litho filter failure", ex);
+        } finally {
+            // Cleanup and remove the value,
+            // otherwise this will cause a memory leak if Litho is using a non fixed thread pool.
+            bufferThreadLocal.remove();
         }
 
         return false;
