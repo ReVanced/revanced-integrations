@@ -7,12 +7,11 @@ import app.revanced.integrations.utils.ReVancedUtils;
 
 public class PlayerOverlayPatch {
     private static final boolean HIDE_PLAYER_OVERLAY = SettingsEnum.HIDE_PLAYER_OVERLAY.getBoolean();
-    private static final boolean USE_CUSTOM_OVERLAY_OPACITY = SettingsEnum.CHANGE_PLAYER_OVERLAY_OPACITY.getBoolean();
-    private static final int DEFAULT_OPACITY = 100;
+    private static final int DEFAULT_OPACITY = SettingsEnum.CHANGE_PLAYER_OVERLAY_OPACITY_VALUE.getInt();
     private static int opacity = DEFAULT_OPACITY;
 
     static {
-        if (USE_CUSTOM_OVERLAY_OPACITY)
+        if (!HIDE_PLAYER_OVERLAY)
             loadCustomOpacityValue();
     }
 
@@ -23,7 +22,7 @@ public class PlayerOverlayPatch {
     }
 
     public static void changePlayerOverlay(ImageView imageView) {
-        if (!USE_CUSTOM_OVERLAY_OPACITY || HIDE_PLAYER_OVERLAY) return;
+        if (HIDE_PLAYER_OVERLAY) return;
 
         imageView.setImageAlpha(mapOpacity(opacity));
     }
