@@ -7,7 +7,7 @@ import app.revanced.integrations.utils.ReVancedUtils;
 
 public class PlayerOverlayPatch {
     private static final boolean HIDE_PLAYER_OVERLAY = SettingsEnum.HIDE_PLAYER_OVERLAY.getBoolean();
-    private static final int DEFAULT_OPACITY = SettingsEnum.CHANGE_PLAYER_OVERLAY_OPACITY_VALUE.getInt();
+    private static final int DEFAULT_OPACITY = (int) SettingsEnum.CHANGE_PLAYER_OVERLAY_OPACITY_VALUE.defaultValue;
     private static int opacity = DEFAULT_OPACITY;
 
     static {
