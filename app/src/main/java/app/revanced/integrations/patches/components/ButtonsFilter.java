@@ -31,16 +31,15 @@ final class ButtonsFilter extends Filter {
         pathFilterGroups.addAll(
                 new StringFilterGroup(
                         SettingsEnum.HIDE_LIKE_DISLIKE_BUTTON,
-                        "|like_button",
-                        "dislike_button"
+                        "|segmented_like_dislike_button"
                 ),
                 new StringFilterGroup(
                         SettingsEnum.HIDE_DOWNLOAD_BUTTON,
-                        "download_button"
+                        "|download_button.eml|"
                 ),
                 new StringFilterGroup(
                         SettingsEnum.HIDE_PLAYLIST_BUTTON,
-                        "save_to_playlist_button"
+                        "|save_to_playlist_button"
                 ),
                 new StringFilterGroup(
                         SettingsEnum.HIDE_CLIP_BUTTON,
