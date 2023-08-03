@@ -33,7 +33,7 @@ public class PlayerOverlayPatch {
             if (opacity < 0 || opacity > 100)
                 throw new IllegalArgumentException();
         } catch (Exception e) {
-            ReVancedUtils.showToastLong("Player overlay opacity must be 0-100!");
+            ReVancedUtils.showToastLong("Player overlay opacity must be 0-100");
             SettingsEnum.CHANGE_PLAYER_OVERLAY_OPACITY_VALUE.saveValue(DEFAULT_OPACITY);
             loadCustomOpacityValue();
         }
