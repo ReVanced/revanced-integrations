@@ -70,7 +70,7 @@ public final class ShortsFilter extends Filter {
         if (matchedList == pathFilterGroups) {
             if (matchedGroup == soundButton || matchedGroup == infoPanel || matchedGroup == channelBar) {
                 // Always filter if matched.
-                super.isFiltered(path, identifier, protobufBufferArray, matchedList, matchedGroup, matchedIndex);
+                return super.isFiltered(path, identifier, protobufBufferArray, matchedList, matchedGroup, matchedIndex);
             }
             // Filter all other path items only when reelChannelBar is visible.
             if  (!path.contains(REEL_CHANNEL_BAR_PATH)) {
