@@ -65,6 +65,12 @@ final class ButtonsFilter extends Filter {
                         SettingsEnum.HIDE_REMIX_BUTTON,
                         "yt_outline_youtube_shorts_plus"
                 ),
+                // Check for clip button both here and using a path filter,
+                // as there's a chance the path is a generic action button and won't contain 'clip_button'
+                new ByteArrayAsStringFilterGroup(
+                        SettingsEnum.HIDE_CLIP_BUTTON,
+                        "yt_outline_scissors"
+                ),
                 new ByteArrayAsStringFilterGroup(
                         SettingsEnum.HIDE_SHOP_BUTTON,
                         "yt_outline_bag"
@@ -89,10 +95,11 @@ final class ButtonsFilter extends Filter {
     @Override
     public boolean isFiltered(@Nullable String identifier, String path, byte[] protobufBufferArray,
                               FilterGroupList matchedList, FilterGroup matchedGroup, int matchedIndex) {
-        if (matchedGroup == actionBarRule && !isEveryFilterGroupEnabled()) {
-            return false;
-        }
-        if (matchedGroup == bufferFilterPathRule) {
+        if (matchedGroup == actionBarRule) {
+            if (!isEveryFilterGroupEnabled()) {
+                return false;
+            }
+        } else if (matchedGroup == bufferFilterPathRule) {
             if (!path.startsWith(VIDEO_ACTION_BAR_PATH)) {
                 return false; // Some other unknown button and not part of the player action buttons.
             }
