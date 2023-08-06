@@ -326,8 +326,8 @@ public final class LithoFilterPatch {
         final byte[] protoBuffer;
 
         LithoFilterParameters(@Nullable String lithoIdentifier, StringBuilder lithoPath, ByteBuffer protoBuffer) {
-            this.path = lithoPath.toString();
             this.identifier = lithoIdentifier;
+            this.path = lithoPath.toString();
             this.protoBuffer = protoBuffer.array();
         }
 
@@ -420,6 +420,10 @@ public final class LithoFilterPatch {
         }
     }
 
+    /**
+     * Injection point.
+     */
+    @SuppressWarnings("unused")
     public static void setProtoBuffer(@NonNull ByteBuffer protobufBuffer) {
         bufferThreadLocal.set(protobufBuffer);
     }
