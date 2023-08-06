@@ -286,17 +286,6 @@ abstract class Filter {
 
     protected final StringFilterGroupList pathFilterGroups = new StringFilterGroupList();
     protected final StringFilterGroupList identifierFilterGroups = new StringFilterGroupList();
-    /**
-     * A collection of {@link ByteArrayFilterGroup} that are always searched for (no matter what).
-     *
-     * If possible, avoid adding values to this list and instead use a path or identifier filter
-     * for the item you are looking for. Then inside
-     * {@link #isFiltered(String, String, byte[], FilterGroupList, FilterGroup, int)},
-     * the buffer can then be searched using using a different
-     * {@link ByteArrayFilterGroupList} or a {@link ByteArrayFilterGroup}.
-     * This way, the expensive buffer searching only occurs if the cheap and fast path/identifier is already found.
-     */
-    protected final ByteArrayFilterGroupList protobufBufferFilterGroups = new ByteArrayFilterGroupList();
 
     /**
      * Called after an enabled filter has been matched.
@@ -318,8 +307,6 @@ abstract class Filter {
                 LogHelper.printDebug(() -> getClass().getSimpleName() + " Filtered path: " + path);
             } else if (identifierFilterGroups == matchedList) {
                 LogHelper.printDebug(() -> getClass().getSimpleName() + " Filtered identifier: " + identifier);
-            } else if (protobufBufferFilterGroups == matchedList) {
-                LogHelper.printDebug(() -> getClass().getSimpleName() + " Filtered from protobuf-buffer");
             }
         }
         return true;
@@ -393,7 +380,6 @@ public final class LithoFilterPatch {
 
     private static final StringTrieSearch pathSearchTree = new StringTrieSearch();
     private static final StringTrieSearch identifierSearchTree = new StringTrieSearch();
-    private static final ByteTrieSearch protoSearchTree = new ByteTrieSearch();
 
     /**
      * Because litho filtering is multi-threaded and the buffer is passed in from a different injection point,
@@ -405,16 +391,13 @@ public final class LithoFilterPatch {
         for (Filter filter : filters) {
             filterGroupLists(pathSearchTree, filter, filter.pathFilterGroups);
             filterGroupLists(identifierSearchTree, filter, filter.identifierFilterGroups);
-            filterGroupLists(protoSearchTree, filter, filter.protobufBufferFilterGroups);
         }
 
         LogHelper.printDebug(() -> "Using: "
                 + pathSearchTree.numberOfPatterns() + " path filters"
                 + " (" + pathSearchTree.getEstimatedMemorySize() + " KB), "
                 + identifierSearchTree.numberOfPatterns() + " identifier filters"
-                + " (" + identifierSearchTree.getEstimatedMemorySize() + " KB), "
-                + protoSearchTree.numberOfPatterns() + " buffer filters"
-                + " (" + protoSearchTree.getEstimatedMemorySize() + " KB)");
+                + " (" + identifierSearchTree.getEstimatedMemorySize() + " KB)");
     }
 
     private static <T> void filterGroupLists(TrieSearch<T> pathSearchTree,
@@ -454,14 +437,13 @@ public final class LithoFilterPatch {
                 LogHelper.printException(() -> "Proto buffer is null"); // Should never happen
                 return false;
             }
-            LithoFilterParameters parameter = new LithoFilterParameters(pathBuilder, lithoIdentifier, protobufBuffer);
+            LithoFilterParameters parameter = new LithoFilterParameters(lithoIdentifier, pathBuilder, protobufBuffer);
             LogHelper.printDebug(() -> "Searching " + parameter);
 
             if (parameter.identifier != null) {
                 if (identifierSearchTree.matches(parameter.identifier, parameter)) return true;
             }
             if (pathSearchTree.matches(parameter.path, parameter)) return true;
-            if (protoSearchTree.matches(parameter.protoBuffer, parameter)) return true;
         } catch (Exception ex) {
             LogHelper.printException(() -> "Litho filter failure", ex);
         } finally {
