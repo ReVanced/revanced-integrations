@@ -18,6 +18,7 @@ public final class ShortsFilter extends Filter {
     private final StringFilterGroup channelBar;
     private final StringFilterGroup soundButton;
     private final StringFilterGroup infoPanel;
+    private final StringFilterGroup shortsShelf;
 
     public ShortsFilter() {
         channelBar = new StringFilterGroup(
@@ -56,12 +57,16 @@ public final class ShortsFilter extends Filter {
                 "inline_shorts",
                 "shorts_grid",
                 "shorts_video_cell",
-                "shorts_pivot_item",
+                "shorts_pivot_item"
+        );
+        // Use a different filter group for this pattern, as it requires an additional check after matching.
+        shortsShelf = new StringFilterGroup(
+                SettingsEnum.HIDE_SHORTS,
                 "shelf_header"
         );
 
         pathFilterGroups.addAll(joinButton, subscribeButton, channelBar, soundButton, infoPanel);
-        identifierFilterGroups.addAll(shorts, thanksButton);
+        identifierFilterGroups.addAll(shorts, shortsShelf, thanksButton);
     }
 
     @Override
@@ -70,8 +75,14 @@ public final class ShortsFilter extends Filter {
         if (matchedGroup == soundButton || matchedGroup == infoPanel || matchedGroup == channelBar) return true;
 
         // Filter the path only when reelChannelBar is visible.
-        if (pathFilterGroups == matchedList) {
+        if (matchedList == pathFilterGroups) {
             return path.contains(REEL_CHANNEL_BAR_PATH);
+        }
+
+        if (matchedGroup == shortsShelf) {
+            // Shelf header is used for watch history and possibly other places.
+            // Only hide if the shelf is used for Shorts.
+            return path.startsWith("horizontal_video_shelf.eml|");
         }
 
         return identifierFilterGroups == matchedList;
