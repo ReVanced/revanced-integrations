@@ -78,7 +78,7 @@ public final class ShortsFilter extends Filter {
             }
         } else if (matchedGroup == shortsShelfHeader) {
             // Shelf header is used for watch history and possibly other places.
-            // Only hide if the shelf is used for Shorts, which appears as the first item in the path.
+            // Only hide if the shelf is used for Shorts, which appears as the first item in the identifier.
             if (matchedIndex != 0) {
                 return false;
             }
