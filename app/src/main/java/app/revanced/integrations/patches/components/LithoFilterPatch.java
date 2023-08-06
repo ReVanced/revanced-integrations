@@ -91,8 +91,7 @@ class StringFilterGroup extends FilterGroup<String> {
 
     @Override
     public FilterGroupResult check(final String string) {
-        return new FilterGroupResult(setting,
-                (setting == null || setting.getBoolean()) && ReVancedUtils.containsAny(string, filters));
+        return new FilterGroupResult(setting, isEnabled() && ReVancedUtils.containsAny(string, filters));
     }
 }
 
