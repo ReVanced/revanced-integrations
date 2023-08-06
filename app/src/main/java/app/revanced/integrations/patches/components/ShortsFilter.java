@@ -18,7 +18,7 @@ public final class ShortsFilter extends Filter {
     private final StringFilterGroup channelBar;
     private final StringFilterGroup soundButton;
     private final StringFilterGroup infoPanel;
-    private final StringFilterGroup shortsShelf;
+    private final StringFilterGroup shortsShelfHeader;
 
     public ShortsFilter() {
         var thanksButton = new StringFilterGroup(
@@ -34,11 +34,11 @@ public final class ShortsFilter extends Filter {
                 "shorts_pivot_item"
         );
         // Use a different filter group for this pattern, as it requires an additional check after matching.
-        shortsShelf = new StringFilterGroup(
+        shortsShelfHeader = new StringFilterGroup(
                 SettingsEnum.HIDE_SHORTS,
                 "shelf_header"
         );
-        identifierFilterGroups.addAll(shorts, shortsShelf, thanksButton);
+        identifierFilterGroups.addAll(shorts, shortsShelfHeader, thanksButton);
 
 
         var joinButton = new StringFilterGroup(
@@ -76,7 +76,7 @@ public final class ShortsFilter extends Filter {
             if  (!path.contains(REEL_CHANNEL_BAR_PATH)) {
                 return false;
             }
-        } else if (matchedGroup == shortsShelf) {
+        } else if (matchedGroup == shortsShelfHeader) {
             // Shelf header is used for watch history and possibly other places.
             // Only hide if the shelf is used for Shorts, which appears as the first item in the path.
             if (matchedIndex != 0) {
