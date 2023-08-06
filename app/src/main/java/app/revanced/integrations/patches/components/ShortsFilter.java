@@ -74,18 +74,21 @@ public final class ShortsFilter extends Filter {
                        FilterGroupList matchedList, FilterGroup matchedGroup, int matchedIndex) {
         if (matchedGroup == soundButton || matchedGroup == infoPanel || matchedGroup == channelBar) return true;
 
-        // Filter the path only when reelChannelBar is visible.
         if (matchedList == pathFilterGroups) {
-            return path.contains(REEL_CHANNEL_BAR_PATH);
-        }
-
-        if (matchedGroup == shortsShelf) {
+            // Filter the path only when reelChannelBar is visible.
+            if  (!path.contains(REEL_CHANNEL_BAR_PATH)) {
+                return false;
+            }
+        } else if (matchedGroup == shortsShelf) {
             // Shelf header is used for watch history and possibly other places.
             // Only hide if the shelf is used for Shorts.
-            return path.startsWith("horizontal_video_shelf.eml|");
+            if (!path.startsWith("horizontal_video_shelf.eml|")) {
+                return false;
+            }
         }
 
-        return identifierFilterGroups == matchedList;
+        // Super class handles logging.
+        return super.isFiltered(path, identifier, protobufBufferArray, matchedList, matchedGroup, matchedIndex);
     }
 
     public static void hideShortsShelf(final View shortsShelfView) {
