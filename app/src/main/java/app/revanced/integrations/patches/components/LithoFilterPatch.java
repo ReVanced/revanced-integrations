@@ -302,7 +302,7 @@ abstract class Filter {
      * Called after an enabled filter has been matched.
      * Default implementation is to always filter the matched item.
      * Subclasses can perform additional or different checks if needed.
-     *
+     * <p>
      * Method is called off the main thread.
      *
      * @param matchedList  The list the group filter belongs to.
@@ -311,7 +311,7 @@ abstract class Filter {
      * @return True if the litho item should be filtered out.
      */
     @SuppressWarnings("rawtypes")
-    boolean isFiltered(String path, @Nullable String identifier, byte[] protobufBufferArray,
+    boolean isFiltered(@Nullable String identifier, String path, byte[] protobufBufferArray,
                        FilterGroupList matchedList, FilterGroup matchedGroup, int matchedIndex) {
         if (SettingsEnum.DEBUG.getBoolean()) {
             if (pathFilterGroups == matchedList) {
@@ -333,11 +333,12 @@ public final class LithoFilterPatch {
      * Simple wrapper to pass the litho parameters through the prefix search.
      */
     private static final class LithoFilterParameters {
-        final String path;
+        @Nullable
         final String identifier;
+        final String path;
         final byte[] protoBuffer;
 
-        LithoFilterParameters(StringBuilder lithoPath, String lithoIdentifier, ByteBuffer protoBuffer) {
+        LithoFilterParameters(@Nullable String lithoIdentifier, StringBuilder lithoPath, ByteBuffer protoBuffer) {
             this.path = lithoPath.toString();
             this.identifier = lithoIdentifier;
             this.protoBuffer = protoBuffer.array();
@@ -426,7 +427,7 @@ public final class LithoFilterPatch {
                 pathSearchTree.addPattern(pattern, (textSearched, matchedStartIndex, callbackParameter) -> {
                             if (!group.isEnabled()) return false;
                             LithoFilterParameters parameters = (LithoFilterParameters) callbackParameter;
-                            return filter.isFiltered(parameters.path, parameters.identifier, parameters.protoBuffer,
+                            return filter.isFiltered(parameters.identifier, parameters.path, parameters.protoBuffer,
                                     list, group, matchedStartIndex);
                         }
                 );
@@ -442,7 +443,7 @@ public final class LithoFilterPatch {
      * Injection point.  Called off the main thread, and commonly called by multiple threads at the same time.
      */
     @SuppressWarnings("unused")
-    public static boolean filter(@NonNull StringBuilder pathBuilder, @Nullable String lithoIdentifier) {
+    public static boolean filter(@Nullable String lithoIdentifier, @NonNull StringBuilder pathBuilder) {
         try {
             // It is assumed that protobufBuffer is empty as well in this case.
             if (pathBuilder.length() == 0)

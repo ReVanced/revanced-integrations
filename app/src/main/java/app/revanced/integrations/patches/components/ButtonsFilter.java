@@ -87,7 +87,7 @@ final class ButtonsFilter extends Filter {
     }
 
     @Override
-    public boolean isFiltered(String path, @Nullable String identifier, byte[] protobufBufferArray,
+    public boolean isFiltered(@Nullable String identifier, String path, byte[] protobufBufferArray,
                               FilterGroupList matchedList, FilterGroup matchedGroup, int matchedIndex) {
         if (matchedGroup == actionBarRule && !isEveryFilterGroupEnabled()) {
             return false;
@@ -101,6 +101,6 @@ final class ButtonsFilter extends Filter {
             }
         }
 
-        return super.isFiltered(path, identifier, protobufBufferArray, matchedList, matchedGroup, matchedIndex);
+        return super.isFiltered(identifier, path, protobufBufferArray, matchedList, matchedGroup, matchedIndex);
     }
 }
