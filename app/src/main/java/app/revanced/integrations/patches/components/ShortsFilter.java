@@ -56,7 +56,8 @@ public final class ShortsFilter extends Filter {
                 "inline_shorts",
                 "shorts_grid",
                 "shorts_video_cell",
-                "shorts_pivot_item"
+                "shorts_pivot_item",
+                "shelf_header"
         );
 
         pathFilterGroups.addAll(joinButton, subscribeButton, channelBar, soundButton, infoPanel);
