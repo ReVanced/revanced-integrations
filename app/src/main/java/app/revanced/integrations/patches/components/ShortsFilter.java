@@ -36,7 +36,7 @@ public final class ShortsFilter extends Filter {
         // Use a different filter group for this pattern, as it requires an additional check after matching.
         shortsShelfHeader = new StringFilterGroup(
                 SettingsEnum.HIDE_SHORTS,
-                "shelf_header"
+                "shelf_header.eml"
         );
         identifierFilterGroups.addAll(shorts, shortsShelfHeader, thanksButton);
 
