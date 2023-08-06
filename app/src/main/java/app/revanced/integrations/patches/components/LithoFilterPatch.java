@@ -364,7 +364,9 @@ public final class LithoFilterPatch {
                 int value = buffer[end];
                 if (value < minimumAscii || value > maximumAscii || end == length - 1) {
                     if (end - start >= minimumAsciiStringLength) {
-                        builder.append(new String(buffer, start, end - start));
+                        for (int i = start; i < end; i++) {
+                            builder.append((char) buffer[i]);
+                        }
                         builder.append(delimitingCharacter);
                     }
                     start = end + 1;
