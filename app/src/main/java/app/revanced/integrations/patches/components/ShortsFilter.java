@@ -21,37 +21,11 @@ public final class ShortsFilter extends Filter {
     private final StringFilterGroup shortsShelf;
 
     public ShortsFilter() {
-        channelBar = new StringFilterGroup(
-                SettingsEnum.HIDE_SHORTS_CHANNEL_BAR,
-                REEL_CHANNEL_BAR_PATH
-        );
-
-        soundButton = new StringFilterGroup(
-                SettingsEnum.HIDE_SHORTS_SOUND_BUTTON,
-                "reel_pivot_button"
-        );
-
-        infoPanel = new StringFilterGroup(
-                SettingsEnum.HIDE_SHORTS_INFO_PANEL,
-                "shorts_info_panel_overview"
-        );
-
-        final var thanksButton = new StringFilterGroup(
+        var thanksButton = new StringFilterGroup(
                 SettingsEnum.HIDE_SHORTS_THANKS_BUTTON,
                 "suggested_action"
         );
-
-        final var subscribeButton = new StringFilterGroup(
-                SettingsEnum.HIDE_SHORTS_SUBSCRIBE_BUTTON,
-                "subscribe_button"
-        );
-
-        final var joinButton = new StringFilterGroup(
-                SettingsEnum.HIDE_SHORTS_JOIN_BUTTON,
-                "sponsor_button"
-        );
-
-        final var shorts = new StringFilterGroup(
+        var shorts = new StringFilterGroup(
                 SettingsEnum.HIDE_SHORTS,
                 "shorts_shelf",
                 "inline_shorts",
@@ -64,18 +38,40 @@ public final class ShortsFilter extends Filter {
                 SettingsEnum.HIDE_SHORTS,
                 "shelf_header"
         );
-
-        pathFilterGroups.addAll(joinButton, subscribeButton, channelBar, soundButton, infoPanel);
         identifierFilterGroups.addAll(shorts, shortsShelf, thanksButton);
+
+
+        var joinButton = new StringFilterGroup(
+                SettingsEnum.HIDE_SHORTS_JOIN_BUTTON,
+                "sponsor_button"
+        );
+        var subscribeButton = new StringFilterGroup(
+                SettingsEnum.HIDE_SHORTS_SUBSCRIBE_BUTTON,
+                "subscribe_button"
+        );
+        channelBar = new StringFilterGroup(
+                SettingsEnum.HIDE_SHORTS_CHANNEL_BAR,
+                REEL_CHANNEL_BAR_PATH
+        );
+        soundButton = new StringFilterGroup(
+                SettingsEnum.HIDE_SHORTS_SOUND_BUTTON,
+                "reel_pivot_button"
+        );
+        infoPanel = new StringFilterGroup(
+                SettingsEnum.HIDE_SHORTS_INFO_PANEL,
+                "shorts_info_panel_overview"
+        );
+        pathFilterGroups.addAll(joinButton, subscribeButton, channelBar, soundButton, infoPanel);
     }
 
     @Override
     boolean isFiltered(String path, @Nullable String identifier, byte[] protobufBufferArray,
                        FilterGroupList matchedList, FilterGroup matchedGroup, int matchedIndex) {
         if (matchedList == pathFilterGroups) {
-            // Always filter if matched.
-            if (matchedGroup == soundButton || matchedGroup == infoPanel || matchedGroup == channelBar) return true;
-
+            if (matchedGroup == soundButton || matchedGroup == infoPanel || matchedGroup == channelBar) {
+                // Always filter if matched.
+                super.isFiltered(path, identifier, protobufBufferArray, matchedList, matchedGroup, matchedIndex);
+            }
             // Filter all other path items only when reelChannelBar is visible.
             if  (!path.contains(REEL_CHANNEL_BAR_PATH)) {
                 return false;
