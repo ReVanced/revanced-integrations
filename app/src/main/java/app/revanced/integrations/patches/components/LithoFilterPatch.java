@@ -420,7 +420,7 @@ public final class LithoFilterPatch {
     }
 
     /**
-     * Injection point.
+     * Injection point.  Called off the main thread.
      */
     @SuppressWarnings("unused")
     public static void setProtoBuffer(@NonNull ByteBuffer protobufBuffer) {
@@ -452,9 +452,7 @@ public final class LithoFilterPatch {
         } catch (Exception ex) {
             LogHelper.printException(() -> "Litho filter failure", ex);
         } finally {
-            // Cleanup and remove the value,
-            // otherwise this will cause a memory leak if Litho is using a non fixed thread pool.
-            bufferThreadLocal.remove();
+            bufferThreadLocal.remove(); // Cleanup and remove the buffer.
         }
 
         return false;
