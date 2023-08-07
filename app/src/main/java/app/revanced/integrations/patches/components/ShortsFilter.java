@@ -65,7 +65,7 @@ public final class ShortsFilter extends Filter {
     }
 
     @Override
-    boolean isFiltered(String path, @Nullable String identifier, byte[] protobufBufferArray,
+    boolean isFiltered(@Nullable String identifier, String path, byte[] protobufBufferArray,
                        FilterGroupList matchedList, FilterGroup matchedGroup, int matchedIndex) {
         if (matchedList == pathFilterGroups) {
             if (matchedGroup == soundButton || matchedGroup == infoPanel || matchedGroup == channelBar) {
