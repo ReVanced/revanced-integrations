@@ -12,7 +12,7 @@ import com.google.android.libraries.youtube.rendering.ui.pivotbar.PivotBar;
 import app.revanced.integrations.settings.SettingsEnum;
 
 public final class ShortsFilter extends Filter {
-    private static final String REEL_CHANNEL_BAR_PATH = "reel_channel_bar";
+    private static final String REEL_CHANNEL_BAR_PATH = "reel_channel_bar.eml";
     public static PivotBar pivotBar; // Set by patch.
 
     private final StringFilterGroup channelBar;
@@ -21,6 +21,7 @@ public final class ShortsFilter extends Filter {
     private final StringFilterGroup shortsShelfHeader;
 
     public ShortsFilter() {
+        // Home / subscription feed components.
         var thanksButton = new StringFilterGroup(
                 SettingsEnum.HIDE_SHORTS_THANKS_BUTTON,
                 "suggested_action"
@@ -41,6 +42,7 @@ public final class ShortsFilter extends Filter {
         identifierFilterGroups.addAll(shorts, shortsShelfHeader, thanksButton);
 
 
+        // Shorts player components.
         var joinButton = new StringFilterGroup(
                 SettingsEnum.HIDE_SHORTS_JOIN_BUTTON,
                 "sponsor_button"
@@ -73,7 +75,7 @@ public final class ShortsFilter extends Filter {
                 return super.isFiltered(path, identifier, protobufBufferArray, matchedList, matchedGroup, matchedIndex);
             }
             // Filter all other path items only when reelChannelBar is visible.
-            if  (!path.contains(REEL_CHANNEL_BAR_PATH)) {
+            if (!path.startsWith(REEL_CHANNEL_BAR_PATH)) {
                 return false;
             }
         } else if (matchedGroup == shortsShelfHeader) {
