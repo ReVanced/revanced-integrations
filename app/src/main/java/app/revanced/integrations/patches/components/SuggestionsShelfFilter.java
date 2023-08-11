@@ -7,9 +7,11 @@ import app.revanced.integrations.utils.NavBarIndexHook;
 import app.revanced.tiktok.settings.SettingsEnum;
 
 public class SuggestionsShelfFilter extends Filter {
+    private final StringFilterGroup horizontalVideoShelf;
+
     public SuggestionsShelfFilter() {
         pathFilterGroups.addAll(
-                new StringFilterGroup(
+                horizontalVideoShelf = new StringFilterGroup(
                         SettingsEnum.HIDE_SUGGESTIONS_SHELF,
                         "horizontal_video_shelf.eml"
                 )
@@ -18,7 +20,7 @@ public class SuggestionsShelfFilter extends Filter {
 
     @Override
     boolean isFiltered(@Nullable String identifier, String path, byte[] protobufBufferArray, FilterGroupList matchedList, FilterGroup matchedGroup, int matchedIndex) {
-        if (matchedList == pathFilterGroups) {
+        if (matchedGroup == horizontalVideoShelf) {
             if (path.contains("library_recent_shelf"))
                 // If the library shelf is detected, set the current navbar index to 4
                 NavBarIndexHook.setCurrentNavBarIndex(4);
