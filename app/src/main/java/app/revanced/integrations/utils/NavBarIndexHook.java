@@ -34,7 +34,7 @@ public class NavBarIndexHook {
     }
 
     /**
-     * Check if current tab is Library Tab
+     * Check if current tab is not Library Tab
      */
 
     public static boolean isNotLibraryTab() {
