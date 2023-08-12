@@ -1,58 +1,76 @@
 package app.revanced.integrations.patches;
 
-import androidx.annotation.NonNull;
-
 import java.io.IOException;
-import java.net.URL;
-import java.net.URLConnection;
 
 import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.utils.LogHelper;
-import app.revanced.integrations.utils.StringTrieSearch;
 
 public final class DeArrowPatch {
 
     private static final boolean DEARROW_ENABLED = SettingsEnum.DEARROW_ENABLED.getBoolean();
 
-    private static boolean isValidThumbnailImageSize(@NonNull String imageSize) {
-        String[] validThumbnailSizes = {"mqdefault", "sddefault", "hqdefault", "hq720", "maxresdefault"};
-        for (String thumbnail : validThumbnailSizes) {
-            if (thumbnail.equals(imageSize)) {
-                return true;
-            }
+    static {
+        // Validate and correct any if user imported bad data.
+        final int secondaryImageType = SettingsEnum.DEARROW_SECONDARY_IMAGE_TYPE.getInt();
+        if (secondaryImageType <0 || secondaryImageType > 3) {
+            LogHelper.printException(() -> "Invalid DeArrow secondary thumbnail image type: " + secondaryImageType);
+            SettingsEnum.DEARROW_SECONDARY_IMAGE_TYPE.saveValue(SettingsEnum.DEARROW_SECONDARY_IMAGE_TYPE.defaultValue);
         }
-        return false;
     }
 
-    public static String overrideImageURL(String imageUrl) {
+    public static String overrideImageURL(String originalUrl) {
         try {
-            if (!DEARROW_ENABLED) return imageUrl;
-            LogHelper.printDebug(() -> "Image url: " + imageUrl);
+            if (!DEARROW_ENABLED) return originalUrl;
+            LogHelper.printDebug(() -> "Image url: " + originalUrl);
 
             String thumbnailPrefix = "https://i.ytimg.com/vi"; // '/vi/' or '/vi_webp/'
-            if (!imageUrl.startsWith(thumbnailPrefix)) return imageUrl;
+            if (!originalUrl.startsWith(thumbnailPrefix)) return originalUrl;
 
-            final int videoIdStartIndex = imageUrl.indexOf('/', thumbnailPrefix.length()) + 1;
-            if (videoIdStartIndex <= 0) return imageUrl;
-            final int videoIdEndIndex = imageUrl.indexOf('/', videoIdStartIndex);
-            if (videoIdEndIndex < 0) return imageUrl;
+            final int videoIdStartIndex = originalUrl.indexOf('/', thumbnailPrefix.length()) + 1;
+            if (videoIdStartIndex <= 0) return originalUrl;
+            final int videoIdEndIndex = originalUrl.indexOf('/', videoIdStartIndex);
+            if (videoIdEndIndex < 0) return originalUrl;
             final int imageSizeStartIndex = videoIdEndIndex + 1;
-            final int imageSizeEndIndex = imageUrl.indexOf('.', imageSizeStartIndex);
-            if (imageSizeEndIndex < 0) return imageUrl;
+            final int imageSizeEndIndex = originalUrl.indexOf('.', imageSizeStartIndex);
+            if (imageSizeEndIndex < 0) return originalUrl;
 
-            String imageSize = imageUrl.substring(imageSizeStartIndex, imageSizeEndIndex);
-            if (!isValidThumbnailImageSize(imageSize)) {
-                return imageUrl; // a Short or other unknown image.
+            String originalImageSize = originalUrl.substring(imageSizeStartIndex, imageSizeEndIndex);
+            final String secondaryImageSize;
+            switch (originalImageSize) {
+                case "maxresdefault":
+                    // No in video thumbnails for this size.  Fall thru to next largest.
+                    // Of note, the YouTube app/website does not seem to ever use the max res size.
+                case "hq720":
+                    secondaryImageSize = "hq720_";
+                    break;
+                case "sddefault":
+                    secondaryImageSize = "sd";
+                    break;
+                case "hqdefault":
+                    secondaryImageSize = "hq";
+                    break;
+                case "mqdefault":
+                    secondaryImageSize = "mq";
+                    break;
+                default:
+                    return originalUrl; // Thumbnail is a short or some unknown image type.
             }
-            String videoId = imageUrl.substring(videoIdStartIndex, videoIdEndIndex);
+            final String secondaryImageToUse;
+            final int secondaryImageType = SettingsEnum.DEARROW_SECONDARY_IMAGE_TYPE.getInt();
+            if (secondaryImageType == 0) {
+                secondaryImageToUse = originalImageSize;
+            } else {
+                secondaryImageToUse = secondaryImageSize + secondaryImageType;
+            }
+
+            String videoId = originalUrl.substring(videoIdStartIndex, videoIdEndIndex);
             String replacement = "https://dearrow-thumb.ajay.app/api/v1/getThumbnail" + "?videoID=" + videoId
-                    // If DeArrow is not available, then use webp of the original.
-                    + "&redirectUrl=" + "https://i.ytimg.com/vi_webp/" + videoId + "/" + imageSize + ".webp";
+                    + "&redirectUrl=" + "https://i.ytimg.com/vi_webp/" + videoId + "/" + secondaryImageToUse + ".webp";
             LogHelper.printDebug(() -> "Replaced image with: " + replacement);
             return replacement;
         } catch (Exception ex) {
             LogHelper.printException(() -> "DeArrow failure", ex);
-            return imageUrl;
+            return originalUrl;
         }
     }
 
