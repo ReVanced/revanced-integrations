@@ -31,6 +31,10 @@ public class ReVancedSettingActivity {
             String toolbarTitleResourceName;
             String dataString = licenseActivity.getIntent().getDataString();
             switch (dataString) {
+                case "clickbait_settings":
+                    toolbarTitleResourceName = "revanced_clickbait_settings_title";
+                    fragment = new ClickbaitRemoverSettingsFragment();
+                    break;
                 case "sponsorblock_settings":
                     toolbarTitleResourceName = "revanced_sponsorblock_settings_title";
                     fragment = new SponsorBlockSettingsFragment();

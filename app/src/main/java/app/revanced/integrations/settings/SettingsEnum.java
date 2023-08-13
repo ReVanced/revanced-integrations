@@ -230,8 +230,10 @@ public enum SettingsEnum {
     SB_LOCAL_TIME_SAVED_NUMBER_SEGMENTS("sb_local_time_saved_number_segments", INTEGER, 0, SPONSOR_BLOCK),
     SB_LOCAL_TIME_SAVED_MILLISECONDS("sb_local_time_saved_milliseconds", LONG, 0L, SPONSOR_BLOCK),
 
-    DEARROW_ENABLED("dearrow_enabled", BOOLEAN, TRUE, true),
-    DEARROW_ALTERNATE_IMAGE_TYPE("dearrow_alternate_image_type", INTEGER, 1);
+    CLICKBAIT_DEARROW("revanced_clickbait_dearrow", BOOLEAN, TRUE),
+    CLICKBAIT_ALT_THUMBNAIL("revanced_clickbait_alt_thumbnail", BOOLEAN, TRUE),
+    CLICKBAIT_ALT_THUMBNAIL_TYPE("revanced_clickbait_alt_thumbnail_type", INTEGER, 2, parents(CLICKBAIT_ALT_THUMBNAIL)),
+    CLICKBAIT_ALT_THUMBNAIL_FAST_QUALITY("revanced_clickbait_alt_thumbnail_fast_quality", BOOLEAN, TRUE, parents(CLICKBAIT_ALT_THUMBNAIL));
 
     private static SettingsEnum[] parents(SettingsEnum... parents) {
         return parents;
