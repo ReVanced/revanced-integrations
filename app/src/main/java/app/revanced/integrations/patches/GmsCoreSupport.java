@@ -13,7 +13,7 @@ import java.util.Objects;
 import static app.revanced.integrations.utils.StringRef.str;
 
 public class GmsCoreSupport {
-    private static final String GMS_VENDOR = "app.revanceed";
+    private static final String GMS_VENDOR = "app.revanced";
     private static final String GMS_PACKAGE_NAME = GMS_VENDOR + ".android.gms";
     private static final String GMS_CORE_DOWNLOAD_LINK = "https://github.com/revanced/gmscore/releases/latest";
     private static final String DONT_KILL_MY_APP_LINK = "https://dontkillmyapp.com";
