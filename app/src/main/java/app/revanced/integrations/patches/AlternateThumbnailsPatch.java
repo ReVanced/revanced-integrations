@@ -1,14 +1,16 @@
 package app.revanced.integrations.patches;
 
+import androidx.annotation.GuardedBy;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import org.chromium.net.UrlResponseInfo;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 
 import app.revanced.integrations.settings.SettingsEnum;
@@ -30,73 +32,195 @@ import app.revanced.integrations.utils.ReVancedUtils;
  * Ideas for improvements:
  * - Selectively allow using original thumbnails in some situations,
  *   such as videos subscription feed, watch history, or in search results.
- * - Save to a temporary file, the video id's verified to have alt thumbnails.
+ * - Save to a temporary file the video id's verified to have alt thumbnails.
  *   This would speed up loading the watch history and users saved playlists.
  */
 public final class AlternateThumbnailsPatch {
 
-    /**
-     * YouTube thumbnail URL prefix. Can be '/vi/' or '/vi_webp/'
-     */
-    public static final String YOUTUBE_THUMBNAIL_PREFIX = "https://i.ytimg.com/vi";
+    private enum VideoImageQuality {
+        // In order of lowest to highest resolution.
+        DEFAULT("default", ""), // effective alt name is 1.jpg, 2.jpg, 3.jpg
+        MQDEFAULT("mqdefault", "mq"),
+        HQDEFAULT("hqdefault", "hq"),
+        SDDEFAULT("sddefault", "sd"),
+        HQ720("hq720", "hq720_"),
+        MAXRESDEFAULT("maxresdefault", "maxres");
 
-    /**
-     * Cache used to verify if alternate thumbnails exists for a given video id.
-     */
-    private static final LinkedHashMap<String, Boolean> altVideoIdLookup = new LinkedHashMap<>(100) {
-        private static final int CACHE_LIMIT = 1000;
-        @Override
-        protected boolean removeEldestEntry(Map.Entry eldest) {
-            return size() > CACHE_LIMIT; // Evict oldest entry if over the cache limit.
+        /**
+         * Lookup map of original name to enum.
+         */
+        private static final Map<String, VideoImageQuality> originalNameToEnum = new HashMap<>();
+
+        /**
+         * Lookup map of alt name to enum.  ie: "hq720_1" to {@link #HQ720}.
+         */
+        private static final Map<String, VideoImageQuality> altNameToEnum = new HashMap<>();
+
+        static {
+            for (VideoImageQuality quality : values()) {
+                originalNameToEnum.put(quality.originalName, quality);
+
+                for (int i = 1; i <= 3; i++) {
+                    altNameToEnum.put(quality.altImageName + i, quality);
+                }
+            }
         }
-    };
 
-    static {
-        // Fix any bad imported data.
-        final int altThumbnailType = SettingsEnum.ALT_THUMBNAIL_TYPE.getInt();
-        if (altThumbnailType < 1 || altThumbnailType > 3) {
-            LogHelper.printException(() -> "Invalid alt thumbnail type: " + altThumbnailType);
-            SettingsEnum.ALT_THUMBNAIL_TYPE.saveValue(SettingsEnum.ALT_THUMBNAIL_TYPE.defaultValue);
+        /**
+         * Convert an alt image name to enum.
+         * ie: "hq720_2" returns {@link #HQ720}.
+         */
+        @Nullable
+        static VideoImageQuality altImageNameToQuality(@NonNull String altImageName) {
+            return altNameToEnum.get(altImageName);
         }
-    }
 
-    private static void setVideoIdHasAltYouTubeThumbnails(@NonNull String videoId, boolean isValid) {
-        altVideoIdLookup.put(Objects.requireNonNull(videoId), isValid);
-        if (!isValid) {
-            LogHelper.printDebug(() -> "Alt thumbnails not available for video: " + videoId);
-        }
-    }
-
-    /**
-     * Verify if a video alt thumbnail exists.  Does so by making a minimal HEAD http request.
-     *
-     *
-     * Known limitation of this implementation:
-     *
-     * This only checks if alt images exist for the requested resolution,
-     * and will fail to detect if the video only has low resolution alt images (ie: hq720_2 does not exist, but sd2 does).
-     * This could try checking for lower resolution images until it finds an alt image that exists.
-     * But that would make loading slower, especially for live streams or other videos that have zero alt thumbnails.
-     *
-     * The videos that do not have high resolution alt images are almost always very old (10+ years old),
-     * or it's an obscure video with a very low view count. So for now, ignore these videos and show the original thumbnail.
-     */
-    private static boolean verifyAltYouTubeThumbnailsExist(@NonNull String videoId, @NonNull String imageUrl) {
-        LogHelper.printDebug(() -> "Alt image: " + imageUrl);
-
-        Boolean hasAltThumbnails = altVideoIdLookup.get(videoId);
-        if (hasAltThumbnails == null) {
-            if (SettingsEnum.ALT_THUMBNAIL_FAST_QUALITY.getBoolean()) {
-                // In fast quality, skip checking if the alt thumbnail exists.
-                // Instead, it only detects if an alt thumbnail has previously failed to laad.
-                return true;
+        /**
+         * Original quality to effective alt quality to use.
+         * ie: If fast alt image is enabled, then "hq720" returns {@link #SDDEFAULT}.
+         */
+        @Nullable
+        static VideoImageQuality getQualityToUse(@NonNull String originalSize) {
+            VideoImageQuality quality = originalNameToEnum.get(originalSize);
+            if (quality == null) {
+                return null; // Not a thumbnail.
             }
 
+            final boolean useFastQuality = SettingsEnum.ALT_THUMBNAIL_FAST_QUALITY.getBoolean();
+            switch (quality) {
+                case SDDEFAULT:
+                    // SD alt images have somewhat worse quality with washed out color and poor contrast.
+                    // But the 720 images look much better and don't suffer from these issues.
+                    // For unknown reasons, the 720 thumbnails are used only for the home feed,
+                    // while SD is used for the search and subscription feed
+                    // (even though search and subscriptions use the exact same layout as the home feed).
+                    // Of note, this image quality issue only appears with the alt thumbnail images,
+                    // and the regular thumbnails have identical color/contrast quality for all sizes.
+                    // Fix this by falling thru and upgrading SD to 720.
+                case HQ720:
+                    if (useFastQuality) {
+                        return SDDEFAULT; // SD is max resolution for fast alt images.
+                    }
+                    return HQ720;
+                case MAXRESDEFAULT:
+                    if (useFastQuality) {
+                        return SDDEFAULT;
+                    }
+                    return MAXRESDEFAULT;
+                default:
+                    return quality;
+            }
+        }
+
+        final String originalName;
+        final String altImageName;
+
+        VideoImageQuality(String originalName, String altImageName) {
+            this.originalName = originalName;
+            this.altImageName = altImageName;
+        }
+
+        String getAltImageNameToUse() {
+            return altImageName + SettingsEnum.ALT_THUMBNAIL_TYPE.getInt();
+        }
+    }
+
+    /**
+     * Keeps track of what qualities have been verified as available and not available,
+     * and does HTTP HEAD requests to verify alt images exist.
+     */
+    private static class VerifiedVideoQualities {
+        /**
+         * Cache used to verify if an alternate thumbnails exists for a given video id.
+         */
+        @GuardedBy("itself")
+        private static final Map<String, VerifiedVideoQualities> altVideoIdLookup = new LinkedHashMap<>(100) {
+            private static final int CACHE_LIMIT = 1000;
+
+            @Override
+            protected boolean removeEldestEntry(Map.Entry eldest) {
+                return size() > CACHE_LIMIT; // Evict oldest entry if over the cache limit.
+            }
+        };
+
+        static boolean verifyAltThumbnailExist(@NonNull String videoId, @NonNull VideoImageQuality quality,
+                                               @NonNull String imageUrl) {
+            VerifiedVideoQualities verified;
+            synchronized (altVideoIdLookup) {
+                verified = altVideoIdLookup.get(videoId);
+                if (verified == null) {
+                    if (SettingsEnum.ALT_THUMBNAIL_FAST_QUALITY.getBoolean()) {
+                        // In fast quality, skip checking if the alt thumbnail exists.
+                        return true;
+                    }
+                    verified = new VerifiedVideoQualities();
+                    altVideoIdLookup.put(videoId, verified);
+                }
+            }
+
+            // Verify outside of map synchronization, so different images can be verified at same time.
+            return verified.verifyYouTubeThumbnailExists(videoId, quality, imageUrl);
+        }
+
+        static void setAltThumbnailDoesNotExist(@NonNull String videoId, @NonNull VideoImageQuality quality) {
+            VerifiedVideoQualities verified;
+            synchronized (altVideoIdLookup) {
+                verified = altVideoIdLookup.get(videoId);
+                if (verified == null) {
+                    verified = new VerifiedVideoQualities();
+                    altVideoIdLookup.put(videoId, verified);
+                }
+            }
+
+            verified.setQualityVerified(videoId, quality, false);
+        }
+
+        /**
+         * Highest quality verified as existing.
+         */
+        @Nullable
+        VideoImageQuality highestQualityVerified;
+        /**
+         * Lowest quality verified as not existing.
+         */
+        @Nullable
+        VideoImageQuality lowestQualityNotAvailable;
+
+        synchronized void setQualityVerified(String videoId, VideoImageQuality quality, boolean isVerified) {
+            if (isVerified) {
+                if (highestQualityVerified == null || highestQualityVerified.ordinal() < quality.ordinal()) {
+                    highestQualityVerified = quality;
+                }
+            } else {
+                if (lowestQualityNotAvailable == null || lowestQualityNotAvailable.ordinal() > quality.ordinal()) {
+                    lowestQualityNotAvailable = quality;
+                }
+                LogHelper.printDebug(() -> quality + " not available for video: " + videoId);
+            }
+        }
+
+        /**
+         * Verify if a video alt thumbnail exists.  Does so by making a minimal HEAD http request.
+         */
+        synchronized boolean verifyYouTubeThumbnailExists(@NonNull String videoId, @NonNull VideoImageQuality quality,
+                                                          @NonNull String imageUrl) {
+            if (highestQualityVerified != null && highestQualityVerified.ordinal() >= quality.ordinal()) {
+                return true; // Previously verified as existing.
+            }
+            if (lowestQualityNotAvailable != null && lowestQualityNotAvailable.ordinal() <= quality.ordinal()) {
+                return false; // Previously verified as not existing.
+            }
+            if (SettingsEnum.ALT_THUMBNAIL_FAST_QUALITY.getBoolean()) {
+                return true; // Unknown if it exists or not.  Use the URL anyways and update afterwards if loading fails.
+            }
+
+            boolean imageFileFound;
             try {
-                // The hooked code is running at a low priority, and it's slightly faster
+                LogHelper.printDebug(() -> "Verifying image: " + imageUrl);
+                // This hooked code is running on a low priority thread, and it's slightly faster
                 // to run the url connection thru the integrations thread pool which runs at the highest priority.
                 final long start = System.currentTimeMillis();
-                hasAltThumbnails = ReVancedUtils.submitOnBackgroundThread(() -> {
+                imageFileFound = ReVancedUtils.submitOnBackgroundThread(() -> {
                     final int connectionTimeoutMillis = 5000;
                     HttpURLConnection connection = (HttpURLConnection) new URL(imageUrl).openConnection();
                     connection.setConnectTimeout(connectionTimeoutMillis);
@@ -118,15 +242,73 @@ public final class AlternateThumbnailsPatch {
                 LogHelper.printDebug(() -> "Alt verification took: " + (System.currentTimeMillis() - start) + "ms");
             } catch (ExecutionException | InterruptedException ex) {
                 LogHelper.printInfo(() -> "Could not verify alt url: " + imageUrl, ex);
-                hasAltThumbnails = false;
+                imageFileFound = false;
             }
-            setVideoIdHasAltYouTubeThumbnails(videoId, hasAltThumbnails);
+
+            setQualityVerified(videoId, quality, imageFileFound);
+            return imageFileFound;
         }
-        return hasAltThumbnails;
     }
 
     /**
-     * Injection point.
+     * YouTube video thumbnail url, decoded into it's relevant parts.
+     */
+    private static class DecodedThumbnailUrl {
+        /**
+         * YouTube thumbnail URL prefix. Can be '/vi/' or '/vi_webp/'
+         */
+        private static final String YOUTUBE_THUMBNAIL_PREFIX = "https://i.ytimg.com/vi";
+
+        @Nullable
+        static DecodedThumbnailUrl decodeImageUrl(String url) {
+            final int videoIdStartIndex = url.indexOf('/', YOUTUBE_THUMBNAIL_PREFIX.length()) + 1;
+            if (videoIdStartIndex <= 0) return null;
+            final int videoIdEndIndex = url.indexOf('/', videoIdStartIndex);
+            if (videoIdEndIndex < 0) return null;
+            final int imageSizeStartIndex = videoIdEndIndex + 1;
+            final int imageSizeEndIndex = url.indexOf('.', imageSizeStartIndex);
+            if (imageSizeEndIndex < 0) return null;
+            int imageExtensionEndIndex = url.indexOf('?', imageSizeEndIndex);
+            if (imageExtensionEndIndex < 0) imageExtensionEndIndex = url.length();
+            return new DecodedThumbnailUrl(url, videoIdStartIndex, videoIdEndIndex,
+                    imageSizeStartIndex, imageSizeEndIndex, imageExtensionEndIndex);
+        }
+
+        /** Full usable url, but stripped of any tracking information. */
+        final String sanitizedUrl;
+        /** Url up to the video id. */
+        final String urlPrefix;
+        final String videoId;
+        /** Quality, such as hq720 or sddefault. */
+        final String imageQuality;
+        /** jpg or webp */
+        final String imageExtension;
+        /** User view tracking parameters, only present on some images. */
+        final String urlTrackingParameters;
+
+        private DecodedThumbnailUrl(String fullUrl, int videoIdStartIndex, int videoIdEndIndex,
+                                    int imageSizeStartIndex, int imageSizeEndIndex, int imageExtensionEndIndex) {
+            sanitizedUrl = fullUrl.substring(0, imageExtensionEndIndex);
+            urlPrefix = fullUrl.substring(0, videoIdStartIndex);
+            videoId = fullUrl.substring(videoIdStartIndex, videoIdEndIndex);
+            imageQuality = fullUrl.substring(imageSizeStartIndex, imageSizeEndIndex);
+            imageExtension = fullUrl.substring(imageSizeEndIndex + 1, imageExtensionEndIndex);
+            urlTrackingParameters = (imageExtensionEndIndex == fullUrl.length())
+                    ? "" : fullUrl.substring(imageExtensionEndIndex);
+        }
+    }
+
+    static {
+        // Fix any bad imported data.
+        final int altThumbnailType = SettingsEnum.ALT_THUMBNAIL_TYPE.getInt();
+        if (altThumbnailType < 1 || altThumbnailType > 3) {
+            LogHelper.printException(() -> "Invalid alt thumbnail type: " + altThumbnailType);
+            SettingsEnum.ALT_THUMBNAIL_TYPE.saveValue(SettingsEnum.ALT_THUMBNAIL_TYPE.defaultValue);
+        }
+    }
+
+    /**
+     * Injection point.  Called off the main thread and by multiple threads at the same time.
      *
      * @param originalUrl Image url for all url images loaded, including video thumbnails.
      */
@@ -135,83 +317,38 @@ public final class AlternateThumbnailsPatch {
             if (!SettingsEnum.ALT_THUMBNAIL.getBoolean()) {
                 return originalUrl;
             }
-            if (!originalUrl.startsWith(YOUTUBE_THUMBNAIL_PREFIX)) return originalUrl;
-
-            // Could use a regular expression here, but the format is simple enough to decode manually.
-            final int videoIdStartIndex = originalUrl.indexOf('/', YOUTUBE_THUMBNAIL_PREFIX.length()) + 1;
-            if (videoIdStartIndex <= 0) return originalUrl;
-            final int videoIdEndIndex = originalUrl.indexOf('/', videoIdStartIndex);
-            if (videoIdEndIndex < 0) return originalUrl;
-            final int imageSizeStartIndex = videoIdEndIndex + 1;
-            final int imageSizeEndIndex = originalUrl.indexOf('.', imageSizeStartIndex);
-            if (imageSizeEndIndex < 0) return originalUrl;
-            int imageTypeEndIndex = originalUrl.indexOf('?', imageSizeEndIndex);
-            if (imageTypeEndIndex < 0) imageTypeEndIndex = originalUrl.length();
+            DecodedThumbnailUrl decodedUrl = DecodedThumbnailUrl.decodeImageUrl(originalUrl);
+            if (decodedUrl == null) {
+                return originalUrl; // Not a thumbnail.
+            }
 
             // Keep any tracking parameters out of the logs, and log only the base url.
-            final int imageTypeEndIndexLogging = imageTypeEndIndex;
-            LogHelper.printDebug(() -> "Original url: " + originalUrl.substring(0, imageTypeEndIndexLogging));
-            String originalImageName = originalUrl.substring(imageSizeStartIndex, imageSizeEndIndex);
+            LogHelper.printDebug(() -> "Original url: " + decodedUrl.sanitizedUrl);
 
-            final boolean useFastQuality = SettingsEnum.ALT_THUMBNAIL_FAST_QUALITY.getBoolean();
-            final String alternateImagePrefix;
-            switch (originalImageName) {
-                case "maxresdefault":
-                    if (!useFastQuality) {
-                        alternateImagePrefix = "maxres";
-                        break;
-                    } // else, fall thru to sd quality.
-                case "hq720":
-                    if (!useFastQuality) {
-                        alternateImagePrefix = "hq720_";
-                        break;
-                    }
-                case "sddefault":
-                    if (!useFastQuality) {
-                        // SD alt images have somewhat worse quality with washed out color and poor contrast.
-                        // But the 720 images look much better and don't suffer from these issues.
-                        // For unknown reasons, the 720 thumbnails are used only for the home feed,
-                        // while SD is used for the search and subscription feed
-                        // (even though search and subscriptions uses the exact same layout as the home feed).
-                        // Of note, this image quality issue only appears with the alt thumbnail images,
-                        // and the regular thumbnails have identical color/contrast quality for all sizes.
-                        //
-                        // To improve this situation, upgrade to 720 if SD is requested.
-                        alternateImagePrefix = "hq720_";
-                        break;
-                    }
-                    alternateImagePrefix = "sd";
-                    break;
-                case "hqdefault":
-                    alternateImagePrefix = "hq";
-                    break;
-                case "mqdefault":
-                    alternateImagePrefix = "mq";
-                    break;
-                default:
-                    return originalUrl; // Video is a short
-            }
+            VideoImageQuality qualityToUse = VideoImageQuality.getQualityToUse(decodedUrl.imageQuality);
+            if (qualityToUse == null) return originalUrl; // Video is a short.
 
             // Images could be upgraded to webp if they are not already, but this fails quite often,
             // especially for new videos uploaded in the last hour.
             // And even if alt webp images do exist, sometimes they can load much slower than the original jpg alt images.
             // (as much as 4x slower has been observed, despite the alt webp image being a smaller file).
 
-            String videoId = originalUrl.substring(videoIdStartIndex, videoIdEndIndex);
-
             StringBuilder builder = new StringBuilder();
-            builder.append(originalUrl, 0, videoIdStartIndex);
-            builder.append(videoId).append('/');
-            builder.append(alternateImagePrefix).append(SettingsEnum.ALT_THUMBNAIL_TYPE.getInt());
-            builder.append(originalUrl, imageSizeEndIndex, imageTypeEndIndex);
+            builder.append(decodedUrl.urlPrefix);
+            builder.append(decodedUrl.videoId).append('/');
+            builder.append(qualityToUse.getAltImageNameToUse());
+            builder.append('.').append(decodedUrl.imageExtension);
 
-            if (!verifyAltYouTubeThumbnailsExist(videoId, builder.toString())) {
+            String sanitizedReplacement = builder.toString();
+            if (!VerifiedVideoQualities.verifyAltThumbnailExist(decodedUrl.videoId, qualityToUse, sanitizedReplacement)) {
                 return originalUrl;
             }
 
+            LogHelper.printDebug(() -> "Replaced url: " + sanitizedReplacement);
+
             // URL tracking parameters. Presumably they are to determine if a user has viewed a thumbnail.
             // This likely is used for recommendations, so they are retained if present.
-            builder.append(originalUrl, imageTypeEndIndex, originalUrl.length());
+            builder.append(decodedUrl.urlTrackingParameters);
             return builder.toString();
         } catch (Exception ex) {
             LogHelper.printException(() -> "Alt thumbnails failure", ex);
@@ -222,15 +359,13 @@ public final class AlternateThumbnailsPatch {
     /**
      * Injection point.
      *
-     * Cronet considers a completed connection as a success, even if the response is 404 or 5xx.
+     * Cronet considers all completed connections as a success, even if the response is 404 or 5xx.
      */
     public static void handleCronetSuccess(@NonNull UrlResponseInfo responseInfo) {
         try {
             String url = responseInfo.getUrl();
 
-            if (responseInfo.getHttpStatusCode() == 404
-                    && SettingsEnum.ALT_THUMBNAIL.getBoolean()
-                    && url.startsWith(YOUTUBE_THUMBNAIL_PREFIX)) {
+            if (responseInfo.getHttpStatusCode() == 404 && SettingsEnum.ALT_THUMBNAIL.getBoolean()) {
                 // Fast alt thumbnails is enabled and the thumbnail is not available.
                 // The video is:
                 // - live stream
@@ -238,10 +373,19 @@ public final class AlternateThumbnailsPatch {
                 // - very old
                 // - very low view count
                 // Take note of this, so if the image reloads the original thumbnail will be used.
-                final int videoIdStartIndex = url.indexOf('/', YOUTUBE_THUMBNAIL_PREFIX.length()) + 1;
-                final int videoIdEndIndex = url.indexOf('/', videoIdStartIndex);
-                String videoId = url.substring(videoIdStartIndex, videoIdEndIndex);
-                setVideoIdHasAltYouTubeThumbnails(videoId, false);
+                DecodedThumbnailUrl decodedUrl = DecodedThumbnailUrl.decodeImageUrl(url);
+                if (decodedUrl == null) {
+                    return; // Not a thumbnail.
+                }
+
+                VideoImageQuality quality = VideoImageQuality.altImageNameToQuality(decodedUrl.imageQuality);
+                if (quality == null) {
+                    // Video is a short or unknown quality, but the url returned 404.  Should never happen.
+                    LogHelper.printDebug(() -> "Failed to load unknown url: " + decodedUrl.sanitizedUrl);
+                    return;
+                }
+
+                VerifiedVideoQualities.setAltThumbnailDoesNotExist(decodedUrl.videoId, quality);
             }
         } catch (Exception ex) {
             LogHelper.printException(() -> "Alt thumbnails callback failure", ex);
