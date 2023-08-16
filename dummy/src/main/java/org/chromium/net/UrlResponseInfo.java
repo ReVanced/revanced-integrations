@@ -7,4 +7,6 @@ public abstract class UrlResponseInfo {
 
     public abstract int getHttpStatusCode();
 
+    // Add additional existing methods, if needed.
+
 }
