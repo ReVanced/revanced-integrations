@@ -1,3 +1,17 @@
+# [0.116.0-dev.4](https://github.com/ReVanced/revanced-integrations/compare/v0.116.0-dev.3...v0.116.0-dev.4) (2023-08-16)
+
+
+### Bug Fixes
+
+* **YouTube - Litho Filter:** Don't remove the buffer until the thread stops ([#461](https://github.com/ReVanced/revanced-integrations/issues/461)) ([2188607](https://github.com/ReVanced/revanced-integrations/commit/218860734021ef89699de110ec2dcf63412761b9))
+
+# [0.116.0-dev.3](https://github.com/ReVanced/revanced-integrations/compare/v0.116.0-dev.2...v0.116.0-dev.3) (2023-08-08)
+
+
+### Bug Fixes
+
+* **YouTube - Player Flyout Menu:** Change 'audio track flyout menu' to show up by default ([#458](https://github.com/ReVanced/revanced-integrations/issues/458)) ([97880ea](https://github.com/ReVanced/revanced-integrations/commit/97880eaf72b0ae746ae3851d51e36039244b01c0))
+
 # [0.116.0-dev.2](https://github.com/ReVanced/revanced-integrations/compare/v0.116.0-dev.1...v0.116.0-dev.2) (2023-08-07)
 
 
