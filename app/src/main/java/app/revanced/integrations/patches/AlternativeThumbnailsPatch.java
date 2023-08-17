@@ -18,7 +18,7 @@ import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedUtils;
 
 /**
- * Alternate YouTube provided thumbnails, showing the beginning/middle/end of the video.
+ * Alternative YouTube thumbnails, showing the beginning/middle/end of the video.
  * (ie: sd1.jpg, sd2.jpg, sd3.jpg).
  *
  * Has an additional option to use 'fast' thumbnails,
@@ -35,7 +35,7 @@ import app.revanced.integrations.utils.ReVancedUtils;
  * - Save to a temporary file the video id's verified to have alt thumbnails.
  *   This would speed up loading the watch history and users saved playlists.
  */
-public final class AlternateThumbnailsPatch {
+public final class AlternativeThumbnailsPatch {
 
     private enum VideoImageQuality {
         // In order of lowest to highest resolution.
@@ -131,7 +131,7 @@ public final class AlternateThumbnailsPatch {
      */
     private static class VerifiedVideoQualities {
         /**
-         * Cache used to verify if an alternate thumbnails exists for a given video id.
+         * Cache used to verify if an alternative thumbnails exists for a given video id.
          */
         @GuardedBy("itself")
         private static final Map<String, VerifiedVideoQualities> altVideoIdLookup = new LinkedHashMap<>(100) {
