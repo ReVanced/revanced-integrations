@@ -27,7 +27,7 @@ import app.revanced.integrations.utils.ReVancedUtils;
  * but thumbnails will initially fail to load for all live streams, unreleased, and occasionally very old videos.
  * If a failed thumbnail load is reloaded (ie: scroll off, then on screen), then the original thumbnail
  * is reloaded instead.  Fast thumbnails requires using SD or lower thumbnail resolution,
- * because a noticeable number of videos do not have hq720 and they fail to load.
+ * because a noticeable number of videos do not have hq720 and too many fail to load.
  *
  * Ideas for improvements:
  * - Selectively allow using original thumbnails in some situations,
@@ -158,7 +158,7 @@ public final class AlternativeThumbnailsPatch {
                 }
             }
 
-            // Verify outside of map synchronization, so different images can be verified at same time.
+            // Verify outside of map synchronization, so different images can be verified at the same time.
             return verified.verifyYouTubeThumbnailExists(videoId, quality, imageUrl);
         }
 
@@ -333,7 +333,7 @@ public final class AlternativeThumbnailsPatch {
             // And even if alt webp images do exist, sometimes they can load much slower than the original jpg alt images.
             // (as much as 4x slower has been observed, despite the alt webp image being a smaller file).
 
-            StringBuilder builder = new StringBuilder();
+            StringBuilder builder = new StringBuilder(originalUrl.length() + 2);
             builder.append(decodedUrl.urlPrefix);
             builder.append(decodedUrl.videoId).append('/');
             builder.append(qualityToUse.getAltImageNameToUse());
