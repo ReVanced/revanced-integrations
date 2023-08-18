@@ -37,7 +37,7 @@ import app.revanced.integrations.utils.ReVancedUtils;
  */
 public final class AlternativeThumbnailsPatch {
 
-    private enum VideoImageQuality {
+    private enum ThumbnailQuality {
         // In order of lowest to highest resolution.
         DEFAULT("default", ""), // effective alt name is 1.jpg, 2.jpg, 3.jpg
         MQDEFAULT("mqdefault", "mq"),
@@ -49,15 +49,15 @@ public final class AlternativeThumbnailsPatch {
         /**
          * Lookup map of original name to enum.
          */
-        private static final Map<String, VideoImageQuality> originalNameToEnum = new HashMap<>();
+        private static final Map<String, ThumbnailQuality> originalNameToEnum = new HashMap<>();
 
         /**
          * Lookup map of alt name to enum.  ie: "hq720_1" to {@link #HQ720}.
          */
-        private static final Map<String, VideoImageQuality> altNameToEnum = new HashMap<>();
+        private static final Map<String, ThumbnailQuality> altNameToEnum = new HashMap<>();
 
         static {
-            for (VideoImageQuality quality : values()) {
+            for (ThumbnailQuality quality : values()) {
                 originalNameToEnum.put(quality.originalName, quality);
 
                 for (int i = 1; i <= 3; i++) {
@@ -71,7 +71,7 @@ public final class AlternativeThumbnailsPatch {
          * ie: "hq720_2" returns {@link #HQ720}.
          */
         @Nullable
-        static VideoImageQuality altImageNameToQuality(@NonNull String altImageName) {
+        static ThumbnailQuality altImageNameToQuality(@NonNull String altImageName) {
             return altNameToEnum.get(altImageName);
         }
 
@@ -80,8 +80,8 @@ public final class AlternativeThumbnailsPatch {
          * ie: If fast alt image is enabled, then "hq720" returns {@link #SDDEFAULT}.
          */
         @Nullable
-        static VideoImageQuality getQualityToUse(@NonNull String originalSize) {
-            VideoImageQuality quality = originalNameToEnum.get(originalSize);
+        static ThumbnailQuality getQualityToUse(@NonNull String originalSize) {
+            ThumbnailQuality quality = originalNameToEnum.get(originalSize);
             if (quality == null) {
                 return null; // Not a thumbnail.
             }
@@ -115,7 +115,7 @@ public final class AlternativeThumbnailsPatch {
         final String originalName;
         final String altImageName;
 
-        VideoImageQuality(String originalName, String altImageName) {
+        ThumbnailQuality(String originalName, String altImageName) {
             this.originalName = originalName;
             this.altImageName = altImageName;
         }
@@ -126,15 +126,15 @@ public final class AlternativeThumbnailsPatch {
     }
 
     /**
-     * Keeps track of what qualities have been verified as available and not available,
+     * Keeps track of what thumbnail qualities have been verified as available and not available,
      * and does HTTP HEAD requests to verify alt images exist.
      */
-    private static class VerifiedVideoQualities {
+    private static class VerifiedQualities {
         /**
          * Cache used to verify if an alternative thumbnails exists for a given video id.
          */
         @GuardedBy("itself")
-        private static final Map<String, VerifiedVideoQualities> altVideoIdLookup = new LinkedHashMap<>(100) {
+        private static final Map<String, VerifiedQualities> altVideoIdLookup = new LinkedHashMap<>(100) {
             private static final int CACHE_LIMIT = 1000;
 
             @Override
@@ -143,9 +143,9 @@ public final class AlternativeThumbnailsPatch {
             }
         };
 
-        static boolean verifyAltThumbnailExist(@NonNull String videoId, @NonNull VideoImageQuality quality,
+        static boolean verifyAltThumbnailExist(@NonNull String videoId, @NonNull ThumbnailQuality quality,
                                                @NonNull String imageUrl) {
-            VerifiedVideoQualities verified;
+            VerifiedQualities verified;
             synchronized (altVideoIdLookup) {
                 verified = altVideoIdLookup.get(videoId);
                 if (verified == null) {
@@ -153,7 +153,7 @@ public final class AlternativeThumbnailsPatch {
                         // In fast quality, skip checking if the alt thumbnail exists.
                         return true;
                     }
-                    verified = new VerifiedVideoQualities();
+                    verified = new VerifiedQualities();
                     altVideoIdLookup.put(videoId, verified);
                 }
             }
@@ -162,12 +162,12 @@ public final class AlternativeThumbnailsPatch {
             return verified.verifyYouTubeThumbnailExists(videoId, quality, imageUrl);
         }
 
-        static void setAltThumbnailDoesNotExist(@NonNull String videoId, @NonNull VideoImageQuality quality) {
-            VerifiedVideoQualities verified;
+        static void setAltThumbnailDoesNotExist(@NonNull String videoId, @NonNull ThumbnailQuality quality) {
+            VerifiedQualities verified;
             synchronized (altVideoIdLookup) {
                 verified = altVideoIdLookup.get(videoId);
                 if (verified == null) {
-                    verified = new VerifiedVideoQualities();
+                    verified = new VerifiedQualities();
                     altVideoIdLookup.put(videoId, verified);
                 }
             }
@@ -179,14 +179,14 @@ public final class AlternativeThumbnailsPatch {
          * Highest quality verified as existing.
          */
         @Nullable
-        VideoImageQuality highestQualityVerified;
+        ThumbnailQuality highestQualityVerified;
         /**
          * Lowest quality verified as not existing.
          */
         @Nullable
-        VideoImageQuality lowestQualityNotAvailable;
+        ThumbnailQuality lowestQualityNotAvailable;
 
-        synchronized void setQualityVerified(String videoId, VideoImageQuality quality, boolean isVerified) {
+        synchronized void setQualityVerified(String videoId, ThumbnailQuality quality, boolean isVerified) {
             if (isVerified) {
                 if (highestQualityVerified == null || highestQualityVerified.ordinal() < quality.ordinal()) {
                     highestQualityVerified = quality;
@@ -202,7 +202,7 @@ public final class AlternativeThumbnailsPatch {
         /**
          * Verify if a video alt thumbnail exists.  Does so by making a minimal HEAD http request.
          */
-        synchronized boolean verifyYouTubeThumbnailExists(@NonNull String videoId, @NonNull VideoImageQuality quality,
+        synchronized boolean verifyYouTubeThumbnailExists(@NonNull String videoId, @NonNull ThumbnailQuality quality,
                                                           @NonNull String imageUrl) {
             if (highestQualityVerified != null && highestQualityVerified.ordinal() >= quality.ordinal()) {
                 return true; // Previously verified as existing.
@@ -325,7 +325,7 @@ public final class AlternativeThumbnailsPatch {
             // Keep any tracking parameters out of the logs, and log only the base url.
             LogHelper.printDebug(() -> "Original url: " + decodedUrl.sanitizedUrl);
 
-            VideoImageQuality qualityToUse = VideoImageQuality.getQualityToUse(decodedUrl.imageQuality);
+            ThumbnailQuality qualityToUse = ThumbnailQuality.getQualityToUse(decodedUrl.imageQuality);
             if (qualityToUse == null) return originalUrl; // Video is a short.
 
             // Images could be upgraded to webp if they are not already, but this fails quite often,
@@ -340,7 +340,7 @@ public final class AlternativeThumbnailsPatch {
             builder.append('.').append(decodedUrl.imageExtension);
 
             String sanitizedReplacement = builder.toString();
-            if (!VerifiedVideoQualities.verifyAltThumbnailExist(decodedUrl.videoId, qualityToUse, sanitizedReplacement)) {
+            if (!VerifiedQualities.verifyAltThumbnailExist(decodedUrl.videoId, qualityToUse, sanitizedReplacement)) {
                 return originalUrl;
             }
 
@@ -378,14 +378,14 @@ public final class AlternativeThumbnailsPatch {
                     return; // Not a thumbnail.
                 }
 
-                VideoImageQuality quality = VideoImageQuality.altImageNameToQuality(decodedUrl.imageQuality);
+                ThumbnailQuality quality = ThumbnailQuality.altImageNameToQuality(decodedUrl.imageQuality);
                 if (quality == null) {
                     // Video is a short or unknown quality, but the url returned 404.  Should never happen.
                     LogHelper.printDebug(() -> "Failed to load unknown url: " + decodedUrl.sanitizedUrl);
                     return;
                 }
 
-                VerifiedVideoQualities.setAltThumbnailDoesNotExist(decodedUrl.videoId, quality);
+                VerifiedQualities.setAltThumbnailDoesNotExist(decodedUrl.videoId, quality);
             }
         } catch (Exception ex) {
             LogHelper.printException(() -> "Alt thumbnails callback failure", ex);
