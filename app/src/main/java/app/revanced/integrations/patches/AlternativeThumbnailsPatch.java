@@ -83,7 +83,7 @@ public final class AlternativeThumbnailsPatch {
         static ThumbnailQuality getQualityToUse(@NonNull String originalSize) {
             ThumbnailQuality quality = originalNameToEnum.get(originalSize);
             if (quality == null) {
-                return null; // Not a thumbnail.
+                return null; // Not a thumbnail for a regular video.
             }
 
             final boolean useFastQuality = SettingsEnum.ALT_THUMBNAIL_FAST_QUALITY.getBoolean();
@@ -126,10 +126,17 @@ public final class AlternativeThumbnailsPatch {
     }
 
     /**
-     * Keeps track of what thumbnail qualities have been verified as available and not available,
-     * and does HTTP HEAD requests to verify alt images exist.
+     * Uses HTTP HEAD requests to verify and keep track of which thumbnail sizes
+     * are available and not available.
      */
     private static class VerifiedQualities {
+        /**
+         * After a quality is verified as not available, how long until the quality is re-verified again.
+         * Used only if fast mode is not enabled. Intended for live streams and unreleased videos
+         * that are now finished and available (and thus, the alt thumbnails are also now available).
+         */
+        private static final long NOT_AVAILABLE_TIMEOUT_MILLISECONDS = 10 * 60 * 1000; // 10 minutes.
+
         /**
          * Cache used to verify if an alternative thumbnails exists for a given video id.
          */
@@ -143,35 +150,29 @@ public final class AlternativeThumbnailsPatch {
             }
         };
 
-        static boolean verifyAltThumbnailExist(@NonNull String videoId, @NonNull ThumbnailQuality quality,
-                                               @NonNull String imageUrl) {
-            VerifiedQualities verified;
+        private static VerifiedQualities getVerifiedQualities(@NonNull String videoId, boolean returnNullIfDoesNotExist) {
             synchronized (altVideoIdLookup) {
-                verified = altVideoIdLookup.get(videoId);
+                VerifiedQualities verified = altVideoIdLookup.get(videoId);
                 if (verified == null) {
-                    if (SettingsEnum.ALT_THUMBNAIL_FAST_QUALITY.getBoolean()) {
-                        // In fast quality, skip checking if the alt thumbnail exists.
-                        return true;
+                    if (returnNullIfDoesNotExist) {
+                        return null;
                     }
                     verified = new VerifiedQualities();
                     altVideoIdLookup.put(videoId, verified);
                 }
+                return verified;
             }
+        }
 
-            // Verify outside of map synchronization, so different images can be verified at the same time.
+        static boolean verifyAltThumbnailExist(@NonNull String videoId, @NonNull ThumbnailQuality quality,
+                                               @NonNull String imageUrl) {
+            VerifiedQualities verified = getVerifiedQualities(videoId, SettingsEnum.ALT_THUMBNAIL_FAST_QUALITY.getBoolean());
+            if (verified == null) return true; // Fast alt thumbnails is enabled.
             return verified.verifyYouTubeThumbnailExists(videoId, quality, imageUrl);
         }
 
         static void setAltThumbnailDoesNotExist(@NonNull String videoId, @NonNull ThumbnailQuality quality) {
-            VerifiedQualities verified;
-            synchronized (altVideoIdLookup) {
-                verified = altVideoIdLookup.get(videoId);
-                if (verified == null) {
-                    verified = new VerifiedQualities();
-                    altVideoIdLookup.put(videoId, verified);
-                }
-            }
-
+            VerifiedQualities verified = getVerifiedQualities(videoId, false);
             verified.setQualityVerified(videoId, quality, false);
         }
 
@@ -186,6 +187,12 @@ public final class AlternativeThumbnailsPatch {
         @Nullable
         ThumbnailQuality lowestQualityNotAvailable;
 
+        /**
+         * System time, of when to invalidate {@link #lowestQualityNotAvailable}.
+         * Used only if fast mode is not enabled.
+         */
+        long timeToReVerifyLowestQuality;
+
         synchronized void setQualityVerified(String videoId, ThumbnailQuality quality, boolean isVerified) {
             if (isVerified) {
                 if (highestQualityVerified == null || highestQualityVerified.ordinal() < quality.ordinal()) {
@@ -194,6 +201,7 @@ public final class AlternativeThumbnailsPatch {
             } else {
                 if (lowestQualityNotAvailable == null || lowestQualityNotAvailable.ordinal() > quality.ordinal()) {
                     lowestQualityNotAvailable = quality;
+                    timeToReVerifyLowestQuality = System.currentTimeMillis() + NOT_AVAILABLE_TIMEOUT_MILLISECONDS;
                 }
                 LogHelper.printDebug(() -> quality + " not available for video: " + videoId);
             }
@@ -207,10 +215,18 @@ public final class AlternativeThumbnailsPatch {
             if (highestQualityVerified != null && highestQualityVerified.ordinal() >= quality.ordinal()) {
                 return true; // Previously verified as existing.
             }
+
+            final boolean fastQuality = SettingsEnum.ALT_THUMBNAIL_FAST_QUALITY.getBoolean();
             if (lowestQualityNotAvailable != null && lowestQualityNotAvailable.ordinal() <= quality.ordinal()) {
-                return false; // Previously verified as not existing.
+                if (fastQuality || System.currentTimeMillis() < timeToReVerifyLowestQuality) {
+                    return false; // Previously verified as not existing.
+                }
+                // Enough time has passed, and should re-verify again.
+                LogHelper.printDebug(() -> "Resetting lowest verified quality for: " + videoId);
+                lowestQualityNotAvailable = null;
             }
-            if (SettingsEnum.ALT_THUMBNAIL_FAST_QUALITY.getBoolean()) {
+
+            if (fastQuality) {
                 return true; // Unknown if it exists or not.  Use the URL anyways and update afterwards if loading fails.
             }
 
@@ -363,8 +379,6 @@ public final class AlternativeThumbnailsPatch {
      */
     public static void handleCronetSuccess(@NonNull UrlResponseInfo responseInfo) {
         try {
-            String url = responseInfo.getUrl();
-
             if (responseInfo.getHttpStatusCode() == 404 && SettingsEnum.ALT_THUMBNAIL.getBoolean()) {
                 // Fast alt thumbnails is enabled and the thumbnail is not available.
                 // The video is:
@@ -373,7 +387,7 @@ public final class AlternativeThumbnailsPatch {
                 // - very old
                 // - very low view count
                 // Take note of this, so if the image reloads the original thumbnail will be used.
-                DecodedThumbnailUrl decodedUrl = DecodedThumbnailUrl.decodeImageUrl(url);
+                DecodedThumbnailUrl decodedUrl = DecodedThumbnailUrl.decodeImageUrl(responseInfo.getUrl());
                 if (decodedUrl == null) {
                     return; // Not a thumbnail.
                 }
