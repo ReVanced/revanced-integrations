@@ -69,7 +69,7 @@ public final class ShortsFilter extends Filter {
     @Override
     boolean isFiltered(@Nullable String identifier, String path, byte[] protobufBufferArray,
                        FilterGroupList matchedList, FilterGroup matchedGroup, int matchedIndex) {
-        if (matchedList == pathFilterGroups) {
+        if (matchedList == pathFilterGroupList) {
             if (matchedGroup == soundButton || matchedGroup == infoPanel || matchedGroup == channelBar) {
                 // Always filter if matched.
                 return super.isFiltered(path, identifier, protobufBufferArray, matchedList, matchedGroup, matchedIndex);
