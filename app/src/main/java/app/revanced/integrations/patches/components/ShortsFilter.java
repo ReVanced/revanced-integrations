@@ -63,27 +63,25 @@ public final class ShortsFilter extends Filter {
                 SettingsEnum.HIDE_SHORTS_INFO_PANEL,
                 "shorts_info_panel_overview"
         );
-        pathFilterGroups.addAll(joinButton, subscribeButton, channelBar, soundButton, infoPanel);
+        pathFilterGroupList.addAll(joinButton, subscribeButton, channelBar, soundButton, infoPanel);
     }
 
     @Override
     boolean isFiltered(@Nullable String identifier, String path, byte[] protobufBufferArray,
                        FilterGroupList matchedList, FilterGroup matchedGroup, int matchedIndex) {
         if (matchedList == pathFilterGroupList) {
-            if (matchedGroup == soundButton || matchedGroup == infoPanel || matchedGroup == channelBar) {
-                // Always filter if matched.
+            // Always filter if matched.
+            if (matchedGroup == soundButton || matchedGroup == infoPanel || matchedGroup == channelBar)
                 return super.isFiltered(path, identifier, protobufBufferArray, matchedList, matchedGroup, matchedIndex);
-            }
-            // Filter all other path items only when reelChannelBar is visible.
-            if (!path.startsWith(REEL_CHANNEL_BAR_PATH)) {
+
+            // Filter other path groups from pathFilterGroupList, only when reelChannelBar is visible
+            // to avoid false positives.
+            if (!path.startsWith(REEL_CHANNEL_BAR_PATH))
                 return false;
-            }
         } else if (matchedGroup == shortsShelfHeader) {
-            // Shelf header is used for watch history and possibly other places.
-            // Only hide if the shelf is used for Shorts, which appears as the first item in the identifier.
-            if (matchedIndex != 0) {
-                return false;
-            }
+            // Because the header is used in watch history and possibly other places, check for the index,
+            // which is 0 when the shelf header is used for Shorts.
+            if (matchedIndex != 0) return false;
         }
 
         // Super class handles logging.
