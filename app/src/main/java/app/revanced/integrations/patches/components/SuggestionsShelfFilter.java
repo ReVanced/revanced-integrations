@@ -8,7 +8,7 @@ import app.revanced.integrations.utils.NavBarIndexHook;
 public class SuggestionsShelfFilter extends Filter {
 
     public SuggestionsShelfFilter() {
-        pathFilterGroups.addAll(
+        pathFilterGroupList.addAll(
                 new StringFilterGroup(
                         SettingsEnum.HIDE_SUGGESTIONS_SHELF,
                         "horizontal_video_shelf.eml"
