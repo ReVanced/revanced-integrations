@@ -1,3 +1,45 @@
+# [0.116.0-dev.6](https://github.com/ReVanced/revanced-integrations/compare/v0.116.0-dev.5...v0.116.0-dev.6) (2023-08-23)
+
+
+### Bug Fixes
+
+* **YouTube - Hide Shorts components:** Hide `shorts header` ([#455](https://github.com/ReVanced/revanced-integrations/issues/455)) ([13afac9](https://github.com/ReVanced/revanced-integrations/commit/13afac906a0087ea7bc888c80e293f7b05c0a46e))
+
+# [0.116.0-dev.5](https://github.com/ReVanced/revanced-integrations/compare/v0.116.0-dev.4...v0.116.0-dev.5) (2023-08-21)
+
+
+### Features
+
+* **YouTube:** Add `Alternative thumbnails` patch ([#462](https://github.com/ReVanced/revanced-integrations/issues/462)) ([d354356](https://github.com/ReVanced/revanced-integrations/commit/d354356b2d9052bc0d388633ed9eb0206f7c2058))
+
+# [0.116.0-dev.4](https://github.com/ReVanced/revanced-integrations/compare/v0.116.0-dev.3...v0.116.0-dev.4) (2023-08-16)
+
+
+### Bug Fixes
+
+* **YouTube - Litho Filter:** Don't remove the buffer until the thread stops ([#461](https://github.com/ReVanced/revanced-integrations/issues/461)) ([2188607](https://github.com/ReVanced/revanced-integrations/commit/218860734021ef89699de110ec2dcf63412761b9))
+
+# [0.116.0-dev.3](https://github.com/ReVanced/revanced-integrations/compare/v0.116.0-dev.2...v0.116.0-dev.3) (2023-08-08)
+
+
+### Bug Fixes
+
+* **YouTube - Player Flyout Menu:** Change 'audio track flyout menu' to show up by default ([#458](https://github.com/ReVanced/revanced-integrations/issues/458)) ([97880ea](https://github.com/ReVanced/revanced-integrations/commit/97880eaf72b0ae746ae3851d51e36039244b01c0))
+
+# [0.116.0-dev.2](https://github.com/ReVanced/revanced-integrations/compare/v0.116.0-dev.1...v0.116.0-dev.2) (2023-08-07)
+
+
+### Features
+
+* **YouTube - Hide video action buttons:** Hide individual action buttons ([#451](https://github.com/ReVanced/revanced-integrations/issues/451)) ([8e5ca65](https://github.com/ReVanced/revanced-integrations/commit/8e5ca65286b8b62eaeff3bce5fa1d2fb5a198703))
+
+# [0.116.0-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v0.115.1...v0.116.0-dev.1) (2023-08-07)
+
+
+### Features
+
+* **YouTube - Debug:** Logging of layout proto buffer strings ([#456](https://github.com/ReVanced/revanced-integrations/issues/456)) ([769a200](https://github.com/ReVanced/revanced-integrations/commit/769a2006ce8dc934dd5de0acc59ed6aa6985da4f))
+
 ## [0.115.1](https://github.com/ReVanced/revanced-integrations/compare/v0.115.0...v0.115.1) (2023-08-05)
 
 

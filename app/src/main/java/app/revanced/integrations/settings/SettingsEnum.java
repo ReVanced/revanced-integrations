@@ -89,10 +89,15 @@ public enum SettingsEnum {
 
     // Action buttons
     HIDE_LIKE_DISLIKE_BUTTON("revanced_hide_like_dislike_button", BOOLEAN, FALSE),
+    HIDE_LIVE_CHAT_BUTTON("revanced_hide_live_chat_button", BOOLEAN, FALSE),
+    HIDE_SHARE_BUTTON("revanced_hide_share_button", BOOLEAN, FALSE),
+    HIDE_REPORT_BUTTON("revanced_hide_report_button", BOOLEAN, FALSE),
+    HIDE_REMIX_BUTTON("revanced_hide_remix_button", BOOLEAN, TRUE),
     HIDE_DOWNLOAD_BUTTON("revanced_hide_download_button", BOOLEAN, FALSE),
+    HIDE_THANKS_BUTTON("revanced_hide_thanks_button", BOOLEAN, TRUE),
+    HIDE_CLIP_BUTTON("revanced_hide_clip_button", BOOLEAN, TRUE),
     HIDE_PLAYLIST_BUTTON("revanced_hide_playlist_button", BOOLEAN, FALSE),
-    HIDE_CLIP_BUTTON("revanced_hide_clip_button", BOOLEAN, FALSE, "revanced_hide_clip_button_user_dialog_message"),
-    HIDE_ACTION_BUTTONS("revanced_hide_action_buttons", BOOLEAN, FALSE),
+    HIDE_SHOP_BUTTON("revanced_hide_shop_button", BOOLEAN, TRUE),
 
     // Layout
     DISABLE_RESUMING_SHORTS_PLAYER("revanced_disable_resuming_shorts_player", BOOLEAN, FALSE),
@@ -149,6 +154,10 @@ public enum SettingsEnum {
     HIDE_SHORTS_NAVIGATION_BAR("revanced_hide_shorts_navigation_bar", BOOLEAN, TRUE, true),
     HIDE_SHORTS("revanced_hide_shorts", BOOLEAN, FALSE, true),
 
+    ALT_THUMBNAIL("revanced_alt_thumbnail", BOOLEAN, FALSE),
+    ALT_THUMBNAIL_TYPE("revanced_alt_thumbnail_type", INTEGER, 2, parents(ALT_THUMBNAIL)),
+    ALT_THUMBNAIL_FAST_QUALITY("revanced_alt_thumbnail_fast_quality", BOOLEAN, FALSE, parents(ALT_THUMBNAIL)),
+
     //Player flyout menu items
     HIDE_QUALITY_MENU("revanced_hide_player_flyout_quality", BOOLEAN, FALSE),
     HIDE_CAPTIONS_MENU("revanced_hide_player_flyout_captions", BOOLEAN, FALSE),
@@ -158,7 +167,7 @@ public enum SettingsEnum {
     HIDE_HELP_MENU("revanced_hide_player_flyout_help", BOOLEAN, TRUE),
     HIDE_SPEED_MENU("revanced_hide_player_flyout_speed", BOOLEAN, FALSE),
     HIDE_MORE_INFO_MENU("revanced_hide_player_flyout_more_info", BOOLEAN, TRUE),
-    HIDE_AUDIO_TRACK_MENU("revanced_hide_player_flyout_audio_track", BOOLEAN, TRUE),
+    HIDE_AUDIO_TRACK_MENU("revanced_hide_player_flyout_audio_track", BOOLEAN, FALSE),
     HIDE_WATCH_IN_VR_MENU("revanced_hide_player_flyout_watch_in_vr", BOOLEAN, TRUE),
 
     // Misc
@@ -191,6 +200,7 @@ public enum SettingsEnum {
     // Debugging
     DEBUG("revanced_debug", BOOLEAN, FALSE),
     DEBUG_STACKTRACE("revanced_debug_stacktrace", BOOLEAN, FALSE, parents(DEBUG)),
+    DEBUG_PROTOBUFFER("revanced_debug_protobuffer", BOOLEAN, FALSE, parents(DEBUG)),
     DEBUG_TOAST_ON_ERROR("revanced_debug_toast_on_error", BOOLEAN, TRUE, "revanced_debug_toast_on_error_user_dialog_message"),
 
     // ReturnYoutubeDislike
