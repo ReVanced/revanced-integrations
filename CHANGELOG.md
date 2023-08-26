@@ -1,3 +1,31 @@
+# [0.116.0-dev.10](https://github.com/ReVanced/revanced-integrations/compare/v0.116.0-dev.9...v0.116.0-dev.10) (2023-08-26)
+
+
+### Features
+
+* **YouTube:** Add `Enable tablet layout` patch ([d4570de](https://github.com/ReVanced/revanced-integrations/commit/d4570de0a791bd97c70ac46b84cbff75c6d0b274))
+
+# [0.116.0-dev.9](https://github.com/ReVanced/revanced-integrations/compare/v0.116.0-dev.8...v0.116.0-dev.9) (2023-08-26)
+
+
+### Features
+
+* **YouTube:** Support version 18.32.39 ([#464](https://github.com/ReVanced/revanced-integrations/issues/464)) ([aa9d892](https://github.com/ReVanced/revanced-integrations/commit/aa9d892cde59c39718529bc40a66b93a1cb78f82))
+
+# [0.116.0-dev.8](https://github.com/ReVanced/revanced-integrations/compare/v0.116.0-dev.7...v0.116.0-dev.8) (2023-08-26)
+
+
+### Features
+
+* **YouTube:** Add `Custom player overlay opacity` patch ([#449](https://github.com/ReVanced/revanced-integrations/issues/449)) ([44dccb3](https://github.com/ReVanced/revanced-integrations/commit/44dccb3d658852e92aaf8d17e36dc205f1b3eb05))
+
+# [0.116.0-dev.7](https://github.com/ReVanced/revanced-integrations/compare/v0.116.0-dev.6...v0.116.0-dev.7) (2023-08-24)
+
+
+### Bug Fixes
+
+* use correct logging tags ([420b926](https://github.com/ReVanced/revanced-integrations/commit/420b9263b6e1cbb81aeb4985cf454b51912b51f8))
+
 # [0.116.0-dev.6](https://github.com/ReVanced/revanced-integrations/compare/v0.116.0-dev.5...v0.116.0-dev.6) (2023-08-23)
 
 
