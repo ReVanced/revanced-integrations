@@ -49,6 +49,7 @@ public class ExternalDownloadButton extends BottomControlButton {
         LogHelper.printDebug(() -> "External download button clicked");
 
         final var context = view.getContext();
+        // Trim string to avoid any accidental whitespace.
         var downloaderPackageName = SettingsEnum.EXTERNAL_DOWNLOADER_PACKAGE_NAME.getString().trim();
 
         boolean packageEnabled = false;
