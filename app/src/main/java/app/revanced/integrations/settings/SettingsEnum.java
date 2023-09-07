@@ -373,7 +373,7 @@ public enum SettingsEnum {
         // This migration may need to remain here for a while.
         // Older online guides will still reference using commas,
         // and this code will automatically convert anything the user enters to newline format,
-        // and also migrate any imported settings using commas.
+        // and also migrate any imported older settings that using commas.
         String componentsToFilter = SettingsEnum.CUSTOM_FILTER_STRINGS.getString();
         if (componentsToFilter.contains(",")) {
             LogHelper.printInfo(() -> "Migrating custom filter strings to new line format");
