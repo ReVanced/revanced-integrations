@@ -365,14 +365,15 @@ public enum SettingsEnum {
 
         // region Migration
 
-        // TODO: do _not_ delete this SB private user id migration property until sometime in 2024.
+        // Do _not_ delete this SB private user id migration property until sometime in 2024.
         // This is the only setting that cannot be reconfigured if lost,
         // and more time should be given for users who rarely upgrade.
         migrateOldSettingToNew(DEPRECATED_SB_UUID_OLD_MIGRATION_SETTING, SB_PRIVATE_USER_ID);
 
-        // TODO: This migration may need to remain here for a while,
-        // as older online guides will still reference using commas,
-        // and this code will automatically convert anything the user enters to newline format.
+        // This migration may need to remain here for a while.
+        // Older online guides will still reference using commas,
+        // and this code will automatically convert anything the user enters to newline format,
+        // and also migrate any imported settings using commas.
         String componentsToFilter = SettingsEnum.CUSTOM_FILTER_STRINGS.getString();
         if (componentsToFilter.contains(",")) {
             LogHelper.printInfo(() -> "Migrating custom filter strings to new line format");
