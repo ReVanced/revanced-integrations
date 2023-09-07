@@ -371,8 +371,8 @@ public enum SettingsEnum {
         migrateOldSettingToNew(DEPRECATED_SB_UUID_OLD_MIGRATION_SETTING, SB_PRIVATE_USER_ID);
 
         // TODO: This migration may need to remain here for a while,
-        //  as older online guides will still reference using commas,
-        //  and this code will automatically convert anything the user enters to newline format.
+        // as older online guides will still reference using commas,
+        // and this code will automatically convert anything the user enters to newline format.
         String componentsToFilter = SettingsEnum.CUSTOM_FILTER_STRINGS.getString();
         if (componentsToFilter.contains(",")) {
             LogHelper.printInfo(() -> "Migrating custom filter strings to new line format");
