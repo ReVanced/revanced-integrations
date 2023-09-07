@@ -1,3 +1,100 @@
+## [0.117.1](https://github.com/ReVanced/revanced-integrations/compare/v0.117.0...v0.117.1) (2023-09-03)
+
+
+### Bug Fixes
+
+* **YouTube - ExternalDownloads:** Trim whitespace from package name ([#469](https://github.com/ReVanced/revanced-integrations/issues/469)) ([61d997e](https://github.com/ReVanced/revanced-integrations/commit/61d997e1db64730c36674445ff5b516a3acb41fb))
+
+## [0.117.1-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v0.117.0...v0.117.1-dev.1) (2023-08-30)
+
+
+### Bug Fixes
+
+* **YouTube - ExternalDownloads:** Trim whitespace from package name ([#469](https://github.com/ReVanced/revanced-integrations/issues/469)) ([61d997e](https://github.com/ReVanced/revanced-integrations/commit/61d997e1db64730c36674445ff5b516a3acb41fb))
+
+# [0.117.0](https://github.com/ReVanced/revanced-integrations/compare/v0.116.2...v0.117.0) (2023-08-27)
+
+
+### Features
+
+* Restore previous release ([dc955d1](https://github.com/ReVanced/revanced-integrations/commit/dc955d1bc2db63efc83d4fd5c7e076ed0867d48b))
+
+# [0.117.0-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v0.116.2...v0.117.0-dev.1) (2023-08-27)
+
+
+### Features
+
+* Restore previous release ([dc955d1](https://github.com/ReVanced/revanced-integrations/commit/dc955d1bc2db63efc83d4fd5c7e076ed0867d48b))
+
+## [0.116.2](https://github.com/ReVanced/revanced-integrations/compare/v0.116.1...v0.116.2) (2023-08-27)
+
+
+### Bug Fixes
+
+* Add back missing class ([6e8d13b](https://github.com/ReVanced/revanced-integrations/commit/6e8d13bfbbdadb8c737e7c183e9badc65fc6d719))
+
+## [0.116.1](https://github.com/ReVanced/revanced-integrations/compare/v0.116.0...v0.116.1) (2023-08-27)
+
+
+### Bug Fixes
+
+* Revert previous release ([a178a22](https://github.com/ReVanced/revanced-integrations/commit/a178a223c283abe420e197d10863d7fe64534f32))
+
+## [0.116.1-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v0.116.0...v0.116.1-dev.1) (2023-08-27)
+
+
+### Bug Fixes
+
+* Revert previous release ([a178a22](https://github.com/ReVanced/revanced-integrations/commit/a178a223c283abe420e197d10863d7fe64534f32))
+
+# [0.116.0](https://github.com/ReVanced/revanced-integrations/compare/v0.115.1...v0.116.0) (2023-08-26)
+
+
+### Bug Fixes
+
+* use correct logging tags ([420b926](https://github.com/ReVanced/revanced-integrations/commit/420b9263b6e1cbb81aeb4985cf454b51912b51f8))
+* **YouTube - Hide Shorts components:** Hide `shorts header` ([#455](https://github.com/ReVanced/revanced-integrations/issues/455)) ([13afac9](https://github.com/ReVanced/revanced-integrations/commit/13afac906a0087ea7bc888c80e293f7b05c0a46e))
+* **YouTube - Litho Filter:** Don't remove the buffer until the thread stops ([#461](https://github.com/ReVanced/revanced-integrations/issues/461)) ([2188607](https://github.com/ReVanced/revanced-integrations/commit/218860734021ef89699de110ec2dcf63412761b9))
+* **YouTube - Player Flyout Menu:** Change 'audio track flyout menu' to show up by default ([#458](https://github.com/ReVanced/revanced-integrations/issues/458)) ([97880ea](https://github.com/ReVanced/revanced-integrations/commit/97880eaf72b0ae746ae3851d51e36039244b01c0))
+
+
+### Features
+
+* **YouTube - Debug:** Logging of layout proto buffer strings ([#456](https://github.com/ReVanced/revanced-integrations/issues/456)) ([769a200](https://github.com/ReVanced/revanced-integrations/commit/769a2006ce8dc934dd5de0acc59ed6aa6985da4f))
+* **YouTube - Hide video action buttons:** Hide individual action buttons ([#451](https://github.com/ReVanced/revanced-integrations/issues/451)) ([8e5ca65](https://github.com/ReVanced/revanced-integrations/commit/8e5ca65286b8b62eaeff3bce5fa1d2fb5a198703))
+* **YouTube:** Add `Alternative thumbnails` patch ([#462](https://github.com/ReVanced/revanced-integrations/issues/462)) ([d354356](https://github.com/ReVanced/revanced-integrations/commit/d354356b2d9052bc0d388633ed9eb0206f7c2058))
+* **YouTube:** Add `Custom player overlay opacity` patch ([#449](https://github.com/ReVanced/revanced-integrations/issues/449)) ([44dccb3](https://github.com/ReVanced/revanced-integrations/commit/44dccb3d658852e92aaf8d17e36dc205f1b3eb05))
+* **YouTube:** Add `Enable tablet layout` patch ([d4570de](https://github.com/ReVanced/revanced-integrations/commit/d4570de0a791bd97c70ac46b84cbff75c6d0b274))
+* **YouTube:** Support version 18.32.39 ([#464](https://github.com/ReVanced/revanced-integrations/issues/464)) ([aa9d892](https://github.com/ReVanced/revanced-integrations/commit/aa9d892cde59c39718529bc40a66b93a1cb78f82))
+
+# [0.116.0-dev.10](https://github.com/ReVanced/revanced-integrations/compare/v0.116.0-dev.9...v0.116.0-dev.10) (2023-08-26)
+
+
+### Features
+
+* **YouTube:** Add `Enable tablet layout` patch ([d4570de](https://github.com/ReVanced/revanced-integrations/commit/d4570de0a791bd97c70ac46b84cbff75c6d0b274))
+
+# [0.116.0-dev.9](https://github.com/ReVanced/revanced-integrations/compare/v0.116.0-dev.8...v0.116.0-dev.9) (2023-08-26)
+
+
+### Features
+
+* **YouTube:** Support version 18.32.39 ([#464](https://github.com/ReVanced/revanced-integrations/issues/464)) ([aa9d892](https://github.com/ReVanced/revanced-integrations/commit/aa9d892cde59c39718529bc40a66b93a1cb78f82))
+
+# [0.116.0-dev.8](https://github.com/ReVanced/revanced-integrations/compare/v0.116.0-dev.7...v0.116.0-dev.8) (2023-08-26)
+
+
+### Features
+
+* **YouTube:** Add `Custom player overlay opacity` patch ([#449](https://github.com/ReVanced/revanced-integrations/issues/449)) ([44dccb3](https://github.com/ReVanced/revanced-integrations/commit/44dccb3d658852e92aaf8d17e36dc205f1b3eb05))
+
+# [0.116.0-dev.7](https://github.com/ReVanced/revanced-integrations/compare/v0.116.0-dev.6...v0.116.0-dev.7) (2023-08-24)
+
+
+### Bug Fixes
+
+* use correct logging tags ([420b926](https://github.com/ReVanced/revanced-integrations/commit/420b9263b6e1cbb81aeb4985cf454b51912b51f8))
+
 # [0.116.0-dev.6](https://github.com/ReVanced/revanced-integrations/compare/v0.116.0-dev.5...v0.116.0-dev.6) (2023-08-23)
 
 
