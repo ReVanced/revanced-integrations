@@ -16,6 +16,10 @@ import app.revanced.twitch.utils.TwitchUtils;
 import tv.twitch.android.shared.chat.util.ClickableUsernameSpan;
 
 public class ShowDeletedMessagesPatch {
+
+    /**
+     * Injection point.
+     */
     public static boolean shouldUseSpoiler() {
         return Objects.equals(SettingsEnum.SHOW_DELETED_MESSAGES.getString(), "spoiler");
     }
@@ -24,6 +28,9 @@ public class ShowDeletedMessagesPatch {
         return Objects.equals(SettingsEnum.SHOW_DELETED_MESSAGES.getString(), "cross-out");
     }
 
+    /**
+     * Injection point.
+     */
     public static Spanned reformatDeletedMessage(Spanned original) {
         if (!shouldCrossOut())
             return null;
