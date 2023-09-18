@@ -1,9 +1,12 @@
 package app.revanced.integrations.patches.components;
 
+import android.view.View;
+
 import androidx.annotation.Nullable;
 
 import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.utils.NavBarIndexHook;
+import app.revanced.integrations.utils.ReVancedUtils;
 
 public class SuggestionsShelfFilter extends Filter {
 
@@ -29,5 +32,15 @@ public class SuggestionsShelfFilter extends Filter {
             return NavBarIndexHook.isNotLibraryTab();
 
         return false;
+    }
+
+    /**
+     * Injection point.
+     */
+    public static void hideBreakingNews(View view) {
+        if (!SettingsEnum.HIDE_SUGGESTIONS_SHELF.getBoolean()
+                || SettingsEnum.SPOOF_APP_VERSION.getBoolean()) return;
+
+        ReVancedUtils.hideViewByLayoutParams(view);
     }
 }

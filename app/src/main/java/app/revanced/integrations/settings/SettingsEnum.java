@@ -99,7 +99,7 @@ public enum SettingsEnum {
     HIDE_ARTIST_CARDS("revanced_hide_artist_cards", BOOLEAN, FALSE),
     HIDE_AUDIO_TRACK_BUTTON("revanced_hide_audio_track_button", BOOLEAN, FALSE),
     HIDE_AUTOPLAY_BUTTON("revanced_hide_autoplay_button", BOOLEAN, TRUE, true),
-    HIDE_SUGGESTIONS_SHELF("revanced_hide_suggestions_shelf", BOOLEAN, FALSE),
+    HIDE_SUGGESTIONS_SHELF("revanced_hide_suggestions_shelf", BOOLEAN, FALSE, true),
     HIDE_CAPTIONS_BUTTON("revanced_hide_captions_button", BOOLEAN, FALSE),
     HIDE_CAST_BUTTON("revanced_hide_cast_button", BOOLEAN, TRUE, true),
     HIDE_COMMENTS_SECTION("revanced_hide_comments_section", BOOLEAN, FALSE, true),
