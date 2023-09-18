@@ -1,5 +1,7 @@
 package app.revanced.integrations.patches;
 
+import static app.revanced.integrations.utils.StringRef.str;
+
 import android.widget.ImageView;
 
 import app.revanced.integrations.settings.SettingsEnum;
@@ -12,7 +14,7 @@ public class CustomPlayerOverlayOpacityPatch {
         int opacity = SettingsEnum.PLAYER_OVERLAY_OPACITY.getInt();
 
         if (opacity < 0 || opacity > 100) {
-            ReVancedUtils.showToastLong("Player overlay opacity must be between 0-100");
+            ReVancedUtils.showToastLong(str("revanced_player_overlay_opacity_parse_error"));
             SettingsEnum.PLAYER_OVERLAY_OPACITY.saveValue(DEFAULT_OPACITY);
             opacity = DEFAULT_OPACITY;
         }
