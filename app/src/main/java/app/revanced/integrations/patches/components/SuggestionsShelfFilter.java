@@ -10,6 +10,14 @@ import app.revanced.integrations.utils.ReVancedUtils;
 
 public class SuggestionsShelfFilter extends Filter {
 
+    /**
+     * When spoofing to app version 17.08.35 or older, the watch history preview bar uses
+     * the same layout components as the breaking news shelf.
+     */
+    private static final boolean isSpoofingOldVersionWithHorizontalCardListWatchHistory =
+            SettingsEnum.SPOOF_APP_VERSION.getBoolean()
+                    && SettingsEnum.SPOOF_APP_VERSION_TARGET.getString().compareTo("17.08.35") <= 0;
+
     public SuggestionsShelfFilter() {
         pathFilterGroupList.addAll(
                 new StringFilterGroup(
@@ -36,10 +44,14 @@ public class SuggestionsShelfFilter extends Filter {
 
     /**
      * Injection point.
+     *
+     * Only used to hide breaking news on tablet layout which still uses the old UI components.
      */
     public static void hideBreakingNews(View view) {
         if (!SettingsEnum.HIDE_SUGGESTIONS_SHELF.getBoolean()
-                || SettingsEnum.SPOOF_APP_VERSION.getBoolean()) return;
+                // If this starts hiding stuff inappropriately on phones,
+                // then can add a check if the device is not a tablet using ReVancedUtils.isTablet()
+                || isSpoofingOldVersionWithHorizontalCardListWatchHistory) return;
 
         ReVancedUtils.hideViewByLayoutParams(view);
     }
