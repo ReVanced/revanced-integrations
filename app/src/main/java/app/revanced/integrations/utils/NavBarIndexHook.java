@@ -5,6 +5,7 @@ import android.content.Context;
 public class NavBarIndexHook {
 
     private static int currentNavBarIndex = 0;
+    private static int lastNavBarIndex = 0;
     private static boolean isLaunched = false;
 
     /**
@@ -15,21 +16,19 @@ public class NavBarIndexHook {
             return;
 
         LogHelper.printDebug(() -> "Setting current NavBar Index to: " + navBarIndex);
+        lastNavBarIndex = currentNavBarIndex;
         currentNavBarIndex = navBarIndex;
     }
 
-    /**
-     * Check if current tab is Home Tab
-     */
-    public static boolean isHomeTab() {
-        return currentNavBarIndex == 0;
+    public static void setLastNavBarIndex() {
+        currentNavBarIndex = lastNavBarIndex;
     }
 
     /**
      * Check if current tab is not Library Tab
      */
     public static boolean isNotLibraryTab() {
-        return currentNavBarIndex < 4;
+        return currentNavBarIndex != 4;
     }
 
     /**
