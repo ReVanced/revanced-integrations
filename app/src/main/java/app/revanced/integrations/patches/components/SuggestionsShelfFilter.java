@@ -27,9 +27,9 @@ public class SuggestionsShelfFilter extends Filter {
             // If the library shelf is detected, set the current navbar index to 4
             NavBarIndexHook.setCurrentNavBarIndex(4);
 
-        else if (super.isFiltered(path, identifier, protobufBufferArray, matchedList, matchedGroup, matchedIndex))
+        else if (NavBarIndexHook.isNotLibraryTab())
             // When the Library Tab is not detected, hide the suggestion shelf
-            return NavBarIndexHook.isNotLibraryTab();
+            return super.isFiltered(path, identifier, protobufBufferArray, matchedList, matchedGroup, matchedIndex);
 
         return false;
     }
