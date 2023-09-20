@@ -1,3 +1,45 @@
+# [0.118.0-dev.3](https://github.com/ReVanced/revanced-integrations/compare/v0.118.0-dev.2...v0.118.0-dev.3) (2023-09-19)
+
+
+### Bug Fixes
+
+* **YouTube:** fix old quality and custom speed not working on tablets ([#477](https://github.com/ReVanced/revanced-integrations/issues/477)) ([2352fa5](https://github.com/ReVanced/revanced-integrations/commit/2352fa542658035c5f4400fb5892217887710e4d))
+
+# [0.118.0-dev.2](https://github.com/ReVanced/revanced-integrations/compare/v0.118.0-dev.1...v0.118.0-dev.2) (2023-09-14)
+
+
+### Features
+
+* **Twitch - Block embedded ads:** Switch from `ttv.lol` to `luminous.dev` ([2c34180](https://github.com/ReVanced/revanced-integrations/commit/2c3418041cf19ae4c1c7b67eda8398578384b753))
+
+# [0.118.0-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v0.117.2-dev.3...v0.118.0-dev.1) (2023-09-14)
+
+
+### Features
+
+* **TU Dortmund:** Add `Show on lockscreen` patch ([#472](https://github.com/ReVanced/revanced-integrations/issues/472)) ([526d66f](https://github.com/ReVanced/revanced-integrations/commit/526d66f6a91e0ed907db609a4adaa97f3239898b))
+
+## [0.117.2-dev.3](https://github.com/ReVanced/revanced-integrations/compare/v0.117.2-dev.2...v0.117.2-dev.3) (2023-09-09)
+
+
+### Bug Fixes
+
+* **YouTube - ReturnYouTubeDislike:** Add debug logging to litho text ([#476](https://github.com/ReVanced/revanced-integrations/issues/476)) ([e3b8e8b](https://github.com/ReVanced/revanced-integrations/commit/e3b8e8be41796d0300c8421e28e5b8cf43ffb25e))
+
+## [0.117.2-dev.2](https://github.com/ReVanced/revanced-integrations/compare/v0.117.2-dev.1...v0.117.2-dev.2) (2023-09-07)
+
+
+### Bug Fixes
+
+* **YouTube - Custom filter:** Use new lines between components instead of commas ([#475](https://github.com/ReVanced/revanced-integrations/issues/475)) ([17ed396](https://github.com/ReVanced/revanced-integrations/commit/17ed39673954a5b571bc1654be20afc235682ca4))
+
+## [0.117.2-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v0.117.1...v0.117.2-dev.1) (2023-09-07)
+
+
+### Bug Fixes
+
+* **YouTube - Hide layout components:** Always hide redundant 'player audio track' button ([#473](https://github.com/ReVanced/revanced-integrations/issues/473)) ([d86851b](https://github.com/ReVanced/revanced-integrations/commit/d86851baf1ef1993f5ba9543a4a3fe8d50c3a199))
+
 ## [0.117.1](https://github.com/ReVanced/revanced-integrations/compare/v0.117.0...v0.117.1) (2023-09-03)
 
 
