@@ -6,7 +6,6 @@ public class NavBarIndexHook {
 
     private static int currentNavBarIndex = 0;
     private static int lastNavBarIndex = 0;
-    private static boolean isLaunched = false;
 
     /**
      * Set current NavBar Index to @param
@@ -29,17 +28,5 @@ public class NavBarIndexHook {
      */
     public static boolean isNotLibraryTab() {
         return currentNavBarIndex != 4;
-    }
-
-    /**
-     * Initialize NavBar Index
-     */
-    public static void initializeIndex(Context context) {
-        if (isLaunched)
-            return;
-
-        LogHelper.printDebug(() -> "Initializing NavBar index");
-        isLaunched = true;
-        setCurrentNavBarIndex(0);
     }
 }
