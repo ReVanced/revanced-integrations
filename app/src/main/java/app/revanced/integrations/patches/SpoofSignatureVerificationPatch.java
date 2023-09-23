@@ -1,81 +1,75 @@
 package app.revanced.integrations.patches;
 
-import static app.revanced.integrations.utils.ReVancedUtils.containsAny;
-
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-
 import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.shared.PlayerType;
 import app.revanced.integrations.utils.LogHelper;
 
+import static app.revanced.integrations.utils.ReVancedUtils.containsAny;
+
 public class SpoofSignatureVerificationPatch {
     /**
-     * Enable/disable all workarounds that are required due to signature spoofing.
+     * Parameter (also used by
+     * <a href="https://github.com/yt-dlp/yt-dlp/blob/81ca451480051d7ce1a31c017e005358345a9149/yt_dlp/extractor/youtube.py#L3602">yt-dlp</a>)
+     * to fix playback issues.
      */
-    private static final boolean WORKAROUND = true;
+    private static final String INCOGNITO_PARAMETERS = "CgIQBg==";
 
     /**
-     * Protobuf parameters used for autoplay in scrim.
-     * Prepend this parameter to mute video playback (for autoplay in feed)
+     * Parameters causing playback issues.
      */
-    private static final String PROTOBUF_PARAMETER_SCRIM = "SAFgAXgB";
-
-    /**
-     * Protobuf parameter also used by
-     * <a href="https://github.com/yt-dlp/yt-dlp/blob/81ca451480051d7ce1a31c017e005358345a9149/yt_dlp/extractor/youtube.py#L3602">yt-dlp</a>
-     * <br>
-     * Known issue: captions are positioned on upper area in the player.
-     */
-    private static final String PROTOBUF_PLAYER_PARAMS = "CgIQBg==";
-
-    /**
-     * Target Protobuf parameters.
-     */
-    private static final String[] PROTOBUF_PARAMETER_TARGETS = {
-            "YAHI", // Autoplay in feed
-            "SAFg"  // Autoplay in scrim
+    private static final String[] AUTOPLAY_PARAMETERS = {
+            "YAHI", // Autoplay in feed.
+            "SAFg"  // Autoplay in scrim.
     };
+
+    /**
+     * Parameter used for autoplay in scrim.
+     * Prepend this parameter to mute video playback (for autoplay in feed).
+     */
+    private static final String SCRIM_PARAMETER = "SAFgAXgB";
+
+
+    /**
+     * Parameters used in YouTube Shorts.
+     */
+    private static final String SHORTS_PLAYER_PARAMETERS = "8AEB";
+
+    private static boolean isPlayingShorts;
 
     /**
      * Injection point.
      *
-     * @param originalValue originalValue protobuf parameter
+     * @param parameters Original protobuf parameter value.
      */
-    public static String overrideProtobufParameter(String originalValue) {
-        try {
-            if (!SettingsEnum.SPOOF_SIGNATURE_VERIFICATION.getBoolean()) {
-                return originalValue;
-            }
+    public static String spoofParameter(String parameters) {
+        LogHelper.printDebug(() -> "Original protobuf parameter value: " + parameters);
 
-            LogHelper.printDebug(() -> "Original protobuf parameter value: " + originalValue);
+        if (!SettingsEnum.SPOOF_SIGNATURE.getBoolean()) return parameters;
 
-            if (!WORKAROUND) return PROTOBUF_PLAYER_PARAMS;
+        // Shorts do not need to be spoofed.
+        //noinspection AssignmentUsedAsCondition
+        if (isPlayingShorts = parameters.startsWith(SHORTS_PLAYER_PARAMETERS)) return parameters;
 
-            var isPlayingVideo = originalValue.contains(PROTOBUF_PLAYER_PARAMS);
-            if (isPlayingVideo) return originalValue;
+        boolean isPlayingFeed = PlayerType.getCurrent() == PlayerType.INLINE_MINIMAL && containsAny(parameters, AUTOPLAY_PARAMETERS);
+        if (isPlayingFeed) return SettingsEnum.SPOOF_SIGNATURE_IN_FEED.getBoolean() ?
+                // Prepend the scrim parameter to mute videos in feed.
+                SCRIM_PARAMETER + INCOGNITO_PARAMETERS :
+                // In order to prevent videos that are auto-played in feed to be added to history,
+                // only spoof the parameter if the video is not playing in the feed.
+                // This will cause playback issues in the feed, but it's better than manipulating the history.
+                parameters;
 
-            boolean isPlayingFeed = containsAny(originalValue, PROTOBUF_PARAMETER_TARGETS) && PlayerType.getCurrent() == PlayerType.INLINE_MINIMAL;
-            if (isPlayingFeed) {
-                // Videos in feed won't autoplay with sound.
-                return PROTOBUF_PARAMETER_SCRIM + PROTOBUF_PLAYER_PARAMS;
-            } else {
-                // Spoof the parameter to prevent playback issues.
-                return PROTOBUF_PLAYER_PARAMS;
-            }
-        } catch (Exception ex) {
-            LogHelper.printException(() -> "overrideProtobufParameter failure", ex);
-        }
-
-        return originalValue;
+        return INCOGNITO_PARAMETERS;
     }
 
     /**
      * Injection point.
      */
     public static boolean getSeekbarThumbnailOverrideValue() {
-        return SettingsEnum.SPOOF_SIGNATURE_VERIFICATION.getBoolean();
+        return SettingsEnum.SPOOF_SIGNATURE.getBoolean();
     }
 
     /**
@@ -84,12 +78,13 @@ public class SpoofSignatureVerificationPatch {
      * @param view seekbar thumbnail view.  Includes both shorts and regular videos.
      */
     public static void seekbarImageViewCreated(ImageView view) {
-        if (SettingsEnum.SPOOF_SIGNATURE_VERIFICATION.getBoolean()) {
-            view.setVisibility(View.GONE);
-            // Also hide the border around the thumbnail (otherwise a 1 pixel wide bordered frame is visible).
-            ViewGroup parentLayout = (ViewGroup) view.getParent();
-            parentLayout.setPadding(0, 0, 0, 0);
-        }
+        if (!SettingsEnum.SPOOF_SIGNATURE.getBoolean()) return;
+        if (isPlayingShorts) return;
+
+        view.setVisibility(View.GONE);
+        // Also hide the border around the thumbnail (otherwise a 1 pixel wide bordered frame is visible).
+        ViewGroup parentLayout = (ViewGroup) view.getParent();
+        parentLayout.setPadding(0, 0, 0, 0);
     }
 
 }
