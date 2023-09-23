@@ -12,6 +12,8 @@ import java.util.List;
 import java.util.Objects;
 
 public class TimelineFilterPatch {
+    // !! This method gets modified by the TimelineFilterPatch.
+    // If you refactor this method, you will need to update the patch.
     public static void filterTimeline(List<TimelineObject<? extends Timelineable>> timelineObjects) {
         Iterator<TimelineObject<? extends Timelineable>> iterator = timelineObjects.iterator();
         while (iterator.hasNext()) {
