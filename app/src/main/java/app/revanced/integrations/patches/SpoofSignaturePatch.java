@@ -9,7 +9,8 @@ import app.revanced.integrations.utils.LogHelper;
 
 import static app.revanced.integrations.utils.ReVancedUtils.containsAny;
 
-public class SpoofSignatureVerificationPatch {
+/** @noinspection unused*/
+public class SpoofSignaturePatch {
     /**
      * Parameter (also used by
      * <a href="https://github.com/yt-dlp/yt-dlp/blob/81ca451480051d7ce1a31c017e005358345a9149/yt_dlp/extractor/youtube.py#L3602">yt-dlp</a>)
@@ -86,5 +87,4 @@ public class SpoofSignatureVerificationPatch {
         ViewGroup parentLayout = (ViewGroup) view.getParent();
         parentLayout.setPadding(0, 0, 0, 0);
     }
-
 }
