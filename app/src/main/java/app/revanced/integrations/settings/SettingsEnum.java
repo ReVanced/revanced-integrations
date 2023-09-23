@@ -167,8 +167,8 @@ public enum SettingsEnum {
     SEEKBAR_TAPPING("revanced_seekbar_tapping", BOOLEAN, TRUE),
     SPOOF_SIGNATURE("revanced_spoof_signature_verification_enabled", BOOLEAN, TRUE, true,
             "revanced_spoof_signature_verification_enabled_user_dialog_message"),
-    SPOOF_SIGNATURE_IN_FEED("revanced_spoof_signature_in_feed", BOOLEAN, FALSE, false,
-            "revanced_spoof_signature_in_feed_user_dialog_message", parents(SPOOF_SIGNATURE)),
+    SPOOF_SIGNATURE_IN_FEED("revanced_spoof_signature_in_feed_enabled", BOOLEAN, FALSE, false,
+            parents(SPOOF_SIGNATURE)),
 
     // Swipe controls
     SWIPE_BRIGHTNESS("revanced_swipe_brightness", BOOLEAN, TRUE),
