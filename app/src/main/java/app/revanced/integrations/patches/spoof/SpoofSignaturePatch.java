@@ -44,7 +44,7 @@ public class SpoofSignaturePatch {
      */
     @Nullable
     private static volatile String storyboardRendererSpec;
-    private static int recommendedLevel;
+    private static volatile int recommendedLevel;
 
     /**
      * Injection point.
@@ -109,8 +109,9 @@ public class SpoofSignaturePatch {
         return recommendedLevel;
     }
 
-    public static void setStoryboardRendererSpec(String newlyLoadedStoryboardRendererSpec) {
+    public static void setStoryboardRendererSpec(@Nullable String newlyLoadedStoryboardRendererSpec) {
         storyboardRendererSpec = newlyLoadedStoryboardRendererSpec;
+        LogHelper.printDebug(() -> "StoryBoard renderer spec: " + newlyLoadedStoryboardRendererSpec);
     }
 
     public static void setRecommendedLevel(int level) {
