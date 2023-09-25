@@ -1,13 +1,16 @@
 package app.revanced.integrations.patches.spoof;
 
+import static app.revanced.integrations.patches.spoof.requests.StoryBoardRendererRequester.fetchStoryboardRenderer;
+import static app.revanced.integrations.utils.ReVancedUtils.containsAny;
+
 import androidx.annotation.Nullable;
+
+import java.util.Objects;
+
 import app.revanced.integrations.patches.VideoInformation;
 import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.shared.PlayerType;
 import app.revanced.integrations.utils.LogHelper;
-
-import static app.revanced.integrations.patches.spoof.requests.StoryBoardRendererRequester.fetchStoryboardRenderer;
-import static app.revanced.integrations.utils.ReVancedUtils.containsAny;
 
 /** @noinspection unused*/
 public class SpoofSignaturePatch {
@@ -32,11 +35,15 @@ public class SpoofSignaturePatch {
      */
     private static final String SCRIM_PARAMETER = "SAFgAXgB";
 
-
     /**
      * Parameters used in YouTube Shorts.
      */
     private static final String SHORTS_PLAYER_PARAMETERS = "8AEB";
+
+    /**
+     * Last video id loaded. Used to prevent reloading the same spec multiple times.
+     */
+    private static volatile String currentVideoId;
 
     @Nullable
     private static volatile StoryboardRenderer renderer;
@@ -70,8 +77,12 @@ public class SpoofSignaturePatch {
                 // This will cause playback issues in the feed, but it's better than manipulating the history.
                 parameters;
 
-        renderer = fetchStoryboardRenderer(VideoInformation.getVideoId());
-        LogHelper.printDebug(() -> "StoryBoard renderer: " + renderer);
+        String videoId = VideoInformation.getVideoId();
+        if (!Objects.equals(currentVideoId, videoId)) {
+            currentVideoId = videoId;
+            renderer = fetchStoryboardRenderer(VideoInformation.getVideoId());
+            LogHelper.printDebug(() -> "StoryBoard renderer: " + renderer);
+        }
 
         return INCOGNITO_PARAMETERS;
     }
@@ -82,7 +93,6 @@ public class SpoofSignaturePatch {
     public static boolean getSeekbarThumbnailOverrideValue() {
         return SettingsEnum.SPOOF_SIGNATURE.getBoolean();
     }
-
 
     /**
      * Injection point.
@@ -105,4 +115,5 @@ public class SpoofSignaturePatch {
 
         return renderer.getRecommendedLevel();
     }
+
 }
