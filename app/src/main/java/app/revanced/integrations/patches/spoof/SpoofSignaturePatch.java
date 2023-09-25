@@ -1,13 +1,14 @@
-package app.revanced.integrations.patches;
+package app.revanced.integrations.patches.spoof;
 
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
+import static app.revanced.integrations.patches.spoof.requests.StoryBoardRendererRequester.fetchStoryboardRenderer;
+import static app.revanced.integrations.utils.ReVancedUtils.containsAny;
+
+import androidx.annotation.Nullable;
+
+import app.revanced.integrations.patches.VideoInformation;
 import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.shared.PlayerType;
 import app.revanced.integrations.utils.LogHelper;
-
-import static app.revanced.integrations.utils.ReVancedUtils.containsAny;
 
 /** @noinspection unused*/
 public class SpoofSignaturePatch {
@@ -32,13 +33,18 @@ public class SpoofSignaturePatch {
      */
     private static final String SCRIM_PARAMETER = "SAFgAXgB";
 
-
     /**
      * Parameters used in YouTube Shorts.
      */
     private static final String SHORTS_PLAYER_PARAMETERS = "8AEB";
 
-    private static boolean isPlayingShorts;
+    /**
+     * Last video id loaded. Used to prevent reloading the same spec multiple times.
+     */
+    private static volatile String currentVideoId;
+
+    @Nullable
+    private static volatile StoryboardRenderer renderer;
 
     /**
      * Injection point.
@@ -50,9 +56,15 @@ public class SpoofSignaturePatch {
 
         if (!SettingsEnum.SPOOF_SIGNATURE.getBoolean()) return parameters;
 
+        // Clip's player parameters contain a lot of information (e.g. video start and end time or whether it loops)
+        // For this reason, the player parameters of a clip are usually very long (150~300 characters).
+        // Clips are 60 seconds or less in length, so no spoofing.
+        var isClip = parameters.length() > 150;
+        if (isClip) return parameters;
+
+
         // Shorts do not need to be spoofed.
-        //noinspection AssignmentUsedAsCondition
-        if (isPlayingShorts = parameters.startsWith(SHORTS_PLAYER_PARAMETERS)) return parameters;
+        if (parameters.startsWith(SHORTS_PLAYER_PARAMETERS)) return parameters;
 
         boolean isPlayingFeed = PlayerType.getCurrent() == PlayerType.INLINE_MINIMAL && containsAny(parameters, AUTOPLAY_PARAMETERS);
         if (isPlayingFeed) return SettingsEnum.SPOOF_SIGNATURE_IN_FEED.getBoolean() ?
@@ -62,6 +74,13 @@ public class SpoofSignaturePatch {
                 // only spoof the parameter if the video is not playing in the feed.
                 // This will cause playback issues in the feed, but it's better than manipulating the history.
                 parameters;
+
+        String videoId = VideoInformation.getVideoId();
+        if (!videoId.equals(currentVideoId)) {
+            currentVideoId = videoId;
+            renderer = fetchStoryboardRenderer(videoId);
+            LogHelper.printDebug(() -> "Fetched: " + renderer);
+        }
 
         return INCOGNITO_PARAMETERS;
     }
@@ -75,16 +94,28 @@ public class SpoofSignaturePatch {
 
     /**
      * Injection point.
-     *
-     * @param view seekbar thumbnail view.  Includes both shorts and regular videos.
+     * Called from background threads and from the main thread.
      */
-    public static void seekbarImageViewCreated(ImageView view) {
-        if (!SettingsEnum.SPOOF_SIGNATURE.getBoolean()) return;
-        if (isPlayingShorts) return;
+    @Nullable
+    public static String getStoryboardRendererSpec(String originalStoryboardRendererSpec) {
+        if (!SettingsEnum.SPOOF_SIGNATURE.getBoolean()) return originalStoryboardRendererSpec;
 
-        view.setVisibility(View.GONE);
-        // Also hide the border around the thumbnail (otherwise a 1 pixel wide bordered frame is visible).
-        ViewGroup parentLayout = (ViewGroup) view.getParent();
-        parentLayout.setPadding(0, 0, 0, 0);
+        StoryboardRenderer currentRenderer = renderer;
+        if (currentRenderer == null) return originalStoryboardRendererSpec;
+
+        return currentRenderer.getSpec();
     }
+
+    /**
+     * Injection point.
+     */
+    public static int getRecommendedLevel(int originalLevel) {
+        if (!SettingsEnum.SPOOF_SIGNATURE.getBoolean()) return originalLevel;
+
+        StoryboardRenderer currentRenderer = renderer;
+        if (currentRenderer == null) return originalLevel;
+
+        return currentRenderer.getRecommendedLevel();
+    }
+
 }

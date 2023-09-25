@@ -1,3 +1,40 @@
+# [0.118.0-dev.9](https://github.com/ReVanced/revanced-integrations/compare/v0.118.0-dev.8...v0.118.0-dev.9) (2023-09-25)
+
+
+### Bug Fixes
+
+* **YouTube - Client spoof:** Removed unused code ([#480](https://github.com/ReVanced/revanced-integrations/issues/480)) ([e6903bf](https://github.com/ReVanced/revanced-integrations/commit/e6903bff95b485d21773537bbcc162411b616618))
+
+# [0.118.0-dev.8](https://github.com/ReVanced/revanced-integrations/compare/v0.118.0-dev.7...v0.118.0-dev.8) (2023-09-25)
+
+
+### Bug Fixes
+
+* **YouTube - Client spoof:** Display seekbar thumbnails in high quality ([f71c1a0](https://github.com/ReVanced/revanced-integrations/commit/f71c1a0c156b2320e06dd98b3e5b276560d438aa))
+
+# [0.118.0-dev.7](https://github.com/ReVanced/revanced-integrations/compare/v0.118.0-dev.6...v0.118.0-dev.7) (2023-09-25)
+
+
+### Bug Fixes
+
+* Remove parameter from route ([4b0925e](https://github.com/ReVanced/revanced-integrations/commit/4b0925e33762c02e95ef9b1aadcae1038af71a50))
+
+# [0.118.0-dev.6](https://github.com/ReVanced/revanced-integrations/compare/v0.118.0-dev.5...v0.118.0-dev.6) (2023-09-25)
+
+
+### Performance Improvements
+
+* Only request required fields ([d20b768](https://github.com/ReVanced/revanced-integrations/commit/d20b768bc23d167d9f0d2c651c75b3f92944e731))
+* Remove unnecessary api key parameter ([ba5e7d8](https://github.com/ReVanced/revanced-integrations/commit/ba5e7d870ee88ad45c233d914e1e2795de920cb2))
+
+# [0.118.0-dev.5](https://github.com/ReVanced/revanced-integrations/compare/v0.118.0-dev.4...v0.118.0-dev.5) (2023-09-25)
+
+
+### Bug Fixes
+
+* **YouTube - Client spoof:** Restore clipping videos functionality ([2cd1738](https://github.com/ReVanced/revanced-integrations/commit/2cd1738d2494add13c48b64ccc9aad2432b2d8e3))
+* **YouTube - Client spoof:** Restore seekbar thumbnails ([978f630](https://github.com/ReVanced/revanced-integrations/commit/978f630c0267ec2b0d9bb9b5b0b3cdc9abef65ec))
+
 # [0.118.0-dev.4](https://github.com/ReVanced/revanced-integrations/compare/v0.118.0-dev.3...v0.118.0-dev.4) (2023-09-23)
 
 
