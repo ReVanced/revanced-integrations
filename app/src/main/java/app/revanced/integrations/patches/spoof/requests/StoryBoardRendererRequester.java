@@ -36,7 +36,11 @@ public class StoryBoardRendererRequester {
 
             final byte[] innerTubeBody = String.format(INNER_TUBE_BODY, videoId).getBytes(StandardCharsets.UTF_8);
 
-            HttpURLConnection connection = StoryBoardRendererRoutes.getPlayerResponseConnectionFromRoute();
+            HttpURLConnection connection = StoryBoardRendererRoutes.getPlayerResponseConnectionFromRoute(
+                    StoryBoardRendererRoutes.GET_PLAYER,
+                    StoryBoardRendererRoutes.YT_API_KEY
+            );
+
             connection.getOutputStream().write(innerTubeBody, 0, innerTubeBody.length);
 
             final int responseCode = connection.getResponseCode();
