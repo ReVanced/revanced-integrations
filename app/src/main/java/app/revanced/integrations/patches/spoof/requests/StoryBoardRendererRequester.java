@@ -12,11 +12,6 @@ import java.net.HttpURLConnection;
 import java.net.SocketTimeoutException;
 import java.nio.charset.StandardCharsets;
 
-import app.revanced.integrations.patches.spoof.SpoofSignaturePatch;
-import app.revanced.integrations.requests.Requester;
-import app.revanced.integrations.utils.LogHelper;
-import app.revanced.integrations.utils.ReVancedUtils;
-
 public class StoryBoardRendererRequester {
     private static final String INNER_TUBE_BODY =
             "{" +
@@ -70,7 +65,6 @@ public class StoryBoardRendererRequester {
             LogHelper.printException(() -> "Failed to fetch StoryBoard URL", ex);
         }
 
-        SpoofSignaturePatch.setStoryboardRendererSpec(null);
+        return null;
     }
-
 }
