@@ -1,14 +1,13 @@
 package app.revanced.integrations.patches.spoof;
 
-import static app.revanced.integrations.patches.spoof.requests.StoryBoardRendererRequester.fetchStoryboardsRenderer;
-import static app.revanced.integrations.utils.ReVancedUtils.containsAny;
-
 import androidx.annotation.Nullable;
-
 import app.revanced.integrations.patches.VideoInformation;
 import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.shared.PlayerType;
 import app.revanced.integrations.utils.LogHelper;
+
+import static app.revanced.integrations.patches.spoof.requests.StoryBoardRendererRequester.fetchStoryboardRenderer;
+import static app.revanced.integrations.utils.ReVancedUtils.containsAny;
 
 /** @noinspection unused*/
 public class SpoofSignaturePatch {
@@ -39,12 +38,8 @@ public class SpoofSignaturePatch {
      */
     private static final String SHORTS_PLAYER_PARAMETERS = "8AEB";
 
-    /**
-     * Storyboard spec url, used to fix seekbar preview and ambient mode.
-     */
     @Nullable
-    private static volatile String storyboardRendererSpec;
-    private static volatile int recommendedLevel;
+    private static volatile StoryboardRenderer renderer;
 
     /**
      * Injection point.
@@ -75,8 +70,8 @@ public class SpoofSignaturePatch {
                 // This will cause playback issues in the feed, but it's better than manipulating the history.
                 parameters;
 
-        fetchStoryboardsRenderer(VideoInformation.getVideoId());
-        LogHelper.printDebug(() -> "StoryBoard renderer spec: " + storyboardRendererSpec);
+        renderer = fetchStoryboardRenderer(VideoInformation.getVideoId());
+        LogHelper.printDebug(() -> "StoryBoard renderer: " + renderer);
 
         return INCOGNITO_PARAMETERS;
     }
@@ -91,13 +86,14 @@ public class SpoofSignaturePatch {
 
     /**
      * Injection point.
-     *
      * Called from background threads and from the main thread.
      */
     @Nullable
     public static String getStoryboardRendererSpec(String originalStoryboardRendererSpec) {
         if (!SettingsEnum.SPOOF_SIGNATURE.getBoolean()) return originalStoryboardRendererSpec;
-        return storyboardRendererSpec;
+        if (renderer == null) return originalStoryboardRendererSpec;
+
+        return renderer.getSpec();
     }
 
     /**
@@ -105,16 +101,8 @@ public class SpoofSignaturePatch {
      */
     public static int getRecommendedLevel(int originalLevel) {
         if (!SettingsEnum.SPOOF_SIGNATURE.getBoolean()) return originalLevel;
+        if (renderer == null) return originalLevel;
 
-        return recommendedLevel;
-    }
-
-    public static void setStoryboardRendererSpec(@Nullable String newlyLoadedStoryboardRendererSpec) {
-        storyboardRendererSpec = newlyLoadedStoryboardRendererSpec;
-        LogHelper.printDebug(() -> "StoryBoard renderer spec: " + newlyLoadedStoryboardRendererSpec);
-    }
-
-    public static void setRecommendedLevel(int level) {
-        recommendedLevel = level;
+        return renderer.getRecommendedLevel();
     }
 }

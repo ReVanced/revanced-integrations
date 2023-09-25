@@ -1,7 +1,11 @@
 package app.revanced.integrations.patches.spoof.requests;
 
 import androidx.annotation.NonNull;
-
+import androidx.annotation.Nullable;
+import app.revanced.integrations.patches.spoof.StoryboardRenderer;
+import app.revanced.integrations.requests.Requester;
+import app.revanced.integrations.utils.LogHelper;
+import app.revanced.integrations.utils.ReVancedUtils;
 import org.json.JSONObject;
 
 import java.net.HttpURLConnection;
@@ -30,7 +34,8 @@ public class StoryBoardRendererRequester {
     private StoryBoardRendererRequester() {
     }
 
-    public static void fetchStoryboardsRenderer(@NonNull String videoId) {
+    @Nullable
+    public static StoryboardRenderer fetchStoryboardRenderer(@NonNull String videoId) {
         try {
             ReVancedUtils.verifyOffMainThread();
 
@@ -48,11 +53,13 @@ public class StoryBoardRendererRequester {
                 final String storyboardsRendererTag = storyboards.has("playerLiveStoryboardSpecRenderer")
                         ? "playerLiveStoryboardSpecRenderer"
                         : "playerStoryboardSpecRenderer";
-                final JSONObject storyboardsRenderer = storyboards.getJSONObject(storyboardsRendererTag);
 
-                SpoofSignaturePatch.setStoryboardRendererSpec(storyboardsRenderer.getString("spec"));
-                SpoofSignaturePatch.setRecommendedLevel(storyboardsRenderer.getInt("recommendedLevel"));
-                return;
+                final var renderer = storyboards.getJSONObject(storyboardsRendererTag);
+
+                return new StoryboardRenderer(
+                        renderer.getString("spec"),
+                        renderer.getInt("recommendedLevel")
+                );
             } else {
                 LogHelper.printException(() -> "API not available: " + responseCode);
                 connection.disconnect();
@@ -65,4 +72,5 @@ public class StoryBoardRendererRequester {
 
         SpoofSignaturePatch.setStoryboardRendererSpec(null);
     }
+
 }
