@@ -18,7 +18,7 @@ final class StoryBoardRendererRoutes {
     private StoryBoardRendererRoutes() {
     }
 
-    static HttpURLConnection getPlayerResponseConnectionFromRoute() throws IOException {
+    static HttpURLConnection getPlayerResponseConnectionFromRoute(String... params) throws IOException {
         var connection = Requester.getConnectionFromCompiledRoute(YT_API_URL, GET_STORYBOARD_SPEC_RENDERER);
         connection.setRequestProperty("User-Agent", "com.google.android.youtube/18.37.36 (Linux; U; Android 12; GB) gzip");
         connection.setRequestProperty("X-Goog-Api-Format-Version", "2");
