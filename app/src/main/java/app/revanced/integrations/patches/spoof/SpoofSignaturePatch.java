@@ -48,13 +48,9 @@ public class SpoofSignaturePatch {
     /**
      * Injection point.
      *
-     * Must pass in the video id because {@link VideoInformation#getVideoId()}
-     * is yet available at this point.
-     *
-     * @param videoId video identifier.
      * @param parameters Original protobuf parameter value.
      */
-    public static String spoofParameter(String videoId, String parameters) {
+    public static String spoofParameter(String parameters) {
         LogHelper.printDebug(() -> "Original protobuf parameter value: " + parameters);
 
         if (!SettingsEnum.SPOOF_SIGNATURE.getBoolean()) return parameters;
@@ -78,7 +74,7 @@ public class SpoofSignaturePatch {
                 // This will cause playback issues in the feed, but it's better than manipulating the history.
                 parameters;
 
-        storyboardRendererSpec = fetchStoryboardsRenderer(videoId);
+        storyboardRendererSpec = fetchStoryboardsRenderer(VideoInformation.getVideoId());
         LogHelper.printDebug(() -> "StoryBoard renderer spec: " + storyboardRendererSpec);
 
         return INCOGNITO_PARAMETERS;
