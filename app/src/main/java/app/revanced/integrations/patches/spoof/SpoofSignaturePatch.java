@@ -78,7 +78,7 @@ public class SpoofSignaturePatch {
         String videoId = VideoInformation.getVideoId();
         if (!videoId.equals(currentVideoId)) {
             currentVideoId = videoId;
-            renderer = fetchStoryboardRenderer(VideoInformation.getVideoId());
+            renderer = fetchStoryboardRenderer(videoId);
             LogHelper.printDebug(() -> "Fetched: " + renderer.toString());
         }
 
