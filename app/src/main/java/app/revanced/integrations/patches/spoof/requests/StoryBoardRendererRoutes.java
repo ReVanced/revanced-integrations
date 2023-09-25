@@ -8,7 +8,7 @@ import java.net.HttpURLConnection;
 
 final class StoryBoardRendererRoutes {
     private static final String YT_API_URL = "https://www.youtube.com/youtubei/v1/";
-    private static final Route.CompiledRoute GET_STORYBOARD_SPEC = new Route(
+    private static final Route.CompiledRoute GET_STORYBOARD_SPEC_RENDERER = new Route(
             Route.Method.POST,
             "player" +
                     "?fields=storyboards.playerStoryboardSpecRenderer," +
@@ -19,7 +19,7 @@ final class StoryBoardRendererRoutes {
     }
 
     static HttpURLConnection getPlayerResponseConnectionFromRoute() throws IOException {
-        var connection = Requester.getConnectionFromCompiledRoute(YT_API_URL, GET_STORYBOARD_SPEC);
+        var connection = Requester.getConnectionFromCompiledRoute(YT_API_URL, GET_STORYBOARD_SPEC_RENDERER);
         connection.setRequestProperty("User-Agent", "com.google.android.youtube/18.37.36 (Linux; U; Android 12; GB) gzip");
         connection.setRequestProperty("X-Goog-Api-Format-Version", "2");
         connection.setRequestProperty("Content-Type", "application/json");
