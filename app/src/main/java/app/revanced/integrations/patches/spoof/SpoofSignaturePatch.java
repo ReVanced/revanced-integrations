@@ -5,8 +5,6 @@ import static app.revanced.integrations.utils.ReVancedUtils.containsAny;
 
 import androidx.annotation.Nullable;
 
-import java.util.Objects;
-
 import app.revanced.integrations.patches.VideoInformation;
 import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.shared.PlayerType;
@@ -78,7 +76,7 @@ public class SpoofSignaturePatch {
                 parameters;
 
         String videoId = VideoInformation.getVideoId();
-        if (!Objects.equals(currentVideoId, videoId)) {
+        if (!videoId.equals(currentVideoId)) {
             currentVideoId = videoId;
             renderer = fetchStoryboardRenderer(VideoInformation.getVideoId());
             LogHelper.printDebug(() -> "StoryBoard renderer: " + renderer);
