@@ -11,6 +11,7 @@ import org.json.JSONObject;
 import java.net.HttpURLConnection;
 import java.net.SocketTimeoutException;
 import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 
 public class StoryBoardRendererRequester {
     private static final String INNER_TUBE_BODY =
@@ -33,6 +34,7 @@ public class StoryBoardRendererRequester {
     public static StoryboardRenderer fetchStoryboardRenderer(@NonNull String videoId) {
         try {
             ReVancedUtils.verifyOffMainThread();
+            Objects.requireNonNull(videoId);
 
             final byte[] innerTubeBody = String.format(INNER_TUBE_BODY, videoId).getBytes(StandardCharsets.UTF_8);
 
