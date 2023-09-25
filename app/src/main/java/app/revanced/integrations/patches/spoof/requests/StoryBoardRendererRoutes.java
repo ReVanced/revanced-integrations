@@ -11,8 +11,8 @@ final class StoryBoardRendererRoutes {
     private static final Route.CompiledRoute GET_STORYBOARD_SPEC = new Route(
             Route.Method.POST,
             "player" +
-                    "?fields=storyboards.playerStoryboardSpecRenderer.spec," +
-                    "storyboards.playerLiveStoryboardSpecRenderer.spec"
+                    "?fields=storyboards.playerStoryboardSpecRenderer," +
+                    "storyboards.playerLiveStoryboardSpecRenderer"
     ).compile();
 
     private StoryBoardRendererRoutes() {

@@ -44,6 +44,7 @@ public class SpoofSignaturePatch {
      */
     @Nullable
     private static volatile String storyboardRendererSpec;
+    private static int recommendedLevel;
 
     /**
      * Injection point.
@@ -74,7 +75,7 @@ public class SpoofSignaturePatch {
                 // This will cause playback issues in the feed, but it's better than manipulating the history.
                 parameters;
 
-        storyboardRendererSpec = fetchStoryboardsRenderer(VideoInformation.getVideoId());
+        fetchStoryboardsRenderer(VideoInformation.getVideoId());
         LogHelper.printDebug(() -> "StoryBoard renderer spec: " + storyboardRendererSpec);
 
         return INCOGNITO_PARAMETERS;
@@ -87,14 +88,32 @@ public class SpoofSignaturePatch {
         return SettingsEnum.SPOOF_SIGNATURE.getBoolean();
     }
 
+
     /**
      * Injection point.
      *
      * Called from background threads and from the main thread.
      */
     @Nullable
-    public static String getStoryboardRendererSpec() {
+    public static String getStoryboardRendererSpec(String originalStoryboardRendererSpec) {
+        if (!SettingsEnum.SPOOF_SIGNATURE.getBoolean()) return originalStoryboardRendererSpec;
         return storyboardRendererSpec;
     }
 
+    /**
+     * Injection point.
+     */
+    public static int getRecommendedLevel(int originalLevel) {
+        if (!SettingsEnum.SPOOF_SIGNATURE.getBoolean()) return originalLevel;
+
+        return recommendedLevel;
+    }
+
+    public static void setStoryboardRendererSpec(String newlyLoadedStoryboardRendererSpec) {
+        storyboardRendererSpec = newlyLoadedStoryboardRendererSpec;
+    }
+
+    public static void setRecommendedLevel(int level) {
+        recommendedLevel = level;
+    }
 }

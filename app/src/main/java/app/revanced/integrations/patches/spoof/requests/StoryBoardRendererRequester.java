@@ -2,6 +2,8 @@ package app.revanced.integrations.patches.spoof.requests;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
+import app.revanced.integrations.patches.spoof.SpoofSignaturePatch;
 import app.revanced.integrations.requests.Requester;
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedUtils;
@@ -49,7 +51,13 @@ public class StoryBoardRendererRequester {
                         ? "playerLiveStoryboardSpecRenderer"
                         : "playerStoryboardSpecRenderer";
                 final JSONObject storyboardsRenderer = storyboards.getJSONObject(storyboardsRendererTag);
-                return storyboardsRenderer.getString("spec");
+                final String storyboardsRendererSpec = storyboardsRenderer.getString("spec");
+
+                SpoofSignaturePatch.setStoryboardRendererSpec(storyboardsRendererSpec);
+                SpoofSignaturePatch.setRecommendedLevel(storyboardsRenderer.getInt("recommendedLevel"));
+
+                LogHelper.printDebug(() -> "StoryBoard renderer spec: " + storyboardsRendererSpec);
+
             } else {
                 LogHelper.printException(() -> "API not available: " + responseCode);
                 connection.disconnect();
