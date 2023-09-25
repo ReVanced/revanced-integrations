@@ -6,20 +6,21 @@ import app.revanced.integrations.requests.Route;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 
-final class StoryBoardRendererRoutes {
+final class PlayerRoutes {
     private static final String YT_API_URL = "https://www.youtube.com/youtubei/v1/";
-    private static final Route.CompiledRoute GET_STORYBOARD_SPEC_RENDERER = new Route(
+    static final Route.CompiledRoute POST_STORYBOARD_SPEC_RENDERER = new Route(
             Route.Method.POST,
             "player" +
                     "?fields=storyboards.playerStoryboardSpecRenderer," +
                     "storyboards.playerLiveStoryboardSpecRenderer"
     ).compile();
 
-    private StoryBoardRendererRoutes() {
+    private PlayerRoutes() {
     }
 
-    static HttpURLConnection getPlayerResponseConnectionFromRoute(String... params) throws IOException {
-        var connection = Requester.getConnectionFromCompiledRoute(YT_API_URL, GET_STORYBOARD_SPEC_RENDERER);
+    /** @noinspection SameParameterValue*/
+    static HttpURLConnection getPlayerResponseConnectionFromRoute(Route.CompiledRoute route) throws IOException {
+        var connection = Requester.getConnectionFromCompiledRoute(YT_API_URL, route);
         connection.setRequestProperty("User-Agent", "com.google.android.youtube/18.37.36 (Linux; U; Android 12; GB) gzip");
         connection.setRequestProperty("X-Goog-Api-Format-Version", "2");
         connection.setRequestProperty("Content-Type", "application/json");

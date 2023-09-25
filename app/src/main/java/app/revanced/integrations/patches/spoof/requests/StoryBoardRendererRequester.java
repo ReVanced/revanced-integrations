@@ -13,6 +13,8 @@ import java.net.SocketTimeoutException;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
+import static app.revanced.integrations.patches.spoof.requests.PlayerRoutes.POST_STORYBOARD_SPEC_RENDERER;
+
 public class StoryBoardRendererRequester {
     private static final String INNER_TUBE_BODY =
             "{" +
@@ -38,7 +40,7 @@ public class StoryBoardRendererRequester {
 
             final byte[] innerTubeBody = String.format(INNER_TUBE_BODY, videoId).getBytes(StandardCharsets.UTF_8);
 
-            HttpURLConnection connection = StoryBoardRendererRoutes.getPlayerResponseConnectionFromRoute();
+            HttpURLConnection connection = PlayerRoutes.getPlayerResponseConnectionFromRoute(POST_STORYBOARD_SPEC_RENDERER);
             connection.getOutputStream().write(innerTubeBody, 0, innerTubeBody.length);
 
             final int responseCode = connection.getResponseCode();
