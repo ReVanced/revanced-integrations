@@ -2,16 +2,16 @@ package app.revanced.integrations.patches.spoof.requests;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import app.revanced.integrations.patches.spoof.SpoofSignaturePatch;
-import app.revanced.integrations.requests.Requester;
-import app.revanced.integrations.utils.LogHelper;
-import app.revanced.integrations.utils.ReVancedUtils;
+
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.SocketTimeoutException;
 import java.nio.charset.StandardCharsets;
+
+import app.revanced.integrations.requests.Requester;
+import app.revanced.integrations.utils.LogHelper;
+import app.revanced.integrations.utils.ReVancedUtils;
 
 public class StoryBoardRendererRequester {
     private static final String INNER_TUBE_BODY =
@@ -31,10 +31,12 @@ public class StoryBoardRendererRequester {
     }
 
     // TODO: Find a way to increase the quality of SeekBar thumbnail previews
-    public static void fetchStoryboardsRenderer(@NonNull String videoId) {
-        ReVancedUtils.verifyOffMainThread();
-
+    @Nullable
+    public static String fetchStoryboardsRenderer(@NonNull String videoId) {
         try {
+            // Calling code is not in a try catch block and an exception will take down the app.
+            // Instead verify in this block.
+            ReVancedUtils.verifyOffMainThread();
             final byte[] innerTubeBody = String.format(INNER_TUBE_BODY, videoId).getBytes(StandardCharsets.UTF_8);
 
             HttpURLConnection connection = StoryBoardRendererRoutes.getPlayerResponseConnectionFromRoute();
@@ -50,30 +52,18 @@ public class StoryBoardRendererRequester {
                         ? "playerLiveStoryboardSpecRenderer"
                         : "playerStoryboardSpecRenderer";
                 final JSONObject storyboardsRenderer = storyboards.getJSONObject(storyboardsRendererTag);
-                final String storyboardsRendererSpec = storyboardsRenderer.getString("spec");
-
-                SpoofSignaturePatch.setStoryboardRendererSpec(storyboardsRendererSpec);
-                LogHelper.printDebug(() -> "StoryBoard renderer spec: " + storyboardsRendererSpec);
-
+                return storyboardsRenderer.getString("spec");
             } else {
-                handleConnectionError("API not available: " + responseCode, null);
+                LogHelper.printException(() -> "API not available: " + responseCode);
+                connection.disconnect();
             }
-            connection.disconnect();
         } catch (SocketTimeoutException ex) {
-            handleConnectionError("API timed out", ex);
-        } catch (IOException ex) {
-            handleConnectionError(String.format("Failed to fetch StoryBoard URL (%s)", ex.getMessage()), ex);
+            LogHelper.printException(() -> "API timed out", ex);
         } catch (Exception ex) {
-            handleConnectionError("Failed to fetch StoryBoard URL", ex);
+            LogHelper.printException(() -> "Failed to fetch StoryBoard URL", ex);
         }
+
+        return null;
     }
 
-    private static void handleConnectionError(@NonNull String toastMessage, @Nullable Exception ex) {
-        if (ex != null)
-            LogHelper.printException(() -> toastMessage, ex);
-        else
-            LogHelper.printException(() -> toastMessage);
-
-        SpoofSignaturePatch.setStoryboardRendererSpec("");
-    }
 }
