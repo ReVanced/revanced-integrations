@@ -79,7 +79,7 @@ public class SpoofSignaturePatch {
         if (!videoId.equals(currentVideoId)) {
             currentVideoId = videoId;
             renderer = fetchStoryboardRenderer(videoId);
-            LogHelper.printDebug(() -> "Fetched: " + renderer.toString());
+            LogHelper.printDebug(() -> "Fetched: " + renderer);
         }
 
         return INCOGNITO_PARAMETERS;
