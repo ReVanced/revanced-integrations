@@ -2,6 +2,8 @@ package app.revanced.integrations.utils;
 
 import android.content.Context;
 
+import app.revanced.integrations.patches.components.SuggestionsShelfFilter;
+
 public class NavBarIndexHook {
 
     private static int currentNavBarIndex = 0;
@@ -20,6 +22,16 @@ public class NavBarIndexHook {
     }
 
     public static void setLastNavBarIndex() {
+        // if we come to back to Library fragment from any other like downloads page, playlists, your videos, or your clips
+        // NavBar index should still be same
+        if (SuggestionsShelfFilter.isLibraryRecentShelfVisible && currentNavBarIndex == 4)
+            return;
+
+        // if we come to back to Home fragment from any other like trending, or news, or sports page
+        // NavBar index should still be same
+        if (SuggestionsShelfFilter.isHomeFeedVisible && currentNavBarIndex == 0)
+            return;
+
         currentNavBarIndex = lastNavBarIndex;
     }
 

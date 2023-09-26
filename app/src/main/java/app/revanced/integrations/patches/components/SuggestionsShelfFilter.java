@@ -18,6 +18,10 @@ public class SuggestionsShelfFilter extends Filter {
             SettingsEnum.SPOOF_APP_VERSION.getBoolean()
                     && SettingsEnum.SPOOF_APP_VERSION_TARGET.getString().compareTo("17.08.35") <= 0;
 
+    // Must be volatile or synchronized, as litho filtering runs off main thread and this field is then access from the main thread.
+    public static volatile boolean isLibraryRecentShelfVisible;
+    public static volatile boolean isHomeFeedVisible;
+
     public SuggestionsShelfFilter() {
         pathFilterGroupList.addAll(
                 new StringFilterGroup(
@@ -31,11 +35,15 @@ public class SuggestionsShelfFilter extends Filter {
     boolean isFiltered(@Nullable String identifier, String path, byte[] protobufBufferArray,
                        FilterGroupList matchedList, FilterGroup matchedGroup, int matchedIndex) {
         // Only one filter is added, so the matched group must be the horizontal video shelf.
-        if (path.contains("library_recent_shelf"))
+        if (path.contains("library_recent_shelf")) {
             // If the library shelf is detected, set the current navbar index to 4
             NavBarIndexHook.setCurrentNavBarIndex(4);
-
-        else if (NavBarIndexHook.isNotLibraryTab())
+            isLibraryRecentShelfVisible = true;
+        } else if (path.contains("more_drawer")) {
+            // If drawer button is detected, set the current NavBar index to zero
+            NavBarIndexHook.setCurrentNavBarIndex(0);
+            isHomeFeedVisible = true;
+        } else if (NavBarIndexHook.isNotLibraryTab())
             // When the Library Tab is not detected, hide the suggestion shelf
             return super.isFiltered(path, identifier, protobufBufferArray, matchedList, matchedGroup, matchedIndex);
 
@@ -44,7 +52,7 @@ public class SuggestionsShelfFilter extends Filter {
 
     /**
      * Injection point.
-     *
+     * <p>
      * Only used to hide breaking news on tablet layout which still uses the old UI components.
      */
     public static void hideBreakingNews(View view) {
