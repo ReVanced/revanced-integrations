@@ -1,31 +1,25 @@
 package app.revanced.integrations.patches;
 
-import static app.revanced.integrations.returnyoutubedislike.ReturnYouTubeDislike.Vote;
-
 import android.graphics.Rect;
 import android.os.Build;
-import android.text.Editable;
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.Spanned;
-import android.text.TextWatcher;
+import android.text.*;
 import android.view.View;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
-import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
-
 import app.revanced.integrations.returnyoutubedislike.ReturnYouTubeDislike;
 import app.revanced.integrations.returnyoutubedislike.requests.ReturnYouTubeDislikeApi;
 import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.shared.PlayerType;
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedUtils;
+
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
+
+import static app.revanced.integrations.returnyoutubedislike.ReturnYouTubeDislike.Vote;
 
 /**
  * Handles all interaction of UI patch components.
@@ -149,7 +143,7 @@ public class ReturnYouTubeDislikePatch {
                                                  @NonNull AtomicReference<CharSequence> textRef,
                                                  @NonNull CharSequence original) {
         try {
-            if (!SettingsEnum.RYD_ENABLED.getBoolean() || PlayerType.getCurrent().isNoneOrHidden()) {
+            if (!SettingsEnum.RYD_ENABLED.getBoolean()) {
                 return original;
             }
 
@@ -159,7 +153,8 @@ public class ReturnYouTubeDislikePatch {
             final boolean isSegmentedButton;
             if (conversionContextString.contains("|segmented_like_dislike_button.eml|")) {
                 isSegmentedButton = true;
-            } else if (conversionContextString.contains("|dislike_button.eml|")) {
+            } else if (conversionContextString.contains("|dislike_button.eml|") ||
+                    conversionContextString.contains("|shorts_dislike_button.eml|")) {
                 isSegmentedButton = false;
             } else {
                 return original;
