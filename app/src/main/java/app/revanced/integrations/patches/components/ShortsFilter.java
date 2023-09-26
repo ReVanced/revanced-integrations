@@ -130,7 +130,7 @@ public final class ShortsFilter extends Filter {
         hideViewBy1dpUnderCondition(SettingsEnum.HIDE_SHORTS, shortsShelfView);
     }
 
-    // region HIde the buttons in older versions of YouTube. New versions use Litho.
+    // region Hide the buttons in older versions of YouTube. New versions use Litho.
 
     public static void hideShortsCommentsButton(final View commentsButtonView) {
         hideViewUnderCondition(SettingsEnum.HIDE_SHORTS_COMMENTS_BUTTON, commentsButtonView);
