@@ -1,3 +1,24 @@
+# [0.118.0-dev.12](https://github.com/ReVanced/revanced-integrations/compare/v0.118.0-dev.11...v0.118.0-dev.12) (2023-09-26)
+
+
+### Bug Fixes
+
+* **YouTube - Client spoof:** Show seekbar thumbnail for age restricted and paid videos ([01019b0](https://github.com/ReVanced/revanced-integrations/commit/01019b09c1c106ed814b994dd8af558a18873c1d))
+
+# [0.118.0-dev.11](https://github.com/ReVanced/revanced-integrations/compare/v0.118.0-dev.10...v0.118.0-dev.11) (2023-09-26)
+
+
+### Bug Fixes
+
+* **YouTube - Client spoof:** fix toast shown if opening paid or age restricted video ([#482](https://github.com/ReVanced/revanced-integrations/issues/482)) ([e72b65b](https://github.com/ReVanced/revanced-integrations/commit/e72b65b599353715a6467463226abc603bc850f7))
+
+# [0.118.0-dev.10](https://github.com/ReVanced/revanced-integrations/compare/v0.118.0-dev.9...v0.118.0-dev.10) (2023-09-26)
+
+
+### Bug Fixes
+
+* **YouTube - Client spoof:** fix storyboard fetched out of order ([#481](https://github.com/ReVanced/revanced-integrations/issues/481)) ([8398774](https://github.com/ReVanced/revanced-integrations/commit/83987747e67541cd44221ede8c4020baba36c7b8))
+
 # [0.118.0-dev.9](https://github.com/ReVanced/revanced-integrations/compare/v0.118.0-dev.8...v0.118.0-dev.9) (2023-09-25)
 
 
