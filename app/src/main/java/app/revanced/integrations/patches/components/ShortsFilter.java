@@ -1,31 +1,30 @@
 package app.revanced.integrations.patches.components;
 
+import android.os.Build;
+import android.view.View;
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import app.revanced.integrations.settings.SettingsEnum;
+import com.google.android.libraries.youtube.rendering.ui.pivotbar.PivotBar;
+
 import static app.revanced.integrations.utils.ReVancedUtils.hideViewBy1dpUnderCondition;
 import static app.revanced.integrations.utils.ReVancedUtils.hideViewUnderCondition;
 
-import android.view.View;
-
-import androidx.annotation.Nullable;
-
-import com.google.android.libraries.youtube.rendering.ui.pivotbar.PivotBar;
-
-import app.revanced.integrations.settings.SettingsEnum;
-
+@RequiresApi(api = Build.VERSION_CODES.N)
 public final class ShortsFilter extends Filter {
-    private static final String REEL_CHANNEL_BAR_PATH = "reel_channel_bar.eml";
     public static PivotBar pivotBar; // Set by patch.
+    private final String REEL_CHANNEL_BAR_PATH = "reel_channel_bar.eml";
 
     private final StringFilterGroup channelBar;
     private final StringFilterGroup soundButton;
     private final StringFilterGroup infoPanel;
-    private final StringFilterGroup shortsShelfHeader;
+    private final StringFilterGroup shelfHeader;
+
+    private final StringFilterGroup videoActionButton;
+    private final ByteArrayFilterGroupList videoActionButtonGroupList = new ByteArrayFilterGroupList();
+
 
     public ShortsFilter() {
-        // Home / subscription feed components.
-        var thanksButton = new StringFilterGroup(
-                SettingsEnum.HIDE_SHORTS_THANKS_BUTTON,
-                "suggested_action"
-        );
         var shorts = new StringFilterGroup(
                 SettingsEnum.HIDE_SHORTS,
                 "shorts_shelf",
@@ -33,14 +32,21 @@ public final class ShortsFilter extends Filter {
                 "shorts_grid",
                 "shorts_video_cell",
                 "shorts_pivot_item"
+
         );
         // Use a different filter group for this pattern, as it requires an additional check after matching.
-        shortsShelfHeader = new StringFilterGroup(
+        shelfHeader = new StringFilterGroup(
                 SettingsEnum.HIDE_SHORTS,
                 "shelf_header.eml"
         );
-        identifierFilterGroupList.addAll(shorts, shortsShelfHeader, thanksButton);
 
+        // Home / subscription feed components.
+        var thanksButton = new StringFilterGroup(
+                SettingsEnum.HIDE_SHORTS_THANKS_BUTTON,
+                "suggested_action"
+        );
+
+        identifierFilterGroupList.addAll(shorts, shelfHeader, thanksButton);
 
         // Shorts player components.
         var joinButton = new StringFilterGroup(
@@ -51,6 +57,7 @@ public final class ShortsFilter extends Filter {
                 SettingsEnum.HIDE_SHORTS_SUBSCRIBE_BUTTON,
                 "subscribe_button"
         );
+
         channelBar = new StringFilterGroup(
                 SettingsEnum.HIDE_SHORTS_CHANNEL_BAR,
                 REEL_CHANNEL_BAR_PATH
@@ -59,12 +66,39 @@ public final class ShortsFilter extends Filter {
                 SettingsEnum.HIDE_SHORTS_SOUND_BUTTON,
                 "reel_pivot_button"
         );
+
         infoPanel = new StringFilterGroup(
                 SettingsEnum.HIDE_SHORTS_INFO_PANEL,
                 "shorts_info_panel_overview"
         );
-        pathFilterGroupList.addAll(joinButton, subscribeButton, channelBar, soundButton, infoPanel);
+
+        videoActionButton = new StringFilterGroup(
+                null,
+                "ContainerType|shorts_video_action_button"
+        );
+
+        pathFilterGroupList.addAll(
+                joinButton, subscribeButton, channelBar, soundButton, infoPanel, videoActionButton
+        );
+
+        var shortsCommentButton = new ByteArrayAsStringFilterGroup(
+                SettingsEnum.HIDE_SHORTS_COMMENTS_BUTTON,
+                "reel_comment_button"
+        );
+
+        var shortsShareButton = new ByteArrayAsStringFilterGroup(
+                SettingsEnum.HIDE_SHORTS_SHARE_BUTTON,
+                "reel_share_button"
+        );
+
+        var shortsRemixButton = new ByteArrayAsStringFilterGroup(
+                SettingsEnum.HIDE_SHORTS_REMIX_BUTTON,
+                "reel_remix_button"
+        );
+
+        videoActionButtonGroupList.addAll(shortsCommentButton, shortsShareButton, shortsRemixButton);
     }
+
 
     @Override
     boolean isFiltered(@Nullable String identifier, String path, byte[] protobufBufferArray,
@@ -74,11 +108,15 @@ public final class ShortsFilter extends Filter {
             if (matchedGroup == soundButton || matchedGroup == infoPanel || matchedGroup == channelBar)
                 return super.isFiltered(path, identifier, protobufBufferArray, matchedList, matchedGroup, matchedIndex);
 
+            // Video action buttons (comment, share, remix) have the same path.
+            if (matchedGroup == videoActionButton && videoActionButtonGroupList.check(protobufBufferArray).isFiltered())
+                return true;
+
             // Filter other path groups from pathFilterGroupList, only when reelChannelBar is visible
             // to avoid false positives.
             if (!path.startsWith(REEL_CHANNEL_BAR_PATH))
                 return false;
-        } else if (matchedGroup == shortsShelfHeader) {
+        } else if (matchedGroup == shelfHeader) {
             // Because the header is used in watch history and possibly other places, check for the index,
             // which is 0 when the shelf header is used for Shorts.
             if (matchedIndex != 0) return false;
@@ -92,7 +130,7 @@ public final class ShortsFilter extends Filter {
         hideViewBy1dpUnderCondition(SettingsEnum.HIDE_SHORTS, shortsShelfView);
     }
 
-    // Additional components that have to be hidden by setting their visibility
+    // region HIde the buttons in older versions of YouTube. New versions use Litho.
 
     public static void hideShortsCommentsButton(final View commentsButtonView) {
         hideViewUnderCondition(SettingsEnum.HIDE_SHORTS_COMMENTS_BUTTON, commentsButtonView);
@@ -105,6 +143,8 @@ public final class ShortsFilter extends Filter {
     public static void hideShortsShareButton(final View shareButtonView) {
         hideViewUnderCondition(SettingsEnum.HIDE_SHORTS_SHARE_BUTTON, shareButtonView);
     }
+
+    // endregion
 
     public static void hideNavigationBar() {
         if (!SettingsEnum.HIDE_SHORTS_NAVIGATION_BAR.getBoolean()) return;
