@@ -93,13 +93,17 @@ public class SpoofSignaturePatch {
                 // This will cause playback issues in the feed, but it's better than manipulating the history.
                 parameters;
 
-        String videoId = VideoInformation.getVideoIdPlayerResponse();
+        requestStoryboardRenderer();
+
+        return INCOGNITO_PARAMETERS;
+    }
+
+    private static void requestStoryboardRenderer() {
+        String videoId = VideoInformation.getPlayerResponseVideoId();
         if (!videoId.equals(lastPlayerResponseVideoId)) {
             lastPlayerResponseVideoId = videoId;
             rendererFuture = ReVancedUtils.submitOnBackgroundThread(() -> getStoryboardRenderer(videoId));
         }
-
-        return INCOGNITO_PARAMETERS;
     }
 
     /**
