@@ -25,6 +25,10 @@ public final class VideoInformation {
     private static String videoId = "";
     private static long videoLength = 0;
     private static long videoTime = -1;
+
+    @NonNull
+    private static String videoIdPlayerResponse = "";
+
     /**
      * The current playback speed
      */
@@ -58,6 +62,18 @@ public final class VideoInformation {
         if (!videoId.equals(newlyLoadedVideoId)) {
             LogHelper.printDebug(() -> "New video id: " + newlyLoadedVideoId);
             videoId = newlyLoadedVideoId;
+        }
+    }
+
+    /**
+     * Injection point.
+     *
+     * @param newlyLoadedVideoId id of the last video loaded.
+     */
+    public static void setVideoIdPlayerResponse(@NonNull String newlyLoadedVideoId) {
+        if (!videoIdPlayerResponse.equals(newlyLoadedVideoId)) {
+            LogHelper.printDebug(() -> "New player response video id: " + newlyLoadedVideoId);
+            videoIdPlayerResponse = newlyLoadedVideoId;
         }
     }
 
@@ -139,6 +155,22 @@ public final class VideoInformation {
     @NonNull
     public static String getVideoId() {
         return videoId;
+    }
+
+    /**
+     * Differs from {@link #videoId} as this is the video id for the
+     * last player response received, which may not be the current video playing.
+     *
+     * If Shorts are loading the background, this commonly will be
+     * different than the short that is currently on screen.
+     *
+     * For most use cases, you should instead use {@link #getVideoId()}.
+     *
+     * @return The id of the last video loaded. Empty string if not set yet.
+     */
+    @NonNull
+    public static String getVideoIdPlayerResponse() {
+        return videoIdPlayerResponse;
     }
 
     /**

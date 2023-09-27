@@ -46,7 +46,7 @@ public class SpoofSignaturePatch {
     /**
      * Last video id loaded. Used to prevent reloading the same spec multiple times.
      */
-    private static volatile String currentVideoId;
+    private static volatile String lastPlayerResponseVideoId;
 
     private static volatile Future<StoryboardRenderer> rendererFuture;
 
@@ -81,7 +81,6 @@ public class SpoofSignaturePatch {
         var isClip = parameters.length() > 150;
         if (isClip) return parameters;
 
-
         // Shorts do not need to be spoofed.
         if (parameters.startsWith(SHORTS_PLAYER_PARAMETERS)) return parameters;
 
@@ -94,9 +93,9 @@ public class SpoofSignaturePatch {
                 // This will cause playback issues in the feed, but it's better than manipulating the history.
                 parameters;
 
-        String videoId = VideoInformation.getVideoId();
-        if (!videoId.equals(currentVideoId)) {
-            currentVideoId = videoId;
+        String videoId = VideoInformation.getVideoIdPlayerResponse();
+        if (!videoId.equals(lastPlayerResponseVideoId)) {
+            lastPlayerResponseVideoId = videoId;
             rendererFuture = ReVancedUtils.submitOnBackgroundThread(() -> getStoryboardRenderer(videoId));
         }
 
