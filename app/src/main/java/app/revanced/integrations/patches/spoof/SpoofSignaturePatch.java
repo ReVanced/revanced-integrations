@@ -1,19 +1,20 @@
 package app.revanced.integrations.patches.spoof;
 
+import static app.revanced.integrations.patches.spoof.requests.StoryboardRendererRequester.getStoryboardRenderer;
+import static app.revanced.integrations.utils.ReVancedUtils.containsAny;
+
 import androidx.annotation.Nullable;
-import app.revanced.integrations.patches.VideoInformation;
-import app.revanced.integrations.settings.SettingsEnum;
-import app.revanced.integrations.shared.PlayerType;
-import app.revanced.integrations.utils.LogHelper;
-import app.revanced.integrations.utils.ReVancedUtils;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import static app.revanced.integrations.patches.spoof.requests.StoryboardRendererRequester.getStoryboardRenderer;
-import static app.revanced.integrations.utils.ReVancedUtils.containsAny;
+import app.revanced.integrations.patches.VideoInformation;
+import app.revanced.integrations.settings.SettingsEnum;
+import app.revanced.integrations.shared.PlayerType;
+import app.revanced.integrations.utils.LogHelper;
+import app.revanced.integrations.utils.ReVancedUtils;
 
 /** @noinspection unused*/
 public class SpoofSignaturePatch {
@@ -106,7 +107,7 @@ public class SpoofSignaturePatch {
             lastPlayerResponseVideoId = videoId;
             rendererFuture = ReVancedUtils.submitOnBackgroundThread(() -> getStoryboardRenderer(videoId));
         }
-        // Block until the fetch is completed.  Without this,occasionally when a new video is opened
+        // Block until the fetch is completed.  Without this, occasionally when a new video is opened
         // the video will be frozen a few seconds while the audio plays.
         // This is because the main thread is calling to get the storyboard but the fetch is not completed.
         // To prevent this, call get() here and block until the fetch is completed.
