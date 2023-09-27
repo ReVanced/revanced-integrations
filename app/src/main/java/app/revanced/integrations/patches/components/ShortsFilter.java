@@ -23,7 +23,6 @@ public final class ShortsFilter extends Filter {
     private final StringFilterGroup videoActionButton;
     private final ByteArrayFilterGroupList videoActionButtonGroupList = new ByteArrayFilterGroupList();
 
-
     public ShortsFilter() {
         var shorts = new StringFilterGroup(
                 SettingsEnum.HIDE_SHORTS,
@@ -34,6 +33,7 @@ public final class ShortsFilter extends Filter {
                 "shorts_pivot_item"
 
         );
+        // Feed Shorts shelf header.
         // Use a different filter group for this pattern, as it requires an additional check after matching.
         shelfHeader = new StringFilterGroup(
                 SettingsEnum.HIDE_SHORTS,
@@ -99,18 +99,20 @@ public final class ShortsFilter extends Filter {
         videoActionButtonGroupList.addAll(shortsCommentButton, shortsShareButton, shortsRemixButton);
     }
 
-
     @Override
     boolean isFiltered(@Nullable String identifier, String path, byte[] protobufBufferArray,
                        FilterGroupList matchedList, FilterGroup matchedGroup, int matchedIndex) {
         if (matchedList == pathFilterGroupList) {
             // Always filter if matched.
             if (matchedGroup == soundButton || matchedGroup == infoPanel || matchedGroup == channelBar)
-                return super.isFiltered(path, identifier, protobufBufferArray, matchedList, matchedGroup, matchedIndex);
+                return super.isFiltered(identifier, path, protobufBufferArray, matchedList, matchedGroup, matchedIndex);
 
             // Video action buttons (comment, share, remix) have the same path.
-            if (matchedGroup == videoActionButton && videoActionButtonGroupList.check(protobufBufferArray).isFiltered())
-                return true;
+            if (matchedGroup == videoActionButton) {
+                if (videoActionButtonGroupList.check(protobufBufferArray).isFiltered())
+                    return super.isFiltered(identifier, path, protobufBufferArray, matchedList, matchedGroup, matchedIndex);
+                return false;
+            }
 
             // Filter other path groups from pathFilterGroupList, only when reelChannelBar is visible
             // to avoid false positives.
@@ -123,7 +125,7 @@ public final class ShortsFilter extends Filter {
         }
 
         // Super class handles logging.
-        return super.isFiltered(path, identifier, protobufBufferArray, matchedList, matchedGroup, matchedIndex);
+        return super.isFiltered(identifier, path, protobufBufferArray, matchedList, matchedGroup, matchedIndex);
     }
 
     public static void hideShortsShelf(final View shortsShelfView) {
