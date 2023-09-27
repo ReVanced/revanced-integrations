@@ -104,8 +104,8 @@ public class SpoofSignaturePatch {
     private static void fetchStoryboardRenderer() {
         String videoId = VideoInformation.getPlayerResponseVideoId();
         if (!videoId.equals(lastPlayerResponseVideoId)) {
-            lastPlayerResponseVideoId = videoId;
             rendererFuture = ReVancedUtils.submitOnBackgroundThread(() -> getStoryboardRenderer(videoId));
+            lastPlayerResponseVideoId = videoId;
         }
         // Block until the fetch is completed.  Without this, occasionally when a new video is opened
         // the video will be frozen a few seconds while the audio plays.
