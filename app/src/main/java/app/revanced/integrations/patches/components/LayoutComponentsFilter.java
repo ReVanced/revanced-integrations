@@ -198,7 +198,7 @@ public final class LayoutComponentsFilter extends Filter {
         final boolean isMixPlaylistFiltered = mixPlaylists.check(bytes).isFiltered();
 
         if (isMixPlaylistFiltered)
-            LogHelper.printDebug(() -> "Filtered protobufBuffer: " + mixPlaylists.setting);
+            LogHelper.printDebug(() -> "Filtered mix playlist");
 
         return isMixPlaylistFiltered;
     }
