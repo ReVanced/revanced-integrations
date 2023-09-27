@@ -95,18 +95,19 @@ public class SpoofSignaturePatch {
                 // This will cause playback issues in the feed, but it's better than manipulating the history.
                 parameters;
 
-        requestStoryboardRenderer();
+        fetchStoryboardRenderer();
 
         return INCOGNITO_PARAMETERS;
     }
 
-    private static void requestStoryboardRenderer() {
+    private static void fetchStoryboardRenderer() {
         String videoId = VideoInformation.getPlayerResponseVideoId();
         if (!videoId.equals(lastPlayerResponseVideoId)) {
             lastPlayerResponseVideoId = videoId;
             rendererFuture = ReVancedUtils.submitOnBackgroundThread(() -> getStoryboardRenderer(videoId));
         }
-        // Occasionally when a new video is opened the video will be frozen a few seconds while the audio plays.
+        // Block until the fetch is completed.  Without this,occasionally when a new video is opened
+        // the video will be frozen a few seconds while the audio plays.
         // This is because the main thread is calling to get the storyboard but the fetch is not completed.
         // To prevent this, call get() here and block until the fetch is completed.
         // So later when the main thread calls to get the renderer it will never block as the future is done.

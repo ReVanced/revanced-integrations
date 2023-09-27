@@ -26,7 +26,7 @@ public final class VideoInformation {
     private static long videoTime = -1;
 
     @NonNull
-    private static String playerResponseVideoId = "";
+    private static volatile String playerResponseVideoId = "";
 
     /**
      * The current playback speed
@@ -65,7 +65,7 @@ public final class VideoInformation {
     }
 
     /**
-     * Injection point.
+     * Injection point.  Called off the main thread.
      *
      * @param videoId The id of the last video loaded.
      */
