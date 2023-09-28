@@ -1,3 +1,17 @@
+# [0.118.0-dev.15](https://github.com/ReVanced/revanced-integrations/compare/v0.118.0-dev.14...v0.118.0-dev.15) (2023-09-27)
+
+
+### Features
+
+* **YouTube:** Bump compatibility to `18.37.36` ([#483](https://github.com/ReVanced/revanced-integrations/issues/483)) ([5dadb0d](https://github.com/ReVanced/revanced-integrations/commit/5dadb0d523f2b1eb4216d43770af37a156c8a477))
+
+# [0.118.0-dev.14](https://github.com/ReVanced/revanced-integrations/compare/v0.118.0-dev.13...v0.118.0-dev.14) (2023-09-27)
+
+
+### Bug Fixes
+
+* **YouTube - Hide info cards:** Fix info cards not hiding for some users ([#487](https://github.com/ReVanced/revanced-integrations/issues/487)) ([00c4c40](https://github.com/ReVanced/revanced-integrations/commit/00c4c4025bc27495e490fdb231ac803881c9887f))
+
 # [0.118.0-dev.13](https://github.com/ReVanced/revanced-integrations/compare/v0.118.0-dev.12...v0.118.0-dev.13) (2023-09-27)
 
 
