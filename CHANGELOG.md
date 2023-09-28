@@ -1,3 +1,96 @@
+# [0.118.0-dev.16](https://github.com/ReVanced/revanced-integrations/compare/v0.118.0-dev.15...v0.118.0-dev.16) (2023-09-28)
+
+
+### Features
+
+* **YouTube:** Add `Bypass URL redirects` patch ([9109653](https://github.com/ReVanced/revanced-integrations/commit/91096532eedf396920d69932638f667cbf850cbe))
+
+# [0.118.0-dev.15](https://github.com/ReVanced/revanced-integrations/compare/v0.118.0-dev.14...v0.118.0-dev.15) (2023-09-27)
+
+
+### Features
+
+* **YouTube:** Bump compatibility to `18.37.36` ([#483](https://github.com/ReVanced/revanced-integrations/issues/483)) ([5dadb0d](https://github.com/ReVanced/revanced-integrations/commit/5dadb0d523f2b1eb4216d43770af37a156c8a477))
+
+# [0.118.0-dev.14](https://github.com/ReVanced/revanced-integrations/compare/v0.118.0-dev.13...v0.118.0-dev.14) (2023-09-27)
+
+
+### Bug Fixes
+
+* **YouTube - Hide info cards:** Fix info cards not hiding for some users ([#487](https://github.com/ReVanced/revanced-integrations/issues/487)) ([00c4c40](https://github.com/ReVanced/revanced-integrations/commit/00c4c4025bc27495e490fdb231ac803881c9887f))
+
+# [0.118.0-dev.13](https://github.com/ReVanced/revanced-integrations/compare/v0.118.0-dev.12...v0.118.0-dev.13) (2023-09-27)
+
+
+### Bug Fixes
+
+* **YouTube - Client spoof:** fix occasionally frozen video playback ([#486](https://github.com/ReVanced/revanced-integrations/issues/486)) ([b0b6ff6](https://github.com/ReVanced/revanced-integrations/commit/b0b6ff6a82820d4578c5cfc5f69ae7aaaac49c7f))
+
+# [0.118.0-dev.12](https://github.com/ReVanced/revanced-integrations/compare/v0.118.0-dev.11...v0.118.0-dev.12) (2023-09-26)
+
+
+### Bug Fixes
+
+* **YouTube - Client spoof:** Show seekbar thumbnail for age restricted and paid videos ([01019b0](https://github.com/ReVanced/revanced-integrations/commit/01019b09c1c106ed814b994dd8af558a18873c1d))
+
+# [0.118.0-dev.11](https://github.com/ReVanced/revanced-integrations/compare/v0.118.0-dev.10...v0.118.0-dev.11) (2023-09-26)
+
+
+### Bug Fixes
+
+* **YouTube - Client spoof:** fix toast shown if opening paid or age restricted video ([#482](https://github.com/ReVanced/revanced-integrations/issues/482)) ([e72b65b](https://github.com/ReVanced/revanced-integrations/commit/e72b65b599353715a6467463226abc603bc850f7))
+
+# [0.118.0-dev.10](https://github.com/ReVanced/revanced-integrations/compare/v0.118.0-dev.9...v0.118.0-dev.10) (2023-09-26)
+
+
+### Bug Fixes
+
+* **YouTube - Client spoof:** fix storyboard fetched out of order ([#481](https://github.com/ReVanced/revanced-integrations/issues/481)) ([8398774](https://github.com/ReVanced/revanced-integrations/commit/83987747e67541cd44221ede8c4020baba36c7b8))
+
+# [0.118.0-dev.9](https://github.com/ReVanced/revanced-integrations/compare/v0.118.0-dev.8...v0.118.0-dev.9) (2023-09-25)
+
+
+### Bug Fixes
+
+* **YouTube - Client spoof:** Removed unused code ([#480](https://github.com/ReVanced/revanced-integrations/issues/480)) ([e6903bf](https://github.com/ReVanced/revanced-integrations/commit/e6903bff95b485d21773537bbcc162411b616618))
+
+# [0.118.0-dev.8](https://github.com/ReVanced/revanced-integrations/compare/v0.118.0-dev.7...v0.118.0-dev.8) (2023-09-25)
+
+
+### Bug Fixes
+
+* **YouTube - Client spoof:** Display seekbar thumbnails in high quality ([f71c1a0](https://github.com/ReVanced/revanced-integrations/commit/f71c1a0c156b2320e06dd98b3e5b276560d438aa))
+
+# [0.118.0-dev.7](https://github.com/ReVanced/revanced-integrations/compare/v0.118.0-dev.6...v0.118.0-dev.7) (2023-09-25)
+
+
+### Bug Fixes
+
+* Remove parameter from route ([4b0925e](https://github.com/ReVanced/revanced-integrations/commit/4b0925e33762c02e95ef9b1aadcae1038af71a50))
+
+# [0.118.0-dev.6](https://github.com/ReVanced/revanced-integrations/compare/v0.118.0-dev.5...v0.118.0-dev.6) (2023-09-25)
+
+
+### Performance Improvements
+
+* Only request required fields ([d20b768](https://github.com/ReVanced/revanced-integrations/commit/d20b768bc23d167d9f0d2c651c75b3f92944e731))
+* Remove unnecessary api key parameter ([ba5e7d8](https://github.com/ReVanced/revanced-integrations/commit/ba5e7d870ee88ad45c233d914e1e2795de920cb2))
+
+# [0.118.0-dev.5](https://github.com/ReVanced/revanced-integrations/compare/v0.118.0-dev.4...v0.118.0-dev.5) (2023-09-25)
+
+
+### Bug Fixes
+
+* **YouTube - Client spoof:** Restore clipping videos functionality ([2cd1738](https://github.com/ReVanced/revanced-integrations/commit/2cd1738d2494add13c48b64ccc9aad2432b2d8e3))
+* **YouTube - Client spoof:** Restore seekbar thumbnails ([978f630](https://github.com/ReVanced/revanced-integrations/commit/978f630c0267ec2b0d9bb9b5b0b3cdc9abef65ec))
+
+# [0.118.0-dev.4](https://github.com/ReVanced/revanced-integrations/compare/v0.118.0-dev.3...v0.118.0-dev.4) (2023-09-23)
+
+
+### Bug Fixes
+
+* **YouTube - Client spoof:** Do not record feed videos to history by default ([#478](https://github.com/ReVanced/revanced-integrations/issues/478)) ([ef1cca0](https://github.com/ReVanced/revanced-integrations/commit/ef1cca02c165d9c24e64b43fae375ae57bf90a52))
+
 # [0.118.0-dev.3](https://github.com/ReVanced/revanced-integrations/compare/v0.118.0-dev.2...v0.118.0-dev.3) (2023-09-19)
 
 
