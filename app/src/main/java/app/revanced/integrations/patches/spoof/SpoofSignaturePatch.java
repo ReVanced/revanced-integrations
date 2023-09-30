@@ -51,11 +51,13 @@ public class SpoofSignaturePatch {
 
     private static volatile Future<StoryboardRenderer> rendererFuture;
 
+    private static volatile boolean useOriginalStoryboardRenderer;
+
     @Nullable
     private static StoryboardRenderer getRenderer() {
         if (rendererFuture != null) {
             try {
-                return rendererFuture.get(5000, TimeUnit.MILLISECONDS);
+                return rendererFuture.get(4000, TimeUnit.MILLISECONDS);
             } catch (TimeoutException ex) {
                 LogHelper.printDebug(() -> "Could not get renderer (get timed out)");
             } catch (ExecutionException | InterruptedException ex) {
@@ -81,27 +83,34 @@ public class SpoofSignaturePatch {
         // Clip's player parameters contain a lot of information (e.g. video start and end time or whether it loops)
         // For this reason, the player parameters of a clip are usually very long (150~300 characters).
         // Clips are 60 seconds or less in length, so no spoofing.
-        var isClip = parameters.length() > 150;
-        if (isClip) return parameters;
+        if (useOriginalStoryboardRenderer = parameters.length() > 150) return parameters;
 
         // Shorts do not need to be spoofed.
-        if (parameters.startsWith(SHORTS_PLAYER_PARAMETERS)) return parameters;
+        if (useOriginalStoryboardRenderer = parameters.startsWith(SHORTS_PLAYER_PARAMETERS)) return parameters;
 
-        boolean isPlayingFeed = PlayerType.getCurrent() == PlayerType.INLINE_MINIMAL && containsAny(parameters, AUTOPLAY_PARAMETERS);
-        if (isPlayingFeed) return SettingsEnum.SPOOF_SIGNATURE_IN_FEED.getBoolean() ?
-                // Prepend the scrim parameter to mute videos in feed.
-                SCRIM_PARAMETER + INCOGNITO_PARAMETERS :
-                // In order to prevent videos that are auto-played in feed to be added to history,
-                // only spoof the parameter if the video is not playing in the feed.
-                // This will cause playback issues in the feed, but it's better than manipulating the history.
-                parameters;
+        boolean isPlayingFeed = PlayerType.getCurrent() == PlayerType.INLINE_MINIMAL
+                && containsAny(parameters, AUTOPLAY_PARAMETERS);
+        if (isPlayingFeed) {
+            if (useOriginalStoryboardRenderer = !SettingsEnum.SPOOF_SIGNATURE_IN_FEED.getBoolean()) {
+                // Don't spoof the feed video playback. This will cause video playback issues,
+                // but only if user continues watching for more than 1 minute.
+                return parameters;
+            }
+            // Spoof the feed video.  Video will show up in watch history and video subtitles are missing.
+            fetchStoryboardRenderer();
+            return SCRIM_PARAMETER + INCOGNITO_PARAMETERS;
+        }
 
         fetchStoryboardRenderer();
-
         return INCOGNITO_PARAMETERS;
     }
 
     private static void fetchStoryboardRenderer() {
+        if (!SettingsEnum.SPOOF_STORYBOARD_RENDERER.getBoolean()) {
+            lastPlayerResponseVideoId = null;
+            rendererFuture = null;
+            return;
+        }
         String videoId = VideoInformation.getPlayerResponseVideoId();
         if (!videoId.equals(lastPlayerResponseVideoId)) {
             rendererFuture = ReVancedUtils.submitOnBackgroundThread(() -> getStoryboardRenderer(videoId));
@@ -122,15 +131,14 @@ public class SpoofSignaturePatch {
         return SettingsEnum.SPOOF_SIGNATURE.getBoolean();
     }
 
-    /**
-     * Injection point.
-     * Called from background threads and from the main thread.
-     */
-    @Nullable
-    public static String getStoryboardRendererSpec(String originalStoryboardRendererSpec) {
-        if (SettingsEnum.SPOOF_SIGNATURE.getBoolean()) {
+    private static String getStoryboardRendererSpec(String originalStoryboardRendererSpec,
+                                                    boolean returnNullIfLiveStream) {
+        if (SettingsEnum.SPOOF_SIGNATURE.getBoolean() && !useOriginalStoryboardRenderer) {
             StoryboardRenderer renderer = getRenderer();
-            if (renderer != null) return renderer.getSpec();
+            if (renderer != null) {
+                if (returnNullIfLiveStream && renderer.isLiveStream()) return null;
+                return renderer.getSpec();
+            }
         }
 
         return originalStoryboardRendererSpec;
@@ -138,9 +146,28 @@ public class SpoofSignaturePatch {
 
     /**
      * Injection point.
+     * Called from background threads and from the main thread.
+     */
+    @Nullable
+    public static String getStoryboardRendererSpec(String originalStoryboardRendererSpec) {
+        return getStoryboardRendererSpec(originalStoryboardRendererSpec, false);
+    }
+
+    /**
+     * Injection point.
+     * Uses additional check to handle live streams.
+     * Called from background threads and from the main thread.
+     */
+    @Nullable
+    public static String getStoryboardDecoderRendererSpec(String originalStoryboardRendererSpec) {
+        return getStoryboardRendererSpec(originalStoryboardRendererSpec, true);
+    }
+
+    /**
+     * Injection point.
      */
     public static int getRecommendedLevel(int originalLevel) {
-        if (SettingsEnum.SPOOF_SIGNATURE.getBoolean()) {
+        if (SettingsEnum.SPOOF_SIGNATURE.getBoolean() && !useOriginalStoryboardRenderer) {
             StoryboardRenderer renderer = getRenderer();
             if (renderer != null) {
                 Integer recommendedLevel = renderer.getRecommendedLevel();
