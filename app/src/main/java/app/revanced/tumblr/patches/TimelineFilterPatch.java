@@ -3,11 +3,11 @@ package app.revanced.tumblr.patches;
 import com.tumblr.rumblr.model.TimelineObject;
 import com.tumblr.rumblr.model.Timelineable;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 public final class TimelineFilterPatch {
-    private static final List<String> blockedObjectTypes = new ArrayList<>();
+    private static final HashSet<String> blockedObjectTypes = new HashSet<>();
 
     static {
         // This dummy gets removed by the TimelineFilterPatch and in its place,
