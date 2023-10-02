@@ -144,23 +144,27 @@ public class ReturnYouTubeDislikePatch {
                                                  @NonNull AtomicReference<CharSequence> textRef,
                                                  @NonNull CharSequence original) {
         try {
-            if (!SettingsEnum.RYD_ENABLED.getBoolean() || PlayerType.getCurrent().isNoneOrHidden()) {
+            if (!SettingsEnum.RYD_ENABLED.getBoolean()) {
                 return original;
             }
 
             String conversionContextString = conversionContext.toString();
             LogHelper.printDebug(() -> "conversionContext: " + conversionContextString);
 
-            final boolean isSegmentedButton;
+            final Spanned replacement;
             if (conversionContextString.contains("|segmented_like_dislike_button.eml|")) {
-                isSegmentedButton = true;
-            } else if (conversionContextString.contains("|dislike_button.eml|")) {
-                isSegmentedButton = false;
+                replacement = ReturnYouTubeDislike.getDislikesSpanForRegularVideo((Spannable) original, true);
+            } else if (conversionContextString.contains("|dislike_button.eml|") ) {
+                // This code path is basically dead because it's only used when spoofing between 17.09.xx and 17.30.xx
+                // but spoofing to that range gives a broken UI layout.
+                // Keep this check here anyways just in case the old litho layout is somehow still used.
+                replacement = ReturnYouTubeDislike.getDislikesSpanForRegularVideo((Spannable) original, false);
+            } else if (conversionContextString.contains("|shorts_dislike_button.eml|")) {
+                replacement = ReturnYouTubeDislike.getDislikeSpanForShort((Spannable) original);
             } else {
                 return original;
             }
 
-            Spanned replacement = ReturnYouTubeDislike.getDislikesSpanForRegularVideo((Spannable) original, isSegmentedButton);
             textRef.set(replacement);
             return replacement;
         } catch (Exception ex) {
