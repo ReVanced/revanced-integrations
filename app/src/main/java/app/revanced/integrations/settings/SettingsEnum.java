@@ -65,6 +65,10 @@ public enum SettingsEnum {
     HIDE_EMERGENCY_BOX("revanced_hide_emergency_box", BOOLEAN, TRUE),
     HIDE_FEED_SURVEY("revanced_hide_feed_survey", BOOLEAN, TRUE),
     HIDE_GRAY_SEPARATOR("revanced_hide_gray_separator", BOOLEAN, TRUE),
+    HIDE_TIMED_REACTIONS("revanced_hide_timed_reactions", BOOLEAN, TRUE),
+    HIDE_SEARCH_RESULT_SHELF_HEADER("revanced_hide_search_result_shelf_header", BOOLEAN, TRUE),
+    HIDE_NOTIFY_ME_BUTTON("revanced_hide_notify_me_button", BOOLEAN, TRUE),
+    HIDE_JOIN_MEMBERSHIP_BUTTON("revanced_hide_join_membership_button", BOOLEAN, TRUE),
     HIDE_HIDE_CHANNEL_GUIDELINES("revanced_hide_channel_guidelines", BOOLEAN, TRUE),
     HIDE_IMAGE_SHELF("revanced_hide_image_shelf", BOOLEAN, TRUE),
     HIDE_HIDE_INFO_PANELS("revanced_hide_info_panels", BOOLEAN, TRUE),
@@ -169,6 +173,7 @@ public enum SettingsEnum {
             "revanced_spoof_signature_verification_enabled_user_dialog_message"),
     SPOOF_SIGNATURE_IN_FEED("revanced_spoof_signature_in_feed_enabled", BOOLEAN, FALSE, false,
             parents(SPOOF_SIGNATURE)),
+    BYPASS_URL_REDIRECTS("revanced_bypass_url_redirects", BOOLEAN, TRUE),
 
     // Swipe controls
     SWIPE_BRIGHTNESS("revanced_swipe_brightness", BOOLEAN, TRUE),

@@ -7,6 +7,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 
 import app.revanced.integrations.settings.SettingsEnum;
+import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.StringTrieSearch;
 
 @RequiresApi(api = Build.VERSION_CODES.N)
@@ -145,6 +146,27 @@ public final class LayoutComponentsFilter extends Filter {
                 "cell_divider" // layout residue (gray line above the buttoned ad),
         );
 
+        final var timedReactions = new StringFilterGroup(
+                SettingsEnum.HIDE_TIMED_REACTIONS,
+                "emoji_control_panel",
+                "timed_reaction"
+        );
+
+        final var searchResultShelfHeader = new StartsWithStringFilterGroup(
+                SettingsEnum.HIDE_SEARCH_RESULT_SHELF_HEADER,
+                "shelf_header.eml"
+        );
+
+        final var notifyMe = new StringFilterGroup(
+                SettingsEnum.HIDE_NOTIFY_ME_BUTTON,
+                "set_reminder_button"
+        );
+
+        final var joinMembership = new StringFilterGroup(
+                SettingsEnum.HIDE_JOIN_MEMBERSHIP_BUTTON,
+                "compact_sponsor_button"
+        );
+
         final var chipsShelf = new StringFilterGroup(
                 SettingsEnum.HIDE_CHIPS_SHELF,
                 "chips_shelf"
@@ -162,13 +184,17 @@ public final class LayoutComponentsFilter extends Filter {
                 relatedVideos,
                 compactBanner,
                 inFeedSurvey,
+                joinMembership,
                 medicalPanel,
+                notifyMe,
                 infoPanel,
+                subscribersCommunityGuidelines,
                 channelGuidelines,
                 audioTrackButton,
                 artistCard,
+                timedReactions,
                 imageShelf,
-                subscribersCommunityGuidelines,
+                searchResultShelfHeader,
                 channelMemberShelf,
                 custom
         );
@@ -195,6 +221,11 @@ public final class LayoutComponentsFilter extends Filter {
      * Called from a different place then the other filters.
      */
     public static boolean filterMixPlaylists(final byte[] bytes) {
-        return mixPlaylists.check(bytes).isFiltered();
+        final boolean isMixPlaylistFiltered = mixPlaylists.check(bytes).isFiltered();
+
+        if (isMixPlaylistFiltered)
+            LogHelper.printDebug(() -> "Filtered mix playlist");
+
+        return isMixPlaylistFiltered;
     }
 }

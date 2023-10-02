@@ -85,6 +85,18 @@ class StringFilterGroup extends FilterGroup<String> {
     }
 }
 
+class StartsWithStringFilterGroup extends StringFilterGroup {
+
+    public StartsWithStringFilterGroup(final SettingsEnum setting, final String... filters) {
+        super(setting, filters);
+    }
+
+    @Override
+    public FilterGroupResult check(final String string) {
+        return new FilterGroupResult(setting, isEnabled() && ReVancedUtils.startsWithAny(string, filters));
+    }
+}
+
 final class CustomFilterGroup extends StringFilterGroup {
 
     public CustomFilterGroup(final SettingsEnum setting, final SettingsEnum filter) {
@@ -292,10 +304,10 @@ abstract class Filter {
     boolean isFiltered(@Nullable String identifier, String path, byte[] protobufBufferArray,
                        FilterGroupList matchedList, FilterGroup matchedGroup, int matchedIndex) {
         if (SettingsEnum.DEBUG.getBoolean()) {
-            if (pathFilterGroupList == matchedList) {
-                LogHelper.printDebug(() -> getClass().getSimpleName() + " Filtered path: " + path);
-            } else if (identifierFilterGroupList == matchedList) {
+            if (matchedList == identifierFilterGroupList) {
                 LogHelper.printDebug(() -> getClass().getSimpleName() + " Filtered identifier: " + identifier);
+            } else {
+                LogHelper.printDebug(() -> getClass().getSimpleName() + " Filtered path: " + path);
             }
         }
         return true;

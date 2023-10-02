@@ -49,7 +49,7 @@ public class StoryboardRendererRequester {
         try {
             return playerResponse.getJSONObject("playabilityStatus").getString("status").equals("OK");
         } catch (JSONException e) {
-            LogHelper.printException(() -> "Failed to get playabilityStatus", e);
+            LogHelper.printDebug(() -> "Failed to get playabilityStatus for response: " + playerResponse);
         }
 
         return false;
@@ -80,7 +80,9 @@ public class StoryboardRendererRequester {
             final var rendererElement = storyboards.getJSONObject(storyboardsRendererTag);
             StoryboardRenderer renderer = new StoryboardRenderer(
                     rendererElement.getString("spec"),
-                    rendererElement.getInt("recommendedLevel")
+                    rendererElement.has("recommendedLevel")
+                            ? rendererElement.getInt("recommendedLevel")
+                            : null
             );
 
             LogHelper.printDebug(() -> "Fetched: " + renderer);
@@ -100,10 +102,10 @@ public class StoryboardRendererRequester {
 
             var renderer = getStoryboardRendererUsingBody(String.format(ANDROID_INNER_TUBE_BODY, videoId));
             if (renderer == null) {
-                LogHelper.printDebug(() -> videoId + " not available using android client");
+                LogHelper.printDebug(() -> videoId + " not available using Android client");
                 renderer = getStoryboardRendererUsingBody(String.format(TV_EMBED_INNER_TUBE_BODY, videoId, videoId));
                 if (renderer == null) {
-                    LogHelper.printDebug(() -> videoId + " not available using tv embedded client");
+                    LogHelper.printDebug(() -> videoId + " not available using TV embedded client");
                 }
             }
 
