@@ -32,6 +32,9 @@ public class ReturnYouTubeDislikePatch {
     @Nullable
     private static String currentVideoId;
 
+    //
+    // 17.x non litho player.
+    //
 
     /**
      * Resource identifier of old UI dislike button.
@@ -124,6 +127,10 @@ public class ReturnYouTubeDislikePatch {
     }
 
 
+    //
+    // Litho player for both regular videos and Shorts.
+    //
+
     /**
      * Injection point.
      *
@@ -149,6 +156,7 @@ public class ReturnYouTubeDislikePatch {
             }
 
             String conversionContextString = conversionContext.toString();
+            // Remove this log statement after the a/b new litho dislikes is fixed.
             LogHelper.printDebug(() -> "conversionContext: " + conversionContextString);
 
             final Spanned replacement;
@@ -173,6 +181,10 @@ public class ReturnYouTubeDislikePatch {
         return original;
     }
 
+
+    //
+    // Non litho shorts player.
+    //
 
     /**
      * Replacement text to use for "Dislikes" while RYD is fetching.
@@ -281,7 +293,7 @@ public class ReturnYouTubeDislikePatch {
                 ReVancedUtils.runOnBackgroundThread(update);
             }
         } catch (Exception ex) {
-            LogHelper.printException(() -> "updateVisibleShortsTextViews failure", ex);
+            LogHelper.printException(() -> "updateOnScreenShortsTextViews failure", ex);
         }
     }
 
@@ -299,25 +311,47 @@ public class ReturnYouTubeDislikePatch {
         return location[0] < windowRect.width() && location[1] < windowRect.height();
     }
 
+
+    //
+    // Video Id and voting hooks (all players)
+    //
+
     /**
      * Injection point.
      */
     public static void newVideoLoaded(@NonNull String videoId) {
+        newVideoLoaded(videoId, true);
+    }
+
+    /**
+     * @param isVideoInformationHook  If the video id is from {@link VideoInformation}.
+     */
+    public static void newVideoLoaded(@NonNull String videoId, boolean isVideoInformationHook) {
         try {
             if (!SettingsEnum.RYD_ENABLED.getBoolean()) return;
 
             if (!videoId.equals(currentVideoId)) {
-                currentVideoId = videoId;
-
-                final boolean noneHiddenOrMinimized = PlayerType.getCurrent().isNoneOrHidden();
-                if (noneHiddenOrMinimized && !SettingsEnum.RYD_SHORTS.getBoolean()) {
-                    ReturnYouTubeDislike.setCurrentVideoId(null);
-                    return;
+                final boolean isNoneOrHidden = PlayerType.getCurrent().isNoneOrHidden();
+                if (isNoneOrHidden) {
+                    if (!SettingsEnum.RYD_SHORTS.getBoolean()) {
+                        // Clear the video id to prevent voting for the wrong video if spoofing to 16.x
+                        currentVideoId = null;
+                        ReturnYouTubeDislike.setCurrentVideoId(null);
+                        return;
+                    }
+                    if (isVideoInformationHook && shortsTextViewRefs.isEmpty() && oldUITextViewRef.get() == null) {
+                        // App is using the new litho shorts player, because no dislike text views were hooked.
+                        // Do not set the video id here, and instead it's set from the litho filter.
+                        currentVideoId = null;
+                        LogHelper.printDebug(() -> "Ignoring VideoInformation hook as litho shorts player is in use for video: " + videoId);
+                        return;
+                    }
                 }
 
+                currentVideoId = videoId;
                 ReturnYouTubeDislike.newVideoLoaded(videoId);
 
-                if (noneHiddenOrMinimized) {
+                if (isNoneOrHidden) {
                     // Shorts TextView hook can be called out of order with the video id hook.
                     // Must manually update again here.
                     updateOnScreenShortsTextViews(true);
@@ -340,8 +374,12 @@ public class ReturnYouTubeDislikePatch {
             if (!SettingsEnum.RYD_ENABLED.getBoolean()) {
                 return;
             }
-            if (!SettingsEnum.RYD_SHORTS.getBoolean() && PlayerType.getCurrent().isNoneHiddenOrMinimized()) {
-                return;
+            if (PlayerType.getCurrent().isNoneHiddenOrMinimized()) {
+                if (!SettingsEnum.RYD_SHORTS.getBoolean()) return;
+                // Because the video id is initially set from the Litho filter,
+                // the last loaded short will be the next short (and not the current).
+                // Fix this by setting the current short that is on screen now.
+                ReturnYouTubeDislike.newVideoLoaded(VideoInformation.getVideoId());
             }
 
             for (Vote v : Vote.values()) {

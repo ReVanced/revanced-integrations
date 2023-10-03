@@ -4,7 +4,7 @@ import android.os.Build;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
-import app.revanced.integrations.patches.ReturnYouTubeDislikePatch;
+
 import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.utils.*;
 
@@ -14,12 +14,24 @@ import java.util.function.Consumer;
 
 abstract class FilterGroup<T> {
     final static class FilterGroupResult {
-        SettingsEnum setting;
-        boolean filtered;
+        private SettingsEnum setting;
+        private boolean filtered;
+        private int matchedIndex;
+        // In the future it might be useful to include which pattern matched,
+        // but for now that is not needed.
 
-        FilterGroupResult(SettingsEnum setting, boolean filtered) {
+        FilterGroupResult() {
+            this(null, false, -1);
+        }
+
+        FilterGroupResult(SettingsEnum setting, boolean filtered, int matchedIndex) {
+            setValues(setting, filtered, matchedIndex);
+        }
+
+        public void setValues(SettingsEnum setting, boolean filtered, int matchedIndex) {
             this.setting = setting;
             this.filtered = filtered;
+            this.matchedIndex = matchedIndex;
         }
 
         /**
@@ -32,6 +44,13 @@ abstract class FilterGroup<T> {
 
         public boolean isFiltered() {
             return filtered;
+        }
+
+        /**
+         * Matched index of first pattern that matched, or -1 if nothing matched.
+         */
+        public int getMatchedIndex() {
+            return matchedIndex;
         }
     }
 
@@ -82,7 +101,11 @@ class StringFilterGroup extends FilterGroup<String> {
 
     @Override
     public FilterGroupResult check(final String string) {
-        return new FilterGroupResult(setting, isEnabled() && ReVancedUtils.containsAny(string, filters));
+        final boolean isEnabled = isEnabled();
+        final int indexOf = isEnabled
+                ? ReVancedUtils.indexOfFirstFound(string, filters)
+                : -1;
+        return new FilterGroupResult(setting, isEnabled, indexOf);
     }
 }
 
@@ -157,18 +180,20 @@ class ByteArrayFilterGroup extends FilterGroup<byte[]> {
     @Override
     public FilterGroupResult check(final byte[] bytes) {
         var matched = false;
+        int matchedIndex = -1;
         if (isEnabled()) {
             if (failurePatterns == null) {
                 buildFailurePatterns(); // Lazy load.
             }
             for (int i = 0, length = filters.length; i < length; i++) {
-                if (indexOf(bytes, filters[i], failurePatterns[i]) >= 0) {
+                matchedIndex = indexOf(bytes, filters[i], failurePatterns[i]);
+                if (matchedIndex >= 0) {
                     matched = true;
                     break;
                 }
             }
         }
-        return new FilterGroupResult(setting, matched);
+        return new FilterGroupResult(setting, matched, matchedIndex);
     }
 }
 
@@ -208,8 +233,7 @@ abstract class FilterGroupList<V, T extends FilterGroup<V>> implements Iterable<
                 search.addPattern(pattern, (textSearched, matchedStartIndex, callbackParameter) -> {
                     if (group.isEnabled()) {
                         FilterGroup.FilterGroupResult result = (FilterGroup.FilterGroupResult) callbackParameter;
-                        result.setting = group.setting;
-                        result.filtered = true;
+                        result.setValues(group.setting, true, matchedStartIndex);
                         return true;
                     }
                     return false;
@@ -242,9 +266,10 @@ abstract class FilterGroupList<V, T extends FilterGroup<V>> implements Iterable<
         if (search == null) {
             buildSearch(); // Lazy load.
         }
-        FilterGroup.FilterGroupResult result = new FilterGroup.FilterGroupResult(null, false);
+        FilterGroup.FilterGroupResult result = new FilterGroup.FilterGroupResult();
         search.matches(stack, result);
         return result;
+
     }
 
     protected abstract TrieSearch<V> createSearchGraph();
@@ -335,14 +360,7 @@ public final class LithoFilterPatch {
                 findAsciiStrings(builder, protoBuffer);
             }
 
-
-            var s = builder.toString();
-
-            var split = s.split("ic_right_dislike_off_shadowed❙");
-            if (split.length > 1) {
-                ReturnYouTubeDislikePatch.newVideoLoaded(split[1].split(":")[0]);
-            }
-            return s;
+            return builder.toString();
         }
 
         /**
