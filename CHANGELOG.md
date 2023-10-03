@@ -1,3 +1,29 @@
+# [0.118.0-dev.24](https://github.com/ReVanced/revanced-integrations/compare/v0.118.0-dev.23...v0.118.0-dev.24) (2023-10-03)
+
+
+### Bug Fixes
+
+* **YouTube - Hide layout components:** Do not hide chapters in feed unexpectedly ([bedb02e](https://github.com/ReVanced/revanced-integrations/commit/bedb02e4f6122f3dcdc106648648eec4d6a3cbe5))
+
+# [0.118.0-dev.23](https://github.com/ReVanced/revanced-integrations/compare/v0.118.0-dev.22...v0.118.0-dev.23) (2023-10-02)
+
+
+### Bug Fixes
+
+* **YouTube - SponsorBlock:** Adjust import/export UI text ([#491](https://github.com/ReVanced/revanced-integrations/issues/491)) ([4215be4](https://github.com/ReVanced/revanced-integrations/commit/4215be4250d195ecf89b041c96834be56c164f34))
+
+# [0.118.0-dev.22](https://github.com/ReVanced/revanced-integrations/compare/v0.118.0-dev.21...v0.118.0-dev.22) (2023-10-02)
+
+
+### Bug Fixes
+
+* Do not always hide the component ([3d0fc1d](https://github.com/ReVanced/revanced-integrations/commit/3d0fc1d610cdf50bb7cc4687d899e0acbf3fb83e))
+
+
+### Features
+
+* **YouTube - Hide layout components:** Disable hiding search result shelf header by default ([b280de3](https://github.com/ReVanced/revanced-integrations/commit/b280de31957631180f07057cc7e466bd26e2f7fb))
+
 # [0.118.0-dev.21](https://github.com/ReVanced/revanced-integrations/compare/v0.118.0-dev.20...v0.118.0-dev.21) (2023-10-02)
 
 

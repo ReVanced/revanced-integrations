@@ -19,6 +19,7 @@ public final class LayoutComponentsFilter extends Filter {
             SettingsEnum.HIDE_MIX_PLAYLISTS,
             "&list="
     );
+    private final StringFilterGroup searchResultShelfHeader;
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     public LayoutComponentsFilter() {
@@ -152,7 +153,7 @@ public final class LayoutComponentsFilter extends Filter {
                 "timed_reaction"
         );
 
-        final var searchResultShelfHeader = new StartsWithStringFilterGroup(
+        searchResultShelfHeader = new StringFilterGroup(
                 SettingsEnum.HIDE_SEARCH_RESULT_SHELF_HEADER,
                 "shelf_header.eml"
         );
@@ -177,7 +178,6 @@ public final class LayoutComponentsFilter extends Filter {
                 communityPosts,
                 paidContent,
                 latestPosts,
-                chapters,
                 communityGuidelines,
                 quickActions,
                 expandableMetadata,
@@ -194,14 +194,14 @@ public final class LayoutComponentsFilter extends Filter {
                 artistCard,
                 timedReactions,
                 imageShelf,
-                searchResultShelfHeader,
                 channelMemberShelf,
                 custom
         );
 
         this.identifierFilterGroupList.addAll(
                 graySeparator,
-                chipsShelf
+                chipsShelf,
+                chapters
         );
     }
 
@@ -210,6 +210,9 @@ public final class LayoutComponentsFilter extends Filter {
                               FilterGroupList matchedList, FilterGroup matchedGroup, int matchedIndex) {
         if (matchedGroup != custom && exceptions.matches(path))
             return false; // Exceptions are not filtered.
+
+        // TODO: This also hides the feed Shorts shelf header
+        if (matchedGroup == searchResultShelfHeader && matchedIndex != 0) return false;
 
         return super.isFiltered(identifier, path, protobufBufferArray, matchedList, matchedGroup, matchedIndex);
     }
