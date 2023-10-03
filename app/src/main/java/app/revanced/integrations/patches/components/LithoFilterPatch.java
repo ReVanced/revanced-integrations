@@ -15,22 +15,20 @@ import java.util.function.Consumer;
 abstract class FilterGroup<T> {
     final static class FilterGroupResult {
         private SettingsEnum setting;
-        private boolean filtered;
         private int matchedIndex;
         // In the future it might be useful to include which pattern matched,
         // but for now that is not needed.
 
         FilterGroupResult() {
-            this(null, false, -1);
+            this(null, -1);
         }
 
-        FilterGroupResult(SettingsEnum setting, boolean filtered, int matchedIndex) {
-            setValues(setting, filtered, matchedIndex);
+        FilterGroupResult(SettingsEnum setting, int matchedIndex) {
+            setValues(setting, matchedIndex);
         }
 
-        public void setValues(SettingsEnum setting, boolean filtered, int matchedIndex) {
+        public void setValues(SettingsEnum setting, int matchedIndex) {
             this.setting = setting;
-            this.filtered = filtered;
             this.matchedIndex = matchedIndex;
         }
 
@@ -43,7 +41,7 @@ abstract class FilterGroup<T> {
         }
 
         public boolean isFiltered() {
-            return filtered;
+            return matchedIndex >= 0;
         }
 
         /**
@@ -101,11 +99,10 @@ class StringFilterGroup extends FilterGroup<String> {
 
     @Override
     public FilterGroupResult check(final String string) {
-        final boolean isEnabled = isEnabled();
-        final int indexOf = isEnabled
+        final int indexOf = isEnabled()
                 ? ReVancedUtils.indexOfFirstFound(string, filters)
                 : -1;
-        return new FilterGroupResult(setting, isEnabled, indexOf);
+        return new FilterGroupResult(setting, indexOf);
     }
 }
 
@@ -179,7 +176,6 @@ class ByteArrayFilterGroup extends FilterGroup<byte[]> {
 
     @Override
     public FilterGroupResult check(final byte[] bytes) {
-        var matched = false;
         int matchedIndex = -1;
         if (isEnabled()) {
             if (failurePatterns == null) {
@@ -188,12 +184,11 @@ class ByteArrayFilterGroup extends FilterGroup<byte[]> {
             for (int i = 0, length = filters.length; i < length; i++) {
                 matchedIndex = indexOf(bytes, filters[i], failurePatterns[i]);
                 if (matchedIndex >= 0) {
-                    matched = true;
                     break;
                 }
             }
         }
-        return new FilterGroupResult(setting, matched, matchedIndex);
+        return new FilterGroupResult(setting, matchedIndex);
     }
 }
 
@@ -233,7 +228,7 @@ abstract class FilterGroupList<V, T extends FilterGroup<V>> implements Iterable<
                 search.addPattern(pattern, (textSearched, matchedStartIndex, callbackParameter) -> {
                     if (group.isEnabled()) {
                         FilterGroup.FilterGroupResult result = (FilterGroup.FilterGroupResult) callbackParameter;
-                        result.setValues(group.setting, true, matchedStartIndex);
+                        result.setValues(group.setting, matchedStartIndex);
                         return true;
                     }
                     return false;
