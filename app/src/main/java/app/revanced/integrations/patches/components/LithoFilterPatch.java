@@ -4,6 +4,7 @@ import android.os.Build;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import app.revanced.integrations.patches.ReturnYouTubeDislikePatch;
 import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.utils.*;
 
@@ -334,7 +335,14 @@ public final class LithoFilterPatch {
                 findAsciiStrings(builder, protoBuffer);
             }
 
-            return builder.toString();
+
+            var s = builder.toString();
+
+            var split = s.split("ic_right_dislike_off_shadowed❙");
+            if (split.length > 1) {
+                ReturnYouTubeDislikePatch.newVideoLoaded(split[1].split(":")[0]);
+            }
+            return s;
         }
 
         /**
