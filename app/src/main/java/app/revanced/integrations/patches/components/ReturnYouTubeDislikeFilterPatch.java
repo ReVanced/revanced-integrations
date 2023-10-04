@@ -17,14 +17,11 @@ public final class ReturnYouTubeDislikeFilterPatch extends Filter {
     private static final String VIDEO_ID_PREFIX_TEXT = "ic_right_dislike_off_shadowed";
 
     private final ByteArrayAsStringFilterGroup videoIdFilterGroup
-            = new ByteArrayAsStringFilterGroup(null,VIDEO_ID_PREFIX_TEXT);
+            = new ByteArrayAsStringFilterGroup(null, VIDEO_ID_PREFIX_TEXT);
 
     public ReturnYouTubeDislikeFilterPatch() {
         pathFilterGroupList.addAll(
-                new StringFilterGroup(
-                        SettingsEnum.RYD_SHORTS,
-                        "|shorts_dislike_button.eml|"
-                )
+                new StringFilterGroup(SettingsEnum.RYD_SHORTS, "|shorts_dislike_button.eml|")
         );
     }
 
@@ -34,8 +31,9 @@ public final class ReturnYouTubeDislikeFilterPatch extends Filter {
         FilterGroup.FilterGroupResult result = videoIdFilterGroup.check(protobufBufferArray);
         if (result.isFiltered()) {
             final int minimumYouTubeVideoIdLength = 11;
-            final int videoIdStartIndex = result.getMatchedIndex() + VIDEO_ID_PREFIX_TEXT.length();
-            String videoId = findSubString(protobufBufferArray, videoIdStartIndex, minimumYouTubeVideoIdLength, (byte) ':');
+            final int subStringSearchStartIndex = result.getMatchedIndex() + VIDEO_ID_PREFIX_TEXT.length();
+            String videoId = findSubString(protobufBufferArray, subStringSearchStartIndex,
+                    minimumYouTubeVideoIdLength, (byte) ':');
             if (videoId != null) {
                 LogHelper.printDebug(() -> "Found shorts litho video id: " + videoId);
                 ReturnYouTubeDislikePatch.newVideoLoaded(videoId, false);
