@@ -161,13 +161,13 @@ public class ReturnYouTubeDislikePatch {
 
             final Spanned replacement;
             if (conversionContextString.contains("|segmented_like_dislike_button.eml|")) {
+                // Regular video
                 replacement = ReturnYouTubeDislike.getDislikesSpanForRegularVideo((Spannable) original, true);
-            } else if (conversionContextString.contains("|dislike_button.eml|") ) {
-                // This code path is basically dead because it's only used when spoofing between 17.09.xx and 17.30.xx
-                // but spoofing to that range gives a broken UI layout.
-                // Keep this check here anyways just in case the old litho layout is somehow still used.
-                replacement = ReturnYouTubeDislike.getDislikesSpanForRegularVideo((Spannable) original, false);
+                // When spoofing between 17.09.xx and 17.30.xx the UI is the old layout but uses litho
+                // and the dislikes is "|dislike_button.eml|"
+                // but spoofing to that range gives a broken UI layout so no point checking for this.
             } else if (SettingsEnum.RYD_SHORTS.getBoolean() && conversionContextString.contains("|shorts_dislike_button.eml|")) {
+                // Litho shorts player
                 replacement = ReturnYouTubeDislike.getDislikeSpanForShort((Spannable) original);
             } else {
                 return original;
