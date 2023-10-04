@@ -167,7 +167,7 @@ public class ReturnYouTubeDislikePatch {
                 // but spoofing to that range gives a broken UI layout.
                 // Keep this check here anyways just in case the old litho layout is somehow still used.
                 replacement = ReturnYouTubeDislike.getDislikesSpanForRegularVideo((Spannable) original, false);
-            } else if (conversionContextString.contains("|shorts_dislike_button.eml|")) {
+            } else if (SettingsEnum.RYD_SHORTS.getBoolean() && conversionContextString.contains("|shorts_dislike_button.eml|")) {
                 replacement = ReturnYouTubeDislike.getDislikeSpanForShort((Spannable) original);
             } else {
                 return original;
