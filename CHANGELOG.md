@@ -1,3 +1,10 @@
+# [0.119.0-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v0.118.1-dev.1...v0.119.0-dev.1) (2023-10-05)
+
+
+### Features
+
+* **YouTube - Hide shorts components:** Hide subscribe button when paused separately from subscribe button ([3ac869f](https://github.com/ReVanced/revanced-integrations/commit/3ac869fa6ae095f074481d98d9a4eea207eda00d))
+
 ## [0.118.1-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v0.118.0...v0.118.1-dev.1) (2023-10-05)
 
 
