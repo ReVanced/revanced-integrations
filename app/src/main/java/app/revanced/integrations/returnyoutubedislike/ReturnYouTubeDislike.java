@@ -165,46 +165,6 @@ public class ReturnYouTubeDislike {
     @GuardedBy("this")
     private SpannableString replacementLikeDislikeSpan;
 
-    @NonNull
-    public static ReturnYouTubeDislike getFetchForVideoId(@Nullable String videoId) {
-        Objects.requireNonNull(videoId);
-        synchronized (fetchCache) {
-            // Remove any expired entries.
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                final long now = System.currentTimeMillis();
-                fetchCache.values().removeIf(value -> {
-                    final boolean expired = value.isExpired(now);
-                    if (expired)
-                        LogHelper.printDebug(() -> "Removing expired fetch: " + value.videoId);
-                    return expired;
-                });
-            }
-
-            ReturnYouTubeDislike fetch = fetchCache.get(videoId);
-            if (fetch == null || !fetch.futureInProgressOrFinishedSuccessfully()) {
-                fetch = new ReturnYouTubeDislike(videoId);
-                fetchCache.put(videoId, fetch);
-            }
-            return fetch;
-        }
-    }
-
-    /**
-     * Should be called if the user changes settings for dislikes appearance.
-     */
-    public static void clearAllUICaches() {
-        synchronized (fetchCache) {
-            for (ReturnYouTubeDislike fetch : fetchCache.values()) {
-                fetch.clearUICache();
-            }
-        }
-    }
-
-    // Alternatively, this could check if the span contains one of the custom created spans, but this is simple and quick.
-    private static boolean isPreviouslyCreatedSegmentedSpan(@NonNull Spanned span) {
-        return span.toString().indexOf(MIDDLE_SEPARATOR_CHARACTER) != -1;
-    }
-
     /**
      * @param isSegmentedButton If UI is using the segmented single UI component for both like and dislike.
      */
@@ -278,6 +238,11 @@ public class ReturnYouTubeDislike {
         builder.append(newSpannableWithDislikes(oldSpannable, voteData));
 
         return new SpannableString(builder);
+    }
+
+    // Alternatively, this could check if the span contains one of the custom created spans, but this is simple and quick.
+    private static boolean isPreviouslyCreatedSegmentedSpan(@NonNull Spanned span) {
+        return span.toString().indexOf(MIDDLE_SEPARATOR_CHARACTER) != -1;
     }
 
     /**
@@ -364,6 +329,41 @@ public class ReturnYouTubeDislike {
                 dislikePercentageFormatter.setMaximumFractionDigits(1); // show up to 1 digit precision
             }
             return dislikePercentageFormatter.format(dislikePercentage);
+        }
+    }
+
+    @NonNull
+    public static ReturnYouTubeDislike getFetchForVideoId(@Nullable String videoId) {
+        Objects.requireNonNull(videoId);
+        synchronized (fetchCache) {
+            // Remove any expired entries.
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                final long now = System.currentTimeMillis();
+                fetchCache.values().removeIf(value -> {
+                    final boolean expired = value.isExpired(now);
+                    if (expired)
+                        LogHelper.printDebug(() -> "Removing expired fetch: " + value.videoId);
+                    return expired;
+                });
+            }
+
+            ReturnYouTubeDislike fetch = fetchCache.get(videoId);
+            if (fetch == null || !fetch.futureInProgressOrFinishedSuccessfully()) {
+                fetch = new ReturnYouTubeDislike(videoId);
+                fetchCache.put(videoId, fetch);
+            }
+            return fetch;
+        }
+    }
+
+    /**
+     * Should be called if the user changes settings for dislikes appearance.
+     */
+    public static void clearAllUICaches() {
+        synchronized (fetchCache) {
+            for (ReturnYouTubeDislike fetch : fetchCache.values()) {
+                fetch.clearUICache();
+            }
         }
     }
 
