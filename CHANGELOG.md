@@ -1,3 +1,10 @@
+# [0.119.0-dev.3](https://github.com/ReVanced/revanced-integrations/compare/v0.119.0-dev.2...v0.119.0-dev.3) (2023-10-06)
+
+
+### Bug Fixes
+
+* **YouTube - Hide shorts components:** Add filter to filter group list ([30788ba](https://github.com/ReVanced/revanced-integrations/commit/30788ba1a3e8d666b55a37e9389246e4bfa039cb))
+
 # [0.119.0-dev.2](https://github.com/ReVanced/revanced-integrations/compare/v0.119.0-dev.1...v0.119.0-dev.2) (2023-10-06)
 
 
