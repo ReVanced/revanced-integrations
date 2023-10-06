@@ -165,20 +165,11 @@ public class ReturnYouTubeDislike {
     @GuardedBy("this")
     private SpannableString replacementLikeDislikeSpan;
 
-    public static void onEnabledChange(boolean enabled) {
-        if (!enabled) {
-            // Must clear old values to protect against using stale data
-            // if the user re-enables RYD while watching a video.
-            synchronized (fetchCache) {
-                fetchCache.clear();
-            }
-        }
-    }
-
     @NonNull
     public static ReturnYouTubeDislike getFetchForVideoId(@Nullable String videoId) {
         Objects.requireNonNull(videoId);
         synchronized (fetchCache) {
+            // Remove any expired entries.
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 final long now = System.currentTimeMillis();
                 fetchCache.values().removeIf(value -> {
@@ -201,10 +192,10 @@ public class ReturnYouTubeDislike {
     /**
      * Should be called if the user changes settings for dislikes appearance.
      */
-    public static void clearAllCaches() {
+    public static void clearAllUICaches() {
         synchronized (fetchCache) {
             for (ReturnYouTubeDislike fetch : fetchCache.values()) {
-                fetch.clearCache();
+                fetch.clearUICache();
             }
         }
     }
@@ -402,7 +393,7 @@ public class ReturnYouTubeDislike {
         return !future.isDone() || getFetchData(MAX_MILLISECONDS_TO_BLOCK_UI_WAITING_FOR_FETCH) != null;
     }
 
-    private synchronized void clearCache() {
+    private synchronized void clearUICache() {
         if (replacementLikeDislikeSpan != null) {
             LogHelper.printDebug(() -> "Clearing replacement span for: " + videoId);
         }
@@ -547,7 +538,7 @@ public class ReturnYouTubeDislike {
 
             synchronized (this) {
                 userVote = vote;
-                clearCache(); // UI needs updating
+                clearUICache();
             }
             
             if (future.isDone()) {

@@ -55,6 +55,16 @@ public class ReturnYouTubeDislikePatch {
     @Nullable
     private static volatile String lastPrefetchedVideoId;
 
+    public static void onRYDStatusChange(boolean rydEnabled) {
+        if (!rydEnabled) {
+            // Must remove all values to protect against using stale data
+            // if the user enables RYD while a video is on screen.
+            currentVideoData = null;
+            lastLithoShortsVideoData = null;
+            lithoShortsShouldUseCurrentData = false;
+        }
+    }
+
 
     //
     // 17.x non litho regular video player.
@@ -378,7 +388,7 @@ public class ReturnYouTubeDislikePatch {
     /**
      * Injection point.  Uses 'playback response' video id hook to preload RYD.
      */
-    public static void preloadPlayerResponseVideoId(@NonNull String videoId) {
+    public static void preloadVideoId(@NonNull String videoId) {
         if (!SettingsEnum.RYD_ENABLED.getBoolean()) {
             return;
         }
@@ -433,7 +443,7 @@ public class ReturnYouTubeDislikePatch {
             }
 
             LogHelper.printDebug(() -> "New video id: " + videoId + " playerType: " + currentPlayerType
-                    + " isCurrentVideo: " + !isShortsLithoVideoId);
+                    + " isShortsLithoHook: " + isShortsLithoVideoId);
 
             if (isNoneOrHidden) {
                 // Non litho shorts TextView hook can be called out of order with the video id hook.
@@ -445,7 +455,7 @@ public class ReturnYouTubeDislikePatch {
         }
     }
 
-    private static boolean videoIdIsSame(ReturnYouTubeDislike fetch, String videoId) {
+    private static boolean videoIdIsSame(@Nullable  ReturnYouTubeDislike fetch, String videoId) {
         return fetch != null && fetch.getVideoId().equals(videoId);
     }
 
