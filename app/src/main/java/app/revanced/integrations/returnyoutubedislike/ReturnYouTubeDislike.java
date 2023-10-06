@@ -312,7 +312,7 @@ public class ReturnYouTubeDislike {
             }
         }
 
-        // will never be reached, as the oldest supported YouTube app requires Android N or greater
+        // Will never be reached, as the oldest supported YouTube app requires Android N or greater.
         return String.valueOf(dislikeCount);
     }
 
@@ -505,7 +505,7 @@ public class ReturnYouTubeDislike {
         Objects.requireNonNull(vote);
         try {
             if (isShort != null && isShort != PlayerType.getCurrent().isNoneOrHidden()) {
-                // Shorts was loaded with regular video present, then shorts was closed.
+                // Shorts was loaded with regular video present, then Shorts was closed.
                 // and then user voted on the now visible original video.
                 // Cannot send a vote, because the loaded videoId is for the wrong video.
                 ReVancedUtils.showToastLong(str("revanced_ryd_failure_ryd_enabled_while_playing_video_then_user_voted"));
@@ -515,7 +515,7 @@ public class ReturnYouTubeDislike {
             setUserVote(vote);
 
             voteSerialExecutor.execute(() -> {
-                try { // must wrap in try/catch to properly log exceptions
+                try { // Must wrap in try/catch to properly log exceptions.
                     ReturnYouTubeDislikeApi.sendVote(videoId, vote);
                 } catch (Exception ex) {
                     LogHelper.printException(() -> "Failed to send vote", ex);
@@ -545,7 +545,7 @@ public class ReturnYouTubeDislike {
                 // Update the fetched vote data.
                 RYDVoteData voteData = getFetchData(MAX_MILLISECONDS_TO_BLOCK_UI_WAITING_FOR_FETCH);
                 if (voteData == null) {
-                    // RYD fetch failed
+                    // RYD fetch failed.
                     LogHelper.printDebug(() -> "Cannot update UI (vote data not available)");
                     return;
                 }
