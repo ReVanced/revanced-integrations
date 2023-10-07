@@ -1,3 +1,10 @@
+# [0.119.0-dev.4](https://github.com/ReVanced/revanced-integrations/compare/v0.119.0-dev.3...v0.119.0-dev.4) (2023-10-07)
+
+
+### Features
+
+* **YouTube:** Add `Disable fine scrubbing gesture` patch ([4498f39](https://github.com/ReVanced/revanced-integrations/commit/4498f39b8c4900fccdc359d0c687c26db23526c3))
+
 # [0.119.0-dev.3](https://github.com/ReVanced/revanced-integrations/compare/v0.119.0-dev.2...v0.119.0-dev.3) (2023-10-06)
 
 
