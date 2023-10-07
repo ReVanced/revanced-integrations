@@ -1,3 +1,10 @@
+# [0.119.0-dev.6](https://github.com/ReVanced/revanced-integrations/compare/v0.119.0-dev.5...v0.119.0-dev.6) (2023-10-07)
+
+
+### Bug Fixes
+
+* **YouTube - ReturnYouTubeDislike:** Do not retry API call if same fetch recently failed ([#493](https://github.com/ReVanced/revanced-integrations/issues/493)) ([486c894](https://github.com/ReVanced/revanced-integrations/commit/486c894257e91dedc04b38191e0e01e38c66b5c4))
+
 # [0.119.0-dev.5](https://github.com/ReVanced/revanced-integrations/compare/v0.119.0-dev.4...v0.119.0-dev.5) (2023-10-07)
 
 
