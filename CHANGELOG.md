@@ -1,3 +1,10 @@
+## [0.119.1](https://github.com/ReVanced/revanced-integrations/compare/v0.119.0...v0.119.1) (2023-10-09)
+
+
+### Bug Fixes
+
+* **YouTube - Hide shorts components:** Do not hide subscribe button outside of Shorts ([1479d6b](https://github.com/ReVanced/revanced-integrations/commit/1479d6bc2668758ea55f9d640684547f710099f0))
+
 ## [0.119.1-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v0.119.0...v0.119.1-dev.1) (2023-10-08)
 
 
