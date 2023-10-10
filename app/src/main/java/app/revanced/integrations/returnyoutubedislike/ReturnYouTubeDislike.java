@@ -74,13 +74,13 @@ public class ReturnYouTubeDislike {
     /**
      * How long to retain successful RYD fetches.
      */
-    private static final long CACHE_TIMEOUT_SUCCESS_MILLISECONDS = 5 * 60 * 1000; // 5 Minutes
+    private static final long CACHE_TIMEOUT_SUCCESS_MILLISECONDS = 7 * 60 * 1000; // 7 Minutes
 
     /**
      * How long to retain unsuccessful RYD fetches,
      * and also the minimum time before retrying again.
      */
-    private static final long CACHE_TIMEOUT_FAILURE_MILLISECONDS = 60 * 1000; // 1 Minute
+    private static final long CACHE_TIMEOUT_FAILURE_MILLISECONDS = 2 * 60 * 1000; // 2 Minutes
 
     /**
      * Unique placeholder character, used to detect if a segmented span already has dislikes added to it.
