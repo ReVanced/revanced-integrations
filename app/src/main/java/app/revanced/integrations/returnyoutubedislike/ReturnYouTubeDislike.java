@@ -427,6 +427,12 @@ public class ReturnYouTubeDislike {
      * Should only be used immediately after creation of this instance.
      */
     public synchronized void setVideoIdIsShort(boolean isShort) {
+        if (this.isShort != null && !this.isShort) {
+            // This instance was previously used for a regular video,
+            // but caller is manually setting it as a Short. Should never happen.
+            LogHelper.printDebug(() -> "Manual call to set Short status, but data was previously set to not Short: " + videoId);
+            return;
+        }
         this.isShort = isShort;
     }
 

@@ -482,11 +482,13 @@ public class ReturnYouTubeDislikePatch {
             if (!SettingsEnum.RYD_ENABLED.getBoolean()) {
                 return;
             }
-            if (!SettingsEnum.RYD_SHORTS.getBoolean() && PlayerType.getCurrent().isNoneHiddenOrMinimized()) {
+            final boolean isNoneHiddenOrMinimized = PlayerType.getCurrent().isNoneHiddenOrMinimized();
+            if (isNoneHiddenOrMinimized && !SettingsEnum.RYD_SHORTS.getBoolean()) {
                 return;
             }
             ReturnYouTubeDislike videoData = currentVideoData;
             if (videoData == null) {
+                LogHelper.printDebug(() -> "Cannot send vote, as current video data is null");
                 return; // User enabled RYD while a regular video was minimized.
             }
 
@@ -494,7 +496,7 @@ public class ReturnYouTubeDislikePatch {
                 if (v.value == vote) {
                     videoData.sendVote(v);
 
-                    if (lastLithoShortsVideoData != null) {
+                    if (isNoneHiddenOrMinimized && lastLithoShortsVideoData != null) {
                         lithoShortsShouldUseCurrentData = true;
                     }
                     updateOldUIDislikesTextView();
