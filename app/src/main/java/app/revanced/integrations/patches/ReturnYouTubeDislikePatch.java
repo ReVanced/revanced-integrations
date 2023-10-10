@@ -108,7 +108,7 @@ public class ReturnYouTubeDislikePatch {
 
     /**
      * Old UI dislikes can be set multiple times by YouTube.
-     * To prevent it from reverting changes made here, this listener overrides any future changes YouTube makes.
+     * To prevent reverting changes made here, this listener overrides any future changes YouTube makes.
      */
     private static final TextWatcher oldUiTextWatcher = new TextWatcher() {
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -141,7 +141,7 @@ public class ReturnYouTubeDislikePatch {
     /**
      * Injection point.  Called on main thread.
      *
-     * Used when spoofing the older app versions of {@link SpoofAppVersionPatch}.
+     * Used when spoofing to 16.x and 17.x versions.
      */
     public static void setOldUILayoutDislikes(int buttonViewResourceId, @Nullable TextView textView) {
         try {
@@ -230,8 +230,7 @@ public class ReturnYouTubeDislikePatch {
                 }
                 ReturnYouTubeDislike videoData = lastLithoShortsVideoData;
                 if (videoData == null) {
-                    // Should not happen, as user cannot turn on RYD while leaving a short on screen.
-                    // If this does happen, then the litho video id filter did not detect the video id.
+                    // Somehow the litho video id filter did not detect the video id.
                     LogHelper.printDebug(() -> "Error: Litho video data is null, but it should not be");
                     return original;
                 }

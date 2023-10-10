@@ -8,8 +8,21 @@ import androidx.annotation.RequiresApi;
 import java.nio.charset.StandardCharsets;
 
 import app.revanced.integrations.patches.ReturnYouTubeDislikePatch;
+import app.revanced.integrations.patches.VideoInformation;
 import app.revanced.integrations.settings.SettingsEnum;
 
+/**
+ * Searches for video id's in the proto buffer of Shorts dislike.
+ *
+ * Because multiple litho dislike spans are created in the background
+ * (and also anytime litho refreshes the components, which is somewhat arbitrary),
+ * that makes the value of {@link VideoInformation#getVideoId()} and {@link VideoInformation#getPlayerResponseVideoId()}
+ * unreliable to determine which video id a Shorts litho span belongs to.
+ *
+ * But the correct video id does appear in the protobuffer just before any litho span is created.
+ *
+ * Once a way to asynchronously update litho text is found, this strategy will no longer be needed.
+ */
 @RequiresApi(api = Build.VERSION_CODES.N)
 public final class ReturnYouTubeDislikeFilterPatch extends Filter {
 
