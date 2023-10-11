@@ -59,11 +59,9 @@ public final class ReturnYouTubeDislikeFilterPatch extends Filter {
                 return;
             }
             synchronized (lastVideoIds) {
-                if (lastVideoIds.containsKey(videoId)) {
-                    return;
+                if (lastVideoIds.put(videoId, Boolean.TRUE) == null) {
+                    LogHelper.printDebug(() -> "New video id: " + videoId);
                 }
-                LogHelper.printDebug(() -> "New video id: " + videoId);
-                lastVideoIds.put(videoId, Boolean.TRUE);
             }
         } catch (Exception ex) {
             LogHelper.printException(() -> "newPlayerResponseVideoId failure", ex);
