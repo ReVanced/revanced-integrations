@@ -22,7 +22,7 @@ public class ReturnYouTubeDislikeSettingsFragment extends PreferenceFragment {
 
     private static final boolean IS_SPOOFING_TO_NON_LITHO_SHORTS_PLAYER =
             SettingsEnum.SPOOF_APP_VERSION.getBoolean()
-                    && SettingsEnum.SPOOF_APP_VERSION_TARGET.getString().compareTo("18.29.39") <= 0;
+                    && SettingsEnum.SPOOF_APP_VERSION_TARGET.getString().compareTo("18.33.40") <= 0;
 
     /**
      * If dislikes are shown on Shorts.
