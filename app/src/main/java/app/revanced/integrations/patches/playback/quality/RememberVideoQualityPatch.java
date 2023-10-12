@@ -94,12 +94,15 @@ public class RememberVideoQualityPatch {
                 return userSelectedQualityIndex;
             }
 
-            // find the highest quality that is equal to or less than the preferred
-            int qualityToUse = videoQualities.get(0); // first element is automatic mode
+            // Find the highest quality that is equal to or less than the preferred.
+            int qualityToUse = videoQualities.get(0); // First element is automatic mode.
             int qualityIndexToUse = 0;
             int i = 0;
             for (Integer quality : videoQualities) {
-                if (quality <= preferredQuality && qualityToUse < quality)  {
+                // '1080p Enhanced bitrate' shows up as 1080p and is indistinguishable from regular 1080p.
+                // But the enhanced rate shows up after 1080p, so compare with <= to pick if available.
+                // This isn't fool proof to potential future class structure changes, but for now this works.
+                if (quality <= preferredQuality && qualityToUse <= quality)  {
                     qualityToUse = quality;
                     qualityIndexToUse = i;
                 }
