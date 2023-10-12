@@ -475,7 +475,6 @@ public class ReturnYouTubeDislikePatch {
                 // Pre-emptively set the data to short status.
                 // Required to prevent Shorts data from being used on a minimized video in incognito mode.
                 if (isNoneHiddenOrSlidingMinimized) {
-                    // Short is playing with a regular video minimized.
                     currentVideoData.setVideoIdIsShort(true);
                 }
             }
