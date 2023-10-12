@@ -235,8 +235,9 @@ public class ReturnYouTubeDislikePatch {
                 }
                 ReturnYouTubeDislike videoData = lastLithoShortsVideoData;
                 if (videoData == null) {
-                    // Somehow the litho video id filter did not detect the video id.
-                    LogHelper.printDebug(() -> "Error: Litho video data is null, but it should not be");
+                    // The Shorts litho video id filter did not detect the video id.
+                    // This is normal if in incognito mode, but otherwise is not normal.
+                    LogHelper.printDebug(() -> "Cannot modify Shorts litho span, data is null");
                     return original;
                 }
                 // Use the correct dislikes data after voting.
@@ -437,7 +438,10 @@ public class ReturnYouTubeDislikePatch {
             if (!SettingsEnum.RYD_ENABLED.getBoolean()) return;
 
             PlayerType currentPlayerType = PlayerType.getCurrent();
-            if (currentPlayerType.isNoneOrHidden() && !SettingsEnum.RYD_SHORTS.getBoolean()) {
+            final boolean isNoneHiddenOrSlidingMinimized = currentPlayerType.isNoneHiddenOrSlidingMinimized();
+            if (isNoneHiddenOrSlidingMinimized && !SettingsEnum.RYD_SHORTS.getBoolean()) {
+                // Must clear here, otherwise the wrong data can be used for a minimized regular video.
+                currentVideoData = null;
                 return;
             }
 
@@ -450,7 +454,7 @@ public class ReturnYouTubeDislikePatch {
                     // Litho filter did not detect the video id.  App is in incognito mode,
                     // or the proto buffer structure was changed and the video id is no longer present.
                     // Must clear both currently playing and last litho data otherwise the
-                    // next regular video may use the wrong data
+                    // next regular video may use the wrong data.
                     LogHelper.printDebug(() -> "Litho filter did not find any video ids");
                     currentVideoData = null;
                     lastLithoShortsVideoData = null;
@@ -468,6 +472,12 @@ public class ReturnYouTubeDislikePatch {
                     return;
                 }
                 currentVideoData = ReturnYouTubeDislike.getFetchForVideoId(videoId);
+                // Pre-emptively set the data to short status.
+                // Required to prevent Shorts data from being used on a minimized video in incognito mode.
+                if (isNoneHiddenOrSlidingMinimized) {
+                    // Short is playing with a regular video minimized.
+                    currentVideoData.setVideoIdIsShort(true);
+                }
             }
 
             LogHelper.printDebug(() -> "New video id: " + videoId + " playerType: " + currentPlayerType
@@ -475,14 +485,17 @@ public class ReturnYouTubeDislikePatch {
 
             // Current video id hook can be called out of order with the non litho Shorts text view hook.
             // Must manually update again here.
-            updateOnScreenShortsTextViews(true);
+            if (!isShortsLithoVideoId && isNoneHiddenOrSlidingMinimized) {
+                updateOnScreenShortsTextViews(true);
+            }
         } catch (Exception ex) {
             LogHelper.printException(() -> "newVideoLoaded failure", ex);
         }
     }
 
-    private static boolean videoIdIsSame(@Nullable  ReturnYouTubeDislike fetch, String videoId) {
-        return fetch != null && fetch.getVideoId().equals(videoId);
+    private static boolean videoIdIsSame(@Nullable ReturnYouTubeDislike fetch, @Nullable String videoId) {
+        return (fetch == null && videoId == null)
+                || (fetch != null && fetch.getVideoId().equals(videoId));
     }
 
     /**
@@ -511,10 +524,13 @@ public class ReturnYouTubeDislikePatch {
                 if (v.value == vote) {
                     videoData.sendVote(v);
 
-                    if (isNoneHiddenOrMinimized && lastLithoShortsVideoData != null) {
-                        lithoShortsShouldUseCurrentData = true;
+                    if (isNoneHiddenOrMinimized) {
+                        if (lastLithoShortsVideoData != null) {
+                            lithoShortsShouldUseCurrentData = true;
+                        }
+                        updateOldUIDislikesTextView();
                     }
-                    updateOldUIDislikesTextView();
+
                     return;
                 }
             }

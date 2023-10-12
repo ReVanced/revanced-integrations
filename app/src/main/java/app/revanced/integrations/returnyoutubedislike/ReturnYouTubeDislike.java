@@ -142,7 +142,6 @@ public class ReturnYouTubeDislike {
     /**
      * If this instance was previously used for a Short.
      */
-    @Nullable
     @GuardedBy("this")
     private boolean isShort;
 
@@ -421,7 +420,6 @@ public class ReturnYouTubeDislike {
 
     /**
      * Pre-emptively set this as a Short.
-     * Should only be used immediately after creation of this instance.
      */
     public synchronized void setVideoIdIsShort(boolean isShort) {
         this.isShort = isShort;
@@ -475,11 +473,11 @@ public class ReturnYouTubeDislike {
 
                 if (originalDislikeSpan != null && replacementLikeDislikeSpan != null) {
                     if (spansHaveEqualTextAndColor(original, replacementLikeDislikeSpan)) {
-                        LogHelper.printDebug(() -> "Ignoring previously created dislikes span");
+                        LogHelper.printDebug(() -> "Ignoring previously created dislikes span of data: " + videoId);
                         return original;
                     }
                     if (spansHaveEqualTextAndColor(original, originalDislikeSpan)) {
-                        LogHelper.printDebug(() -> "Replacing span with previously created dislike span");
+                        LogHelper.printDebug(() -> "Replacing span with previously created dislike span of data: " + videoId);
                         return replacementLikeDislikeSpan;
                     }
                 }
@@ -518,7 +516,7 @@ public class ReturnYouTubeDislike {
             if (isShort != PlayerType.getCurrent().isNoneOrHidden()) {
                 // Shorts was loaded with regular video present, then Shorts was closed.
                 // and then user voted on the now visible original video.
-                // Cannot send a vote, because the loaded videoId is for the wrong video.
+                // Cannot send a vote, because this instance is for the wrong video.
                 ReVancedUtils.showToastLong(str("revanced_ryd_failure_ryd_enabled_while_playing_video_then_user_voted"));
                 return;
             }

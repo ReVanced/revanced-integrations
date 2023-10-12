@@ -25,7 +25,7 @@ import app.revanced.integrations.utils.TrieSearch;
  * that makes the value of {@link VideoInformation#getVideoId()} and {@link VideoInformation#getPlayerResponseVideoId()}
  * unreliable to determine which video id a Shorts litho span belongs to.
  *
- * But the correct video id does appear in the protobuffer just before any litho span is created.
+ * But the correct video id does appear in the protobuffer just before a Shorts litho span is created.
  *
  * Once a way to asynchronously update litho text is found, this strategy will no longer be needed.
  */
@@ -91,6 +91,8 @@ public final class ReturnYouTubeDislikeFilterPatch extends Filter {
             String matchedVideoId = findVideoId(protobufBufferArray);
             // Matched video will be null if in incognito mode.
             // Must pass a null id to correctly clear out the current video data.
+            // Otherwise if a Short is opened in non-incognito, then incognito is enabled and another Short is opened,
+            // the new incognito Short will show the old prior data.
             ReturnYouTubeDislikePatch.newVideoLoaded(matchedVideoId, true);
         }
 
