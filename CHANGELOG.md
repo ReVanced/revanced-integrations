@@ -1,3 +1,10 @@
+## [0.119.2](https://github.com/ReVanced/revanced-integrations/compare/v0.119.1...v0.119.2) (2023-10-12)
+
+
+### Bug Fixes
+
+* **YouTube - ReturnYouTubeDislike:** Fix dislikes not showing on Shorts ([#495](https://github.com/ReVanced/revanced-integrations/issues/495)) ([9b2add7](https://github.com/ReVanced/revanced-integrations/commit/9b2add7553488436c63fa14bd62966dfb92705bf))
+
 ## [0.119.2-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v0.119.1...v0.119.2-dev.1) (2023-10-12)
 
 
