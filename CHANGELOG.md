@@ -1,3 +1,10 @@
+## [0.119.3-dev.2](https://github.com/ReVanced/revanced-integrations/compare/v0.119.3-dev.1...v0.119.3-dev.2) (2023-10-13)
+
+
+### Bug Fixes
+
+* **YouTube - Hide Layout components:** Exempt expandable chips from exceptions ([#498](https://github.com/ReVanced/revanced-integrations/issues/498)) ([6f79746](https://github.com/ReVanced/revanced-integrations/commit/6f79746d788f196f3aa63b8e7c24b7f15ecd3f50))
+
 ## [0.119.3-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v0.119.2...v0.119.3-dev.1) (2023-10-13)
 
 
