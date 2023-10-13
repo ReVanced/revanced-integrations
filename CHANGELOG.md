@@ -1,3 +1,10 @@
+# [0.120.0-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v0.119.3-dev.2...v0.120.0-dev.1) (2023-10-13)
+
+
+### Features
+
+* **YouTube - Theme:** Disable gradient loading screen ([fd09e46](https://github.com/ReVanced/revanced-integrations/commit/fd09e46d01c820632cfe440dac34f5cd957e793d))
+
 ## [0.119.3-dev.2](https://github.com/ReVanced/revanced-integrations/compare/v0.119.3-dev.1...v0.119.3-dev.2) (2023-10-13)
 
 
