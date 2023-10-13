@@ -22,6 +22,7 @@ public final class LayoutComponentsFilter extends Filter {
     private final StringFilterGroup searchResultShelfHeader;
     private final StringFilterGroup inFeedSurvey;
     private final StringFilterGroup notifyMe;
+    private final StringFilterGroup expandableMetadata;
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     public LayoutComponentsFilter() {
@@ -114,7 +115,7 @@ public final class LayoutComponentsFilter extends Filter {
                 "official_card"
         );
 
-        final var expandableMetadata = new StringFilterGroup(
+        expandableMetadata = new StringFilterGroup(
                 SettingsEnum.HIDE_EXPANDABLE_CHIP,
                 "inline_expander"
         );
@@ -211,7 +212,8 @@ public final class LayoutComponentsFilter extends Filter {
     public boolean isFiltered(@Nullable String identifier, String path, byte[] protobufBufferArray,
                               FilterGroupList matchedList, FilterGroup matchedGroup, int matchedIndex) {
 
-        if (matchedGroup == notifyMe || matchedGroup == inFeedSurvey) return true;
+        if (matchedGroup == notifyMe || matchedGroup == inFeedSurvey || matchedGroup == expandableMetadata) 
+            return super.isFiltered(identifier, path, protobufBufferArray, matchedList, matchedGroup, matchedIndex);
 
         if (matchedGroup != custom && exceptions.matches(path))
             return false; // Exceptions are not filtered.
