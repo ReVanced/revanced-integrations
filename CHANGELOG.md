@@ -1,3 +1,10 @@
+## [0.119.3-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v0.119.2...v0.119.3-dev.1) (2023-10-13)
+
+
+### Bug Fixes
+
+* **YouTube - Hide layout components:** Hide new channel watermark component ([9670bd3](https://github.com/ReVanced/revanced-integrations/commit/9670bd305b3b9bbbc900af3b64152aaac125ec14))
+
 ## [0.119.2](https://github.com/ReVanced/revanced-integrations/compare/v0.119.1...v0.119.2) (2023-10-12)
 
 
