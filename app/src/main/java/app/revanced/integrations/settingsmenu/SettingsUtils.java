@@ -6,6 +6,8 @@ import android.preference.PreferenceGroup;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import kotlin.text.Regex;
+
 /**
  * Class is used across multiple target apps.
  *
@@ -17,6 +19,8 @@ import java.util.TreeMap;
  * or any other code that references these app specific integration code.
  */
 public class SettingsUtils {
+
+    private static final Regex punctuationRegex = new Regex("\\p{P}+");
 
     /**
      * Sort the preferences by title and ignore the casing.
@@ -36,13 +40,17 @@ public class SettingsUtils {
             if (preference instanceof PreferenceGroup) {
                 sortPreferenceGroupByTitle((PreferenceGroup) preference, menuDepthToSort - 1);
             }
-            preferences.put(preference.getTitle().toString().toLowerCase(), preference);
+            preferences.put(removePunctuationConvertToLowercase(preference.getTitle()), preference);
         }
 
         int prefIndex = 0;
         for (Preference pref : preferences.values()) {
             pref.setOrder(prefIndex++);
         }
+    }
+
+    private static String removePunctuationConvertToLowercase(CharSequence original) {
+        return punctuationRegex.replace(original, "").toLowerCase();
     }
 
 }
