@@ -5,7 +5,7 @@ import static app.revanced.integrations.utils.StringRef.str;
 import android.os.Build;
 
 import app.revanced.integrations.utils.LogHelper;
-import app.revanced.integrations.utils.ReVancedUtils;
+import app.revanced.integrations.utils.Utils;
 
 public class CopyVideoUrlPatch {
 
@@ -30,12 +30,12 @@ public class CopyVideoUrlPatch {
                 }
             }
 
-            ReVancedUtils.setClipboard(builder.toString());
+            Utils.setClipboard(builder.toString());
             // Do not show a toast if using Android 13+ as it shows it's own toast.
             // But if the user copied with a timestamp then show a toast.
             // Unfortunately this will show 2 toasts on Android 13+, but no way around this.
             if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.S_V2 || (withTimestamp && currentVideoTimeInSeconds > 0)) {
-                ReVancedUtils.showToastShort(withTimestamp && currentVideoTimeInSeconds > 0
+                Utils.showToastShort(withTimestamp && currentVideoTimeInSeconds > 0
                         ? str("revanced_share_copy_url_timestamp_success")
                         : str("revanced_share_copy_url_success"));
             }

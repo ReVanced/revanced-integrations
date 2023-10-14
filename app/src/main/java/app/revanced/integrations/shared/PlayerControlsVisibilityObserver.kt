@@ -3,7 +3,7 @@ package app.revanced.integrations.shared
 import android.app.Activity
 import android.view.View
 import android.view.ViewGroup
-import app.revanced.integrations.utils.ReVancedUtils
+import app.revanced.integrations.utils.Utils
 import java.lang.ref.WeakReference
 
 /**
@@ -19,13 +19,13 @@ class PlayerControlsVisibilityObserverImpl(
      * id of the direct parent of controls_layout, R.id.youtube_controls_overlay
      */
     private val controlsLayoutParentId =
-        ReVancedUtils.getResourceIdentifier(activity, "youtube_controls_overlay", "id")
+        Utils.getResourceIdentifier(activity, "youtube_controls_overlay", "id")
 
     /**
      * id of R.id.controls_layout
      */
     private val controlsLayoutId =
-        ReVancedUtils.getResourceIdentifier(activity, "controls_layout", "id")
+        Utils.getResourceIdentifier(activity, "controls_layout", "id")
 
     /**
      * reference to the controls layout view

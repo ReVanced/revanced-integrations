@@ -5,7 +5,7 @@ import androidx.annotation.Nullable;
 import app.revanced.integrations.patches.spoof.StoryboardRenderer;
 import app.revanced.integrations.requests.Requester;
 import app.revanced.integrations.utils.LogHelper;
-import app.revanced.integrations.utils.ReVancedUtils;
+import app.revanced.integrations.utils.Utils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -23,7 +23,7 @@ public class StoryboardRendererRequester {
     @Nullable
     private static JSONObject fetchPlayerResponse(@NonNull String requestBody) {
         try {
-            ReVancedUtils.verifyOffMainThread();
+            Utils.verifyOffMainThread();
             Objects.requireNonNull(requestBody);
 
             final byte[] innerTubeBody = requestBody.getBytes(StandardCharsets.UTF_8);

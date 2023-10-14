@@ -41,7 +41,7 @@ import app.revanced.integrations.returnyoutubedislike.requests.ReturnYouTubeDisl
 import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.shared.PlayerType;
 import app.revanced.integrations.utils.LogHelper;
-import app.revanced.integrations.utils.ReVancedUtils;
+import app.revanced.integrations.utils.Utils;
 import app.revanced.integrations.utils.ThemeHelper;
 
 /**
@@ -116,7 +116,7 @@ public class ReturnYouTubeDislike {
     private static final Rect middleSeparatorBounds;
 
     static {
-        DisplayMetrics dp = Objects.requireNonNull(ReVancedUtils.getContext()).getResources().getDisplayMetrics();
+        DisplayMetrics dp = Objects.requireNonNull(Utils.getContext()).getResources().getDisplayMetrics();
 
         leftSeparatorBounds = new Rect(0, 0,
                 (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 1.2f, dp),
@@ -208,7 +208,7 @@ public class ReturnYouTubeDislike {
 
         if (!compactLayout) {
             // left separator
-            String leftSeparatorString = ReVancedUtils.isRightToLeftTextLayout()
+            String leftSeparatorString = Utils.isRightToLeftTextLayout()
                     ? "\u200F    "  // u200F = right to left character
                     : "\u200E    "; // u200E = left to right character
             Spannable leftSeparatorSpan = new SpannableString(leftSeparatorString);
@@ -306,7 +306,7 @@ public class ReturnYouTubeDislike {
                     // such as Arabic which formats "1.234" into "۱,۲۳٤"
                     // But YouTube disregards locale specific number characters
                     // and instead shows english number characters everywhere.
-                    Locale locale = Objects.requireNonNull(ReVancedUtils.getContext()).getResources().getConfiguration().locale;
+                    Locale locale = Objects.requireNonNull(Utils.getContext()).getResources().getConfiguration().locale;
                     LogHelper.printDebug(() -> "Locale: " + locale);
                     dislikeCountFormatter = CompactDecimalFormat.getInstance(locale, CompactDecimalFormat.CompactStyle.SHORT);
                 }
@@ -321,7 +321,7 @@ public class ReturnYouTubeDislike {
     private static String formatDislikePercentage(float dislikePercentage) {
         synchronized (ReturnYouTubeDislike.class) { // number formatter is not thread safe, must synchronize
             if (dislikePercentageFormatter == null) {
-                Locale locale = Objects.requireNonNull(ReVancedUtils.getContext()).getResources().getConfiguration().locale;
+                Locale locale = Objects.requireNonNull(Utils.getContext()).getResources().getConfiguration().locale;
                 LogHelper.printDebug(() -> "Locale: " + locale);
                 dislikePercentageFormatter = NumberFormat.getPercentInstance(locale);
             }
@@ -372,7 +372,7 @@ public class ReturnYouTubeDislike {
     private ReturnYouTubeDislike(@NonNull String videoId) {
         this.videoId = Objects.requireNonNull(videoId);
         this.timeFetched = System.currentTimeMillis();
-        this.future = ReVancedUtils.submitOnBackgroundThread(() -> ReturnYouTubeDislikeApi.fetchVotes(videoId));
+        this.future = Utils.submitOnBackgroundThread(() -> ReturnYouTubeDislikeApi.fetchVotes(videoId));
     }
 
     private boolean isExpired(long now) {
@@ -510,14 +510,14 @@ public class ReturnYouTubeDislike {
     }
 
     public void sendVote(@NonNull Vote vote) {
-        ReVancedUtils.verifyOnMainThread();
+        Utils.verifyOnMainThread();
         Objects.requireNonNull(vote);
         try {
             if (isShort != PlayerType.getCurrent().isNoneOrHidden()) {
                 // Shorts was loaded with regular video present, then Shorts was closed.
                 // and then user voted on the now visible original video.
                 // Cannot send a vote, because this instance is for the wrong video.
-                ReVancedUtils.showToastLong(str("revanced_ryd_failure_ryd_enabled_while_playing_video_then_user_voted"));
+                Utils.showToastLong(str("revanced_ryd_failure_ryd_enabled_while_playing_video_then_user_voted"));
                 return;
             }
 

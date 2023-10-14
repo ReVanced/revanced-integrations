@@ -5,7 +5,7 @@ import static app.revanced.integrations.utils.StringRef.str;
 import app.revanced.integrations.patches.VideoInformation;
 import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.utils.LogHelper;
-import app.revanced.integrations.utils.ReVancedUtils;
+import app.revanced.integrations.utils.Utils;
 
 public final class RememberPlaybackSpeedPatch {
 
@@ -26,7 +26,7 @@ public final class RememberPlaybackSpeedPatch {
     public static void userSelectedPlaybackSpeed(float playbackSpeed) {
         if (SettingsEnum.REMEMBER_PLAYBACK_SPEED_LAST_SELECTED.getBoolean()) {
             SettingsEnum.PLAYBACK_SPEED_DEFAULT.saveValue(playbackSpeed);
-            ReVancedUtils.showToastLong(str("revanced_remember_playback_speed_toast", (playbackSpeed + "x")));
+            Utils.showToastLong(str("revanced_remember_playback_speed_toast", (playbackSpeed + "x")));
         }
     }
 

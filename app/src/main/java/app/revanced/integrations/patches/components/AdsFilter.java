@@ -6,7 +6,7 @@ import android.view.View;
 import androidx.annotation.Nullable;
 
 import app.revanced.integrations.settings.SettingsEnum;
-import app.revanced.integrations.utils.ReVancedUtils;
+import app.revanced.integrations.utils.Utils;
 import app.revanced.integrations.utils.StringTrieSearch;
 
 
@@ -113,6 +113,6 @@ public final class AdsFilter extends Filter {
      * @param view The view, which shows ads.
      */
     public static void hideAdAttributionView(View view) {
-        ReVancedUtils.hideViewBy1dpUnderCondition(SettingsEnum.HIDE_GENERAL_ADS, view);
+        Utils.hideViewBy1dpUnderCondition(SettingsEnum.HIDE_GENERAL_ADS, view);
     }
 }

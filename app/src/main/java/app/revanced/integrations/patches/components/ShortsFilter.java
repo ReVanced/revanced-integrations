@@ -7,8 +7,8 @@ import androidx.annotation.RequiresApi;
 import app.revanced.integrations.settings.SettingsEnum;
 import com.google.android.libraries.youtube.rendering.ui.pivotbar.PivotBar;
 
-import static app.revanced.integrations.utils.ReVancedUtils.hideViewBy1dpUnderCondition;
-import static app.revanced.integrations.utils.ReVancedUtils.hideViewUnderCondition;
+import static app.revanced.integrations.utils.Utils.hideViewBy1dpUnderCondition;
+import static app.revanced.integrations.utils.Utils.hideViewUnderCondition;
 
 /** @noinspection unused*/
 @RequiresApi(api = Build.VERSION_CODES.N)

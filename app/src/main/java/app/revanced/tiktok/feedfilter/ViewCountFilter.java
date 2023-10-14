@@ -1,6 +1,6 @@
 package app.revanced.tiktok.feedfilter;
 
-import static app.revanced.tiktok.utils.TikTokUtils.parseMinMax;
+import static app.revanced.tiktok.utils.Utils.parseMinMax;
 
 import com.ss.android.ugc.aweme.feed.model.Aweme;
 import com.ss.android.ugc.aweme.feed.model.AwemeStatistics;

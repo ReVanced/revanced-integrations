@@ -2,7 +2,7 @@ package app.revanced.integrations.patches;
 
 import android.view.View;
 import app.revanced.integrations.settings.SettingsEnum;
-import app.revanced.integrations.utils.ReVancedUtils;
+import app.revanced.integrations.utils.Utils;
 
 public final class HideFilterBarPatch {
     public static int hideInFeed(final int height) {
@@ -14,7 +14,7 @@ public final class HideFilterBarPatch {
     public static void hideInRelatedVideos(final View chipView) {
         if (!SettingsEnum.HIDE_FILTER_BAR_FEED_IN_RELATED_VIDEOS.getBoolean()) return;
 
-        ReVancedUtils.hideViewByLayoutParams(chipView);
+        Utils.hideViewByLayoutParams(chipView);
     }
 
     public static int hideInSearch(final int height) {

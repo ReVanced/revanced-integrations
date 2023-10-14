@@ -1,6 +1,6 @@
 package app.revanced.integrations.patches.playback.quality;
 
-import static app.revanced.integrations.utils.ReVancedUtils.NetworkType;
+import static app.revanced.integrations.utils.Utils.NetworkType;
 import static app.revanced.integrations.utils.StringRef.str;
 
 import androidx.annotation.Nullable;
@@ -12,7 +12,7 @@ import java.util.List;
 
 import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.utils.LogHelper;
-import app.revanced.integrations.utils.ReVancedUtils;
+import app.revanced.integrations.utils.Utils;
 
 public class RememberVideoQualityPatch {
     private static final int AUTOMATIC_VIDEO_QUALITY_VALUE = -2;
@@ -40,14 +40,14 @@ public class RememberVideoQualityPatch {
 
     private static void changeDefaultQuality(int defaultQuality) {
         String networkTypeMessage;
-        if (ReVancedUtils.getNetworkType() == NetworkType.MOBILE) {
+        if (Utils.getNetworkType() == NetworkType.MOBILE) {
             mobileQualitySetting.saveValue(defaultQuality);
             networkTypeMessage = str("revanced_remember_video_quality_mobile");
         } else {
             wifiQualitySetting.saveValue(defaultQuality);
             networkTypeMessage = str("revanced_remember_video_quality_wifi");
         }
-        ReVancedUtils.showToastShort(
+        Utils.showToastShort(
                 str("revanced_remember_video_quality_toast", networkTypeMessage, (defaultQuality + "p")));
     }
 
@@ -65,7 +65,7 @@ public class RememberVideoQualityPatch {
             qualityNeedsUpdating = false;
 
             final int preferredQuality;
-            if (ReVancedUtils.getNetworkType() == NetworkType.MOBILE) {
+            if (Utils.getNetworkType() == NetworkType.MOBILE) {
                 preferredQuality = mobileQualitySetting.getInt();
             } else {
                 preferredQuality = wifiQualitySetting.getInt();

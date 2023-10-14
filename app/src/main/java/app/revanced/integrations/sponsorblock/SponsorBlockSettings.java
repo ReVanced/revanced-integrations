@@ -21,7 +21,7 @@ import app.revanced.integrations.settings.SharedPrefCategory;
 import app.revanced.integrations.sponsorblock.objects.CategoryBehaviour;
 import app.revanced.integrations.sponsorblock.objects.SegmentCategory;
 import app.revanced.integrations.utils.LogHelper;
-import app.revanced.integrations.utils.ReVancedUtils;
+import app.revanced.integrations.utils.Utils;
 
 public class SponsorBlockSettings {
     /**
@@ -30,7 +30,7 @@ public class SponsorBlockSettings {
     private static final int SB_PRIVATE_USER_ID_MINIMUM_LENGTH = 30;
 
     public static void importSettings(@NonNull String json) {
-        ReVancedUtils.verifyOnMainThread();
+        Utils.verifyOnMainThread();
         try {
             JSONObject settingsJson = new JSONObject(json);
             JSONObject barTypesObject = settingsJson.getJSONObject("barTypes");
@@ -58,9 +58,9 @@ public class SponsorBlockSettings {
                 CategoryBehaviour behaviour = CategoryBehaviour.byDesktopKey(desktopKey);
                 if (behaviour == null) {
                     // String is not worth localizing, as this should never happen.
-                    ReVancedUtils.showToastLong(categoryKey + " unknown behavior key: " + desktopKey);
+                    Utils.showToastLong(categoryKey + " unknown behavior key: " + desktopKey);
                 } else if (category == SegmentCategory.HIGHLIGHT && behaviour == CategoryBehaviour.SKIP_AUTOMATICALLY_ONCE) {
-                    ReVancedUtils.showToastLong("Skip-once behavior not allowed for " + category.key);
+                    Utils.showToastLong("Skip-once behavior not allowed for " + category.key);
                     category.behaviour = CategoryBehaviour.SKIP_AUTOMATICALLY; // use closest match
                 } else {
                     category.behaviour = behaviour;
@@ -113,16 +113,16 @@ public class SponsorBlockSettings {
                 SettingsEnum.SB_LOCAL_TIME_SAVED_MILLISECONDS.saveValue((long) (minutesSaved * 60 * 1000));
             }
 
-            ReVancedUtils.showToastLong(str("revanced_sb_settings_import_successful"));
+            Utils.showToastLong(str("revanced_sb_settings_import_successful"));
         } catch (Exception ex) {
             LogHelper.printInfo(() -> "failed to import settings", ex); // use info level, as we are showing our own toast
-            ReVancedUtils.showToastLong(str("revanced_sb_settings_import_failed", ex.getMessage()));
+            Utils.showToastLong(str("revanced_sb_settings_import_failed", ex.getMessage()));
         }
     }
 
     @NonNull
     public static String exportSettings() {
-        ReVancedUtils.verifyOnMainThread();
+        Utils.verifyOnMainThread();
         try {
             LogHelper.printDebug(() -> "Creating SponsorBlock export settings string");
             JSONObject json = new JSONObject();
@@ -162,7 +162,7 @@ public class SponsorBlockSettings {
             return json.toString(2);
         } catch (Exception ex) {
             LogHelper.printInfo(() -> "failed to export settings", ex); // use info level, as we are showing our own toast
-            ReVancedUtils.showToastLong(str("revanced_sb_settings_export_failed", ex));
+            Utils.showToastLong(str("revanced_sb_settings_export_failed", ex));
             return "";
         }
     }
@@ -172,7 +172,7 @@ public class SponsorBlockSettings {
      */
     public static void exportCategoriesToFlatJson(@Nullable Context dialogContext,
                                                   @NonNull JSONObject json) throws JSONException {
-        ReVancedUtils.verifyOnMainThread();
+        Utils.verifyOnMainThread();
         initialize();
 
         // If user has a SponsorBlock user id then show a warning.
@@ -198,7 +198,7 @@ public class SponsorBlockSettings {
      * @return the number of settings imported
      */
     public static int importCategoriesFromFlatJson(JSONObject json) throws JSONException {
-        ReVancedUtils.verifyOnMainThread();
+        Utils.verifyOnMainThread();
         initialize();
 
         int numberOfImportedSettings = 0;

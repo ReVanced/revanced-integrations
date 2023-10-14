@@ -28,7 +28,7 @@ import app.revanced.integrations.patches.playback.speed.CustomPlaybackSpeedPatch
 import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.settings.SharedPrefCategory;
 import app.revanced.integrations.utils.LogHelper;
-import app.revanced.integrations.utils.ReVancedUtils;
+import app.revanced.integrations.utils.Utils;
 
 public class YouTubeSettingsFragment extends PreferenceFragment {
     /**
@@ -128,7 +128,7 @@ public class YouTubeSettingsFragment extends PreferenceFragment {
         try {
             PreferenceManager preferenceManager = getPreferenceManager();
             preferenceManager.setSharedPreferencesName(SharedPrefCategory.YOUTUBE.prefName);
-            addPreferencesFromResource(ReVancedUtils.getResourceIdentifier("revanced_prefs", "xml"));
+            addPreferencesFromResource(Utils.getResourceIdentifier("revanced_prefs", "xml"));
 
             enableDisablePreferences();
 

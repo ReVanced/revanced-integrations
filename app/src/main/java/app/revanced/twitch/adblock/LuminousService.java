@@ -1,14 +1,14 @@
 package app.revanced.twitch.adblock;
 
 import app.revanced.twitch.utils.LogHelper;
-import app.revanced.twitch.utils.TwitchUtils;
+import app.revanced.twitch.utils.Utils;
 import okhttp3.HttpUrl;
 import okhttp3.Request;
 
 public class LuminousService implements IAdblockService {
     @Override
     public String friendlyName() {
-        return TwitchUtils.getString("revanced_proxy_luminous");
+        return Utils.getString("revanced_proxy_luminous");
     }
 
     @Override

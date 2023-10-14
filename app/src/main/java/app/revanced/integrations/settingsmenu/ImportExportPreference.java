@@ -14,7 +14,7 @@ import android.widget.EditText;
 
 import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.utils.LogHelper;
-import app.revanced.integrations.utils.ReVancedUtils;
+import app.revanced.integrations.utils.Utils;
 
 public class ImportExportPreference extends EditTextPreference implements Preference.OnPreferenceClickListener {
 
@@ -68,7 +68,7 @@ public class ImportExportPreference extends EditTextPreference implements Prefer
         try {
             // Show the user the settings in JSON format.
             builder.setNeutralButton(str("revanced_settings_import_copy"), (dialog, which) -> {
-                ReVancedUtils.setClipboard(getEditText().getText().toString());
+                Utils.setClipboard(getEditText().getText().toString());
             }).setPositiveButton(str("revanced_settings_import"), (dialog, which) -> {
                 importSettings(getEditText().getText().toString());
             });

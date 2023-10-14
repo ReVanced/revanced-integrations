@@ -16,7 +16,7 @@ import app.revanced.integrations.sponsorblock.objects.SponsorSegment;
 import app.revanced.integrations.sponsorblock.requests.SBRequester;
 import app.revanced.integrations.sponsorblock.ui.SponsorBlockViewController;
 import app.revanced.integrations.utils.LogHelper;
-import app.revanced.integrations.utils.ReVancedUtils;
+import app.revanced.integrations.utils.Utils;
 
 import java.lang.reflect.Field;
 import java.util.*;
@@ -178,7 +178,7 @@ public class SegmentPlaybackController {
      */
     public static void initialize(Object ignoredPlayerController) {
         try {
-            ReVancedUtils.verifyOnMainThread();
+            Utils.verifyOnMainThread();
             SponsorBlockSettings.initialize();
             clearData();
             SponsorBlockViewController.hideAll();
@@ -205,7 +205,7 @@ public class SegmentPlaybackController {
                 LogHelper.printDebug(() -> "ignoring Short");
                 return;
             }
-            if (!ReVancedUtils.isNetworkConnected()) {
+            if (!Utils.isNetworkConnected()) {
                 LogHelper.printDebug(() -> "Network not connected, ignoring video");
                 return;
             }
@@ -213,7 +213,7 @@ public class SegmentPlaybackController {
             currentVideoId = videoId;
             LogHelper.printDebug(() -> "setCurrentVideoId: " + videoId);
 
-            ReVancedUtils.runOnBackgroundThread(() -> {
+            Utils.runOnBackgroundThread(() -> {
                 try {
                     executeDownloadSegments(videoId);
                 } catch (Exception e) {
@@ -233,7 +233,7 @@ public class SegmentPlaybackController {
         try {
             SponsorSegment[] segments = SBRequester.getSegments(videoId);
 
-            ReVancedUtils.runOnMainThread(()-> {
+            Utils.runOnMainThread(()-> {
                 if (!videoId.equals(currentVideoId)) {
                     // user changed videos before get segments network call could complete
                     LogHelper.printDebug(() -> "Ignoring segments for prior video: " + videoId);
@@ -393,7 +393,7 @@ public class SegmentPlaybackController {
                     scheduledHideSegment = segmentToHide;
                     LogHelper.printDebug(() -> "Scheduling hide segment: " + segmentToHide + " playbackSpeed: " + playbackSpeed);
                     final long delayUntilHide = (long) ((segmentToHide.end - millis) / playbackSpeed);
-                    ReVancedUtils.runOnMainThreadDelayed(() -> {
+                    Utils.runOnMainThreadDelayed(() -> {
                         if (scheduledHideSegment != segmentToHide) {
                             LogHelper.printDebug(() -> "Ignoring old scheduled hide segment: " + segmentToHide);
                             return;
@@ -432,7 +432,7 @@ public class SegmentPlaybackController {
 
                     LogHelper.printDebug(() -> "Scheduling segment: " + segmentToSkip + " playbackSpeed: " + playbackSpeed);
                     final long delayUntilSkip = (long) ((segmentToSkip.start - millis) / playbackSpeed);
-                    ReVancedUtils.runOnMainThreadDelayed(() -> {
+                    Utils.runOnMainThreadDelayed(() -> {
                         if (scheduledUpcomingSegment != segmentToSkip) {
                             LogHelper.printDebug(() -> "Ignoring old scheduled segment: " + segmentToSkip);
                             return;
@@ -577,7 +577,7 @@ public class SegmentPlaybackController {
     private static SponsorSegment toastSegmentSkipped;
 
     private static void showSkippedSegmentToast(@NonNull SponsorSegment segment) {
-        ReVancedUtils.verifyOnMainThread();
+        Utils.verifyOnMainThread();
         toastNumberOfSegmentsSkipped++;
         if (toastNumberOfSegmentsSkipped > 1) {
             return; // toast already scheduled
@@ -585,13 +585,13 @@ public class SegmentPlaybackController {
         toastSegmentSkipped = segment;
 
         final long delayToToastMilliseconds = 250; // also the maximum time between skips to be considered skipping multiple segments
-        ReVancedUtils.runOnMainThreadDelayed(() -> {
+        Utils.runOnMainThreadDelayed(() -> {
             try {
                 if (toastSegmentSkipped == null) { // video was changed just after skipping segment
                     LogHelper.printDebug(() -> "Ignoring old scheduled show toast");
                     return;
                 }
-                ReVancedUtils.showToastShort(toastNumberOfSegmentsSkipped == 1
+                Utils.showToastShort(toastNumberOfSegmentsSkipped == 1
                         ? toastSegmentSkipped.getSkippedToastText()
                         : str("revanced_sb_skipped_multiple_segments"));
             } catch (Exception ex) {
@@ -727,7 +727,7 @@ public class SegmentPlaybackController {
         if (highlightSegmentTimeBarScreenWidth == -1) {
             highlightSegmentTimeBarScreenWidth = (int) TypedValue.applyDimension(
                     TypedValue.COMPLEX_UNIT_DIP, HIGHLIGHT_SEGMENT_DRAW_BAR_WIDTH,
-                    Objects.requireNonNull(ReVancedUtils.getContext()).getResources().getDisplayMetrics());
+                    Objects.requireNonNull(Utils.getContext()).getResources().getDisplayMetrics());
         }
         return highlightSegmentTimeBarScreenWidth;
     }

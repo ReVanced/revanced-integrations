@@ -1,7 +1,7 @@
 package app.revanced.integrations.patches.spoof;
 
 import static app.revanced.integrations.patches.spoof.requests.StoryboardRendererRequester.getStoryboardRenderer;
-import static app.revanced.integrations.utils.ReVancedUtils.containsAny;
+import static app.revanced.integrations.utils.Utils.containsAny;
 
 import androidx.annotation.Nullable;
 
@@ -14,7 +14,7 @@ import app.revanced.integrations.patches.VideoInformation;
 import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.shared.PlayerType;
 import app.revanced.integrations.utils.LogHelper;
-import app.revanced.integrations.utils.ReVancedUtils;
+import app.revanced.integrations.utils.Utils;
 
 /** @noinspection unused*/
 public class SpoofSignaturePatch {
@@ -104,7 +104,7 @@ public class SpoofSignaturePatch {
     private static void fetchStoryboardRenderer() {
         String videoId = VideoInformation.getPlayerResponseVideoId();
         if (!videoId.equals(lastPlayerResponseVideoId)) {
-            rendererFuture = ReVancedUtils.submitOnBackgroundThread(() -> getStoryboardRenderer(videoId));
+            rendererFuture = Utils.submitOnBackgroundThread(() -> getStoryboardRenderer(videoId));
             lastPlayerResponseVideoId = videoId;
         }
         // Block until the fetch is completed.  Without this, occasionally when a new video is opened

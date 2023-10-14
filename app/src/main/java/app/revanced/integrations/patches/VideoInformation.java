@@ -4,7 +4,7 @@ import androidx.annotation.NonNull;
 import app.revanced.integrations.patches.playback.speed.RememberPlaybackSpeedPatch;
 import app.revanced.integrations.shared.VideoState;
 import app.revanced.integrations.utils.LogHelper;
-import app.revanced.integrations.utils.ReVancedUtils;
+import app.revanced.integrations.utils.Utils;
 
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Method;
@@ -132,7 +132,7 @@ public final class VideoInformation {
      * @return if the seek was successful
      */
     public static boolean seekTo(final long millisecond) {
-        ReVancedUtils.verifyOnMainThread();
+        Utils.verifyOnMainThread();
         try {
             LogHelper.printDebug(() -> "Seeking to " + millisecond);
             return (Boolean) seekMethod.invoke(playerControllerRef.get(), millisecond);

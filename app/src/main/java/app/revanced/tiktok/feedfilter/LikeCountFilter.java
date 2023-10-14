@@ -4,14 +4,14 @@ import app.revanced.tiktok.settings.SettingsEnum;
 import com.ss.android.ugc.aweme.feed.model.Aweme;
 import com.ss.android.ugc.aweme.feed.model.AwemeStatistics;
 
-import app.revanced.tiktok.utils.TikTokUtils;
+import app.revanced.tiktok.utils.Utils;
 
 public final class LikeCountFilter implements IFilter {
     final long minLike;
     final long maxLike;
 
     LikeCountFilter() {
-        long[] minMax = TikTokUtils.parseMinMax(SettingsEnum.MIN_MAX_LIKES);
+        long[] minMax = Utils.parseMinMax(SettingsEnum.MIN_MAX_LIKES);
         minLike = minMax[0];
         maxLike = minMax[1];
     }

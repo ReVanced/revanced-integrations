@@ -6,7 +6,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.widget.Toast;
 
-public class TwitchUtils {
+public class Utils {
     @SuppressLint("StaticFieldLeak")
     public static Context context;
 

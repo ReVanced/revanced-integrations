@@ -1,7 +1,7 @@
 package app.revanced.integrations.settingsmenu;
 
-import static app.revanced.integrations.utils.ReVancedUtils.getChildView;
-import static app.revanced.integrations.utils.ReVancedUtils.getResourceIdentifier;
+import static app.revanced.integrations.utils.Utils.getChildView;
+import static app.revanced.integrations.utils.Utils.getResourceIdentifier;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;

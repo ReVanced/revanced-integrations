@@ -13,7 +13,7 @@ import java.util.Objects;
 
 import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.utils.LogHelper;
-import app.revanced.integrations.utils.ReVancedUtils;
+import app.revanced.integrations.utils.Utils;
 
 public abstract class BottomControlButton {
     private static final Animation fadeIn;
@@ -25,11 +25,11 @@ public abstract class BottomControlButton {
 
     static {
         // TODO: check if these durations are correct.
-        fadeIn = ReVancedUtils.getResourceAnimation("fade_in");
-        fadeIn.setDuration(ReVancedUtils.getResourceInteger("fade_duration_fast"));
+        fadeIn = Utils.getResourceAnimation("fade_in");
+        fadeIn.setDuration(Utils.getResourceInteger("fade_duration_fast"));
 
-        fadeOut = ReVancedUtils.getResourceAnimation("fade_out");
-        fadeOut.setDuration(ReVancedUtils.getResourceInteger("fade_duration_scheduled"));
+        fadeOut = Utils.getResourceAnimation("fade_out");
+        fadeOut.setDuration(Utils.getResourceInteger("fade_duration_scheduled"));
     }
 
     @NonNull
@@ -54,7 +54,7 @@ public abstract class BottomControlButton {
 
         // Create the button.
         ImageView imageView = Objects.requireNonNull(bottomControlsViewGroup.findViewById(
-                ReVancedUtils.getResourceIdentifier(imageViewButtonId, "id")
+                Utils.getResourceIdentifier(imageViewButtonId, "id")
         ));
         imageView.setOnClickListener(onClickListener);
         if (longClickListener != null) {

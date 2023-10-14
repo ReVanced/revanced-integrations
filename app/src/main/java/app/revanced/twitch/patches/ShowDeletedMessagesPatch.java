@@ -12,7 +12,7 @@ import android.text.style.StyleSpan;
 import java.util.Objects;
 
 import app.revanced.twitch.settings.SettingsEnum;
-import app.revanced.twitch.utils.TwitchUtils;
+import app.revanced.twitch.utils.Utils;
 import tv.twitch.android.shared.chat.util.ClickableUsernameSpan;
 
 public class ShowDeletedMessagesPatch {
@@ -37,7 +37,7 @@ public class ShowDeletedMessagesPatch {
 
         SpannableStringBuilder ssb = new SpannableStringBuilder(original);
         ssb.setSpan(new StrikethroughSpan(), 0, original.length(), 0);
-        ssb.append(" (").append(TwitchUtils.getString("revanced_deleted_msg")).append(")");
+        ssb.append(" (").append(Utils.getString("revanced_deleted_msg")).append(")");
         ssb.setSpan(new StyleSpan(Typeface.ITALIC), original.length(), ssb.length(), 0);
 
         // Gray-out username

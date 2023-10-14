@@ -26,7 +26,7 @@ import app.revanced.integrations.requests.Requester;
 import app.revanced.integrations.returnyoutubedislike.ReturnYouTubeDislike;
 import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.utils.LogHelper;
-import app.revanced.integrations.utils.ReVancedUtils;
+import app.revanced.integrations.utils.Utils;
 
 public class ReturnYouTubeDislikeApi {
     /**
@@ -196,7 +196,7 @@ public class ReturnYouTubeDislikeApi {
             numberOfRateLimitRequestsEncountered++;
             LogHelper.printDebug(() -> "API rate limit was hit. Stopping API calls for the next "
                     + RATE_LIMIT_BACKOFF_SECONDS + " seconds");
-            ReVancedUtils.showToastLong(str("revanced_ryd_failure_client_rate_limit_requested"));
+            Utils.showToastLong(str("revanced_ryd_failure_client_rate_limit_requested"));
             return true;
         }
         return false;
@@ -224,7 +224,7 @@ public class ReturnYouTubeDislikeApi {
 
     private static void handleConnectionError(@NonNull String toastMessage, @Nullable Exception ex) {
         if (SettingsEnum.RYD_TOAST_ON_CONNECTION_ERROR.getBoolean()) {
-            ReVancedUtils.showToastShort(toastMessage);
+            Utils.showToastShort(toastMessage);
         }
         if (ex != null) {
             LogHelper.printInfo(() -> toastMessage, ex);
@@ -236,7 +236,7 @@ public class ReturnYouTubeDislikeApi {
      */
     @Nullable
     public static RYDVoteData fetchVotes(String videoId) {
-        ReVancedUtils.verifyOffMainThread();
+        Utils.verifyOffMainThread();
         Objects.requireNonNull(videoId);
 
         if (checkIfRateLimitInEffect("fetchVotes")) {
@@ -305,7 +305,7 @@ public class ReturnYouTubeDislikeApi {
      */
     @Nullable
     public static String registerAsNewUser() {
-        ReVancedUtils.verifyOffMainThread();
+        Utils.verifyOffMainThread();
         try {
             if (checkIfRateLimitInEffect("registerAsNewUser")) {
                 return null;
@@ -345,7 +345,7 @@ public class ReturnYouTubeDislikeApi {
 
     @Nullable
     private static String confirmRegistration(String userId, String solution) {
-        ReVancedUtils.verifyOffMainThread();
+        Utils.verifyOffMainThread();
         Objects.requireNonNull(userId);
         Objects.requireNonNull(solution);
         try {
@@ -399,7 +399,7 @@ public class ReturnYouTubeDislikeApi {
      */
     @Nullable
     private static String getUserId() {
-        ReVancedUtils.verifyOffMainThread();
+        Utils.verifyOffMainThread();
 
         String userId = SettingsEnum.RYD_USER_ID.getString();
         if (!userId.isEmpty()) {
@@ -414,7 +414,7 @@ public class ReturnYouTubeDislikeApi {
     }
 
     public static boolean sendVote(String videoId, ReturnYouTubeDislike.Vote vote) {
-        ReVancedUtils.verifyOffMainThread();
+        Utils.verifyOffMainThread();
         Objects.requireNonNull(videoId);
         Objects.requireNonNull(vote);
 
@@ -465,7 +465,7 @@ public class ReturnYouTubeDislikeApi {
     }
 
     private static boolean confirmVote(String videoId, String userId, String solution) {
-        ReVancedUtils.verifyOffMainThread();
+        Utils.verifyOffMainThread();
         Objects.requireNonNull(videoId);
         Objects.requireNonNull(userId);
         Objects.requireNonNull(solution);

@@ -1,6 +1,6 @@
 package app.revanced.integrations.sponsorblock.ui;
 
-import static app.revanced.integrations.utils.ReVancedUtils.getResourceIdentifier;
+import static app.revanced.integrations.utils.Utils.getResourceIdentifier;
 
 import android.view.View;
 import android.widget.ImageView;
@@ -13,7 +13,7 @@ import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.sponsorblock.SegmentPlaybackController;
 import app.revanced.integrations.sponsorblock.SponsorBlockUtils;
 import app.revanced.integrations.utils.LogHelper;
-import app.revanced.integrations.utils.ReVancedUtils;
+import app.revanced.integrations.utils.Utils;
 import app.revanced.integrations.videoplayer.BottomControlButton;
 
 public class VotingButtonController {
@@ -98,7 +98,7 @@ public class VotingButtonController {
         if (!isShowing) {
             return;
         }
-        ReVancedUtils.verifyOnMainThread();
+        Utils.verifyOnMainThread();
         View v = buttonReference.get();
         if (v == null) {
             return;

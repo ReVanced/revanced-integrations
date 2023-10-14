@@ -26,7 +26,7 @@ import app.revanced.integrations.returnyoutubedislike.ReturnYouTubeDislike;
 import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.shared.PlayerType;
 import app.revanced.integrations.utils.LogHelper;
-import app.revanced.integrations.utils.ReVancedUtils;
+import app.revanced.integrations.utils.Utils;
 
 /**
  * Handles all interaction of UI patch components.
@@ -90,7 +90,7 @@ public class ReturnYouTubeDislikePatch {
      * Resource identifier of old UI dislike button.
      */
     private static final int OLD_UI_DISLIKE_BUTTON_RESOURCE_ID
-            = ReVancedUtils.getResourceIdentifier("dislike_button", "id");
+            = Utils.getResourceIdentifier("dislike_button", "id");
 
     /**
      * Dislikes text label used by old UI.
@@ -347,7 +347,7 @@ public class ReturnYouTubeDislikePatch {
 
             Runnable update = () -> {
                 Spanned shortsDislikesSpan = videoData.getDislikeSpanForShort(SHORTS_LOADING_SPAN);
-                ReVancedUtils.runOnMainThreadNowOrLater(() -> {
+                Utils.runOnMainThreadNowOrLater(() -> {
                     String videoId = videoData.getVideoId();
                     if (!videoId.equals(VideoInformation.getVideoId())) {
                         // User swiped to new video before fetch completed
@@ -375,7 +375,7 @@ public class ReturnYouTubeDislikePatch {
             if (videoData.fetchCompleted()) {
                 update.run(); // Network call is completed, no need to wait on background thread.
             } else {
-                ReVancedUtils.runOnBackgroundThread(update);
+                Utils.runOnBackgroundThread(update);
             }
         } catch (Exception ex) {
             LogHelper.printException(() -> "updateOnScreenShortsTextViews failure", ex);

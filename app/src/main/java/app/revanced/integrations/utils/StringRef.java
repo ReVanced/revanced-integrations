@@ -102,7 +102,7 @@ public class StringRef {
     public String toString() {
         if (!resolved) {
             if (resources == null || packageName == null) {
-                Context context = ReVancedUtils.getContext();
+                Context context = Utils.getContext();
                 resources = context.getResources();
                 packageName = context.getPackageName();
             }

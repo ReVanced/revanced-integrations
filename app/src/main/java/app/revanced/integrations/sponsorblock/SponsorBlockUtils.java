@@ -28,7 +28,7 @@ import app.revanced.integrations.sponsorblock.objects.SponsorSegment.SegmentVote
 import app.revanced.integrations.sponsorblock.requests.SBRequester;
 import app.revanced.integrations.sponsorblock.ui.SponsorBlockViewController;
 import app.revanced.integrations.utils.LogHelper;
-import app.revanced.integrations.utils.ReVancedUtils;
+import app.revanced.integrations.utils.Utils;
 
 /**
  * Not thread safe. All fields/methods must be accessed from the main thread.
@@ -74,7 +74,7 @@ public class SponsorBlockUtils {
                 SegmentCategory category = SegmentCategory.categoriesWithoutHighlights()[which];
                 final boolean enableButton;
                 if (category.behaviour == CategoryBehaviour.IGNORE) {
-                    ReVancedUtils.showToastLong(str("revanced_sb_new_segment_disabled_category"));
+                    Utils.showToastLong(str("revanced_sb_new_segment_disabled_category"));
                     enableButton = false;
                 } else {
                     newUserCreatedSegmentCategory = category;
@@ -213,7 +213,7 @@ public class SponsorBlockUtils {
 
     private static void submitNewSegment() {
         try {
-            ReVancedUtils.verifyOnMainThread();
+            Utils.verifyOnMainThread();
             final long start = newSponsorSegmentStartMillis;
             final long end = newSponsorSegmentEndMillis;
             final String videoId = VideoInformation.getVideoId();
@@ -224,7 +224,7 @@ public class SponsorBlockUtils {
                 return;
             }
             clearUnsubmittedSegmentTimes();
-            ReVancedUtils.runOnBackgroundThread(() -> {
+            Utils.runOnBackgroundThread(() -> {
                 SBRequester.submitSegments(videoId, segmentCategory.key, start, end, videoLength);
                 SegmentPlaybackController.executeDownloadSegments(videoId);
             });
@@ -235,7 +235,7 @@ public class SponsorBlockUtils {
 
     public static void onMarkLocationClicked() {
         try {
-            ReVancedUtils.verifyOnMainThread();
+            Utils.verifyOnMainThread();
             newSponsorSegmentDialogShownMillis = VideoInformation.getVideoTime();
 
             new AlertDialog.Builder(SponsorBlockViewController.getOverLaysViewGroupContext())
@@ -255,13 +255,13 @@ public class SponsorBlockUtils {
 
     public static void onPublishClicked() {
         try {
-            ReVancedUtils.verifyOnMainThread();
+            Utils.verifyOnMainThread();
             if (newSponsorSegmentStartMillis < 0 || newSponsorSegmentEndMillis < 0) {
-                ReVancedUtils.showToastShort(str("revanced_sb_new_segment_mark_locations_first"));
+                Utils.showToastShort(str("revanced_sb_new_segment_mark_locations_first"));
             } else if (newSponsorSegmentStartMillis >= newSponsorSegmentEndMillis) {
-                ReVancedUtils.showToastShort(str("revanced_sb_new_segment_start_is_before_end"));
+                Utils.showToastShort(str("revanced_sb_new_segment_start_is_before_end"));
             } else if (!newSponsorSegmentPreviewed && newSponsorSegmentStartMillis != 0) {
-                ReVancedUtils.showToastLong(str("revanced_sb_new_segment_preview_segment_first"));
+                Utils.showToastLong(str("revanced_sb_new_segment_preview_segment_first"));
             } else {
                 long length = (newSponsorSegmentEndMillis - newSponsorSegmentStartMillis) / 1000;
                 long start = (newSponsorSegmentStartMillis) / 1000;
@@ -283,13 +283,13 @@ public class SponsorBlockUtils {
 
     public static void onVotingClicked(@NonNull Context context) {
         try {
-            ReVancedUtils.verifyOnMainThread();
+            Utils.verifyOnMainThread();
             SponsorSegment[] segments = SegmentPlaybackController.getSegments();
             if (segments == null || segments.length == 0) {
                 // Button is hidden if no segments exist.
                 // But if prior video had segments, and current video does not,
                 // then the button persists until the overlay fades out (this is intentional, as abruptly hiding the button is jarring).
-                ReVancedUtils.showToastShort(str("revanced_sb_vote_no_segments"));
+                Utils.showToastShort(str("revanced_sb_vote_no_segments"));
                 return;
             }
 
@@ -337,7 +337,7 @@ public class SponsorBlockUtils {
 
     private static void onNewCategorySelect(@NonNull SponsorSegment segment, @NonNull Context context) {
         try {
-            ReVancedUtils.verifyOnMainThread();
+            Utils.verifyOnMainThread();
             final SegmentCategory[] values = SegmentCategory.categoriesWithoutHighlights();
             CharSequence[] titles = new CharSequence[values.length];
             for (int i = 0; i < values.length; i++) {
@@ -355,11 +355,11 @@ public class SponsorBlockUtils {
 
     public static void onPreviewClicked() {
         try {
-            ReVancedUtils.verifyOnMainThread();
+            Utils.verifyOnMainThread();
             if (newSponsorSegmentStartMillis < 0 || newSponsorSegmentEndMillis < 0) {
-                ReVancedUtils.showToastShort(str("revanced_sb_new_segment_mark_locations_first"));
+                Utils.showToastShort(str("revanced_sb_new_segment_mark_locations_first"));
             } else if (newSponsorSegmentStartMillis >= newSponsorSegmentEndMillis) {
-                ReVancedUtils.showToastShort(str("revanced_sb_new_segment_start_is_before_end"));
+                Utils.showToastShort(str("revanced_sb_new_segment_start_is_before_end"));
             } else {
                 SegmentPlaybackController.removeUnsubmittedSegments(); // If user hits preview more than once before playing.
                 SegmentPlaybackController.addUnsubmittedSegment(
@@ -383,13 +383,13 @@ public class SponsorBlockUtils {
         SettingsEnum.SB_LOCAL_TIME_SAVED_NUMBER_SEGMENTS.saveValue(SettingsEnum.SB_LOCAL_TIME_SAVED_NUMBER_SEGMENTS.getInt() + 1);
 
         if (SettingsEnum.SB_TRACK_SKIP_COUNT.getBoolean()) {
-            ReVancedUtils.runOnBackgroundThread(() -> SBRequester.sendSegmentSkippedViewedRequest(segment));
+            Utils.runOnBackgroundThread(() -> SBRequester.sendSegmentSkippedViewedRequest(segment));
         }
     }
 
     public static void onEditByHandClicked() {
         try {
-            ReVancedUtils.verifyOnMainThread();
+            Utils.verifyOnMainThread();
             new AlertDialog.Builder(SponsorBlockViewController.getOverLaysViewGroupContext())
                     .setTitle(str("revanced_sb_new_segment_edit_by_hand_title"))
                     .setMessage(str("revanced_sb_new_segment_edit_by_hand_content"))
@@ -443,7 +443,7 @@ public class SponsorBlockUtils {
                             DialogInterface.BUTTON_NEGATIVE :
                             DialogInterface.BUTTON_POSITIVE);
             } catch (ParseException e) {
-                ReVancedUtils.showToastLong(str("revanced_sb_new_segment_edit_by_hand_parse_error"));
+                Utils.showToastLong(str("revanced_sb_new_segment_edit_by_hand_parse_error"));
             } catch (Exception ex) {
                 LogHelper.printException(() -> "EditByHandSaveDialogListener failure", ex);
             }

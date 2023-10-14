@@ -7,7 +7,7 @@ import androidx.annotation.Nullable;
 
 import java.util.Objects;
 
-import app.revanced.integrations.utils.ReVancedUtils;
+import app.revanced.integrations.utils.Utils;
 import app.revanced.integrations.utils.StringRef;
 
 public enum CategoryBehaviour {
@@ -63,7 +63,7 @@ public enum CategoryBehaviour {
     private static String[] behaviorDescriptionsWithoutSkipOnce;
 
     private static void createNameAndKeyArrays() {
-        ReVancedUtils.verifyOnMainThread();
+        Utils.verifyOnMainThread();
 
         CategoryBehaviour[] behaviours = values();
         final int behaviorLength = behaviours.length;

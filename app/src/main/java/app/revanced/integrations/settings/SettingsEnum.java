@@ -5,7 +5,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import app.revanced.integrations.sponsorblock.SponsorBlockSettings;
 import app.revanced.integrations.utils.LogHelper;
-import app.revanced.integrations.utils.ReVancedUtils;
+import app.revanced.integrations.utils.Utils;
 import app.revanced.integrations.utils.StringRef;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -672,13 +672,13 @@ public enum SettingsEnum {
             }
             numberOfSettingsImported += SponsorBlockSettings.importCategoriesFromFlatJson(json);
 
-            ReVancedUtils.showToastLong(numberOfSettingsImported == 0
+            Utils.showToastLong(numberOfSettingsImported == 0
                     ? str("revanced_settings_import_reset")
                     : str("revanced_settings_import_success", numberOfSettingsImported));
 
             return rebootSettingChanged;
         } catch (JSONException | IllegalArgumentException ex) {
-            ReVancedUtils.showToastLong(str("revanced_settings_import_failure_parse", ex.getMessage()));
+            Utils.showToastLong(str("revanced_settings_import_failure_parse", ex.getMessage()));
             LogHelper.printInfo(() -> "", ex);
         } catch (Exception ex) {
             LogHelper.printException(() -> "Import failure: " + ex.getMessage(), ex); // should never happen

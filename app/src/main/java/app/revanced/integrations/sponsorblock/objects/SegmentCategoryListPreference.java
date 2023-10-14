@@ -20,7 +20,7 @@ import android.widget.TextView;
 import java.util.Objects;
 
 import app.revanced.integrations.utils.LogHelper;
-import app.revanced.integrations.utils.ReVancedUtils;
+import app.revanced.integrations.utils.Utils;
 
 public class SegmentCategoryListPreference extends ListPreference {
     private final SegmentCategory category;
@@ -110,7 +110,7 @@ public class SegmentCategoryListPreference extends ListPreference {
                     category.save(editor);
                     editor.apply();
                     updateTitle();
-                    ReVancedUtils.showToastShort(str("revanced_sb_color_reset"));
+                    Utils.showToastShort(str("revanced_sb_color_reset"));
                 } catch (Exception ex) {
                     LogHelper.printException(() -> "setNeutralButton failure", ex);
                 }
@@ -139,10 +139,10 @@ public class SegmentCategoryListPreference extends ListPreference {
                     final int color = Color.parseColor(colorString) & 0xFFFFFF;
                     if (color != category.color) {
                         category.setColor(color);
-                        ReVancedUtils.showToastShort(str("revanced_sb_color_changed"));
+                        Utils.showToastShort(str("revanced_sb_color_changed"));
                     }
                 } catch (IllegalArgumentException ex) {
-                    ReVancedUtils.showToastShort(str("revanced_sb_color_invalid"));
+                    Utils.showToastShort(str("revanced_sb_color_invalid"));
                 }
                 // behavior is already saved, but color needs to be saved
                 SharedPreferences.Editor editor = getSharedPreferences().edit();

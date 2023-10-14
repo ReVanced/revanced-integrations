@@ -1,9 +1,9 @@
 package app.revanced.integrations.sponsorblock.ui;
 
-import static app.revanced.integrations.utils.ReVancedUtils.getResourceColor;
-import static app.revanced.integrations.utils.ReVancedUtils.getResourceDimension;
-import static app.revanced.integrations.utils.ReVancedUtils.getResourceDimensionPixelSize;
-import static app.revanced.integrations.utils.ReVancedUtils.getResourceIdentifier;
+import static app.revanced.integrations.utils.Utils.getResourceColor;
+import static app.revanced.integrations.utils.Utils.getResourceDimension;
+import static app.revanced.integrations.utils.Utils.getResourceDimensionPixelSize;
+import static app.revanced.integrations.utils.Utils.getResourceIdentifier;
 
 import android.content.Context;
 import android.graphics.Canvas;

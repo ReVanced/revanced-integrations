@@ -6,7 +6,7 @@ import app.revanced.twitch.adblock.LuminousService;
 import app.revanced.twitch.adblock.PurpleAdblockService;
 import app.revanced.twitch.settings.SettingsEnum;
 import app.revanced.twitch.utils.LogHelper;
-import app.revanced.twitch.utils.TwitchUtils;
+import app.revanced.twitch.utils.Utils;
 import okhttp3.Interceptor;
 import okhttp3.Response;
 
@@ -46,7 +46,7 @@ public class RequestInterceptor implements Interceptor {
 
 
             if (!available || rewritten == null) {
-                TwitchUtils.toast(String.format(TwitchUtils.getString("revanced_embedded_ads_service_unavailable"), activeService.friendlyName()), true);
+                Utils.toast(String.format(Utils.getString("revanced_embedded_ads_service_unavailable"), activeService.friendlyName()), true);
                 return chain.proceed(originalRequest);
             }
 
@@ -74,7 +74,7 @@ public class RequestInterceptor implements Interceptor {
             }
 
             // maxAttempts exceeded; giving up on using the ad blocker
-            TwitchUtils.toast(String.format(TwitchUtils.getString("revanced_embedded_ads_service_failed"), activeService.friendlyName()), true);
+            Utils.toast(String.format(Utils.getString("revanced_embedded_ads_service_failed"), activeService.friendlyName()), true);
 
         }
 
@@ -86,11 +86,11 @@ public class RequestInterceptor implements Interceptor {
     private void updateActiveService() {
         var current = SettingsEnum.BLOCK_EMBEDDED_ADS.getString();
 
-        if (current.equals(TwitchUtils.getString("key_revanced_proxy_luminous")) && !(activeService instanceof LuminousService))
+        if (current.equals(Utils.getString("key_revanced_proxy_luminous")) && !(activeService instanceof LuminousService))
             activeService = new LuminousService();
-        else if (current.equals(TwitchUtils.getString("key_revanced_proxy_purpleadblock")) && !(activeService instanceof PurpleAdblockService))
+        else if (current.equals(Utils.getString("key_revanced_proxy_purpleadblock")) && !(activeService instanceof PurpleAdblockService))
             activeService = new PurpleAdblockService();
-        else if (current.equals(TwitchUtils.getString("key_revanced_proxy_disabled")))
+        else if (current.equals(Utils.getString("key_revanced_proxy_disabled")))
             activeService = null;
     }
 }

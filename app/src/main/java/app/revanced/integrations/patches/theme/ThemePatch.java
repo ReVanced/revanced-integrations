@@ -1,7 +1,7 @@
 package app.revanced.integrations.patches.theme;
 
 import app.revanced.integrations.settings.SettingsEnum;
-import app.revanced.integrations.utils.ReVancedUtils;
+import app.revanced.integrations.utils.Utils;
 import app.revanced.integrations.utils.ThemeHelper;
 
 public class ThemePatch {
@@ -46,12 +46,12 @@ public class ThemePatch {
     }
 
     private static int getBlackColor() {
-        if (blackColor == 0) blackColor = ReVancedUtils.getResourceColor("yt_black1");
+        if (blackColor == 0) blackColor = Utils.getResourceColor("yt_black1");
         return blackColor;
     }
 
     private static int getWhiteColor() {
-        if (whiteColor == 0) whiteColor = ReVancedUtils.getResourceColor("yt_white1");
+        if (whiteColor == 0) whiteColor = Utils.getResourceColor("yt_white1");
         return whiteColor;
     }
 

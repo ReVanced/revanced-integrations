@@ -15,7 +15,7 @@ import java.util.concurrent.ExecutionException;
 
 import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.utils.LogHelper;
-import app.revanced.integrations.utils.ReVancedUtils;
+import app.revanced.integrations.utils.Utils;
 
 /**
  * Alternative YouTube thumbnails, showing the beginning/middle/end of the video.
@@ -236,7 +236,7 @@ public final class AlternativeThumbnailsPatch {
                 // This hooked code is running on a low priority thread, and it's slightly faster
                 // to run the url connection thru the integrations thread pool which runs at the highest priority.
                 final long start = System.currentTimeMillis();
-                imageFileFound = ReVancedUtils.submitOnBackgroundThread(() -> {
+                imageFileFound = Utils.submitOnBackgroundThread(() -> {
                     final int connectionTimeoutMillis = 5000;
                     HttpURLConnection connection = (HttpURLConnection) new URL(imageUrl).openConnection();
                     connection.setConnectTimeout(connectionTimeoutMillis);

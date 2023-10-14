@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import app.revanced.tiktok.utils.LogHelper;
-import app.revanced.tiktok.utils.TikTokUtils;
+import app.revanced.tiktok.utils.Utils;
 
 public enum SettingsEnum {
     DEBUG("debug", BOOLEAN, FALSE), // Must be first value, otherwise logging during loading will not work.
@@ -79,7 +79,7 @@ public enum SettingsEnum {
 
     private static void loadAllSettings() {
         try {
-            Context context = TikTokUtils.getAppContext();
+            Context context = Utils.getAppContext();
             if (context == null) {
                 Log.e("revanced: SettingsEnum", "Context returned null! Settings NOT initialized");
                 return;
@@ -128,7 +128,7 @@ public enum SettingsEnum {
     }
 
     public void saveValue(Object newValue) {
-        Context context = TikTokUtils.getAppContext();
+        Context context = Utils.getAppContext();
         if (context == null) {
             LogHelper.printException(SettingsEnum.class, "Context on SaveValue is null!");
             return;

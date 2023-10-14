@@ -21,7 +21,7 @@ public class ThemeHelper {
         final var theme = isDarkTheme()
                 ? "Theme.YouTube.Settings.Dark"
                 : "Theme.YouTube.Settings";
-        activity.setTheme(ReVancedUtils.getResourceIdentifier(theme, "style"));
+        activity.setTheme(Utils.getResourceIdentifier(theme, "style"));
     }
 
 }

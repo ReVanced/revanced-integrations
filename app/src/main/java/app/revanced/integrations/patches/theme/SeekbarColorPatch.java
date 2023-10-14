@@ -6,7 +6,7 @@ import android.graphics.Color;
 
 import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.utils.LogHelper;
-import app.revanced.integrations.utils.ReVancedUtils;
+import app.revanced.integrations.utils.Utils;
 
 public final class SeekbarColorPatch {
 
@@ -49,7 +49,7 @@ public final class SeekbarColorPatch {
             seekbarColor = Color.parseColor(SettingsEnum.SEEKBAR_CUSTOM_COLOR_VALUE.getString());
             Color.colorToHSV(seekbarColor, customSeekbarColorHSV);
         } catch (Exception ex) {
-            ReVancedUtils.showToastShort(str("revanced_seekbar_custom_color_invalid"));
+            Utils.showToastShort(str("revanced_seekbar_custom_color_invalid"));
             SettingsEnum.SEEKBAR_CUSTOM_COLOR_VALUE.saveValue(SettingsEnum.SEEKBAR_CUSTOM_COLOR_VALUE.defaultValue);
             loadCustomSeekbarColor();
         }

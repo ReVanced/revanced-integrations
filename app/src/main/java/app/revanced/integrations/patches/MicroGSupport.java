@@ -11,7 +11,7 @@ import android.net.Uri;
 import java.util.Objects;
 
 import app.revanced.integrations.utils.LogHelper;
-import app.revanced.integrations.utils.ReVancedUtils;
+import app.revanced.integrations.utils.Utils;
 
 public class MicroGSupport {
     private static final String MICROG_VENDOR = "com.mgoogle";
@@ -21,7 +21,7 @@ public class MicroGSupport {
     private static final Uri VANCED_MICROG_PROVIDER = Uri.parse("content://" + MICROG_VENDOR + ".android.gsf.gservices/prefix");
 
     private static void startIntent(Context context, String uriString, String message) {
-        ReVancedUtils.showToastLong(message);
+        Utils.showToastLong(message);
 
         var intent = new Intent(Intent.ACTION_VIEW);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -31,7 +31,7 @@ public class MicroGSupport {
 
     @TargetApi(26)
     public static void checkAvailability() {
-        var context = Objects.requireNonNull(ReVancedUtils.getContext());
+        var context = Objects.requireNonNull(Utils.getContext());
 
         try {
             context.getPackageManager().getPackageInfo(MICROG_PACKAGE_NAME, PackageManager.GET_ACTIVITIES);

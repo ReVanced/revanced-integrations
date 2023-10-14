@@ -13,8 +13,8 @@ import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.sponsorblock.SponsorBlockUtils;
 import app.revanced.integrations.utils.LogHelper;
 
-import static app.revanced.integrations.utils.ReVancedUtils.getResourceDimensionPixelSize;
-import static app.revanced.integrations.utils.ReVancedUtils.getResourceIdentifier;
+import static app.revanced.integrations.utils.Utils.getResourceDimensionPixelSize;
+import static app.revanced.integrations.utils.Utils.getResourceIdentifier;
 
 public final class NewSegmentLayout extends FrameLayout {
     private static final ColorStateList rippleColorStateList = new ColorStateList(

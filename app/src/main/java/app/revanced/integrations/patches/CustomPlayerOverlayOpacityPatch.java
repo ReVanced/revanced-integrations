@@ -5,7 +5,7 @@ import static app.revanced.integrations.utils.StringRef.str;
 import android.widget.ImageView;
 
 import app.revanced.integrations.settings.SettingsEnum;
-import app.revanced.integrations.utils.ReVancedUtils;
+import app.revanced.integrations.utils.Utils;
 
 public class CustomPlayerOverlayOpacityPatch {
     private static final int DEFAULT_OPACITY = (int) SettingsEnum.PLAYER_OVERLAY_OPACITY.defaultValue;
@@ -14,7 +14,7 @@ public class CustomPlayerOverlayOpacityPatch {
         int opacity = SettingsEnum.PLAYER_OVERLAY_OPACITY.getInt();
 
         if (opacity < 0 || opacity > 100) {
-            ReVancedUtils.showToastLong(str("revanced_player_overlay_opacity_parse_error"));
+            Utils.showToastLong(str("revanced_player_overlay_opacity_parse_error"));
             SettingsEnum.PLAYER_OVERLAY_OPACITY.saveValue(DEFAULT_OPACITY);
             opacity = DEFAULT_OPACITY;
         }

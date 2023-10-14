@@ -5,7 +5,7 @@ import android.content.Context;
 
 import app.revanced.tiktok.settings.SettingsEnum;
 
-public class TikTokUtils {
+public class Utils {
 
     @SuppressLint("StaticFieldLeak")
     public static Context context;
@@ -14,7 +14,7 @@ public class TikTokUtils {
         if (context != null) {
             return context;
         }
-        LogHelper.printException(TikTokUtils.class, "Context is null!");
+        LogHelper.printException(Utils.class, "Context is null!");
         return null;
     }
 

@@ -129,7 +129,7 @@ public class LogHelper {
             String toastMessageToDisplay = (userToastMessage != null)
                     ? userToastMessage
                     : outerClassSimpleName + ": " + messageString;
-            ReVancedUtils.showToastLong(toastMessageToDisplay);
+            Utils.showToastLong(toastMessageToDisplay);
         }
     }
 

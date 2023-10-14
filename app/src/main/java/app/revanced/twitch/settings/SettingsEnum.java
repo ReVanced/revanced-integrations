@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import androidx.annotation.NonNull;
 import app.revanced.twitch.utils.LogHelper;
-import app.revanced.twitch.utils.TwitchUtils;
+import app.revanced.twitch.utils.Utils;
 
 import static app.revanced.twitch.settings.SettingsEnum.ReturnType.BOOLEAN;
 import static app.revanced.twitch.settings.SettingsEnum.ReturnType.STRING;
@@ -55,7 +55,7 @@ public enum SettingsEnum {
     }
 
     private static void loadAllSettings() {
-        TwitchUtils.ifContextAttached((context -> {
+        Utils.ifContextAttached((context -> {
             try {
                 SharedPreferences prefs = context.getSharedPreferences(REVANCED_PREFS, Context.MODE_PRIVATE);
                 for (SettingsEnum setting : values()) {
@@ -121,7 +121,7 @@ public enum SettingsEnum {
     }
 
     public void saveValue(Object newValue) {
-        TwitchUtils.ifContextAttached((context) -> {
+        Utils.ifContextAttached((context) -> {
             SharedPreferences prefs = context.getSharedPreferences(REVANCED_PREFS, Context.MODE_PRIVATE);
             if (returnType == BOOLEAN) {
                 prefs.edit().putBoolean(path, (Boolean)newValue).apply();

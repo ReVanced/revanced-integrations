@@ -20,12 +20,12 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.concurrent.*;
 
-public class ReVancedUtils {
+public class Utils {
 
     @SuppressLint("StaticFieldLeak")
     public static Context context;
 
-    private ReVancedUtils() {
+    private Utils() {
     } // utility class
 
     /**

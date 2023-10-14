@@ -39,7 +39,7 @@ import app.revanced.integrations.sponsorblock.objects.UserStats;
 import app.revanced.integrations.sponsorblock.requests.SBRequester;
 import app.revanced.integrations.sponsorblock.ui.SponsorBlockViewController;
 import app.revanced.integrations.utils.LogHelper;
-import app.revanced.integrations.utils.ReVancedUtils;
+import app.revanced.integrations.utils.Utils;
 
 @SuppressWarnings("deprecation")
 public class SponsorBlockSettingsFragment extends PreferenceFragment {
@@ -214,7 +214,7 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment {
         showSkipToast.setSummaryOn(str("revanced_sb_general_skiptoast_sum_on"));
         showSkipToast.setSummaryOff(str("revanced_sb_general_skiptoast_sum_off"));
         showSkipToast.setOnPreferenceClickListener(preference1 -> {
-            ReVancedUtils.showToastShort(str("revanced_sb_skipped_sponsor"));
+            Utils.showToastShort(str("revanced_sb_skipped_sponsor"));
             return false;
         });
         showSkipToast.setOnPreferenceChangeListener((preference1, newValue) -> {
@@ -270,7 +270,7 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment {
         newSegmentStep.setOnPreferenceChangeListener((preference1, newValue) -> {
             final int newAdjustmentValue = Integer.parseInt(newValue.toString());
             if (newAdjustmentValue == 0) {
-                ReVancedUtils.showToastLong(str("revanced_sb_general_adjusting_invalid"));
+                Utils.showToastLong(str("revanced_sb_general_adjusting_invalid"));
                 return false;
             }
             SettingsEnum.SB_CREATE_NEW_SEGMENT_STEP.saveValue(newAdjustmentValue);
@@ -331,7 +331,7 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment {
         privateUserId.setOnPreferenceChangeListener((preference1, newValue) -> {
             String newUUID = newValue.toString();
             if (!SponsorBlockSettings.isValidSBUserId(newUUID)) {
-                ReVancedUtils.showToastLong(str("revanced_sb_general_uuid_invalid"));
+                Utils.showToastLong(str("revanced_sb_general_uuid_invalid"));
                 return false;
             }
             SettingsEnum.SB_PRIVATE_USER_ID.saveValue(newUUID);
@@ -352,14 +352,14 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment {
             DialogInterface.OnClickListener urlChangeListener = (dialog, buttonPressed) -> {
                 if (buttonPressed == DialogInterface.BUTTON_NEUTRAL) {
                     SettingsEnum.SB_API_URL.saveValue(SettingsEnum.SB_API_URL.defaultValue);
-                    ReVancedUtils.showToastLong(str("revanced_sb_api_url_reset"));
+                    Utils.showToastLong(str("revanced_sb_api_url_reset"));
                 } else if (buttonPressed == DialogInterface.BUTTON_POSITIVE) {
                     String serverAddress = editText.getText().toString();
                     if (!SponsorBlockSettings.isValidSBServerAddress(serverAddress)) {
-                        ReVancedUtils.showToastLong(str("revanced_sb_api_url_invalid"));
+                        Utils.showToastLong(str("revanced_sb_api_url_invalid"));
                     } else if (!serverAddress.equals(SettingsEnum.SB_API_URL.getString())) {
                         SettingsEnum.SB_API_URL.saveValue(serverAddress);
-                        ReVancedUtils.showToastLong(str("revanced_sb_api_url_changed"));
+                        Utils.showToastLong(str("revanced_sb_api_url_changed"));
                     }
                 }
             };
@@ -377,7 +377,7 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment {
         importExport = new EditTextPreference(context) {
             protected void onPrepareDialogBuilder(AlertDialog.Builder builder) {
                 builder.setNeutralButton(str("revanced_sb_settings_copy"), (dialog, which) -> {
-                    ReVancedUtils.setClipboard(getEditText().getText().toString());
+                    Utils.setClipboard(getEditText().getText().toString());
                 });
             }
         };
@@ -456,9 +456,9 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment {
             statsCategory.addPreference(loadingPlaceholderPreference);
             if (SettingsEnum.SB_ENABLED.getBoolean()) {
                 loadingPlaceholderPreference.setTitle(str("revanced_sb_stats_loading"));
-                ReVancedUtils.runOnBackgroundThread(() -> {
+                Utils.runOnBackgroundThread(() -> {
                     UserStats stats = SBRequester.retrieveUserStats();
-                    ReVancedUtils.runOnMainThread(() -> { // get back on main thread to modify UI elements
+                    Utils.runOnMainThread(() -> { // get back on main thread to modify UI elements
                         addUserStats(loadingPlaceholderPreference, stats);
                         addLocalUserStats();
                     });
@@ -474,7 +474,7 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment {
     private static final DecimalFormat statsNumberOfSegmentsSkippedFormatter = new DecimalFormat("#,###,###");
 
     private void addUserStats(@NonNull Preference loadingPlaceholder, @Nullable UserStats stats) {
-        ReVancedUtils.verifyOnMainThread();
+        Utils.verifyOnMainThread();
         try {
             if (stats == null) {
                 loadingPlaceholder.setTitle(str("revanced_sb_stats_connection_failure"));
@@ -492,17 +492,17 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment {
                 preference.setSummary(str("revanced_sb_stats_username_change"));
                 preference.setText(userName);
                 preference.setOnPreferenceChangeListener((preference1, value) -> {
-                    ReVancedUtils.runOnBackgroundThread(() -> {
+                    Utils.runOnBackgroundThread(() -> {
                         String newUserName = (String) value;
                         String errorMessage = SBRequester.setUsername(newUserName);
-                        ReVancedUtils.runOnMainThread(() -> {
+                        Utils.runOnMainThread(() -> {
                             if (errorMessage == null) {
                                 preference.setTitle(fromHtml(str("revanced_sb_stats_username", newUserName)));
                                 preference.setText(newUserName);
-                                ReVancedUtils.showToastLong(str("revanced_sb_stats_username_changed"));
+                                Utils.showToastLong(str("revanced_sb_stats_username_changed"));
                             } else {
                                 preference.setText(userName); // revert to previous
-                                ReVancedUtils.showToastLong(errorMessage);
+                                Utils.showToastLong(errorMessage);
                             }
                         });
                     });

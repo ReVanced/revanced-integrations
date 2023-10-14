@@ -9,7 +9,7 @@ import androidx.annotation.Nullable;
 import java.util.Objects;
 
 import app.revanced.integrations.utils.LogHelper;
-import app.revanced.integrations.utils.ReVancedUtils;
+import app.revanced.integrations.utils.Utils;
 
 /**
  * Shared categories, and helper methods.
@@ -33,7 +33,7 @@ public enum SharedPrefCategory {
 
     SharedPrefCategory(@NonNull String prefName) {
         this.prefName = Objects.requireNonNull(prefName);
-        preferences = Objects.requireNonNull(ReVancedUtils.getContext()).getSharedPreferences(prefName, Context.MODE_PRIVATE);
+        preferences = Objects.requireNonNull(Utils.getContext()).getSharedPreferences(prefName, Context.MODE_PRIVATE);
     }
 
     private void removeConflictingPreferenceKeyValue(@NonNull String key) {

@@ -29,7 +29,7 @@ import app.revanced.tiktok.settingsmenu.preference.categories.DownloadsPreferenc
 import app.revanced.tiktok.settingsmenu.preference.categories.FeedFilterPreferenceCategory;
 import app.revanced.tiktok.settingsmenu.preference.categories.IntegrationsPreferenceCategory;
 import app.revanced.tiktok.settingsmenu.preference.categories.SimSpoofPreferenceCategory;
-import app.revanced.tiktok.utils.TikTokUtils;
+import app.revanced.tiktok.utils.Utils;
 
 @SuppressWarnings("deprecation")
 public class TikTokSettingsFragment extends PreferenceFragment {
@@ -66,7 +66,7 @@ public class TikTokSettingsFragment extends PreferenceFragment {
                 LogHelper.printException(() -> "Setting cannot be handled: " + pref.getClass() + " " + pref);
                 return;
             }
-            if (TikTokUtils.getAppContext() != null && this.settingsInitialized && setting.rebootApp) {
+            if (Utils.getAppContext() != null && this.settingsInitialized && setting.rebootApp) {
                 rebootDialog(getActivity());
             }
         } catch (Exception ex) {

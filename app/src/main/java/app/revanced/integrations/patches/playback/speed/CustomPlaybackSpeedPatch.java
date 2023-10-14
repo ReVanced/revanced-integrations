@@ -14,7 +14,7 @@ import java.util.Arrays;
 import app.revanced.integrations.patches.components.PlaybackSpeedMenuFilterPatch;
 import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.utils.LogHelper;
-import app.revanced.integrations.utils.ReVancedUtils;
+import app.revanced.integrations.utils.Utils;
 
 public class CustomPlaybackSpeedPatch {
     /**
@@ -38,7 +38,7 @@ public class CustomPlaybackSpeedPatch {
     }
 
     private static void resetCustomSpeeds(@NonNull String toastMessage) {
-        ReVancedUtils.showToastLong(toastMessage);
+        Utils.showToastLong(toastMessage);
         SettingsEnum.CUSTOM_PLAYBACK_SPEEDS.saveValue(SettingsEnum.CUSTOM_PLAYBACK_SPEEDS.defaultValue);
     }
 
