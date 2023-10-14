@@ -1,3 +1,172 @@
+# [0.120.0-dev.2](https://github.com/ReVanced/revanced-integrations/compare/v0.120.0-dev.1...v0.120.0-dev.2) (2023-10-14)
+
+
+### Bug Fixes
+
+* **YouTube - Minimized playback:** Fix pip incorrectly showing if app is minimized immediately after opening a Short ([7d02774](https://github.com/ReVanced/revanced-integrations/commit/7d02774ea192510e692e90ae55a86e25ee321926))
+
+# [0.120.0-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v0.119.3-dev.2...v0.120.0-dev.1) (2023-10-13)
+
+
+### Features
+
+* **YouTube - Theme:** Disable gradient loading screen ([fd09e46](https://github.com/ReVanced/revanced-integrations/commit/fd09e46d01c820632cfe440dac34f5cd957e793d))
+
+## [0.119.3-dev.2](https://github.com/ReVanced/revanced-integrations/compare/v0.119.3-dev.1...v0.119.3-dev.2) (2023-10-13)
+
+
+### Bug Fixes
+
+* **YouTube - Hide Layout components:** Exempt expandable chips from exceptions ([#498](https://github.com/ReVanced/revanced-integrations/issues/498)) ([6f79746](https://github.com/ReVanced/revanced-integrations/commit/6f79746d788f196f3aa63b8e7c24b7f15ecd3f50))
+
+## [0.119.3-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v0.119.2...v0.119.3-dev.1) (2023-10-13)
+
+
+### Bug Fixes
+
+* **YouTube - Hide layout components:** Hide new channel watermark component ([9670bd3](https://github.com/ReVanced/revanced-integrations/commit/9670bd305b3b9bbbc900af3b64152aaac125ec14))
+
+## [0.119.2](https://github.com/ReVanced/revanced-integrations/compare/v0.119.1...v0.119.2) (2023-10-12)
+
+
+### Bug Fixes
+
+* **YouTube - ReturnYouTubeDislike:** Fix dislikes not showing on Shorts ([#495](https://github.com/ReVanced/revanced-integrations/issues/495)) ([9b2add7](https://github.com/ReVanced/revanced-integrations/commit/9b2add7553488436c63fa14bd62966dfb92705bf))
+
+## [0.119.2-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v0.119.1...v0.119.2-dev.1) (2023-10-12)
+
+
+### Bug Fixes
+
+* **YouTube - ReturnYouTubeDislike:** Fix dislikes not showing on Shorts ([#495](https://github.com/ReVanced/revanced-integrations/issues/495)) ([9b2add7](https://github.com/ReVanced/revanced-integrations/commit/9b2add7553488436c63fa14bd62966dfb92705bf))
+
+## [0.119.1](https://github.com/ReVanced/revanced-integrations/compare/v0.119.0...v0.119.1) (2023-10-09)
+
+
+### Bug Fixes
+
+* **YouTube - Hide shorts components:** Do not hide subscribe button outside of Shorts ([1479d6b](https://github.com/ReVanced/revanced-integrations/commit/1479d6bc2668758ea55f9d640684547f710099f0))
+
+## [0.119.1-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v0.119.0...v0.119.1-dev.1) (2023-10-08)
+
+
+### Bug Fixes
+
+* **YouTube - Hide shorts components:** Do not hide subscribe button outside of Shorts ([1479d6b](https://github.com/ReVanced/revanced-integrations/commit/1479d6bc2668758ea55f9d640684547f710099f0))
+
+# [0.119.0](https://github.com/ReVanced/revanced-integrations/compare/v0.118.0...v0.119.0) (2023-10-08)
+
+
+### Bug Fixes
+
+* **YouTube - Hide shorts components:** Add filter to filter group list ([30788ba](https://github.com/ReVanced/revanced-integrations/commit/30788ba1a3e8d666b55a37e9389246e4bfa039cb))
+* **YouTube - Hide shorts components:** Do not prevent filtering components ([6eb3017](https://github.com/ReVanced/revanced-integrations/commit/6eb301776e202cf1d923f96cc83ddf6f0430b211))
+* **YouTube - Hide shorts components:** Hide the subscribe button when paused ([6730aaf](https://github.com/ReVanced/revanced-integrations/commit/6730aaf2b864b747a6b77411cdaceee653b36218))
+* **YouTube - ReturnYouTubeDislike:** Do not retry API call if same fetch recently failed ([#493](https://github.com/ReVanced/revanced-integrations/issues/493)) ([486c894](https://github.com/ReVanced/revanced-integrations/commit/486c894257e91dedc04b38191e0e01e38c66b5c4))
+
+
+### Features
+
+* **YouTube - Hide shorts components:** Hide subscribe button when paused separately from subscribe button ([3ac869f](https://github.com/ReVanced/revanced-integrations/commit/3ac869fa6ae095f074481d98d9a4eea207eda00d))
+* **YouTube - Return YouTube Dislike:** Support version `18.37.36` ([#490](https://github.com/ReVanced/revanced-integrations/issues/490)) ([245c3b3](https://github.com/ReVanced/revanced-integrations/commit/245c3b35373313d49cc5b1c2fd8e9deebb6258a5))
+* **YouTube:** Add `Disable fine scrubbing gesture` patch ([4498f39](https://github.com/ReVanced/revanced-integrations/commit/4498f39b8c4900fccdc359d0c687c26db23526c3))
+
+# [0.119.0-dev.6](https://github.com/ReVanced/revanced-integrations/compare/v0.119.0-dev.5...v0.119.0-dev.6) (2023-10-07)
+
+
+### Bug Fixes
+
+* **YouTube - ReturnYouTubeDislike:** Do not retry API call if same fetch recently failed ([#493](https://github.com/ReVanced/revanced-integrations/issues/493)) ([486c894](https://github.com/ReVanced/revanced-integrations/commit/486c894257e91dedc04b38191e0e01e38c66b5c4))
+
+# [0.119.0-dev.5](https://github.com/ReVanced/revanced-integrations/compare/v0.119.0-dev.4...v0.119.0-dev.5) (2023-10-07)
+
+
+### Features
+
+* **YouTube - Return YouTube Dislike:** Support version `18.37.36` ([#490](https://github.com/ReVanced/revanced-integrations/issues/490)) ([245c3b3](https://github.com/ReVanced/revanced-integrations/commit/245c3b35373313d49cc5b1c2fd8e9deebb6258a5))
+
+# [0.119.0-dev.4](https://github.com/ReVanced/revanced-integrations/compare/v0.119.0-dev.3...v0.119.0-dev.4) (2023-10-07)
+
+
+### Features
+
+* **YouTube:** Add `Disable fine scrubbing gesture` patch ([4498f39](https://github.com/ReVanced/revanced-integrations/commit/4498f39b8c4900fccdc359d0c687c26db23526c3))
+
+# [0.119.0-dev.3](https://github.com/ReVanced/revanced-integrations/compare/v0.119.0-dev.2...v0.119.0-dev.3) (2023-10-06)
+
+
+### Bug Fixes
+
+* **YouTube - Hide shorts components:** Add filter to filter group list ([30788ba](https://github.com/ReVanced/revanced-integrations/commit/30788ba1a3e8d666b55a37e9389246e4bfa039cb))
+
+# [0.119.0-dev.2](https://github.com/ReVanced/revanced-integrations/compare/v0.119.0-dev.1...v0.119.0-dev.2) (2023-10-06)
+
+
+### Bug Fixes
+
+* **YouTube - Hide shorts components:** Do not prevent filtering components ([6eb3017](https://github.com/ReVanced/revanced-integrations/commit/6eb301776e202cf1d923f96cc83ddf6f0430b211))
+
+# [0.119.0-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v0.118.1-dev.1...v0.119.0-dev.1) (2023-10-05)
+
+
+### Features
+
+* **YouTube - Hide shorts components:** Hide subscribe button when paused separately from subscribe button ([3ac869f](https://github.com/ReVanced/revanced-integrations/commit/3ac869fa6ae095f074481d98d9a4eea207eda00d))
+
+## [0.118.1-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v0.118.0...v0.118.1-dev.1) (2023-10-05)
+
+
+### Bug Fixes
+
+* **YouTube - Hide shorts components:** Hide the subscribe button when paused ([6730aaf](https://github.com/ReVanced/revanced-integrations/commit/6730aaf2b864b747a6b77411cdaceee653b36218))
+
+# [0.118.0](https://github.com/ReVanced/revanced-integrations/compare/v0.117.1...v0.118.0) (2023-10-04)
+
+
+### Bug Fixes
+
+* Do not always hide the component ([3d0fc1d](https://github.com/ReVanced/revanced-integrations/commit/3d0fc1d610cdf50bb7cc4687d899e0acbf3fb83e))
+* Remove parameter from route ([4b0925e](https://github.com/ReVanced/revanced-integrations/commit/4b0925e33762c02e95ef9b1aadcae1038af71a50))
+* **YouTube - Client spoof:** Display seekbar thumbnails in high quality ([f71c1a0](https://github.com/ReVanced/revanced-integrations/commit/f71c1a0c156b2320e06dd98b3e5b276560d438aa))
+* **YouTube - Client spoof:** Do not record feed videos to history by default ([#478](https://github.com/ReVanced/revanced-integrations/issues/478)) ([ef1cca0](https://github.com/ReVanced/revanced-integrations/commit/ef1cca02c165d9c24e64b43fae375ae57bf90a52))
+* **YouTube - Client spoof:** fix occasionally frozen video playback ([#486](https://github.com/ReVanced/revanced-integrations/issues/486)) ([b0b6ff6](https://github.com/ReVanced/revanced-integrations/commit/b0b6ff6a82820d4578c5cfc5f69ae7aaaac49c7f))
+* **YouTube - Client spoof:** fix storyboard fetched out of order ([#481](https://github.com/ReVanced/revanced-integrations/issues/481)) ([8398774](https://github.com/ReVanced/revanced-integrations/commit/83987747e67541cd44221ede8c4020baba36c7b8))
+* **YouTube - Client spoof:** Fix toast shown for live streams ([#489](https://github.com/ReVanced/revanced-integrations/issues/489)) ([27f49df](https://github.com/ReVanced/revanced-integrations/commit/27f49dfd1e8fbfd3e28270da91ad437df8a54761))
+* **YouTube - Client spoof:** fix toast shown if opening paid or age restricted video ([#482](https://github.com/ReVanced/revanced-integrations/issues/482)) ([e72b65b](https://github.com/ReVanced/revanced-integrations/commit/e72b65b599353715a6467463226abc603bc850f7))
+* **YouTube - Client spoof:** Removed unused code ([#480](https://github.com/ReVanced/revanced-integrations/issues/480)) ([e6903bf](https://github.com/ReVanced/revanced-integrations/commit/e6903bff95b485d21773537bbcc162411b616618))
+* **YouTube - Client spoof:** Restore clipping videos functionality ([2cd1738](https://github.com/ReVanced/revanced-integrations/commit/2cd1738d2494add13c48b64ccc9aad2432b2d8e3))
+* **YouTube - Client spoof:** Restore seekbar thumbnails ([978f630](https://github.com/ReVanced/revanced-integrations/commit/978f630c0267ec2b0d9bb9b5b0b3cdc9abef65ec))
+* **YouTube - Client spoof:** Show seekbar thumbnail for age restricted and paid videos ([01019b0](https://github.com/ReVanced/revanced-integrations/commit/01019b09c1c106ed814b994dd8af558a18873c1d))
+* **YouTube - Custom filter:** Use new lines between components instead of commas ([#475](https://github.com/ReVanced/revanced-integrations/issues/475)) ([17ed396](https://github.com/ReVanced/revanced-integrations/commit/17ed39673954a5b571bc1654be20afc235682ca4))
+* **YouTube - Hide info cards:** Fix info cards not hiding for some users ([#487](https://github.com/ReVanced/revanced-integrations/issues/487)) ([00c4c40](https://github.com/ReVanced/revanced-integrations/commit/00c4c4025bc27495e490fdb231ac803881c9887f))
+* **YouTube - Hide layout components:** Always hide redundant 'player audio track' button ([#473](https://github.com/ReVanced/revanced-integrations/issues/473)) ([d86851b](https://github.com/ReVanced/revanced-integrations/commit/d86851baf1ef1993f5ba9543a4a3fe8d50c3a199))
+* **YouTube - Hide layout components:** Do not hide chapters in feed unexpectedly ([bedb02e](https://github.com/ReVanced/revanced-integrations/commit/bedb02e4f6122f3dcdc106648648eec4d6a3cbe5))
+* **YouTube - Hide shorts components:** Hide subscribe button in paused state ([9685070](https://github.com/ReVanced/revanced-integrations/commit/9685070eda5b448eb33324b4bfabd4c7eae42f9f))
+* **YouTube - ReturnYouTubeDislike:** Add debug logging to litho text ([#476](https://github.com/ReVanced/revanced-integrations/issues/476)) ([e3b8e8b](https://github.com/ReVanced/revanced-integrations/commit/e3b8e8be41796d0300c8421e28e5b8cf43ffb25e))
+* **YouTube - ReturnYouTubeDislike:** Revert support for 18.37.36 ([#488](https://github.com/ReVanced/revanced-integrations/issues/488)) ([165b061](https://github.com/ReVanced/revanced-integrations/commit/165b061fa9c5fd48b0dbb9540fd6ea6a9ffaf312))
+* **YouTube - SponsorBlock:** Adjust import/export UI text ([#491](https://github.com/ReVanced/revanced-integrations/issues/491)) ([4215be4](https://github.com/ReVanced/revanced-integrations/commit/4215be4250d195ecf89b041c96834be56c164f34))
+* **YouTube - Video Id:** Fix video id not showing the currently playing video ([#484](https://github.com/ReVanced/revanced-integrations/issues/484)) ([da923a3](https://github.com/ReVanced/revanced-integrations/commit/da923a38a06baf8c30d38211e8354be4edb0ad51))
+* **YouTube:** fix old quality and custom speed not working on tablets ([#477](https://github.com/ReVanced/revanced-integrations/issues/477)) ([2352fa5](https://github.com/ReVanced/revanced-integrations/commit/2352fa542658035c5f4400fb5892217887710e4d))
+
+
+### Features
+
+* **TU Dortmund:** Add `Show on lockscreen` patch ([#472](https://github.com/ReVanced/revanced-integrations/issues/472)) ([526d66f](https://github.com/ReVanced/revanced-integrations/commit/526d66f6a91e0ed907db609a4adaa97f3239898b))
+* **Twitch - Block embedded ads:** Switch from `ttv.lol` to `luminous.dev` ([2c34180](https://github.com/ReVanced/revanced-integrations/commit/2c3418041cf19ae4c1c7b67eda8398578384b753))
+* **YouTube - Hide layout components:** Disable hiding search result shelf header by default ([b280de3](https://github.com/ReVanced/revanced-integrations/commit/b280de31957631180f07057cc7e466bd26e2f7fb))
+* **YouTube - Hide layout components:** Hide "Join" button ([e225468](https://github.com/ReVanced/revanced-integrations/commit/e2254681cd77481376e4c3f8c556db510fdfce6c))
+* **YouTube - Hide layout components:** Hide "Notify me" button ([b87d806](https://github.com/ReVanced/revanced-integrations/commit/b87d8066597a2c989480de47561007844964a0e4))
+* **YouTube - Hide layout components:** Hide search result shelf header ([93a3045](https://github.com/ReVanced/revanced-integrations/commit/93a30453d9693e015b1f58a12f85cf355770a4ca))
+* **YouTube - Hide layout components:** Hide timed reactions ([b472aee](https://github.com/ReVanced/revanced-integrations/commit/b472aeeed7904f6b6d537dfbddda1a97c7ddcd5e))
+* **YouTube:** Add `Bypass URL redirects` patch ([9109653](https://github.com/ReVanced/revanced-integrations/commit/91096532eedf396920d69932638f667cbf850cbe))
+* **YouTube:** Bump compatibility to `18.37.36` ([#483](https://github.com/ReVanced/revanced-integrations/issues/483)) ([5dadb0d](https://github.com/ReVanced/revanced-integrations/commit/5dadb0d523f2b1eb4216d43770af37a156c8a477))
+
+
+### Performance Improvements
+
+* Only request required fields ([d20b768](https://github.com/ReVanced/revanced-integrations/commit/d20b768bc23d167d9f0d2c651c75b3f92944e731))
+* Remove unnecessary api key parameter ([ba5e7d8](https://github.com/ReVanced/revanced-integrations/commit/ba5e7d870ee88ad45c233d914e1e2795de920cb2))
+
 # [0.118.0-dev.24](https://github.com/ReVanced/revanced-integrations/compare/v0.118.0-dev.23...v0.118.0-dev.24) (2023-10-03)
 
 

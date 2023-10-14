@@ -12,12 +12,17 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceScreen;
 import android.preference.SwitchPreference;
 
+import app.revanced.integrations.patches.ReturnYouTubeDislikePatch;
 import app.revanced.integrations.returnyoutubedislike.ReturnYouTubeDislike;
 import app.revanced.integrations.returnyoutubedislike.requests.ReturnYouTubeDislikeApi;
 import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.settings.SharedPrefCategory;
 
 public class ReturnYouTubeDislikeSettingsFragment extends PreferenceFragment {
+
+    private static final boolean IS_SPOOFING_TO_NON_LITHO_SHORTS_PLAYER =
+            SettingsEnum.SPOOF_APP_VERSION.getBoolean()
+                    && SettingsEnum.SPOOF_APP_VERSION_TARGET.getString().compareTo("18.33.40") <= 0;
 
     /**
      * If dislikes are shown on Shorts.
@@ -63,7 +68,7 @@ public class ReturnYouTubeDislikeSettingsFragment extends PreferenceFragment {
         enabledPreference.setOnPreferenceChangeListener((pref, newValue) -> {
             final boolean rydIsEnabled = (Boolean) newValue;
             SettingsEnum.RYD_ENABLED.saveValue(rydIsEnabled);
-            ReturnYouTubeDislike.onEnabledChange(rydIsEnabled);
+            ReturnYouTubeDislikePatch.onRYDStatusChange(rydIsEnabled);
 
             updateUIState();
             return true;
@@ -73,7 +78,11 @@ public class ReturnYouTubeDislikeSettingsFragment extends PreferenceFragment {
         shortsPreference = new SwitchPreference(context);
         shortsPreference.setChecked(SettingsEnum.RYD_SHORTS.getBoolean());
         shortsPreference.setTitle(str("revanced_ryd_shorts_title"));
-        shortsPreference.setSummaryOn(str("revanced_ryd_shorts_summary_on"));
+        String shortsSummary = str("revanced_ryd_shorts_summary_on",
+                IS_SPOOFING_TO_NON_LITHO_SHORTS_PLAYER
+                        ? ""
+                        : "\n\n" + str("revanced_ryd_shorts_summary_disclaimer"));
+        shortsPreference.setSummaryOn(shortsSummary);
         shortsPreference.setSummaryOff(str("revanced_ryd_shorts_summary_off"));
         shortsPreference.setOnPreferenceChangeListener((pref, newValue) -> {
             SettingsEnum.RYD_SHORTS.saveValue(newValue);
@@ -89,7 +98,7 @@ public class ReturnYouTubeDislikeSettingsFragment extends PreferenceFragment {
         percentagePreference.setSummaryOff(str("revanced_ryd_dislike_percentage_summary_off"));
         percentagePreference.setOnPreferenceChangeListener((pref, newValue) -> {
             SettingsEnum.RYD_DISLIKE_PERCENTAGE.saveValue(newValue);
-            ReturnYouTubeDislike.clearCache();
+            ReturnYouTubeDislike.clearAllUICaches();
             updateUIState();
             return true;
         });
@@ -102,7 +111,7 @@ public class ReturnYouTubeDislikeSettingsFragment extends PreferenceFragment {
         compactLayoutPreference.setSummaryOff(str("revanced_ryd_compact_layout_summary_off"));
         compactLayoutPreference.setOnPreferenceChangeListener((pref, newValue) -> {
             SettingsEnum.RYD_COMPACT_LAYOUT.saveValue(newValue);
-            ReturnYouTubeDislike.clearCache();
+            ReturnYouTubeDislike.clearAllUICaches();
             updateUIState();
             return true;
         });
