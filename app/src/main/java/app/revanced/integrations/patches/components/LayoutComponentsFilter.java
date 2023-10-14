@@ -19,14 +19,18 @@ public final class LayoutComponentsFilter extends Filter {
             SettingsEnum.HIDE_MIX_PLAYLISTS,
             "&list="
     );
+    private final StringFilterGroup searchResultShelfHeader;
+    private final StringFilterGroup inFeedSurvey;
+    private final StringFilterGroup notifyMe;
+    private final StringFilterGroup expandableMetadata;
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     public LayoutComponentsFilter() {
         exceptions.addPatterns(
                 "home_video_with_context",
                 "related_video_with_context",
-                "comment_thread", // skip filtering anything in the comments
-                "|comment.", // skip filtering anything in the comments replies
+                "comment_thread", // Whitelist comments
+                "|comment.", // Whitelist comment replies
                 "library_recent_shelf"
         );
 
@@ -61,7 +65,7 @@ public final class LayoutComponentsFilter extends Filter {
                 "compact_banner"
         );
 
-        final var inFeedSurvey = new StringFilterGroup(
+        inFeedSurvey = new StringFilterGroup(
                 SettingsEnum.HIDE_FEED_SURVEY,
                 "in_feed_survey",
                 "slimline_survey"
@@ -111,7 +115,7 @@ public final class LayoutComponentsFilter extends Filter {
                 "official_card"
         );
 
-        final var expandableMetadata = new StringFilterGroup(
+        expandableMetadata = new StringFilterGroup(
                 SettingsEnum.HIDE_EXPANDABLE_CHIP,
                 "inline_expander"
         );
@@ -146,9 +150,35 @@ public final class LayoutComponentsFilter extends Filter {
                 "cell_divider" // layout residue (gray line above the buttoned ad),
         );
 
+        final var timedReactions = new StringFilterGroup(
+                SettingsEnum.HIDE_TIMED_REACTIONS,
+                "emoji_control_panel",
+                "timed_reaction"
+        );
+
+        searchResultShelfHeader = new StringFilterGroup(
+                SettingsEnum.HIDE_SEARCH_RESULT_SHELF_HEADER,
+                "shelf_header.eml"
+        );
+
+        notifyMe = new StringFilterGroup(
+                SettingsEnum.HIDE_NOTIFY_ME_BUTTON,
+                "set_reminder_button"
+        );
+
+        final var joinMembership = new StringFilterGroup(
+                SettingsEnum.HIDE_JOIN_MEMBERSHIP_BUTTON,
+                "compact_sponsor_button"
+        );
+
         final var chipsShelf = new StringFilterGroup(
                 SettingsEnum.HIDE_CHIPS_SHELF,
                 "chips_shelf"
+        );
+
+        final var channelWatermark = new StringFilterGroup(
+                SettingsEnum.HIDE_VIDEO_CHANNEL_WATERMARK,
+                "featured_channel_watermark_overlay"
         );
 
         this.pathFilterGroupList.addAll(
@@ -156,35 +186,48 @@ public final class LayoutComponentsFilter extends Filter {
                 communityPosts,
                 paidContent,
                 latestPosts,
-                chapters,
+                channelWatermark,
                 communityGuidelines,
                 quickActions,
                 expandableMetadata,
                 relatedVideos,
                 compactBanner,
                 inFeedSurvey,
+                joinMembership,
                 medicalPanel,
+                notifyMe,
                 infoPanel,
+                subscribersCommunityGuidelines,
                 channelGuidelines,
                 audioTrackButton,
                 artistCard,
+                timedReactions,
                 imageShelf,
-                subscribersCommunityGuidelines,
                 channelMemberShelf,
                 custom
         );
 
         this.identifierFilterGroupList.addAll(
                 graySeparator,
-                chipsShelf
+                chipsShelf,
+                chapters
         );
     }
 
     @Override
     public boolean isFiltered(@Nullable String identifier, String path, byte[] protobufBufferArray,
                               FilterGroupList matchedList, FilterGroup matchedGroup, int matchedIndex) {
+
+        // The groups are excluded from the filter due to the exceptions list below.
+        // Filter them separately here.
+        if (matchedGroup == notifyMe || matchedGroup == inFeedSurvey || matchedGroup == expandableMetadata) 
+            return super.isFiltered(identifier, path, protobufBufferArray, matchedList, matchedGroup, matchedIndex);
+
         if (matchedGroup != custom && exceptions.matches(path))
             return false; // Exceptions are not filtered.
+
+        // TODO: This also hides the feed Shorts shelf header
+        if (matchedGroup == searchResultShelfHeader && matchedIndex != 0) return false;
 
         return super.isFiltered(identifier, path, protobufBufferArray, matchedList, matchedGroup, matchedIndex);
     }
@@ -192,7 +235,6 @@ public final class LayoutComponentsFilter extends Filter {
 
     /**
      * Injection point.
-     *
      * Called from a different place then the other filters.
      */
     public static boolean filterMixPlaylists(final byte[] bytes) {
@@ -202,5 +244,9 @@ public final class LayoutComponentsFilter extends Filter {
             LogHelper.printDebug(() -> "Filtered mix playlist");
 
         return isMixPlaylistFiltered;
+    }
+
+    public static boolean showWatermark() {
+        return !SettingsEnum.HIDE_VIDEO_CHANNEL_WATERMARK.getBoolean();
     }
 }
