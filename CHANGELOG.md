@@ -1,3 +1,10 @@
+# [0.120.0-dev.2](https://github.com/ReVanced/revanced-integrations/compare/v0.120.0-dev.1...v0.120.0-dev.2) (2023-10-14)
+
+
+### Bug Fixes
+
+* **YouTube - Minimized playback:** Fix pip incorrectly showing if app is minimized immediately after opening a Short ([7d02774](https://github.com/ReVanced/revanced-integrations/commit/7d02774ea192510e692e90ae55a86e25ee321926))
+
 # [0.120.0-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v0.119.3-dev.2...v0.120.0-dev.1) (2023-10-13)
 
 
