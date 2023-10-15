@@ -1,3 +1,10 @@
+# [0.120.0-dev.3](https://github.com/ReVanced/revanced-integrations/compare/v0.120.0-dev.2...v0.120.0-dev.3) (2023-10-15)
+
+
+### Bug Fixes
+
+* **YouTube - Old video quality menu:** Fix toast error on tablet devices ([#500](https://github.com/ReVanced/revanced-integrations/issues/500)) ([d3eba27](https://github.com/ReVanced/revanced-integrations/commit/d3eba27c909e519eaeda072c1f995a2284007749))
+
 # [0.120.0-dev.2](https://github.com/ReVanced/revanced-integrations/compare/v0.120.0-dev.1...v0.120.0-dev.2) (2023-10-14)
 
 
