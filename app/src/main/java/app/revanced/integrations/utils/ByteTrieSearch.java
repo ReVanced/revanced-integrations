@@ -1,7 +1,5 @@
 package app.revanced.integrations.utils;
 
-import static app.revanced.integrations.utils.TrieSearch.TrieNode.ROOT_NODE_CHARACTER_VALUE;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -10,7 +8,10 @@ import java.util.Objects;
 public final class ByteTrieSearch extends TrieSearch<byte[]> {
 
     private static final class ByteTrieNode extends TrieNode<byte[]> {
-        public ByteTrieNode(char nodeCharacterValue) {
+        ByteTrieNode() {
+            super();
+        }
+        ByteTrieNode(char nodeCharacterValue) {
             super(nodeCharacterValue);
         }
         @Override
@@ -24,7 +25,7 @@ public final class ByteTrieSearch extends TrieSearch<byte[]> {
     }
 
     public ByteTrieSearch() {
-        super(new ByteTrieNode(ROOT_NODE_CHARACTER_VALUE));
+        super(new ByteTrieNode());
     }
 
     @Override

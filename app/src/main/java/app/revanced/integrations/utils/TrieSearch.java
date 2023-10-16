@@ -4,7 +4,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -73,9 +72,9 @@ public abstract class TrieSearch<T> {
 
     static abstract class TrieNode<T> {
         /**
-         * Dummy value used for root node. Value can be anything as it's never used.
+         * Dummy value used for root node. Value can be anything as it's never referenced.
          */
-        static final char ROOT_NODE_CHARACTER_VALUE = 0;
+        private static final char ROOT_NODE_CHARACTER_VALUE = 0;  //ASCII null character.
 
         // Support only ASCII letters/numbers/symbols and filter out all control characters.
         private static final char MIN_VALID_CHAR = 32; // Space character.
@@ -83,7 +82,7 @@ public abstract class TrieSearch<T> {
 
         private static final int CHILDREN_ARRAY_MAX_SIZE = MAX_VALID_CHAR - MIN_VALID_CHAR + 1;
         /**
-         * How much to increment the node array when resizing.
+         * How much to expand the children array when resizing.
          */
         private static final int CHILDREN_ARRAY_INCREASE_SIZE_INCREMENT = 2;
 
@@ -113,10 +112,19 @@ public abstract class TrieSearch<T> {
          * and uses perfect hashing for the elements it contains.
          *
          * So if the array contains a given character,
-         * the character will always map to the node with index (character % arraySize).
+         * the character will always map to the node with index: (character % arraySize).
          *
-         * Elements it does not contain can collide with elements it does contain,
-         * so must compare the node character values when accessing.
+         * Elements not contained can collide with elements the array does contain,
+         * so must compare the nodes character value.
+         *
+         * Alternatively this array could be a sorted and densely packed array,
+         * and lookup is done using binary search.
+         * That would save a small amount of memory because there's no null children entries,
+         * but would give a worst case search of O(nlog(m)) where n is the number of
+         * characters in the searched text and m is the maximum size of the sorted character arrays.
+         * Using a hash table array always gives O(n) search time.
+         * The memory usage here is very small (all Litho filters use ~10KB of memory),
+         * so the more performant hash implementation is chosen.
          */
         @Nullable
         private TrieNode<T>[] children;
@@ -127,6 +135,9 @@ public abstract class TrieSearch<T> {
         @Nullable
         private List<TriePatternMatchedCallback<T>> endOfPatternCallback;
 
+        protected TrieNode() {
+            this.nodeValue = ROOT_NODE_CHARACTER_VALUE;
+        }
         protected TrieNode(char nodeCharacterValue) {
             this.nodeValue = nodeCharacterValue;
         }

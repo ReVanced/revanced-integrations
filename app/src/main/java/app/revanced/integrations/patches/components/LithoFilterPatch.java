@@ -425,8 +425,8 @@ public final class LithoFilterPatch {
 
     static {
         for (Filter filter : filters) {
-            filterGroupLists(pathSearchTree, filter, filter.pathFilterGroupList);
             filterGroupLists(identifierSearchTree, filter, filter.identifierFilterGroupList);
+            filterGroupLists(pathSearchTree, filter, filter.pathFilterGroupList);
         }
 
         LogHelper.printDebug(() -> "Using: "
