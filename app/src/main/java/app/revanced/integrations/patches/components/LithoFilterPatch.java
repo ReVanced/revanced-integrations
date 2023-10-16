@@ -430,10 +430,10 @@ public final class LithoFilterPatch {
         }
 
         LogHelper.printDebug(() -> "Using: "
-                + pathSearchTree.numberOfPatterns() + " path filters"
-                + " (" + pathSearchTree.getEstimatedMemorySize() + " KB), "
                 + identifierSearchTree.numberOfPatterns() + " identifier filters"
-                + " (" + identifierSearchTree.getEstimatedMemorySize() + " KB)");
+                + " (" + identifierSearchTree.getEstimatedMemorySize() + " KB), "
+                + pathSearchTree.numberOfPatterns() + " path filters"
+                + " (" + pathSearchTree.getEstimatedMemorySize() + " KB)");
     }
 
     private static <T> void filterGroupLists(TrieSearch<T> pathSearchTree,

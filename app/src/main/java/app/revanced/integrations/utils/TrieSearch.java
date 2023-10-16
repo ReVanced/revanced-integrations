@@ -69,14 +69,6 @@ public abstract class TrieSearch<T> {
             return callback == null || callback.patternMatched(searchText,
                     searchTextIndex - patternStartIndex, patternLength, callbackParameter);
         }
-        @Override
-        public String toString() {
-            return "TrieCompressedPath{" +
-                    "pattern=" + pattern +
-                    ", patternLength=" + patternLength +
-                    ", patternStartIndex=" + patternStartIndex +
-                    '}';
-        }
     }
 
     static abstract class TrieNode<T> {
@@ -185,21 +177,12 @@ public abstract class TrieSearch<T> {
             child.addPattern(pattern, patternLength, patternIndex + 1, callback);
         }
 
-        @Override
-        public String toString() {
-            return "TrieNode{" +
-                    "nodeValue=" + nodeValue +
-                    ", leaf=" + leaf +
-                    '}';
-        }
-
         /**
          * Resizes the children table until all nodes hash to exactly one array index.
          * Worse case, this will resize the array to {@link #CHILDREN_ARRAY_MAX_SIZE} elements.
          */
         private void expandChildArray(TrieNode<T> child) {
-            int replacementArraySize = children.length;
-            int numberOfResizes = 0;
+            int replacementArraySize = Objects.requireNonNull(children).length;
             while (true) {
                 replacementArraySize += CHILDREN_ARRAY_INCREASE_SIZE_INCREMENT;
                 //noinspection unchecked
@@ -218,11 +201,6 @@ public abstract class TrieSearch<T> {
                     if (replacementArraySize > CHILDREN_ARRAY_MAX_SIZE) throw new IllegalStateException();
                     continue;
                 }
-                final int numberOfResizesLog = numberOfResizes;
-                LogHelper.printDebug(() -> "Resized child array " + numberOfResizesLog
-                        + " times from size: " + children.length + " to size: " + replacement.length
-                        + " replacement: " + Arrays.toString(replacement));
-
                 children = replacement;
                 return;
             }
