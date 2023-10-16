@@ -1,5 +1,7 @@
 package app.revanced.integrations.utils;
 
+import static app.revanced.integrations.utils.TrieSearch.TrieNode.ROOT_NODE_CHARACTER_VALUE;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -11,16 +13,21 @@ import java.util.Objects;
 public final class StringTrieSearch extends TrieSearch<String> {
 
     private static final class StringTrieNode extends TrieNode<String> {
-        TrieNode<String> createNode() {
-            return new StringTrieNode();
+        protected StringTrieNode(char nodeCharacterValue) {
+            super(nodeCharacterValue);
         }
+        @Override
+        TrieNode<String> createNode(char nodeValue) {
+            return new StringTrieNode(nodeValue);
+        }
+        @Override
         char getCharValue(String text, int index) {
             return text.charAt(index);
         }
     }
 
     public StringTrieSearch() {
-        super(new StringTrieNode());
+        super(new StringTrieNode(ROOT_NODE_CHARACTER_VALUE));
     }
 
     @Override
