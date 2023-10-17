@@ -1,3 +1,10 @@
+# [0.120.0-dev.4](https://github.com/ReVanced/revanced-integrations/compare/v0.120.0-dev.3...v0.120.0-dev.4) (2023-10-17)
+
+
+### Performance Improvements
+
+* **YouTube:** Reduce memory requirement for prefix tree searching ([#501](https://github.com/ReVanced/revanced-integrations/issues/501)) ([f5add51](https://github.com/ReVanced/revanced-integrations/commit/f5add51fa7eb620a6edd1b27f02d38618f144480))
+
 # [0.120.0-dev.3](https://github.com/ReVanced/revanced-integrations/compare/v0.120.0-dev.2...v0.120.0-dev.3) (2023-10-15)
 
 
