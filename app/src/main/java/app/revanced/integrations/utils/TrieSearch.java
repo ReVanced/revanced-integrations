@@ -74,17 +74,17 @@ public abstract class TrieSearch<T> {
         /**
          * Dummy value used for root node. Value can be anything as it's never referenced.
          */
-        private static final char ROOT_NODE_CHARACTER_VALUE = 0;  //ASCII null character.
+        private static final char ROOT_NODE_CHARACTER_VALUE = 0;  // ASCII null character.
 
         // Support only ASCII letters/numbers/symbols and filter out all control characters.
         private static final char MIN_VALID_CHAR = 32; // Space character.
         private static final char MAX_VALID_CHAR = 126; // 127 = delete character.
 
-        private static final int CHILDREN_ARRAY_MAX_SIZE = MAX_VALID_CHAR - MIN_VALID_CHAR + 1;
         /**
          * How much to expand the children array when resizing.
          */
         private static final int CHILDREN_ARRAY_INCREASE_SIZE_INCREMENT = 2;
+        private static final int CHILDREN_ARRAY_MAX_SIZE = MAX_VALID_CHAR - MIN_VALID_CHAR + 1;
 
         private static boolean isInvalidRange(char character) {
             return character < MIN_VALID_CHAR || character > MAX_VALID_CHAR;
@@ -135,10 +135,10 @@ public abstract class TrieSearch<T> {
         @Nullable
         private List<TriePatternMatchedCallback<T>> endOfPatternCallback;
 
-        protected TrieNode() {
+        TrieNode() {
             this.nodeValue = ROOT_NODE_CHARACTER_VALUE;
         }
-        protected TrieNode(char nodeCharacterValue) {
+        TrieNode(char nodeCharacterValue) {
             this.nodeValue = nodeCharacterValue;
         }
 
