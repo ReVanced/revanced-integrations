@@ -178,7 +178,7 @@ public enum SettingsEnum {
     BYPASS_URL_REDIRECTS("revanced_bypass_url_redirects", BOOLEAN, TRUE),
     ANNOUNCEMENTS("revanced_announcements", BOOLEAN, TRUE),
     ANNOUNCEMENT_CONSUMER("revanced_announcement_consumer", STRING, ""),
-    LAST_ANNOUNCEMENT_HASH("revanced_last_announcement_hash", STRING, ""),
+    ANNOUNCEMENT_LAST_HASH("revanced_announcement_last_hash", STRING, ""),
 
     // Swipe controls
     SWIPE_BRIGHTNESS("revanced_swipe_brightness", BOOLEAN, TRUE),

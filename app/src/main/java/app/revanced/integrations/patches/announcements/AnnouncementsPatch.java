@@ -41,9 +41,9 @@ public final class AnnouncementsPatch {
                 try {
                     // Do not show the announcement if the request failed.
                     if (connection.getResponseCode() != 200) {
-                        if (SettingsEnum.LAST_ANNOUNCEMENT_HASH.getString().isEmpty()) return;
+                        if (SettingsEnum.ANNOUNCEMENT_LAST_HASH.getString().isEmpty()) return;
 
-                        SettingsEnum.LAST_ANNOUNCEMENT_HASH.saveValue("");
+                        SettingsEnum.ANNOUNCEMENT_LAST_HASH.saveValue("");
                         ReVancedUtils.showToastLong("Failed to get announcement");
 
                         return;
@@ -60,7 +60,7 @@ public final class AnnouncementsPatch {
                 // Do not show the announcement if it is older or the same as the last one.
                 final byte[] hashBytes = MessageDigest.getInstance("SHA-256").digest(jsonString.getBytes(StandardCharsets.UTF_8));
                 final var hash = java.util.Base64.getEncoder().encodeToString(hashBytes);
-                if (hash.equals(SettingsEnum.LAST_ANNOUNCEMENT_HASH.getString())) return;
+                if (hash.equals(SettingsEnum.ANNOUNCEMENT_LAST_HASH.getString())) return;
 
                 // Parse the announcement. Fall-back to raw string if it fails.
                 String title;
@@ -91,7 +91,7 @@ public final class AnnouncementsPatch {
                             .setMessage(finalMessage)
                             .setIcon(finalLevel.icon)
                             .setPositiveButton("Ok", (dialog, which) -> {
-                                SettingsEnum.LAST_ANNOUNCEMENT_HASH.saveValue(hash);
+                                SettingsEnum.ANNOUNCEMENT_LAST_HASH.saveValue(hash);
                                 dialog.dismiss();
                             }).setNegativeButton("Dismiss", (dialog, which) -> {
                                 dialog.dismiss();
@@ -117,8 +117,8 @@ public final class AnnouncementsPatch {
      * @return true if the last announcement hash was empty.
      */
     private static boolean emptyLastAnnouncementHash() {
-        if (SettingsEnum.LAST_ANNOUNCEMENT_HASH.getString().isEmpty()) return true;
-        SettingsEnum.LAST_ANNOUNCEMENT_HASH.saveValue("");
+        if (SettingsEnum.ANNOUNCEMENT_LAST_HASH.getString().isEmpty()) return true;
+        SettingsEnum.ANNOUNCEMENT_LAST_HASH.saveValue("");
 
         return false;
     }
