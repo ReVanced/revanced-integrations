@@ -63,11 +63,14 @@ public final class AnnouncementsPatch {
                 // Parse the announcement. Fall-back to raw string if it fails.
                 String title;
                 String message;
+                Level level = Level.INFO;
                 try {
                     final var announcement = new JSONObject(jsonString);
 
                     title = announcement.getString("title");
                     message = announcement.getJSONObject("content").getString("message");
+
+                    if (announcement.has("level")) level = Level.fromInt(announcement.getInt("level"));
                 } catch (Throwable ex) {
                     LogHelper.printException(() -> "Failed to parse announcement. Fall-backing to raw string", ex);
 
@@ -77,11 +80,13 @@ public final class AnnouncementsPatch {
 
                 final var finalTitle = title;
                 final var finalMessage = Html.fromHtml(message, FROM_HTML_MODE_COMPACT);
+                final Level finalLevel = level;
 
                 ReVancedUtils.runOnMainThread(() -> {
                     // Show the announcement.
                     new android.app.AlertDialog.Builder(context).setTitle(finalTitle)
                             .setMessage(finalMessage)
+                            .setIcon(finalLevel.icon)
                             .setPositiveButton("Ok", (dialog, which) -> {
                                 SettingsEnum.LAST_ANNOUNCEMENT_HASH.saveValue(hash);
                                 dialog.dismiss();
@@ -118,5 +123,21 @@ public final class AnnouncementsPatch {
         final var uuid = UUID.randomUUID().toString();
         SettingsEnum.ANNOUNCEMENT_CONSUMER.saveValue(uuid);
         return uuid;
+    }
+
+    private enum Level {
+        INFO(android.R.drawable.ic_dialog_info),
+        WARNING(android.R.drawable.ic_dialog_alert),
+        SEVERE(android.R.drawable.ic_dialog_alert);
+
+        public final int icon;
+
+        Level(int icon) {
+            this.icon = icon;
+        }
+
+        public static Level fromInt(int value) {
+            return values()[Math.min(value, values().length - 1)];
+        }
     }
 }
