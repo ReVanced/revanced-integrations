@@ -22,7 +22,10 @@ public class PlayerFlyoutMenuItemsFilter extends Filter {
                 new ByteArrayAsStringFilterGroup(null, "quality_sheet") // Whitelist Quality menu item
         );
 
-        pathFilterGroupList.addAll(new StringFilterGroup(null, "overflow_menu_item.eml|")); // Using pathFilterGroupList due to new flyout panel(A/B)
+        // Using pathFilterGroupList due to new flyout panel(A/B)
+        pathFilterGroupList.addAll(
+                new StringFilterGroup(null, "overflow_menu_item.eml|")
+        );
 
         flyoutFilterGroupList.addAll(
                 new ByteArrayAsStringFilterGroup(
