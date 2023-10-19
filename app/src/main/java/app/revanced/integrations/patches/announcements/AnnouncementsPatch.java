@@ -3,6 +3,8 @@ package app.revanced.integrations.patches.announcements;
 import android.app.Activity;
 import android.os.Build;
 import android.text.Html;
+import android.text.method.LinkMovementMethod;
+import android.widget.TextView;
 import androidx.annotation.RequiresApi;
 import app.revanced.integrations.patches.announcements.requests.AnnouncementsRoutes;
 import app.revanced.integrations.requests.Requester;
@@ -79,13 +81,12 @@ public final class AnnouncementsPatch {
                 }
 
                 final var finalTitle = title;
-                // TODO: Fix links not working.
                 final var finalMessage = Html.fromHtml(message, FROM_HTML_MODE_COMPACT);
                 final Level finalLevel = level;
 
                 ReVancedUtils.runOnMainThread(() -> {
                     // Show the announcement.
-                    new android.app.AlertDialog.Builder(context)
+                    var alertDialog = new android.app.AlertDialog.Builder(context)
                             .setTitle(finalTitle)
                             .setMessage(finalMessage)
                             .setIcon(finalLevel.icon)
@@ -97,6 +98,10 @@ public final class AnnouncementsPatch {
                             })
                             .setCancelable(false)
                             .show();
+
+                    // Make links clickable.
+                    ((TextView)alertDialog.findViewById(android.R.id.message))
+                            .setMovementMethod(LinkMovementMethod.getInstance());
                 });
             } catch (Exception e) {
                 final var message = "Failed to get announcement";
