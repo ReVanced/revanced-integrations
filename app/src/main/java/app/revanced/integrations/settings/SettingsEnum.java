@@ -176,7 +176,7 @@ public enum SettingsEnum {
             parents(SPOOF_SIGNATURE)),
     SPOOF_DEVICE_DIMENSIONS("revanced_spoof_device_dimensions", BOOLEAN, FALSE, true),
     BYPASS_URL_REDIRECTS("revanced_bypass_url_redirects", BOOLEAN, TRUE),
-    ANNOUNCEMENTS("revanced_announcements", BOOLEAN, TRUE, false),
+    ANNOUNCEMENTS("revanced_announcements", BOOLEAN, TRUE),
     ANNOUNCEMENT_CONSUMER("revanced_announcement_consumer", STRING, ""),
     LAST_ANNOUNCEMENT_HASH("revanced_last_announcement_hash", STRING, ""),
 
