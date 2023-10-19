@@ -79,12 +79,14 @@ public final class AnnouncementsPatch {
                 }
 
                 final var finalTitle = title;
+                // TODO: Fix links not working.
                 final var finalMessage = Html.fromHtml(message, FROM_HTML_MODE_COMPACT);
                 final Level finalLevel = level;
 
                 ReVancedUtils.runOnMainThread(() -> {
                     // Show the announcement.
-                    new android.app.AlertDialog.Builder(context).setTitle(finalTitle)
+                    new android.app.AlertDialog.Builder(context)
+                            .setTitle(finalTitle)
                             .setMessage(finalMessage)
                             .setIcon(finalLevel.icon)
                             .setPositiveButton("Ok", (dialog, which) -> {
@@ -125,6 +127,7 @@ public final class AnnouncementsPatch {
         return uuid;
     }
 
+    // TODO: Use better icons.
     private enum Level {
         INFO(android.R.drawable.ic_dialog_info),
         WARNING(android.R.drawable.ic_dialog_alert),
