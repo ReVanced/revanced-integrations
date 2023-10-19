@@ -2,6 +2,7 @@ package app.revanced.integrations.patches.announcements;
 
 import android.app.Activity;
 import android.os.Build;
+import android.text.Html;
 import androidx.annotation.RequiresApi;
 import app.revanced.integrations.patches.announcements.requests.AnnouncementsRoutes;
 import app.revanced.integrations.requests.Requester;
@@ -16,6 +17,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.util.UUID;
 
+import static android.text.Html.FROM_HTML_MODE_COMPACT;
 import static app.revanced.integrations.patches.announcements.requests.AnnouncementsRoutes.GET_LATEST_ANNOUNCEMENT;
 
 public final class AnnouncementsPatch {
@@ -74,7 +76,7 @@ public final class AnnouncementsPatch {
                 }
 
                 final var finalTitle = title;
-                final var finalMessage = message;
+                final var finalMessage = Html.fromHtml(message, FROM_HTML_MODE_COMPACT);
 
                 ReVancedUtils.runOnMainThread(() -> {
                     // Show the announcement.
