@@ -1,3 +1,11 @@
+## [0.120.1-dev.2](https://github.com/ReVanced/revanced-integrations/compare/v0.120.1-dev.1...v0.120.1-dev.2) (2023-10-20)
+
+
+### Reverts
+
+* Revert "fix(YouTube - Minimized playback): Fix pip incorrectly showing for Short playback (#504)" ([c1c7e3b](https://github.com/ReVanced/revanced-integrations/commit/c1c7e3b5964394de6af39f6fb83d667eba174f0a)), closes [#504](https://github.com/ReVanced/revanced-integrations/issues/504)
+* Revert "chore(release): 0.120.1-dev.1 [skip ci]" ([e68f558](https://github.com/ReVanced/revanced-integrations/commit/e68f558e9ccac4c6e0d9113b3f134e89edd2233f))
+
 # [0.120.0](https://github.com/ReVanced/revanced-integrations/compare/v0.119.2...v0.120.0) (2023-10-20)
 
 
