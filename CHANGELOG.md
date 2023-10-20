@@ -1,10 +1,3 @@
-## [0.120.1-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v0.120.0...v0.120.1-dev.1) (2023-10-20)
-
-
-### Bug Fixes
-
-* **YouTube - Minimized playback:** Fix pip incorrectly showing for Short playback ([#504](https://github.com/ReVanced/revanced-integrations/issues/504)) ([6d5a5c8](https://github.com/ReVanced/revanced-integrations/commit/6d5a5c8281fc13d02ed42f6b93f08932da0d2a56))
-
 # [0.120.0](https://github.com/ReVanced/revanced-integrations/compare/v0.119.2...v0.120.0) (2023-10-20)
 
 
