@@ -1,3 +1,25 @@
+# [0.120.0](https://github.com/ReVanced/revanced-integrations/compare/v0.119.2...v0.120.0) (2023-10-20)
+
+
+### Bug Fixes
+
+* **YouTube - Hide Layout components:** Exempt expandable chips from exceptions ([#498](https://github.com/ReVanced/revanced-integrations/issues/498)) ([6f79746](https://github.com/ReVanced/revanced-integrations/commit/6f79746d788f196f3aa63b8e7c24b7f15ecd3f50))
+* **YouTube - Hide layout components:** Hide new channel watermark component ([9670bd3](https://github.com/ReVanced/revanced-integrations/commit/9670bd305b3b9bbbc900af3b64152aaac125ec14))
+* **YouTube - Minimized playback:** Fix pip incorrectly showing if app is minimized immediately after opening a Short ([7d02774](https://github.com/ReVanced/revanced-integrations/commit/7d02774ea192510e692e90ae55a86e25ee321926))
+* **YouTube - Old video quality menu:** Fix toast error on tablet devices ([#500](https://github.com/ReVanced/revanced-integrations/issues/500)) ([d3eba27](https://github.com/ReVanced/revanced-integrations/commit/d3eba27c909e519eaeda072c1f995a2284007749))
+
+
+### Features
+
+* **YouTube - Theme:** Disable gradient loading screen ([fd09e46](https://github.com/ReVanced/revanced-integrations/commit/fd09e46d01c820632cfe440dac34f5cd957e793d))
+* **YouTube:** Add `Announcements` patch ([#503](https://github.com/ReVanced/revanced-integrations/issues/503)) ([59687f1](https://github.com/ReVanced/revanced-integrations/commit/59687f1a39768ab71b2680a5c49df5aaae0d3b4c))
+* **YouTube:** Add `Spoof device dimensions` patch ([16f1163](https://github.com/ReVanced/revanced-integrations/commit/16f1163a346fef0a87ca9384c9bf6aea977dc8fb))
+
+
+### Performance Improvements
+
+* **YouTube:** Reduce memory requirement for prefix tree searching ([#501](https://github.com/ReVanced/revanced-integrations/issues/501)) ([f5add51](https://github.com/ReVanced/revanced-integrations/commit/f5add51fa7eb620a6edd1b27f02d38618f144480))
+
 # [0.120.0-dev.6](https://github.com/ReVanced/revanced-integrations/compare/v0.120.0-dev.5...v0.120.0-dev.6) (2023-10-20)
 
 
