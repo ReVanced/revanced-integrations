@@ -1,3 +1,10 @@
+# [0.120.0-dev.6](https://github.com/ReVanced/revanced-integrations/compare/v0.120.0-dev.5...v0.120.0-dev.6) (2023-10-20)
+
+
+### Features
+
+* **YouTube:** Add `Announcements` patch ([#503](https://github.com/ReVanced/revanced-integrations/issues/503)) ([59687f1](https://github.com/ReVanced/revanced-integrations/commit/59687f1a39768ab71b2680a5c49df5aaae0d3b4c))
+
 # [0.120.0-dev.5](https://github.com/ReVanced/revanced-integrations/compare/v0.120.0-dev.4...v0.120.0-dev.5) (2023-10-19)
 
 
