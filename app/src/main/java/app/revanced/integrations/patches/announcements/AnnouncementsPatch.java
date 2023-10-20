@@ -72,7 +72,7 @@ public final class AnnouncementsPatch {
                     title = announcement.getString("title");
                     message = announcement.getJSONObject("content").getString("message");
 
-                    if (announcement.has("level")) level = Level.fromInt(announcement.getInt("level"));
+                    if (!announcement.isNull("level")) level = Level.fromInt(announcement.getInt("level"));
                 } catch (Throwable ex) {
                     LogHelper.printException(() -> "Failed to parse announcement. Fall-backing to raw string", ex);
 
