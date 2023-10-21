@@ -86,7 +86,7 @@ public abstract class TrieSearch<T> {
         private static final int CHILDREN_ARRAY_INCREASE_SIZE_INCREMENT = 2;
         private static final int CHILDREN_ARRAY_MAX_SIZE = MAX_VALID_CHAR - MIN_VALID_CHAR + 1;
 
-        private static boolean isInvalidRange(char character) {
+        static boolean isInvalidRange(char character) {
             return character < MIN_VALID_CHAR || character > MAX_VALID_CHAR;
         }
 
@@ -388,8 +388,9 @@ public abstract class TrieSearch<T> {
         return matches(textToSearch, 0);
     }
 
-    public boolean matches(@NonNull T textToSearch, @Nullable Object callbackParameter) {
-        return matches(textToSearch, 0, root.getTextLength(textToSearch), callbackParameter);
+    public boolean matches(@NonNull T textToSearch, @NonNull Object callbackParameter) {
+        return matches(textToSearch, 0, root.getTextLength(textToSearch),
+                Objects.requireNonNull(callbackParameter));
     }
 
     public boolean matches(@NonNull T textToSearch, int startIndex) {
