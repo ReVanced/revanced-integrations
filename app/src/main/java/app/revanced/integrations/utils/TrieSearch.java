@@ -324,6 +324,23 @@ public abstract class TrieSearch<T> {
         }
     }
 
+    /**
+     * Adds a pattern that will always return a positive match if found.
+     *
+     * @param pattern Pattern to add. Calling this with a zero length pattern does nothing.
+     */
+    public void addPattern(@NonNull T pattern) {
+        addPattern(pattern, root.getTextLength(pattern), null);
+    }
+
+    /**
+     * @param pattern  Pattern to add. Calling this with a zero length pattern does nothing.
+     * @param callback Callback to determine if searching should halt when a match is found.
+     */
+    public void addPattern(@NonNull T pattern, @NonNull TriePatternMatchedCallback<T> callback) {
+        addPattern(pattern, root.getTextLength(pattern), Objects.requireNonNull(callback));
+    }
+
     void addPattern(@NonNull T pattern, int patternLength, @Nullable TriePatternMatchedCallback<T> callback) {
         if (patternLength == 0) return; // Nothing to match
 
@@ -331,8 +348,38 @@ public abstract class TrieSearch<T> {
         root.addPattern(pattern, patternLength, 0, callback);
     }
 
+    public final boolean matches(@NonNull T textToSearch) {
+        return matches(textToSearch, 0);
+    }
+
+    public boolean matches(@NonNull T textToSearch, @NonNull Object callbackParameter) {
+        return matches(textToSearch, 0, root.getTextLength(textToSearch),
+                Objects.requireNonNull(callbackParameter));
+    }
+
+    public boolean matches(@NonNull T textToSearch, int startIndex) {
+        return matches(textToSearch, startIndex, root.getTextLength(textToSearch));
+    }
+
+    public final boolean matches(@NonNull T textToSearch, int startIndex, int endIndex) {
+        return matches(textToSearch, startIndex, endIndex, null);
+    }
+
+    /**
+     * Searches through text, looking for any substring that matches any pattern in this tree.
+     *
+     * @param textToSearch Text to search through.
+     * @param startIndex Index to start searching, inclusive value.
+     * @param endIndex Index to stop matching, exclusive value.
+     * @param callbackParameter Optional parameter passed to the callbacks.
+     * @return If any pattern matched, and it's callback halted searching.
+     */
+    public boolean matches(@NonNull T textToSearch, int startIndex, int endIndex, @Nullable Object callbackParameter) {
+        return matches(textToSearch, root.getTextLength(textToSearch), startIndex, endIndex, callbackParameter);
+    }
+
     private boolean matches(@NonNull T textToSearch, int textToSearchLength, int startIndex, int endIndex,
-                          @Nullable Object callbackParameter) {
+                            @Nullable Object callbackParameter) {
         if (endIndex > textToSearchLength) {
             throw new IllegalArgumentException("endIndex: " + endIndex
                     + " is greater than texToSearchLength: " + textToSearchLength);
@@ -365,52 +412,5 @@ public abstract class TrieSearch<T> {
 
     public List<T> getPatterns() {
         return Collections.unmodifiableList(patterns);
-    }
-
-    /**
-     * Adds a pattern that will always return a positive match if found.
-     *
-     * @param pattern Pattern to add. Calling this with a zero length pattern does nothing.
-     */
-    public void addPattern(@NonNull T pattern) {
-        addPattern(pattern, root.getTextLength(pattern), null);
-    }
-
-    /**
-     * @param pattern  Pattern to add. Calling this with a zero length pattern does nothing.
-     * @param callback Callback to determine if searching should halt when a match is found.
-     */
-    public void addPattern(@NonNull T pattern, @NonNull TriePatternMatchedCallback<T> callback) {
-        addPattern(pattern, root.getTextLength(pattern), Objects.requireNonNull(callback));
-    }
-
-    public final boolean matches(@NonNull T textToSearch) {
-        return matches(textToSearch, 0);
-    }
-
-    public boolean matches(@NonNull T textToSearch, @NonNull Object callbackParameter) {
-        return matches(textToSearch, 0, root.getTextLength(textToSearch),
-                Objects.requireNonNull(callbackParameter));
-    }
-
-    public boolean matches(@NonNull T textToSearch, int startIndex) {
-        return matches(textToSearch, startIndex, root.getTextLength(textToSearch));
-    }
-
-    public final boolean matches(@NonNull T textToSearch, int startIndex, int endIndex) {
-        return matches(textToSearch, startIndex, endIndex, null);
-    }
-
-    /**
-     * Searches through text, looking for any substring that matches any pattern in this tree.
-     *
-     * @param textToSearch Text to search through.
-     * @param startIndex Index to start searching, inclusive value.
-     * @param endIndex Index to stop matching, exclusive value.
-     * @param callbackParameter Optional parameter passed to the callbacks.
-     * @return If any pattern matched, and it's callback halted searching.
-     */
-    public boolean matches(@NonNull T textToSearch, int startIndex, int endIndex, @Nullable Object callbackParameter) {
-        return matches(textToSearch, root.getTextLength(textToSearch), startIndex, endIndex, callbackParameter);
     }
 }
