@@ -227,7 +227,7 @@ public abstract class TrieSearch<T> {
         }
 
         private static int hashIndexForTableSize(int arraySize, char nodeValue) {
-            return (nodeValue - MIN_VALID_CHAR) % arraySize;
+            return nodeValue % arraySize;
         }
 
         /**
