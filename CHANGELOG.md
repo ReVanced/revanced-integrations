@@ -1,3 +1,10 @@
+## [0.120.1-dev.3](https://github.com/ReVanced/revanced-integrations/compare/v0.120.1-dev.2...v0.120.1-dev.3) (2023-10-21)
+
+
+### Bug Fixes
+
+* **YouTube - Custom filter:** Fix app crash if invalid character is used in custom filter ([#506](https://github.com/ReVanced/revanced-integrations/issues/506)) ([debd0a2](https://github.com/ReVanced/revanced-integrations/commit/debd0a2e1101e543161390fd3ced6bda19030155))
+
 ## [0.120.1-dev.2](https://github.com/ReVanced/revanced-integrations/compare/v0.120.1-dev.1...v0.120.1-dev.2) (2023-10-20)
 
 
