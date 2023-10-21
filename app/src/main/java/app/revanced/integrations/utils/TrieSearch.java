@@ -300,6 +300,7 @@ public abstract class TrieSearch<T> {
 
         abstract TrieNode<T> createNode(char nodeValue);
         abstract char getCharValue(T text, int index);
+        abstract int getTextLength(T text);
     }
 
     /**
@@ -330,7 +331,7 @@ public abstract class TrieSearch<T> {
         root.addPattern(pattern, patternLength, 0, callback);
     }
 
-    final boolean matches(@NonNull T textToSearch, int textToSearchLength, int startIndex, int endIndex,
+    private boolean matches(@NonNull T textToSearch, int textToSearchLength, int startIndex, int endIndex,
                           @Nullable Object callbackParameter) {
         if (endIndex > textToSearchLength) {
             throw new IllegalArgumentException("endIndex: " + endIndex
@@ -371,14 +372,33 @@ public abstract class TrieSearch<T> {
      *
      * @param pattern Pattern to add. Calling this with a zero length pattern does nothing.
      */
-    public abstract void addPattern(@NonNull T pattern);
+    public void addPattern(@NonNull T pattern) {
+        addPattern(pattern, root.getTextLength(pattern), null);
+    }
 
     /**
      * @param pattern  Pattern to add. Calling this with a zero length pattern does nothing.
      * @param callback Callback to determine if searching should halt when a match is found.
      */
-    public abstract void addPattern(@NonNull T pattern, @NonNull TriePatternMatchedCallback<T> callback);
+    public void addPattern(@NonNull T pattern, @NonNull TriePatternMatchedCallback<T> callback) {
+        addPattern(pattern, root.getTextLength(pattern), Objects.requireNonNull(callback));
+    }
 
+    public final boolean matches(@NonNull T textToSearch) {
+        return matches(textToSearch, 0);
+    }
+
+    public boolean matches(@NonNull T textToSearch, @Nullable Object callbackParameter) {
+        return matches(textToSearch, 0, root.getTextLength(textToSearch), callbackParameter);
+    }
+
+    public boolean matches(@NonNull T textToSearch, int startIndex) {
+        return matches(textToSearch, startIndex, root.getTextLength(textToSearch));
+    }
+
+    public final boolean matches(@NonNull T textToSearch, int startIndex, int endIndex) {
+        return matches(textToSearch, startIndex, endIndex, null);
+    }
 
     /**
      * Searches through text, looking for any substring that matches any pattern in this tree.
@@ -389,17 +409,7 @@ public abstract class TrieSearch<T> {
      * @param callbackParameter Optional parameter passed to the callbacks.
      * @return If any pattern matched, and it's callback halted searching.
      */
-    public abstract boolean matches(@NonNull T textToSearch, int startIndex, int endIndex, @Nullable Object callbackParameter);
-
-    public abstract boolean matches(@NonNull T textToSearch, int startIndex);
-
-    public abstract boolean matches(@NonNull T textToSearch, @Nullable Object callbackParameter);
-
-    public final boolean matches(@NonNull T textToSearch, int startIndex, int endIndex) {
-        return matches(textToSearch, startIndex, endIndex, null);
-    }
-
-    public final boolean matches(@NonNull T textToSearch) {
-        return matches(textToSearch, 0);
+    public boolean matches(@NonNull T textToSearch, int startIndex, int endIndex, @Nullable Object callbackParameter) {
+        return matches(textToSearch, root.getTextLength(textToSearch), startIndex, endIndex, callbackParameter);
     }
 }
