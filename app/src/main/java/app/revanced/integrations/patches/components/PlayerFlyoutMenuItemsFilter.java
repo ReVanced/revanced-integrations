@@ -14,12 +14,14 @@ public class PlayerFlyoutMenuItemsFilter extends Filter {
     // Handle the searching in this class instead of adding to the global filter group (which searches all the time)
     private final ByteArrayFilterGroupList flyoutFilterGroupList = new ByteArrayFilterGroupList();
 
-    private final ByteArrayFilterGroupList exceptions = new ByteArrayFilterGroupList();
+    private final ByteArrayFilterGroup exception;
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     public PlayerFlyoutMenuItemsFilter() {
-        exceptions.addAll(
-                new ByteArrayAsStringFilterGroup(null, "quality_sheet") // Whitelist Quality menu item
+        exception = new ByteArrayAsStringFilterGroup(
+                // Whitelist Quality menu item when "Hide Additional settings menu" is enabled
+                SettingsEnum.HIDE_ADDITIONAL_SETTINGS_MENU,
+                "quality_sheet"
         );
 
         // Using pathFilterGroupList due to new flyout panel(A/B)
@@ -75,7 +77,7 @@ public class PlayerFlyoutMenuItemsFilter extends Filter {
     boolean isFiltered(@Nullable String identifier, String path, byte[] protobufBufferArray,
                        FilterGroupList matchedList, FilterGroup matchedGroup, int matchedIndex) {
         // Shorts also use this player flyout panel
-        if (PlayerType.getCurrent().isNoneOrHidden() || exceptions.check(protobufBufferArray).isFiltered())
+        if (PlayerType.getCurrent().isNoneOrHidden() || exception.check(protobufBufferArray).isFiltered())
             return false;
 
         // Only 1 group is added to the parent class, so the matched group must be the overflow menu.
