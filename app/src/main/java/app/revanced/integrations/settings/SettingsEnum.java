@@ -75,6 +75,7 @@ public enum SettingsEnum {
     HIDE_SUBSCRIBERS_COMMUNITY_GUIDELINES("revanced_hide_subscribers_community_guidelines", BOOLEAN, TRUE),
     HIDE_PRODUCTS_BANNER("revanced_hide_products_banner", BOOLEAN, TRUE),
     HIDE_WEB_SEARCH_RESULTS("revanced_hide_web_search_results", BOOLEAN, TRUE),
+    HIDE_QUALITY_SHEET_FOOTER("revanced_hide_quality_sheet_footer", BOOLEAN, TRUE, true),
     HIDE_QUICK_ACTIONS("revanced_hide_quick_actions", BOOLEAN, FALSE),
     HIDE_RELATED_VIDEOS("revanced_hide_related_videos", BOOLEAN, FALSE),
     HIDE_MIX_PLAYLISTS("revanced_hide_mix_playlists", BOOLEAN, TRUE),

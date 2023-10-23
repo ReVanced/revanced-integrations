@@ -135,6 +135,12 @@ public final class LayoutComponentsFilter extends Filter {
                 "fullscreen_related_videos"
         );
 
+        final var qualitySheetFooter = new StringFilterGroup(
+                SettingsEnum.HIDE_QUALITY_SHEET_FOOTER,
+                "|divider.eml",
+                "quality_sheet_footer"
+        );
+
         final var quickActions = new StringFilterGroup(
                 SettingsEnum.HIDE_QUICK_ACTIONS,
                 "quick_actions"
@@ -190,6 +196,7 @@ public final class LayoutComponentsFilter extends Filter {
                 communityGuidelines,
                 quickActions,
                 expandableMetadata,
+                qualitySheetFooter,
                 relatedVideos,
                 compactBanner,
                 inFeedSurvey,
