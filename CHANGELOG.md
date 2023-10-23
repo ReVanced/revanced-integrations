@@ -1,3 +1,10 @@
+# [0.121.0-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v0.120.1-dev.3...v0.121.0-dev.1) (2023-10-23)
+
+
+### Features
+
+* **YouTube - Hide layout components:** Hide video quality menu footer ([04608d3](https://github.com/ReVanced/revanced-integrations/commit/04608d32e88d184e4662a71498d7a49c1fbbdb25))
+
 ## [0.120.1-dev.3](https://github.com/ReVanced/revanced-integrations/compare/v0.120.1-dev.2...v0.120.1-dev.3) (2023-10-21)
 
 
