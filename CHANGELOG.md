@@ -1,3 +1,10 @@
+# [0.121.0-dev.2](https://github.com/ReVanced/revanced-integrations/compare/v0.121.0-dev.1...v0.121.0-dev.2) (2023-10-24)
+
+
+### Bug Fixes
+
+* **YouTube - ReturnYouTubeDislike:** Fix RYD prefetching home feed Shorts ([#508](https://github.com/ReVanced/revanced-integrations/issues/508)) ([98c91af](https://github.com/ReVanced/revanced-integrations/commit/98c91af130b57322aa98a3e66ec0acad26bfc7d6))
+
 # [0.121.0-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v0.120.1-dev.3...v0.121.0-dev.1) (2023-10-23)
 
 
