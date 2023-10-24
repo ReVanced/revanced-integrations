@@ -1,3 +1,11 @@
+# [0.121.0-dev.3](https://github.com/ReVanced/revanced-integrations/compare/v0.121.0-dev.2...v0.121.0-dev.3) (2023-10-24)
+
+
+### Features
+
+* **YouTube:** Add `Disable fullscreen ambient mode` patch ([bf50711](https://github.com/ReVanced/revanced-integrations/commit/bf5071107b8bc88ac6562d45bfa28bdab8e566c7))
+* **YouTube:** Add `Disable suggested video end screen` patch ([6bd5aae](https://github.com/ReVanced/revanced-integrations/commit/6bd5aae9772e80809dbee9f8fffc1247364a9a13))
+
 # [0.121.0-dev.2](https://github.com/ReVanced/revanced-integrations/compare/v0.121.0-dev.1...v0.121.0-dev.2) (2023-10-24)
 
 
