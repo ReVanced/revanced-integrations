@@ -1,3 +1,10 @@
+# [0.121.0-dev.6](https://github.com/ReVanced/revanced-integrations/compare/v0.121.0-dev.5...v0.121.0-dev.6) (2023-10-25)
+
+
+### Bug Fixes
+
+* **YouTube - Client spoof:** Set the client version correctly ([f203731](https://github.com/ReVanced/revanced-integrations/commit/f2037316d36f99ef79ae5792e34d8616ecd31c80))
+
 # [0.121.0-dev.5](https://github.com/ReVanced/revanced-integrations/compare/v0.121.0-dev.4...v0.121.0-dev.5) (2023-10-25)
 
 
