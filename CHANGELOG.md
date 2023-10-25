@@ -1,3 +1,16 @@
+# [0.121.0-dev.5](https://github.com/ReVanced/revanced-integrations/compare/v0.121.0-dev.4...v0.121.0-dev.5) (2023-10-25)
+
+
+### Bug Fixes
+
+* **YouTube - Disable suggested video end screen:** Hide the view once possible ([df27822](https://github.com/ReVanced/revanced-integrations/commit/df278222e8814612797e55e616d4ebc075cafb92))
+
+
+### Features
+
+* **YouTube - Disable precise seeking gesture:** Use better patch name ([2453d30](https://github.com/ReVanced/revanced-integrations/commit/2453d30970ac59d78647386f4fe5d904dbc145e4))
+* **YouTube:** Add `Enable old seekbar thumbnails` patch ([75297a5](https://github.com/ReVanced/revanced-integrations/commit/75297a52c1c5f7c2b928964d08b055380f4a08fe))
+
 # [0.121.0-dev.4](https://github.com/ReVanced/revanced-integrations/compare/v0.121.0-dev.3...v0.121.0-dev.4) (2023-10-25)
 
 
