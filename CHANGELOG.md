@@ -1,3 +1,10 @@
+# [0.121.0-dev.4](https://github.com/ReVanced/revanced-integrations/compare/v0.121.0-dev.3...v0.121.0-dev.4) (2023-10-25)
+
+
+### Bug Fixes
+
+* **YouTube - ReturnYouTubeDislike:** Use API back off if client connection fails for any reason ([#509](https://github.com/ReVanced/revanced-integrations/issues/509)) ([40cfa1e](https://github.com/ReVanced/revanced-integrations/commit/40cfa1e9af2b064b464c4d03d5c28b5932621d62))
+
 # [0.121.0-dev.3](https://github.com/ReVanced/revanced-integrations/compare/v0.121.0-dev.2...v0.121.0-dev.3) (2023-10-24)
 
 
