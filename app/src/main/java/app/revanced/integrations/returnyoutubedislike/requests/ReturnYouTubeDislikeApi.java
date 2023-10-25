@@ -54,12 +54,6 @@ public class ReturnYouTubeDislikeApi {
     private static final int HTTP_STATUS_CODE_SUCCESS = 200;
 
     /**
-     * Response code indicating the video id is not for a video that can be voted for.
-     * (it's not a Short or a regular video, and it's likely a YouTube Story)
-     */
-    private static final int HTTP_STATUS_CODE_NOT_FOUND = 404;
-
-    /**
      * Indicates a client rate limit has been reached and the client must back off.
      */
     private static final int HTTP_STATUS_CODE_RATE_LIMIT = 429;
@@ -279,10 +273,6 @@ public class ReturnYouTubeDislikeApi {
                     LogHelper.printException(() -> "Failed to parse video: " + videoId + " json: " + json, ex);
                     // fall thru to update statistics
                 }
-            } else if (responseCode == HTTP_STATUS_CODE_NOT_FOUND) {
-                // Previously would happen with YouTube Stories and was normal.
-                // But Stories are no more so this condition should not happen.
-                LogHelper.printDebug(() -> "Video has no like/dislikes: " + videoId);
             } else {
                 handleConnectionError(str("revanced_ryd_failure_connection_status_code", responseCode), null);
             }
