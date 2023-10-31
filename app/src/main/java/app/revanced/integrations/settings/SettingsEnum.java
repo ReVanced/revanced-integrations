@@ -10,10 +10,7 @@ import app.revanced.integrations.utils.StringRef;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 import static app.revanced.integrations.settings.SettingsEnum.ReturnType.*;
 import static app.revanced.integrations.settings.SharedPrefCategory.RETURN_YOUTUBE_DISLIKE;
@@ -58,6 +55,7 @@ public enum SettingsEnum {
     HIDE_CHANNEL_BAR("revanced_hide_channel_bar", BOOLEAN, FALSE),
     HIDE_CHANNEL_MEMBER_SHELF("revanced_hide_channel_member_shelf", BOOLEAN, TRUE),
     HIDE_EXPANDABLE_CHIP("revanced_hide_expandable_chip", BOOLEAN, TRUE),
+    HIDE_VIDEO_QUALITY_MENU_FOOTER("revanced_hide_video_quality_menu_footer", BOOLEAN, TRUE),
     HIDE_CHAPTERS("revanced_hide_chapters", BOOLEAN, TRUE),
     HIDE_COMMUNITY_GUIDELINES("revanced_hide_community_guidelines", BOOLEAN, TRUE),
     HIDE_COMMUNITY_POSTS("revanced_hide_community_posts", BOOLEAN, FALSE),
@@ -149,7 +147,9 @@ public enum SettingsEnum {
     HIDE_SHORTS_CHANNEL_BAR("revanced_hide_shorts_channel_bar", BOOLEAN, FALSE),
     HIDE_SHORTS_NAVIGATION_BAR("revanced_hide_shorts_navigation_bar", BOOLEAN, TRUE, true),
     HIDE_SHORTS("revanced_hide_shorts", BOOLEAN, FALSE, true),
-
+    DISABLE_SUGGESTED_VIDEO_END_SCREEN("revanced_disable_suggested_video_end_screen", BOOLEAN, TRUE),
+    ENABLE_OLD_SEEKBAR_THUMBNAILS("revanced_enable_old_seekbar_thumbnails", BOOLEAN, TRUE),
+    DISABLE_FULLSCREEN_AMBIENT_MODE("revanced_disable_fullscreen_ambient_mode", BOOLEAN, TRUE, true),
     ALT_THUMBNAIL("revanced_alt_thumbnail", BOOLEAN, FALSE),
     ALT_THUMBNAIL_TYPE("revanced_alt_thumbnail_type", INTEGER, 2, parents(ALT_THUMBNAIL)),
     ALT_THUMBNAIL_FAST_QUALITY("revanced_alt_thumbnail_fast_quality", BOOLEAN, FALSE, parents(ALT_THUMBNAIL)),
@@ -172,12 +172,17 @@ public enum SettingsEnum {
     EXTERNAL_BROWSER("revanced_external_browser", BOOLEAN, TRUE, true),
     AUTO_REPEAT("revanced_auto_repeat", BOOLEAN, FALSE),
     SEEKBAR_TAPPING("revanced_seekbar_tapping", BOOLEAN, TRUE),
+    DISABLE_PRECISE_SEEKING_GESTURE("revanced_disable_precise_seeking_gesture", BOOLEAN, TRUE),
     DISABLE_FINE_SCRUBBING_GESTURE("revanced_disable_fine_scrubbing_gesture", BOOLEAN, TRUE),
     SPOOF_SIGNATURE("revanced_spoof_signature_verification_enabled", BOOLEAN, TRUE, true,
             "revanced_spoof_signature_verification_enabled_user_dialog_message"),
     SPOOF_SIGNATURE_IN_FEED("revanced_spoof_signature_in_feed_enabled", BOOLEAN, FALSE, false,
             parents(SPOOF_SIGNATURE)),
+    SPOOF_DEVICE_DIMENSIONS("revanced_spoof_device_dimensions", BOOLEAN, FALSE, true),
     BYPASS_URL_REDIRECTS("revanced_bypass_url_redirects", BOOLEAN, TRUE),
+    ANNOUNCEMENTS("revanced_announcements", BOOLEAN, TRUE),
+    ANNOUNCEMENT_CONSUMER("revanced_announcement_consumer", STRING, ""),
+    ANNOUNCEMENT_LAST_HASH("revanced_announcement_last_hash", STRING, ""),
 
     // Swipe controls
     SWIPE_BRIGHTNESS("revanced_swipe_brightness", BOOLEAN, TRUE),
@@ -377,6 +382,7 @@ public enum SettingsEnum {
         // region Migration
 
         migrateOldSettingToNew(HIDE_VIDEO_WATERMARK, HIDE_VIDEO_CHANNEL_WATERMARK);
+        migrateOldSettingToNew(DISABLE_FINE_SCRUBBING_GESTURE, DISABLE_PRECISE_SEEKING_GESTURE);
 
         // Do _not_ delete this SB private user id migration property until sometime in 2024.
         // This is the only setting that cannot be reconfigured if lost,
@@ -554,6 +560,7 @@ public enum SettingsEnum {
     private boolean includeWithImportExport() {
         switch (this) {
             case RYD_USER_ID: // Not useful to export, no reason to include it.
+            case ANNOUNCEMENT_CONSUMER: // Not useful to export, no reason to include it.
             case SB_LAST_VIP_CHECK:
             case SB_HIDE_EXPORT_WARNING:
             case SB_SEEN_GUIDELINES:

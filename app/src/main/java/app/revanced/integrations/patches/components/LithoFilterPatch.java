@@ -128,8 +128,20 @@ class StringFilterGroup extends FilterGroup<String> {
 
 final class CustomFilterGroup extends StringFilterGroup {
 
-    public CustomFilterGroup(final SettingsEnum setting, final SettingsEnum filter) {
-        super(setting, filter.getString().split("\\s+"));
+    private static String[] getFilterPatterns(SettingsEnum setting) {
+        String[] patterns = setting.getString().split("\\s+");
+        for (String pattern : patterns) {
+            if (!StringTrieSearch.isValidPattern(pattern)) {
+                Utils.showToastLong("Invalid custom filter, resetting to default");
+                setting.saveValue(setting.defaultValue);
+                return getFilterPatterns(setting);
+            }
+        }
+        return patterns;
+    }
+
+    public CustomFilterGroup(SettingsEnum setting, SettingsEnum filter) {
+        super(setting, getFilterPatterns(filter));
     }
 }
 
@@ -425,15 +437,15 @@ public final class LithoFilterPatch {
 
     static {
         for (Filter filter : filters) {
-            filterGroupLists(pathSearchTree, filter, filter.pathFilterGroupList);
             filterGroupLists(identifierSearchTree, filter, filter.identifierFilterGroupList);
+            filterGroupLists(pathSearchTree, filter, filter.pathFilterGroupList);
         }
 
         LogHelper.printDebug(() -> "Using: "
-                + pathSearchTree.numberOfPatterns() + " path filters"
-                + " (" + pathSearchTree.getEstimatedMemorySize() + " KB), "
                 + identifierSearchTree.numberOfPatterns() + " identifier filters"
-                + " (" + identifierSearchTree.getEstimatedMemorySize() + " KB)");
+                + " (" + identifierSearchTree.getEstimatedMemorySize() + " KB), "
+                + pathSearchTree.numberOfPatterns() + " path filters"
+                + " (" + pathSearchTree.getEstimatedMemorySize() + " KB)");
     }
 
     private static <T> void filterGroupLists(TrieSearch<T> pathSearchTree,
