@@ -1,3 +1,10 @@
+# [0.121.0-dev.7](https://github.com/ReVanced/revanced-integrations/compare/v0.121.0-dev.6...v0.121.0-dev.7) (2023-11-03)
+
+
+### Bug Fixes
+
+* **YouTube - Player flyout menu:** Restore functionality ([#502](https://github.com/ReVanced/revanced-integrations/issues/502)) ([c048527](https://github.com/ReVanced/revanced-integrations/commit/c048527dc0bc6b1b3de9c451ca909aab7ad93d0f))
+
 # [0.121.0-dev.6](https://github.com/ReVanced/revanced-integrations/compare/v0.121.0-dev.5...v0.121.0-dev.6) (2023-10-25)
 
 
