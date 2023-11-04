@@ -1,3 +1,74 @@
+# [0.121.0-dev.7](https://github.com/ReVanced/revanced-integrations/compare/v0.121.0-dev.6...v0.121.0-dev.7) (2023-11-03)
+
+
+### Bug Fixes
+
+* **YouTube - Player flyout menu:** Restore functionality ([#502](https://github.com/ReVanced/revanced-integrations/issues/502)) ([c048527](https://github.com/ReVanced/revanced-integrations/commit/c048527dc0bc6b1b3de9c451ca909aab7ad93d0f))
+
+# [0.121.0-dev.6](https://github.com/ReVanced/revanced-integrations/compare/v0.121.0-dev.5...v0.121.0-dev.6) (2023-10-25)
+
+
+### Bug Fixes
+
+* **YouTube - Client spoof:** Set the client version correctly ([f203731](https://github.com/ReVanced/revanced-integrations/commit/f2037316d36f99ef79ae5792e34d8616ecd31c80))
+
+# [0.121.0-dev.5](https://github.com/ReVanced/revanced-integrations/compare/v0.121.0-dev.4...v0.121.0-dev.5) (2023-10-25)
+
+
+### Bug Fixes
+
+* **YouTube - Disable suggested video end screen:** Hide the view once possible ([df27822](https://github.com/ReVanced/revanced-integrations/commit/df278222e8814612797e55e616d4ebc075cafb92))
+
+
+### Features
+
+* **YouTube - Disable precise seeking gesture:** Use better patch name ([2453d30](https://github.com/ReVanced/revanced-integrations/commit/2453d30970ac59d78647386f4fe5d904dbc145e4))
+* **YouTube:** Add `Enable old seekbar thumbnails` patch ([75297a5](https://github.com/ReVanced/revanced-integrations/commit/75297a52c1c5f7c2b928964d08b055380f4a08fe))
+
+# [0.121.0-dev.4](https://github.com/ReVanced/revanced-integrations/compare/v0.121.0-dev.3...v0.121.0-dev.4) (2023-10-25)
+
+
+### Bug Fixes
+
+* **YouTube - ReturnYouTubeDislike:** Use API back off if client connection fails for any reason ([#509](https://github.com/ReVanced/revanced-integrations/issues/509)) ([40cfa1e](https://github.com/ReVanced/revanced-integrations/commit/40cfa1e9af2b064b464c4d03d5c28b5932621d62))
+
+# [0.121.0-dev.3](https://github.com/ReVanced/revanced-integrations/compare/v0.121.0-dev.2...v0.121.0-dev.3) (2023-10-24)
+
+
+### Features
+
+* **YouTube:** Add `Disable fullscreen ambient mode` patch ([bf50711](https://github.com/ReVanced/revanced-integrations/commit/bf5071107b8bc88ac6562d45bfa28bdab8e566c7))
+* **YouTube:** Add `Disable suggested video end screen` patch ([6bd5aae](https://github.com/ReVanced/revanced-integrations/commit/6bd5aae9772e80809dbee9f8fffc1247364a9a13))
+
+# [0.121.0-dev.2](https://github.com/ReVanced/revanced-integrations/compare/v0.121.0-dev.1...v0.121.0-dev.2) (2023-10-24)
+
+
+### Bug Fixes
+
+* **YouTube - ReturnYouTubeDislike:** Fix RYD prefetching home feed Shorts ([#508](https://github.com/ReVanced/revanced-integrations/issues/508)) ([98c91af](https://github.com/ReVanced/revanced-integrations/commit/98c91af130b57322aa98a3e66ec0acad26bfc7d6))
+
+# [0.121.0-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v0.120.1-dev.3...v0.121.0-dev.1) (2023-10-23)
+
+
+### Features
+
+* **YouTube - Hide layout components:** Hide video quality menu footer ([04608d3](https://github.com/ReVanced/revanced-integrations/commit/04608d32e88d184e4662a71498d7a49c1fbbdb25))
+
+## [0.120.1-dev.3](https://github.com/ReVanced/revanced-integrations/compare/v0.120.1-dev.2...v0.120.1-dev.3) (2023-10-21)
+
+
+### Bug Fixes
+
+* **YouTube - Custom filter:** Fix app crash if invalid character is used in custom filter ([#506](https://github.com/ReVanced/revanced-integrations/issues/506)) ([debd0a2](https://github.com/ReVanced/revanced-integrations/commit/debd0a2e1101e543161390fd3ced6bda19030155))
+
+## [0.120.1-dev.2](https://github.com/ReVanced/revanced-integrations/compare/v0.120.1-dev.1...v0.120.1-dev.2) (2023-10-20)
+
+
+### Reverts
+
+* Revert "fix(YouTube - Minimized playback): Fix pip incorrectly showing for Short playback (#504)" ([c1c7e3b](https://github.com/ReVanced/revanced-integrations/commit/c1c7e3b5964394de6af39f6fb83d667eba174f0a)), closes [#504](https://github.com/ReVanced/revanced-integrations/issues/504)
+* Revert "chore(release): 0.120.1-dev.1 [skip ci]" ([e68f558](https://github.com/ReVanced/revanced-integrations/commit/e68f558e9ccac4c6e0d9113b3f134e89edd2233f))
+
 # [0.120.0](https://github.com/ReVanced/revanced-integrations/compare/v0.119.2...v0.120.0) (2023-10-20)
 
 
