@@ -2,8 +2,9 @@ package app.revanced.integrations.patches;
 
 import app.revanced.integrations.settings.SettingsEnum;
 
-public final class EnableOldSeekbarThumbnailsPatch {
+@SuppressWarnings("unused")
+public final class OldSeekbarThumbnailsPatch {
     public static boolean enableOldSeekbarThumbnails() {
-        return !SettingsEnum.ENABLE_OLD_SEEKBAR_THUMBNAILS.getBoolean();
+        return !SettingsEnum.OLD_SEEKBAR_THUMBNAILS.getBoolean();
     }
 }
