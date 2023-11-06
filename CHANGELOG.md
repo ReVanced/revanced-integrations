@@ -1,3 +1,10 @@
+## [0.121.1-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v0.121.0...v0.121.1-dev.1) (2023-11-06)
+
+
+### Bug Fixes
+
+* **YouTube:** Rename `Restore old seekbar thumbnails` and `Restore old quality menu` ([#510](https://github.com/ReVanced/revanced-integrations/issues/510)) ([6b00f90](https://github.com/ReVanced/revanced-integrations/commit/6b00f90fb7561d59de59d76d43fff8c1d057dce6))
+
 # [0.121.0](https://github.com/ReVanced/revanced-integrations/compare/v0.120.0...v0.121.0) (2023-11-04)
 
 
