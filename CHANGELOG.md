@@ -1,3 +1,11 @@
+## [0.121.1-dev.2](https://github.com/ReVanced/revanced-integrations/compare/v0.121.1-dev.1...v0.121.1-dev.2) (2023-11-07)
+
+
+### Bug Fixes
+
+* **YouTube - Disable suggested video end screen:** Do not spam click to disable the screen ([4f57d56](https://github.com/ReVanced/revanced-integrations/commit/4f57d560425a40386a014da05fe26bb9c22f090f))
+* **YouTube:** Prevent playing touch interaction sound when unintended ([6e414ec](https://github.com/ReVanced/revanced-integrations/commit/6e414ec6c2a40d70f810b0ade1d8c41cadafff8d))
+
 ## [0.121.1-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v0.121.0...v0.121.1-dev.1) (2023-11-06)
 
 
