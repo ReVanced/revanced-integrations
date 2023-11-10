@@ -1,3 +1,10 @@
+## [0.121.1-dev.3](https://github.com/ReVanced/revanced-integrations/compare/v0.121.1-dev.2...v0.121.1-dev.3) (2023-11-10)
+
+
+### Bug Fixes
+
+* **Remove screenshot restriction:** Improve reliability ([#471](https://github.com/ReVanced/revanced-integrations/issues/471)) ([50933dc](https://github.com/ReVanced/revanced-integrations/commit/50933dc42d4ef77fb45a978e19d306dad5070540))
+
 ## [0.121.1-dev.2](https://github.com/ReVanced/revanced-integrations/compare/v0.121.1-dev.1...v0.121.1-dev.2) (2023-11-07)
 
 
