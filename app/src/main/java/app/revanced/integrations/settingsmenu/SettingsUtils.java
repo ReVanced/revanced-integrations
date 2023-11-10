@@ -16,7 +16,7 @@ import kotlin.text.Regex;
  * {@link app.revanced.twitch.settings.SettingsEnum}
  * {@link app.revanced.tiktok.settings.SettingsEnum}
  *
- * or any other code that references these app specific integration code.
+ * or any other code that references these app specific integration classes.
  */
 public class SettingsUtils {
 

@@ -1,3 +1,25 @@
+## [0.121.1-dev.3](https://github.com/ReVanced/revanced-integrations/compare/v0.121.1-dev.2...v0.121.1-dev.3) (2023-11-10)
+
+
+### Bug Fixes
+
+* **Remove screenshot restriction:** Improve reliability ([#471](https://github.com/ReVanced/revanced-integrations/issues/471)) ([50933dc](https://github.com/ReVanced/revanced-integrations/commit/50933dc42d4ef77fb45a978e19d306dad5070540))
+
+## [0.121.1-dev.2](https://github.com/ReVanced/revanced-integrations/compare/v0.121.1-dev.1...v0.121.1-dev.2) (2023-11-07)
+
+
+### Bug Fixes
+
+* **YouTube - Disable suggested video end screen:** Do not spam click to disable the screen ([4f57d56](https://github.com/ReVanced/revanced-integrations/commit/4f57d560425a40386a014da05fe26bb9c22f090f))
+* **YouTube:** Prevent playing touch interaction sound when unintended ([6e414ec](https://github.com/ReVanced/revanced-integrations/commit/6e414ec6c2a40d70f810b0ade1d8c41cadafff8d))
+
+## [0.121.1-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v0.121.0...v0.121.1-dev.1) (2023-11-06)
+
+
+### Bug Fixes
+
+* **YouTube:** Rename `Restore old seekbar thumbnails` and `Restore old quality menu` ([#510](https://github.com/ReVanced/revanced-integrations/issues/510)) ([6b00f90](https://github.com/ReVanced/revanced-integrations/commit/6b00f90fb7561d59de59d76d43fff8c1d057dce6))
+
 # [0.121.0](https://github.com/ReVanced/revanced-integrations/compare/v0.120.0...v0.121.0) (2023-11-04)
 
 
