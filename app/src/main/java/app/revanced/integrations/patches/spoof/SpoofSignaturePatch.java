@@ -3,6 +3,10 @@ package app.revanced.integrations.patches.spoof;
 import static app.revanced.integrations.patches.spoof.requests.StoryboardRendererRequester.getStoryboardRenderer;
 import static app.revanced.integrations.utils.ReVancedUtils.containsAny;
 
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+
 import androidx.annotation.Nullable;
 
 import java.util.concurrent.ExecutionException;
@@ -53,6 +57,8 @@ public class SpoofSignaturePatch {
 
     private static volatile boolean useOriginalStoryboardRenderer;
 
+    private static volatile boolean isPlayingShorts;
+
     @Nullable
     private static StoryboardRenderer getRenderer() {
         if (rendererFuture != null) {
@@ -86,7 +92,10 @@ public class SpoofSignaturePatch {
         if (useOriginalStoryboardRenderer = parameters.length() > 150) return parameters;
 
         // Shorts do not need to be spoofed.
-        if (useOriginalStoryboardRenderer = parameters.startsWith(SHORTS_PLAYER_PARAMETERS)) return parameters;
+        if (useOriginalStoryboardRenderer = parameters.startsWith(SHORTS_PLAYER_PARAMETERS)) {
+            isPlayingShorts = true;
+            return parameters;
+        }
 
         boolean isPlayingFeed = PlayerType.getCurrent() == PlayerType.INLINE_MINIMAL
                 && containsAny(parameters, AUTOPLAY_PARAMETERS);
@@ -122,13 +131,6 @@ public class SpoofSignaturePatch {
         // To prevent this, call get() here and block until the fetch is completed.
         // So later when the main thread calls to get the renderer it will never block as the future is done.
         getRenderer();
-    }
-
-    /**
-     * Injection point.
-     */
-    public static boolean getSeekbarThumbnailOverrideValue() {
-        return SettingsEnum.SPOOF_SIGNATURE.getBoolean();
     }
 
     private static String getStoryboardRendererSpec(String originalStoryboardRendererSpec,
@@ -176,5 +178,31 @@ public class SpoofSignaturePatch {
         }
 
         return originalLevel;
+    }
+
+    /**
+     * Injection point.  Forces seekbar to be shown for paid videos or
+     * if {@link SettingsEnum#SPOOF_STORYBOARD_RENDERER} is not enabled.
+     */
+    public static boolean getSeekbarThumbnailOverrideValue() {
+        return SettingsEnum.SPOOF_SIGNATURE.getBoolean();
+    }
+
+    /**
+     * Injection point.
+     *
+     * @param view seekbar thumbnail view.  Includes both shorts and regular videos.
+     */
+    public static void seekbarImageViewCreated(ImageView view) {
+        if (!SettingsEnum.SPOOF_SIGNATURE.getBoolean()
+                || SettingsEnum.SPOOF_STORYBOARD_RENDERER.getBoolean()) {
+            return;
+        }
+        if (isPlayingShorts) return;
+
+        view.setVisibility(View.GONE);
+        // Also hide the border around the thumbnail (otherwise a 1 pixel wide bordered frame is visible).
+        ViewGroup parentLayout = (ViewGroup) view.getParent();
+        parentLayout.setPadding(0, 0, 0, 0);
     }
 }
