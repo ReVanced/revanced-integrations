@@ -1,3 +1,10 @@
+## [0.121.1-dev.4](https://github.com/ReVanced/revanced-integrations/compare/v0.121.1-dev.3...v0.121.1-dev.4) (2023-11-11)
+
+
+### Bug Fixes
+
+* **YouTube - Client spoof:** Fix low resolution precise seeking thumbnails ([#513](https://github.com/ReVanced/revanced-integrations/issues/513)) ([11f97ac](https://github.com/ReVanced/revanced-integrations/commit/11f97ac354344aac3d101f8874e38273da15f9e6))
+
 ## [0.121.1-dev.3](https://github.com/ReVanced/revanced-integrations/compare/v0.121.1-dev.2...v0.121.1-dev.3) (2023-11-10)
 
 
