@@ -96,6 +96,7 @@ public class SpoofSignaturePatch {
             isPlayingShorts = true;
             return parameters;
         }
+        isPlayingShorts = false;
 
         boolean isPlayingFeed = PlayerType.getCurrent() == PlayerType.INLINE_MINIMAL
                 && containsAny(parameters, AUTOPLAY_PARAMETERS);
