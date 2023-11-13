@@ -1,19 +1,18 @@
 package app.revanced.integrations.patches;
 
-import static app.revanced.integrations.returnyoutubedislike.ReturnYouTubeDislike.Vote;
-
 import android.graphics.Rect;
 import android.os.Build;
-import android.text.Editable;
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.Spanned;
-import android.text.TextWatcher;
+import android.text.*;
 import android.view.View;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import app.revanced.integrations.patches.components.ReturnYouTubeDislikeFilterPatch;
+import app.revanced.integrations.returnyoutubedislike.ReturnYouTubeDislike;
+import app.revanced.integrations.settings.SettingsEnum;
+import app.revanced.integrations.shared.PlayerType;
+import app.revanced.integrations.utils.LogHelper;
+import app.revanced.integrations.utils.ReVancedUtils;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -21,12 +20,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 
-import app.revanced.integrations.patches.components.ReturnYouTubeDislikeFilterPatch;
-import app.revanced.integrations.returnyoutubedislike.ReturnYouTubeDislike;
-import app.revanced.integrations.settings.SettingsEnum;
-import app.revanced.integrations.shared.PlayerType;
-import app.revanced.integrations.utils.LogHelper;
-import app.revanced.integrations.utils.ReVancedUtils;
+import static app.revanced.integrations.returnyoutubedislike.ReturnYouTubeDislike.Vote;
 
 /**
  * Handles all interaction of UI patch components.
@@ -197,12 +191,12 @@ public class ReturnYouTubeDislikePatch {
      * @param textRef Cache reference to the like/dislike char sequence,
      *                which may or may not be the same as the original span parameter.
      *                If dislikes are added, the atomic reference must be set to the replacement span.
-     * @param original Original span that was created or reused by Litho.
-     * @return The original span (if nothing should change), or a replacement span that contains dislikes.
+     * @param original Original char sequence was created or reused by Litho.
+     * @return The original char sequence (if nothing should change), or a replacement char sequence that contains dislikes.
      */
     @NonNull
     public static CharSequence onLithoTextLoaded(@NonNull Object conversionContext,
-                                                 @NonNull AtomicReference<CharSequence> textRef,
+                                                 AtomicReference<CharSequence> textRef,
                                                  @NonNull CharSequence original) {
         try {
             if (!SettingsEnum.RYD_ENABLED.getBoolean()) {
@@ -213,14 +207,21 @@ public class ReturnYouTubeDislikePatch {
             // Remove this log statement after the a/b new litho dislikes is fixed.
             LogHelper.printDebug(() -> "conversionContext: " + conversionContextString);
 
-            final Spanned replacement;
+            final CharSequence replacement;
             if (conversionContextString.contains("|segmented_like_dislike_button.eml|")) {
                 // Regular video
                 ReturnYouTubeDislike videoData = currentVideoData;
                 if (videoData == null) {
                     return original; // User enabled RYD while a video was on screen.
                 }
-                replacement = videoData.getDislikesSpanForRegularVideo((Spannable) original, true);
+
+                // In some cases the original may not be a Spannable, so convert it.
+                final var isSpannable = original instanceof Spannable;
+
+                original = isSpannable ? (Spannable) original : new SpannableString(original);
+                final var dislikesSpan = videoData.getDislikesSpanForRegularVideo((Spannable) original, true);
+                replacement = isSpannable ? dislikesSpan : dislikesSpan.toString();
+
                 // When spoofing between 17.09.xx and 17.30.xx the UI is the old layout but uses litho
                 // and the dislikes is "|dislike_button.eml|"
                 // but spoofing to that range gives a broken UI layout so no point checking for that.
@@ -255,7 +256,7 @@ public class ReturnYouTubeDislikePatch {
                 return original;
             }
 
-            textRef.set(replacement);
+            if (textRef != null) textRef.set(replacement);
             return replacement;
         } catch (Exception ex) {
             LogHelper.printException(() -> "onLithoTextLoaded failure", ex);
