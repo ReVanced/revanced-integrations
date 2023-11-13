@@ -29,7 +29,7 @@ import static app.revanced.integrations.returnyoutubedislike.ReturnYouTubeDislik
  * Litho based Shorts player can experience temporarily frozen video playback if the RYD fetch takes too long.
  *
  * Temporary work around:
- * Enable app spoofing to version 18.20.39 or older, as that uses a non litho Shorts player.
+ * Enable app spoofing to version 18.33.40 or older, as that uses a non litho Shorts player.
  *
  * Permanent fix (yet to be implemented), either of:
  * - Modify patch to hook onto the Shorts Litho TextView, and update the dislikes asynchronously.
@@ -192,7 +192,7 @@ public class ReturnYouTubeDislikePatch {
      * This method is sometimes called on the main thread, but it usually is called _off_ the main thread.
      * This method can be called multiple times for the same UI element (including after dislikes was added).
      *
-     * @param textRef Cache reference to the like/dislike char sequence,
+     * @param textRef Optional cache reference to the like/dislike char sequence,
      *                which may or may not be the same as the original span parameter.
      *                If dislikes are added, the atomic reference must be set to the replacement span.
      * @param original Original char sequence was created or reused by Litho.
@@ -218,9 +218,9 @@ public class ReturnYouTubeDislikePatch {
                 }
                 replacement = videoData.getDislikesSpanForRegularVideo((Spannable) original, true);
 
-                // When spoofing between 17.09.xx and 17.30.xx the UI is the old layout but uses litho
-                // and the dislikes is "|dislike_button.eml|"
-                // but spoofing to that range gives a broken UI layout so no point checking for that.
+                // When spoofing between 17.09.xx and 17.30.xx the UI is the old layout
+                // but uses litho and the dislikes is "|dislike_button.eml|".
+                // But spoofing to that range gives a broken UI layout so no point checking for that.
             } else if (conversionContextString.contains("|shorts_dislike_button.eml|")) {
                 // Litho Shorts player.
                 if (!SettingsEnum.RYD_SHORTS.getBoolean()) {
@@ -271,6 +271,9 @@ public class ReturnYouTubeDislikePatch {
     @Nullable
     private static volatile CharSequence rollingNumberText;
 
+    /**
+     * Injection point.
+     */
     public static CharSequence onRollingNumberLoaded(@NonNull Object conversionContext,
                                                      @NonNull CharSequence original) {
         try {
@@ -302,6 +305,8 @@ public class ReturnYouTubeDislikePatch {
                 }
                 CharSequence replacement = rollingNumberText;
                 if (replacement == null) {
+                    // User enabled RYD while a video was open,
+                    // or user opened/closed a Short while a regular video was opened.
                     LogHelper.printDebug(() -> "Cannot update rolling number (field is null");
                     return text;
                 }
@@ -454,21 +459,25 @@ public class ReturnYouTubeDislikePatch {
      * Injection point.  Uses 'playback response' video id hook to preload RYD.
      */
     public static void preloadVideoId(@NonNull String videoId, boolean videoIsOpeningOrPlaying) {
-        // Shorts shelf in home and subscription feed causes player response hook to be called,
-        // and the 'is opening/playing' parameter will be false.
-        // This hook will be called again when the Short is actually opened.
-        if (!videoIsOpeningOrPlaying || !SettingsEnum.RYD_ENABLED.getBoolean()) {
-            return;
+        try {
+            // Shorts shelf in home and subscription feed causes player response hook to be called,
+            // and the 'is opening/playing' parameter will be false.
+            // This hook will be called again when the Short is actually opened.
+            if (!videoIsOpeningOrPlaying || !SettingsEnum.RYD_ENABLED.getBoolean()) {
+                return;
+            }
+            if (!SettingsEnum.RYD_SHORTS.getBoolean() && PlayerType.getCurrent().isNoneHiddenOrSlidingMinimized()) {
+                return;
+            }
+            if (videoId.equals(lastPrefetchedVideoId)) {
+                return;
+            }
+            lastPrefetchedVideoId = videoId;
+            LogHelper.printDebug(() -> "Prefetching RYD for video: " + videoId);
+            ReturnYouTubeDislike.getFetchForVideoId(videoId);
+        } catch (Exception ex) {
+            LogHelper.printException(() -> "preloadVideoId failure", ex);
         }
-        if (!SettingsEnum.RYD_SHORTS.getBoolean() && PlayerType.getCurrent().isNoneHiddenOrSlidingMinimized()) {
-            return;
-        }
-        if (videoId.equals(lastPrefetchedVideoId)) {
-            return;
-        }
-        lastPrefetchedVideoId = videoId;
-        LogHelper.printDebug(() -> "Prefetching RYD for video: " + videoId);
-        ReturnYouTubeDislike.getFetchForVideoId(videoId);
     }
 
     /**
