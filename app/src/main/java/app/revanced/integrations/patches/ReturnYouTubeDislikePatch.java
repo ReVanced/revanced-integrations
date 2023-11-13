@@ -295,13 +295,13 @@ public class ReturnYouTubeDislikePatch {
     /**
      * Injection point.
      */
-    public static CharSequence updateRollingText(CharSequence text) {
+    public static CharSequence updateRollingNumber(CharSequence text) {
         try {
             if (SettingsEnum.RYD_ENABLED.getBoolean()) {
                 // Called for all instances of RollingNumber, so must check if text is for a dislikes.
                 // Text will already have the correct content, but it's missing the separators and Span styling.
                 if (!ReturnYouTubeDislike.isPreviouslyCreatedSegmentedSpan(text.toString())) {
-                    return text;
+                    return text; // Text is the video view count, upload time, or some other text.
                 }
                 CharSequence replacement = rollingNumberText;
                 if (replacement == null) {
