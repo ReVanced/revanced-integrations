@@ -69,12 +69,16 @@ public class ReturnYouTubeDislikePatch {
         if (!rydEnabled) {
             // Must remove all values to protect against using stale data
             // if the user enables RYD while a video is on screen.
-            currentVideoData = null;
-            lastLithoShortsVideoData = null;
-            lithoShortsShouldUseCurrentData = false;
+            clearData();
         }
     }
 
+    private static void clearData() {
+        currentVideoData = null;
+        lastLithoShortsVideoData = null;
+        rollingNumberText = null;
+        lithoShortsShouldUseCurrentData = false;
+    }
 
     //
     // 17.x non litho regular video player.
@@ -212,13 +216,7 @@ public class ReturnYouTubeDislikePatch {
                 if (videoData == null) {
                     return original; // User enabled RYD while a video was on screen.
                 }
-
-                // In some cases the original may not be a Spannable, so convert it.
-                final var isSpannable = original instanceof Spannable;
-
-                original = isSpannable ? (Spannable) original : new SpannableString(original);
-                final var dislikesSpan = videoData.getDislikesSpanForRegularVideo((Spannable) original, true);
-                replacement = isSpannable ? dislikesSpan : dislikesSpan.toString();
+                replacement = videoData.getDislikesSpanForRegularVideo((Spannable) original, true);
 
                 // When spoofing between 17.09.xx and 17.30.xx the UI is the old layout but uses litho
                 // and the dislikes is "|dislike_button.eml|"
@@ -229,7 +227,7 @@ public class ReturnYouTubeDislikePatch {
                     // Must clear the current video here, otherwise if the user opens a regular video
                     // then opens a litho short (while keeping the regular video on screen), then closes the short,
                     // the original video may show the incorrect dislike value.
-                    currentVideoData = null;
+                    clearData();
                     return original;
                 }
                 ReturnYouTubeDislike videoData = lastLithoShortsVideoData;
@@ -262,6 +260,58 @@ public class ReturnYouTubeDislikePatch {
         return original;
     }
 
+    //
+    // Rolling Number
+    //
+
+    /**
+     * Current regular video rolling text, if one exists.
+     * This is saved to a field as it's used in every draw() call.
+     */
+    @Nullable
+    private static volatile CharSequence rollingNumberText;
+
+    public static CharSequence onRollingNumberLoaded(@NonNull Object conversionContext,
+                                                     @NonNull CharSequence original) {
+        try {
+            if (SettingsEnum.RYD_ENABLED.getBoolean()) {
+                final boolean isSpannable = original instanceof Spanned;
+                Spanned originalSpan = isSpannable ? (Spanned) original : new SpannableString(original);
+                CharSequence replacement = onLithoTextLoaded(conversionContext, null, originalSpan);
+                rollingNumberText = replacement;
+
+                if (isSpannable) return replacement;
+                return replacement.toString();
+            }
+        } catch (Exception ex) {
+            LogHelper.printException(() -> "onRollingNumberLoaded failure", ex);
+        }
+        return original;
+    }
+
+    /**
+     * Injection point.
+     */
+    public static CharSequence updateRollingText(CharSequence text) {
+        try {
+            if (SettingsEnum.RYD_ENABLED.getBoolean()) {
+                // Called for all instances of RollingNumber, so must check if text is for a dislikes.
+                // Text will already have the correct content, but it's missing the separators and Span styling.
+                if (!ReturnYouTubeDislike.isPreviouslyCreatedSegmentedSpan(text.toString())) {
+                    return text;
+                }
+                CharSequence replacement = rollingNumberText;
+                if (replacement == null) {
+                    LogHelper.printDebug(() -> "Cannot update rolling number (field is null");
+                    return text;
+                }
+                return rollingNumberText;
+            }
+        } catch (Exception ex) {
+            LogHelper.printException(() -> "updateRollingText failure", ex);
+        }
+        return text;
+    }
 
     //
     // Non litho Shorts player.
@@ -300,7 +350,7 @@ public class ReturnYouTubeDislikePatch {
             if (!SettingsEnum.RYD_SHORTS.getBoolean()) {
                 // Must clear the data here, in case a new video was loaded while PlayerType
                 // suggested the video was not a short (can happen when spoofing to an old app version).
-                currentVideoData = null;
+                clearData();
                 return false;
             }
             LogHelper.printDebug(() -> "setShortsDislikes");
@@ -443,7 +493,7 @@ public class ReturnYouTubeDislikePatch {
             final boolean isNoneHiddenOrSlidingMinimized = currentPlayerType.isNoneHiddenOrSlidingMinimized();
             if (isNoneHiddenOrSlidingMinimized && !SettingsEnum.RYD_SHORTS.getBoolean()) {
                 // Must clear here, otherwise the wrong data can be used for a minimized regular video.
-                currentVideoData = null;
+                clearData();
                 return;
             }
 
@@ -458,9 +508,7 @@ public class ReturnYouTubeDislikePatch {
                     // Must clear both currently playing and last litho data otherwise the
                     // next regular video may use the wrong data.
                     LogHelper.printDebug(() -> "Litho filter did not find any video ids");
-                    currentVideoData = null;
-                    lastLithoShortsVideoData = null;
-                    lithoShortsShouldUseCurrentData = false;
+                    clearData();
                     return;
                 }
                 ReturnYouTubeDislike videoData = ReturnYouTubeDislike.getFetchForVideoId(videoId);

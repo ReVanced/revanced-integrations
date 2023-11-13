@@ -243,8 +243,8 @@ public class ReturnYouTubeDislike {
     }
 
     // Alternatively, this could check if the span contains one of the custom created spans, but this is simple and quick.
-    private static boolean isPreviouslyCreatedSegmentedSpan(@NonNull Spanned span) {
-        return span.toString().indexOf(MIDDLE_SEPARATOR_CHARACTER) != -1;
+    public static boolean isPreviouslyCreatedSegmentedSpan(@NonNull String text) {
+        return text.indexOf(MIDDLE_SEPARATOR_CHARACTER) != -1;
     }
 
     /**
@@ -481,7 +481,7 @@ public class ReturnYouTubeDislike {
                         return replacementLikeDislikeSpan;
                     }
                 }
-                if (isSegmentedButton && isPreviouslyCreatedSegmentedSpan(original)) {
+                if (isSegmentedButton && isPreviouslyCreatedSegmentedSpan(original.toString())) {
                     // need to recreate using original, as original has prior outdated dislike values
                     if (originalDislikeSpan == null) {
                         // Should never happen.
