@@ -1,3 +1,22 @@
+# [0.122.0-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v0.121.1-dev.4...v0.122.0-dev.1) (2023-11-12)
+
+
+### Bug Fixes
+
+* **YouTube - Disable suggested video end screen:** Properly hide it every time the screen appears ([828ff6f](https://github.com/ReVanced/revanced-integrations/commit/828ff6f31e2f15bf50899ab1e403bdc40cc09d07))
+* **YouTube - Hide layout components:** Reduce false positives when hiding mix playlists ([5f30100](https://github.com/ReVanced/revanced-integrations/commit/5f30100fd59c1e61c0236bc54cfcd03212994cab))
+
+
+### Features
+
+* **YouTube:** Add `Enable slide to seek` patch ([b1ce7a7](https://github.com/ReVanced/revanced-integrations/commit/b1ce7a75eba53312d9522c87321ac83cb16d83cf))
+* **YouTube:** Add `Remove tracking query parameter` patch ([e84b7b3](https://github.com/ReVanced/revanced-integrations/commit/e84b7b328ea48e86d240d38cf83aa960f87d6902))
+
+
+### Performance Improvements
+
+* **YouTube - Client spoof:** Reduce timeout to fetch storyboard renderer ([847cce4](https://github.com/ReVanced/revanced-integrations/commit/847cce43f6436c592c680820960f5270f799cb8d))
+
 ## [0.121.1-dev.4](https://github.com/ReVanced/revanced-integrations/compare/v0.121.1-dev.3...v0.121.1-dev.4) (2023-11-11)
 
 

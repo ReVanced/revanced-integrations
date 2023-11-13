@@ -176,6 +176,7 @@ public enum SettingsEnum {
     EXTERNAL_BROWSER("revanced_external_browser", BOOLEAN, TRUE, true),
     AUTO_REPEAT("revanced_auto_repeat", BOOLEAN, FALSE),
     SEEKBAR_TAPPING("revanced_seekbar_tapping", BOOLEAN, TRUE),
+    SLIDE_TO_SEEK("revanced_slide_to_seek", BOOLEAN, FALSE),
     @Deprecated DISABLE_FINE_SCRUBBING_GESTURE("revanced_disable_fine_scrubbing_gesture", BOOLEAN, TRUE),
     DISABLE_PRECISE_SEEKING_GESTURE("revanced_disable_precise_seeking_gesture", BOOLEAN, TRUE),
     SPOOF_SIGNATURE("revanced_spoof_signature_verification_enabled", BOOLEAN, TRUE, true,
@@ -190,6 +191,7 @@ public enum SettingsEnum {
     ANNOUNCEMENTS("revanced_announcements", BOOLEAN, TRUE),
     ANNOUNCEMENT_CONSUMER("revanced_announcement_consumer", STRING, ""),
     ANNOUNCEMENT_LAST_HASH("revanced_announcement_last_hash", STRING, ""),
+    REMOVE_TRACKING_QUERY_PARAMETER("revanced_remove_tracking_query_parameter", BOOLEAN, TRUE),
 
     // Swipe controls
     SWIPE_BRIGHTNESS("revanced_swipe_brightness", BOOLEAN, TRUE),
