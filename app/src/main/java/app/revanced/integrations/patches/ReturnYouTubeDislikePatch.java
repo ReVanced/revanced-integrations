@@ -36,6 +36,7 @@ import static app.revanced.integrations.returnyoutubedislike.ReturnYouTubeDislik
  * - Find a way to force Litho to rebuild it's component tree
  *   (and use that hook to force the shorts dislikes to update after the fetch is completed).
  */
+@SuppressWarnings("unused")
 public class ReturnYouTubeDislikePatch {
 
     /**
@@ -265,7 +266,7 @@ public class ReturnYouTubeDislikePatch {
     //
 
     /**
-     * Current regular video rolling text, if one exists.
+     * Current regular video rolling number text, if rolling number is in use.
      * This is saved to a field as it's used in every draw() call.
      */
     @Nullable
@@ -274,16 +275,13 @@ public class ReturnYouTubeDislikePatch {
     /**
      * Injection point.
      */
-    public static CharSequence onRollingNumberLoaded(@NonNull Object conversionContext,
-                                                     @NonNull CharSequence original) {
+    public static String onRollingNumberLoaded(@NonNull Object conversionContext,
+                                               @NonNull String original) {
         try {
             if (SettingsEnum.RYD_ENABLED.getBoolean()) {
-                final boolean isSpannable = original instanceof Spanned;
-                Spanned originalSpan = isSpannable ? (Spanned) original : new SpannableString(original);
+                Spanned originalSpan = new SpannableString(original);
                 CharSequence replacement = onLithoTextLoaded(conversionContext, null, originalSpan);
                 rollingNumberText = replacement;
-
-                if (isSpannable) return replacement;
                 return replacement.toString();
             }
         } catch (Exception ex) {
@@ -313,7 +311,7 @@ public class ReturnYouTubeDislikePatch {
                 return rollingNumberText;
             }
         } catch (Exception ex) {
-            LogHelper.printException(() -> "updateRollingText failure", ex);
+            LogHelper.printException(() -> "updateRollingNumber failure", ex);
         }
         return text;
     }
@@ -536,6 +534,7 @@ public class ReturnYouTubeDislikePatch {
                 if (isNoneHiddenOrSlidingMinimized) {
                     data.setVideoIdIsShort(true);
                 }
+                rollingNumberText = null;
                 currentVideoData = data;
             }
 
