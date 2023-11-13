@@ -196,7 +196,7 @@ public class ReturnYouTubeDislikePatch {
      */
     @NonNull
     public static CharSequence onLithoTextLoaded(@NonNull Object conversionContext,
-                                                 AtomicReference<CharSequence> textRef,
+                                                 @Nullable AtomicReference<CharSequence> textRef,
                                                  @NonNull CharSequence original) {
         try {
             if (!SettingsEnum.RYD_ENABLED.getBoolean()) {
@@ -204,8 +204,6 @@ public class ReturnYouTubeDislikePatch {
             }
 
             String conversionContextString = conversionContext.toString();
-            // Remove this log statement after the a/b new litho dislikes is fixed.
-            LogHelper.printDebug(() -> "conversionContext: " + conversionContextString);
 
             final CharSequence replacement;
             if (conversionContextString.contains("|segmented_like_dislike_button.eml|")) {
