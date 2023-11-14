@@ -308,19 +308,18 @@ public class ReturnYouTubeDislikePatch {
     public static CharSequence updateRollingNumber(CharSequence text) {
         try {
             if (SettingsEnum.RYD_ENABLED.getBoolean()) {
-                // Called for all instances of RollingNumber, so must check if text is for a dislikes.
-                // Text will already have the correct content, but it's missing the separators and Span styling.
-                if (!ReturnYouTubeDislike.isPreviouslyCreatedSegmentedSpan(text.toString())) {
-                    return text; // Text is the video view count, upload time, or some other text.
-                }
                 CharSequence replacement = rollingNumberText;
                 if (replacement == null) {
                     // User enabled RYD while a video was open,
                     // or user opened/closed a Short while a regular video was opened.
-                    LogHelper.printDebug(() -> "Cannot update rolling number (field is null");
                     return text;
                 }
-                return rollingNumberText;
+                // Called for all instances of RollingNumber.
+                // Dislikes text will have the correct content, but is missing the styling. Replace with the styled span.
+                if (!replacement.toString().equals(text.toString())) {
+                    return text; // Text is the video view count, upload time, or some other rolling number text.
+                }
+                return replacement;
             }
         } catch (Exception ex) {
             LogHelper.printException(() -> "updateRollingNumber failure", ex);
