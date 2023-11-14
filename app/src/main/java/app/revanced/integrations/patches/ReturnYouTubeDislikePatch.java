@@ -83,8 +83,10 @@ public class ReturnYouTubeDislikePatch {
     private static void clearData() {
         currentVideoData = null;
         lastLithoShortsVideoData = null;
-        rollingNumberText = null;
         lithoShortsShouldUseCurrentData = false;
+        // Rolling number text should not be cleared,
+        // as it's used if incognito Short is opened/closed
+        // while a regular video is on screen.
     }
 
     //
@@ -218,12 +220,15 @@ public class ReturnYouTubeDislikePatch {
 
             final CharSequence replacement;
             if (conversionContextString.contains("|segmented_like_dislike_button.eml|")) {
-                // Regular video
+                // Regular video.
                 ReturnYouTubeDislike videoData = currentVideoData;
                 if (videoData == null) {
                     return original; // User enabled RYD while a video was on screen.
                 }
-                replacement = videoData.getDislikesSpanForRegularVideo((Spannable) original, true);
+                if (!(original instanceof Spanned)) {
+                    original = new SpannableString(original);
+                }
+                replacement = videoData.getDislikesSpanForRegularVideo((Spanned) original, true);
 
                 // When spoofing between 17.09.xx and 17.30.xx the UI is the old layout
                 // but uses litho and the dislikes is "|dislike_button.eml|".
@@ -240,7 +245,7 @@ public class ReturnYouTubeDislikePatch {
                 ReturnYouTubeDislike videoData = lastLithoShortsVideoData;
                 if (videoData == null) {
                     // The Shorts litho video id filter did not detect the video id.
-                    // This is normal if in incognito mode, but otherwise is not normal.
+                    // This is normal in incognito mode, but otherwise is abnormal.
                     LogHelper.printDebug(() -> "Cannot modify Shorts litho span, data is null");
                     return original;
                 }
@@ -254,7 +259,7 @@ public class ReturnYouTubeDislikePatch {
                     }
                     LogHelper.printDebug(() -> "Using current video data for litho span");
                 }
-                replacement = videoData.getDislikeSpanForShort((Spannable) original);
+                replacement = videoData.getDislikeSpanForShort((Spanned) original);
             } else {
                 return original;
             }
@@ -285,10 +290,11 @@ public class ReturnYouTubeDislikePatch {
                                                @NonNull String original) {
         try {
             if (SettingsEnum.RYD_ENABLED.getBoolean()) {
-                Spanned originalSpan = new SpannableString(original);
-                CharSequence replacement = onLithoTextLoaded(conversionContext, null, originalSpan);
-                rollingNumberText = replacement;
-                return replacement.toString();
+                CharSequence replacement = onLithoTextLoaded(conversionContext, null, original);
+                if (replacement != original) {
+                    rollingNumberText = replacement;
+                    return replacement.toString();
+                } // Else, the text was not a likes count but instead the view count or something else.
             }
         } catch (Exception ex) {
             LogHelper.printException(() -> "onRollingNumberLoaded failure", ex);
@@ -511,7 +517,6 @@ public class ReturnYouTubeDislikePatch {
             if (isNoneHiddenOrSlidingMinimized) {
                 data.setVideoIdIsShort(true);
             }
-            rollingNumberText = null;
             currentVideoData = data;
 
             // Current video id hook can be called out of order with the non litho Shorts text view hook.
