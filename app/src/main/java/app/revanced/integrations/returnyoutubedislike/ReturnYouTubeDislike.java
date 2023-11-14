@@ -84,9 +84,12 @@ public class ReturnYouTubeDislike {
 
     /**
      * Unique placeholder character, used to detect if a segmented span already has dislikes added to it.
-     * Can be any almost any non-visible character.
+     * Ideally is something YouTube is unlikely to use, as it's searched for in all usage of Rolling Number.
+     *
+     * Character is not visible as it's overwrote with an drawable span,
+     * but it should be something narrow as it's horizontal space is retained.
      */
-    private static final char MIDDLE_SEPARATOR_CHARACTER = '\u2009'; // 'narrow space' character
+    private static final char MIDDLE_SEPARATOR_CHARACTER = '⁏'; // 'Reversed Semicolon'
 
     /**
      * Cached lookup of all video ids.
@@ -245,7 +248,7 @@ public class ReturnYouTubeDislike {
     /**
      * @return If the text is likely for a previously created likes/dislikes segmented span.
      */
-    private static boolean isPreviouslyCreatedSegmentedSpan(@NonNull String text) {
+    public static boolean isPreviouslyCreatedSegmentedSpan(@NonNull String text) {
         return text.indexOf(MIDDLE_SEPARATOR_CHARACTER) >= 0;
     }
 
