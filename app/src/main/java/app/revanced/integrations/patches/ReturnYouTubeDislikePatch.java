@@ -291,7 +291,7 @@ public class ReturnYouTubeDislikePatch {
         try {
             if (SettingsEnum.RYD_ENABLED.getBoolean()) {
                 CharSequence replacement = onLithoTextLoaded(conversionContext, null, original);
-                if (replacement != original) {
+                if (!replacement.toString().equals(original)) {
                     rollingNumberText = replacement;
                     return replacement.toString();
                 } // Else, the text was not a likes count but instead the view count or something else.
