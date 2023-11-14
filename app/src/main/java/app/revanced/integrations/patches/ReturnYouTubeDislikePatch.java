@@ -1,18 +1,19 @@
 package app.revanced.integrations.patches;
 
+import static app.revanced.integrations.returnyoutubedislike.ReturnYouTubeDislike.Vote;
+
 import android.graphics.Rect;
 import android.os.Build;
-import android.text.*;
+import android.text.Editable;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import app.revanced.integrations.patches.components.ReturnYouTubeDislikeFilterPatch;
-import app.revanced.integrations.returnyoutubedislike.ReturnYouTubeDislike;
-import app.revanced.integrations.settings.SettingsEnum;
-import app.revanced.integrations.shared.PlayerType;
-import app.revanced.integrations.utils.LogHelper;
-import app.revanced.integrations.utils.ReVancedUtils;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -20,7 +21,12 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 
-import static app.revanced.integrations.returnyoutubedislike.ReturnYouTubeDislike.Vote;
+import app.revanced.integrations.patches.components.ReturnYouTubeDislikeFilterPatch;
+import app.revanced.integrations.returnyoutubedislike.ReturnYouTubeDislike;
+import app.revanced.integrations.settings.SettingsEnum;
+import app.revanced.integrations.shared.PlayerType;
+import app.revanced.integrations.utils.LogHelper;
+import app.revanced.integrations.utils.ReVancedUtils;
 
 /**
  * Handles all interaction of UI patch components.
@@ -482,19 +488,9 @@ public class ReturnYouTubeDislikePatch {
      * Injection point.  Uses 'current playing' video id hook.  Always called on main thread.
      */
     public static void newVideoLoaded(@NonNull String videoId) {
-        newVideoLoaded(videoId, false);
-    }
-
-    /**
-     * Called both on and off main thread.
-     *
-     * @param isShortsLithoVideoId If the video id is from {@link ReturnYouTubeDislikeFilterPatch}.
-     *                             if true, then the video id can be null indicating the filter did
-     *                             not find any video id.
-     */
-    public static void newVideoLoaded(@Nullable String videoId, boolean isShortsLithoVideoId) {
         try {
             if (!SettingsEnum.RYD_ENABLED.getBoolean()) return;
+            Objects.requireNonNull(videoId);
 
             PlayerType currentPlayerType = PlayerType.getCurrent();
             final boolean isNoneHiddenOrSlidingMinimized = currentPlayerType.isNoneHiddenOrSlidingMinimized();
@@ -504,51 +500,48 @@ public class ReturnYouTubeDislikePatch {
                 return;
             }
 
-            if (isShortsLithoVideoId) {
-                // Litho Shorts video.
-                if (videoIdIsSame(lastLithoShortsVideoData, videoId)) {
-                    return;
-                }
-                if (videoId == null) {
-                    // Litho filter did not detect the video id.  App is in incognito mode,
-                    // or the proto buffer structure was changed and the video id is no longer present.
-                    // Must clear both currently playing and last litho data otherwise the
-                    // next regular video may use the wrong data.
-                    LogHelper.printDebug(() -> "Litho filter did not find any video ids");
-                    clearData();
-                    return;
-                }
-                ReturnYouTubeDislike videoData = ReturnYouTubeDislike.getFetchForVideoId(videoId);
-                videoData.setVideoIdIsShort(true);
-                lastLithoShortsVideoData = videoData;
-                lithoShortsShouldUseCurrentData = false;
-            } else {
-                Objects.requireNonNull(videoId);
-                // All other playback (including non-litho Shorts).
-                if (videoIdIsSame(currentVideoData, videoId)) {
-                    return;
-                }
-                ReturnYouTubeDislike data = ReturnYouTubeDislike.getFetchForVideoId(videoId);
-                // Pre-emptively set the data to short status.
-                // Required to prevent Shorts data from being used on a minimized video in incognito mode.
-                if (isNoneHiddenOrSlidingMinimized) {
-                    data.setVideoIdIsShort(true);
-                }
-                rollingNumberText = null;
-                currentVideoData = data;
+            if (videoIdIsSame(currentVideoData, videoId)) {
+                return;
             }
+            LogHelper.printDebug(() -> "New video id: " + videoId + " playerType: " + currentPlayerType);
 
-            LogHelper.printDebug(() -> "New video id: " + videoId + " playerType: " + currentPlayerType
-                    + " isShortsLithoHook: " + isShortsLithoVideoId);
+            ReturnYouTubeDislike data = ReturnYouTubeDislike.getFetchForVideoId(videoId);
+            // Pre-emptively set the data to short status.
+            // Required to prevent Shorts data from being used on a minimized video in incognito mode.
+            if (isNoneHiddenOrSlidingMinimized) {
+                data.setVideoIdIsShort(true);
+            }
+            rollingNumberText = null;
+            currentVideoData = data;
 
             // Current video id hook can be called out of order with the non litho Shorts text view hook.
             // Must manually update again here.
-            if (!isShortsLithoVideoId && isNoneHiddenOrSlidingMinimized) {
+            if (isNoneHiddenOrSlidingMinimized) {
                 updateOnScreenShortsTextViews(true);
             }
         } catch (Exception ex) {
             LogHelper.printException(() -> "newVideoLoaded failure", ex);
         }
+    }
+
+    public static void setLastLithoShortsVideoId(@Nullable String videoId) {
+        if (videoIdIsSame(lastLithoShortsVideoData, videoId)) {
+            return;
+        }
+        if (videoId == null) {
+            // Litho filter did not detect the video id.  App is in incognito mode,
+            // or the proto buffer structure was changed and the video id is no longer present.
+            // Must clear both currently playing and last litho data otherwise the
+            // next regular video may use the wrong data.
+            LogHelper.printDebug(() -> "Litho filter did not find any video ids");
+            clearData();
+            return;
+        }
+        LogHelper.printDebug(() -> "New litho Shorts video id: " + videoId);
+        ReturnYouTubeDislike videoData = ReturnYouTubeDislike.getFetchForVideoId(videoId);
+        videoData.setVideoIdIsShort(true);
+        lastLithoShortsVideoData = videoData;
+        lithoShortsShouldUseCurrentData = false;
     }
 
     private static boolean videoIdIsSame(@Nullable ReturnYouTubeDislike fetch, @Nullable String videoId) {
