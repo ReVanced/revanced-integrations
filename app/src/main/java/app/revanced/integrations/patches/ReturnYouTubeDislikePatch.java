@@ -3,12 +3,14 @@ package app.revanced.integrations.patches;
 import static app.revanced.integrations.returnyoutubedislike.ReturnYouTubeDislike.Vote;
 
 import android.graphics.Rect;
+import android.graphics.drawable.ShapeDrawable;
 import android.os.Build;
 import android.text.Editable;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextWatcher;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.TextView;
 
@@ -144,7 +146,7 @@ public class ReturnYouTubeDislikePatch {
         if (oldUITextView == null) {
             return;
         }
-        oldUIReplacementSpan = videoData.getDislikesSpanForRegularVideo(oldUIOriginalSpan, false);
+        oldUIReplacementSpan = videoData.getDislikesSpanForRegularVideo(oldUIOriginalSpan, false, false);
         if (!oldUIReplacementSpan.equals(oldUITextView.getText())) {
             oldUITextView.setText(oldUIReplacementSpan);
         }
@@ -195,6 +197,16 @@ public class ReturnYouTubeDislikePatch {
     /**
      * Injection point.
      *
+     * For Litho segmented buttons and Litho Shorts player.
+     */
+    @NonNull
+    public static CharSequence onLithoTextLoaded(@NonNull Object conversionContext,
+                                                 @Nullable AtomicReference<CharSequence> textRef,
+                                                 @NonNull CharSequence original) {
+        return onLithoTextLoaded(conversionContext, textRef, original, false);
+    }
+
+    /**
      * Called when a litho text component is initially created,
      * and also when a Span is later reused again (such as scrolling off/on screen).
      *
@@ -205,12 +217,14 @@ public class ReturnYouTubeDislikePatch {
      *                which may or may not be the same as the original span parameter.
      *                If dislikes are added, the atomic reference must be set to the replacement span.
      * @param original Original char sequence was created or reused by Litho.
+     * @param isRollingNumber If the span is for a Rolling Number.
      * @return The original char sequence (if nothing should change), or a replacement char sequence that contains dislikes.
      */
     @NonNull
-    public static CharSequence onLithoTextLoaded(@NonNull Object conversionContext,
-                                                 @Nullable AtomicReference<CharSequence> textRef,
-                                                 @NonNull CharSequence original) {
+    private static CharSequence onLithoTextLoaded(@NonNull Object conversionContext,
+                                                  @Nullable AtomicReference<CharSequence> textRef,
+                                                  @NonNull CharSequence original,
+                                                  boolean isRollingNumber) {
         try {
             if (!SettingsEnum.RYD_ENABLED.getBoolean()) {
                 return original;
@@ -228,12 +242,13 @@ public class ReturnYouTubeDislikePatch {
                 if (!(original instanceof Spanned)) {
                     original = new SpannableString(original);
                 }
-                replacement = videoData.getDislikesSpanForRegularVideo((Spanned) original, true);
+                replacement = videoData.getDislikesSpanForRegularVideo((Spanned) original,
+                        true, isRollingNumber);
 
                 // When spoofing between 17.09.xx and 17.30.xx the UI is the old layout
                 // but uses litho and the dislikes is "|dislike_button.eml|".
                 // But spoofing to that range gives a broken UI layout so no point checking for that.
-            } else if (conversionContextString.contains("|shorts_dislike_button.eml|")) {
+            } else if (!isRollingNumber && conversionContextString.contains("|shorts_dislike_button.eml|")) {
                 // Litho Shorts player.
                 if (!SettingsEnum.RYD_SHORTS.getBoolean()) {
                     // Must clear the current video here, otherwise if the user opens a regular video
@@ -281,7 +296,7 @@ public class ReturnYouTubeDislikePatch {
      * This is saved to a field as it's used in every draw() call.
      */
     @Nullable
-    private static volatile CharSequence rollingNumberText;
+    private static volatile CharSequence rollingNumberSpan;
 
     /**
      * Injection point.
@@ -290,9 +305,9 @@ public class ReturnYouTubeDislikePatch {
                                                @NonNull String original) {
         try {
             if (SettingsEnum.RYD_ENABLED.getBoolean()) {
-                CharSequence replacement = onLithoTextLoaded(conversionContext, null, original);
+                CharSequence replacement = onLithoTextLoaded(conversionContext, null, original, true);
                 if (!replacement.toString().equals(original)) {
-                    rollingNumberText = replacement;
+                    rollingNumberSpan = replacement;
                     return replacement.toString();
                 } // Else, the text was not a likes count but instead the view count or something else.
             }
@@ -303,29 +318,87 @@ public class ReturnYouTubeDislikePatch {
     }
 
     /**
+     * Remove Rolling Number text view modifications made by this patch.
+     * Required as it appears text views can be reused for other rolling numbers (view count, upload time, etc).
+     */
+    private static void removeRollingNumberPatchChanges(TextView view) {
+        if (view.getCompoundDrawablePadding() != 0) {
+            LogHelper.printDebug(() -> "Removing rolling number styling from TextView");
+            view.setCompoundDrawablePadding(0);
+            view.setCompoundDrawables(null, null, null, null);
+            view.setGravity(Gravity.NO_GRAVITY);
+            view.setTextAlignment(View.TEXT_ALIGNMENT_INHERIT);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                view.setSingleLine(false);
+            }
+        }
+    }
+
+    /**
      * Injection point.
      */
-    public static CharSequence updateRollingNumber(CharSequence text) {
+    public static CharSequence updateRollingNumber(TextView view, CharSequence original) {
         try {
-            if (SettingsEnum.RYD_ENABLED.getBoolean()) {
-                // Called for all instances of RollingNumber, so must check if text is for a dislikes.
-                // Text will already have the correct content, but it's missing the separators and Span styling.
-                if (!ReturnYouTubeDislike.isPreviouslyCreatedSegmentedSpan(text.toString())) {
-                    return text; // Text is the video view count, upload time, or some other text.
-                }
-                CharSequence replacement = rollingNumberText;
-                if (replacement == null) {
-                    // User enabled RYD while a video was open,
-                    // or user opened/closed a Short while a regular video was opened.
-                    LogHelper.printDebug(() -> "Cannot update rolling number (field is null");
-                    return text;
-                }
-                return rollingNumberText;
+            if (!SettingsEnum.RYD_ENABLED.getBoolean()) {
+                removeRollingNumberPatchChanges(view);
+                return original;
             }
+            // Called for all instances of RollingNumber, so must check if text is for a dislikes.
+            // Text will already have the correct content but it's missing the drawable separators.
+            if (!ReturnYouTubeDislike.isPreviouslyCreatedSegmentedSpan(original.toString())) {
+                // The text is the video view count, upload time, or some other text.
+                removeRollingNumberPatchChanges(view);
+                return original;
+            }
+
+            CharSequence replacement = rollingNumberSpan;
+            if (replacement == null) {
+                // User enabled RYD while a video was open,
+                // or user opened/closed a Short while a regular video was opened.
+                LogHelper.printDebug(() -> "Cannot update rolling number (field is null");
+                removeRollingNumberPatchChanges(view);
+                return original;
+            }
+
+            // TextView does not display the tall left separator correctly,
+            // as it goes outside the height bounds and messes up the layout.
+            // Fix this by applying the left separator as a text view compound drawable.
+            // This create a new issue as the compound drawable is not taken into the
+            // layout width sizing, but that is fixed in the span itself where it uses a blank
+            // padding string that adds to the layout width but is later ignored during UI drawing.
+            if (SettingsEnum.RYD_COMPACT_LAYOUT.getBoolean()) {
+                // Do not apply any TextView changes, and text should always fit without clipping.
+                removeRollingNumberPatchChanges(view);
+            } else if (view.getCompoundDrawablePadding() == 0) {
+                // YouTube Rolling Numbers do not use compound drawables or drawable padding.
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    // Single line mode prevents entire words from being entirely clipped,
+                    // and instead only clips the portion of text that runs off.
+                    // The text should not clip due to the empty end padding,
+                    // but use the feature if available just in case.
+                    // If making changes to anything, comment this out and verify layout is still correct.
+                    view.setSingleLine(true);
+                }
+                // Center align to distribute the horizontal padding.
+                view.setGravity(Gravity.CENTER);
+                view.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                ShapeDrawable shapeDrawable = ReturnYouTubeDislike.getLeftSeparatorDrawable();
+                view.setCompoundDrawables(shapeDrawable, null, null, null);
+                view.setCompoundDrawablePadding(ReturnYouTubeDislike.leftSeparatorShapePaddingPixels);
+            }
+
+            // Remove any padding set by Rolling Number.
+            view.setPadding(0, 0, 0, 0);
+
+            // When displaying dislikes, the rolling animation is not visually correct
+            // and the dislikes always animate (even though the dislike count has not changed).
+            // The animation is caused by an image span attached to the span,
+            // and using only the modified segmented span prevents the animation from showing.
+            return replacement;
         } catch (Exception ex) {
             LogHelper.printException(() -> "updateRollingNumber failure", ex);
+            return original;
         }
-        return text;
     }
 
     //
