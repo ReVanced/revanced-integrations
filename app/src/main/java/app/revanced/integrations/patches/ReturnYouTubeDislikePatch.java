@@ -328,9 +328,7 @@ public class ReturnYouTubeDislikePatch {
             view.setCompoundDrawables(null, null, null, null);
             view.setGravity(Gravity.NO_GRAVITY);
             view.setTextAlignment(View.TEXT_ALIGNMENT_INHERIT);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                view.setSingleLine(false);
-            }
+            view.setSingleLine(false);
         }
     }
 
@@ -371,14 +369,12 @@ public class ReturnYouTubeDislikePatch {
                 removeRollingNumberPatchChanges(view);
             } else if (view.getCompoundDrawablePadding() == 0) {
                 // YouTube Rolling Numbers do not use compound drawables or drawable padding.
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    // Single line mode prevents entire words from being entirely clipped,
-                    // and instead only clips the portion of text that runs off.
-                    // The text should not clip due to the empty end padding,
-                    // but use the feature if available just in case.
-                    // If making changes to anything, comment this out and verify layout is still correct.
-                    view.setSingleLine(true);
-                }
+                //
+                // Single line mode prevents entire words from being entirely clipped,
+                // and instead only clips the portion of text that runs off.
+                // The text should not clip due to the empty end padding,
+                // but use the feature just in case.
+                view.setSingleLine(true);
                 // Center align to distribute the horizontal padding.
                 view.setGravity(Gravity.CENTER);
                 view.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);

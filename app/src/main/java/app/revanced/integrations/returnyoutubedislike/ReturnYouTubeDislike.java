@@ -276,9 +276,6 @@ public class ReturnYouTubeDislike {
         // extra wiggle room for the left separator drawable (which is not included in layout width).
         if (isRollingNumber && !compactLayout) {
             // To test this, set the device system font to the smallest available.
-            // And try different system fonts and try on an Android 8 or 9 device
-            // (which has no TextView single line mode),
-            // or comment out the setSingleLineMode() call in the patch.
             // If text clipping still occurs, then increase the number of padding spaces below.
             // Any extra width will be padded around the like/dislike string
             // as it's set to center text alignment.
