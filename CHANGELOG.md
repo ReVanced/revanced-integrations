@@ -1,3 +1,10 @@
+# [0.122.0-dev.2](https://github.com/ReVanced/revanced-integrations/compare/v0.122.0-dev.1...v0.122.0-dev.2) (2023-11-17)
+
+
+### Bug Fixes
+
+* **YouTube - Disable resuming Shorts on startup:** Adjust patch name ([#516](https://github.com/ReVanced/revanced-integrations/issues/516)) ([8b5d2d1](https://github.com/ReVanced/revanced-integrations/commit/8b5d2d1871c19421eb39ce38a7039c86e5d8d08b))
+
 # [0.122.0-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v0.121.1-dev.4...v0.122.0-dev.1) (2023-11-12)
 
 
