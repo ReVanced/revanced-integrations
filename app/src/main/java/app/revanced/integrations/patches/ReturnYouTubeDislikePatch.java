@@ -325,6 +325,28 @@ public class ReturnYouTubeDislikePatch {
     }
 
     /**
+     * Add Rolling Number text view modifications.
+     */
+    private static void addRollingNumberPatchChanges(TextView view) {
+        if (view.getCompoundDrawablePadding() == 0) {
+            LogHelper.printDebug(() -> "Adding rolling number styling to TextView");
+            // YouTube Rolling Numbers do not use compound drawables or drawable padding.
+            //
+            // Single line mode prevents entire words from being entirely clipped,
+            // and instead only clips the portion of text that runs off.
+            // The text should not clip due to the empty end padding,
+            // but use the feature just in case.
+            view.setSingleLine(true);
+            // Center align to distribute the horizontal padding.
+            view.setGravity(Gravity.CENTER);
+            view.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+            ShapeDrawable shapeDrawable = ReturnYouTubeDislike.getLeftSeparatorDrawable();
+            view.setCompoundDrawables(shapeDrawable, null, null, null);
+            view.setCompoundDrawablePadding(ReturnYouTubeDislike.leftSeparatorShapePaddingPixels);
+        }
+    }
+
+    /**
      * Injection point.
      */
     public static CharSequence updateRollingNumber(TextView view, CharSequence original) {
@@ -353,26 +375,14 @@ public class ReturnYouTubeDislikePatch {
             // TextView does not display the tall left separator correctly,
             // as it goes outside the height bounds and messes up the layout.
             // Fix this by applying the left separator as a text view compound drawable.
-            // This create a new issue as the compound drawable is not taken into the
+            // This creates a new issue as the compound drawable is not taken into the
             // layout width sizing, but that is fixed in the span itself where it uses a blank
             // padding string that adds to the layout width but is later ignored during UI drawing.
             if (SettingsEnum.RYD_COMPACT_LAYOUT.getBoolean()) {
                 // Do not apply any TextView changes, and text should always fit without clipping.
                 removeRollingNumberPatchChanges(view);
-            } else if (view.getCompoundDrawablePadding() == 0) {
-                // YouTube Rolling Numbers do not use compound drawables or drawable padding.
-                //
-                // Single line mode prevents entire words from being entirely clipped,
-                // and instead only clips the portion of text that runs off.
-                // The text should not clip due to the empty end padding,
-                // but use the feature just in case.
-                view.setSingleLine(true);
-                // Center align to distribute the horizontal padding.
-                view.setGravity(Gravity.CENTER);
-                view.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-                ShapeDrawable shapeDrawable = ReturnYouTubeDislike.getLeftSeparatorDrawable();
-                view.setCompoundDrawables(shapeDrawable, null, null, null);
-                view.setCompoundDrawablePadding(ReturnYouTubeDislike.leftSeparatorShapePaddingPixels);
+            } else {
+                addRollingNumberPatchChanges(view);
             }
 
             // Remove any padding set by Rolling Number.
