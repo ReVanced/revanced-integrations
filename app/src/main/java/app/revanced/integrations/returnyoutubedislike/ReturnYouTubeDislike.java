@@ -181,7 +181,7 @@ public class ReturnYouTubeDislike {
 
     private static int getSeparatorColor() {
         return ThemeHelper.isDarkTheme()
-                ? 0x29AAAAAA  // transparent dark gray
+                ? 0x33FFFFFF  // transparent dark gray
                 : 0xFFD9D9D9; // light gray
     }
 
@@ -226,7 +226,6 @@ public class ReturnYouTubeDislike {
 
         SpannableStringBuilder builder = new SpannableStringBuilder();
         final boolean compactLayout = SettingsEnum.RYD_COMPACT_LAYOUT.getBoolean();
-        final int separatorColor = getSeparatorColor();
 
         if (!compactLayout) {
             String leftSeparatorString = ReVancedUtils.isRightToLeftTextLayout()
@@ -239,9 +238,11 @@ public class ReturnYouTubeDislike {
                 leftSeparatorString += "  ";
                 leftSeparatorSpan = new SpannableString(leftSeparatorString);
                 // Styling spans cannot overwrite RTL or LTR character.
-                leftSeparatorSpan.setSpan(new VerticallyCenteredImageSpan(getLeftSeparatorDrawable(), false),
+                leftSeparatorSpan.setSpan(
+                        new VerticallyCenteredImageSpan(getLeftSeparatorDrawable(), false),
                         1, 2, Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
-                leftSeparatorSpan.setSpan(new FixedWidthEmptySpan(leftSeparatorShapePaddingPixels),
+                leftSeparatorSpan.setSpan(
+                        new FixedWidthEmptySpan(leftSeparatorShapePaddingPixels),
                         2, 3, Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
             }
             builder.append(leftSeparatorSpan);
@@ -257,29 +258,30 @@ public class ReturnYouTubeDislike {
         final int shapeInsertionIndex = middleSeparatorString.length() / 2;
         Spannable middleSeparatorSpan = new SpannableString(middleSeparatorString);
         ShapeDrawable shapeDrawable = new ShapeDrawable(new OvalShape());
-        shapeDrawable.getPaint().setColor(separatorColor);
+        shapeDrawable.getPaint().setColor(getSeparatorColor());
         shapeDrawable.setBounds(middleSeparatorBounds);
         // Use original text width if using compact layout with Rolling Number,
         // as there is no empty padding to allow any layout width differences.
-        VerticallyCenteredImageSpan verticallyCentered
-                = new VerticallyCenteredImageSpan(shapeDrawable, isRollingNumber && compactLayout);
-        middleSeparatorSpan.setSpan(verticallyCentered,
+        middleSeparatorSpan.setSpan(
+                new VerticallyCenteredImageSpan(shapeDrawable, isRollingNumber && compactLayout),
                 shapeInsertionIndex, shapeInsertionIndex + 1, Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
         builder.append(middleSeparatorSpan);
 
         // dislikes
         builder.append(newSpannableWithDislikes(oldSpannable, voteData));
 
-        // Add some padding to the right for Rolling Number segmented span.
-        // Use a remove space span, as the layout uses the measured text width and not the
+        // Add some padding for Rolling Number segmented span.
+        // Use an empty width span, as the layout uses the measured text width and not the
         // actual span width.  So adding padding and then removing it while drawing gives some
-        // extra wiggle room for the left separator drawable (which is not measured for layout width).
+        // extra wiggle room for the left separator drawable (which is not included in layout width).
         if (isRollingNumber && !compactLayout) {
             // To test this, set the device system font to the smallest available.
             // And try different system fonts and try on an Android 8 or 9 device
-            // (which has no TextView single line mode), or comment
-            // out the setSingleLineMode() call in the patch.
+            // (which has no TextView single line mode),
+            // or comment out the setSingleLineMode() call in the patch.
             // If text clipping still occurs, then increase the number of padding spaces below.
+            // Any extra width will be padded around the like/dislike string
+            // as it's set to center text alignment.
             Spannable rightPaddingString = new SpannableString("      ");
             rightPaddingString.setSpan(new FixedWidthEmptySpan(0), 0,
                     rightPaddingString.length(), Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
