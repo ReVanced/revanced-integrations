@@ -11,9 +11,7 @@ public class SpoofAppVersionPatch {
      * Injection point
      */
     public static String getYouTubeVersionOverride(String version) {
-        if (SPOOF_APP_VERSION_ENABLED) {
-            return SPOOF_APP_VERSION_TARGET;
-        }
+        if (SPOOF_APP_VERSION_ENABLED) return SPOOF_APP_VERSION_TARGET;
         return version;
     }
 
