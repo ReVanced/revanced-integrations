@@ -304,13 +304,11 @@ public class ReturnYouTubeDislikePatch {
     public static String onRollingNumberLoaded(@NonNull Object conversionContext,
                                                @NonNull String original) {
         try {
-            if (SettingsEnum.RYD_ENABLED.getBoolean()) {
-                CharSequence replacement = onLithoTextLoaded(conversionContext, null, original, true);
-                if (!replacement.toString().equals(original)) {
-                    rollingNumberSpan = replacement;
-                    return replacement.toString();
-                } // Else, the text was not a likes count but instead the view count or something else.
-            }
+            CharSequence replacement = onLithoTextLoaded(conversionContext, null, original, true);
+            if (!replacement.toString().equals(original)) {
+                rollingNumberSpan = replacement;
+                return replacement.toString();
+            } // Else, the text was not a likes count but instead the view count or something else.
         } catch (Exception ex) {
             LogHelper.printException(() -> "onRollingNumberLoaded failure", ex);
         }
