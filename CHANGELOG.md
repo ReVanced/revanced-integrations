@@ -1,3 +1,10 @@
+# [0.122.0-dev.3](https://github.com/ReVanced/revanced-integrations/compare/v0.122.0-dev.2...v0.122.0-dev.3) (2023-11-17)
+
+
+### Features
+
+* **YouTube - Return YouTube Dislike:** Support version `18.43.45` and `18.44.41` ([#514](https://github.com/ReVanced/revanced-integrations/issues/514)) ([a5245b8](https://github.com/ReVanced/revanced-integrations/commit/a5245b85a829a86b535cf305cac49d14b709708d))
+
 # [0.122.0-dev.2](https://github.com/ReVanced/revanced-integrations/compare/v0.122.0-dev.1...v0.122.0-dev.2) (2023-11-17)
 
 
