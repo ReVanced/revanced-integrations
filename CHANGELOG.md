@@ -1,3 +1,10 @@
+# [0.122.0-dev.4](https://github.com/ReVanced/revanced-integrations/compare/v0.122.0-dev.3...v0.122.0-dev.4) (2023-11-18)
+
+
+### Features
+
+* **YouTube - Hide layout components:** Hide description components ([726a251](https://github.com/ReVanced/revanced-integrations/commit/726a2510a5b28da3afb77c7f5fdda87a3bd2c809))
+
 # [0.122.0-dev.3](https://github.com/ReVanced/revanced-integrations/compare/v0.122.0-dev.2...v0.122.0-dev.3) (2023-11-17)
 
 
