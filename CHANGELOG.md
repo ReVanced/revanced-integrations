@@ -1,3 +1,10 @@
+## [0.122.1-dev.2](https://github.com/ReVanced/revanced-integrations/compare/v0.122.1-dev.1...v0.122.1-dev.2) (2023-11-18)
+
+
+### Bug Fixes
+
+* **YouTube - ReturnYouTubeDislike:** Improve layout padding ([#517](https://github.com/ReVanced/revanced-integrations/issues/517)) ([ba15aba](https://github.com/ReVanced/revanced-integrations/commit/ba15aba063d95116d8f028cf9c3b72aa2737fc30))
+
 ## [0.122.1-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v0.122.0...v0.122.1-dev.1) (2023-11-18)
 
 
