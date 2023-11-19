@@ -1,3 +1,10 @@
+## [0.122.2-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v0.122.1...v0.122.2-dev.1) (2023-11-19)
+
+
+### Bug Fixes
+
+* **YouTube - Hide layout components:** Check if `bytes` parameter of `LayoutComponentsFilter#filterMixPlaylists` for null ([3eb07c1](https://github.com/ReVanced/revanced-integrations/commit/3eb07c12dda889f6ed50fb3b6900b2d789bb0c10))
+
 ## [0.122.1](https://github.com/ReVanced/revanced-integrations/compare/v0.122.0...v0.122.1) (2023-11-19)
 
 
