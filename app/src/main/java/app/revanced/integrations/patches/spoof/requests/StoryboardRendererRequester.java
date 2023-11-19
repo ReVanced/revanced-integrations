@@ -18,6 +18,7 @@ import java.util.Objects;
 
 import app.revanced.integrations.patches.spoof.StoryboardRenderer;
 import app.revanced.integrations.requests.Requester;
+import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedUtils;
 
@@ -37,9 +38,7 @@ public class StoryboardRendererRequester {
     private static void handleConnectionError(@NonNull String toastMessage, @Nullable Exception ex,
                                               boolean showToastOnIOException) {
         if (showToastOnIOException) ReVancedUtils.showToastShort(toastMessage);
-        if (ex != null) {
-            LogHelper.printInfo(() -> toastMessage, ex);
-        }
+        LogHelper.printInfo(() -> toastMessage, ex);
     }
 
     @Nullable
@@ -60,7 +59,7 @@ public class StoryboardRendererRequester {
 
             // Always show a toast for this, as a non 200 response means something is broken.
             handleConnectionError("Spoof storyboard not available: " + responseCode,
-                    null, true);
+                    null, showToastOnIOException | SettingsEnum.DEBUG_TOAST_ON_ERROR.getBoolean());
             connection.disconnect();
         } catch (SocketTimeoutException ex) {
             handleConnectionError("Spoof storyboard temporarily not available (API timed out)",
