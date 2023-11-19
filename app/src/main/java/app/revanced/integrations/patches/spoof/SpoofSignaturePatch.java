@@ -1,6 +1,5 @@
 package app.revanced.integrations.patches.spoof;
 
-import static app.revanced.integrations.patches.spoof.requests.StoryboardRendererRequester.getStoryboardRenderer;
 import static app.revanced.integrations.utils.ReVancedUtils.containsAny;
 
 import android.view.View;
@@ -9,16 +8,11 @@ import android.widget.ImageView;
 
 import androidx.annotation.Nullable;
 
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
-
 import app.revanced.integrations.patches.VideoInformation;
+import app.revanced.integrations.patches.spoof.requests.StoryboardRendererRequester;
 import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.shared.PlayerType;
 import app.revanced.integrations.utils.LogHelper;
-import app.revanced.integrations.utils.ReVancedUtils;
 
 /** @noinspection unused*/
 public class SpoofSignaturePatch {
@@ -51,28 +45,15 @@ public class SpoofSignaturePatch {
     /**
      * Last video id loaded. Used to prevent reloading the same spec multiple times.
      */
+    @Nullable
     private static volatile String lastPlayerResponseVideoId;
 
-    private static volatile Future<StoryboardRenderer> rendererFuture;
+    @Nullable
+    private static volatile StoryboardRenderer videoRenderer;
 
     private static volatile boolean useOriginalStoryboardRenderer;
 
     private static volatile boolean isPlayingShorts;
-
-    @Nullable
-    private static StoryboardRenderer getRenderer() {
-        if (rendererFuture != null) {
-            try {
-                return rendererFuture.get(2000, TimeUnit.MILLISECONDS);
-            } catch (TimeoutException ex) {
-                LogHelper.printDebug(() -> "Could not get renderer (get timed out)");
-            } catch (ExecutionException | InterruptedException ex) {
-                // Should never happen.
-                LogHelper.printException(() -> "Could not get renderer", ex);
-            }
-        }
-        return null;
-    }
 
     /**
      * Injection point.
@@ -82,62 +63,63 @@ public class SpoofSignaturePatch {
      * @param parameters Original protobuf parameter value.
      */
     public static String spoofParameter(String parameters) {
-        LogHelper.printDebug(() -> "Original protobuf parameter value: " + parameters);
+        try {
+            LogHelper.printDebug(() -> "Original protobuf parameter value: " + parameters);
 
-        if (!SettingsEnum.SPOOF_SIGNATURE.getBoolean()) return parameters;
+            if (!SettingsEnum.SPOOF_SIGNATURE.getBoolean()) return parameters;
 
-        // Clip's player parameters contain a lot of information (e.g. video start and end time or whether it loops)
-        // For this reason, the player parameters of a clip are usually very long (150~300 characters).
-        // Clips are 60 seconds or less in length, so no spoofing.
-        if (useOriginalStoryboardRenderer = parameters.length() > 150) return parameters;
+            // Clip's player parameters contain a lot of information (e.g. video start and end time or whether it loops)
+            // For this reason, the player parameters of a clip are usually very long (150~300 characters).
+            // Clips are 60 seconds or less in length, so no spoofing.
+            if (useOriginalStoryboardRenderer = parameters.length() > 150) return parameters;
 
-        // Shorts do not need to be spoofed.
-        if (useOriginalStoryboardRenderer = parameters.startsWith(SHORTS_PLAYER_PARAMETERS)) {
-            isPlayingShorts = true;
-            return parameters;
-        }
-        isPlayingShorts = false;
-
-        boolean isPlayingFeed = PlayerType.getCurrent() == PlayerType.INLINE_MINIMAL
-                && containsAny(parameters, AUTOPLAY_PARAMETERS);
-        if (isPlayingFeed) {
-            if (useOriginalStoryboardRenderer = !SettingsEnum.SPOOF_SIGNATURE_IN_FEED.getBoolean()) {
-                // Don't spoof the feed video playback. This will cause video playback issues,
-                // but only if user continues watching for more than 1 minute.
+            // Shorts do not need to be spoofed.
+            if (useOriginalStoryboardRenderer = parameters.startsWith(SHORTS_PLAYER_PARAMETERS)) {
+                isPlayingShorts = true;
                 return parameters;
             }
-            // Spoof the feed video.  Video will show up in watch history and video subtitles are missing.
-            fetchStoryboardRenderer();
-            return SCRIM_PARAMETER + INCOGNITO_PARAMETERS;
-        }
+            isPlayingShorts = false;
 
-        fetchStoryboardRenderer();
+            boolean isPlayingFeed = PlayerType.getCurrent() == PlayerType.INLINE_MINIMAL
+                    && containsAny(parameters, AUTOPLAY_PARAMETERS);
+            if (isPlayingFeed) {
+                if (useOriginalStoryboardRenderer = !SettingsEnum.SPOOF_SIGNATURE_IN_FEED.getBoolean()) {
+                    // Don't spoof the feed video playback. This will cause video playback issues,
+                    // but only if user continues watching for more than 1 minute.
+                    return parameters;
+                }
+                // Spoof the feed video.  Video will show up in watch history and video subtitles are missing.
+                fetchStoryboardRenderer();
+                return SCRIM_PARAMETER + INCOGNITO_PARAMETERS;
+            }
+
+            fetchStoryboardRenderer();
+        } catch (Exception ex) {
+            LogHelper.printException(() -> "spoofParameter failure", ex);
+        }
         return INCOGNITO_PARAMETERS;
     }
 
     private static void fetchStoryboardRenderer() {
         if (!SettingsEnum.SPOOF_STORYBOARD_RENDERER.getBoolean()) {
             lastPlayerResponseVideoId = null;
-            rendererFuture = null;
+            videoRenderer = null;
             return;
         }
         String videoId = VideoInformation.getPlayerResponseVideoId();
         if (!videoId.equals(lastPlayerResponseVideoId)) {
-            rendererFuture = ReVancedUtils.submitOnBackgroundThread(() -> getStoryboardRenderer(videoId));
             lastPlayerResponseVideoId = videoId;
+            // This will block video playback until the fetch completes,
+            // but that is desired otherwise video playback initially be frozen while the main thread
+            // waits for the fetch to complete.
+            videoRenderer = StoryboardRendererRequester.getStoryboardRenderer(videoId);
         }
-        // Block until the fetch is completed.  Without this, occasionally when a new video is opened
-        // the video will be frozen a few seconds while the audio plays.
-        // This is because the main thread is calling to get the storyboard but the fetch is not completed.
-        // To prevent this, call get() here and block until the fetch is completed.
-        // So later when the main thread calls to get the renderer it will never block as the future is done.
-        getRenderer();
     }
 
     private static String getStoryboardRendererSpec(String originalStoryboardRendererSpec,
                                                     boolean returnNullIfLiveStream) {
         if (SettingsEnum.SPOOF_SIGNATURE.getBoolean() && !useOriginalStoryboardRenderer) {
-            StoryboardRenderer renderer = getRenderer();
+            StoryboardRenderer renderer = videoRenderer;
             if (renderer != null) {
                 if (returnNullIfLiveStream && renderer.isLiveStream()) return null;
                 return renderer.getSpec();
@@ -171,7 +153,7 @@ public class SpoofSignaturePatch {
      */
     public static int getRecommendedLevel(int originalLevel) {
         if (SettingsEnum.SPOOF_SIGNATURE.getBoolean() && !useOriginalStoryboardRenderer) {
-            StoryboardRenderer renderer = getRenderer();
+            StoryboardRenderer renderer = videoRenderer;
             if (renderer != null) {
                 Integer recommendedLevel = renderer.getRecommendedLevel();
                 if (recommendedLevel != null) return recommendedLevel;

@@ -23,6 +23,17 @@ final class PlayerRoutes {
     static final String ANDROID_INNER_TUBE_BODY;
     static final String TV_EMBED_INNER_TUBE_BODY;
 
+    /**
+     * TCP connection timeout
+     */
+    private static final int TCP_CONNECTION_TIMEOUT_MILLISECONDS = 2 * 1000; // 2 Seconds.
+
+    /**
+     * HTTP read timeout.
+     * To locally debug and force timeouts, change this to a very small number (ie: 100)
+     */
+    private static final int HTTP_READ_RESPONSE_TIMEOUT_MILLISECONDS = 4 * 1000; // 4 Seconds.
+
     static {
         JSONObject innerTubeBody = new JSONObject();
 
@@ -88,8 +99,8 @@ final class PlayerRoutes {
         connection.setUseCaches(false);
         connection.setDoOutput(true);
 
-        connection.setConnectTimeout(5000);
-        connection.setReadTimeout(5000);
+        connection.setConnectTimeout(TCP_CONNECTION_TIMEOUT_MILLISECONDS);
+        connection.setReadTimeout(HTTP_READ_RESPONSE_TIMEOUT_MILLISECONDS);
         return connection;
     }
 }
