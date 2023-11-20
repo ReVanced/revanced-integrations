@@ -1,3 +1,10 @@
+## [0.122.2-dev.2](https://github.com/ReVanced/revanced-integrations/compare/v0.122.2-dev.1...v0.122.2-dev.2) (2023-11-20)
+
+
+### Bug Fixes
+
+* **YouTube - Spoof client:** Fix frozen video on playback start ([#520](https://github.com/ReVanced/revanced-integrations/issues/520)) ([9139954](https://github.com/ReVanced/revanced-integrations/commit/91399540ba55c80c437652bf919d5af7b080bdfb))
+
 ## [0.122.2-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v0.122.1...v0.122.2-dev.1) (2023-11-19)
 
 
