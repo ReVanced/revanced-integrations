@@ -45,7 +45,13 @@ public class SettingsUtils {
 
         int prefIndex = 0;
         for (Preference pref : preferences.values()) {
-            pref.setOrder(prefIndex++);
+            int indexToSet = prefIndex++;
+            if (pref instanceof PreferenceGroup) {
+                // Place preference groups last.
+                // Use an offset to push the group to the end.
+                indexToSet += 1000;
+            }
+            pref.setOrder(indexToSet);
         }
     }
 
