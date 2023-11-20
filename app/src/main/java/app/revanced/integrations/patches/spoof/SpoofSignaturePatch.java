@@ -109,9 +109,10 @@ public class SpoofSignaturePatch {
         String videoId = VideoInformation.getPlayerResponseVideoId();
         if (!videoId.equals(lastPlayerResponseVideoId)) {
             lastPlayerResponseVideoId = videoId;
-            // This will block video playback until the fetch completes,
-            // but that is desired otherwise video playback initially be frozen while the main thread
-            // waits for the fetch to complete.
+            // This will block starting video playback until the fetch completes.
+            // This is desired because if this returns without finishing the fetch,
+            // then video will start playback but the image will be frozen
+            // while the main thread call for the renderer waits for the fetch to complete.
             videoRenderer = StoryboardRendererRequester.getStoryboardRenderer(videoId);
         }
     }
@@ -177,15 +178,19 @@ public class SpoofSignaturePatch {
      * @param view seekbar thumbnail view.  Includes both shorts and regular videos.
      */
     public static void seekbarImageViewCreated(ImageView view) {
-        if (!SettingsEnum.SPOOF_SIGNATURE.getBoolean()
-                || SettingsEnum.SPOOF_STORYBOARD_RENDERER.getBoolean()) {
-            return;
-        }
-        if (isPlayingShorts) return;
+        try {
+            if (!SettingsEnum.SPOOF_SIGNATURE.getBoolean()
+                    || SettingsEnum.SPOOF_STORYBOARD_RENDERER.getBoolean()) {
+                return;
+            }
+            if (isPlayingShorts) return;
 
-        view.setVisibility(View.GONE);
-        // Also hide the border around the thumbnail (otherwise a 1 pixel wide bordered frame is visible).
-        ViewGroup parentLayout = (ViewGroup) view.getParent();
-        parentLayout.setPadding(0, 0, 0, 0);
+            view.setVisibility(View.GONE);
+            // Also hide the border around the thumbnail (otherwise a 1 pixel wide bordered frame is visible).
+            ViewGroup parentLayout = (ViewGroup) view.getParent();
+            parentLayout.setPadding(0, 0, 0, 0);
+        } catch (Exception ex) {
+            LogHelper.printException(() -> "seekbarImageViewCreated failure", ex);
+        }
     }
 }
