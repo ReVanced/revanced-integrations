@@ -1,3 +1,16 @@
+# [0.123.0](https://github.com/ReVanced/revanced-integrations/compare/v0.122.1...v0.123.0) (2023-11-20)
+
+
+### Bug Fixes
+
+* **YouTube - Hide layout components:** Check if `bytes` parameter of `LayoutComponentsFilter#filterMixPlaylists` for null ([abfbb0d](https://github.com/ReVanced/revanced-integrations/commit/abfbb0d7d58defee77424996af52fd82d6c4ef73))
+* **YouTube - Spoof client:** Fix frozen video on playback start ([#520](https://github.com/ReVanced/revanced-integrations/issues/520)) ([ffcee71](https://github.com/ReVanced/revanced-integrations/commit/ffcee71f798470577ade6d59cc0408c59c878f7e))
+
+
+### Features
+
+* **YouTube:** Add `Disable rolling number animations` patch ([#519](https://github.com/ReVanced/revanced-integrations/issues/519)) ([ce0bedc](https://github.com/ReVanced/revanced-integrations/commit/ce0bedc5d3b332760ee4d816a57fe64dc754ea0f))
+
 ## [0.122.2-dev.2](https://github.com/ReVanced/revanced-integrations/compare/v0.122.2-dev.1...v0.122.2-dev.2) (2023-11-20)
 
 
