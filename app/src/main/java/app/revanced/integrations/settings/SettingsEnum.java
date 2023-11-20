@@ -62,6 +62,7 @@ public enum SettingsEnum {
     CUSTOM_FILTER_STRINGS("revanced_custom_filter_strings", STRING, "", true, parents(CUSTOM_FILTER)),
     DISABLE_FULLSCREEN_AMBIENT_MODE("revanced_disable_fullscreen_ambient_mode", BOOLEAN, TRUE, true),
     DISABLE_RESUMING_SHORTS_PLAYER("revanced_disable_resuming_shorts_player", BOOLEAN, FALSE),
+    DISABLE_ROLLING_NUMBER_ANIMATIONS("revanced_disable_rolling_number_animations", BOOLEAN, FALSE),
     DISABLE_SUGGESTED_VIDEO_END_SCREEN("revanced_disable_suggested_video_end_screen", BOOLEAN, TRUE),
     GRADIENT_LOADING_SCREEN("revanced_gradient_loading_screen", BOOLEAN, FALSE),
     HIDE_ALBUM_CARDS("revanced_hide_album_cards", BOOLEAN, FALSE, true),
@@ -72,7 +73,6 @@ public enum SettingsEnum {
     HIDE_CAST_BUTTON("revanced_hide_cast_button", BOOLEAN, TRUE, true),
     HIDE_CHANNEL_BAR("revanced_hide_channel_bar", BOOLEAN, FALSE),
     HIDE_CHANNEL_MEMBER_SHELF("revanced_hide_channel_member_shelf", BOOLEAN, TRUE),
-    HIDE_CHAPTERS("revanced_hide_chapters", BOOLEAN, TRUE),
     HIDE_CHIPS_SHELF("revanced_hide_chips_shelf", BOOLEAN, TRUE),
     HIDE_COMMENTS_SECTION("revanced_hide_comments_section", BOOLEAN, FALSE, true),
     HIDE_COMMUNITY_GUIDELINES("revanced_hide_community_guidelines", BOOLEAN, TRUE),
@@ -123,6 +123,13 @@ public enum SettingsEnum {
     TABLET_LAYOUT("revanced_tablet_layout", BOOLEAN, FALSE, true, "revanced_tablet_layout_user_dialog_message"),
     USE_TABLET_MINIPLAYER("revanced_tablet_miniplayer", BOOLEAN, FALSE, true),
     WIDE_SEARCHBAR("revanced_wide_searchbar", BOOLEAN, FALSE, true),
+    // Description
+    HIDE_CHAPTERS("revanced_hide_chapters", BOOLEAN, TRUE),
+    HIDE_INFO_CARDS_SECTION("revanced_hide_info_cards_section", BOOLEAN, TRUE),
+    HIDE_GAME_SECTION("revanced_hide_game_section", BOOLEAN, TRUE),
+    HIDE_MUSIC_SECTION("revanced_hide_music_section", BOOLEAN, TRUE),
+    HIDE_PODCAST_SECTION("revanced_hide_podcast_section", BOOLEAN, TRUE),
+    HIDE_TRANSCIPT_SECTION("revanced_hide_transcript_section", BOOLEAN, TRUE),
 
     // Shorts
     HIDE_SHORTS("revanced_hide_shorts", BOOLEAN, FALSE, true),

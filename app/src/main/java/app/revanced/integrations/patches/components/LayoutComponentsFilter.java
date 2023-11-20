@@ -136,11 +136,6 @@ public final class LayoutComponentsFilter extends Filter {
                 "quality_sheet_footer"
         );
 
-        final var chapters = new StringFilterGroup(
-                SettingsEnum.HIDE_CHAPTERS,
-                "macro_markers_carousel"
-        );
-
         final var channelBar = new StringFilterGroup(
                 SettingsEnum.HIDE_CHANNEL_BAR,
                 "channel_bar"
@@ -226,8 +221,7 @@ public final class LayoutComponentsFilter extends Filter {
 
         this.identifierFilterGroupList.addAll(
                 graySeparator,
-                chipsShelf,
-                chapters
+                chipsShelf
         );
     }
 
@@ -249,12 +243,16 @@ public final class LayoutComponentsFilter extends Filter {
         return super.isFiltered(identifier, path, protobufBufferArray, matchedList, matchedGroup, matchedIndex);
     }
 
-
     /**
      * Injection point.
      * Called from a different place then the other filters.
      */
-    public static boolean filterMixPlaylists(final Object conversionContext, final byte[] bytes) {
+    public static boolean filterMixPlaylists(final Object conversionContext, @Nullable final byte[] bytes) {
+        if (bytes == null) {
+            LogHelper.printDebug(() -> "bytes is null");
+            return false;
+        }
+
         // Prevent playlist items being hidden, if a mix playlist is present in it.
         if (mixPlaylistsExceptions.matches(conversionContext.toString()))
             return false;
