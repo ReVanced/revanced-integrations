@@ -15,9 +15,12 @@ import java.util.Arrays;
 public class CustomPlaybackSpeedPatch {
     /**
      * Maximum playback speed, exclusive value.  Custom speeds must be less than this value.
-     * Limit is required otherwise double digit speeds show up out of order in the UI selector.
+     *
+     * Going over 8x does not increase the actual playback speed any higher,
+     * and the UI selector starts flickering and acting weird.
+     * Over 10x and the speeds show up out of order in the UI selector.
      */
-    public static final float MAXIMUM_PLAYBACK_SPEED = 10;
+    public static final float MAXIMUM_PLAYBACK_SPEED = 8;
 
     /**
      * Custom playback speeds.
