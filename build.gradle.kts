@@ -9,6 +9,14 @@ buildscript {
     }
 }
 
+allprojects {
+    repositories {
+        google()
+        maven { url = uri("https://jitpack.io") }
+        mavenCentral()
+    }
+}
+
 // Tracking issue https://github.com/semantic-release/semantic-release/issues/963
 tasks.register("publish", DefaultTask::class) {
     group = "publish"
