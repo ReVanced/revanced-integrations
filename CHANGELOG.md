@@ -1,3 +1,10 @@
+## [0.123.1-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v0.123.0...v0.123.1-dev.1) (2023-11-22)
+
+
+### Bug Fixes
+
+* **YouTube - Custom playback speed:** Fix toast error on opening playback speed menu ([#522](https://github.com/ReVanced/revanced-integrations/issues/522)) ([0124f41](https://github.com/ReVanced/revanced-integrations/commit/0124f41cd699467e1c973ea42774c89b751f576f))
+
 # [0.123.0](https://github.com/ReVanced/revanced-integrations/compare/v0.122.1...v0.123.0) (2023-11-20)
 
 
