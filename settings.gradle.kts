@@ -1,12 +1,10 @@
-dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-    repositories {
-        google()
-        maven { url = uri("https://jitpack.io") }
-        mavenCentral()
+rootProject.name = "revanced-integrations"
+
+buildCache {
+    local {
+        isEnabled = !System.getenv().containsKey("CI")
     }
 }
+
 include(":app")
 include(":dummy")
-
-rootProject.name = "revanced-integrations"
