@@ -1,3 +1,16 @@
+# [0.124.0-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v0.123.1-dev.1...v0.124.0-dev.1) (2023-11-23)
+
+
+### Bug Fixes
+
+* **YouTube - Enable tablet layout:** Respect the original device layout ([bc56aa5](https://github.com/ReVanced/revanced-integrations/commit/bc56aa5f07d8fa5c241343ebf43887f360c79e74))
+
+
+### Features
+
+* **YouTube - Hide ads:** Hide shopping links in video description ([11e7c04](https://github.com/ReVanced/revanced-integrations/commit/11e7c04b707d86901809db3b4f427a0155787177))
+* **YouTube - Hide layout components:** Hide "For You" shelf in channel page ([2613e10](https://github.com/ReVanced/revanced-integrations/commit/2613e102cc446c910c4a2f750cc034e12995dd39))
+
 ## [0.123.1-dev.2](https://github.com/ReVanced/revanced-integrations/compare/v0.123.1-dev.1...v0.123.1-dev.2) (2023-11-23)
 
 
