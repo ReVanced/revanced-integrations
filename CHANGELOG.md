@@ -1,3 +1,44 @@
+# [0.124.0-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v0.123.1-dev.1...v0.124.0-dev.1) (2023-11-23)
+
+
+### Bug Fixes
+
+* **YouTube - Enable tablet layout:** Respect the original device layout ([bc56aa5](https://github.com/ReVanced/revanced-integrations/commit/bc56aa5f07d8fa5c241343ebf43887f360c79e74))
+* **YouTube - SponsorBlock:** Do not disable autoplay when skipping to the end of the video ([f936f24](https://github.com/ReVanced/revanced-integrations/commit/f936f240a7ad14bbf6130ef6960c0fa5542f78c5))
+
+
+### Features
+
+* **YouTube - Hide ads:** Hide shopping links in video description ([11e7c04](https://github.com/ReVanced/revanced-integrations/commit/11e7c04b707d86901809db3b4f427a0155787177))
+* **YouTube - Hide layout components:** Hide "For You" shelf in channel page ([2613e10](https://github.com/ReVanced/revanced-integrations/commit/2613e102cc446c910c4a2f750cc034e12995dd39))
+
+# [0.124.0-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v0.123.1-dev.1...v0.124.0-dev.1) (2023-11-23)
+
+
+### Bug Fixes
+
+* **YouTube - Enable tablet layout:** Respect the original device layout ([bc56aa5](https://github.com/ReVanced/revanced-integrations/commit/bc56aa5f07d8fa5c241343ebf43887f360c79e74))
+
+
+### Features
+
+* **YouTube - Hide ads:** Hide shopping links in video description ([11e7c04](https://github.com/ReVanced/revanced-integrations/commit/11e7c04b707d86901809db3b4f427a0155787177))
+* **YouTube - Hide layout components:** Hide "For You" shelf in channel page ([2613e10](https://github.com/ReVanced/revanced-integrations/commit/2613e102cc446c910c4a2f750cc034e12995dd39))
+
+## [0.123.1-dev.2](https://github.com/ReVanced/revanced-integrations/compare/v0.123.1-dev.1...v0.123.1-dev.2) (2023-11-23)
+
+
+### Bug Fixes
+
+* **YouTube - Enable tablet layout:** Respect the original device layout ([9e3e747](https://github.com/ReVanced/revanced-integrations/commit/9e3e747ce66d58b9ee74e812a68e74d1a88288e0))
+
+## [0.123.1-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v0.123.0...v0.123.1-dev.1) (2023-11-22)
+
+
+### Bug Fixes
+
+* **YouTube - Custom playback speed:** Fix toast error on opening playback speed menu ([#522](https://github.com/ReVanced/revanced-integrations/issues/522)) ([0124f41](https://github.com/ReVanced/revanced-integrations/commit/0124f41cd699467e1c973ea42774c89b751f576f))
+
 # [0.123.0](https://github.com/ReVanced/revanced-integrations/compare/v0.122.1...v0.123.0) (2023-11-20)
 
 
