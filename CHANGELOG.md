@@ -1,3 +1,10 @@
+## [0.123.1-dev.2](https://github.com/ReVanced/revanced-integrations/compare/v0.123.1-dev.1...v0.123.1-dev.2) (2023-11-23)
+
+
+### Bug Fixes
+
+* **YouTube - Enable tablet layout:** Respect the original device layout ([9e3e747](https://github.com/ReVanced/revanced-integrations/commit/9e3e747ce66d58b9ee74e812a68e74d1a88288e0))
+
 ## [0.123.1-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v0.123.0...v0.123.1-dev.1) (2023-11-22)
 
 
