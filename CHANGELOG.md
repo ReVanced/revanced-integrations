@@ -1,3 +1,11 @@
+# [0.124.0-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v0.123.1-dev.2...v0.124.0-dev.1) (2023-11-23)
+
+
+### Features
+
+* **YouTube - Hide ads:** Hide shopping links in video description ([1001f64](https://github.com/ReVanced/revanced-integrations/commit/1001f647dad6a82186a2244563d2dcdf26506c2e))
+* **YouTube - Hide layout components:** Hide "For You" shelf in channel page ([bcfd726](https://github.com/ReVanced/revanced-integrations/commit/bcfd7266bf9fe7aafc4357a699b72f697dda88dd))
+
 ## [0.123.1-dev.2](https://github.com/ReVanced/revanced-integrations/compare/v0.123.1-dev.1...v0.123.1-dev.2) (2023-11-23)
 
 
