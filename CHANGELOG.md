@@ -1,3 +1,10 @@
+## [0.124.1-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v0.124.0...v0.124.1-dev.1) (2023-11-25)
+
+
+### Bug Fixes
+
+* **YouTube - Spoof signature:** fix error toast when viewing very old YouTube videos ([#525](https://github.com/ReVanced/revanced-integrations/issues/525)) ([eede028](https://github.com/ReVanced/revanced-integrations/commit/eede028c96042e6abc18377bf16a75e4806aba4a))
+
 # [0.124.0](https://github.com/ReVanced/revanced-integrations/compare/v0.123.0...v0.124.0) (2023-11-23)
 
 
