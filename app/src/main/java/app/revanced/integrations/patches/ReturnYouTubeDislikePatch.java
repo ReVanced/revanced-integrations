@@ -1,19 +1,20 @@
 package app.revanced.integrations.patches;
 
+import static app.revanced.integrations.returnyoutubedislike.ReturnYouTubeDislike.Vote;
+
 import android.graphics.Rect;
 import android.graphics.drawable.ShapeDrawable;
 import android.os.Build;
-import android.text.*;
+import android.text.Editable;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import app.revanced.integrations.patches.components.ReturnYouTubeDislikeFilterPatch;
-import app.revanced.integrations.returnyoutubedislike.ReturnYouTubeDislike;
-import app.revanced.integrations.settings.SettingsEnum;
-import app.revanced.integrations.shared.PlayerType;
-import app.revanced.integrations.utils.LogHelper;
-import app.revanced.integrations.utils.Utils;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -21,7 +22,12 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 
-import static app.revanced.integrations.returnyoutubedislike.ReturnYouTubeDislike.Vote;
+import app.revanced.integrations.patches.components.ReturnYouTubeDislikeFilterPatch;
+import app.revanced.integrations.returnyoutubedislike.ReturnYouTubeDislike;
+import app.revanced.integrations.settings.SettingsEnum;
+import app.revanced.integrations.shared.PlayerType;
+import app.revanced.integrations.utils.LogHelper;
+import app.revanced.integrations.utils.Utils;
 
 /**
  * Handles all interaction of UI patch components.
@@ -335,9 +341,13 @@ public class ReturnYouTubeDislikePatch {
         // YouTube Rolling Numbers do not use compound drawables or drawable padding.
         if (view.getCompoundDrawablePadding() == 0) {
             LogHelper.printDebug(() -> "Adding rolling number TextView changes");
-            ShapeDrawable leftSeparator = ReturnYouTubeDislike.getLeftSeparatorDrawable();
-            view.setCompoundDrawables(leftSeparator, null, null, null);
             view.setCompoundDrawablePadding(ReturnYouTubeDislike.leftSeparatorShapePaddingPixels);
+            ShapeDrawable separator = ReturnYouTubeDislike.getLeftSeparatorDrawable();
+            if (Utils.isRightToLeftTextLayout()) {
+                view.setCompoundDrawables(null, null, separator, null);
+            } else {
+                view.setCompoundDrawables(separator, null, null, null);
+            }
         }
     }
 
