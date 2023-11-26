@@ -1,3 +1,10 @@
+## [0.124.1-dev.2](https://github.com/ReVanced/revanced-integrations/compare/v0.124.1-dev.1...v0.124.1-dev.2) (2023-11-26)
+
+
+### Bug Fixes
+
+* **YouTube - Return YouTube dislike:** Fix layout of right to left languages ([11abdf1](https://github.com/ReVanced/revanced-integrations/commit/11abdf162f1a4c82a2330b16ca42800d8599c215))
+
 ## [0.124.1-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v0.124.0...v0.124.1-dev.1) (2023-11-25)
 
 
