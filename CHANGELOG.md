@@ -1,3 +1,10 @@
+## [0.124.1-dev.3](https://github.com/ReVanced/revanced-integrations/compare/v0.124.1-dev.2...v0.124.1-dev.3) (2023-11-27)
+
+
+### Bug Fixes
+
+* **YouTube - Hide layout components:** Prevent app from crashing on startup ([c2112e0](https://github.com/ReVanced/revanced-integrations/commit/c2112e066af31890c5d441870d24f3582e9b1dd1))
+
 ## [0.124.1-dev.2](https://github.com/ReVanced/revanced-integrations/compare/v0.124.1-dev.1...v0.124.1-dev.2) (2023-11-26)
 
 
