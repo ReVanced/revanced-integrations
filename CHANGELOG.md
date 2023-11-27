@@ -1,3 +1,24 @@
+## [0.124.1-dev.3](https://github.com/ReVanced/revanced-integrations/compare/v0.124.1-dev.2...v0.124.1-dev.3) (2023-11-27)
+
+
+### Bug Fixes
+
+* **YouTube - Hide layout components:** Prevent app from crashing on startup ([c2112e0](https://github.com/ReVanced/revanced-integrations/commit/c2112e066af31890c5d441870d24f3582e9b1dd1))
+
+## [0.124.1-dev.2](https://github.com/ReVanced/revanced-integrations/compare/v0.124.1-dev.1...v0.124.1-dev.2) (2023-11-26)
+
+
+### Bug Fixes
+
+* **YouTube - Return YouTube dislike:** Fix layout of right to left languages ([11abdf1](https://github.com/ReVanced/revanced-integrations/commit/11abdf162f1a4c82a2330b16ca42800d8599c215))
+
+## [0.124.1-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v0.124.0...v0.124.1-dev.1) (2023-11-25)
+
+
+### Bug Fixes
+
+* **YouTube - Spoof signature:** fix error toast when viewing very old YouTube videos ([#525](https://github.com/ReVanced/revanced-integrations/issues/525)) ([eede028](https://github.com/ReVanced/revanced-integrations/commit/eede028c96042e6abc18377bf16a75e4806aba4a))
+
 # [0.124.0](https://github.com/ReVanced/revanced-integrations/compare/v0.123.0...v0.124.0) (2023-11-23)
 
 
