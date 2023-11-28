@@ -22,6 +22,7 @@ import java.util.UUID;
 
 import static android.text.Html.FROM_HTML_MODE_COMPACT;
 import static app.revanced.integrations.patches.announcements.requests.AnnouncementsRoutes.GET_LATEST_ANNOUNCEMENT;
+import static app.revanced.integrations.utils.StringRef.str;
 
 public final class AnnouncementsPatch {
     private final static String CONSUMER = getOrSetConsumer();
@@ -37,7 +38,7 @@ public final class AnnouncementsPatch {
             try {
                 HttpURLConnection connection = AnnouncementsRoutes.getAnnouncementsConnectionFromRoute(GET_LATEST_ANNOUNCEMENT, CONSUMER);
 
-                LogHelper.printDebug(() -> "Get latest announcement route connection url: " + connection.getURL().toString());
+                LogHelper.printDebug(() -> "Get latest announcement route connection url: " + connection.getURL());
 
                 try {
                     // Do not show the announcement if the request failed.
@@ -45,14 +46,12 @@ public final class AnnouncementsPatch {
                         if (SettingsEnum.ANNOUNCEMENT_LAST_HASH.getString().isEmpty()) return;
 
                         SettingsEnum.ANNOUNCEMENT_LAST_HASH.saveValue("");
-                        Utils.showToastLong("Failed to get announcement");
+                        Utils.showToastLong(str("revanced_announcements_connection_failed"));
 
                         return;
                     }
                 } catch (IOException ex) {
-                    final var message = "Failed connecting to announcements provider";
-
-                    LogHelper.printException(() -> message, ex);
+                    LogHelper.printException(() -> str("revanced_announcements_connection_failed"), ex);
                     return;
                 }
 
@@ -105,9 +104,7 @@ public final class AnnouncementsPatch {
                             .setMovementMethod(LinkMovementMethod.getInstance());
                 });
             } catch (Exception e) {
-                final var message = "Failed to get announcement";
-
-                LogHelper.printException(() -> message, e);
+                LogHelper.printException(() -> "showAnnouncement failure", e);
             }
         });
     }

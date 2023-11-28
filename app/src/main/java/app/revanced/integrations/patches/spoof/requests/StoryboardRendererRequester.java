@@ -3,6 +3,7 @@ package app.revanced.integrations.patches.spoof.requests;
 import static app.revanced.integrations.patches.spoof.requests.PlayerRoutes.ANDROID_INNER_TUBE_BODY;
 import static app.revanced.integrations.patches.spoof.requests.PlayerRoutes.GET_STORYBOARD_SPEC_RENDERER;
 import static app.revanced.integrations.patches.spoof.requests.PlayerRoutes.TV_EMBED_INNER_TUBE_BODY;
+import static app.revanced.integrations.utils.StringRef.str;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -66,14 +67,14 @@ public class StoryboardRendererRequester {
             if (responseCode == 200) return Requester.parseJSONObject(connection);
 
             // Always show a toast for this, as a non 200 response means something is broken.
+            // Not a normal code path and should not be reached, so no translations are needed.
             handleConnectionError("Spoof storyboard not available: " + responseCode,
                     null, showToastOnIOException || SettingsEnum.DEBUG_TOAST_ON_ERROR.getBoolean());
             connection.disconnect();
         } catch (SocketTimeoutException ex) {
-            handleConnectionError("Spoof storyboard temporarily not available (API timed out)",
-                    ex, showToastOnIOException);
+            handleConnectionError(str("revanced_spoof_storyboard_timeout"), ex, showToastOnIOException);
         } catch (IOException ex) {
-            handleConnectionError("Spoof storyboard temporarily not available: " + ex.getMessage(),
+            handleConnectionError(str("revanced_spoof_storyboard_io_exception", ex.getMessage()),
                     ex, showToastOnIOException);
         } catch (Exception ex) {
             LogHelper.printException(() -> "Spoof storyboard fetch failed", ex); // Should never happen.
