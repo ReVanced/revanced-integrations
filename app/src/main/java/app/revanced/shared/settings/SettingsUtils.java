@@ -25,6 +25,6 @@ public class SettingsUtils {
         // Ref: https://developer.android.com/about/versions/14/behavior-changes-14#safer-intents
         mainIntent.setPackage(packageName);
         context.startActivity(mainIntent);
-        Runtime.getRuntime().exit(0);
+        System.exit(0);
     }
 }
