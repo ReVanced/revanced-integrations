@@ -29,6 +29,7 @@ import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.settings.SharedPrefCategory;
 import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.Utils;
+import app.revanced.shared.settings.SettingsUtils;
 
 public class YouTubeSettingsFragment extends PreferenceFragment {
     /**

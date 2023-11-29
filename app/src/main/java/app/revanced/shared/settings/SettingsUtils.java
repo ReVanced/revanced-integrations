@@ -1,4 +1,4 @@
-package app.revanced.integrations.settingsmenu;
+package app.revanced.shared.settings;
 
 import android.preference.Preference;
 import android.preference.PreferenceGroup;

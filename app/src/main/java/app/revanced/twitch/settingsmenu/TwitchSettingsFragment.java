@@ -19,7 +19,7 @@ import android.preference.SwitchPreference;
 
 import androidx.annotation.Nullable;
 
-import app.revanced.integrations.settingsmenu.SettingsUtils;
+import app.revanced.shared.settings.SettingsUtils;
 import app.revanced.twitch.settings.SettingsEnum;
 import app.revanced.twitch.utils.LogHelper;
 import app.revanced.twitch.utils.Utils;
