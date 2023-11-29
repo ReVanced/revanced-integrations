@@ -40,7 +40,7 @@ public class MicroGSupport {
             startIntent(context, VANCED_MICROG_DOWNLOAD_LINK, str("microg_not_installed_warning"));
 
             // Gracefully exit the app, so it does not crash.
-            System.exit(0);
+            Runtime.getRuntime().exit(0);
         }
 
 
