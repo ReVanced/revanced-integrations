@@ -85,7 +85,7 @@ public class ImportExportPreference extends EditTextPreference implements Prefer
             YouTubeSettingsFragment.settingImportInProgress = true;
             final boolean rebootNeeded = SettingsEnum.importJSON(replacementSettings);
             if (rebootNeeded) {
-                YouTubeSettingsFragment.showRebootDialog(getContext());
+                YouTubeSettingsFragment.showRestartDialog(getContext());
             }
         } catch (Exception ex) {
             LogHelper.printException(() -> "importSettings failure", ex);

@@ -1,15 +1,10 @@
 package app.revanced.twitch.settingsmenu;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.app.AlarmManager;
 import android.app.AlertDialog;
-import android.app.PendingIntent;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Process;
 import android.preference.EditTextPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
@@ -17,13 +12,13 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.preference.SwitchPreference;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import app.revanced.shared.settings.SettingsUtils;
 import app.revanced.twitch.settings.SettingsEnum;
 import app.revanced.twitch.utils.LogHelper;
 import app.revanced.twitch.utils.Utils;
-import tv.twitch.android.app.core.LandingActivity;
 
 public class TwitchSettingsFragment extends PreferenceFragment {
 
@@ -63,7 +58,7 @@ public class TwitchSettingsFragment extends PreferenceFragment {
             }
 
             if (Utils.getContext() != null && key != null && settingsInitialized && setting.rebootApp) {
-                rebootDialog(getActivity());
+                showRestartDialog(getContext());
             }
 
             // First onChange event is caused by initial state loading
@@ -130,19 +125,12 @@ public class TwitchSettingsFragment extends PreferenceFragment {
         super.onDestroy();
     }
 
-    @SuppressLint("MissingPermission")
-    private void reboot(Activity activity) {
-        int flags;
-        flags = PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE;
-        ((AlarmManager) activity.getSystemService(Context.ALARM_SERVICE)).setExact(AlarmManager.ELAPSED_REALTIME, 1500L, PendingIntent.getActivity(activity, 0, new Intent(activity, LandingActivity.class), flags));
-        Process.killProcess(Process.myPid());
-    }
-
-    private void rebootDialog(final Activity activity) {
-        new AlertDialog.Builder(activity).
+    private void showRestartDialog(@NonNull Context context) {
+        new AlertDialog.Builder(context).
                 setMessage(Utils.getString("revanced_reboot_message")).
-                setPositiveButton(Utils.getString("revanced_reboot"), (dialog, i) -> reboot(activity))
-                .setNegativeButton(Utils.getString("revanced_cancel"), null)
+                setPositiveButton(Utils.getString("revanced_reboot"),
+                        (dialog, i) -> SettingsUtils.restartApp(context))
+                .setNegativeButton(android.R.string.cancel, null)
                 .show();
     }
 }

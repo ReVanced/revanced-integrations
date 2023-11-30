@@ -1,7 +1,11 @@
 package app.revanced.shared.settings;
 
+import android.content.Context;
+import android.content.Intent;
 import android.preference.Preference;
 import android.preference.PreferenceGroup;
+
+import androidx.annotation.NonNull;
 
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -59,4 +63,14 @@ public class SettingsUtils {
         return punctuationRegex.replace(original, "").toLowerCase();
     }
 
+    public static void restartApp(@NonNull Context context) {
+        String packageName = context.getPackageName();
+        Intent intent = context.getPackageManager().getLaunchIntentForPackage(packageName);
+        Intent mainIntent = Intent.makeRestartActivityTask(intent.getComponent());
+        // Required for API 34 and later
+        // Ref: https://developer.android.com/about/versions/14/behavior-changes-14#safer-intents
+        mainIntent.setPackage(packageName);
+        context.startActivity(mainIntent);
+        System.exit(0);
+    }
 }
