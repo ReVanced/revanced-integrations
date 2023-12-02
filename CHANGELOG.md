@@ -1,3 +1,15 @@
+# [1.0.0-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v0.125.1-dev.1...v1.0.0-dev.1) (2023-12-02)
+
+
+### Features
+
+* Allow choosing the vendor of GmsCore via patch options ([#529](https://github.com/ReVanced/revanced-integrations/issues/529)) ([fba7181](https://github.com/ReVanced/revanced-integrations/commit/fba7181e70d695d7fb13c530754dc1db99b87216))
+
+
+### BREAKING CHANGES
+
+* The class `MicroGSupport` has been renamed to `GmsCoreSupport`
+
 ## [0.125.1-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v0.125.0...v0.125.1-dev.1) (2023-12-02)
 
 
