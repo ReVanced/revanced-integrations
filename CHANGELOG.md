@@ -1,3 +1,10 @@
+# [0.125.0](https://github.com/ReVanced/revanced-integrations/compare/v0.124.1...v0.125.0) (2023-12-02)
+
+
+### Features
+
+* Modernize restart logic ([#527](https://github.com/ReVanced/revanced-integrations/issues/527)) ([0ea4e72](https://github.com/ReVanced/revanced-integrations/commit/0ea4e720edab250aac02b32a8014c24b1127d02f))
+
 # [0.125.0-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v0.124.1...v0.125.0-dev.1) (2023-11-29)
 
 
