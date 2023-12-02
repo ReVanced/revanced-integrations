@@ -1,3 +1,10 @@
+## [0.125.1-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v0.125.0...v0.125.1-dev.1) (2023-12-02)
+
+
+### Bug Fixes
+
+* **YouTube - SponsorBlock:** Allow autoplay when skipping to the end of the video ([3d660e1](https://github.com/ReVanced/revanced-integrations/commit/3d660e1b5eeab9771f96bd2d26a222b835e2485c))
+
 # [0.125.0](https://github.com/ReVanced/revanced-integrations/compare/v0.124.1...v0.125.0) (2023-12-02)
 
 
