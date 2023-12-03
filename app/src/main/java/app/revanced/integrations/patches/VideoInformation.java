@@ -32,7 +32,7 @@ public final class VideoInformation {
 
     @NonNull
     private static volatile String playerResponseVideoId = "";
-    private static volatile boolean lastVideoOpenedWasShort;
+    private static volatile boolean videoIdIsShort;
 
     /**
      * The current playback speed
@@ -83,9 +83,9 @@ public final class VideoInformation {
     public static String newPlayerResponseSignature(@NonNull String signature, boolean isShortAndOpeningOrPlaying) {
         final boolean isShort = playerParametersAreShort(signature);
         if (!isShort || isShortAndOpeningOrPlaying) {
-            if (lastVideoOpenedWasShort != isShort) {
-                lastVideoOpenedWasShort = isShort;
-                LogHelper.printDebug(() -> "lastVideoOpenedWasShort: " + isShort);
+            if (videoIdIsShort != isShort) {
+                videoIdIsShort = isShort;
+                LogHelper.printDebug(() -> "videoIdIsShort: " + isShort);
             }
         }
         return signature; // Return the original value since we are observing and not modifying.
@@ -181,9 +181,9 @@ public final class VideoInformation {
     }
 
     /**
-     * Id of the current video playing.  Includes Shorts.
+     * Id of the last video opened.  Includes Shorts.
      *
-     * @return The id of the video. Empty string if not set yet.
+     * @return The id of the video, or an empty string if no videos have been opened yet.
      */
     @NonNull
     public static String getVideoId() {
@@ -192,14 +192,14 @@ public final class VideoInformation {
 
     /**
      * Differs from {@link #videoId} as this is the video id for the
-     * last player response received, which may not be the current video playing.
+     * last player response received, which may not be the last video opened.
      * <p>
      * If Shorts are loading the background, this commonly will be
      * different from the Short that is currently on screen.
      * <p>
      * For most use cases, you should instead use {@link #getVideoId()}.
      *
-     * @return The id of the last video loaded. Empty string if not set yet.
+     * @return The id of the last video loaded, or an empty string if no videos have been loaded yet.
      */
     @NonNull
     public static String getPlayerResponseVideoId() {
@@ -207,13 +207,13 @@ public final class VideoInformation {
     }
 
     /**
-     * @return If the last player response video that was opened was a Short.
+     * @return If the last player response video id _that was opened_ was a Short.
      * <p>
      * Note: This value returned may not match the status of  {@link #getPlayerResponseVideoId()}
      * since that includes player responses for videos not opened.
      */
-    public static boolean lastVideoOpenedWasShort() {
-        return lastVideoOpenedWasShort;
+    public static boolean lastVideoIdIsShort() {
+        return videoIdIsShort;
     }
 
     /**
