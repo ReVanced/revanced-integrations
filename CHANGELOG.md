@@ -1,3 +1,10 @@
+# [1.0.0-dev.2](https://github.com/ReVanced/revanced-integrations/compare/v1.0.0-dev.1...v1.0.0-dev.2) (2023-12-03)
+
+
+### Bug Fixes
+
+* **YouTube - Return YouTube Dislike:** Fix dislikes sometimes not showing for non English language ([5d4c8b0](https://github.com/ReVanced/revanced-integrations/commit/5d4c8b0a1b77e97c7c0c02288927e92f3c9765ce))
+
 # [1.0.0-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v0.125.1-dev.1...v1.0.0-dev.1) (2023-12-02)
 
 
