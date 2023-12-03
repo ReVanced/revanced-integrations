@@ -1,3 +1,10 @@
+# [1.0.0-dev.3](https://github.com/ReVanced/revanced-integrations/compare/v1.0.0-dev.2...v1.0.0-dev.3) (2023-12-03)
+
+
+### Bug Fixes
+
+* **YouTube - SponsorBlock:** Prevent autoplay from stopping to work ([f4e2d56](https://github.com/ReVanced/revanced-integrations/commit/f4e2d56b181fee4d693dea1dfe81974237e4eff7))
+
 # [1.0.0-dev.2](https://github.com/ReVanced/revanced-integrations/compare/v1.0.0-dev.1...v1.0.0-dev.2) (2023-12-03)
 
 
