@@ -1,3 +1,10 @@
+# [1.0.0-dev.4](https://github.com/ReVanced/revanced-integrations/compare/v1.0.0-dev.3...v1.0.0-dev.4) (2023-12-04)
+
+
+### Bug Fixes
+
+* **YouTube - Return YouTube Dislike:** Prevent the first Short opened from freezing the UI ([#532](https://github.com/ReVanced/revanced-integrations/issues/532)) ([0bb8669](https://github.com/ReVanced/revanced-integrations/commit/0bb86694e24a6a41edee62f5ef1bb80fe7bc3f19))
+
 # [1.0.0-dev.3](https://github.com/ReVanced/revanced-integrations/compare/v1.0.0-dev.2...v1.0.0-dev.3) (2023-12-03)
 
 
