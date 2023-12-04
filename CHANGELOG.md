@@ -1,3 +1,10 @@
+# [1.0.0-dev.5](https://github.com/ReVanced/revanced-integrations/compare/v1.0.0-dev.4...v1.0.0-dev.5) (2023-12-04)
+
+
+### Bug Fixes
+
+* **YouTube - Minimized playback:** Fix PIP incorrectly shown for some Shorts playback ([#533](https://github.com/ReVanced/revanced-integrations/issues/533)) ([fb433da](https://github.com/ReVanced/revanced-integrations/commit/fb433da6ad652aee48fc92794de82bb914ab80ca))
+
 # [1.0.0-dev.4](https://github.com/ReVanced/revanced-integrations/compare/v1.0.0-dev.3...v1.0.0-dev.4) (2023-12-04)
 
 
