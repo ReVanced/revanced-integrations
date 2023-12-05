@@ -57,7 +57,8 @@ public enum SettingsEnum {
 
     // Layout
     ALT_THUMBNAIL_MODE("revanced_alt_thumbnail_mode", INTEGER, 1),
-    ALT_THUMBNAIL_TYPE("revanced_alt_thumbnail_type", INTEGER, 2),
+    @Deprecated DEPRECATED_ALT_THUMBNAIL_TYPE("revanced_alt_thumbnail_type", INTEGER, 2),
+    ALT_THUMBNAIL_STILL_TYPE("revanced_alt_thumbnail_still_type", INTEGER, 2),
     ALT_THUMBNAIL_FAST_QUALITY("revanced_alt_thumbnail_fast_quality", BOOLEAN, FALSE),
     ALT_THUMBNAIL_DEARROW_API_URL("revanced_alt_thumbnail_dearrow_api_url", STRING,
             "https://dearrow-thumb.ajay.app/api/v1/getThumbnail", true),
@@ -405,6 +406,7 @@ public enum SettingsEnum {
         migrateOldSettingToNew(DISABLE_FINE_SCRUBBING_GESTURE, DISABLE_PRECISE_SEEKING_GESTURE);
         migrateOldSettingToNew(SHOW_OLD_VIDEO_QUALITY_MENU, RESTORE_OLD_VIDEO_QUALITY_MENU);
         migrateOldSettingToNew(ENABLE_OLD_SEEKBAR_THUMBNAILS, RESTORE_OLD_SEEKBAR_THUMBNAILS);
+        migrateOldSettingToNew(DEPRECATED_ALT_THUMBNAIL_TYPE, ALT_THUMBNAIL_STILL_TYPE);
 
         // Do _not_ delete this SB private user id migration property until sometime in 2024.
         // This is the only setting that cannot be reconfigured if lost,
@@ -522,6 +524,13 @@ public enum SettingsEnum {
             default:
                 throw new IllegalStateException(name());
         }
+    }
+
+    /**
+     * Identical to calling {@link #saveValue(Object)} using {@link #defaultValue}.
+     */
+    public void resetToDefault() {
+        saveValue(defaultValue);
     }
 
     /**

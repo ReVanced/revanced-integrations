@@ -1,14 +1,14 @@
 package app.revanced.integrations.patches;
 
 import android.net.Uri;
+
 import androidx.annotation.GuardedBy;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import app.revanced.integrations.settings.SettingsEnum;
-import app.revanced.integrations.utils.LogHelper;
-import app.revanced.integrations.utils.ReVancedUtils;
+
 import org.chromium.net.UrlResponseInfo;
 
+import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.HashMap;
@@ -16,11 +16,21 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
+import app.revanced.integrations.settings.SettingsEnum;
+import app.revanced.integrations.utils.LogHelper;
+import app.revanced.integrations.utils.ReVancedUtils;
+
 /**
- * Alternative YouTube thumbnails, showing the beginning/middle/end of the video.
+ * Alternative YouTube thumbnails.
+ * <p>
+ * Can show YouTube provided screen captures of beginning/middle/end of the video.
  * (ie: sd1.jpg, sd2.jpg, sd3.jpg).
  * <p>
- * Has an additional option to use 'fast' thumbnails,
+ * Or can show crowd sourced thumbnails provided by DeArrow (http://dearrow.ajay.app).
+ * <p>
+ * Or can use DeArrow and fall back to screen captures if DeArrow is not available.
+ * <p>
+ * Has an additional option to use 'fast' video still thumbnails,
  * where it forces sd thumbnail quality and skips verifying if the alt thumbnail image exists.
  * The UI loading time will be the same or better than using the the original thumbnails,
  * but thumbnails will initially fail to load for all live streams, unreleased, and occasionally very old videos.
@@ -36,22 +46,53 @@ import java.util.concurrent.ExecutionException;
  * @noinspection unused
  */
 public final class AlternativeThumbnailsPatch {
-    @Nullable
-    private static final Uri dearrowApiUri = Uri.parse(SettingsEnum.ALT_THUMBNAIL_DEARROW_API_URL.getString());
+
+    private static final Uri dearrowApiUri;
+    /**
+     * The scheme and host of {@link #dearrowApiUri}.
+     */
+    private static final String deArrowApiUrlPrefix;
+
+    /**
+     * How long to temporarily turn off DeArrow if it fails for any reason.
+     */
+    private static final long DEARROW_CONNECTION_FAILURE_BACKOFF_MILLISECONDS = 2 * 60 * 1000; // 2 Minutes.
+
+    /**
+     * If non zero, then the system time of when DeArrow API calls can resume.
+     */
+    private static volatile long timeToResumeDeArrowAPICalls;
 
     static {
-        // Fix any bad imported data.
+        dearrowApiUri = validateSettings();
+        deArrowApiUrlPrefix = dearrowApiUri.getScheme() + "://" + dearrowApiUri.getHost() + "/";
+    }
+
+    /**
+     * Fix any bad imported data.
+     */
+    private static Uri validateSettings() {
         final int mode = SettingsEnum.ALT_THUMBNAIL_MODE.getInt();
-        if(mode < 1 || mode > 3) {
-            LogHelper.printException(() -> "Invalid alt thumbnail mode: " + mode);
-            SettingsEnum.ALT_THUMBNAIL_MODE.saveValue(SettingsEnum.ALT_THUMBNAIL_MODE.defaultValue);
+        if (mode < 1 || mode > 4) {
+            ReVancedUtils.showToastLong("Invalid Alternative thumbnail mode: "
+                    + mode + ".  Using default");
+            SettingsEnum.ALT_THUMBNAIL_MODE.resetToDefault();
         }
 
-        final int altThumbnailType = SettingsEnum.ALT_THUMBNAIL_TYPE.getInt();
+        final int altThumbnailType = SettingsEnum.ALT_THUMBNAIL_STILL_TYPE.getInt();
         if (altThumbnailType < 1 || altThumbnailType > 3) {
-            LogHelper.printException(() -> "Invalid alt thumbnail type: " + altThumbnailType);
-            SettingsEnum.ALT_THUMBNAIL_TYPE.saveValue(SettingsEnum.ALT_THUMBNAIL_TYPE.defaultValue);
+            ReVancedUtils.showToastLong("Invalid Alternative still thumbnail type: "
+                    + altThumbnailType + ". Using default");
+            SettingsEnum.ALT_THUMBNAIL_STILL_TYPE.resetToDefault();
         }
+
+        Uri apiUri = Uri.parse(SettingsEnum.ALT_THUMBNAIL_DEARROW_API_URL.getString());
+        if (apiUri.getScheme() == null || apiUri.getHost() == null) {
+            ReVancedUtils.showToastLong("Invalid DeArrow API URL. Using default");
+            SettingsEnum.ALT_THUMBNAIL_DEARROW_API_URL.resetToDefault();
+            return validateSettings();
+        }
+        return apiUri;
     }
 
     /**
@@ -93,11 +134,6 @@ public final class AlternativeThumbnailsPatch {
      */
     @NonNull
     private static String buildDeArrowThumbnailURL(String videoId, String fallbackUrl) {
-        // Use fallback if parsing API URI failed.
-        if (dearrowApiUri == null) {
-            return fallbackUrl;
-        }
-
         // Build thumbnail request url.
         // See https://github.com/ajayyy/DeArrowThumbnailCache/blob/29eb4359ebdf823626c79d944a901492d760bbbc/app.py#L29.
         return dearrowApiUri
@@ -107,6 +143,32 @@ public final class AlternativeThumbnailsPatch {
                 .appendQueryParameter("redirectUrl", fallbackUrl)
                 .build()
                 .toString();
+    }
+
+    private static boolean urlIsDeArrow(@NonNull String imageUrl) {
+        return imageUrl.startsWith(deArrowApiUrlPrefix);
+    }
+
+    /**
+     * @return If this client has not recently experience any DeArrow API errors.
+     */
+    private static boolean canUseDeArrowAPI() {
+        if (timeToResumeDeArrowAPICalls == 0) {
+            return true;
+        }
+        if (System.currentTimeMillis() > timeToResumeDeArrowAPICalls) {
+            LogHelper.printDebug(() -> "Resuming DeArrow API calls");
+            timeToResumeDeArrowAPICalls = 0;
+            return true;
+        }
+        return false;
+    }
+
+    private static void handleDeArrowError(UrlResponseInfo responseInfo) {
+        // TODO? Add a setting to show a toast on DeArrow failure?
+        LogHelper.printDebug(() -> "Encountered DeArrow error.  Backing off for "
+                        + DEARROW_CONNECTION_FAILURE_BACKOFF_MILLISECONDS + "ms: " + responseInfo);
+        timeToResumeDeArrowAPICalls = System.currentTimeMillis() + DEARROW_CONNECTION_FAILURE_BACKOFF_MILLISECONDS;
     }
 
     /**
@@ -130,7 +192,7 @@ public final class AlternativeThumbnailsPatch {
             LogHelper.printDebug(() -> "Original url: " + decodedUrl.sanitizedUrl);
 
             final StringBuilder thumbnailUrlBuilder = new StringBuilder();
-            if (thumbnailMode.usingDeArrow()) {
+            if (thumbnailMode.usingDeArrow() && canUseDeArrowAPI()) {
                 // Get fallback URL.
                 final String fallbackUrl = thumbnailMode == AlternativeThumbnailMode.DEARROW_OR_VIDEO_STILLS
                         ? buildYoutubeVideoStillURL(decodedUrl)
@@ -138,7 +200,7 @@ public final class AlternativeThumbnailsPatch {
 
                 final var thumbnailURL = buildDeArrowThumbnailURL(decodedUrl.videoId, fallbackUrl);
                 thumbnailUrlBuilder.append(thumbnailURL);
-            } else {
+            } else if (thumbnailMode.usingVideoStills()) {
                 // Get video still URL.
                 final var thumbnailUrl = buildYoutubeVideoStillURL(decodedUrl);
                 thumbnailUrlBuilder.append(thumbnailUrl);
@@ -146,6 +208,8 @@ public final class AlternativeThumbnailsPatch {
                 // URL tracking parameters. Presumably they are to determine if a user has viewed a thumbnail.
                 // This likely is used for recommendations, so they are retained if present.
                 thumbnailUrlBuilder.append(decodedUrl.urlTrackingParameters);
+            } else {
+                return originalUrl; // Recently experienced DeArrow failure and video stills are not enabled.
             }
 
             final var thumbnailUrl = thumbnailUrlBuilder.toString();
@@ -165,29 +229,65 @@ public final class AlternativeThumbnailsPatch {
      */
     public static void handleCronetSuccess(@NonNull UrlResponseInfo responseInfo) {
         try {
-            // 404 and alt thumbnails is using video stills
-            if (responseInfo.getHttpStatusCode() == 404
-                    && AlternativeThumbnailMode.getCurrent().usingVideoStills()) {
-                // Fast alt thumbnails is enabled and the thumbnail is not available.
-                // The video is:
-                // - live stream
-                // - upcoming unreleased video
-                // - very old
-                // - very low view count
-                // Take note of this, so if the image reloads the original thumbnail will be used.
-                DecodedThumbnailUrl decodedUrl = DecodedThumbnailUrl.decodeImageUrl(responseInfo.getUrl());
-                if (decodedUrl == null) {
-                    return; // Not a thumbnail.
+            final int responseCode = responseInfo.getHttpStatusCode();
+            if (responseCode != 200) {
+                AlternativeThumbnailMode currentMode = AlternativeThumbnailMode.getCurrent();
+                String url = responseInfo.getUrl();
+                // Do not log the responseInfo unless it's known to be a DeArrow call.
+                // Otherwise this can log user details found in regular YouTube non Alt Thumbnails traffic.
+                LogHelper.printDebug(() -> "handleCronetSuccess responseCode: " + responseCode + " url: " + url);
+
+                if (currentMode.usingDeArrow() && urlIsDeArrow(url)) {
+                    handleDeArrowError(responseInfo);
                 }
 
-                ThumbnailQuality quality = ThumbnailQuality.altImageNameToQuality(decodedUrl.imageQuality);
-                if (quality == null) {
-                    // Video is a short or unknown quality, but the url returned 404.  Should never happen.
-                    LogHelper.printDebug(() -> "Failed to load unknown url: " + decodedUrl.sanitizedUrl);
-                    return;
-                }
+                if (currentMode.usingVideoStills() && responseCode == 404) {
+                    // Fast alt thumbnails is enabled and the thumbnail is not available.
+                    // The video is:
+                    // - live stream
+                    // - upcoming unreleased video
+                    // - very old
+                    // - very low view count
+                    // Take note of this, so if the image reloads the original thumbnail will be used.
+                    DecodedThumbnailUrl decodedUrl = DecodedThumbnailUrl.decodeImageUrl(url);
+                    if (decodedUrl == null) {
+                        return; // Not a thumbnail.
+                    }
 
-                VerifiedQualities.setAltThumbnailDoesNotExist(decodedUrl.videoId, quality);
+                    ThumbnailQuality quality = ThumbnailQuality.altImageNameToQuality(decodedUrl.imageQuality);
+                    if (quality == null) {
+                        // Video is a short or unknown quality, but the url returned 404.  Should never happen.
+                        LogHelper.printDebug(() -> "Failed to load unknown url: " + decodedUrl.sanitizedUrl);
+                        return;
+                    }
+
+                    VerifiedQualities.setAltThumbnailDoesNotExist(decodedUrl.videoId, quality);
+                }
+            }
+        } catch (Exception ex) {
+            LogHelper.printException(() -> "Alt thumbnails callback failure", ex);
+        }
+    }
+
+    /**
+     * Injection point.
+     */
+    public static void handleCronetFailure(@Nullable UrlResponseInfo responseInfo, IOException exception) {
+        try {
+            LogHelper.printDebug(() -> "handleCronetFailure exception: " + exception);
+            AlternativeThumbnailMode currentMode = AlternativeThumbnailMode.getCurrent();
+
+            if (currentMode.usingDeArrow()) {
+                // If the DeArrow API host name does not resolve, then no response is provided
+                // and the IOException (CronetException) provides no information to detect this situation.
+                //
+                // For now, treat this as a DeArrow failure but only if the API is not set to default.
+                // This may incorrectly turn off DeArrow for non alt thumbnail errors,
+                // but that should be rare since so few users will change the API url.
+                if ((responseInfo == null && !SettingsEnum.ALT_THUMBNAIL_DEARROW_API_URL.isSetToDefault())
+                        || (responseInfo != null && urlIsDeArrow(responseInfo.getUrl()))) {
+                    handleDeArrowError(responseInfo);
+                }
             }
         } catch (Exception ex) {
             LogHelper.printException(() -> "Alt thumbnails callback failure", ex);
@@ -278,7 +378,7 @@ public final class AlternativeThumbnailsPatch {
         }
 
         String getAltImageNameToUse() {
-            return altImageName + SettingsEnum.ALT_THUMBNAIL_TYPE.getInt();
+            return altImageName + SettingsEnum.ALT_THUMBNAIL_STILL_TYPE.getInt();
         }
     }
 
@@ -515,27 +615,25 @@ public final class AlternativeThumbnailsPatch {
             return this == DEARROW_OR_CREATOR_PROVIDED || this == DEARROW_OR_VIDEO_STILLS;
         }
 
-        @Nullable
+        @NonNull
         public static AlternativeThumbnailMode byId(int id) {
+            // Could use the Enum ordinal and use values()[id],
+            // but then the ids would start at 0.
+            // Since only 4 ids exist this isn't a big deal
+            // and little overhead is needed to manually compare 4 int values.
             for (final var mode : AlternativeThumbnailMode.values()) {
-                if(mode.id == id) {
+                if (mode.id == id) {
                     return mode;
                 }
             }
-
-            return null;
+            // User imported bad data and did not restart the app. Fix the settings and continue.
+            validateSettings();
+            return byId(id);
         }
 
         @NonNull
         public static AlternativeThumbnailMode getCurrent() {
-            var mode = byId(SettingsEnum.ALT_THUMBNAIL_MODE.getInt());
-
-            if (mode == null) {
-                // Fallback to stock behaviour.
-                mode = ORIGINAL;
-            }
-
-            return mode;
+            return byId(SettingsEnum.ALT_THUMBNAIL_MODE.getInt());
         }
     }
 }
