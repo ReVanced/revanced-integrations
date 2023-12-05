@@ -130,17 +130,17 @@ public final class AlternativeThumbnailsPatch {
             // Keep any tracking parameters out of the logs, and log only the base URL.
             LogHelper.printDebug(() -> "Original url: " + decodedUrl.sanitizedUrl);
 
-            // Get video still URL.
-            final var videoStillUrl = getYoutubeVideoStillURL(decodedUrl);
-
             // Initialize thumbnail URL builder.
             final StringBuilder thumbnailUrlBuilder;
             if(mode.isDeArrow()) {
                 // figure out fallback url to use
-                final var fallbackUrl = mode == AlternativeThumbnailMode.DEARROW_OR_VIDEO_STILLS ? videoStillUrl : decodedUrl.sanitizedUrl;
+                final String fallbackUrl = mode == AlternativeThumbnailMode.DEARROW_OR_VIDEO_STILLS
+                        ? getYoutubeVideoStillURL(decodedUrl) : decodedUrl.sanitizedUrl;
                 final var deArrowUrl = getDeArrowThumbnailURL(decodedUrl.videoId, fallbackUrl);
                 thumbnailUrlBuilder = new StringBuilder(deArrowUrl);
             } else {
+                // Get video still URL.
+                final var videoStillUrl = getYoutubeVideoStillURL(decodedUrl);
                 thumbnailUrlBuilder = new StringBuilder(videoStillUrl);
             }
 
