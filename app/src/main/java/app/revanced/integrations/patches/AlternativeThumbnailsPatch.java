@@ -15,8 +15,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import app.revanced.integrations.settings.SettingsEnum;
 import app.revanced.integrations.utils.LogHelper;
@@ -48,32 +46,6 @@ import app.revanced.integrations.utils.ReVancedUtils;
  * @noinspection unused
  */
 public final class AlternativeThumbnailsPatch {
-
-    public static final int CONNECTION_TIMEOUT_MILLIS = 5000;
-
-    /**
-     * Single thread executor with the lowest priority.
-     * Used simulate loading the original thumbnail with the view tracking parameters.
-     * Only used when DeArrow is enabled as the tracking parameters are stripped from it's
-     * redirect url parameter.
-     */
-    private static final ExecutorService viewTrackingExecutor = Executors.newSingleThreadExecutor(r -> {
-        Thread thread = new Thread(r);
-        thread.setPriority(Thread.MIN_PRIORITY);
-        return thread;
-    });
-
-    /**
-     * Used to prevent sending view tracking parameters more than once.
-     */
-    @GuardedBy("itself")
-    private static final Map<String, Boolean> videoIdsTrackingSent = new LinkedHashMap<>(100) {
-        private static final int CACHE_LIMIT = 1000;
-        @Override
-        protected boolean removeEldestEntry(Map.Entry eldest) {
-            return size() > CACHE_LIMIT; // Evict the oldest entry if over the cache limit.
-        }
-    };
 
     private static final Uri dearrowApiUri;
     /**
@@ -134,7 +106,7 @@ public final class AlternativeThumbnailsPatch {
         ThumbnailQuality qualityToUse = ThumbnailQuality.getQualityToUse(decodedUrl.imageQuality);
         if (qualityToUse == null) return decodedUrl.sanitizedUrl; // Video is a short.
 
-        String sanitizedReplacement = decodedUrl.createStillUrl(qualityToUse.getAltImageNameToUse(), false);
+        String sanitizedReplacement = decodedUrl.createStillUrlWithQuality(qualityToUse, false);
         if (VerifiedQualities.verifyAltThumbnailExist(decodedUrl.videoId, qualityToUse, sanitizedReplacement)) {
             return sanitizedReplacement;
         }
@@ -188,35 +160,6 @@ public final class AlternativeThumbnailsPatch {
     }
 
     /**
-     * Because the view tracking parameters are not included and likely are used for recommendations,
-     * make a dummy call in the background for the original thumbnail and include the tracking parameters.
-     *
-     * This may do nothing if YouTube does not detect the
-     */
-    private static void makeDummyViewTrackingCall(@NonNull DecodedThumbnailUrl decodedUrl) {
-        if (decodedUrl.viewTrackingParameters.isEmpty()) {
-            return; // Nothing to do.
-        }
-        if (videoIdsTrackingSent.put(decodedUrl.videoId, Boolean.TRUE) != null) {
-            return; // Already sent tracking for this video.
-        }
-        viewTrackingExecutor.execute(() -> {
-            try {
-                String qualityToUse = ThumbnailQuality.DEFAULT.originalName; // Use the lowest quality.
-                String lowQualityWithTracking = decodedUrl.createStillUrl(qualityToUse, true);
-                HttpURLConnection connection = (HttpURLConnection) new URL(lowQualityWithTracking).openConnection();
-                connection.setConnectTimeout(CONNECTION_TIMEOUT_MILLIS);
-                connection.setReadTimeout(CONNECTION_TIMEOUT_MILLIS);
-                final int responseCode = connection.getResponseCode();
-                LogHelper.printDebug(() -> "Finished sending viewing parameters for video: "
-                        + decodedUrl.videoId + " with response: " + responseCode);
-            } catch (Exception ex) {
-                LogHelper.printInfo(() -> "View tracking failure", ex);
-            }
-        });
-    }
-
-    /**
      * Injection point.  Called off the main thread and by multiple threads at the same time.
      *
      * @param originalUrl Image url for all url images loaded, including video thumbnails.
@@ -241,11 +184,10 @@ public final class AlternativeThumbnailsPatch {
             final boolean includeTrackingParameters;
             if (thumbnailMode.usingDeArrow() && canUseDeArrowAPI()) {
                 // Get fallback URL.
+                // Do not include view tracking parameters with API call.
                 final String fallbackUrl = thumbnailMode == AlternativeThumbnailMode.DEARROW_OR_VIDEO_STILLS
                         ? buildYoutubeVideoStillURL(decodedUrl)
                         : decodedUrl.sanitizedUrl;
-
-                makeDummyViewTrackingCall(decodedUrl);
 
                 sanitizedReplacementUrl = buildDeArrowThumbnailURL(decodedUrl.videoId, fallbackUrl);
                 includeTrackingParameters = false;
@@ -547,9 +489,10 @@ public final class AlternativeThumbnailsPatch {
                 // to run the url connection thru the integrations thread pool which runs at the highest priority.
                 final long start = System.currentTimeMillis();
                 imageFileFound = ReVancedUtils.submitOnBackgroundThread(() -> {
+                    final int connectionTimeoutMillis = 5000;
                     HttpURLConnection connection = (HttpURLConnection) new URL(imageUrl).openConnection();
-                    connection.setConnectTimeout(CONNECTION_TIMEOUT_MILLIS);
-                    connection.setReadTimeout(CONNECTION_TIMEOUT_MILLIS);
+                    connection.setConnectTimeout(connectionTimeoutMillis);
+                    connection.setReadTimeout(connectionTimeoutMillis);
                     connection.setRequestMethod("HEAD");
                     // Even with a HEAD request, the response is the same size as a full GET request.
                     // Using an empty range fixes this.
@@ -628,7 +571,7 @@ public final class AlternativeThumbnailsPatch {
                     ? "" : fullUrl.substring(imageExtensionEndIndex);
         }
 
-        String createStillUrl(@NonNull String imageQualityName, boolean includeViewTracking) {
+        String createStillUrlWithQuality(@NonNull ThumbnailQuality qualityToUse, boolean includeViewTracking) {
             // Images could be upgraded to webp if they are not already, but this fails quite often,
             // especially for new videos uploaded in the last hour.
             // And even if alt webp images do exist, sometimes they can load much slower than the original jpg alt images.
@@ -636,7 +579,7 @@ public final class AlternativeThumbnailsPatch {
             StringBuilder builder = new StringBuilder(originalFullUrl.length() + 2);
             builder.append(urlPrefix);
             builder.append(videoId).append('/');
-            builder.append(imageQualityName);
+            builder.append(qualityToUse.getAltImageNameToUse());
             builder.append('.').append(imageExtension);
             if (includeViewTracking) {
                 builder.append(viewTrackingParameters);
