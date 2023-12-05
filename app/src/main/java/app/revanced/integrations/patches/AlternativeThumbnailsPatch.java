@@ -79,11 +79,11 @@ public final class AlternativeThumbnailsPatch {
             SettingsEnum.ALT_THUMBNAIL_MODE.resetToDefault();
         }
 
-        final int altThumbnailType = SettingsEnum.ALT_THUMBNAIL_STILL_TYPE.getInt();
+        final int altThumbnailType = SettingsEnum.ALT_THUMBNAIL_STILL_TIME.getInt();
         if (altThumbnailType < 1 || altThumbnailType > 3) {
             ReVancedUtils.showToastLong("Invalid Alternative still thumbnail type: "
                     + altThumbnailType + ". Using default");
-            SettingsEnum.ALT_THUMBNAIL_STILL_TYPE.resetToDefault();
+            SettingsEnum.ALT_THUMBNAIL_STILL_TIME.resetToDefault();
         }
 
         Uri apiUri = Uri.parse(SettingsEnum.ALT_THUMBNAIL_DEARROW_API_URL.getString());
@@ -343,7 +343,7 @@ public final class AlternativeThumbnailsPatch {
                 return null; // Not a thumbnail for a regular video.
             }
 
-            final boolean useFastQuality = SettingsEnum.ALT_THUMBNAIL_FAST_QUALITY.getBoolean();
+            final boolean useFastQuality = SettingsEnum.ALT_THUMBNAIL_STILL_FAST_QUALITY.getBoolean();
             switch (quality) {
                 case SDDEFAULT:
                     // SD alt images have somewhat worse quality with washed out color and poor contrast.
@@ -378,7 +378,7 @@ public final class AlternativeThumbnailsPatch {
         }
 
         String getAltImageNameToUse() {
-            return altImageName + SettingsEnum.ALT_THUMBNAIL_STILL_TYPE.getInt();
+            return altImageName + SettingsEnum.ALT_THUMBNAIL_STILL_TIME.getInt();
         }
     }
 
@@ -423,7 +423,7 @@ public final class AlternativeThumbnailsPatch {
 
         static boolean verifyAltThumbnailExist(@NonNull String videoId, @NonNull ThumbnailQuality quality,
                                                @NonNull String imageUrl) {
-            VerifiedQualities verified = getVerifiedQualities(videoId, SettingsEnum.ALT_THUMBNAIL_FAST_QUALITY.getBoolean());
+            VerifiedQualities verified = getVerifiedQualities(videoId, SettingsEnum.ALT_THUMBNAIL_STILL_FAST_QUALITY.getBoolean());
             if (verified == null) return true; // Fast alt thumbnails is enabled.
             return verified.verifyYouTubeThumbnailExists(videoId, quality, imageUrl);
         }
@@ -474,7 +474,7 @@ public final class AlternativeThumbnailsPatch {
                 return true; // Previously verified as existing.
             }
 
-            final boolean fastQuality = SettingsEnum.ALT_THUMBNAIL_FAST_QUALITY.getBoolean();
+            final boolean fastQuality = SettingsEnum.ALT_THUMBNAIL_STILL_FAST_QUALITY.getBoolean();
             if (lowestQualityNotAvailable != null && lowestQualityNotAvailable.ordinal() <= quality.ordinal()) {
                 if (fastQuality || System.currentTimeMillis() < timeToReVerifyLowestQuality) {
                     return false; // Previously verified as not existing.
@@ -588,7 +588,7 @@ public final class AlternativeThumbnailsPatch {
 
         /**
          * Use video stills provided by YouTube.
-         * revanced_alt_thumbnail_type and revanced_alt_thumbnail_fast_quality controls what still should be used.
+         * Uses {@link SettingsEnum#ALT_THUMBNAIL_STILL_TIME} and {@link SettingsEnum#ALT_THUMBNAIL_STILL_FAST_QUALITY}.
          */
         VIDEO_STILLS(2),
 
