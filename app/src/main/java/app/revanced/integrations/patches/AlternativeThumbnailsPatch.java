@@ -106,23 +106,11 @@ public final class AlternativeThumbnailsPatch {
         ThumbnailQuality qualityToUse = ThumbnailQuality.getQualityToUse(decodedUrl.imageQuality);
         if (qualityToUse == null) return decodedUrl.sanitizedUrl; // Video is a short.
 
-        // Images could be upgraded to webp if they are not already, but this fails quite often,
-        // especially for new videos uploaded in the last hour.
-        // And even if alt webp images do exist, sometimes they can load much slower than the original jpg alt images.
-        // (as much as 4x slower has been observed, despite the alt webp image being a smaller file).
-
-        StringBuilder builder = new StringBuilder(decodedUrl.sanitizedUrl.length() + 2);
-        builder.append(decodedUrl.urlPrefix);
-        builder.append(decodedUrl.videoId).append('/');
-        builder.append(qualityToUse.getAltImageNameToUse());
-        builder.append('.').append(decodedUrl.imageExtension);
-
-        String sanitizedReplacement = builder.toString();
-        if (!VerifiedQualities.verifyAltThumbnailExist(decodedUrl.videoId, qualityToUse, sanitizedReplacement)) {
-            return decodedUrl.sanitizedUrl;
+        String sanitizedReplacement = decodedUrl.createStillUrlWithQuality(qualityToUse, false);
+        if (VerifiedQualities.verifyAltThumbnailExist(decodedUrl.videoId, qualityToUse, sanitizedReplacement)) {
+            return sanitizedReplacement;
         }
-
-        return builder.toString();
+        return decodedUrl.sanitizedUrl;
     }
 
     /**
@@ -558,6 +546,7 @@ public final class AlternativeThumbnailsPatch {
                     imageSizeStartIndex, imageSizeEndIndex, imageExtensionEndIndex);
         }
 
+        final String originalFullUrl;
         /** Full usable url, but stripped of any tracking information. */
         final String sanitizedUrl;
         /** Url up to the video ID. */
@@ -572,6 +561,7 @@ public final class AlternativeThumbnailsPatch {
 
         private DecodedThumbnailUrl(String fullUrl, int videoIdStartIndex, int videoIdEndIndex,
                                     int imageSizeStartIndex, int imageSizeEndIndex, int imageExtensionEndIndex) {
+            originalFullUrl = fullUrl;
             sanitizedUrl = fullUrl.substring(0, imageExtensionEndIndex);
             urlPrefix = fullUrl.substring(0, videoIdStartIndex);
             videoId = fullUrl.substring(videoIdStartIndex, videoIdEndIndex);
@@ -579,6 +569,22 @@ public final class AlternativeThumbnailsPatch {
             imageExtension = fullUrl.substring(imageSizeEndIndex + 1, imageExtensionEndIndex);
             viewTrackingParameters = (imageExtensionEndIndex == fullUrl.length())
                     ? "" : fullUrl.substring(imageExtensionEndIndex);
+        }
+
+        String createStillUrlWithQuality(@NonNull ThumbnailQuality qualityToUse, boolean includeViewTracking) {
+            // Images could be upgraded to webp if they are not already, but this fails quite often,
+            // especially for new videos uploaded in the last hour.
+            // And even if alt webp images do exist, sometimes they can load much slower than the original jpg alt images.
+            // (as much as 4x slower has been observed, despite the alt webp image being a smaller file).
+            StringBuilder builder = new StringBuilder(originalFullUrl.length() + 2);
+            builder.append(urlPrefix);
+            builder.append(videoId).append('/');
+            builder.append(qualityToUse.getAltImageNameToUse());
+            builder.append('.').append(imageExtension);
+            if (includeViewTracking) {
+                builder.append(viewTrackingParameters);
+            }
+            return builder.toString();
         }
     }
 
