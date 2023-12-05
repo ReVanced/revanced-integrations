@@ -130,7 +130,7 @@ public final class AlternativeThumbnailsPatch {
             LogHelper.printDebug(() -> "Original url: " + decodedUrl.sanitizedUrl);
 
             final StringBuilder thumbnailUrlBuilder = new StringBuilder();
-            if (thumbnailMode.isDeArrow()) {
+            if (thumbnailMode.usingDeArrow()) {
                 // Get fallback URL.
                 final String fallbackUrl = thumbnailMode == AlternativeThumbnailMode.DEARROW_OR_VIDEO_STILLS
                         ? buildYoutubeVideoStillURL(decodedUrl)
@@ -166,8 +166,8 @@ public final class AlternativeThumbnailsPatch {
     public static void handleCronetSuccess(@NonNull UrlResponseInfo responseInfo) {
         try {
             // 404 and alt thumbnails is using video stills
-            if (responseInfo.getHttpStatusCode() == 404 &&
-                    AlternativeThumbnailMode.getCurrent() == AlternativeThumbnailMode.VIDEO_STILLS) {
+            if (responseInfo.getHttpStatusCode() == 404
+                    && AlternativeThumbnailMode.getCurrent().usingVideoStills()) {
                 // Fast alt thumbnails is enabled and the thumbnail is not available.
                 // The video is:
                 // - live stream
@@ -507,7 +507,11 @@ public final class AlternativeThumbnailsPatch {
             this.id = id;
         }
 
-        public boolean isDeArrow() {
+        public boolean usingVideoStills() {
+            return this == VIDEO_STILLS || this == DEARROW_OR_VIDEO_STILLS;
+        }
+
+        public boolean usingDeArrow() {
             return this == DEARROW_OR_CREATOR_PROVIDED || this == DEARROW_OR_VIDEO_STILLS;
         }
 
