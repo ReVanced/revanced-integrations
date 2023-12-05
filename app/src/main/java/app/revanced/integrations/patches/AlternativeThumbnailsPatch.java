@@ -19,7 +19,7 @@ import java.util.concurrent.ExecutionException;
 /**
  * Alternative YouTube thumbnails, showing the beginning/middle/end of the video.
  * (ie: sd1.jpg, sd2.jpg, sd3.jpg).
- *
+ * <p>
  * Has an additional option to use 'fast' thumbnails,
  * where it forces sd thumbnail quality and skips verifying if the alt thumbnail image exists.
  * The UI loading time will be the same or better than using the the original thumbnails,
@@ -27,12 +27,13 @@ import java.util.concurrent.ExecutionException;
  * If a failed thumbnail load is reloaded (ie: scroll off, then on screen), then the original thumbnail
  * is reloaded instead.  Fast thumbnails requires using SD or lower thumbnail resolution,
  * because a noticeable number of videos do not have hq720 and too many fail to load.
- *
+ * <p>
  * Ideas for improvements:
  * - Selectively allow using original thumbnails in some situations,
  *   such as videos subscription feed, watch history, or in search results.
  * - Save to a temporary file the video id's verified to have alt thumbnails.
  *   This would speed up loading the watch history and users saved playlists.
+ * @noinspection unused
  */
 public final class AlternativeThumbnailsPatch {
     @Nullable
@@ -142,19 +143,16 @@ public final class AlternativeThumbnailsPatch {
                 // Get video still URL.
                 final var videoStillUrl = getYoutubeVideoStillURL(decodedUrl);
                 thumbnailUrlBuilder = new StringBuilder(videoStillUrl);
-            }
 
-            // log replaced url
-            final var thumbnailUrlForLog = thumbnailUrlBuilder.toString();
-            LogHelper.printDebug(() -> "Replaced url: " + thumbnailUrlForLog);
-
-            // URL tracking parameters. Presumably they are to determine if a user has viewed a thumbnail.
-            // This likely is used for recommendations, so they are retained if present.
-            if (!mode.isDeArrow()) {
+                // URL tracking parameters. Presumably they are to determine if a user has viewed a thumbnail.
+                // This likely is used for recommendations, so they are retained if present.
                 thumbnailUrlBuilder.append(decodedUrl.urlTrackingParameters);
             }
 
-            return thumbnailUrlBuilder.toString();
+            final var thumbnailUrl = thumbnailUrlBuilder.toString();
+            LogHelper.printDebug(() -> "Replaced url: " + thumbnailUrl);
+
+            return thumbnailUrl;
         } catch (Exception ex) {
             LogHelper.printException(() -> "Alt thumbnails failure", ex);
             return originalUrl;
@@ -163,7 +161,7 @@ public final class AlternativeThumbnailsPatch {
 
     /**
      * Injection point.
-     *
+     * <p>
      * Cronet considers all completed connections as a success, even if the response is 404 or 5xx.
      */
     public static void handleCronetSuccess(@NonNull UrlResponseInfo responseInfo) {
@@ -305,7 +303,7 @@ public final class AlternativeThumbnailsPatch {
 
             @Override
             protected boolean removeEldestEntry(Map.Entry eldest) {
-                return size() > CACHE_LIMIT; // Evict oldest entry if over the cache limit.
+                return size() > CACHE_LIMIT; // Evict the oldest entry if over the cache limit.
             }
         };
 
@@ -332,6 +330,7 @@ public final class AlternativeThumbnailsPatch {
 
         static void setAltThumbnailDoesNotExist(@NonNull String videoId, @NonNull ThumbnailQuality quality) {
             VerifiedQualities verified = getVerifiedQualities(videoId, false);
+            if (verified == null) return;
             verified.setQualityVerified(videoId, quality, false);
         }
 
@@ -438,25 +437,29 @@ public final class AlternativeThumbnailsPatch {
         static DecodedThumbnailUrl decodeImageUrl(String url) {
             final int videoIdStartIndex = url.indexOf('/', YOUTUBE_THUMBNAIL_PREFIX.length()) + 1;
             if (videoIdStartIndex <= 0) return null;
+
             final int videoIdEndIndex = url.indexOf('/', videoIdStartIndex);
             if (videoIdEndIndex < 0) return null;
+
             final int imageSizeStartIndex = videoIdEndIndex + 1;
             final int imageSizeEndIndex = url.indexOf('.', imageSizeStartIndex);
             if (imageSizeEndIndex < 0) return null;
+
             int imageExtensionEndIndex = url.indexOf('?', imageSizeEndIndex);
             if (imageExtensionEndIndex < 0) imageExtensionEndIndex = url.length();
+
             return new DecodedThumbnailUrl(url, videoIdStartIndex, videoIdEndIndex,
                     imageSizeStartIndex, imageSizeEndIndex, imageExtensionEndIndex);
         }
 
         /** Full usable url, but stripped of any tracking information. */
         final String sanitizedUrl;
-        /** Url up to the video id. */
+        /** Url up to the video ID. */
         final String urlPrefix;
         final String videoId;
         /** Quality, such as hq720 or sddefault. */
         final String imageQuality;
-        /** jpg or webp */
+        /** JPG or WEBP */
         final String imageExtension;
         /** User view tracking parameters, only present on some images. */
         final String urlTrackingParameters;
