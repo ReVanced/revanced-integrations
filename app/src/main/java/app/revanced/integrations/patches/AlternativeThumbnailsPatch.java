@@ -192,32 +192,38 @@ public final class AlternativeThumbnailsPatch {
             LogHelper.printDebug(() -> "Original url: " + decodedUrl.sanitizedUrl);
 
             final StringBuilder thumbnailUrlBuilder = new StringBuilder();
+            final String sanitizedReplacementUrl;
+            final boolean includeTrackingParameters;
             if (thumbnailMode.usingDeArrow() && canUseDeArrowAPI()) {
                 // Get fallback URL.
+                // Do not include view tracking parameters with API call.
                 final String fallbackUrl = thumbnailMode == AlternativeThumbnailMode.DEARROW_OR_VIDEO_STILLS
                         ? buildYoutubeVideoStillURL(decodedUrl)
                         : decodedUrl.sanitizedUrl;
 
-                final var thumbnailURL = buildDeArrowThumbnailURL(decodedUrl.videoId, fallbackUrl);
-                thumbnailUrlBuilder.append(thumbnailURL);
+                sanitizedReplacementUrl = buildDeArrowThumbnailURL(decodedUrl.videoId, fallbackUrl);
+                includeTrackingParameters = false;
             } else if (thumbnailMode.usingVideoStills()) {
                 // Get video still URL.
-                final var thumbnailUrl = buildYoutubeVideoStillURL(decodedUrl);
-                thumbnailUrlBuilder.append(thumbnailUrl);
-
-                // URL tracking parameters. Presumably they are to determine if a user has viewed a thumbnail.
-                // This likely is used for recommendations, so they are retained if present.
-                thumbnailUrlBuilder.append(decodedUrl.urlTrackingParameters);
+                sanitizedReplacementUrl = buildYoutubeVideoStillURL(decodedUrl);
+                includeTrackingParameters = true;
             } else {
                 return originalUrl; // Recently experienced DeArrow failure and video stills are not enabled.
             }
 
-            final var thumbnailUrl = thumbnailUrlBuilder.toString();
-            LogHelper.printDebug(() -> "Replaced url: " + thumbnailUrl);
+            thumbnailUrlBuilder.append(sanitizedReplacementUrl);
+            if (includeTrackingParameters) {
+                // View tracking parameters are presumably used to determine if a user has viewed a thumbnail.
+                // This likely is used for recommendations, so they are retained if present.
+                thumbnailUrlBuilder.append(decodedUrl.viewTrackingParameters);
+            }
 
-            return thumbnailUrl;
+            // Do not log the tracking parameters.
+            LogHelper.printDebug(() -> "Replacement url: " + sanitizedReplacementUrl);
+
+            return sanitizedReplacementUrl;
         } catch (Exception ex) {
-            LogHelper.printException(() -> "Alt thumbnails failure", ex);
+            LogHelper.printException(() -> "overrideImageURL failure", ex);
             return originalUrl;
         }
     }
@@ -233,7 +239,7 @@ public final class AlternativeThumbnailsPatch {
             if (responseCode != 200) {
                 AlternativeThumbnailMode currentMode = AlternativeThumbnailMode.getCurrent();
                 String url = responseInfo.getUrl();
-                // Do not log the responseInfo unless it's known to be a DeArrow call.
+                // Do not log the responseInfo unless it's found to be a DeArrow call.
                 // Otherwise this can log user details found in regular YouTube non Alt Thumbnails traffic.
                 LogHelper.printDebug(() -> "handleCronetSuccess responseCode: " + responseCode + " url: " + url);
 
@@ -265,7 +271,7 @@ public final class AlternativeThumbnailsPatch {
                 }
             }
         } catch (Exception ex) {
-            LogHelper.printException(() -> "Alt thumbnails callback failure", ex);
+            LogHelper.printException(() -> "Callback success error", ex);
         }
     }
 
@@ -290,7 +296,7 @@ public final class AlternativeThumbnailsPatch {
                 }
             }
         } catch (Exception ex) {
-            LogHelper.printException(() -> "Alt thumbnails callback failure", ex);
+            LogHelper.printException(() -> "Callback failure error", ex);
         }
     }
 
@@ -562,7 +568,7 @@ public final class AlternativeThumbnailsPatch {
         /** JPG or WEBP */
         final String imageExtension;
         /** User view tracking parameters, only present on some images. */
-        final String urlTrackingParameters;
+        final String viewTrackingParameters;
 
         private DecodedThumbnailUrl(String fullUrl, int videoIdStartIndex, int videoIdEndIndex,
                                     int imageSizeStartIndex, int imageSizeEndIndex, int imageExtensionEndIndex) {
@@ -571,7 +577,7 @@ public final class AlternativeThumbnailsPatch {
             videoId = fullUrl.substring(videoIdStartIndex, videoIdEndIndex);
             imageQuality = fullUrl.substring(imageSizeStartIndex, imageSizeEndIndex);
             imageExtension = fullUrl.substring(imageSizeEndIndex + 1, imageExtensionEndIndex);
-            urlTrackingParameters = (imageExtensionEndIndex == fullUrl.length())
+            viewTrackingParameters = (imageExtensionEndIndex == fullUrl.length())
                     ? "" : fullUrl.substring(imageExtensionEndIndex);
         }
     }
