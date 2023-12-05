@@ -1,11 +1,12 @@
 package app.revanced.integrations.patches;
 
 import android.net.Uri;
-
 import androidx.annotation.GuardedBy;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
+import app.revanced.integrations.settings.SettingsEnum;
+import app.revanced.integrations.utils.LogHelper;
+import app.revanced.integrations.utils.ReVancedUtils;
 import org.chromium.net.UrlResponseInfo;
 
 import java.net.HttpURLConnection;
@@ -14,10 +15,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
-
-import app.revanced.integrations.settings.SettingsEnum;
-import app.revanced.integrations.utils.LogHelper;
-import app.revanced.integrations.utils.ReVancedUtils;
 
 /**
  * Alternative YouTube thumbnails, showing the beginning/middle/end of the video.
@@ -38,6 +35,166 @@ import app.revanced.integrations.utils.ReVancedUtils;
  *   This would speed up loading the watch history and users saved playlists.
  */
 public final class AlternativeThumbnailsPatch {
+    @Nullable
+    private static final Uri dearrowApiUri;
+
+    static {
+        // Fix any bad imported data.
+        final int mode = SettingsEnum.ALT_THUMBNAIL_MODE.getInt();
+        if(mode < 1 || mode > 3) {
+            LogHelper.printException(() -> "Invalid alt thumbnail mode: " + mode);
+            SettingsEnum.ALT_THUMBNAIL_MODE.saveValue(SettingsEnum.ALT_THUMBNAIL_MODE.defaultValue);
+        }
+
+        final int altThumbnailType = SettingsEnum.ALT_THUMBNAIL_TYPE.getInt();
+        if (altThumbnailType < 1 || altThumbnailType > 3) {
+            LogHelper.printException(() -> "Invalid alt thumbnail type: " + altThumbnailType);
+            SettingsEnum.ALT_THUMBNAIL_TYPE.saveValue(SettingsEnum.ALT_THUMBNAIL_TYPE.defaultValue);
+        }
+
+        dearrowApiUri = Uri.parse(SettingsEnum.ALT_THUMBNAIL_DEARROW_API_URL.getString());
+    }
+
+    /**
+     * Get the alternative thumbnail url using builtin beginning / middle / end thumbnails
+     *
+     * @param decodedUrl Decoded original thumbnail request url.
+     * @return The alternative thumbnail url, or the original url. Both without tracking parameters.
+     */
+    @NonNull
+    private static String getYoutubeVideoStillURL(DecodedThumbnailUrl decodedUrl) {
+        ThumbnailQuality qualityToUse = ThumbnailQuality.getQualityToUse(decodedUrl.imageQuality);
+        if (qualityToUse == null) return decodedUrl.sanitizedUrl; // Video is a short.
+
+        // Images could be upgraded to webp if they are not already, but this fails quite often,
+        // especially for new videos uploaded in the last hour.
+        // And even if alt webp images do exist, sometimes they can load much slower than the original jpg alt images.
+        // (as much as 4x slower has been observed, despite the alt webp image being a smaller file).
+
+        StringBuilder builder = new StringBuilder(decodedUrl.sanitizedUrl.length() + 2);
+        builder.append(decodedUrl.urlPrefix);
+        builder.append(decodedUrl.videoId).append('/');
+        builder.append(qualityToUse.getAltImageNameToUse());
+        builder.append('.').append(decodedUrl.imageExtension);
+
+        String sanitizedReplacement = builder.toString();
+        if (!VerifiedQualities.verifyAltThumbnailExist(decodedUrl.videoId, qualityToUse, sanitizedReplacement)) {
+            return decodedUrl.sanitizedUrl;
+        }
+
+        return builder.toString();
+    }
+
+    /**
+     * Get the alternative thumbnail url using DeArrow thumbnail cache.
+     *
+     * @param videoId ID of the video to get a thumbnail of.
+     * @param fallbackUrl URL to fall back to in case.
+     * @return The alternative thumbnail url, without tracking parameters.
+     */
+    @NonNull
+    private static String getDeArrowThumbnailURL(String videoId, String fallbackUrl) {
+        // Use fallback if parsing API URI failed.
+        if (dearrowApiUri == null) {
+            return fallbackUrl;
+        }
+
+        // Build thumbnail request url.
+        // See https://github.com/ajayyy/DeArrowThumbnailCache/blob/29eb4359ebdf823626c79d944a901492d760bbbc/app.py#L29.
+        return dearrowApiUri
+                .buildUpon()
+                .appendQueryParameter("videoID", videoId)
+                .appendQueryParameter("officialTime", "true")
+                .appendQueryParameter("redirectUrl", fallbackUrl)
+                .build()
+                .toString();
+    }
+
+    /**
+     * Injection point.  Called off the main thread and by multiple threads at the same time.
+     *
+     * @param originalUrl Image url for all url images loaded, including video thumbnails.
+     */
+    public static String overrideImageURL(String originalUrl) {
+        try {
+            final var mode = AlternativeThumbnailMode.getCurrent();
+            if (mode == AlternativeThumbnailMode.ORIGINAL) {
+                return originalUrl;
+            }
+
+            final var decodedUrl = DecodedThumbnailUrl.decodeImageUrl(originalUrl);
+            if (decodedUrl == null) {
+                return originalUrl; // Not a thumbnail.
+            }
+
+            // Keep any tracking parameters out of the logs, and log only the base URL.
+            LogHelper.printDebug(() -> "Original url: " + decodedUrl.sanitizedUrl);
+
+            // Get video still URL.
+            final var videoStillUrl = getYoutubeVideoStillURL(decodedUrl);
+
+            // Initialize thumbnail URL builder.
+            final StringBuilder thumbnailUrlBuilder;
+            if(mode.isDeArrow()) {
+                // figure out fallback url to use
+                final var fallbackUrl = mode == AlternativeThumbnailMode.DEARROW_OR_VIDEO_STILLS ? videoStillUrl : decodedUrl.sanitizedUrl;
+                final var deArrowUrl = getDeArrowThumbnailURL(decodedUrl.videoId, fallbackUrl);
+                thumbnailUrlBuilder = new StringBuilder(deArrowUrl);
+            } else {
+                thumbnailUrlBuilder = new StringBuilder(videoStillUrl);
+            }
+
+            // log replaced url
+            final var thumbnailUrlForLog = thumbnailUrlBuilder.toString();
+            LogHelper.printDebug(() -> "Replaced url: " + thumbnailUrlForLog);
+
+            // URL tracking parameters. Presumably they are to determine if a user has viewed a thumbnail.
+            // This likely is used for recommendations, so they are retained if present.
+            if (!mode.isDeArrow()) {
+                thumbnailUrlBuilder.append(decodedUrl.urlTrackingParameters);
+            }
+
+            return thumbnailUrlBuilder.toString();
+        } catch (Exception ex) {
+            LogHelper.printException(() -> "Alt thumbnails failure", ex);
+            return originalUrl;
+        }
+    }
+
+    /**
+     * Injection point.
+     *
+     * Cronet considers all completed connections as a success, even if the response is 404 or 5xx.
+     */
+    public static void handleCronetSuccess(@NonNull UrlResponseInfo responseInfo) {
+        try {
+            // 404 and alt thumbnails is using video stills
+            if (responseInfo.getHttpStatusCode() == 404 && AlternativeThumbnailMode.getCurrent() == AlternativeThumbnailMode.VIDEO_STILLS) {
+                // Fast alt thumbnails is enabled and the thumbnail is not available.
+                // The video is:
+                // - live stream
+                // - upcoming unreleased video
+                // - very old
+                // - very low view count
+                // Take note of this, so if the image reloads the original thumbnail will be used.
+                DecodedThumbnailUrl decodedUrl = DecodedThumbnailUrl.decodeImageUrl(responseInfo.getUrl());
+                if (decodedUrl == null) {
+                    return; // Not a thumbnail.
+                }
+
+                ThumbnailQuality quality = ThumbnailQuality.altImageNameToQuality(decodedUrl.imageQuality);
+                if (quality == null) {
+                    // Video is a short or unknown quality, but the url returned 404.  Should never happen.
+                    LogHelper.printDebug(() -> "Failed to load unknown url: " + decodedUrl.sanitizedUrl);
+                    return;
+                }
+
+                VerifiedQualities.setAltThumbnailDoesNotExist(decodedUrl.videoId, quality);
+            }
+        } catch (Exception ex) {
+            LogHelper.printException(() -> "Alt thumbnails callback failure", ex);
+        }
+    }
 
     private enum ThumbnailQuality {
         // In order of lowest to highest resolution.
@@ -317,28 +474,28 @@ public final class AlternativeThumbnailsPatch {
     }
 
     /**
-     * patch operation modes, see patch in revanced-patches
+     * Alternative thumbnail mode.
      */
     private enum AlternativeThumbnailMode {
         /**
-         * use thumbnails provided by the content creator.
-         * This should effectively disable the patch, as this options matches the stock behaviour.
+         * Use the original thumbnails provided by the content creator.
+         * This effectively disables the patch, as this options matches the stock behaviour.
          */
-        CREATOR_PROVIDED(1),
+        ORIGINAL(1),
 
         /**
-         * use video stills provided by youtube.
-         * revanced_alt_thumbnail_type and revanced_alt_thumbnail_fast_quality controls what still should be used
+         * Use video stills provided by YouTube.
+         * revanced_alt_thumbnail_type and revanced_alt_thumbnail_fast_quality controls what still should be used.
          */
         VIDEO_STILLS(2),
 
         /**
-         * use thumbnails provided by DeArrow, fallback to {@link AlternativeThumbnailMode#CREATOR_PROVIDED}
+         * Use thumbnails provided by DeArrow, fallback to {@link AlternativeThumbnailMode#ORIGINAL}.
          */
         DEARROW_OR_CREATOR_PROVIDED(3),
 
         /**
-         * use thumbnails provided by DeArrow, fallback to {@link AlternativeThumbnailMode#VIDEO_STILLS}
+         * Use thumbnails provided by DeArrow, fallback to {@link AlternativeThumbnailMode#VIDEO_STILLS}.
          */
         DEARROW_OR_VIDEO_STILLS(4);
 
@@ -367,174 +524,11 @@ public final class AlternativeThumbnailsPatch {
             var mode = byId(SettingsEnum.ALT_THUMBNAIL_MODE.getInt());
 
             if (mode == null) {
-                // fallback to stock behaviour
-                mode = CREATOR_PROVIDED;
+                // Fallback to stock behaviour.
+                mode = ORIGINAL;
             }
 
             return mode;
         }
     }
-
-    static {
-        // Fix any bad imported data.
-        final int altThumbnailMode = SettingsEnum.ALT_THUMBNAIL_MODE.getInt();
-        if(altThumbnailMode < 1 || altThumbnailMode > 3) {
-            LogHelper.printException(() -> "Invalid alt thumbnail mode: " + altThumbnailMode);
-            SettingsEnum.ALT_THUMBNAIL_MODE.saveValue(SettingsEnum.ALT_THUMBNAIL_MODE.defaultValue);
-        }
-
-        final int altThumbnailType = SettingsEnum.ALT_THUMBNAIL_TYPE.getInt();
-        if (altThumbnailType < 1 || altThumbnailType > 3) {
-            LogHelper.printException(() -> "Invalid alt thumbnail type: " + altThumbnailType);
-            SettingsEnum.ALT_THUMBNAIL_TYPE.saveValue(SettingsEnum.ALT_THUMBNAIL_TYPE.defaultValue);
-        }
-    }
-
-    /**
-     * get the alternative thumbnail url using builtin beginning / middle / end thumbnails
-     *
-     * @param decodedUrl decoded original thumbnail request url
-     * @return the alternative thumbnail url, or the original url. Both without tracking parameters
-     */
-    @NonNull
-    private static String getYoutubeVideoStillURL(DecodedThumbnailUrl decodedUrl) {
-        ThumbnailQuality qualityToUse = ThumbnailQuality.getQualityToUse(decodedUrl.imageQuality);
-        if (qualityToUse == null) return decodedUrl.sanitizedUrl; // Video is a short.
-
-        // Images could be upgraded to webp if they are not already, but this fails quite often,
-        // especially for new videos uploaded in the last hour.
-        // And even if alt webp images do exist, sometimes they can load much slower than the original jpg alt images.
-        // (as much as 4x slower has been observed, despite the alt webp image being a smaller file).
-
-        StringBuilder builder = new StringBuilder(decodedUrl.sanitizedUrl.length() + 2);
-        builder.append(decodedUrl.urlPrefix);
-        builder.append(decodedUrl.videoId).append('/');
-        builder.append(qualityToUse.getAltImageNameToUse());
-        builder.append('.').append(decodedUrl.imageExtension);
-
-        String sanitizedReplacement = builder.toString();
-        if (!VerifiedQualities.verifyAltThumbnailExist(decodedUrl.videoId, qualityToUse, sanitizedReplacement)) {
-            return decodedUrl.sanitizedUrl;
-        }
-
-        return builder.toString();
-    }
-
-    @Nullable
-    private static final Uri dearrowApiUri;
-    static {
-        dearrowApiUri = Uri.parse(SettingsEnum.ALT_THUMBNAIL_DEARROW_API_URL.getString());
-    }
-
-    /**
-     * get the alternative thumbnail url using DeArrow thumbnail cache
-     *
-     * @param videoId id of the video to get a thumbnail of
-     * @param fallbackUrl url to fallback to in case
-     * @return the alternative thumbnail url, without tracking parameters
-     */
-    @NonNull
-    private static String getDeArrowThumbnailURL(String videoId, String fallbackUrl) {
-        // use fallback if parsing api uri failed
-        if (dearrowApiUri == null) {
-            return fallbackUrl;
-        }
-
-        // build thumbnail request url
-        // see https://github.com/ajayyy/DeArrowThumbnailCache/blob/29eb4359ebdf823626c79d944a901492d760bbbc/app.py#L29
-        return dearrowApiUri
-                .buildUpon()
-                .appendQueryParameter("videoID", videoId)
-                .appendQueryParameter("officialTime", "true")
-                .appendQueryParameter("redirectUrl", fallbackUrl)
-                .build()
-                .toString();
-    }
-
-    /**
-     * Injection point.  Called off the main thread and by multiple threads at the same time.
-     *
-     * @param originalUrl Image url for all url images loaded, including video thumbnails.
-     */
-    public static String overrideImageURL(String originalUrl) {
-        try {
-            final var mode = AlternativeThumbnailMode.getCurrent();
-            if (mode == AlternativeThumbnailMode.CREATOR_PROVIDED) {
-                return originalUrl;
-            }
-
-            final var decodedUrl = DecodedThumbnailUrl.decodeImageUrl(originalUrl);
-            if (decodedUrl == null) {
-                return originalUrl; // Not a thumbnail.
-            }
-
-            // Keep any tracking parameters out of the logs, and log only the base url.
-            LogHelper.printDebug(() -> "Original url: " + decodedUrl.sanitizedUrl);
-
-            // get alternative thumbnail from youtube builtin
-            final var videoStillUrl = getYoutubeVideoStillURL(decodedUrl);
-
-            // initialize thumbnail url builder
-            final StringBuilder thumbnailUrlBuilder;
-            if(mode.isDeArrow()) {
-                // figure out fallback url to use
-                final var fallbackUrl = mode == AlternativeThumbnailMode.DEARROW_OR_VIDEO_STILLS ? videoStillUrl : decodedUrl.sanitizedUrl;
-                final var deArrowUrl = getDeArrowThumbnailURL(decodedUrl.videoId, fallbackUrl);
-                thumbnailUrlBuilder = new StringBuilder(deArrowUrl);
-            } else {
-                thumbnailUrlBuilder = new StringBuilder(videoStillUrl);
-            }
-
-            // log replaced url
-            final var thumbnailUrlForLog = thumbnailUrlBuilder.toString();
-            LogHelper.printDebug(() -> "Replaced url: " + thumbnailUrlForLog);
-
-            // URL tracking parameters. Presumably they are to determine if a user has viewed a thumbnail.
-            // This likely is used for recommendations, so they are retained if present.
-            if (!mode.isDeArrow()) {
-                thumbnailUrlBuilder.append(decodedUrl.urlTrackingParameters);
-            }
-
-            return thumbnailUrlBuilder.toString();
-        } catch (Exception ex) {
-            LogHelper.printException(() -> "Alt thumbnails failure", ex);
-            return originalUrl;
-        }
-    }
-
-    /**
-     * Injection point.
-     *
-     * Cronet considers all completed connections as a success, even if the response is 404 or 5xx.
-     */
-    public static void handleCronetSuccess(@NonNull UrlResponseInfo responseInfo) {
-        try {
-            // 404 and alt thumbnails is using video stills
-            if (responseInfo.getHttpStatusCode() == 404 && AlternativeThumbnailMode.getCurrent() == AlternativeThumbnailMode.VIDEO_STILLS) {
-                // Fast alt thumbnails is enabled and the thumbnail is not available.
-                // The video is:
-                // - live stream
-                // - upcoming unreleased video
-                // - very old
-                // - very low view count
-                // Take note of this, so if the image reloads the original thumbnail will be used.
-                DecodedThumbnailUrl decodedUrl = DecodedThumbnailUrl.decodeImageUrl(responseInfo.getUrl());
-                if (decodedUrl == null) {
-                    return; // Not a thumbnail.
-                }
-
-                ThumbnailQuality quality = ThumbnailQuality.altImageNameToQuality(decodedUrl.imageQuality);
-                if (quality == null) {
-                    // Video is a short or unknown quality, but the url returned 404.  Should never happen.
-                    LogHelper.printDebug(() -> "Failed to load unknown url: " + decodedUrl.sanitizedUrl);
-                    return;
-                }
-
-                VerifiedQualities.setAltThumbnailDoesNotExist(decodedUrl.videoId, quality);
-            }
-        } catch (Exception ex) {
-            LogHelper.printException(() -> "Alt thumbnails callback failure", ex);
-        }
-    }
-
 }
