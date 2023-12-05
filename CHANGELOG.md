@@ -1,3 +1,50 @@
+# [1.0.0-dev.5](https://github.com/ReVanced/revanced-integrations/compare/v1.0.0-dev.4...v1.0.0-dev.5) (2023-12-04)
+
+
+### Bug Fixes
+
+* **YouTube - Minimized playback:** Fix PIP incorrectly shown for some Shorts playback ([#533](https://github.com/ReVanced/revanced-integrations/issues/533)) ([fb433da](https://github.com/ReVanced/revanced-integrations/commit/fb433da6ad652aee48fc92794de82bb914ab80ca))
+
+# [1.0.0-dev.4](https://github.com/ReVanced/revanced-integrations/compare/v1.0.0-dev.3...v1.0.0-dev.4) (2023-12-04)
+
+
+### Bug Fixes
+
+* **YouTube - Return YouTube Dislike:** Prevent the first Short opened from freezing the UI ([#532](https://github.com/ReVanced/revanced-integrations/issues/532)) ([0bb8669](https://github.com/ReVanced/revanced-integrations/commit/0bb86694e24a6a41edee62f5ef1bb80fe7bc3f19))
+
+# [1.0.0-dev.3](https://github.com/ReVanced/revanced-integrations/compare/v1.0.0-dev.2...v1.0.0-dev.3) (2023-12-03)
+
+
+### Bug Fixes
+
+* **YouTube - SponsorBlock:** Prevent autoplay from stopping to work ([f4e2d56](https://github.com/ReVanced/revanced-integrations/commit/f4e2d56b181fee4d693dea1dfe81974237e4eff7))
+
+# [1.0.0-dev.2](https://github.com/ReVanced/revanced-integrations/compare/v1.0.0-dev.1...v1.0.0-dev.2) (2023-12-03)
+
+
+### Bug Fixes
+
+* **YouTube - Return YouTube Dislike:** Fix dislikes sometimes not showing for non English language ([5d4c8b0](https://github.com/ReVanced/revanced-integrations/commit/5d4c8b0a1b77e97c7c0c02288927e92f3c9765ce))
+
+# [1.0.0-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v0.125.1-dev.1...v1.0.0-dev.1) (2023-12-02)
+
+
+### Features
+
+* Allow choosing the vendor of GmsCore via patch options ([#529](https://github.com/ReVanced/revanced-integrations/issues/529)) ([fba7181](https://github.com/ReVanced/revanced-integrations/commit/fba7181e70d695d7fb13c530754dc1db99b87216))
+
+
+### BREAKING CHANGES
+
+* The class `MicroGSupport` has been renamed to `GmsCoreSupport`
+
+## [0.125.1-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v0.125.0...v0.125.1-dev.1) (2023-12-02)
+
+
+### Bug Fixes
+
+* **YouTube - SponsorBlock:** Allow autoplay when skipping to the end of the video ([3d660e1](https://github.com/ReVanced/revanced-integrations/commit/3d660e1b5eeab9771f96bd2d26a222b835e2485c))
+
 # [0.125.0](https://github.com/ReVanced/revanced-integrations/compare/v0.124.1...v0.125.0) (2023-12-02)
 
 
