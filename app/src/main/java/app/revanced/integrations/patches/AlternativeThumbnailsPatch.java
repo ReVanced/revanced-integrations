@@ -274,12 +274,10 @@ public final class AlternativeThumbnailsPatch {
             if (currentMode.usingDeArrow()) {
                 // If the DeArrow API host name does not resolve, then no response is provided
                 // and the IOException (CronetException) provides no information to detect this situation.
-                //
-                // For now, treat this as a DeArrow failure but only if the API is not set to default.
-                // This may incorrectly turn off DeArrow for non alt thumbnail errors,
-                // but that should be rare since so few users will change the API url.
-                if ((responseInfo == null && !SettingsEnum.ALT_THUMBNAIL_DEARROW_API_URL.isSetToDefault())
-                        || (responseInfo != null && urlIsDeArrow(responseInfo.getUrl()))) {
+                // For this situation no error toast is shown and no API backoff is done,
+                // since this situation cannot be easily detected.  Will not happen
+                // unless the user has changed the API url.
+                if (responseInfo != null && urlIsDeArrow(responseInfo.getUrl())) {
                     handleDeArrowError(responseInfo);
                 }
             }
