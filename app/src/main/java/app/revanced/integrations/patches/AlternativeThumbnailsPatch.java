@@ -179,9 +179,7 @@ public final class AlternativeThumbnailsPatch {
             // Keep any tracking parameters out of the logs, and log only the base URL.
             LogHelper.printDebug(() -> "Original url: " + decodedUrl.sanitizedUrl);
 
-            final StringBuilder thumbnailUrlBuilder = new StringBuilder();
-            final String sanitizedReplacementUrl;
-            final boolean includeTrackingParameters;
+            String sanitizedReplacementUrl;
             if (thumbnailMode.usingDeArrow() && canUseDeArrowAPI()) {
                 // Get fallback URL.
                 // Do not include view tracking parameters with API call.
@@ -190,20 +188,12 @@ public final class AlternativeThumbnailsPatch {
                         : decodedUrl.sanitizedUrl;
 
                 sanitizedReplacementUrl = buildDeArrowThumbnailURL(decodedUrl.videoId, fallbackUrl);
-                includeTrackingParameters = false;
             } else if (thumbnailMode.usingVideoStills()) {
                 // Get video still URL.
-                sanitizedReplacementUrl = buildYoutubeVideoStillURL(decodedUrl);
-                includeTrackingParameters = true;
+                // Include view tracking parameters if present.
+                sanitizedReplacementUrl = buildYoutubeVideoStillURL(decodedUrl) + decodedUrl.viewTrackingParameters;
             } else {
                 return originalUrl; // Recently experienced DeArrow failure and video stills are not enabled.
-            }
-
-            thumbnailUrlBuilder.append(sanitizedReplacementUrl);
-            if (includeTrackingParameters) {
-                // View tracking parameters are presumably used to determine if a user has viewed a thumbnail.
-                // This likely is used for recommendations, so they are retained if present.
-                thumbnailUrlBuilder.append(decodedUrl.viewTrackingParameters);
             }
 
             // Do not log the tracking parameters.
@@ -227,9 +217,6 @@ public final class AlternativeThumbnailsPatch {
             if (responseCode != 200) {
                 AlternativeThumbnailMode currentMode = AlternativeThumbnailMode.getCurrent();
                 String url = responseInfo.getUrl();
-                // Do not log the responseInfo unless it's found to be a DeArrow call.
-                // Otherwise this can log user details found in regular YouTube non Alt Thumbnails traffic.
-                LogHelper.printDebug(() -> "handleCronetSuccess responseCode: " + responseCode + " url: " + url);
 
                 if (currentMode.usingDeArrow() && urlIsDeArrow(url)) {
                     handleDeArrowError(responseInfo);
@@ -247,6 +234,8 @@ public final class AlternativeThumbnailsPatch {
                     if (decodedUrl == null) {
                         return; // Not a thumbnail.
                     }
+
+                    LogHelper.printDebug(() -> "handleCronetSuccess responseCode: " + responseCode + " url: " + url);
 
                     ThumbnailQuality quality = ThumbnailQuality.altImageNameToQuality(decodedUrl.imageQuality);
                     if (quality == null) {
@@ -272,7 +261,7 @@ public final class AlternativeThumbnailsPatch {
             AlternativeThumbnailMode currentMode = AlternativeThumbnailMode.getCurrent();
 
             if (currentMode.usingDeArrow()) {
-                // If the DeArrow API host name does not resolve, then no response is provided
+                // If the DeArrow API host name does not resolve, then the response is nbull
                 // and the IOException (CronetException) provides no information to detect this situation.
                 // For this situation no error toast is shown and no API backoff is done,
                 // since this situation cannot be easily detected.  Will not happen
@@ -626,7 +615,8 @@ public final class AlternativeThumbnailsPatch {
         }
 
         @NonNull
-        public static AlternativeThumbnailMode byId(int id) {
+        public static AlternativeThumbnailMode getCurrent() {
+            final var id = SettingsEnum.ALT_THUMBNAIL_MODE.getInt();
             // Could use the Enum ordinal and use values()[id],
             // but then the ids would start at 0.
             // Since only 4 ids exist this isn't a big deal
@@ -638,12 +628,8 @@ public final class AlternativeThumbnailsPatch {
             }
             // User imported bad data and did not restart the app. Fix the settings and continue.
             validateSettings();
-            return byId(id);
+            return getCurrent();
         }
 
-        @NonNull
-        public static AlternativeThumbnailMode getCurrent() {
-            return byId(SettingsEnum.ALT_THUMBNAIL_MODE.getInt());
-        }
     }
 }
