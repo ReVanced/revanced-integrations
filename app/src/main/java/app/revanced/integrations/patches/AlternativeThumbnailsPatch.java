@@ -242,8 +242,7 @@ public final class AlternativeThumbnailsPatch {
         try {
             final int responseCode = responseInfo.getHttpStatusCode();
             if (responseCode != 200) {
-                // Url is the still images url if DeArrow was not available.
-                String url = ((CronetUrlRequest) request).getHookedUrl();
+                String url = responseInfo.getUrl();
                 if (usingDeArrow() && urlIsDeArrow(url)) {
                     LogHelper.printDebug(() -> "handleCronetSuccess responseCode: " + responseCode);
                     handleDeArrowError(url);
