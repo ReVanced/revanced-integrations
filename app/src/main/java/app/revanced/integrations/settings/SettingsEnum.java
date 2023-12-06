@@ -62,6 +62,7 @@ public enum SettingsEnum {
     ALT_THUMBNAIL_DEARROW("revanced_alt_thumbnail_dearrow", BOOLEAN, false),
     ALT_THUMBNAIL_DEARROW_API_URL("revanced_alt_thumbnail_dearrow_api_url", STRING,
             "https://dearrow-thumb.ajay.app/api/v1/getThumbnail", true, parents(ALT_THUMBNAIL_DEARROW)),
+    ALT_THUMBNAIL_DEARROW_CONNECTION_TOAST("revanced_alt_thumbnail_dearrow_connection_toast", BOOLEAN, TRUE, parents(ALT_THUMBNAIL_DEARROW)),
     CUSTOM_FILTER("revanced_custom_filter", BOOLEAN, FALSE),
     CUSTOM_FILTER_STRINGS("revanced_custom_filter_strings", STRING, "", true, parents(CUSTOM_FILTER)),
     DISABLE_FULLSCREEN_AMBIENT_MODE("revanced_disable_fullscreen_ambient_mode", BOOLEAN, TRUE, true),

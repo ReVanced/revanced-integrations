@@ -1,12 +1,16 @@
 package app.revanced.integrations.patches;
 
+import static app.revanced.integrations.utils.StringRef.str;
+
 import android.net.Uri;
 
 import androidx.annotation.GuardedBy;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import org.chromium.net.UrlRequest;
 import org.chromium.net.UrlResponseInfo;
+import org.chromium.net.impl.CronetUrlRequest;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -56,16 +60,30 @@ public final class AlternativeThumbnailsPatch {
     /**
      * How long to temporarily turn off DeArrow if it fails for any reason.
      */
-    private static final long DEARROW_CONNECTION_FAILURE_BACKOFF_MILLISECONDS = 2 * 60 * 1000; // 2 Minutes.
+    private static final long DEARROW_CONNECTION_FAILURE_API_BACKOFF_MILLISECONDS = 2 * 60 * 1000; // 2 Minutes.
 
     /**
      * If non zero, then the system time of when DeArrow API calls can resume.
      */
     private static volatile long timeToResumeDeArrowAPICalls;
 
+    /**
+     * How long to temporarily turn off connection failure toasts if DeArrow fails for any reason.
+     */
+    private static final long DEARROW_CONNECTION_FAILURE_TOAST_BACKOFF_MILLISECONDS = 60 * 60 * 1000; // 60 Minutes.
+
+    /**
+     * If non zero, then the system time of when connection error toasts can be shown again.
+     * Differs from {@link #DEARROW_CONNECTION_FAILURE_API_BACKOFF_MILLISECONDS}.
+     */
+    private static volatile long timeToResumeDeArrowConnectionToasts;
+
     static {
         dearrowApiUri = validateSettings();
-        deArrowApiUrlPrefix = dearrowApiUri.getScheme() + "://" + dearrowApiUri.getHost() + "/";
+        final int port = dearrowApiUri.getPort();
+        String portString = port == -1 ? "" : (":" + port);
+        deArrowApiUrlPrefix = dearrowApiUri.getScheme() + "://" + dearrowApiUri.getHost() + portString + "/";
+        LogHelper.printDebug(() -> "Using DeArrow API address: " + deArrowApiUrlPrefix);
     }
 
     /**
@@ -80,7 +98,8 @@ public final class AlternativeThumbnailsPatch {
         }
 
         Uri apiUri = Uri.parse(SettingsEnum.ALT_THUMBNAIL_DEARROW_API_URL.getString());
-        if (apiUri.getScheme() == null || apiUri.getHost() == null) {
+        // Cannot use unsecured 'http', otherwise the connections fail to start and no callbacks hooks are made.
+        if (apiUri.getScheme() == null || apiUri.getScheme().equals("http") || apiUri.getHost() == null) {
             ReVancedUtils.showToastLong("Invalid DeArrow API URL. Using default");
             SettingsEnum.ALT_THUMBNAIL_DEARROW_API_URL.resetToDefault();
             return validateSettings();
@@ -153,11 +172,17 @@ public final class AlternativeThumbnailsPatch {
         return false;
     }
 
-    private static void handleDeArrowError(UrlResponseInfo responseInfo) {
-        // TODO? Add a setting to show a toast on DeArrow failure?
+    private static void handleDeArrowError(@NonNull String url) {
         LogHelper.printDebug(() -> "Encountered DeArrow error.  Backing off for "
-                        + DEARROW_CONNECTION_FAILURE_BACKOFF_MILLISECONDS + "ms: " + responseInfo);
-        timeToResumeDeArrowAPICalls = System.currentTimeMillis() + DEARROW_CONNECTION_FAILURE_BACKOFF_MILLISECONDS;
+                        + DEARROW_CONNECTION_FAILURE_API_BACKOFF_MILLISECONDS + "ms.  Url: " + url);
+        final long now = System.currentTimeMillis();
+        timeToResumeDeArrowAPICalls = now + DEARROW_CONNECTION_FAILURE_API_BACKOFF_MILLISECONDS;
+
+        if (SettingsEnum.ALT_THUMBNAIL_DEARROW_CONNECTION_TOAST.getBoolean()
+                && timeToResumeDeArrowConnectionToasts < now) {
+            ReVancedUtils.showToastLong(str("revanced_alt_thumbnail_dearrow_error_toast"));
+        }
+        timeToResumeDeArrowConnectionToasts = now + DEARROW_CONNECTION_FAILURE_TOAST_BACKOFF_MILLISECONDS;
     }
 
     /**
@@ -213,14 +238,15 @@ public final class AlternativeThumbnailsPatch {
      * <p>
      * Cronet considers all completed connections as a success, even if the response is 404 or 5xx.
      */
-    public static void handleCronetSuccess(@NonNull UrlResponseInfo responseInfo) {
+    public static void handleCronetSuccess(UrlRequest request, @NonNull UrlResponseInfo responseInfo) {
         try {
             final int responseCode = responseInfo.getHttpStatusCode();
             if (responseCode != 200) {
-                String url = responseInfo.getUrl();
-
+                // Url is the still images url if DeArrow was not available.
+                String url = ((CronetUrlRequest) request).getHookedUrl();
                 if (usingDeArrow() && urlIsDeArrow(url)) {
-                    handleDeArrowError(responseInfo);
+                    LogHelper.printDebug(() -> "handleCronetSuccess responseCode: " + responseCode);
+                    handleDeArrowError(url);
                 }
 
                 if (usingVideoStills() && responseCode == 404) {
@@ -255,19 +281,24 @@ public final class AlternativeThumbnailsPatch {
 
     /**
      * Injection point.
+     *
+     * To test this hook try changing the API to each of:
+     * - A non existent domain
+     * - A url path of something incorrect (ie: /v1/nonExistentEndPoint)
+     *
+     * Known limitation: YT uses an infinite timeout, so this hook is never called if a host never responds.
+     * But this does not appear to be a problem, as the DeArrow API has not been observed to 'go silent'
+     * Instead if there's a problem it returns an error code status response, which this hook correctly handles.
      */
-    public static void handleCronetFailure(@Nullable UrlResponseInfo responseInfo, IOException exception) {
+    public static void handleCronetFailure(UrlRequest request,
+                                           @Nullable UrlResponseInfo responseInfo,
+                                           IOException exception) {
         try {
-            LogHelper.printDebug(() -> "handleCronetFailure exception: " + exception);
-
             if (usingDeArrow()) {
-                // If the DeArrow API host name does not resolve, then the response is nbull
-                // and the IOException (CronetException) provides no information to detect this situation.
-                // For this situation no error toast is shown and no API backoff is done,
-                // since this situation cannot be easily detected.  Will not happen
-                // unless the user has changed the API url.
-                if (responseInfo != null && urlIsDeArrow(responseInfo.getUrl())) {
-                    handleDeArrowError(responseInfo);
+                String url = ((CronetUrlRequest) request).getHookedUrl();
+                if (urlIsDeArrow(url)) {
+                    LogHelper.printDebug(() -> "handleCronetFailure exception: " + exception);
+                    handleDeArrowError(url);
                 }
             }
         } catch (Exception ex) {
