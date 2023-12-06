@@ -56,13 +56,12 @@ public enum SettingsEnum {
     HIDE_WEB_SEARCH_RESULTS("revanced_hide_web_search_results", BOOLEAN, TRUE),
 
     // Layout
-    ALT_THUMBNAIL_MODE("revanced_alt_thumbnail_mode", INTEGER, 1),
-    @Deprecated DEPRECATED_ALT_THUMBNAIL_TYPE("revanced_alt_thumbnail_type", INTEGER, 2),
-    ALT_THUMBNAIL_STILL_TIME("revanced_alt_thumbnail_still_time", INTEGER, 2),
-    @Deprecated DEPRECATED_ALT_THUMBNAIL_FAST_QUALITY("revanced_alt_thumbnail_fast_quality", BOOLEAN, FALSE),
-    ALT_THUMBNAIL_STILL_FAST_QUALITY("revanced_alt_thumbnail_still_fast_quality", BOOLEAN, FALSE),
+    ALT_THUMBNAIL_STILLS("revanced_alt_thumbnail_stills", BOOLEAN, FALSE),
+    ALT_THUMBNAIL_STILLS_TIME("revanced_alt_thumbnail_stills_time", INTEGER, 2, parents(ALT_THUMBNAIL_STILLS)),
+    ALT_THUMBNAIL_STILLS_FAST("revanced_alt_thumbnail_stills_fast", BOOLEAN, FALSE, parents(ALT_THUMBNAIL_STILLS)),
+    ALT_THUMBNAIL_DEARROW("revanced_alt_thumbnail_dearrow", BOOLEAN, false),
     ALT_THUMBNAIL_DEARROW_API_URL("revanced_alt_thumbnail_dearrow_api_url", STRING,
-            "https://dearrow-thumb.ajay.app/api/v1/getThumbnail", true),
+            "https://dearrow-thumb.ajay.app/api/v1/getThumbnail", true, parents(ALT_THUMBNAIL_DEARROW)),
     CUSTOM_FILTER("revanced_custom_filter", BOOLEAN, FALSE),
     CUSTOM_FILTER_STRINGS("revanced_custom_filter_strings", STRING, "", true, parents(CUSTOM_FILTER)),
     DISABLE_FULLSCREEN_AMBIENT_MODE("revanced_disable_fullscreen_ambient_mode", BOOLEAN, TRUE, true),
@@ -407,8 +406,6 @@ public enum SettingsEnum {
         migrateOldSettingToNew(DISABLE_FINE_SCRUBBING_GESTURE, DISABLE_PRECISE_SEEKING_GESTURE);
         migrateOldSettingToNew(SHOW_OLD_VIDEO_QUALITY_MENU, RESTORE_OLD_VIDEO_QUALITY_MENU);
         migrateOldSettingToNew(ENABLE_OLD_SEEKBAR_THUMBNAILS, RESTORE_OLD_SEEKBAR_THUMBNAILS);
-        migrateOldSettingToNew(DEPRECATED_ALT_THUMBNAIL_TYPE, ALT_THUMBNAIL_STILL_TIME);
-        migrateOldSettingToNew(DEPRECATED_ALT_THUMBNAIL_FAST_QUALITY, ALT_THUMBNAIL_STILL_FAST_QUALITY);
 
         // Do _not_ delete this SB private user id migration property until sometime in 2024.
         // This is the only setting that cannot be reconfigured if lost,

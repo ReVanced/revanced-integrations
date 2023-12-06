@@ -72,18 +72,11 @@ public final class AlternativeThumbnailsPatch {
      * Fix any bad imported data.
      */
     private static Uri validateSettings() {
-        final int mode = SettingsEnum.ALT_THUMBNAIL_MODE.getInt();
-        if (mode < 1 || mode > 4) {
-            ReVancedUtils.showToastLong("Invalid Alternative thumbnail mode: "
-                    + mode + ".  Using default");
-            SettingsEnum.ALT_THUMBNAIL_MODE.resetToDefault();
-        }
-
-        final int altThumbnailType = SettingsEnum.ALT_THUMBNAIL_STILL_TIME.getInt();
+        final int altThumbnailType = SettingsEnum.ALT_THUMBNAIL_STILLS_TIME.getInt();
         if (altThumbnailType < 1 || altThumbnailType > 3) {
             ReVancedUtils.showToastLong("Invalid Alternative still thumbnail type: "
                     + altThumbnailType + ". Using default");
-            SettingsEnum.ALT_THUMBNAIL_STILL_TIME.resetToDefault();
+            SettingsEnum.ALT_THUMBNAIL_STILLS_TIME.resetToDefault();
         }
 
         Uri apiUri = Uri.parse(SettingsEnum.ALT_THUMBNAIL_DEARROW_API_URL.getString());
@@ -95,8 +88,16 @@ public final class AlternativeThumbnailsPatch {
         return apiUri;
     }
 
+    private static boolean usingDeArrow() {
+        return SettingsEnum.ALT_THUMBNAIL_DEARROW.getBoolean();
+    }
+
+    private static boolean usingVideoStills() {
+        return SettingsEnum.ALT_THUMBNAIL_STILLS.getBoolean();
+    }
+
     /**
-     * Build the alternative thumbnail url using video stills from the beginning / middle / end thumbnails.
+     * Build the alternative thumbnail url using YouTube provided still video captures.
      *
      * @param decodedUrl Decoded original thumbnail request url.
      * @return The alternative thumbnail url, or the original url. Both without tracking parameters.
@@ -106,7 +107,7 @@ public final class AlternativeThumbnailsPatch {
         ThumbnailQuality qualityToUse = ThumbnailQuality.getQualityToUse(decodedUrl.imageQuality);
         if (qualityToUse == null) return decodedUrl.sanitizedUrl; // Video is a short.
 
-        String sanitizedReplacement = decodedUrl.createStillUrl(qualityToUse, false);
+        String sanitizedReplacement = decodedUrl.createStillsUrl(qualityToUse, false);
         if (VerifiedQualities.verifyAltThumbnailExist(decodedUrl.videoId, qualityToUse, sanitizedReplacement)) {
             return sanitizedReplacement;
         }
@@ -116,7 +117,7 @@ public final class AlternativeThumbnailsPatch {
     /**
      * Build the alternative thumbnail url using DeArrow thumbnail cache.
      *
-     * @param videoId ID of the video to get a thumbnail of.
+     * @param videoId ID of the video to get a thumbnail of.  Can be any video (regular or Short).
      * @param fallbackUrl URL to fall back to in case.
      * @return The alternative thumbnail url, without tracking parameters.
      */
@@ -166,8 +167,9 @@ public final class AlternativeThumbnailsPatch {
      */
     public static String overrideImageURL(String originalUrl) {
         try {
-            final var thumbnailMode = AlternativeThumbnailMode.getCurrent();
-            if (thumbnailMode == AlternativeThumbnailMode.ORIGINAL) {
+            final boolean usingVideoStills = usingVideoStills();
+            final boolean usingDeArrow = usingDeArrow();
+            if (!usingVideoStills && !usingDeArrow) {
                 return originalUrl;
             }
 
@@ -180,15 +182,15 @@ public final class AlternativeThumbnailsPatch {
             LogHelper.printDebug(() -> "Original url: " + decodedUrl.sanitizedUrl);
 
             String sanitizedReplacementUrl;
-            if (thumbnailMode.usingDeArrow() && canUseDeArrowAPI()) {
+            if (usingDeArrow && canUseDeArrowAPI()) {
                 // Get fallback URL.
                 // Do not include view tracking parameters with API call.
-                final String fallbackUrl = thumbnailMode == AlternativeThumbnailMode.DEARROW_OR_VIDEO_STILLS
+                final String fallbackUrl = usingVideoStills
                         ? buildYoutubeVideoStillURL(decodedUrl)
                         : decodedUrl.sanitizedUrl;
 
                 sanitizedReplacementUrl = buildDeArrowThumbnailURL(decodedUrl.videoId, fallbackUrl);
-            } else if (thumbnailMode.usingVideoStills()) {
+            } else if (usingVideoStills) {
                 // Get video still URL.
                 // Include view tracking parameters if present.
                 sanitizedReplacementUrl = buildYoutubeVideoStillURL(decodedUrl) + decodedUrl.viewTrackingParameters;
@@ -215,14 +217,13 @@ public final class AlternativeThumbnailsPatch {
         try {
             final int responseCode = responseInfo.getHttpStatusCode();
             if (responseCode != 200) {
-                AlternativeThumbnailMode currentMode = AlternativeThumbnailMode.getCurrent();
                 String url = responseInfo.getUrl();
 
-                if (currentMode.usingDeArrow() && urlIsDeArrow(url)) {
+                if (usingDeArrow() && urlIsDeArrow(url)) {
                     handleDeArrowError(responseInfo);
                 }
 
-                if (currentMode.usingVideoStills() && responseCode == 404) {
+                if (usingVideoStills() && responseCode == 404) {
                     // Fast alt thumbnails is enabled and the thumbnail is not available.
                     // The video is:
                     // - live stream
@@ -258,9 +259,8 @@ public final class AlternativeThumbnailsPatch {
     public static void handleCronetFailure(@Nullable UrlResponseInfo responseInfo, IOException exception) {
         try {
             LogHelper.printDebug(() -> "handleCronetFailure exception: " + exception);
-            AlternativeThumbnailMode currentMode = AlternativeThumbnailMode.getCurrent();
 
-            if (currentMode.usingDeArrow()) {
+            if (usingDeArrow()) {
                 // If the DeArrow API host name does not resolve, then the response is nbull
                 // and the IOException (CronetException) provides no information to detect this situation.
                 // For this situation no error toast is shown and no API backoff is done,
@@ -324,7 +324,7 @@ public final class AlternativeThumbnailsPatch {
                 return null; // Not a thumbnail for a regular video.
             }
 
-            final boolean useFastQuality = SettingsEnum.ALT_THUMBNAIL_STILL_FAST_QUALITY.getBoolean();
+            final boolean useFastQuality = SettingsEnum.ALT_THUMBNAIL_STILLS_FAST.getBoolean();
             switch (quality) {
                 case SDDEFAULT:
                     // SD alt images have somewhat worse quality with washed out color and poor contrast.
@@ -359,7 +359,7 @@ public final class AlternativeThumbnailsPatch {
         }
 
         String getAltImageNameToUse() {
-            return altImageName + SettingsEnum.ALT_THUMBNAIL_STILL_TIME.getInt();
+            return altImageName + SettingsEnum.ALT_THUMBNAIL_STILLS_TIME.getInt();
         }
     }
 
@@ -404,7 +404,7 @@ public final class AlternativeThumbnailsPatch {
 
         static boolean verifyAltThumbnailExist(@NonNull String videoId, @NonNull ThumbnailQuality quality,
                                                @NonNull String imageUrl) {
-            VerifiedQualities verified = getVerifiedQualities(videoId, SettingsEnum.ALT_THUMBNAIL_STILL_FAST_QUALITY.getBoolean());
+            VerifiedQualities verified = getVerifiedQualities(videoId, SettingsEnum.ALT_THUMBNAIL_STILLS_FAST.getBoolean());
             if (verified == null) return true; // Fast alt thumbnails is enabled.
             return verified.verifyYouTubeThumbnailExists(videoId, quality, imageUrl);
         }
@@ -455,7 +455,7 @@ public final class AlternativeThumbnailsPatch {
                 return true; // Previously verified as existing.
             }
 
-            final boolean fastQuality = SettingsEnum.ALT_THUMBNAIL_STILL_FAST_QUALITY.getBoolean();
+            final boolean fastQuality = SettingsEnum.ALT_THUMBNAIL_STILLS_FAST.getBoolean();
             if (lowestQualityNotAvailable != null && lowestQualityNotAvailable.ordinal() <= quality.ordinal()) {
                 if (fastQuality || System.currentTimeMillis() < timeToReVerifyLowestQuality) {
                     return false; // Previously verified as not existing.
@@ -558,7 +558,7 @@ public final class AlternativeThumbnailsPatch {
                     ? "" : fullUrl.substring(imageExtensionEndIndex);
         }
 
-        String createStillUrl(@NonNull ThumbnailQuality qualityToUse, boolean includeViewTracking) {
+        String createStillsUrl(@NonNull ThumbnailQuality qualityToUse, boolean includeViewTracking) {
             // Images could be upgraded to webp if they are not already, but this fails quite often,
             // especially for new videos uploaded in the last hour.
             // And even if alt webp images do exist, sometimes they can load much slower than the original jpg alt images.
@@ -573,63 +573,5 @@ public final class AlternativeThumbnailsPatch {
             }
             return builder.toString();
         }
-    }
-
-    /**
-     * Alternative thumbnail mode.
-     */
-    private enum AlternativeThumbnailMode {
-        /**
-         * Use the original thumbnails provided by the content creator.
-         * This effectively disables the patch, as this options matches the stock behaviour.
-         */
-        ORIGINAL(1),
-
-        /**
-         * Use video stills provided by YouTube.
-         * Uses {@link SettingsEnum#ALT_THUMBNAIL_STILL_TIME} and {@link SettingsEnum#ALT_THUMBNAIL_STILL_FAST_QUALITY}.
-         */
-        VIDEO_STILLS(2),
-
-        /**
-         * Use thumbnails provided by DeArrow, fallback to {@link AlternativeThumbnailMode#ORIGINAL}.
-         */
-        DEARROW_OR_CREATOR_PROVIDED(3),
-
-        /**
-         * Use thumbnails provided by DeArrow, fallback to {@link AlternativeThumbnailMode#VIDEO_STILLS}.
-         */
-        DEARROW_OR_VIDEO_STILLS(4);
-
-        private final int id;
-        AlternativeThumbnailMode(int id) {
-            this.id = id;
-        }
-
-        public boolean usingVideoStills() {
-            return this == VIDEO_STILLS || this == DEARROW_OR_VIDEO_STILLS;
-        }
-
-        public boolean usingDeArrow() {
-            return this == DEARROW_OR_CREATOR_PROVIDED || this == DEARROW_OR_VIDEO_STILLS;
-        }
-
-        @NonNull
-        public static AlternativeThumbnailMode getCurrent() {
-            final var id = SettingsEnum.ALT_THUMBNAIL_MODE.getInt();
-            // Could use the Enum ordinal and use values()[id],
-            // but then the ids would start at 0.
-            // Since only 4 ids exist this isn't a big deal
-            // and little overhead is needed to manually compare 4 int values.
-            for (final var mode : AlternativeThumbnailMode.values()) {
-                if (mode.id == id) {
-                    return mode;
-                }
-            }
-            // User imported bad data and did not restart the app. Fix the settings and continue.
-            validateSettings();
-            return getCurrent();
-        }
-
     }
 }
