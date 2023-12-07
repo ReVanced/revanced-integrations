@@ -124,12 +124,13 @@ public final class AlternativeThumbnailsPatch {
     @NonNull
     private static String buildYoutubeVideoStillURL(DecodedThumbnailUrl decodedUrl) {
         ThumbnailQuality qualityToUse = ThumbnailQuality.getQualityToUse(decodedUrl.imageQuality);
-        if (qualityToUse == null) return decodedUrl.sanitizedUrl; // Video is a short.
+        if (qualityToUse != null) {
+            String sanitizedReplacement = decodedUrl.createStillsUrl(qualityToUse, false);
+            if (VerifiedQualities.verifyAltThumbnailExist(decodedUrl.videoId, qualityToUse, sanitizedReplacement)) {
+                return sanitizedReplacement;
+            }
+        } // else, video is a Short.
 
-        String sanitizedReplacement = decodedUrl.createStillsUrl(qualityToUse, false);
-        if (VerifiedQualities.verifyAltThumbnailExist(decodedUrl.videoId, qualityToUse, sanitizedReplacement)) {
-            return sanitizedReplacement;
-        }
         return decodedUrl.sanitizedUrl;
     }
 
@@ -203,13 +204,12 @@ public final class AlternativeThumbnailsPatch {
                 return originalUrl; // Not a thumbnail.
             }
 
-            // Keep any tracking parameters out of the logs, and log only the base URL.
-            LogHelper.printDebug(() -> "Original url: " + decodedUrl.sanitizedUrl);
-
             String sanitizedReplacementUrl;
+            final boolean includeTracking;
             if (usingDeArrow && canUseDeArrowAPI()) {
                 // Get fallback URL.
                 // Do not include view tracking parameters with API call.
+                includeTracking = false;
                 final String fallbackUrl = usingVideoStills
                         ? buildYoutubeVideoStillURL(decodedUrl)
                         : decodedUrl.sanitizedUrl;
@@ -218,15 +218,19 @@ public final class AlternativeThumbnailsPatch {
             } else if (usingVideoStills) {
                 // Get video still URL.
                 // Include view tracking parameters if present.
-                sanitizedReplacementUrl = buildYoutubeVideoStillURL(decodedUrl) + decodedUrl.viewTrackingParameters;
+                includeTracking = true;
+                sanitizedReplacementUrl = buildYoutubeVideoStillURL(decodedUrl);
             } else {
                 return originalUrl; // Recently experienced DeArrow failure and video stills are not enabled.
             }
 
-            // Do not log the tracking parameters.
-            LogHelper.printDebug(() -> "Replacement url: " + sanitizedReplacementUrl);
+            // Do not log any tracking parameters.
+            LogHelper.printDebug(() -> "Original url: " + decodedUrl.sanitizedUrl
+                    + "\nReplacement url: " + sanitizedReplacementUrl);
 
-            return sanitizedReplacementUrl;
+            return includeTracking
+                    ? sanitizedReplacementUrl + decodedUrl.viewTrackingParameters
+                    : sanitizedReplacementUrl;
         } catch (Exception ex) {
             LogHelper.printException(() -> "overrideImageURL failure", ex);
             return originalUrl;
@@ -243,9 +247,11 @@ public final class AlternativeThumbnailsPatch {
             final int responseCode = responseInfo.getHttpStatusCode();
             if (responseCode != 200) {
                 String url = responseInfo.getUrl();
+
                 if (usingDeArrow() && urlIsDeArrow(url)) {
-                    LogHelper.printDebug(() -> "handleCronetSuccess responseCode: " + responseCode);
+                    LogHelper.printDebug(() -> "handleCronetSuccess, responseCode: " + responseCode);
                     handleDeArrowError(url);
+                    return;
                 }
 
                 if (usingVideoStills() && responseCode == 404) {
@@ -261,12 +267,12 @@ public final class AlternativeThumbnailsPatch {
                         return; // Not a thumbnail.
                     }
 
-                    LogHelper.printDebug(() -> "handleCronetSuccess responseCode: " + responseCode + " url: " + url);
+                    LogHelper.printDebug(() -> "handleCronetSuccess, image not available: " + url);
 
                     ThumbnailQuality quality = ThumbnailQuality.altImageNameToQuality(decodedUrl.imageQuality);
                     if (quality == null) {
-                        // Video is a short or unknown quality, but the url returned 404.  Should never happen.
-                        LogHelper.printDebug(() -> "Failed to load unknown url: " + decodedUrl.sanitizedUrl);
+                        // Video is a short or unknown quality, but somehow did not load.  Should not happen.
+                        LogHelper.printDebug(() -> "Failed to recognize image quality of url: " + decodedUrl.sanitizedUrl);
                         return;
                     }
 
@@ -296,7 +302,7 @@ public final class AlternativeThumbnailsPatch {
             if (usingDeArrow()) {
                 String url = ((CronetUrlRequest) request).getHookedUrl();
                 if (urlIsDeArrow(url)) {
-                    LogHelper.printDebug(() -> "handleCronetFailure exception: " + exception);
+                    LogHelper.printDebug(() -> "handleCronetFailure, exception: " + exception);
                     handleDeArrowError(url);
                 }
             }
@@ -305,6 +311,10 @@ public final class AlternativeThumbnailsPatch {
         }
     }
 
+    // Edit: YouTube now sometimes uses 'custom' screen captures in place of regular thumbnails.
+    // They appear with the format (original)_custom_(1-3), ie: "sddefault_custom_2.jpg"
+    // Presumably they are stills taken from video times chosen by the content creator.
+    // These could be replaced with a fixed time screen grab, for but now leave these as-is and don't replace.
     private enum ThumbnailQuality {
         // In order of lowest to highest resolution.
         DEFAULT("default", ""), // effective alt name is 1.jpg, 2.jpg, 3.jpg
