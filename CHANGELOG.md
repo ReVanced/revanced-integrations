@@ -1,3 +1,10 @@
+# [1.0.0-dev.6](https://github.com/ReVanced/revanced-integrations/compare/v1.0.0-dev.5...v1.0.0-dev.6) (2023-12-07)
+
+
+### Bug Fixes
+
+* **YouTube - Client spoof:** Do not break clips ([f9102fa](https://github.com/ReVanced/revanced-integrations/commit/f9102fa83bdb2b147543882cb8ebb80b5985ad3e))
+
 # [1.0.0-dev.5](https://github.com/ReVanced/revanced-integrations/compare/v1.0.0-dev.4...v1.0.0-dev.5) (2023-12-04)
 
 
