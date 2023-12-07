@@ -60,23 +60,12 @@ public final class AlternativeThumbnailsPatch {
     /**
      * How long to temporarily turn off DeArrow if it fails for any reason.
      */
-    private static final long DEARROW_CONNECTION_FAILURE_API_BACKOFF_MILLISECONDS = 2 * 60 * 1000; // 2 Minutes.
+    private static final long DEARROW_FAILURE_API_BACKOFF_MILLISECONDS = 5 * 60 * 1000; // 5 Minutes.
 
     /**
      * If non zero, then the system time of when DeArrow API calls can resume.
      */
     private static volatile long timeToResumeDeArrowAPICalls;
-
-    /**
-     * How long to temporarily turn off connection failure toasts if DeArrow fails for any reason.
-     */
-    private static final long DEARROW_CONNECTION_FAILURE_TOAST_BACKOFF_MILLISECONDS = 60 * 60 * 1000; // 60 Minutes.
-
-    /**
-     * If non zero, then the system time of when connection error toasts can be shown again.
-     * Differs from {@link #DEARROW_CONNECTION_FAILURE_API_BACKOFF_MILLISECONDS}.
-     */
-    private static volatile long timeToResumeDeArrowConnectionToasts;
 
     static {
         dearrowApiUri = validateSettings();
@@ -163,7 +152,7 @@ public final class AlternativeThumbnailsPatch {
         if (timeToResumeDeArrowAPICalls == 0) {
             return true;
         }
-        if (System.currentTimeMillis() > timeToResumeDeArrowAPICalls) {
+        if (timeToResumeDeArrowAPICalls < System.currentTimeMillis()) {
             LogHelper.printDebug(() -> "Resuming DeArrow API calls");
             timeToResumeDeArrowAPICalls = 0;
             return true;
@@ -172,16 +161,14 @@ public final class AlternativeThumbnailsPatch {
     }
 
     private static void handleDeArrowError(@NonNull String url) {
-        LogHelper.printDebug(() -> "Encountered DeArrow error.  Backing off for "
-                        + DEARROW_CONNECTION_FAILURE_API_BACKOFF_MILLISECONDS + "ms.  Url: " + url);
         final long now = System.currentTimeMillis();
-        timeToResumeDeArrowAPICalls = now + DEARROW_CONNECTION_FAILURE_API_BACKOFF_MILLISECONDS;
-
-        if (SettingsEnum.ALT_THUMBNAIL_DEARROW_CONNECTION_TOAST.getBoolean()
-                && timeToResumeDeArrowConnectionToasts < now) {
-            ReVancedUtils.showToastLong(str("revanced_alt_thumbnail_dearrow_error_toast"));
+        LogHelper.printDebug(() -> "Encountered DeArrow error.  Url: " + url);
+        if (timeToResumeDeArrowAPICalls < now) {
+            timeToResumeDeArrowAPICalls = now + DEARROW_FAILURE_API_BACKOFF_MILLISECONDS;
+            if (SettingsEnum.ALT_THUMBNAIL_DEARROW_CONNECTION_TOAST.getBoolean()) {
+                ReVancedUtils.showToastLong(str("revanced_alt_thumbnail_dearrow_error_toast"));
+            }
         }
-        timeToResumeDeArrowConnectionToasts = now + DEARROW_CONNECTION_FAILURE_TOAST_BACKOFF_MILLISECONDS;
     }
 
     /**
@@ -206,7 +193,7 @@ public final class AlternativeThumbnailsPatch {
             if (qualityToUse == null) {
                 // Thumbnail is:
                 // - Short
-                // - Custom video still capture chosen by the content creator
+                // - Custom video still capture chosen by the content creator ('_custom_' image)
                 // - Storyboard image used for seekbar thumbnails (must not replace these)
                 return originalUrl;
             }
