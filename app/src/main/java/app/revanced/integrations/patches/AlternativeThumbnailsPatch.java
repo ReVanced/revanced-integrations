@@ -99,7 +99,8 @@ public final class AlternativeThumbnailsPatch {
 
         Uri apiUri = Uri.parse(SettingsEnum.ALT_THUMBNAIL_DEARROW_API_URL.getString());
         // Cannot use unsecured 'http', otherwise the connections fail to start and no callbacks hooks are made.
-        if (apiUri.getScheme() == null || apiUri.getScheme().equals("http") || apiUri.getHost() == null) {
+        String scheme = apiUri.getScheme();
+        if (scheme == null || scheme.equals("http") || apiUri.getHost() == null) {
             ReVancedUtils.showToastLong("Invalid DeArrow API URL. Using default");
             SettingsEnum.ALT_THUMBNAIL_DEARROW_API_URL.resetToDefault();
             return validateSettings();
@@ -122,15 +123,12 @@ public final class AlternativeThumbnailsPatch {
      * @return The alternative thumbnail url, or the original url. Both without tracking parameters.
      */
     @NonNull
-    private static String buildYoutubeVideoStillURL(DecodedThumbnailUrl decodedUrl) {
-        ThumbnailQuality qualityToUse = ThumbnailQuality.getQualityToUse(decodedUrl.imageQuality);
-        if (qualityToUse != null) {
-            String sanitizedReplacement = decodedUrl.createStillsUrl(qualityToUse, false);
-            if (VerifiedQualities.verifyAltThumbnailExist(decodedUrl.videoId, qualityToUse, sanitizedReplacement)) {
-                return sanitizedReplacement;
-            }
-        } // else, video is a Short.
-
+    private static String buildYoutubeVideoStillURL(@NonNull DecodedThumbnailUrl decodedUrl,
+                                                    @NonNull ThumbnailQuality qualityToUse) {
+        String sanitizedReplacement = decodedUrl.createStillsUrl(qualityToUse, false);
+        if (VerifiedQualities.verifyAltThumbnailExist(decodedUrl.videoId, qualityToUse, sanitizedReplacement)) {
+            return sanitizedReplacement;
+        }
         return decodedUrl.sanitizedUrl;
     }
 
@@ -204,22 +202,27 @@ public final class AlternativeThumbnailsPatch {
                 return originalUrl; // Not a thumbnail.
             }
 
+            ThumbnailQuality qualityToUse = ThumbnailQuality.getQualityToUse(decodedUrl.imageQuality);
+            if (qualityToUse == null) {
+                // Thumbnail is:
+                // - Short
+                // - Custom video still capture chosen by the content creator
+                // - Storyboard image used for seekbar thumbnails (must not replace these)
+                return originalUrl;
+            }
+
             String sanitizedReplacementUrl;
             final boolean includeTracking;
             if (usingDeArrow && canUseDeArrowAPI()) {
-                // Get fallback URL.
-                // Do not include view tracking parameters with API call.
-                includeTracking = false;
+                includeTracking = false; // Do not include view tracking parameters with API call.
                 final String fallbackUrl = usingVideoStills
-                        ? buildYoutubeVideoStillURL(decodedUrl)
+                        ? buildYoutubeVideoStillURL(decodedUrl, qualityToUse)
                         : decodedUrl.sanitizedUrl;
 
                 sanitizedReplacementUrl = buildDeArrowThumbnailURL(decodedUrl.videoId, fallbackUrl);
             } else if (usingVideoStills) {
-                // Get video still URL.
-                // Include view tracking parameters if present.
-                includeTracking = true;
-                sanitizedReplacementUrl = buildYoutubeVideoStillURL(decodedUrl);
+                includeTracking = true; // Include view tracking parameters if present.
+                sanitizedReplacementUrl = buildYoutubeVideoStillURL(decodedUrl, qualityToUse);
             } else {
                 return originalUrl; // Recently experienced DeArrow failure and video stills are not enabled.
             }
@@ -287,13 +290,13 @@ public final class AlternativeThumbnailsPatch {
     /**
      * Injection point.
      *
-     * To test this hook try changing the API to each of:
-     * - A non existent domain
-     * - A url path of something incorrect (ie: /v1/nonExistentEndPoint)
+     * To test failure cases, try changing the API URL to each of:
+     * - A non existent domain.
+     * - A url path of something incorrect (ie: /v1/nonExistentEndPoint).
      *
      * Known limitation: YT uses an infinite timeout, so this hook is never called if a host never responds.
      * But this does not appear to be a problem, as the DeArrow API has not been observed to 'go silent'
-     * Instead if there's a problem it returns an error code status response, which this hook correctly handles.
+     * Instead if there's a problem it returns an error code status response, which is handled in this patch.
      */
     public static void handleCronetFailure(UrlRequest request,
                                            @Nullable UrlResponseInfo responseInfo,
@@ -313,8 +316,8 @@ public final class AlternativeThumbnailsPatch {
 
     // Edit: YouTube now sometimes uses 'custom' screen captures in place of regular thumbnails.
     // They appear with the format (original)_custom_(1-3), ie: "sddefault_custom_2.jpg"
-    // Presumably they are stills taken from video times chosen by the content creator.
-    // These could be replaced with a fixed time screen grab, for but now leave these as-is and don't replace.
+    // Presumably they are still captures using video times chosen by the content creator.
+    // Could replaced them with a fixed time screen grab, for but now leave these as-is and don't replace.
     private enum ThumbnailQuality {
         // In order of lowest to highest resolution.
         DEFAULT("default", ""), // effective alt name is 1.jpg, 2.jpg, 3.jpg
