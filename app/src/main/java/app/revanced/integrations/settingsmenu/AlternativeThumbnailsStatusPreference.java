@@ -69,13 +69,13 @@ public class AlternativeThumbnailsStatusPreference extends Preference {
 
         final String summaryTextKey;
         if (usingDeArrow && usingVideoStills) {
-            summaryTextKey = "revanced_alt_thumbnails_about_status_dearrow_stills";
+            summaryTextKey = "revanced_alt_thumbnail_about_status_dearrow_stills";
         } else if (usingDeArrow) {
-            summaryTextKey = "revanced_alt_thumbnails_about_status_dearrow";
+            summaryTextKey = "revanced_alt_thumbnail_about_status_dearrow";
         } else if (usingVideoStills) {
-            summaryTextKey = "revanced_alt_thumbnails_about_status_stills";
+            summaryTextKey = "revanced_alt_thumbnail_about_status_stills";
         } else {
-            summaryTextKey = "revanced_alt_thumbnails_about_status_disabled";
+            summaryTextKey = "revanced_alt_thumbnail_about_status_disabled";
         }
 
         setSummary(str(summaryTextKey));
