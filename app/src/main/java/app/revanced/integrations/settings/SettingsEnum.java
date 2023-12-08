@@ -434,7 +434,7 @@ public enum SettingsEnum {
             LogHelper.printInfo(() -> "Migrating old setting of '" + oldSetting.value
                     + "' from: " + oldSetting + " into replacement setting: " + newSetting);
             newSetting.saveValue(oldSetting.value);
-            oldSetting.saveValue(oldSetting.defaultValue); // reset old value
+            oldSetting.resetToDefault();
         }
     }
 
@@ -705,7 +705,7 @@ public enum SettingsEnum {
                 } else if (setting.includeWithImportExport() && !setting.isSetToDefault()) {
                     LogHelper.printDebug(() -> "Resetting to default: " + setting);
                     rebootSettingChanged |= setting.rebootApp;
-                    setting.saveValue(setting.defaultValue);
+                    setting.resetToDefault();
                 }
             }
             numberOfSettingsImported += SponsorBlockSettings.importCategoriesFromFlatJson(json);
