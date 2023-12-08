@@ -24,7 +24,7 @@ public class AlternativeThumbnailsStatusPreference extends Preference {
         // this could show the prior config and not the current.
         //
         // Push this call to the end of the main run queue,
-        // so all other listeners complete and then the settings are up to date.
+        // so all other listeners are done and SettingsEnum is up to date.
         ReVancedUtils.runOnMainThread(this::updateUI);
     };
 
@@ -42,10 +42,12 @@ public class AlternativeThumbnailsStatusPreference extends Preference {
     }
 
     private void addChangeListener() {
+        LogHelper.printDebug(() -> "addChangeListener");
         SharedPrefCategory.YOUTUBE.preferences.registerOnSharedPreferenceChangeListener(listener);
     }
 
     private void removeChangeListener() {
+        LogHelper.printDebug(() -> "removeChangeListener");
         SharedPrefCategory.YOUTUBE.preferences.unregisterOnSharedPreferenceChangeListener(listener);
     }
 

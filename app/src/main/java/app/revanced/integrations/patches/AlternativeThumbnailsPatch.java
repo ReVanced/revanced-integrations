@@ -52,6 +52,7 @@ import app.revanced.integrations.utils.ReVancedUtils;
 public final class AlternativeThumbnailsPatch {
 
     private static final Uri dearrowApiUri;
+
     /**
      * The scheme and host of {@link #dearrowApiUri}.
      */
