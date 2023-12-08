@@ -437,7 +437,7 @@ public final class AlternativeThumbnailsPatch {
 
         static void setAltThumbnailDoesNotExist(@NonNull String videoId, @NonNull ThumbnailQuality quality) {
             VerifiedQualities verified = getVerifiedQualities(videoId, false);
-            if (verified == null) return; // Entry was evicted after load but before this call.
+            //noinspection ConstantConditions
             verified.setQualityVerified(videoId, quality, false);
         }
 
