@@ -20,15 +20,12 @@ import app.revanced.integrations.utils.ReVancedUtils;
 public class AlternativeThumbnailsStatusPreference extends Preference {
 
     private final SharedPreferences.OnSharedPreferenceChangeListener listener = (sharedPreferences, str) -> {
-        if (str.equals(SettingsEnum.ALT_THUMBNAIL_DEARROW.path)
-                || str.equals(SettingsEnum.ALT_THUMBNAIL_STILLS.path)) {
-            // Because this listener may run before the ReVanced settings fragment updates SettingsEnum,
-            // this could show the prior config and not the current.
-            //
-            // Push this call to the end of the main run queue,
-            // so all other listeners complete and then the settings are up to date.
-            ReVancedUtils.runOnMainThread(this::updateUI);
-        }
+        // Because this listener may run before the ReVanced settings fragment updates SettingsEnum,
+        // this could show the prior config and not the current.
+        //
+        // Push this call to the end of the main run queue,
+        // so all other listeners complete and then the settings are up to date.
+        ReVancedUtils.runOnMainThread(this::updateUI);
     };
 
     public AlternativeThumbnailsStatusPreference(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {

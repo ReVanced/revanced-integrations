@@ -162,9 +162,12 @@ public final class AlternativeThumbnailsPatch {
 
     private static void handleDeArrowError(@NonNull String url) {
         LogHelper.printDebug(() -> "Encountered DeArrow error.  Url: " + url);
-        timeToResumeDeArrowAPICalls = System.currentTimeMillis() + DEARROW_FAILURE_API_BACKOFF_MILLISECONDS;
-        if (SettingsEnum.ALT_THUMBNAIL_DEARROW_CONNECTION_TOAST.getBoolean()) {
-            ReVancedUtils.showToastLong(str("revanced_alt_thumbnail_dearrow_error_toast"));
+        final long now = System.currentTimeMillis();
+        if (timeToResumeDeArrowAPICalls < now) {
+            timeToResumeDeArrowAPICalls = now + DEARROW_FAILURE_API_BACKOFF_MILLISECONDS;
+            if (SettingsEnum.ALT_THUMBNAIL_DEARROW_CONNECTION_TOAST.getBoolean()) {
+                ReVancedUtils.showToastLong(str("revanced_alt_thumbnail_dearrow_error_toast"));
+            }
         }
     }
 
