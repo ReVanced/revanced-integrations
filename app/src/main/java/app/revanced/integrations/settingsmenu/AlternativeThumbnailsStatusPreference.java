@@ -20,8 +20,8 @@ import app.revanced.integrations.utils.ReVancedUtils;
 public class AlternativeThumbnailsStatusPreference extends Preference {
 
     private final SharedPreferences.OnSharedPreferenceChangeListener listener = (sharedPreferences, str) -> {
-        if (str.equals(SettingsEnum.ALT_THUMBNAILS_DEARROW.path)
-                || str.equals(SettingsEnum.ALT_THUMBNAILS_STILLS.path)) {
+        if (str.equals(SettingsEnum.ALT_THUMBNAIL_DEARROW.path)
+                || str.equals(SettingsEnum.ALT_THUMBNAIL_STILLS.path)) {
             // Because this listener may run before the ReVanced settings fragment updates SettingsEnum,
             // this could show the prior config and not the current.
             //
@@ -67,8 +67,8 @@ public class AlternativeThumbnailsStatusPreference extends Preference {
 
     private void updateUI() {
         LogHelper.printDebug(() -> "updateUI");
-        final boolean usingVideoStills = SettingsEnum.ALT_THUMBNAILS_STILLS.getBoolean();
-        final boolean usingDeArrow = SettingsEnum.ALT_THUMBNAILS_DEARROW.getBoolean();
+        final boolean usingVideoStills = SettingsEnum.ALT_THUMBNAIL_STILLS.getBoolean();
+        final boolean usingDeArrow = SettingsEnum.ALT_THUMBNAIL_DEARROW.getBoolean();
 
         final String summaryTextKey;
         if (usingDeArrow && usingVideoStills) {
