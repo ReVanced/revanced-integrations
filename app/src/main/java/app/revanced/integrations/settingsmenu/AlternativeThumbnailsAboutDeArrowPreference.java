@@ -13,7 +13,6 @@ import android.util.AttributeSet;
 public class AlternativeThumbnailsAboutDeArrowPreference extends Preference {
 
     private void init() {
-        setSelectable(true);
         setOnPreferenceClickListener(pref -> {
             Intent i = new Intent(Intent.ACTION_VIEW);
             i.setData(Uri.parse("https://dearrow.ajay.app"));
