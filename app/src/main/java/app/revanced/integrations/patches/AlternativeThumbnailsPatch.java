@@ -437,7 +437,7 @@ public final class AlternativeThumbnailsPatch {
 
         static void setAltThumbnailDoesNotExist(@NonNull String videoId, @NonNull ThumbnailQuality quality) {
             VerifiedQualities verified = getVerifiedQualities(videoId, false);
-            if (verified == null) return;
+            if (verified == null) return; // Entry was evicted after load but before this call.
             verified.setQualityVerified(videoId, quality, false);
         }
 
@@ -445,20 +445,20 @@ public final class AlternativeThumbnailsPatch {
          * Highest quality verified as existing.
          */
         @Nullable
-        ThumbnailQuality highestQualityVerified;
+        private ThumbnailQuality highestQualityVerified;
         /**
          * Lowest quality verified as not existing.
          */
         @Nullable
-        ThumbnailQuality lowestQualityNotAvailable;
+        private ThumbnailQuality lowestQualityNotAvailable;
 
         /**
          * System time, of when to invalidate {@link #lowestQualityNotAvailable}.
          * Used only if fast mode is not enabled.
          */
-        long timeToReVerifyLowestQuality;
+        private long timeToReVerifyLowestQuality;
 
-        synchronized void setQualityVerified(String videoId, ThumbnailQuality quality, boolean isVerified) {
+        private synchronized void setQualityVerified(String videoId, ThumbnailQuality quality, boolean isVerified) {
             if (isVerified) {
                 if (highestQualityVerified == null || highestQualityVerified.ordinal() < quality.ordinal()) {
                     highestQualityVerified = quality;
@@ -572,8 +572,8 @@ public final class AlternativeThumbnailsPatch {
         /** User view tracking parameters, only present on some images. */
         final String viewTrackingParameters;
 
-        private DecodedThumbnailUrl(String fullUrl, int videoIdStartIndex, int videoIdEndIndex,
-                                    int imageSizeStartIndex, int imageSizeEndIndex, int imageExtensionEndIndex) {
+        DecodedThumbnailUrl(String fullUrl, int videoIdStartIndex, int videoIdEndIndex,
+                            int imageSizeStartIndex, int imageSizeEndIndex, int imageExtensionEndIndex) {
             originalFullUrl = fullUrl;
             sanitizedUrl = fullUrl.substring(0, imageExtensionEndIndex);
             urlPrefix = fullUrl.substring(0, videoIdStartIndex);
