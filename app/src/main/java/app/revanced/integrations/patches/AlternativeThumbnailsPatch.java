@@ -189,12 +189,11 @@ public final class AlternativeThumbnailsPatch {
                 return originalUrl; // Not a thumbnail.
             }
 
+            LogHelper.printDebug(() -> "Original url: " + decodedUrl.sanitizedUrl);
+
             ThumbnailQuality qualityToUse = ThumbnailQuality.getQualityToUse(decodedUrl.imageQuality);
             if (qualityToUse == null) {
-                // Thumbnail is:
-                // - Short
-                // - Custom video still capture chosen by the content creator ('_custom_' image)
-                // - Storyboard image used for seekbar thumbnails (must not replace these)
+                // Thumbnail is a Short or a Storyboard image used for seekbar thumbnails (must not replace these).
                 return originalUrl;
             }
 
@@ -215,8 +214,7 @@ public final class AlternativeThumbnailsPatch {
             }
 
             // Do not log any tracking parameters.
-            LogHelper.printDebug(() -> "Original url: " + decodedUrl.sanitizedUrl
-                    + "\nReplacement url: " + sanitizedReplacementUrl);
+            LogHelper.printDebug(() -> "Replacement url: " + sanitizedReplacementUrl);
 
             return includeTracking
                     ? sanitizedReplacementUrl + decodedUrl.viewTrackingParameters
@@ -301,10 +299,6 @@ public final class AlternativeThumbnailsPatch {
         }
     }
 
-    // Edit: YouTube now sometimes uses 'custom' screen captures in place of regular thumbnails.
-    // They appear with the format (original)_custom_(1-3), ie: "sddefault_custom_2.jpg"
-    // Presumably they are still captures using video times chosen by the content creator.
-    // Could replaced them with a fixed time screen grab, for but now leave these as-is and don't replace.
     private enum ThumbnailQuality {
         // In order of lowest to highest resolution.
         DEFAULT("default", ""), // effective alt name is 1.jpg, 2.jpg, 3.jpg
@@ -329,6 +323,11 @@ public final class AlternativeThumbnailsPatch {
                 originalNameToEnum.put(quality.originalName, quality);
 
                 for (int i = 1; i <= 3; i++) {
+                    // 'custom' thumbnails set by the content creator.
+                    // These show up in place of regular thumbnails
+                    // and seem to be limited to [1, 3] range.
+                    originalNameToEnum.put(quality.originalName + "_custom_" + i, quality);
+
                     altNameToEnum.put(quality.altImageName + i, quality);
                 }
             }
