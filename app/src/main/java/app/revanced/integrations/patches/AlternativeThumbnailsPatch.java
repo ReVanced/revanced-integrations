@@ -36,7 +36,7 @@ import app.revanced.integrations.utils.ReVancedUtils;
  * <p>
  * Has an additional option to use 'fast' video still thumbnails,
  * where it forces sd thumbnail quality and skips verifying if the alt thumbnail image exists.
- * The UI loading time will be the same or better than using the the original thumbnails,
+ * The UI loading time will be the same or better than using original thumbnails,
  * but thumbnails will initially fail to load for all live streams, unreleased, and occasionally very old videos.
  * If a failed thumbnail load is reloaded (ie: scroll off, then on screen), then the original thumbnail
  * is reloaded instead.  Fast thumbnails requires using SD or lower thumbnail resolution,
@@ -47,8 +47,8 @@ import app.revanced.integrations.utils.ReVancedUtils;
  *   such as videos subscription feed, watch history, or in search results.
  * - Save to a temporary file the video id's verified to have alt thumbnails.
  *   This would speed up loading the watch history and users saved playlists.
- * @noinspection unused
  */
+@SuppressWarnings("unused")
 public final class AlternativeThumbnailsPatch {
 
     private static final Uri dearrowApiUri;
@@ -161,14 +161,14 @@ public final class AlternativeThumbnailsPatch {
         return false;
     }
 
-    private static void handleDeArrowError(@NonNull String url, int responseCode) {
+    private static void handleDeArrowError(@NonNull String url, int statusCode) {
         LogHelper.printDebug(() -> "Encountered DeArrow error.  Url: " + url);
         final long now = System.currentTimeMillis();
         if (timeToResumeDeArrowAPICalls < now) {
             timeToResumeDeArrowAPICalls = now + DEARROW_FAILURE_API_BACKOFF_MILLISECONDS;
             if (SettingsEnum.ALT_THUMBNAIL_DEARROW_CONNECTION_TOAST.getBoolean()) {
-                String toastMessage = (responseCode != 0)
-                        ? str("revanced_alt_thumbnail_dearrow_error", responseCode)
+                String toastMessage = (statusCode != 0)
+                        ? str("revanced_alt_thumbnail_dearrow_error", statusCode)
                         : str("revanced_alt_thumbnail_dearrow_error_generic");
                 ReVancedUtils.showToastLong(toastMessage);
             }
@@ -182,9 +182,9 @@ public final class AlternativeThumbnailsPatch {
      */
     public static String overrideImageURL(String originalUrl) {
         try {
-            final boolean usingVideoStills = usingVideoStills();
             final boolean usingDeArrow = usingDeArrow();
-            if (!usingVideoStills && !usingDeArrow) {
+            final boolean usingVideoStills = usingVideoStills();
+            if (!usingDeArrow && !usingVideoStills) {
                 return originalUrl;
             }
 
@@ -236,17 +236,17 @@ public final class AlternativeThumbnailsPatch {
      */
     public static void handleCronetSuccess(UrlRequest request, @NonNull UrlResponseInfo responseInfo) {
         try {
-            final int responseCode = responseInfo.getHttpStatusCode();
-            if (responseCode != 200) {
+            final int statusCode = responseInfo.getHttpStatusCode();
+            if (statusCode != 200) {
                 String url = responseInfo.getUrl();
 
                 if (usingDeArrow() && urlIsDeArrow(url)) {
-                    LogHelper.printDebug(() -> "handleCronetSuccess, responseCode: " + responseCode);
-                    handleDeArrowError(url, responseCode);
+                    LogHelper.printDebug(() -> "handleCronetSuccess, statusCode: " + statusCode);
+                    handleDeArrowError(url, statusCode);
                     return;
                 }
 
-                if (usingVideoStills() && responseCode == 404) {
+                if (usingVideoStills() && statusCode == 404) {
                     // Fast alt thumbnails is enabled and the thumbnail is not available.
                     // The video is:
                     // - live stream
@@ -263,7 +263,7 @@ public final class AlternativeThumbnailsPatch {
 
                     ThumbnailQuality quality = ThumbnailQuality.altImageNameToQuality(decodedUrl.imageQuality);
                     if (quality == null) {
-                        // Video is a short or unknown quality, but somehow did not load.  Should not happen.
+                        // Video is a short or a seekbar thumbnail, but somehow did not load.  Should not happen.
                         LogHelper.printDebug(() -> "Failed to recognize image quality of url: " + decodedUrl.sanitizedUrl);
                         return;
                     }
@@ -295,7 +295,10 @@ public final class AlternativeThumbnailsPatch {
                 String url = ((CronetUrlRequest) request).getHookedUrl();
                 if (urlIsDeArrow(url)) {
                     LogHelper.printDebug(() -> "handleCronetFailure, exception: " + exception);
-                    handleDeArrowError(url, 0);
+                    final int statusCode = (responseInfo != null)
+                            ? responseInfo.getHttpStatusCode()
+                            : 0;
+                    handleDeArrowError(url, statusCode);
                 }
             }
         } catch (Exception ex) {
