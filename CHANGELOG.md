@@ -1,3 +1,10 @@
+# [1.0.0-dev.7](https://github.com/ReVanced/revanced-integrations/compare/v1.0.0-dev.6...v1.0.0-dev.7) (2023-12-09)
+
+
+### Bug Fixes
+
+* **YouTube - Spoof signature:** Wait until storyboard fetch is done ([#535](https://github.com/ReVanced/revanced-integrations/issues/535)) ([92e8619](https://github.com/ReVanced/revanced-integrations/commit/92e8619cd7bbcf82f27e9407e18c30d65214e31c))
+
 # [1.0.0-dev.6](https://github.com/ReVanced/revanced-integrations/compare/v1.0.0-dev.5...v1.0.0-dev.6) (2023-12-07)
 
 
