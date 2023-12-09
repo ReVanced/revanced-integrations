@@ -161,13 +161,16 @@ public final class AlternativeThumbnailsPatch {
         return false;
     }
 
-    private static void handleDeArrowError(@NonNull String url) {
+    private static void handleDeArrowError(@NonNull String url, int responseCode) {
         LogHelper.printDebug(() -> "Encountered DeArrow error.  Url: " + url);
         final long now = System.currentTimeMillis();
         if (timeToResumeDeArrowAPICalls < now) {
             timeToResumeDeArrowAPICalls = now + DEARROW_FAILURE_API_BACKOFF_MILLISECONDS;
             if (SettingsEnum.ALT_THUMBNAIL_DEARROW_CONNECTION_TOAST.getBoolean()) {
-                ReVancedUtils.showToastLong(str("revanced_alt_thumbnail_dearrow_error_toast"));
+                String toastMessage = (responseCode != 0)
+                        ? str("revanced_alt_thumbnail_dearrow_error", responseCode)
+                        : str("revanced_alt_thumbnail_dearrow_error_generic");
+                ReVancedUtils.showToastLong(toastMessage);
             }
         }
     }
@@ -239,7 +242,7 @@ public final class AlternativeThumbnailsPatch {
 
                 if (usingDeArrow() && urlIsDeArrow(url)) {
                     LogHelper.printDebug(() -> "handleCronetSuccess, responseCode: " + responseCode);
-                    handleDeArrowError(url);
+                    handleDeArrowError(url, responseCode);
                     return;
                 }
 
@@ -292,7 +295,7 @@ public final class AlternativeThumbnailsPatch {
                 String url = ((CronetUrlRequest) request).getHookedUrl();
                 if (urlIsDeArrow(url)) {
                     LogHelper.printDebug(() -> "handleCronetFailure, exception: " + exception);
-                    handleDeArrowError(url);
+                    handleDeArrowError(url, 0);
                 }
             }
         } catch (Exception ex) {
