@@ -27,7 +27,7 @@ import static app.revanced.integrations.utils.StringRef.str;
  * Can show YouTube provided screen captures of beginning/middle/end of the video.
  * (ie: sd1.jpg, sd2.jpg, sd3.jpg).
  * <p>
- * Or can show crowd sourced thumbnails provided by DeArrow (http://dearrow.ajay.app).
+ * Or can show crowdsourced thumbnails provided by DeArrow (<a href="http://dearrow.ajay.app">...</a>).
  * <p>
  * Or can use DeArrow and fall back to screen captures if DeArrow is not available.
  * <p>
@@ -37,7 +37,7 @@ import static app.revanced.integrations.utils.StringRef.str;
  * but thumbnails will initially fail to load for all live streams, unreleased, and occasionally very old videos.
  * If a failed thumbnail load is reloaded (ie: scroll off, then on screen), then the original thumbnail
  * is reloaded instead.  Fast thumbnails requires using SD or lower thumbnail resolution,
- * because a noticeable number of videos do not have hq720 and too many fail to load.
+ * because a noticeable number of videos do not have hq720 and too much fail to load.
  * <p>
  * Ideas for improvements:
  * - Selectively allow using original thumbnails in some situations,
@@ -143,7 +143,7 @@ public final class AlternativeThumbnailsPatch {
     }
 
     /**
-     * @return If this client has not recently experience any DeArrow API errors.
+     * @return If this client has not recently experienced any DeArrow API errors.
      */
     private static boolean canUseDeArrowAPI() {
         if (timeToResumeDeArrowAPICalls == 0) {
@@ -274,11 +274,11 @@ public final class AlternativeThumbnailsPatch {
 
     /**
      * Injection point.
-     *
+     * <p>
      * To test failure cases, try changing the API URL to each of:
-     * - A non existent domain.
+     * - A non-existent domain.
      * - A url path of something incorrect (ie: /v1/nonExistentEndPoint).
-     *
+     * <p>
      * Known limitation: YT uses an infinite timeout, so this hook is never called if a host never responds.
      * But this does not appear to be a problem, as the DeArrow API has not been observed to 'go silent'
      * Instead if there's a problem it returns an error code status response, which is handled in this patch.
@@ -590,6 +590,7 @@ public final class AlternativeThumbnailsPatch {
                     ? "" : fullUrl.substring(imageExtensionEndIndex);
         }
 
+        /** @noinspection SameParameterValue*/
         String createStillsUrl(@NonNull ThumbnailQuality qualityToUse, boolean includeViewTracking) {
             // Images could be upgraded to webp if they are not already, but this fails quite often,
             // especially for new videos uploaded in the last hour.
