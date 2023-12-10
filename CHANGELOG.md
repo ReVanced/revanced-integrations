@@ -1,3 +1,10 @@
+# [1.0.0-dev.8](https://github.com/ReVanced/revanced-integrations/compare/v1.0.0-dev.7...v1.0.0-dev.8) (2023-12-10)
+
+
+### Bug Fixes
+
+* **YouTube - Announcements:** Don't show error toast if there is no internet connection ([#537](https://github.com/ReVanced/revanced-integrations/issues/537)) ([0ce92c2](https://github.com/ReVanced/revanced-integrations/commit/0ce92c284d08a1c6bffba976e9cf208e82288ddf))
+
 # [1.0.0-dev.7](https://github.com/ReVanced/revanced-integrations/compare/v1.0.0-dev.6...v1.0.0-dev.7) (2023-12-09)
 
 
