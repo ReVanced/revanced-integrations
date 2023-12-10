@@ -30,10 +30,10 @@ public final class AnnouncementsPatch {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public static void showAnnouncement(final Activity context) {
+        if (!SettingsEnum.ANNOUNCEMENTS.getBoolean()) return;
+
         // Check if there is internet connection
         if (!ReVancedUtils.isNetworkConnected()) return;
-
-        if (!SettingsEnum.ANNOUNCEMENTS.getBoolean()) return;
 
         ReVancedUtils.runOnBackgroundThread(() -> {
             try {
