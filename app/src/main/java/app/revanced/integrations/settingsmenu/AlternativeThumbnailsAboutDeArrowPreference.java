@@ -11,8 +11,7 @@ import android.util.AttributeSet;
  */
 @SuppressWarnings("unused")
 public class AlternativeThumbnailsAboutDeArrowPreference extends Preference {
-
-    private void init() {
+    {
         setOnPreferenceClickListener(pref -> {
             Intent i = new Intent(Intent.ACTION_VIEW);
             i.setData(Uri.parse("https://dearrow.ajay.app"));
@@ -23,18 +22,14 @@ public class AlternativeThumbnailsAboutDeArrowPreference extends Preference {
 
     public AlternativeThumbnailsAboutDeArrowPreference(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
-        init();
     }
     public AlternativeThumbnailsAboutDeArrowPreference(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        init();
     }
     public AlternativeThumbnailsAboutDeArrowPreference(Context context, AttributeSet attrs) {
         super(context, attrs);
-        init();
     }
     public AlternativeThumbnailsAboutDeArrowPreference(Context context) {
         super(context);
-        init();
     }
 }
