@@ -1,13 +1,12 @@
 package app.revanced.integrations.patches;
 
-import static app.revanced.integrations.utils.StringRef.str;
-
 import android.net.Uri;
-
 import androidx.annotation.GuardedBy;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
+import app.revanced.integrations.settings.SettingsEnum;
+import app.revanced.integrations.utils.LogHelper;
+import app.revanced.integrations.utils.ReVancedUtils;
 import org.chromium.net.UrlRequest;
 import org.chromium.net.UrlResponseInfo;
 import org.chromium.net.impl.CronetUrlRequest;
@@ -20,9 +19,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
-import app.revanced.integrations.settings.SettingsEnum;
-import app.revanced.integrations.utils.LogHelper;
-import app.revanced.integrations.utils.ReVancedUtils;
+import static app.revanced.integrations.utils.StringRef.str;
 
 /**
  * Alternative YouTube thumbnails.
@@ -136,7 +133,6 @@ public final class AlternativeThumbnailsPatch {
         return dearrowApiUri
                 .buildUpon()
                 .appendQueryParameter("videoID", videoId)
-                .appendQueryParameter("officialTime", "true")
                 .appendQueryParameter("redirectUrl", fallbackUrl)
                 .build()
                 .toString();
