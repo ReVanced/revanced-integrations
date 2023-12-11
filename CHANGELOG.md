@@ -1,3 +1,10 @@
+# [1.0.0-dev.11](https://github.com/ReVanced/revanced-integrations/compare/v1.0.0-dev.10...v1.0.0-dev.11) (2023-12-11)
+
+
+### Features
+
+* **YouTube:** Add `Change start page` patch ([792dc0c](https://github.com/ReVanced/revanced-integrations/commit/792dc0c52210dc9b1560290b0cc2afad572c584c))
+
 # [1.0.0-dev.10](https://github.com/ReVanced/revanced-integrations/compare/v1.0.0-dev.9...v1.0.0-dev.10) (2023-12-11)
 
 
