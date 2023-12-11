@@ -1,3 +1,10 @@
+# [1.0.0-dev.10](https://github.com/ReVanced/revanced-integrations/compare/v1.0.0-dev.9...v1.0.0-dev.10) (2023-12-11)
+
+
+### Bug Fixes
+
+* **YouTube - Return YouTube Dislike:** Wait until fetch is complete before allowing the first Short to start playback ([#538](https://github.com/ReVanced/revanced-integrations/issues/538)) ([1c9c51c](https://github.com/ReVanced/revanced-integrations/commit/1c9c51ca5f7970774d4e0b5aad5ebcd064cac716))
+
 # [1.0.0-dev.9](https://github.com/ReVanced/revanced-integrations/compare/v1.0.0-dev.8...v1.0.0-dev.9) (2023-12-11)
 
 
