@@ -1,3 +1,31 @@
+# [1.0.0-dev.11](https://github.com/ReVanced/revanced-integrations/compare/v1.0.0-dev.10...v1.0.0-dev.11) (2023-12-11)
+
+
+### Features
+
+* **YouTube:** Add `Change start page` patch ([792dc0c](https://github.com/ReVanced/revanced-integrations/commit/792dc0c52210dc9b1560290b0cc2afad572c584c))
+
+# [1.0.0-dev.10](https://github.com/ReVanced/revanced-integrations/compare/v1.0.0-dev.9...v1.0.0-dev.10) (2023-12-11)
+
+
+### Bug Fixes
+
+* **YouTube - Return YouTube Dislike:** Wait until fetch is complete before allowing the first Short to start playback ([#538](https://github.com/ReVanced/revanced-integrations/issues/538)) ([1c9c51c](https://github.com/ReVanced/revanced-integrations/commit/1c9c51ca5f7970774d4e0b5aad5ebcd064cac716))
+
+# [1.0.0-dev.9](https://github.com/ReVanced/revanced-integrations/compare/v1.0.0-dev.8...v1.0.0-dev.9) (2023-12-11)
+
+
+### Features
+
+* **YouTube - Alternative Thumbnails:** Add option to use DeArrow ([#534](https://github.com/ReVanced/revanced-integrations/issues/534)) ([c4ee6ca](https://github.com/ReVanced/revanced-integrations/commit/c4ee6ca4dde13ab8ce6f9cf94f1910455f9d9ecc))
+
+# [1.0.0-dev.8](https://github.com/ReVanced/revanced-integrations/compare/v1.0.0-dev.7...v1.0.0-dev.8) (2023-12-10)
+
+
+### Bug Fixes
+
+* **YouTube - Announcements:** Don't show error toast if there is no internet connection ([#537](https://github.com/ReVanced/revanced-integrations/issues/537)) ([0ce92c2](https://github.com/ReVanced/revanced-integrations/commit/0ce92c284d08a1c6bffba976e9cf208e82288ddf))
+
 # [1.0.0-dev.7](https://github.com/ReVanced/revanced-integrations/compare/v1.0.0-dev.6...v1.0.0-dev.7) (2023-12-09)
 
 
