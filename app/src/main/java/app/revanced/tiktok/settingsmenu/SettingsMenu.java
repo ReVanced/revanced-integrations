@@ -24,7 +24,7 @@ public class SettingsMenu {
             Class<?> entryInfoClazz = Class.forName(entryInfoClazzName);
             Constructor<?> entryConstructor = entryClazz.getConstructor(entryInfoClazz);
             Constructor<?> entryInfoConstructor = entryInfoClazz.getDeclaredConstructors()[0];
-            Object buttonInfo = entryInfoConstructor.newInstance("Revanced settings", null, (View.OnClickListener) view -> startSettingsActivity(), "revanced");
+            Object buttonInfo = entryInfoConstructor.newInstance("ReVanced settings", null, (View.OnClickListener) view -> startSettingsActivity(), "revanced");
             return entryConstructor.newInstance(buttonInfo);
         } catch (ClassNotFoundException | NoSuchMethodException | InvocationTargetException | IllegalAccessException | InstantiationException e) {
             throw new RuntimeException(e);
