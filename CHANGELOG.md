@@ -1,3 +1,10 @@
+# [1.0.0-dev.9](https://github.com/ReVanced/revanced-integrations/compare/v1.0.0-dev.8...v1.0.0-dev.9) (2023-12-11)
+
+
+### Features
+
+* **YouTube - Alternative Thumbnails:** Add option to use DeArrow ([#534](https://github.com/ReVanced/revanced-integrations/issues/534)) ([c4ee6ca](https://github.com/ReVanced/revanced-integrations/commit/c4ee6ca4dde13ab8ce6f9cf94f1910455f9d9ecc))
+
 # [1.0.0-dev.8](https://github.com/ReVanced/revanced-integrations/compare/v1.0.0-dev.7...v1.0.0-dev.8) (2023-12-10)
 
 
