@@ -1,3 +1,10 @@
+# [1.0.0-dev.12](https://github.com/ReVanced/revanced-integrations/compare/v1.0.0-dev.11...v1.0.0-dev.12) (2023-12-12)
+
+
+### Features
+
+* **Tiktok:** Bump compatibility to `32.5.3` ([#536](https://github.com/ReVanced/revanced-integrations/issues/536)) ([10a1e16](https://github.com/ReVanced/revanced-integrations/commit/10a1e168d062adc3c979de17738d8cf1b8f25d63))
+
 # [1.0.0-dev.11](https://github.com/ReVanced/revanced-integrations/compare/v1.0.0-dev.10...v1.0.0-dev.11) (2023-12-11)
 
 
