@@ -219,12 +219,14 @@ class ByteArrayFilterGroup extends FilterGroup<byte[]> {
         int matchedLength = 0;
         int matchedIndex = -1;
         if (isEnabled()) {
-            if (failurePatterns == null) {
+            int[][] failures = failurePatterns;
+            if (failures == null) {
                 buildFailurePatterns(); // Lazy load.
+                failures = failurePatterns;
             }
             for (int i = 0, length = filters.length; i < length; i++) {
                 byte[] filter = filters[i];
-                matchedIndex = indexOf(bytes, filter, failurePatterns[i]);
+                matchedIndex = indexOf(bytes, filter, failures[i]);
                 if (matchedIndex >= 0) {
                     matchedLength = filter.length;
                     break;
