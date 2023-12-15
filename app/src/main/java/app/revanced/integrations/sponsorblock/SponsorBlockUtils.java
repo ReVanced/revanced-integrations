@@ -411,17 +411,20 @@ public class SponsorBlockUtils {
     public static String getTimeSavedString(long totalSecondsSaved) {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             Duration duration = Duration.ofSeconds(totalSecondsSaved);
-            final long hoursSaved = duration.toHours();
-            final long minutesSaved = duration.toMinutes() % 60;
-            if (hoursSaved > 0) {
-                String hoursSavedString = statsNumberFormatter.format(hoursSaved);
-                return str("sb_stats_saved_hour_format", hoursSavedString, minutesSaved);
+            final long hours = duration.toHours();
+            final long minutes = duration.toMinutes() % 60;
+            // Format all numbers so non-western numbers use a consistent appearance.
+            String minutesFormatted = statsNumberFormatter.format(minutes);
+            if (hours > 0) {
+                String hoursFormatted = statsNumberFormatter.format(hours);
+                return str("sb_stats_saved_hour_format", hoursFormatted, minutesFormatted);
             }
-            final long secondsSaved = duration.getSeconds() % 60;
-            if (minutesSaved > 0) {
-                return str("sb_stats_saved_minute_format", minutesSaved, secondsSaved);
+            final long seconds = duration.getSeconds() % 60;
+            String secondsFormatted = statsNumberFormatter.format(seconds);
+            if (minutes > 0) {
+                return str("sb_stats_saved_minute_format", minutesFormatted, secondsFormatted);
             }
-            return str("sb_stats_saved_second_format", secondsSaved);
+            return str("sb_stats_saved_second_format", secondsFormatted);
         }
         return "error"; // will never be reached.  YouTube requires Android O or greater
     }
