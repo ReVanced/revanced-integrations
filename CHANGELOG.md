@@ -1,3 +1,10 @@
+## [1.0.1-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v1.0.0...v1.0.1-dev.1) (2023-12-16)
+
+
+### Bug Fixes
+
+* **YouTube - SponsorBlock:** Export local statistics with saved settings ([#542](https://github.com/ReVanced/revanced-integrations/issues/542)) ([0ed8e5a](https://github.com/ReVanced/revanced-integrations/commit/0ed8e5a2988c07f3dfbd5dd4e9ef8ed53378fbbe))
+
 # [1.0.0](https://github.com/ReVanced/revanced-integrations/compare/v0.125.0...v1.0.0) (2023-12-12)
 
 
