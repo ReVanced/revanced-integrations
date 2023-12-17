@@ -51,7 +51,10 @@ public enum SharedPrefCategory {
 
     public Integer getInt(String key, Integer _default) {
         try {
-            return Integer.valueOf(preferences.getString(key, _default.toString()));
+            var value = preferences.getString(key, null);
+            if (value != null)
+                return Integer.valueOf(value);
+            return _default;
         } catch (ClassCastException ex) {
             return preferences.getInt(key, _default);
         }
@@ -59,7 +62,10 @@ public enum SharedPrefCategory {
 
     public Long getLong(String key, Long _default) {
         try {
-            return Long.valueOf(preferences.getString(key, _default.toString()));
+            var value = preferences.getString(key, null);
+            if (value != null)
+                return Long.valueOf(value);
+            return _default;
         } catch (ClassCastException ex) {
             return preferences.getLong(key, _default);
         }
@@ -67,7 +73,10 @@ public enum SharedPrefCategory {
 
     public Float getFloat(String key, Float _default) {
         try {
-            return Float.valueOf(preferences.getString(key, _default.toString()));
+            var value = preferences.getString(key, null);
+            if (value != null)
+                return Float.valueOf(value);
+            return _default;
         } catch (ClassCastException ex) {
             return preferences.getFloat(key, _default);
         }

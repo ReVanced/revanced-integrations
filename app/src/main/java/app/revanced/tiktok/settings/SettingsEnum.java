@@ -79,20 +79,14 @@ public enum SettingsEnum {
 
     private static void loadAllSettings() {
         try {
-            Context context = ReVancedUtils.getAppContext();
-            if (context == null) {
-                Log.e("revanced: SettingsEnum", "Context returned null! Settings NOT initialized");
-                return;
-            }
-            for (SettingsEnum setting : values()) {
-                setting.load(context);
-            }
+            for (SettingsEnum setting : values())
+                setting.load();
         } catch (Exception ex) {
             LogHelper.printException(SettingsEnum.class, "Error during load()!", ex);
         }
     }
 
-    private void load(Context context) {
+    private void load() {
         switch (returnType) {
             case BOOLEAN:
                 value = sharedPref.getBoolean(path, (boolean) defaultValue);
@@ -128,12 +122,6 @@ public enum SettingsEnum {
     }
 
     public void saveValue(Object newValue) {
-        Context context = ReVancedUtils.getAppContext();
-        if (context == null) {
-            LogHelper.printException(SettingsEnum.class, "Context on SaveValue is null!");
-            return;
-        }
-
         if (returnType == BOOLEAN) {
             sharedPref.saveBoolean(path, (Boolean) newValue);
         } else if (returnType == FLOAT) {
