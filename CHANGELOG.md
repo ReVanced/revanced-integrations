@@ -1,3 +1,10 @@
+## [1.0.1-dev.2](https://github.com/ReVanced/revanced-integrations/compare/v1.0.1-dev.1...v1.0.1-dev.2) (2023-12-17)
+
+
+### Bug Fixes
+
+* **YouTube - Return YouTube Dislike:** Do not prefetch Shorts shelf items on app startup ([697c2aa](https://github.com/ReVanced/revanced-integrations/commit/697c2aaac68976c985f0d838795b03f284e907e8))
+
 ## [1.0.1-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v1.0.0...v1.0.1-dev.1) (2023-12-16)
 
 
