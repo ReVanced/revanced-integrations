@@ -4,15 +4,23 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+import java.util.Objects;
+
+import app.revanced.tiktok.utils.ReVancedUtils;
 
 public enum SharedPrefCategory {
     TIKTOK_PREFS("tiktok_revanced");
 
     @NonNull
     public final String prefName;
+    @NonNull
+    public final SharedPreferences preferences;
 
     SharedPrefCategory(@NonNull String prefName) {
         this.prefName = prefName;
+        preferences = Objects.requireNonNull(ReVancedUtils.getAppContext()).getSharedPreferences(prefName, Context.MODE_PRIVATE);
     }
 
     @NonNull
@@ -21,51 +29,52 @@ public enum SharedPrefCategory {
         return prefName;
     }
 
-    private SharedPreferences getPreferences(Context context) {
-        return context.getSharedPreferences(prefName, Context.MODE_PRIVATE);
+    private void saveObjectAsString(@NonNull String key, @Nullable Object value) {
+        preferences.edit().putString(key, (value == null ? null : value.toString())).apply();
     }
 
-    public void saveBoolean(Context context, String key, boolean value) {
-        getPreferences(context).edit().putBoolean(key, value).apply();
+    public void saveBoolean(String key, boolean value) {
+        preferences.edit().putBoolean(key, value).apply();
     }
 
-    public void saveString(Context context, String key, String value) {
-        getPreferences(context).edit().putString(key, value).apply();
+    public void saveString(String key, String value) {
+        preferences.edit().putString(key, value).apply();
     }
 
-    public boolean getBoolean(Context context, String key, boolean _default) {
-        return getPreferences(context).getBoolean(key, _default);
+    public void saveFloatString(String key, Float value) {
+        saveObjectAsString(key, value);
     }
 
-    public Integer getInt(Context context, String key, Integer _default) {
-        SharedPreferences sharedPreferences = getPreferences(context);
+    public boolean getBoolean(String key, boolean _default) {
+        return preferences.getBoolean(key, _default);
+    }
+
+    public Integer getInt(String key, Integer _default) {
         try {
-            return Integer.valueOf(sharedPreferences.getString(key, _default.toString()));
+            return Integer.valueOf(preferences.getString(key, _default.toString()));
         } catch (ClassCastException ex) {
-            return sharedPreferences.getInt(key, _default);
+            return preferences.getInt(key, _default);
         }
     }
 
-    public Long getLong(Context context, String key, Long _default) {
-        SharedPreferences sharedPreferences = getPreferences(context);
+    public Long getLong(String key, Long _default) {
         try {
-            return Long.valueOf(sharedPreferences.getString(key, _default.toString()));
+            return Long.valueOf(preferences.getString(key, _default.toString()));
         } catch (ClassCastException ex) {
-            return sharedPreferences.getLong(key, _default);
+            return preferences.getLong(key, _default);
         }
     }
 
-    public Float getFloat(Context context, String key, Float _default) {
-        SharedPreferences sharedPreferences = getPreferences(context);
+    public Float getFloat(String key, Float _default) {
         try {
-            return Float.valueOf(sharedPreferences.getString(key, _default.toString()));
+            return Float.valueOf(preferences.getString(key, _default.toString()));
         } catch (ClassCastException ex) {
-            return sharedPreferences.getFloat(key, _default);
+            return preferences.getFloat(key, _default);
         }
     }
 
-    public String getString(Context context, String key, String _default) {
-        return getPreferences(context).getString(key, _default);
+    public String getString(String key, String _default) {
+        return preferences.getString(key, _default);
     }
 
 }

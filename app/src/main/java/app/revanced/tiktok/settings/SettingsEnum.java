@@ -12,6 +12,7 @@ import java.util.Map;
 
 import static app.revanced.tiktok.settings.SettingsEnum.ReturnType.BOOLEAN;
 import static app.revanced.tiktok.settings.SettingsEnum.ReturnType.STRING;
+import static app.revanced.tiktok.settings.SettingsEnum.ReturnType.FLOAT;
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
 
@@ -25,6 +26,7 @@ public enum SettingsEnum {
     MIN_MAX_LIKES("min_max_likes", STRING, "0-" + Long.MAX_VALUE, true),
     DOWNLOAD_PATH("down_path", STRING, "DCIM/TikTok"),
     DOWNLOAD_WATERMARK("down_watermark", BOOLEAN, TRUE),
+    SPEED_SAVED_SPEED("speed_saved_speed", FLOAT, 1.0f),
     SIM_SPOOF("simspoof", BOOLEAN, TRUE, true),
     SIM_SPOOF_ISO("simspoof_iso", STRING, "us"),
     SIMSPOOF_MCCMNC("simspoof_mccmnc", STRING, "310160"),
@@ -93,19 +95,19 @@ public enum SettingsEnum {
     private void load(Context context) {
         switch (returnType) {
             case BOOLEAN:
-                value = sharedPref.getBoolean(context, path, (boolean) defaultValue);
+                value = sharedPref.getBoolean(path, (boolean) defaultValue);
                 break;
             case INTEGER:
-                value = sharedPref.getInt(context, path, (Integer) defaultValue);
+                value = sharedPref.getInt(path, (Integer) defaultValue);
                 break;
             case LONG:
-                value = sharedPref.getLong(context, path, (Long) defaultValue);
+                value = sharedPref.getLong(path, (Long) defaultValue);
                 break;
             case FLOAT:
-                value = sharedPref.getFloat(context, path, (Float) defaultValue);
+                value = sharedPref.getFloat(path, (Float) defaultValue);
                 break;
             case STRING:
-                value = sharedPref.getString(context, path, (String) defaultValue);
+                value = sharedPref.getString(path, (String) defaultValue);
                 break;
             default:
                 throw new IllegalStateException(name());
@@ -133,9 +135,11 @@ public enum SettingsEnum {
         }
 
         if (returnType == BOOLEAN) {
-            sharedPref.saveBoolean(context, path, (Boolean) newValue);
+            sharedPref.saveBoolean(path, (Boolean) newValue);
+        } else if (returnType == FLOAT) {
+            sharedPref.saveFloatString(path, (Float) newValue);
         } else {
-            sharedPref.saveString(context, path, newValue.toString());
+            sharedPref.saveString(path, newValue.toString());
         }
         value = newValue;
     }
