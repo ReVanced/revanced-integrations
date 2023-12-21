@@ -1,3 +1,10 @@
+# [1.1.0-dev.2](https://github.com/ReVanced/revanced-integrations/compare/v1.1.0-dev.1...v1.1.0-dev.2) (2023-12-21)
+
+
+### Bug Fixes
+
+* **Tiktok - Remember clear display:** Use correct name ([2003b91](https://github.com/ReVanced/revanced-integrations/commit/2003b910b12cba445822bfaede7975e00220a81a))
+
 # [1.1.0-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v1.0.1-dev.2...v1.1.0-dev.1) (2023-12-21)
 
 
