@@ -1,3 +1,10 @@
+# [1.1.0-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v1.0.1-dev.2...v1.1.0-dev.1) (2023-12-21)
+
+
+### Features
+
+* **Tiktok:** Add `Remember clear mode` patch ([#544](https://github.com/ReVanced/revanced-integrations/issues/544)) ([05eddb6](https://github.com/ReVanced/revanced-integrations/commit/05eddb68d5d5de1b76545c42313d4e9f9ba6712e))
+
 ## [1.0.1-dev.2](https://github.com/ReVanced/revanced-integrations/compare/v1.0.1-dev.1...v1.0.1-dev.2) (2023-12-17)
 
 
