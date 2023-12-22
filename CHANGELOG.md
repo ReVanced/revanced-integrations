@@ -1,3 +1,31 @@
+# [1.1.0-dev.2](https://github.com/ReVanced/revanced-integrations/compare/v1.1.0-dev.1...v1.1.0-dev.2) (2023-12-21)
+
+
+### Bug Fixes
+
+* **Tiktok - Remember clear display:** Use correct name ([2003b91](https://github.com/ReVanced/revanced-integrations/commit/2003b910b12cba445822bfaede7975e00220a81a))
+
+# [1.1.0-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v1.0.1-dev.2...v1.1.0-dev.1) (2023-12-21)
+
+
+### Features
+
+* **Tiktok:** Add `Remember clear mode` patch ([#544](https://github.com/ReVanced/revanced-integrations/issues/544)) ([05eddb6](https://github.com/ReVanced/revanced-integrations/commit/05eddb68d5d5de1b76545c42313d4e9f9ba6712e))
+
+## [1.0.1-dev.2](https://github.com/ReVanced/revanced-integrations/compare/v1.0.1-dev.1...v1.0.1-dev.2) (2023-12-17)
+
+
+### Bug Fixes
+
+* **YouTube - Return YouTube Dislike:** Do not prefetch Shorts shelf items on app startup ([697c2aa](https://github.com/ReVanced/revanced-integrations/commit/697c2aaac68976c985f0d838795b03f284e907e8))
+
+## [1.0.1-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v1.0.0...v1.0.1-dev.1) (2023-12-16)
+
+
+### Bug Fixes
+
+* **YouTube - SponsorBlock:** Export local statistics with saved settings ([#542](https://github.com/ReVanced/revanced-integrations/issues/542)) ([0ed8e5a](https://github.com/ReVanced/revanced-integrations/commit/0ed8e5a2988c07f3dfbd5dd4e9ef8ed53378fbbe))
+
 # [1.0.0](https://github.com/ReVanced/revanced-integrations/compare/v0.125.0...v1.0.0) (2023-12-12)
 
 

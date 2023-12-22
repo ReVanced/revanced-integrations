@@ -576,7 +576,7 @@ public class ReturnYouTubeDislikePatch {
                 return;
             }
 
-            final boolean videoIdIsShort = VideoInformation.lastVideoIdIsShort();
+            final boolean videoIdIsShort = VideoInformation.lastPlayerResponseIsShort();
             // Shorts shelf in home and subscription feed causes player response hook to be called,
             // and the 'is opening/playing' parameter will be false.
             // This hook will be called again when the Short is actually opened.
