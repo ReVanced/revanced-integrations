@@ -1,3 +1,11 @@
+# [1.1.0-dev.3](https://github.com/ReVanced/revanced-integrations/compare/v1.1.0-dev.2...v1.1.0-dev.3) (2023-12-24)
+
+
+### Features
+
+* **YouTube - Hide ads:** Hide fullscreen ads ([0f6dee5](https://github.com/ReVanced/revanced-integrations/commit/0f6dee5bae6b8017a53830587e09079942bc24aa))
+* **YouTube - Hide layout components:** Hide search result recommendations ([d241e43](https://github.com/ReVanced/revanced-integrations/commit/d241e437ee25cc2211bf06b4a7f8fd1c295fad25))
+
 # [1.1.0-dev.2](https://github.com/ReVanced/revanced-integrations/compare/v1.1.0-dev.1...v1.1.0-dev.2) (2023-12-21)
 
 
