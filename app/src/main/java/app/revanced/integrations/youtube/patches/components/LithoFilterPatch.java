@@ -5,7 +5,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 
-import app.revanced.integrations.youtube.settings.SettingsEnum;
+import app.revanced.integrations.youtube.settings.Setting;
 import app.revanced.integrations.youtube.utils.*;
 
 import java.nio.ByteBuffer;
@@ -14,7 +14,7 @@ import java.util.function.Consumer;
 
 abstract class FilterGroup<T> {
     final static class FilterGroupResult {
-        private SettingsEnum setting;
+        private Setting setting;
         private int matchedIndex;
         private int matchedLength;
         // In the future it might be useful to include which pattern matched,
@@ -24,11 +24,11 @@ abstract class FilterGroup<T> {
             this(null, -1, 0);
         }
 
-        FilterGroupResult(SettingsEnum setting, int matchedIndex, int matchedLength) {
+        FilterGroupResult(Setting setting, int matchedIndex, int matchedLength) {
             setValues(setting, matchedIndex, matchedLength);
         }
 
-        public void setValues(SettingsEnum setting, int matchedIndex, int matchedLength) {
+        public void setValues(Setting setting, int matchedIndex, int matchedLength) {
             this.setting = setting;
             this.matchedIndex = matchedIndex;
             this.matchedLength = matchedLength;
@@ -38,7 +38,7 @@ abstract class FilterGroup<T> {
          * A null value if the group has no setting,
          * or if no match is returned from {@link FilterGroupList#check(Object)}.
          */
-        public SettingsEnum getSetting() {
+        public Setting getSetting() {
             return setting;
         }
 
@@ -61,7 +61,7 @@ abstract class FilterGroup<T> {
         }
     }
 
-    protected final SettingsEnum setting;
+    protected final Setting setting;
     protected final T[] filters;
 
     /**
@@ -71,7 +71,7 @@ abstract class FilterGroup<T> {
      * @param filters The filters.
      */
     @SafeVarargs
-    public FilterGroup(final SettingsEnum setting, final T... filters) {
+    public FilterGroup(final Setting setting, final T... filters) {
         this.setting = setting;
         this.filters = filters;
         if (filters.length == 0) {
@@ -102,7 +102,7 @@ abstract class FilterGroup<T> {
 
 class StringFilterGroup extends FilterGroup<String> {
 
-    public StringFilterGroup(final SettingsEnum setting, final String... filters) {
+    public StringFilterGroup(final Setting setting, final String... filters) {
         super(setting, filters);
     }
 
@@ -128,7 +128,7 @@ class StringFilterGroup extends FilterGroup<String> {
 
 final class CustomFilterGroup extends StringFilterGroup {
 
-    private static String[] getFilterPatterns(SettingsEnum setting) {
+    private static String[] getFilterPatterns(Setting setting) {
         String[] patterns = setting.getString().split("\\s+");
         for (String pattern : patterns) {
             if (!StringTrieSearch.isValidPattern(pattern)) {
@@ -140,7 +140,7 @@ final class CustomFilterGroup extends StringFilterGroup {
         return patterns;
     }
 
-    public CustomFilterGroup(SettingsEnum setting, SettingsEnum filter) {
+    public CustomFilterGroup(Setting setting, Setting filter) {
         super(setting, getFilterPatterns(filter));
     }
 }
@@ -191,7 +191,7 @@ class ByteArrayFilterGroup extends FilterGroup<byte[]> {
         return failure;
     }
 
-    public ByteArrayFilterGroup(SettingsEnum setting, byte[]... filters) {
+    public ByteArrayFilterGroup(Setting setting, byte[]... filters) {
         super(setting, filters);
     }
 
@@ -199,7 +199,7 @@ class ByteArrayFilterGroup extends FilterGroup<byte[]> {
      * Converts the Strings into byte arrays. Used to search for text in binary data.
      */
     @RequiresApi(api = Build.VERSION_CODES.N)
-    public ByteArrayFilterGroup(SettingsEnum setting, String... filters) {
+    public ByteArrayFilterGroup(Setting setting, String... filters) {
         super(setting, Arrays.stream(filters).map(String::getBytes).toArray(byte[][]::new));
     }
 
@@ -377,7 +377,7 @@ abstract class Filter {
      */
     boolean isFiltered(@Nullable String identifier, String path, byte[] protobufBufferArray,
                        StringFilterGroup matchedGroup, FilterContentType contentType, int contentIndex) {
-        if (SettingsEnum.DEBUG.getBoolean()) {
+        if (Setting.DEBUG.getBoolean()) {
             String filterSimpleName = getClass().getSimpleName();
             if (contentType == FilterContentType.IDENTIFIER) {
                 LogHelper.printDebug(() -> filterSimpleName + " Filtered identifier: " + identifier);
@@ -421,7 +421,7 @@ public final class LithoFilterPatch {
             builder.append(identifier);
             builder.append(" Path: ");
             builder.append(path);
-            if (SettingsEnum.DEBUG_PROTOBUFFER.getBoolean()) {
+            if (Setting.DEBUG_PROTOBUFFER.getBoolean()) {
                 builder.append(" BufferStrings: ");
                 findAsciiStrings(builder, protoBuffer);
             }

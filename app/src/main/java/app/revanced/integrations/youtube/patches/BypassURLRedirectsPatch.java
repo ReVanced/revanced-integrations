@@ -1,7 +1,7 @@
 package app.revanced.integrations.youtube.patches;
 
 import android.net.Uri;
-import app.revanced.integrations.youtube.settings.SettingsEnum;
+import app.revanced.integrations.youtube.settings.Setting;
 import app.revanced.integrations.youtube.utils.LogHelper;
 
 public class BypassURLRedirectsPatch {
@@ -16,7 +16,7 @@ public class BypassURLRedirectsPatch {
     public static Uri parseRedirectUri(String uri) {
         final var parsed = Uri.parse(uri);
 
-        if (SettingsEnum.BYPASS_URL_REDIRECTS.getBoolean() && parsed.getPath().equals(YOUTUBE_REDIRECT_PATH)) {
+        if (Setting.BYPASS_URL_REDIRECTS.getBoolean() && parsed.getPath().equals(YOUTUBE_REDIRECT_PATH)) {
             var query = Uri.parse(Uri.decode(parsed.getQueryParameter("q")));
 
             LogHelper.printDebug(() -> "Bypassing YouTube redirect URI: " + query);

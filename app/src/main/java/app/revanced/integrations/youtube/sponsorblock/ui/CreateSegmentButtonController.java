@@ -9,7 +9,7 @@ import java.lang.ref.WeakReference;
 import java.util.Objects;
 
 import app.revanced.integrations.youtube.patches.VideoInformation;
-import app.revanced.integrations.youtube.settings.SettingsEnum;
+import app.revanced.integrations.youtube.settings.Setting;
 import app.revanced.integrations.youtube.utils.LogHelper;
 import app.revanced.integrations.youtube.utils.ReVancedUtils;
 import app.revanced.integrations.youtube.videoplayer.BottomControlButton;
@@ -88,7 +88,7 @@ public class CreateSegmentButtonController {
     }
 
     private static boolean shouldBeShown() {
-        return SettingsEnum.SB_ENABLED.getBoolean() && SettingsEnum.SB_CREATE_NEW_SEGMENT.getBoolean()
+        return Setting.SB_ENABLED.getBoolean() && Setting.SB_CREATE_NEW_SEGMENT.getBoolean()
                 && !VideoInformation.isAtEndOfVideo();
     }
 

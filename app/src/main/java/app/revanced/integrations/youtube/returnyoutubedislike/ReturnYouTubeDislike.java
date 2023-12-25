@@ -39,7 +39,7 @@ import java.util.concurrent.TimeoutException;
 
 import app.revanced.integrations.youtube.returnyoutubedislike.requests.RYDVoteData;
 import app.revanced.integrations.youtube.returnyoutubedislike.requests.ReturnYouTubeDislikeApi;
-import app.revanced.integrations.youtube.settings.SettingsEnum;
+import app.revanced.integrations.youtube.settings.Setting;
 import app.revanced.integrations.youtube.shared.PlayerType;
 import app.revanced.integrations.youtube.utils.LogHelper;
 import app.revanced.integrations.youtube.utils.ReVancedUtils;
@@ -225,7 +225,7 @@ public class ReturnYouTubeDislike {
         }
 
         SpannableStringBuilder builder = new SpannableStringBuilder();
-        final boolean compactLayout = SettingsEnum.RYD_COMPACT_LAYOUT.getBoolean();
+        final boolean compactLayout = Setting.RYD_COMPACT_LAYOUT.getBoolean();
 
         if (!compactLayout) {
             String leftSeparatorString = ReVancedUtils.isRightToLeftTextLayout()
@@ -318,7 +318,7 @@ public class ReturnYouTubeDislike {
 
     private static SpannableString newSpannableWithDislikes(@NonNull Spanned sourceStyling, @NonNull RYDVoteData voteData) {
         return newSpanUsingStylingOfAnotherSpan(sourceStyling,
-                SettingsEnum.RYD_DISLIKE_PERCENTAGE.getBoolean()
+                Setting.RYD_DISLIKE_PERCENTAGE.getBoolean()
                         ? formatDislikePercentage(voteData.getDislikePercentage())
                         : formatDislikeCount(voteData.getDislikeCount()));
     }

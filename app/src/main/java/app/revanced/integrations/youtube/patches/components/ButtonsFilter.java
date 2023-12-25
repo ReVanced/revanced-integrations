@@ -5,7 +5,7 @@ import android.os.Build;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 
-import app.revanced.integrations.youtube.settings.SettingsEnum;
+import app.revanced.integrations.youtube.settings.Setting;
 
 @SuppressWarnings("unused")
 @RequiresApi(api = Build.VERSION_CODES.N)
@@ -30,19 +30,19 @@ final class ButtonsFilter extends Filter {
         );
         addPathCallbacks(
                 new StringFilterGroup(
-                        SettingsEnum.HIDE_LIKE_DISLIKE_BUTTON,
+                        Setting.HIDE_LIKE_DISLIKE_BUTTON,
                         "|segmented_like_dislike_button"
                 ),
                 new StringFilterGroup(
-                        SettingsEnum.HIDE_DOWNLOAD_BUTTON,
+                        Setting.HIDE_DOWNLOAD_BUTTON,
                         "|download_button.eml|"
                 ),
                 new StringFilterGroup(
-                        SettingsEnum.HIDE_PLAYLIST_BUTTON,
+                        Setting.HIDE_PLAYLIST_BUTTON,
                         "|save_to_playlist_button"
                 ),
                 new StringFilterGroup(
-                        SettingsEnum.HIDE_CLIP_BUTTON,
+                        Setting.HIDE_CLIP_BUTTON,
                         "|clip_button.eml|"
                 ),
                 bufferFilterPathGroup
@@ -50,33 +50,33 @@ final class ButtonsFilter extends Filter {
 
         bufferButtonsGroupList.addAll(
                 new ByteArrayFilterGroup(
-                        SettingsEnum.HIDE_LIVE_CHAT_BUTTON,
+                        Setting.HIDE_LIVE_CHAT_BUTTON,
                         "yt_outline_message_bubble_overlap"
                 ),
                 new ByteArrayFilterGroup(
-                        SettingsEnum.HIDE_REPORT_BUTTON,
+                        Setting.HIDE_REPORT_BUTTON,
                         "yt_outline_flag"
                 ),
                 new ByteArrayFilterGroup(
-                        SettingsEnum.HIDE_SHARE_BUTTON,
+                        Setting.HIDE_SHARE_BUTTON,
                         "yt_outline_share"
                 ),
                 new ByteArrayFilterGroup(
-                        SettingsEnum.HIDE_REMIX_BUTTON,
+                        Setting.HIDE_REMIX_BUTTON,
                         "yt_outline_youtube_shorts_plus"
                 ),
                 // Check for clip button both here and using a path filter,
                 // as there's a chance the path is a generic action button and won't contain 'clip_button'
                 new ByteArrayFilterGroup(
-                        SettingsEnum.HIDE_CLIP_BUTTON,
+                        Setting.HIDE_CLIP_BUTTON,
                         "yt_outline_scissors"
                 ),
                 new ByteArrayFilterGroup(
-                        SettingsEnum.HIDE_SHOP_BUTTON,
+                        Setting.HIDE_SHOP_BUTTON,
                         "yt_outline_bag"
                 ),
                 new ByteArrayFilterGroup(
-                        SettingsEnum.HIDE_THANKS_BUTTON,
+                        Setting.HIDE_THANKS_BUTTON,
                         "yt_outline_dollar_sign_heart"
                 )
         );

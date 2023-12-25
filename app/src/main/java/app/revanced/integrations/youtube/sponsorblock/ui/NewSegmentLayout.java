@@ -9,7 +9,7 @@ import android.view.LayoutInflater;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import app.revanced.integrations.youtube.patches.VideoInformation;
-import app.revanced.integrations.youtube.settings.SettingsEnum;
+import app.revanced.integrations.youtube.settings.Setting;
 import app.revanced.integrations.youtube.sponsorblock.SponsorBlockUtils;
 import app.revanced.integrations.youtube.utils.LogHelper;
 
@@ -53,14 +53,14 @@ public final class NewSegmentLayout extends FrameLayout {
         initializeButton(
                 context,
                 "sb_new_segment_rewind",
-                () -> VideoInformation.seekToRelative(-SettingsEnum.SB_CREATE_NEW_SEGMENT_STEP.getInt()),
+                () -> VideoInformation.seekToRelative(-Setting.SB_CREATE_NEW_SEGMENT_STEP.getInt()),
                 "Rewind button clicked"
         );
 
         initializeButton(
                 context,
                 "sb_new_segment_forward",
-                () -> VideoInformation.seekToRelative(SettingsEnum.SB_CREATE_NEW_SEGMENT_STEP.getInt()),
+                () -> VideoInformation.seekToRelative(Setting.SB_CREATE_NEW_SEGMENT_STEP.getInt()),
                 "Forward button clicked"
         );
 

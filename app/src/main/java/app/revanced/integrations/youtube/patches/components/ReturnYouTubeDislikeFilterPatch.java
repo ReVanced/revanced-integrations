@@ -13,7 +13,7 @@ import java.util.Map;
 
 import app.revanced.integrations.youtube.patches.ReturnYouTubeDislikePatch;
 import app.revanced.integrations.youtube.patches.VideoInformation;
-import app.revanced.integrations.youtube.settings.SettingsEnum;
+import app.revanced.integrations.youtube.settings.Setting;
 import app.revanced.integrations.youtube.utils.LogHelper;
 import app.revanced.integrations.youtube.utils.TrieSearch;
 
@@ -55,7 +55,7 @@ public final class ReturnYouTubeDislikeFilterPatch extends Filter {
      */
     public static void newPlayerResponseVideoId(String videoId, boolean isShortAndOpeningOrPlaying) {
         try {
-            if (!isShortAndOpeningOrPlaying || !SettingsEnum.RYD_SHORTS.getBoolean()) {
+            if (!isShortAndOpeningOrPlaying || !Setting.RYD_SHORTS.getBoolean()) {
                 return;
             }
             synchronized (lastVideoIds) {
@@ -72,7 +72,7 @@ public final class ReturnYouTubeDislikeFilterPatch extends Filter {
 
     public ReturnYouTubeDislikeFilterPatch() {
         addPathCallbacks(
-                new StringFilterGroup(SettingsEnum.RYD_SHORTS, "|shorts_dislike_button.eml|")
+                new StringFilterGroup(Setting.RYD_SHORTS, "|shorts_dislike_button.eml|")
         );
         // After the dislikes icon name is some binary data and then the video id for that specific short.
         videoIdFilterGroup.addAll(

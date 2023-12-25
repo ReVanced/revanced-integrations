@@ -5,7 +5,7 @@ import android.os.Build;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 
-import app.revanced.integrations.youtube.settings.SettingsEnum;
+import app.revanced.integrations.youtube.settings.Setting;
 import app.revanced.integrations.youtube.shared.PlayerType;
 
 @SuppressWarnings("unused")
@@ -19,7 +19,7 @@ public class PlayerFlyoutMenuItemsFilter extends Filter {
     public PlayerFlyoutMenuItemsFilter() {
         exception = new ByteArrayFilterGroup(
                 // Whitelist Quality menu item when "Hide Additional settings menu" is enabled
-                SettingsEnum.HIDE_ADDITIONAL_SETTINGS_MENU,
+                Setting.HIDE_ADDITIONAL_SETTINGS_MENU,
                 "quality_sheet"
         );
 
@@ -30,43 +30,43 @@ public class PlayerFlyoutMenuItemsFilter extends Filter {
 
         flyoutFilterGroupList.addAll(
                 new ByteArrayFilterGroup(
-                        SettingsEnum.HIDE_CAPTIONS_MENU,
+                        Setting.HIDE_CAPTIONS_MENU,
                         "closed_caption"
                 ),
                 new ByteArrayFilterGroup(
-                        SettingsEnum.HIDE_ADDITIONAL_SETTINGS_MENU,
+                        Setting.HIDE_ADDITIONAL_SETTINGS_MENU,
                         "yt_outline_gear"
                 ),
                 new ByteArrayFilterGroup(
-                        SettingsEnum.HIDE_LOOP_VIDEO_MENU,
+                        Setting.HIDE_LOOP_VIDEO_MENU,
                         "yt_outline_arrow_repeat_1_"
                 ),
                 new ByteArrayFilterGroup(
-                        SettingsEnum.HIDE_AMBIENT_MODE_MENU,
+                        Setting.HIDE_AMBIENT_MODE_MENU,
                         "yt_outline_screen_light"
                 ),
                 new ByteArrayFilterGroup(
-                        SettingsEnum.HIDE_REPORT_MENU,
+                        Setting.HIDE_REPORT_MENU,
                         "yt_outline_flag"
                 ),
                 new ByteArrayFilterGroup(
-                        SettingsEnum.HIDE_HELP_MENU,
+                        Setting.HIDE_HELP_MENU,
                         "yt_outline_question_circle"
                 ),
                 new ByteArrayFilterGroup(
-                        SettingsEnum.HIDE_MORE_INFO_MENU,
+                        Setting.HIDE_MORE_INFO_MENU,
                         "yt_outline_info_circle"
                 ),
                 new ByteArrayFilterGroup(
-                        SettingsEnum.HIDE_SPEED_MENU,
+                        Setting.HIDE_SPEED_MENU,
                         "yt_outline_play_arrow_half_circle"
                 ),
                 new ByteArrayFilterGroup(
-                        SettingsEnum.HIDE_AUDIO_TRACK_MENU,
+                        Setting.HIDE_AUDIO_TRACK_MENU,
                         "yt_outline_person_radar"
                 ),
                 new ByteArrayFilterGroup(
-                        SettingsEnum.HIDE_WATCH_IN_VR_MENU,
+                        Setting.HIDE_WATCH_IN_VR_MENU,
                         "yt_outline_vr"
                 )
         );

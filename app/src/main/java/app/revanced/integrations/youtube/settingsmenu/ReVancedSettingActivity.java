@@ -1,19 +1,18 @@
 package app.revanced.integrations.youtube.settingsmenu;
 
-import static app.revanced.integrations.youtube.utils.ReVancedUtils.getChildView;
-import static app.revanced.integrations.youtube.utils.ReVancedUtils.getResourceIdentifier;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.preference.PreferenceFragment;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import app.revanced.integrations.youtube.utils.LogHelper;
+import app.revanced.integrations.youtube.utils.ThemeHelper;
 
 import java.util.Objects;
 
-import app.revanced.integrations.youtube.utils.LogHelper;
-import app.revanced.integrations.youtube.utils.ThemeHelper;
+import static app.revanced.integrations.youtube.utils.ReVancedUtils.getChildView;
+import static app.revanced.integrations.youtube.utils.ReVancedUtils.getResourceIdentifier;
 
 public class ReVancedSettingActivity {
 

@@ -1,46 +1,29 @@
 package app.revanced.integrations.youtube.settingsmenu;
 
-import static app.revanced.integrations.youtube.utils.StringRef.str;
-
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.EditTextPreference;
-import android.preference.ListPreference;
-import android.preference.Preference;
-import android.preference.PreferenceFragment;
-import android.preference.PreferenceManager;
-import android.preference.SwitchPreference;
-
+import android.preference.*;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
+import app.revanced.integrations.shared.settings.SettingsUtils;
 import app.revanced.integrations.youtube.patches.playback.speed.CustomPlaybackSpeedPatch;
-import app.revanced.integrations.youtube.settings.SettingsEnum;
+import app.revanced.integrations.youtube.settings.Setting;
 import app.revanced.integrations.youtube.settings.SharedPrefCategory;
 import app.revanced.integrations.youtube.utils.LogHelper;
 import app.revanced.integrations.youtube.utils.ReVancedUtils;
-import app.revanced.integrations.shared.settings.SettingsUtils;
 
+import static app.revanced.integrations.youtube.utils.StringRef.str;
+
+/** @noinspection deprecation*/
 public class ReVancedSettingsFragment extends PreferenceFragment {
     /**
      * Indicates that if a preference changes,
      * to apply the change from the Setting to the UI component.
      */
     static boolean settingImportInProgress;
-
-    static void showRestartDialog(@NonNull Context contxt) {
-        String positiveButton = str("in_app_update_restart_button");
-        new AlertDialog.Builder(contxt).setMessage(str("pref_refresh_config"))
-                .setPositiveButton(positiveButton, (dialog, id) -> {
-                    SettingsUtils.restartApp(contxt);
-                })
-                .setNegativeButton(android.R.string.cancel,  null)
-                .setCancelable(false)
-                .show();
-    }
 
     /**
      * Used to prevent showing reboot dialog, if user cancels a setting user dialog.
@@ -49,12 +32,12 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
 
     SharedPreferences.OnSharedPreferenceChangeListener listener = (sharedPreferences, str) -> {
         try {
-            SettingsEnum setting = SettingsEnum.settingFromPath(str);
+            Setting setting = Setting.settingFromPath(str);
             if (setting == null) {
                 return;
             }
             Preference pref = findPreference(str);
-            LogHelper.printDebug(() -> setting.name() + ": " + " setting value:" + setting.getObjectValue()  + " pref:" + pref);
+            LogHelper.printDebug(() -> setting.key + ": " + " setting value:" + setting.getObjectValue()  + " pref:" + pref);
             if (pref == null) {
                 return;
             }
@@ -64,29 +47,29 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
                 if (settingImportInProgress) {
                     switchPref.setChecked(setting.getBoolean());
                 } else {
-                    SettingsEnum.setValue(setting, switchPref.isChecked());
+                    Setting.setValue(setting, switchPref.isChecked());
                 }
             } else if (pref instanceof EditTextPreference) {
                 EditTextPreference editPreference = (EditTextPreference) pref;
                 if (settingImportInProgress) {
                     editPreference.getEditText().setText(setting.getObjectValue().toString());
                 } else {
-                    SettingsEnum.setValue(setting, editPreference.getText());
+                    Setting.setValue(setting, editPreference.getText());
                 }
             } else if (pref instanceof ListPreference) {
                 ListPreference listPref = (ListPreference) pref;
                 if (settingImportInProgress) {
                     listPref.setValue(setting.getObjectValue().toString());
                 } else {
-                    SettingsEnum.setValue(setting, listPref.getValue());
+                    Setting.setValue(setting, listPref.getValue());
                 }
-                updateListPreferenceSummary((ListPreference) pref, setting);
+                Setting.setListPreferenceSummary(listPref, setting);
             } else {
                 LogHelper.printException(() -> "Setting cannot be handled: " + pref.getClass() + " " + pref);
                 return;
             }
 
-            enableDisablePreferences();
+            Setting.setPreferencesEnabled(this);
 
             if (settingImportInProgress) {
                 return;
@@ -105,36 +88,40 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
         }
     };
 
+    static void showRestartDialog(@NonNull Context contxt) {
+        String positiveButton = str("in_app_update_restart_button");
+        new AlertDialog.Builder(contxt).setMessage(str("pref_refresh_config"))
+                .setPositiveButton(positiveButton, (dialog, id) -> {
+                    SettingsUtils.restartApp(contxt);
+                })
+                .setNegativeButton(android.R.string.cancel,  null)
+                .setCancelable(false)
+                .show();
+    }
+
     @SuppressLint("ResourceType")
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
         try {
             PreferenceManager preferenceManager = getPreferenceManager();
             preferenceManager.setSharedPreferencesName(SharedPrefCategory.YOUTUBE.prefName);
+            preferenceManager.getSharedPreferences().registerOnSharedPreferenceChangeListener(listener);
+
             addPreferencesFromResource(ReVancedUtils.getResourceIdentifier("revanced_prefs", "xml"));
 
-            enableDisablePreferences();
+            Setting.setPreferencesEnabled(this);
 
             // if the preference was included, then initialize it based on the available playback speed
-            Preference defaultSpeedPreference = findPreference(SettingsEnum.PLAYBACK_SPEED_DEFAULT.path);
+            Preference defaultSpeedPreference = findPreference(Setting.PLAYBACK_SPEED_DEFAULT.key);
             if (defaultSpeedPreference instanceof ListPreference) {
                 CustomPlaybackSpeedPatch.initializeListPreference((ListPreference) defaultSpeedPreference);
             }
 
-            // Set current value from SettingsEnum
-            for (SettingsEnum setting : SettingsEnum.values()) {
-                Preference preference = findPreference(setting.path);
-                if (preference instanceof SwitchPreference) {
-                    ((SwitchPreference) preference).setChecked(setting.getBoolean());
-                } else if (preference instanceof EditTextPreference) {
-                    ((EditTextPreference) preference).setText(setting.getObjectValue().toString());
-                } else if (preference instanceof ListPreference) {
-                    updateListPreferenceSummary((ListPreference) preference, setting);
-                }
-            }
+            // Set the preference values to the current setting values.
+            Setting.setPreferences(this);
 
-            preferenceManager.getSharedPreferences().registerOnSharedPreferenceChangeListener(listener);
         } catch (Exception ex) {
             LogHelper.printException(() -> "onActivityCreated() failure", ex);
         }
@@ -146,33 +133,7 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
         super.onDestroy();
     }
 
-    private void enableDisablePreferences() {
-        for (SettingsEnum setting : SettingsEnum.values()) {
-            Preference preference = this.findPreference(setting.path);
-            if (preference != null) {
-                preference.setEnabled(setting.isAvailable());
-            }
-        }
-    }
-
-    /**
-     * Sets summary text to the currently selected list option.
-     */
-    private void updateListPreferenceSummary(ListPreference listPreference, SettingsEnum setting) {
-        String objectStringValue = setting.getObjectValue().toString();
-        final int entryIndex = listPreference.findIndexOfValue(objectStringValue);
-        if (entryIndex >= 0) {
-            listPreference.setSummary(listPreference.getEntries()[entryIndex]);
-            listPreference.setValue(objectStringValue);
-        } else {
-            // Value is not an available option.
-            // User manually edited import data, or options changed and current selection is no longer available.
-            // Still show the value in the summary so it's clear that something is selected.
-            listPreference.setSummary(objectStringValue);
-        }
-    }
-
-    private void showSettingUserDialogConfirmation(@NonNull Context context, SwitchPreference switchPref, SettingsEnum setting) {
+    private void showSettingUserDialogConfirmation(@NonNull Context context, SwitchPreference switchPref, Setting setting) {
         showingUserDialogMessage = true;
         new AlertDialog.Builder(context)
                 .setTitle(str("revanced_settings_confirm_user_dialog_title"))
@@ -184,7 +145,7 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
                 })
                 .setNegativeButton(android.R.string.cancel, (dialog, id) -> {
                     Boolean defaultBooleanValue = (Boolean) setting.defaultValue;
-                    SettingsEnum.setValue(setting, defaultBooleanValue);
+                    Setting.setValue(setting, defaultBooleanValue);
                     switchPref.setChecked(defaultBooleanValue);
                 })
                 .setOnDismissListener(dialog -> {

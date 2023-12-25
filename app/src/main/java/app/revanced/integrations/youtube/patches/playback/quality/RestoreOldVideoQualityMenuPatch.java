@@ -6,7 +6,7 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 
 import app.revanced.integrations.youtube.patches.components.VideoQualityMenuFilterPatch;
-import app.revanced.integrations.youtube.settings.SettingsEnum;
+import app.revanced.integrations.youtube.settings.Setting;
 import app.revanced.integrations.youtube.utils.LogHelper;
 
 /**
@@ -21,7 +21,7 @@ public final class RestoreOldVideoQualityMenuPatch {
      * Injection point.
      */
     public static void onFlyoutMenuCreate(RecyclerView recyclerView) {
-        if (!SettingsEnum.RESTORE_OLD_VIDEO_QUALITY_MENU.getBoolean()) return;
+        if (!Setting.RESTORE_OLD_VIDEO_QUALITY_MENU.getBoolean()) return;
 
         recyclerView.getViewTreeObserver().addOnDrawListener(() -> {
             try {
@@ -47,7 +47,7 @@ public final class RestoreOldVideoQualityMenuPatch {
      * Injection point.  Only used if spoofing to an old app version.
      */
     public static void showOldVideoQualityMenu(final ListView listView) {
-        if (!SettingsEnum.RESTORE_OLD_VIDEO_QUALITY_MENU.getBoolean()) return;
+        if (!Setting.RESTORE_OLD_VIDEO_QUALITY_MENU.getBoolean()) return;
 
         listView.setOnHierarchyChangeListener(new ViewGroup.OnHierarchyChangeListener() {
             @Override

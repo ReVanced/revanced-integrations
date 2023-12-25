@@ -2,17 +2,17 @@ package app.revanced.integrations.youtube.patches;
 
 
 import android.view.View;
-import app.revanced.integrations.youtube.settings.SettingsEnum;
+import app.revanced.integrations.youtube.settings.Setting;
 
 public final class NavigationButtonsPatch {
     public static Enum lastNavigationButton;
 
     public static void hideCreateButton(final View view) {
-        view.setVisibility(SettingsEnum.HIDE_CREATE_BUTTON.getBoolean() ? View.GONE : View.VISIBLE);
+        view.setVisibility(Setting.HIDE_CREATE_BUTTON.getBoolean() ? View.GONE : View.VISIBLE);
     }
 
     public static boolean switchCreateWithNotificationButton() {
-        return SettingsEnum.SWITCH_CREATE_WITH_NOTIFICATIONS_BUTTON.getBoolean();
+        return Setting.SWITCH_CREATE_WITH_NOTIFICATIONS_BUTTON.getBoolean();
     }
 
     public static void hideButton(final View buttonView) {
@@ -24,9 +24,9 @@ public final class NavigationButtonsPatch {
     }
 
     private enum NavigationButton {
-        HOME("PIVOT_HOME", SettingsEnum.HIDE_HOME_BUTTON.getBoolean()),
-        SHORTS("TAB_SHORTS", SettingsEnum.HIDE_SHORTS_BUTTON.getBoolean()),
-        SUBSCRIPTIONS("PIVOT_SUBSCRIPTIONS", SettingsEnum.HIDE_SUBSCRIPTIONS_BUTTON.getBoolean());
+        HOME("PIVOT_HOME", Setting.HIDE_HOME_BUTTON.getBoolean()),
+        SHORTS("TAB_SHORTS", Setting.HIDE_SHORTS_BUTTON.getBoolean()),
+        SUBSCRIPTIONS("PIVOT_SUBSCRIPTIONS", Setting.HIDE_SUBSCRIPTIONS_BUTTON.getBoolean());
         private final boolean enabled;
         private final String name;
 

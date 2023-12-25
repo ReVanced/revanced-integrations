@@ -1,6 +1,6 @@
 package app.revanced.integrations.youtube.patches;
 
-import app.revanced.integrations.youtube.settings.SettingsEnum;
+import app.revanced.integrations.youtube.settings.Setting;
 
 public class DisableAutoCaptionsPatch {
 
@@ -10,7 +10,7 @@ public class DisableAutoCaptionsPatch {
     public static boolean captionsButtonDisabled;
 
     public static boolean autoCaptionsEnabled() {
-        return SettingsEnum.AUTO_CAPTIONS.getBoolean();
+        return Setting.AUTO_CAPTIONS.getBoolean();
     }
 
 }

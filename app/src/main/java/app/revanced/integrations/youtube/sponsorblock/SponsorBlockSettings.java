@@ -16,7 +16,7 @@ import org.json.JSONObject;
 
 import java.util.UUID;
 
-import app.revanced.integrations.youtube.settings.SettingsEnum;
+import app.revanced.integrations.youtube.settings.Setting;
 import app.revanced.integrations.youtube.settings.SharedPrefCategory;
 import app.revanced.integrations.youtube.sponsorblock.objects.CategoryBehaviour;
 import app.revanced.integrations.youtube.sponsorblock.objects.SegmentCategory;
@@ -77,31 +77,31 @@ public class SponsorBlockSettings {
                 // User id does not exist if user never voted or created any segments.
                 String userID = settingsJson.getString("userID");
                 if (isValidSBUserId(userID)) {
-                    SettingsEnum.SB_PRIVATE_USER_ID.saveValue(userID);
+                    Setting.SB_PRIVATE_USER_ID.saveValue(userID);
                 }
             }
-            SettingsEnum.SB_USER_IS_VIP.saveValue(settingsJson.getBoolean("isVip"));
-            SettingsEnum.SB_TOAST_ON_SKIP.saveValue(!settingsJson.getBoolean("dontShowNotice"));
-            SettingsEnum.SB_TRACK_SKIP_COUNT.saveValue(settingsJson.getBoolean("trackViewCount"));
-            SettingsEnum.SB_VIDEO_LENGTH_WITHOUT_SEGMENTS.saveValue(settingsJson.getBoolean("showTimeWithSkips"));
+            Setting.SB_USER_IS_VIP.saveValue(settingsJson.getBoolean("isVip"));
+            Setting.SB_TOAST_ON_SKIP.saveValue(!settingsJson.getBoolean("dontShowNotice"));
+            Setting.SB_TRACK_SKIP_COUNT.saveValue(settingsJson.getBoolean("trackViewCount"));
+            Setting.SB_VIDEO_LENGTH_WITHOUT_SEGMENTS.saveValue(settingsJson.getBoolean("showTimeWithSkips"));
 
             String serverAddress = settingsJson.getString("serverAddress");
             if (isValidSBServerAddress(serverAddress)) { // Old versions of ReVanced exported wrong url format
-                SettingsEnum.SB_API_URL.saveValue(serverAddress);
+                Setting.SB_API_URL.saveValue(serverAddress);
             }
 
             final float minDuration = (float) settingsJson.getDouble("minDuration");
             if (minDuration < 0) {
                 throw new IllegalArgumentException("invalid minDuration: " + minDuration);
             }
-            SettingsEnum.SB_SEGMENT_MIN_DURATION.saveValue(minDuration);
+            Setting.SB_SEGMENT_MIN_DURATION.saveValue(minDuration);
 
             if (settingsJson.has("skipCount")) { // Value not exported in old versions of ReVanced
                 int skipCount = settingsJson.getInt("skipCount");
                 if (skipCount < 0) {
                     throw new IllegalArgumentException("invalid skipCount: " + skipCount);
                 }
-                SettingsEnum.SB_LOCAL_TIME_SAVED_NUMBER_SEGMENTS.saveValue(skipCount);
+                Setting.SB_LOCAL_TIME_SAVED_NUMBER_SEGMENTS.saveValue(skipCount);
             }
 
             if (settingsJson.has("minutesSaved")) {
@@ -109,7 +109,7 @@ public class SponsorBlockSettings {
                 if (minutesSaved < 0) {
                     throw new IllegalArgumentException("invalid minutesSaved: " + minutesSaved);
                 }
-                SettingsEnum.SB_LOCAL_TIME_SAVED_MILLISECONDS.saveValue((long) (minutesSaved * 60 * 1000));
+                Setting.SB_LOCAL_TIME_SAVED_MILLISECONDS.saveValue((long) (minutesSaved * 60 * 1000));
             }
 
             ReVancedUtils.showToastLong(str("sb_settings_import_successful"));
@@ -144,16 +144,16 @@ public class SponsorBlockSettings {
                 }
             }
             if (SponsorBlockSettings.userHasSBPrivateId()) {
-                json.put("userID", SettingsEnum.SB_PRIVATE_USER_ID.getString());
+                json.put("userID", Setting.SB_PRIVATE_USER_ID.getString());
             }
-            json.put("isVip", SettingsEnum.SB_USER_IS_VIP.getBoolean());
-            json.put("serverAddress", SettingsEnum.SB_API_URL.getString());
-            json.put("dontShowNotice", !SettingsEnum.SB_TOAST_ON_SKIP.getBoolean());
-            json.put("showTimeWithSkips", SettingsEnum.SB_VIDEO_LENGTH_WITHOUT_SEGMENTS.getBoolean());
-            json.put("minDuration", SettingsEnum.SB_SEGMENT_MIN_DURATION.getFloat());
-            json.put("trackViewCount", SettingsEnum.SB_TRACK_SKIP_COUNT.getBoolean());
-            json.put("skipCount", SettingsEnum.SB_LOCAL_TIME_SAVED_NUMBER_SEGMENTS.getInt());
-            json.put("minutesSaved", SettingsEnum.SB_LOCAL_TIME_SAVED_MILLISECONDS.getLong() / (60f * 1000));
+            json.put("isVip", Setting.SB_USER_IS_VIP.getBoolean());
+            json.put("serverAddress", Setting.SB_API_URL.getString());
+            json.put("dontShowNotice", !Setting.SB_TOAST_ON_SKIP.getBoolean());
+            json.put("showTimeWithSkips", Setting.SB_VIDEO_LENGTH_WITHOUT_SEGMENTS.getBoolean());
+            json.put("minDuration", Setting.SB_SEGMENT_MIN_DURATION.getFloat());
+            json.put("trackViewCount", Setting.SB_TRACK_SKIP_COUNT.getBoolean());
+            json.put("skipCount", Setting.SB_LOCAL_TIME_SAVED_NUMBER_SEGMENTS.getInt());
+            json.put("minutesSaved", Setting.SB_LOCAL_TIME_SAVED_MILLISECONDS.getLong() / (60f * 1000));
 
             json.put("categorySelections", categorySelectionsArray);
             json.put("barTypes", barTypesObject);
@@ -176,11 +176,11 @@ public class SponsorBlockSettings {
 
         // If user has a SponsorBlock user id then show a warning.
         if (dialogContext != null && SponsorBlockSettings.userHasSBPrivateId()
-                && !SettingsEnum.SB_HIDE_EXPORT_WARNING.getBoolean()) {
+                && !Setting.SB_HIDE_EXPORT_WARNING.getBoolean()) {
             new AlertDialog.Builder(dialogContext)
                     .setMessage(str("sb_settings_revanced_export_user_id_warning"))
                     .setNeutralButton(str("sb_settings_revanced_export_user_id_warning_dismiss"),
-                            (dialog, which) -> SettingsEnum.SB_HIDE_EXPORT_WARNING.saveValue(true))
+                            (dialog, which) -> Setting.SB_HIDE_EXPORT_WARNING.saveValue(true))
                     .setPositiveButton(android.R.string.ok, null)
                     .setCancelable(false)
                     .show();
@@ -239,7 +239,7 @@ public class SponsorBlockSettings {
      * @return if the user has ever voted, created a segment, or imported existing SB settings.
      */
     public static boolean userHasSBPrivateId() {
-        return !SettingsEnum.SB_PRIVATE_USER_ID.getString().isEmpty();
+        return !Setting.SB_PRIVATE_USER_ID.getString().isEmpty();
     }
 
     /**
@@ -247,13 +247,13 @@ public class SponsorBlockSettings {
      */
     @NonNull
     public static String getSBPrivateUserID() {
-        String uuid = SettingsEnum.SB_PRIVATE_USER_ID.getString();
+        String uuid = Setting.SB_PRIVATE_USER_ID.getString();
         if (uuid.isEmpty()) {
             uuid = (UUID.randomUUID().toString() +
                     UUID.randomUUID().toString() +
                     UUID.randomUUID().toString())
                     .replace("-", "");
-            SettingsEnum.SB_PRIVATE_USER_ID.saveValue(uuid);
+            Setting.SB_PRIVATE_USER_ID.saveValue(uuid);
         }
         return uuid;
     }

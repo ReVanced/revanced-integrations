@@ -1,7 +1,5 @@
 package app.revanced.integrations.youtube.settingsmenu;
 
-import static app.revanced.integrations.youtube.utils.StringRef.str;
-
 import android.app.AlertDialog;
 import android.content.Context;
 import android.os.Build;
@@ -11,10 +9,11 @@ import android.text.InputType;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.widget.EditText;
-
-import app.revanced.integrations.youtube.settings.SettingsEnum;
+import app.revanced.integrations.youtube.settings.Setting;
 import app.revanced.integrations.youtube.utils.LogHelper;
 import app.revanced.integrations.youtube.utils.ReVancedUtils;
+
+import static app.revanced.integrations.youtube.utils.StringRef.str;
 
 public class ImportExportPreference extends EditTextPreference implements Preference.OnPreferenceClickListener {
 
@@ -55,7 +54,7 @@ public class ImportExportPreference extends EditTextPreference implements Prefer
     public boolean onPreferenceClick(Preference preference) {
         try {
             // Must set text before preparing dialog, otherwise text is non selectable if this preference is later reopened.
-            existingSettings = SettingsEnum.exportJSON(getContext());
+            existingSettings = Setting.exportToJson(getContext());
             getEditText().setText(existingSettings);
         } catch (Exception ex) {
             LogHelper.printException(() -> "showDialog failure", ex);
@@ -83,7 +82,7 @@ public class ImportExportPreference extends EditTextPreference implements Prefer
                 return;
             }
             ReVancedSettingsFragment.settingImportInProgress = true;
-            final boolean rebootNeeded = SettingsEnum.importJSON(replacementSettings);
+            final boolean rebootNeeded = Setting.importFromJSON(replacementSettings);
             if (rebootNeeded) {
                 ReVancedSettingsFragment.showRestartDialog(getContext());
             }

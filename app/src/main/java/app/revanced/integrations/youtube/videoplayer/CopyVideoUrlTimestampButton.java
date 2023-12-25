@@ -6,7 +6,7 @@ import android.view.ViewGroup;
 import androidx.annotation.Nullable;
 
 import app.revanced.integrations.youtube.patches.CopyVideoUrlPatch;
-import app.revanced.integrations.youtube.settings.SettingsEnum;
+import app.revanced.integrations.youtube.settings.Setting;
 import app.revanced.integrations.youtube.utils.LogHelper;
 
 public class CopyVideoUrlTimestampButton extends BottomControlButton {
@@ -17,7 +17,7 @@ public class CopyVideoUrlTimestampButton extends BottomControlButton {
         super(
                 bottomControlsViewGroup,
                 "copy_video_url_timestamp_button",
-                SettingsEnum.COPY_VIDEO_URL_TIMESTAMP,
+                Setting.COPY_VIDEO_URL_TIMESTAMP,
                 view -> CopyVideoUrlPatch.copyUrl(true),
                 view -> {
                     CopyVideoUrlPatch.copyUrl(false);

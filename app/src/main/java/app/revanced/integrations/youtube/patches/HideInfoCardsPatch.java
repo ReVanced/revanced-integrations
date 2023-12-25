@@ -1,15 +1,15 @@
 package app.revanced.integrations.youtube.patches;
 
 import android.view.View;
-import app.revanced.integrations.youtube.settings.SettingsEnum;
+import app.revanced.integrations.youtube.settings.Setting;
 
 public class HideInfoCardsPatch {
     public static void hideInfoCardsIncognito(View view) {
-        if (!SettingsEnum.HIDE_INFO_CARDS.getBoolean()) return;
+        if (!Setting.HIDE_INFO_CARDS.getBoolean()) return;
         view.setVisibility(View.GONE);
     }
 
     public static boolean hideInfoCardsMethodCall() {
-        return SettingsEnum.HIDE_INFO_CARDS.getBoolean();
+        return Setting.HIDE_INFO_CARDS.getBoolean();
     }
 }

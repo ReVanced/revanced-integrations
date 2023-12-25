@@ -1,9 +1,9 @@
 package app.revanced.integrations.youtube.patches;
 
-import app.revanced.integrations.youtube.settings.SettingsEnum;
+import app.revanced.integrations.youtube.settings.Setting;
 
 public class HideAutoplayButtonPatch {
     public static boolean isButtonShown() {
-        return !SettingsEnum.HIDE_AUTOPLAY_BUTTON.getBoolean();
+        return !Setting.HIDE_AUTOPLAY_BUTTON.getBoolean();
     }
 }

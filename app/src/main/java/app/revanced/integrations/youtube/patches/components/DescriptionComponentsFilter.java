@@ -1,7 +1,7 @@
 package app.revanced.integrations.youtube.patches.components;
 
 import androidx.annotation.Nullable;
-import app.revanced.integrations.youtube.settings.SettingsEnum;
+import app.revanced.integrations.youtube.settings.Setting;
 import app.revanced.integrations.youtube.utils.StringTrieSearch;
 
 @SuppressWarnings("unused")
@@ -19,33 +19,33 @@ final class DescriptionComponentsFilter extends Filter {
         );
 
         final StringFilterGroup chapterSection = new StringFilterGroup(
-                SettingsEnum.HIDE_CHAPTERS,
+                Setting.HIDE_CHAPTERS,
                 "macro_markers_carousel"
         );
 
         final StringFilterGroup infoCardsSection = new StringFilterGroup(
-                SettingsEnum.HIDE_INFO_CARDS_SECTION,
+                Setting.HIDE_INFO_CARDS_SECTION,
                 "infocards_section"
         );
 
         final StringFilterGroup gameSection = new StringFilterGroup(
-                SettingsEnum.HIDE_GAME_SECTION,
+                Setting.HIDE_GAME_SECTION,
                 "gaming_section"
         );
 
         final StringFilterGroup musicSection = new StringFilterGroup(
-                SettingsEnum.HIDE_MUSIC_SECTION,
+                Setting.HIDE_MUSIC_SECTION,
                 "music_section",
                 "video_attributes_section"
         );
 
         final StringFilterGroup podcastSection = new StringFilterGroup(
-                SettingsEnum.HIDE_PODCAST_SECTION,
+                Setting.HIDE_PODCAST_SECTION,
                 "playlist_section"
         );
 
         final StringFilterGroup transcriptSection = new StringFilterGroup(
-                SettingsEnum.HIDE_TRANSCIPT_SECTION,
+                Setting.HIDE_TRANSCIPT_SECTION,
                 "transcript_section"
         );
 

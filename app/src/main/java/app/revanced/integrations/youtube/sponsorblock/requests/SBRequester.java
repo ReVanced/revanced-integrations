@@ -19,7 +19,7 @@ import java.util.concurrent.TimeUnit;
 
 import app.revanced.integrations.youtube.requests.Requester;
 import app.revanced.integrations.youtube.requests.Route;
-import app.revanced.integrations.youtube.settings.SettingsEnum;
+import app.revanced.integrations.youtube.settings.Setting;
 import app.revanced.integrations.youtube.sponsorblock.SponsorBlockSettings;
 import app.revanced.integrations.youtube.sponsorblock.objects.SegmentCategory;
 import app.revanced.integrations.youtube.sponsorblock.objects.SponsorSegment;
@@ -50,7 +50,7 @@ public class SBRequester {
     }
 
     private static void handleConnectionError(@NonNull String toastMessage, @Nullable Exception ex) {
-        if (SettingsEnum.SB_TOAST_ON_CONNECTION_ERROR.getBoolean()) {
+        if (Setting.SB_TOAST_ON_CONNECTION_ERROR.getBoolean()) {
             ReVancedUtils.showToastShort(toastMessage);
         }
         if (ex != null) {
@@ -68,7 +68,7 @@ public class SBRequester {
 
             if (responseCode == HTTP_STATUS_CODE_SUCCESS) {
                 JSONArray responseArray = Requester.parseJSONArray(connection);
-                final long minSegmentDuration = (long) (SettingsEnum.SB_SEGMENT_MIN_DURATION.getFloat() * 1000);
+                final long minSegmentDuration = (long) (Setting.SB_SEGMENT_MIN_DURATION.getFloat() * 1000);
                 for (int i = 0, length = responseArray.length(); i < length; i++) {
                     JSONObject obj = (JSONObject) responseArray.get(i);
                     JSONArray segment = obj.getJSONArray("segment");
@@ -283,15 +283,15 @@ public class SBRequester {
             return; // User cannot be a VIP. User has never voted, created any segments, or has imported a SB user id.
         }
         long now = System.currentTimeMillis();
-        if (now < (SettingsEnum.SB_LAST_VIP_CHECK.getLong() + TimeUnit.DAYS.toMillis(3))) {
+        if (now < (Setting.SB_LAST_VIP_CHECK.getLong() + TimeUnit.DAYS.toMillis(3))) {
             return;
         }
         ReVancedUtils.runOnBackgroundThread(() -> {
             try {
                 JSONObject json = getJSONObject(SBRoutes.IS_USER_VIP, SponsorBlockSettings.getSBPrivateUserID());
                 boolean vip = json.getBoolean("vip");
-                SettingsEnum.SB_USER_IS_VIP.saveValue(vip);
-                SettingsEnum.SB_LAST_VIP_CHECK.saveValue(now);
+                Setting.SB_USER_IS_VIP.saveValue(vip);
+                Setting.SB_LAST_VIP_CHECK.saveValue(now);
             } catch (IOException ex) {
                 LogHelper.printInfo(() -> "Failed to check VIP (network error)", ex); // info, so no error toast is shown
             } catch (Exception ex) {
@@ -303,7 +303,7 @@ public class SBRequester {
     // helpers
 
     private static HttpURLConnection getConnectionFromRoute(@NonNull Route route, String... params) throws IOException {
-        HttpURLConnection connection = Requester.getConnectionFromRoute(SettingsEnum.SB_API_URL.getString(), route, params);
+        HttpURLConnection connection = Requester.getConnectionFromRoute(Setting.SB_API_URL.getString(), route, params);
         connection.setConnectTimeout(TIMEOUT_TCP_DEFAULT_MILLISECONDS);
         connection.setReadTimeout(TIMEOUT_HTTP_DEFAULT_MILLISECONDS);
         return connection;

@@ -9,20 +9,20 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-import app.revanced.integrations.youtube.settings.SettingsEnum;
+import app.revanced.integrations.youtube.settings.Setting;
 import app.revanced.integrations.youtube.utils.LogHelper;
 import app.revanced.integrations.youtube.utils.ReVancedUtils;
 
 public class RememberVideoQualityPatch {
     private static final int AUTOMATIC_VIDEO_QUALITY_VALUE = -2;
-    private static final SettingsEnum wifiQualitySetting = SettingsEnum.VIDEO_QUALITY_DEFAULT_WIFI;
-    private static final SettingsEnum mobileQualitySetting = SettingsEnum.VIDEO_QUALITY_DEFAULT_MOBILE;
+    private static final Setting wifiQualitySetting = Setting.VIDEO_QUALITY_DEFAULT_WIFI;
+    private static final Setting mobileQualitySetting = Setting.VIDEO_QUALITY_DEFAULT_MOBILE;
 
     private static boolean qualityNeedsUpdating;
 
     /**
      * If the user selected a new quality from the flyout menu,
-     * and {@link SettingsEnum#REMEMBER_VIDEO_QUALITY_LAST_SELECTED} is enabled.
+     * and {@link Setting#REMEMBER_VIDEO_QUALITY_LAST_SELECTED} is enabled.
      */
     private static boolean userChangedDefaultQuality;
 
@@ -137,7 +137,7 @@ public class RememberVideoQualityPatch {
      * Injection point.  Old quality menu.
      */
     public static void userChangedQuality(int selectedQualityIndex) {
-        if (!SettingsEnum.REMEMBER_VIDEO_QUALITY_LAST_SELECTED.getBoolean()) return;
+        if (!Setting.REMEMBER_VIDEO_QUALITY_LAST_SELECTED.getBoolean()) return;
 
         userSelectedQualityIndex = selectedQualityIndex;
         userChangedDefaultQuality = true;
@@ -147,7 +147,7 @@ public class RememberVideoQualityPatch {
      * Injection point.  New quality menu.
      */
     public static void userChangedQualityInNewFlyout(int selectedQuality) {
-        if (!SettingsEnum.REMEMBER_VIDEO_QUALITY_LAST_SELECTED.getBoolean()) return;
+        if (!Setting.REMEMBER_VIDEO_QUALITY_LAST_SELECTED.getBoolean()) return;
 
         changeDefaultQuality(selectedQuality); // Quality is human readable resolution (ie: 1080).
     }

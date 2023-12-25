@@ -1,9 +1,9 @@
 package app.revanced.integrations.youtube.patches;
 
-import app.revanced.integrations.youtube.settings.SettingsEnum;
+import app.revanced.integrations.youtube.settings.Setting;
 
 public class HideSeekbarPatch {
     public static boolean hideSeekbar() {
-        return SettingsEnum.HIDE_SEEKBAR.getBoolean();
+        return Setting.HIDE_SEEKBAR.getBoolean();
     }
 }

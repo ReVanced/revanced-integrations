@@ -2,7 +2,7 @@ package app.revanced.integrations.youtube.swipecontrols
 
 import android.content.Context
 import android.graphics.Color
-import app.revanced.integrations.youtube.settings.SettingsEnum
+import app.revanced.integrations.youtube.settings.Setting
 import app.revanced.integrations.youtube.shared.PlayerType
 
 /**
@@ -24,13 +24,13 @@ class SwipeControlsConfigurationProvider(
      * should swipe controls for volume be enabled?
      */
     val enableVolumeControls: Boolean
-        get() = SettingsEnum.SWIPE_VOLUME.boolean
+        get() = Setting.SWIPE_VOLUME.boolean
 
     /**
      * should swipe controls for volume be enabled?
      */
     val enableBrightnessControl: Boolean
-        get() = SettingsEnum.SWIPE_BRIGHTNESS.boolean
+        get() = Setting.SWIPE_BRIGHTNESS.boolean
 
     /**
      * is the video player currently in fullscreen mode?
@@ -52,14 +52,14 @@ class SwipeControlsConfigurationProvider(
      * should press-to-swipe be enabled?
      */
     val shouldEnablePressToSwipe: Boolean
-        get() = SettingsEnum.SWIPE_PRESS_TO_ENGAGE.boolean
+        get() = Setting.SWIPE_PRESS_TO_ENGAGE.boolean
 
     /**
      * threshold for swipe detection
      * this may be called rapidly in onScroll, so we have to load it once and then leave it constant
      */
     val swipeMagnitudeThreshold: Int
-        get() = SettingsEnum.SWIPE_MAGNITUDE_THRESHOLD.int
+        get() = Setting.SWIPE_MAGNITUDE_THRESHOLD.int
 //endregion
 
 //region overlay adjustments
@@ -68,25 +68,25 @@ class SwipeControlsConfigurationProvider(
      * should the overlay enable haptic feedback?
      */
     val shouldEnableHapticFeedback: Boolean
-        get() = SettingsEnum.SWIPE_HAPTIC_FEEDBACK.boolean
+        get() = Setting.SWIPE_HAPTIC_FEEDBACK.boolean
 
     /**
      * how long the overlay should be shown on changes
      */
     val overlayShowTimeoutMillis: Long
-        get() = SettingsEnum.SWIPE_OVERLAY_TIMEOUT.long
+        get() = Setting.SWIPE_OVERLAY_TIMEOUT.long
 
     /**
      * text size for the overlay, in sp
      */
     val overlayTextSize: Int
-        get() = SettingsEnum.SWIPE_OVERLAY_TEXT_SIZE.int
+        get() = Setting.SWIPE_OVERLAY_TEXT_SIZE.int
 
     /**
      * get the background color for text on the overlay, as a color int
      */
     val overlayTextBackgroundColor: Int
-        get() = Color.argb(SettingsEnum.SWIPE_OVERLAY_BACKGROUND_ALPHA.int, 0, 0, 0)
+        get() = Color.argb(Setting.SWIPE_OVERLAY_BACKGROUND_ALPHA.int, 0, 0, 0)
 
     /**
      * get the foreground color for text on the overlay, as a color int
@@ -102,7 +102,7 @@ class SwipeControlsConfigurationProvider(
      * should the brightness be saved and restored when exiting or entering fullscreen
      */
     val shouldSaveAndRestoreBrightness: Boolean
-        get() = SettingsEnum.SWIPE_SAVE_AND_RESTORE_BRIGHTNESS.boolean
+        get() = Setting.SWIPE_SAVE_AND_RESTORE_BRIGHTNESS.boolean
 
 //endregion
 }

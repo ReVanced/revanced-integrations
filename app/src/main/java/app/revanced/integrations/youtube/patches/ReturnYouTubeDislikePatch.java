@@ -11,7 +11,7 @@ import androidx.annotation.Nullable;
 import app.revanced.integrations.youtube.patches.components.ReturnYouTubeDislikeFilterPatch;
 import app.revanced.integrations.youtube.patches.spoof.SpoofAppVersionPatch;
 import app.revanced.integrations.youtube.returnyoutubedislike.ReturnYouTubeDislike;
-import app.revanced.integrations.youtube.settings.SettingsEnum;
+import app.revanced.integrations.youtube.settings.Setting;
 import app.revanced.integrations.youtube.shared.PlayerType;
 import app.revanced.integrations.youtube.utils.LogHelper;
 import app.revanced.integrations.youtube.utils.ReVancedUtils;
@@ -159,7 +159,7 @@ public class ReturnYouTubeDislikePatch {
      */
     public static void setOldUILayoutDislikes(int buttonViewResourceId, @Nullable TextView textView) {
         try {
-            if (!SettingsEnum.RYD_ENABLED.getBoolean()
+            if (!Setting.RYD_ENABLED.getBoolean()
                     || buttonViewResourceId != OLD_UI_DISLIKE_BUTTON_RESOURCE_ID
                     || textView == null) {
                 return;
@@ -226,7 +226,7 @@ public class ReturnYouTubeDislikePatch {
                                                   @NonNull CharSequence original,
                                                   boolean isRollingNumber) {
         try {
-            if (!SettingsEnum.RYD_ENABLED.getBoolean()) {
+            if (!Setting.RYD_ENABLED.getBoolean()) {
                 return original;
             }
 
@@ -250,7 +250,7 @@ public class ReturnYouTubeDislikePatch {
                 // But spoofing to that range gives a broken UI layout so no point checking for that.
             } else if (!isRollingNumber && conversionContextString.contains("|shorts_dislike_button.eml|")) {
                 // Litho Shorts player.
-                if (!SettingsEnum.RYD_SHORTS.getBoolean()) {
+                if (!Setting.RYD_SHORTS.getBoolean()) {
                     // Must clear the current video here, otherwise if the user opens a regular video
                     // then opens a litho short (while keeping the regular video on screen), then closes the short,
                     // the original video may show the incorrect dislike value.
@@ -323,7 +323,7 @@ public class ReturnYouTubeDislikePatch {
      */
     public static float onRollingNumberMeasured(String text, float measuredTextWidth) {
         try {
-            if (SettingsEnum.RYD_ENABLED.getBoolean() && !SettingsEnum.RYD_COMPACT_LAYOUT.getBoolean()) {
+            if (Setting.RYD_ENABLED.getBoolean() && !Setting.RYD_COMPACT_LAYOUT.getBoolean()) {
                 if (ReturnYouTubeDislike.isPreviouslyCreatedSegmentedSpan(text)) {
                     // +1 pixel is needed for some foreign languages that measure
                     // the text different from what is used for layout (Greek in particular).
@@ -378,7 +378,7 @@ public class ReturnYouTubeDislikePatch {
      */
     public static CharSequence updateRollingNumber(TextView view, CharSequence original) {
         try {
-            if (!SettingsEnum.RYD_ENABLED.getBoolean()) {
+            if (!Setting.RYD_ENABLED.getBoolean()) {
                 removeRollingNumberPatchChanges(view);
                 return original;
             }
@@ -399,7 +399,7 @@ public class ReturnYouTubeDislikePatch {
                 return original;
             }
 
-            if (SettingsEnum.RYD_COMPACT_LAYOUT.getBoolean()) {
+            if (Setting.RYD_COMPACT_LAYOUT.getBoolean()) {
                 removeRollingNumberPatchChanges(view);
             } else {
                 addRollingNumberPatchChanges(view);
@@ -450,10 +450,10 @@ public class ReturnYouTubeDislikePatch {
      */
     public static boolean setShortsDislikes(@NonNull View likeDislikeView) {
         try {
-            if (!SettingsEnum.RYD_ENABLED.getBoolean()) {
+            if (!Setting.RYD_ENABLED.getBoolean()) {
                 return false;
             }
-            if (!SettingsEnum.RYD_SHORTS.getBoolean()) {
+            if (!Setting.RYD_SHORTS.getBoolean()) {
                 // Must clear the data here, in case a new video was loaded while PlayerType
                 // suggested the video was not a short (can happen when spoofing to an old app version).
                 clearData();
@@ -563,7 +563,7 @@ public class ReturnYouTubeDislikePatch {
      */
     public static void preloadVideoId(@NonNull String videoId, boolean isShortAndOpeningOrPlaying) {
         try {
-            if (!SettingsEnum.RYD_ENABLED.getBoolean()) {
+            if (!Setting.RYD_ENABLED.getBoolean()) {
                 return;
             }
             if (videoId.equals(lastPrefetchedVideoId)) {
@@ -574,7 +574,7 @@ public class ReturnYouTubeDislikePatch {
             // Shorts shelf in home and subscription feed causes player response hook to be called,
             // and the 'is opening/playing' parameter will be false.
             // This hook will be called again when the Short is actually opened.
-            if (videoIdIsShort && (!isShortAndOpeningOrPlaying || !SettingsEnum.RYD_SHORTS.getBoolean())) {
+            if (videoIdIsShort && (!isShortAndOpeningOrPlaying || !Setting.RYD_SHORTS.getBoolean())) {
                 return;
             }
             final boolean waitForFetchToComplete = !IS_SPOOFING_TO_NON_LITHO_SHORTS_PLAYER
@@ -607,12 +607,12 @@ public class ReturnYouTubeDislikePatch {
      */
     public static void newVideoLoaded(@NonNull String videoId) {
         try {
-            if (!SettingsEnum.RYD_ENABLED.getBoolean()) return;
+            if (!Setting.RYD_ENABLED.getBoolean()) return;
             Objects.requireNonNull(videoId);
 
             PlayerType currentPlayerType = PlayerType.getCurrent();
             final boolean isNoneHiddenOrSlidingMinimized = currentPlayerType.isNoneHiddenOrSlidingMinimized();
-            if (isNoneHiddenOrSlidingMinimized && !SettingsEnum.RYD_SHORTS.getBoolean()) {
+            if (isNoneHiddenOrSlidingMinimized && !Setting.RYD_SHORTS.getBoolean()) {
                 // Must clear here, otherwise the wrong data can be used for a minimized regular video.
                 clearData();
                 return;
@@ -675,11 +675,11 @@ public class ReturnYouTubeDislikePatch {
      */
     public static void sendVote(int vote) {
         try {
-            if (!SettingsEnum.RYD_ENABLED.getBoolean()) {
+            if (!Setting.RYD_ENABLED.getBoolean()) {
                 return;
             }
             final boolean isNoneHiddenOrMinimized = PlayerType.getCurrent().isNoneHiddenOrMinimized();
-            if (isNoneHiddenOrMinimized && !SettingsEnum.RYD_SHORTS.getBoolean()) {
+            if (isNoneHiddenOrMinimized && !Setting.RYD_SHORTS.getBoolean()) {
                 return;
             }
             ReturnYouTubeDislike videoData = currentVideoData;

@@ -16,7 +16,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.*;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import app.revanced.integrations.youtube.settings.SettingsEnum;
+import app.revanced.integrations.youtube.settings.Setting;
 
 import java.text.Bidi;
 import java.util.Locale;
@@ -64,7 +64,7 @@ public class ReVancedUtils {
      * @param condition The setting to check for hiding the view.
      * @param view      The view to hide.
      */
-    public static void hideViewBy1dpUnderCondition(SettingsEnum condition, View view) {
+    public static void hideViewBy1dpUnderCondition(Setting condition, View view) {
         if (!condition.getBoolean()) return;
 
         LogHelper.printDebug(() -> "Hiding view with setting: " + condition);
@@ -78,7 +78,7 @@ public class ReVancedUtils {
      * @param condition The setting to check for hiding the view.
      * @param view      The view to hide.
      */
-    public static void hideViewUnderCondition(SettingsEnum condition, View view) {
+    public static void hideViewUnderCondition(Setting condition, View view) {
         if (!condition.getBoolean()) return;
 
         LogHelper.printDebug(() -> "Hiding view with setting: " + condition);

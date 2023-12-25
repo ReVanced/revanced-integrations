@@ -4,7 +4,7 @@ import android.net.Uri;
 import androidx.annotation.GuardedBy;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import app.revanced.integrations.youtube.settings.SettingsEnum;
+import app.revanced.integrations.youtube.settings.Setting;
 import app.revanced.integrations.youtube.utils.LogHelper;
 import app.revanced.integrations.youtube.utils.ReVancedUtils;
 import org.chromium.net.UrlRequest;
@@ -77,30 +77,30 @@ public final class AlternativeThumbnailsPatch {
      * Fix any bad imported data.
      */
     private static Uri validateSettings() {
-        final int altThumbnailType = SettingsEnum.ALT_THUMBNAIL_STILLS_TIME.getInt();
+        final int altThumbnailType = Setting.ALT_THUMBNAIL_STILLS_TIME.getInt();
         if (altThumbnailType < 1 || altThumbnailType > 3) {
             ReVancedUtils.showToastLong("Invalid Alternative still thumbnail type: "
                     + altThumbnailType + ". Using default");
-            SettingsEnum.ALT_THUMBNAIL_STILLS_TIME.resetToDefault();
+            Setting.ALT_THUMBNAIL_STILLS_TIME.resetToDefault();
         }
 
-        Uri apiUri = Uri.parse(SettingsEnum.ALT_THUMBNAIL_DEARROW_API_URL.getString());
+        Uri apiUri = Uri.parse(Setting.ALT_THUMBNAIL_DEARROW_API_URL.getString());
         // Cannot use unsecured 'http', otherwise the connections fail to start and no callbacks hooks are made.
         String scheme = apiUri.getScheme();
         if (scheme == null || scheme.equals("http") || apiUri.getHost() == null) {
             ReVancedUtils.showToastLong("Invalid DeArrow API URL. Using default");
-            SettingsEnum.ALT_THUMBNAIL_DEARROW_API_URL.resetToDefault();
+            Setting.ALT_THUMBNAIL_DEARROW_API_URL.resetToDefault();
             return validateSettings();
         }
         return apiUri;
     }
 
     private static boolean usingDeArrow() {
-        return SettingsEnum.ALT_THUMBNAIL_DEARROW.getBoolean();
+        return Setting.ALT_THUMBNAIL_DEARROW.getBoolean();
     }
 
     private static boolean usingVideoStills() {
-        return SettingsEnum.ALT_THUMBNAIL_STILLS.getBoolean();
+        return Setting.ALT_THUMBNAIL_STILLS.getBoolean();
     }
 
     /**
@@ -162,7 +162,7 @@ public final class AlternativeThumbnailsPatch {
         final long now = System.currentTimeMillis();
         if (timeToResumeDeArrowAPICalls < now) {
             timeToResumeDeArrowAPICalls = now + DEARROW_FAILURE_API_BACKOFF_MILLISECONDS;
-            if (SettingsEnum.ALT_THUMBNAIL_DEARROW_CONNECTION_TOAST.getBoolean()) {
+            if (Setting.ALT_THUMBNAIL_DEARROW_CONNECTION_TOAST.getBoolean()) {
                 String toastMessage = (statusCode != 0)
                         ? str("revanced_alt_thumbnail_dearrow_error", statusCode)
                         : str("revanced_alt_thumbnail_dearrow_error_generic");
@@ -356,7 +356,7 @@ public final class AlternativeThumbnailsPatch {
                 return null; // Not a thumbnail for a regular video.
             }
 
-            final boolean useFastQuality = SettingsEnum.ALT_THUMBNAIL_STILLS_FAST.getBoolean();
+            final boolean useFastQuality = Setting.ALT_THUMBNAIL_STILLS_FAST.getBoolean();
             switch (quality) {
                 case SDDEFAULT:
                     // SD alt images have somewhat worse quality with washed out color and poor contrast.
@@ -391,7 +391,7 @@ public final class AlternativeThumbnailsPatch {
         }
 
         String getAltImageNameToUse() {
-            return altImageName + SettingsEnum.ALT_THUMBNAIL_STILLS_TIME.getInt();
+            return altImageName + Setting.ALT_THUMBNAIL_STILLS_TIME.getInt();
         }
     }
 
@@ -436,7 +436,7 @@ public final class AlternativeThumbnailsPatch {
 
         static boolean verifyAltThumbnailExist(@NonNull String videoId, @NonNull ThumbnailQuality quality,
                                                @NonNull String imageUrl) {
-            VerifiedQualities verified = getVerifiedQualities(videoId, SettingsEnum.ALT_THUMBNAIL_STILLS_FAST.getBoolean());
+            VerifiedQualities verified = getVerifiedQualities(videoId, Setting.ALT_THUMBNAIL_STILLS_FAST.getBoolean());
             if (verified == null) return true; // Fast alt thumbnails is enabled.
             return verified.verifyYouTubeThumbnailExists(videoId, quality, imageUrl);
         }
@@ -487,7 +487,7 @@ public final class AlternativeThumbnailsPatch {
                 return true; // Previously verified as existing.
             }
 
-            final boolean fastQuality = SettingsEnum.ALT_THUMBNAIL_STILLS_FAST.getBoolean();
+            final boolean fastQuality = Setting.ALT_THUMBNAIL_STILLS_FAST.getBoolean();
             if (lowestQualityNotAvailable != null && lowestQualityNotAvailable.ordinal() <= quality.ordinal()) {
                 if (fastQuality || System.currentTimeMillis() < timeToReVerifyLowestQuality) {
                     return false; // Previously verified as not existing.

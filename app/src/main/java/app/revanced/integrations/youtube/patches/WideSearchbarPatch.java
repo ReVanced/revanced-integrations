@@ -1,9 +1,9 @@
 package app.revanced.integrations.youtube.patches;
 
-import app.revanced.integrations.youtube.settings.SettingsEnum;
+import app.revanced.integrations.youtube.settings.Setting;
 
 public final class WideSearchbarPatch {
     public static boolean enableWideSearchbar() {
-        return SettingsEnum.WIDE_SEARCHBAR.getBoolean();
+        return Setting.WIDE_SEARCHBAR.getBoolean();
     }
 }

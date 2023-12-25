@@ -21,7 +21,7 @@ import java.util.Objects;
 import java.util.TimeZone;
 
 import app.revanced.integrations.youtube.patches.VideoInformation;
-import app.revanced.integrations.youtube.settings.SettingsEnum;
+import app.revanced.integrations.youtube.settings.Setting;
 import app.revanced.integrations.youtube.sponsorblock.objects.CategoryBehaviour;
 import app.revanced.integrations.youtube.sponsorblock.objects.SegmentCategory;
 import app.revanced.integrations.youtube.sponsorblock.objects.SponsorSegment;
@@ -174,7 +174,7 @@ public class SponsorBlockUtils {
             for (int i = 0; i < voteOptions.length; i++) {
                 SegmentVote voteOption = voteOptions[i];
                 String title = voteOption.title.toString();
-                if (SettingsEnum.SB_USER_IS_VIP.getBoolean() && segment.isLocked && voteOption.shouldHighlight) {
+                if (Setting.SB_USER_IS_VIP.getBoolean() && segment.isLocked && voteOption.shouldHighlight) {
                     items[i] = Html.fromHtml(String.format("<font color=\"%s\">%s</font>", LOCKED_COLOR, title));
                 } else {
                     items[i] = title;
@@ -380,11 +380,11 @@ public class SponsorBlockUtils {
             return;
         }
         segment.recordedAsSkipped = true;
-        final long totalTimeSkipped = SettingsEnum.SB_LOCAL_TIME_SAVED_MILLISECONDS.getLong() + segment.length();
-        SettingsEnum.SB_LOCAL_TIME_SAVED_MILLISECONDS.saveValue(totalTimeSkipped);
-        SettingsEnum.SB_LOCAL_TIME_SAVED_NUMBER_SEGMENTS.saveValue(SettingsEnum.SB_LOCAL_TIME_SAVED_NUMBER_SEGMENTS.getInt() + 1);
+        final long totalTimeSkipped = Setting.SB_LOCAL_TIME_SAVED_MILLISECONDS.getLong() + segment.length();
+        Setting.SB_LOCAL_TIME_SAVED_MILLISECONDS.saveValue(totalTimeSkipped);
+        Setting.SB_LOCAL_TIME_SAVED_NUMBER_SEGMENTS.saveValue(Setting.SB_LOCAL_TIME_SAVED_NUMBER_SEGMENTS.getInt() + 1);
 
-        if (SettingsEnum.SB_TRACK_SKIP_COUNT.getBoolean()) {
+        if (Setting.SB_TRACK_SKIP_COUNT.getBoolean()) {
             ReVancedUtils.runOnBackgroundThread(() -> SBRequester.sendSegmentSkippedViewedRequest(segment));
         }
     }

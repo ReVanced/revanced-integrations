@@ -12,7 +12,7 @@ import android.widget.EditText;
 
 import java.util.Objects;
 
-import app.revanced.integrations.youtube.settings.SettingsEnum;
+import app.revanced.integrations.youtube.settings.Setting;
 import app.revanced.integrations.youtube.utils.LogHelper;
 
 public class ResettableEditTextPreference extends EditTextPreference {
@@ -33,7 +33,7 @@ public class ResettableEditTextPreference extends EditTextPreference {
     @Override
     protected void onPrepareDialogBuilder(AlertDialog.Builder builder) {
         super.onPrepareDialogBuilder(builder);
-        SettingsEnum setting = SettingsEnum.settingFromPath(getKey());
+        Setting setting = Setting.settingFromPath(getKey());
         if (setting != null) {
             builder.setNeutralButton(str("revanced_settings_reset"), null);
         }
@@ -50,7 +50,7 @@ public class ResettableEditTextPreference extends EditTextPreference {
         }
         button.setOnClickListener(v -> {
             try {
-                SettingsEnum setting = Objects.requireNonNull(SettingsEnum.settingFromPath(getKey()));
+                Setting setting = Objects.requireNonNull(Setting.settingFromPath(getKey()));
                 String defaultStringValue = setting.defaultValue.toString();
                 EditText editText = getEditText();
                 editText.setText(defaultStringValue);

@@ -2,14 +2,12 @@ package app.revanced.integrations.youtube.settings;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
-import java.util.Objects;
-
 import app.revanced.integrations.youtube.utils.LogHelper;
 import app.revanced.integrations.youtube.utils.ReVancedUtils;
+
+import java.util.Objects;
 
 /**
  * Shared categories, and helper methods.
@@ -88,7 +86,6 @@ public enum SharedPrefCategory {
             return _default;
         }
     }
-
 
     public boolean getBoolean(@NonNull String key, boolean _default) {
         try {

@@ -1,6 +1,6 @@
 package app.revanced.integrations.youtube.patches.components;
 
-import app.revanced.integrations.youtube.settings.SettingsEnum;
+import app.revanced.integrations.youtube.settings.Setting;
 
 @SuppressWarnings("unused")
 public final class HideInfoCardsFilterPatch extends Filter {
@@ -8,7 +8,7 @@ public final class HideInfoCardsFilterPatch extends Filter {
     public HideInfoCardsFilterPatch() {
         addIdentifierCallbacks(
                 new StringFilterGroup(
-                        SettingsEnum.HIDE_INFO_CARDS,
+                        Setting.HIDE_INFO_CARDS,
                         "info_card_teaser_overlay.eml"
                 )
         );

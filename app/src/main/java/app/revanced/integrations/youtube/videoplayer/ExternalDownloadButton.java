@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import androidx.annotation.Nullable;
 
 import app.revanced.integrations.youtube.patches.VideoInformation;
-import app.revanced.integrations.youtube.settings.SettingsEnum;
+import app.revanced.integrations.youtube.settings.Setting;
 import app.revanced.integrations.youtube.utils.LogHelper;
 import app.revanced.integrations.youtube.utils.ReVancedUtils;
 import app.revanced.integrations.youtube.utils.StringRef;
@@ -21,7 +21,7 @@ public class ExternalDownloadButton extends BottomControlButton {
         super(
                 viewGroup,
                 "external_download_button",
-                SettingsEnum.EXTERNAL_DOWNLOADER,
+                Setting.EXTERNAL_DOWNLOADER,
                 ExternalDownloadButton::onDownloadClick,
                 null
         );
@@ -50,7 +50,7 @@ public class ExternalDownloadButton extends BottomControlButton {
 
         final var context = view.getContext();
         // Trim string to avoid any accidental whitespace.
-        var downloaderPackageName = SettingsEnum.EXTERNAL_DOWNLOADER_PACKAGE_NAME.getString().trim();
+        var downloaderPackageName = Setting.EXTERNAL_DOWNLOADER_PACKAGE_NAME.getString().trim();
 
         boolean packageEnabled = false;
         try {

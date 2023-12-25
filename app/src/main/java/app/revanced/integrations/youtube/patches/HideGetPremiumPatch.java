@@ -1,12 +1,12 @@
 package app.revanced.integrations.youtube.patches;
 
-import app.revanced.integrations.youtube.settings.SettingsEnum;
+import app.revanced.integrations.youtube.settings.Setting;
 
 public class HideGetPremiumPatch {
     /**
      * Injection point.
      */
     public static boolean hideGetPremiumView() {
-        return SettingsEnum.HIDE_GET_PREMIUM.getBoolean();
+        return Setting.HIDE_GET_PREMIUM.getBoolean();
     }
 }

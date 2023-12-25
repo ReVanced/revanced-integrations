@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import app.revanced.integrations.youtube.settings.SettingsEnum;
+import app.revanced.integrations.youtube.settings.Setting;
 import app.revanced.integrations.youtube.settings.SharedPrefCategory;
 import app.revanced.integrations.youtube.utils.LogHelper;
 import app.revanced.integrations.youtube.utils.StringRef;
@@ -357,7 +357,7 @@ public enum SegmentCategory {
      */
     @NonNull
     StringRef getSkipButtonText(long segmentStartTime, long videoLength) {
-        if (SettingsEnum.SB_COMPACT_SKIP_BUTTON.getBoolean()) {
+        if (Setting.SB_COMPACT_SKIP_BUTTON.getBoolean()) {
             return (this == SegmentCategory.HIGHLIGHT)
                     ? skipSponsorTextCompactHighlight
                     : skipSponsorTextCompact;

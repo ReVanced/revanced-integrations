@@ -24,7 +24,7 @@ import java.util.Objects;
 
 import app.revanced.integrations.youtube.requests.Requester;
 import app.revanced.integrations.youtube.returnyoutubedislike.ReturnYouTubeDislike;
-import app.revanced.integrations.youtube.settings.SettingsEnum;
+import app.revanced.integrations.youtube.settings.Setting;
 import app.revanced.integrations.youtube.utils.LogHelper;
 import app.revanced.integrations.youtube.utils.ReVancedUtils;
 
@@ -206,7 +206,7 @@ public class ReturnYouTubeDislikeApi {
     }
 
     private static void handleConnectionError(@NonNull String toastMessage, @Nullable Exception ex) {
-        if (SettingsEnum.RYD_TOAST_ON_CONNECTION_ERROR.getBoolean()) {
+        if (Setting.RYD_TOAST_ON_CONNECTION_ERROR.getBoolean()) {
             ReVancedUtils.showToastShort(toastMessage);
         }
         if (ex != null) {
@@ -379,14 +379,14 @@ public class ReturnYouTubeDislikeApi {
     private static String getUserId() {
         ReVancedUtils.verifyOffMainThread();
 
-        String userId = SettingsEnum.RYD_USER_ID.getString();
+        String userId = Setting.RYD_USER_ID.getString();
         if (!userId.isEmpty()) {
             return userId;
         }
 
         userId = registerAsNewUser();
         if (userId != null) {
-            SettingsEnum.RYD_USER_ID.saveValue(userId);
+            Setting.RYD_USER_ID.saveValue(userId);
         }
         return userId;
     }

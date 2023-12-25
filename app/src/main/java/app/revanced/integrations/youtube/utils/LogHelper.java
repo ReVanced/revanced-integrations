@@ -8,7 +8,7 @@ import androidx.annotation.Nullable;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
-import app.revanced.integrations.youtube.settings.SettingsEnum;
+import app.revanced.integrations.youtube.settings.Setting;
 
 public class LogHelper {
 
@@ -52,13 +52,13 @@ public class LogHelper {
     /**
      * Logs debug messages under the outer class name of the code calling this method.
      * Whenever possible, the log string should be constructed entirely inside {@link LogMessage#buildMessageString()}
-     * so the performance cost of building strings is paid only if {@link SettingsEnum#DEBUG} is enabled.
+     * so the performance cost of building strings is paid only if {@link Setting#DEBUG} is enabled.
      */
     public static void printDebug(@NonNull LogMessage message) {
-        if (SettingsEnum.DEBUG.getBoolean()) {
+        if (Setting.DEBUG.getBoolean()) {
             var messageString = message.buildMessageString();
 
-            if (SettingsEnum.DEBUG_STACKTRACE.getBoolean()) {
+            if (Setting.DEBUG_STACKTRACE.getBoolean()) {
                 var builder = new StringBuilder(messageString);
                 var sw = new StringWriter();
                 new Throwable().printStackTrace(new PrintWriter(sw));
@@ -125,7 +125,7 @@ public class LogHelper {
         } else {
             Log.e(logMessage, messageString, ex);
         }
-        if (SettingsEnum.DEBUG_TOAST_ON_ERROR.getBoolean()) {
+        if (Setting.DEBUG_TOAST_ON_ERROR.getBoolean()) {
             String toastMessageToDisplay = (userToastMessage != null)
                     ? userToastMessage
                     : outerClassSimpleName + ": " + messageString;

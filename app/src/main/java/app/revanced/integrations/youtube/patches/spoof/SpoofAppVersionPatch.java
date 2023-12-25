@@ -1,11 +1,11 @@
 package app.revanced.integrations.youtube.patches.spoof;
 
-import app.revanced.integrations.youtube.settings.SettingsEnum;
+import app.revanced.integrations.youtube.settings.Setting;
 
 public class SpoofAppVersionPatch {
 
-    private static final boolean SPOOF_APP_VERSION_ENABLED = SettingsEnum.SPOOF_APP_VERSION.getBoolean();
-    private static final String SPOOF_APP_VERSION_TARGET = SettingsEnum.SPOOF_APP_VERSION_TARGET.getString();
+    private static final boolean SPOOF_APP_VERSION_ENABLED = Setting.SPOOF_APP_VERSION.getBoolean();
+    private static final String SPOOF_APP_VERSION_TARGET = Setting.SPOOF_APP_VERSION_TARGET.getString();
 
     /**
      * Injection point

@@ -11,7 +11,7 @@ import androidx.annotation.Nullable;
 import java.lang.ref.WeakReference;
 import java.util.Objects;
 
-import app.revanced.integrations.youtube.settings.SettingsEnum;
+import app.revanced.integrations.youtube.settings.Setting;
 import app.revanced.integrations.youtube.utils.LogHelper;
 import app.revanced.integrations.youtube.utils.ReVancedUtils;
 
@@ -20,7 +20,7 @@ public abstract class BottomControlButton {
     private static final Animation fadeOut;
 
     private final WeakReference<ImageView> buttonRef;
-    private final SettingsEnum setting;
+    private final Setting setting;
     protected boolean isVisible;
 
     static {
@@ -43,11 +43,11 @@ public abstract class BottomControlButton {
     }
 
     public BottomControlButton(@NonNull ViewGroup bottomControlsViewGroup, @NonNull String imageViewButtonId,
-                               @NonNull SettingsEnum booleanSetting, @NonNull View.OnClickListener onClickListener,
+                               @NonNull Setting booleanSetting, @NonNull View.OnClickListener onClickListener,
                                @Nullable View.OnLongClickListener longClickListener) {
         LogHelper.printDebug(() -> "Initializing button: " + imageViewButtonId);
 
-        if (booleanSetting.returnType != SettingsEnum.ReturnType.BOOLEAN) {
+        if (booleanSetting.returnType != Setting.ReturnType.BOOLEAN) {
             throw new IllegalArgumentException();
         }
         setting = booleanSetting;
