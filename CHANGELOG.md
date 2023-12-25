@@ -1,3 +1,11 @@
+# [1.1.0-dev.5](https://github.com/ReVanced/revanced-integrations/compare/v1.1.0-dev.4...v1.1.0-dev.5) (2023-12-25)
+
+
+### Bug Fixes
+
+* **YouTube - Hide ads:** Hide new type of ad ([#545](https://github.com/ReVanced/revanced-integrations/issues/545)) ([e28b8cc](https://github.com/ReVanced/revanced-integrations/commit/e28b8cc59a445ba8f184ba6f5b9e076b7731129a))
+* **YouTube - Hide ads:** Use correct filter ([4397eed](https://github.com/ReVanced/revanced-integrations/commit/4397eedeeb21edda235cd27cd66088e94bde49e4))
+
 # [1.1.0-dev.4](https://github.com/ReVanced/revanced-integrations/compare/v1.1.0-dev.3...v1.1.0-dev.4) (2023-12-25)
 
 
