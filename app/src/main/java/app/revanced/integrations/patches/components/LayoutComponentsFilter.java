@@ -252,8 +252,12 @@ public final class LayoutComponentsFilter extends Filter {
     @Override
     public boolean isFiltered(@Nullable String identifier, String path, byte[] protobufBufferArray,
                               StringFilterGroup matchedGroup, FilterContentType contentType, int contentIndex) {
-        if (matchedGroup == searchResultVideo && searchResultRecommendations.check(protobufBufferArray).isFiltered())
-            return super.isFiltered(identifier, path, protobufBufferArray, matchedGroup, contentType, contentIndex);
+        if (matchedGroup == searchResultVideo) {
+            if (searchResultRecommendations.check(protobufBufferArray).isFiltered()) {
+                return super.isFiltered(identifier, path, protobufBufferArray, matchedGroup, contentType, contentIndex);
+            }
+            return false;
+        }
         
         // The groups are excluded from the filter due to the exceptions list below.
         // Filter them separately here.
