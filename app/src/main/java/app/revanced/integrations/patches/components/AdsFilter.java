@@ -3,8 +3,11 @@ package app.revanced.integrations.patches.components;
 import android.app.Instrumentation;
 import android.view.KeyEvent;
 import android.view.View;
+
 import androidx.annotation.Nullable;
+
 import app.revanced.integrations.settings.SettingsEnum;
+import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.ReVancedUtils;
 import app.revanced.integrations.utils.StringTrieSearch;
 
