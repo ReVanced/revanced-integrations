@@ -164,7 +164,7 @@ public final class AdsFilter extends Filter {
         if (currentTime - lastTimeClosedFullscreenAd < 10000) return;
         lastTimeClosedFullscreenAd = currentTime;
 
-        LogHelper.printDebug(() -> "closing Fullscreen Ad");
+        LogHelper.printDebug(() -> "Closing fullscreen ad");
 
         ReVancedUtils.runOnMainThreadDelayed(() -> instrumentation.sendKeyDownUpSync(KeyEvent.KEYCODE_BACK), 1000);
     }
