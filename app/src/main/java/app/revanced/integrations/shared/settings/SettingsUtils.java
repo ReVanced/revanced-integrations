@@ -10,7 +10,7 @@ import app.revanced.integrations.tiktok.settings.SettingsEnum;
  * Class is used across multiple target apps.
  *
  * This entire class can _not_ reference:
- * {@link app.revanced.integrations.settings.SettingsEnum}
+ * {@link app.revanced.integrations.youtube.settings.Setting}
  * {@link app.revanced.integrations.twitch.settings.SettingsEnum}
  * {@link SettingsEnum}
  *
