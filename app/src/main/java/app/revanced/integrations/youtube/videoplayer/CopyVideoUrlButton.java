@@ -6,7 +6,7 @@ import android.view.ViewGroup;
 import androidx.annotation.Nullable;
 
 import app.revanced.integrations.youtube.patches.CopyVideoUrlPatch;
-import app.revanced.integrations.youtube.settings.Setting;
+import app.revanced.integrations.youtube.settings.Settings;
 import app.revanced.integrations.youtube.utils.LogHelper;
 
 public class CopyVideoUrlButton extends BottomControlButton {
@@ -17,7 +17,7 @@ public class CopyVideoUrlButton extends BottomControlButton {
         super(
                 viewGroup,
                 "copy_video_url_button",
-                Setting.COPY_VIDEO_URL,
+                Settings.COPY_VIDEO_URL,
                 view -> CopyVideoUrlPatch.copyUrl(false),
                 view -> {
                     CopyVideoUrlPatch.copyUrl(true);

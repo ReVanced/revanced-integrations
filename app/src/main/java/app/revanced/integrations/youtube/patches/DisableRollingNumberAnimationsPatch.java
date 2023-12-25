@@ -1,12 +1,12 @@
 package app.revanced.integrations.youtube.patches;
 
-import app.revanced.integrations.youtube.settings.Setting;
+import app.revanced.integrations.youtube.settings.Settings;
 
 public class DisableRollingNumberAnimationsPatch {
     /**
      * Injection point.
      */
     public static boolean disableRollingNumberAnimations() {
-        return Setting.DISABLE_ROLLING_NUMBER_ANIMATIONS.getBoolean();
+        return Settings.DISABLE_ROLLING_NUMBER_ANIMATIONS.getBoolean();
     }
 }

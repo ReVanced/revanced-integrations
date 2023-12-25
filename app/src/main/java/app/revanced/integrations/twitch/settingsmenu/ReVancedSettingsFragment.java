@@ -15,7 +15,7 @@ import android.preference.SwitchPreference;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import app.revanced.integrations.shared.settings.SettingsUtils;
+import app.revanced.integrations.shared.Utils;
 import app.revanced.integrations.twitch.settings.SettingsEnum;
 import app.revanced.integrations.twitch.utils.LogHelper;
 import app.revanced.integrations.twitch.utils.ReVancedUtils;
@@ -122,7 +122,7 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
         new AlertDialog.Builder(context).
                 setMessage(ReVancedUtils.getString("revanced_reboot_message")).
                 setPositiveButton(ReVancedUtils.getString("revanced_reboot"),
-                        (dialog, i) -> SettingsUtils.restartApp(context))
+                        (dialog, i) -> Utils.restartApp(context))
                 .setNegativeButton(android.R.string.cancel, null)
                 .show();
     }

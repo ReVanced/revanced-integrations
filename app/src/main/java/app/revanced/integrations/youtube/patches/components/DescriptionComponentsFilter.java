@@ -1,7 +1,7 @@
 package app.revanced.integrations.youtube.patches.components;
 
 import androidx.annotation.Nullable;
-import app.revanced.integrations.youtube.settings.Setting;
+import app.revanced.integrations.youtube.settings.Settings;
 import app.revanced.integrations.youtube.utils.StringTrieSearch;
 
 @SuppressWarnings("unused")
@@ -19,33 +19,33 @@ final class DescriptionComponentsFilter extends Filter {
         );
 
         final StringFilterGroup chapterSection = new StringFilterGroup(
-                Setting.HIDE_CHAPTERS,
+                Settings.HIDE_CHAPTERS,
                 "macro_markers_carousel"
         );
 
         final StringFilterGroup infoCardsSection = new StringFilterGroup(
-                Setting.HIDE_INFO_CARDS_SECTION,
+                Settings.HIDE_INFO_CARDS_SECTION,
                 "infocards_section"
         );
 
         final StringFilterGroup gameSection = new StringFilterGroup(
-                Setting.HIDE_GAME_SECTION,
+                Settings.HIDE_GAME_SECTION,
                 "gaming_section"
         );
 
         final StringFilterGroup musicSection = new StringFilterGroup(
-                Setting.HIDE_MUSIC_SECTION,
+                Settings.HIDE_MUSIC_SECTION,
                 "music_section",
                 "video_attributes_section"
         );
 
         final StringFilterGroup podcastSection = new StringFilterGroup(
-                Setting.HIDE_PODCAST_SECTION,
+                Settings.HIDE_PODCAST_SECTION,
                 "playlist_section"
         );
 
         final StringFilterGroup transcriptSection = new StringFilterGroup(
-                Setting.HIDE_TRANSCIPT_SECTION,
+                Settings.HIDE_TRANSCIPT_SECTION,
                 "transcript_section"
         );
 

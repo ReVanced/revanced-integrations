@@ -2,7 +2,7 @@ package app.revanced.integrations.youtube.patches;
 
 import android.view.WindowManager;
 
-import app.revanced.integrations.youtube.settings.Setting;
+import app.revanced.integrations.youtube.settings.Settings;
 import app.revanced.integrations.youtube.swipecontrols.SwipeControlsHostActivity;
 
 /**
@@ -21,7 +21,7 @@ public class HDRAutoBrightnessPatch {
      */
     public static float getHDRBrightness(float original) {
         // do nothing if disabled
-        if (!Setting.HDR_AUTO_BRIGHTNESS.getBoolean()) {
+        if (!Settings.HDR_AUTO_BRIGHTNESS.getBoolean()) {
             return original;
         }
 

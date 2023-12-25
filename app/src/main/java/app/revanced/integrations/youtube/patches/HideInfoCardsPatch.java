@@ -1,15 +1,15 @@
 package app.revanced.integrations.youtube.patches;
 
 import android.view.View;
-import app.revanced.integrations.youtube.settings.Setting;
+import app.revanced.integrations.youtube.settings.Settings;
 
 public class HideInfoCardsPatch {
     public static void hideInfoCardsIncognito(View view) {
-        if (!Setting.HIDE_INFO_CARDS.getBoolean()) return;
+        if (!Settings.HIDE_INFO_CARDS.getBoolean()) return;
         view.setVisibility(View.GONE);
     }
 
     public static boolean hideInfoCardsMethodCall() {
-        return Setting.HIDE_INFO_CARDS.getBoolean();
+        return Settings.HIDE_INFO_CARDS.getBoolean();
     }
 }

@@ -4,16 +4,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.widget.ImageView;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import app.revanced.integrations.shared.settings.Setting;
+import app.revanced.integrations.youtube.utils.LogHelper;
+import app.revanced.integrations.youtube.utils.ReVancedUtils;
 
 import java.lang.ref.WeakReference;
 import java.util.Objects;
-
-import app.revanced.integrations.youtube.settings.Setting;
-import app.revanced.integrations.youtube.utils.LogHelper;
-import app.revanced.integrations.youtube.utils.ReVancedUtils;
 
 public abstract class BottomControlButton {
     private static final Animation fadeIn;

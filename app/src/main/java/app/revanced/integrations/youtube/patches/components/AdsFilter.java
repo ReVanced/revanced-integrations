@@ -4,7 +4,7 @@ import android.app.Instrumentation;
 import android.view.KeyEvent;
 import android.view.View;
 import androidx.annotation.Nullable;
-import app.revanced.integrations.youtube.settings.Setting;
+import app.revanced.integrations.youtube.settings.Settings;
 import app.revanced.integrations.youtube.utils.ReVancedUtils;
 import app.revanced.integrations.youtube.utils.StringTrieSearch;
 
@@ -33,7 +33,7 @@ public final class AdsFilter extends Filter {
 
 
         final var carouselAd = new StringFilterGroup(
-                Setting.HIDE_GENERAL_ADS,
+                Settings.HIDE_GENERAL_ADS,
                 "carousel_ad"
         );
         addIdentifierCallbacks(carouselAd);
@@ -41,12 +41,12 @@ public final class AdsFilter extends Filter {
         // Paths.
 
         fullscreenAd = new StringFilterGroup(
-                Setting.HIDE_FULLSCREEN_ADS,
+                Settings.HIDE_FULLSCREEN_ADS,
                 "fullscreen_ad"
         );
 
         final var buttonedAd = new StringFilterGroup(
-                Setting.HIDE_BUTTONED_ADS,
+                Settings.HIDE_BUTTONED_ADS,
                 "_buttoned_layout",
                 "full_width_square_image_layout",
                 "_ad_with",
@@ -56,7 +56,7 @@ public final class AdsFilter extends Filter {
         );
 
         final var generalAds = new StringFilterGroup(
-                Setting.HIDE_GENERAL_ADS,
+                Settings.HIDE_GENERAL_ADS,
                 "ads_video_with_context",
                 "banner_text_icon",
                 "square_image_layout",
@@ -74,7 +74,7 @@ public final class AdsFilter extends Filter {
         );
 
         final var movieAds = new StringFilterGroup(
-                Setting.HIDE_MOVIES_SECTION,
+                Settings.HIDE_MOVIES_SECTION,
                 "browsy_bar",
                 "compact_movie",
                 "horizontal_movie_shelf",
@@ -84,28 +84,28 @@ public final class AdsFilter extends Filter {
         );
 
         final var viewProducts = new StringFilterGroup(
-                Setting.HIDE_PRODUCTS_BANNER,
+                Settings.HIDE_PRODUCTS_BANNER,
                 "product_item",
                 "products_in_video"
         );
 
         shoppingLinks = new StringFilterGroup(
-                Setting.HIDE_SHOPPING_LINKS,
+                Settings.HIDE_SHOPPING_LINKS,
                 "expandable_list"
         );
 
         final var webLinkPanel = new StringFilterGroup(
-                Setting.HIDE_WEB_SEARCH_RESULTS,
+                Settings.HIDE_WEB_SEARCH_RESULTS,
                 "web_link_panel"
         );
 
         final var merchandise = new StringFilterGroup(
-                Setting.HIDE_MERCHANDISE_BANNERS,
+                Settings.HIDE_MERCHANDISE_BANNERS,
                 "product_carousel"
         );
 
         final var selfSponsor = new StringFilterGroup(
-                Setting.HIDE_SELF_SPONSOR,
+                Settings.HIDE_SELF_SPONSOR,
                 "cta_shelf_card"
         );
 
@@ -145,7 +145,7 @@ public final class AdsFilter extends Filter {
      * @param view The view, which shows ads.
      */
     public static void hideAdAttributionView(View view) {
-        ReVancedUtils.hideViewBy1dpUnderCondition(Setting.HIDE_GENERAL_ADS, view);
+        ReVancedUtils.hideViewBy1dpUnderCondition(Settings.HIDE_GENERAL_ADS, view);
     }
 
     /**

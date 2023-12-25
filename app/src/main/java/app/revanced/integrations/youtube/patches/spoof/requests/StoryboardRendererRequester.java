@@ -18,7 +18,7 @@ import java.util.Objects;
 
 import app.revanced.integrations.youtube.patches.spoof.StoryboardRenderer;
 import app.revanced.integrations.youtube.requests.Requester;
-import app.revanced.integrations.youtube.settings.Setting;
+import app.revanced.integrations.youtube.settings.Settings;
 import app.revanced.integrations.youtube.utils.LogHelper;
 import app.revanced.integrations.youtube.utils.ReVancedUtils;
 
@@ -67,7 +67,7 @@ public class StoryboardRendererRequester {
 
             // Always show a toast for this, as a non 200 response means something is broken.
             handleConnectionError("Spoof storyboard not available: " + responseCode,
-                    null, showToastOnIOException || Setting.DEBUG_TOAST_ON_ERROR.getBoolean());
+                    null, showToastOnIOException || Settings.DEBUG_TOAST_ON_ERROR.getBoolean());
             connection.disconnect();
         } catch (SocketTimeoutException ex) {
             handleConnectionError("Spoof storyboard temporarily not available (API timed out)",

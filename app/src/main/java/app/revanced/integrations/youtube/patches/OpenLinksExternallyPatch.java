@@ -1,6 +1,6 @@
 package app.revanced.integrations.youtube.patches;
 
-import app.revanced.integrations.youtube.settings.Setting;
+import app.revanced.integrations.youtube.settings.Settings;
 
 public class OpenLinksExternallyPatch {
     /**
@@ -10,7 +10,7 @@ public class OpenLinksExternallyPatch {
      * @return The intent to open links with. Empty means the link will be opened with the default browser.
      */
     public static String getIntent(String originalIntent) {
-        if (Setting.EXTERNAL_BROWSER.getBoolean()) return "";
+        if (Settings.EXTERNAL_BROWSER.getBoolean()) return "";
 
         return originalIntent;
     }

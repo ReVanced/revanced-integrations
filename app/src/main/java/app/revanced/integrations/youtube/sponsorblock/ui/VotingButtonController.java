@@ -9,7 +9,7 @@ import java.lang.ref.WeakReference;
 import java.util.Objects;
 
 import app.revanced.integrations.youtube.patches.VideoInformation;
-import app.revanced.integrations.youtube.settings.Setting;
+import app.revanced.integrations.youtube.settings.Settings;
 import app.revanced.integrations.youtube.sponsorblock.SegmentPlaybackController;
 import app.revanced.integrations.youtube.sponsorblock.SponsorBlockUtils;
 import app.revanced.integrations.youtube.utils.LogHelper;
@@ -90,7 +90,7 @@ public class VotingButtonController {
     }
 
     private static boolean shouldBeShown() {
-        return Setting.SB_ENABLED.getBoolean() && Setting.SB_VOTING_BUTTON.getBoolean()
+        return Settings.SB_ENABLED.getBoolean() && Settings.SB_VOTING_BUTTON.getBoolean()
                 && SegmentPlaybackController.videoHasSegments() && !VideoInformation.isAtEndOfVideo();
     }
 

@@ -8,7 +8,7 @@ import android.preference.Preference;
 import android.preference.PreferenceManager;
 import android.util.AttributeSet;
 
-import app.revanced.integrations.youtube.settings.Setting;
+import app.revanced.integrations.youtube.settings.Settings;
 import app.revanced.integrations.youtube.settings.SharedPrefCategory;
 import app.revanced.integrations.youtube.utils.LogHelper;
 import app.revanced.integrations.youtube.utils.ReVancedUtils;
@@ -66,8 +66,8 @@ public class AlternativeThumbnailsStatusPreference extends Preference {
 
     private void updateUI() {
         LogHelper.printDebug(() -> "updateUI");
-        final boolean usingDeArrow = Setting.ALT_THUMBNAIL_DEARROW.getBoolean();
-        final boolean usingVideoStills = Setting.ALT_THUMBNAIL_STILLS.getBoolean();
+        final boolean usingDeArrow = Settings.ALT_THUMBNAIL_DEARROW.getBoolean();
+        final boolean usingVideoStills = Settings.ALT_THUMBNAIL_STILLS.getBoolean();
 
         final String summaryTextKey;
         if (usingDeArrow && usingVideoStills) {

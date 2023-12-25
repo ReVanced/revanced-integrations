@@ -1,6 +1,6 @@
 package app.revanced.integrations.youtube.patches.theme;
 
-import app.revanced.integrations.youtube.settings.Setting;
+import app.revanced.integrations.youtube.settings.Settings;
 import app.revanced.integrations.youtube.utils.ReVancedUtils;
 import app.revanced.integrations.youtube.utils.ThemeHelper;
 
@@ -42,7 +42,7 @@ public class ThemePatch {
     }
 
     public static boolean gradientLoadingScreenEnabled() {
-        return Setting.GRADIENT_LOADING_SCREEN.getBoolean();
+        return Settings.GRADIENT_LOADING_SCREEN.getBoolean();
     }
 
     private static int getBlackColor() {

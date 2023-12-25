@@ -1,23 +1,10 @@
-package app.revanced.integrations.shared.settings;
+package app.revanced.integrations.shared;
 
 import android.content.Context;
 import android.content.Intent;
-
 import androidx.annotation.NonNull;
-import app.revanced.integrations.tiktok.settings.SettingsEnum;
 
-/**
- * Class is used across multiple target apps.
- *
- * This entire class can _not_ reference:
- * {@link app.revanced.integrations.youtube.settings.Setting}
- * {@link app.revanced.integrations.twitch.settings.SettingsEnum}
- * {@link SettingsEnum}
- *
- * or any other code that references these app specific integration classes.
- */
-public class SettingsUtils {
-
+public class Utils {
     public static void restartApp(@NonNull Context context) {
         String packageName = context.getPackageName();
         Intent intent = context.getPackageManager().getLaunchIntentForPackage(packageName);

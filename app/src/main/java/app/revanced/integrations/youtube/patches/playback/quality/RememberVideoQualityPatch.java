@@ -1,28 +1,28 @@
 package app.revanced.integrations.youtube.patches.playback.quality;
 
-import static app.revanced.integrations.youtube.utils.ReVancedUtils.NetworkType;
-
 import androidx.annotation.Nullable;
+import app.revanced.integrations.shared.settings.Setting;
+import app.revanced.integrations.youtube.settings.Settings;
+import app.revanced.integrations.youtube.utils.LogHelper;
+import app.revanced.integrations.youtube.utils.ReVancedUtils;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-import app.revanced.integrations.youtube.settings.Setting;
-import app.revanced.integrations.youtube.utils.LogHelper;
-import app.revanced.integrations.youtube.utils.ReVancedUtils;
+import static app.revanced.integrations.youtube.utils.ReVancedUtils.NetworkType;
 
 public class RememberVideoQualityPatch {
     private static final int AUTOMATIC_VIDEO_QUALITY_VALUE = -2;
-    private static final Setting wifiQualitySetting = Setting.VIDEO_QUALITY_DEFAULT_WIFI;
-    private static final Setting mobileQualitySetting = Setting.VIDEO_QUALITY_DEFAULT_MOBILE;
+    private static final Setting wifiQualitySetting = Settings.VIDEO_QUALITY_DEFAULT_WIFI;
+    private static final Setting mobileQualitySetting = Settings.VIDEO_QUALITY_DEFAULT_MOBILE;
 
     private static boolean qualityNeedsUpdating;
 
     /**
      * If the user selected a new quality from the flyout menu,
-     * and {@link Setting#REMEMBER_VIDEO_QUALITY_LAST_SELECTED} is enabled.
+     * and {@link Settings#REMEMBER_VIDEO_QUALITY_LAST_SELECTED} is enabled.
      */
     private static boolean userChangedDefaultQuality;
 
@@ -137,7 +137,7 @@ public class RememberVideoQualityPatch {
      * Injection point.  Old quality menu.
      */
     public static void userChangedQuality(int selectedQualityIndex) {
-        if (!Setting.REMEMBER_VIDEO_QUALITY_LAST_SELECTED.getBoolean()) return;
+        if (!Settings.REMEMBER_VIDEO_QUALITY_LAST_SELECTED.getBoolean()) return;
 
         userSelectedQualityIndex = selectedQualityIndex;
         userChangedDefaultQuality = true;
@@ -147,7 +147,7 @@ public class RememberVideoQualityPatch {
      * Injection point.  New quality menu.
      */
     public static void userChangedQualityInNewFlyout(int selectedQuality) {
-        if (!Setting.REMEMBER_VIDEO_QUALITY_LAST_SELECTED.getBoolean()) return;
+        if (!Settings.REMEMBER_VIDEO_QUALITY_LAST_SELECTED.getBoolean()) return;
 
         changeDefaultQuality(selectedQuality); // Quality is human readable resolution (ie: 1080).
     }

@@ -9,7 +9,7 @@ import android.text.InputType;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.widget.EditText;
-import app.revanced.integrations.youtube.settings.Setting;
+import app.revanced.integrations.shared.settings.Setting;
 import app.revanced.integrations.youtube.utils.LogHelper;
 import app.revanced.integrations.youtube.utils.ReVancedUtils;
 

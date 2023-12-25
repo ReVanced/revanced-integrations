@@ -2,13 +2,13 @@ package app.revanced.integrations.youtube.patches.theme;
 
 import android.graphics.Color;
 
-import app.revanced.integrations.youtube.settings.Setting;
+import app.revanced.integrations.youtube.settings.Settings;
 import app.revanced.integrations.youtube.utils.LogHelper;
 import app.revanced.integrations.youtube.utils.ReVancedUtils;
 
 public final class SeekbarColorPatch {
 
-    private static final boolean USE_SEEKBAR_CUSTOM_COLOR = Setting.SEEKBAR_CUSTOM_COLOR.getBoolean();
+    private static final boolean USE_SEEKBAR_CUSTOM_COLOR = Settings.SEEKBAR_CUSTOM_COLOR.getBoolean();
 
     /**
      * Default color of the seekbar.
@@ -21,8 +21,8 @@ public final class SeekbarColorPatch {
     private static final float ORIGINAL_SEEKBAR_COLOR_BRIGHTNESS;
 
     /**
-     * If {@link Setting#SEEKBAR_CUSTOM_COLOR} is enabled,
-     * this is the color value of {@link Setting#SEEKBAR_CUSTOM_COLOR_VALUE}.
+     * If {@link Settings#SEEKBAR_CUSTOM_COLOR} is enabled,
+     * this is the color value of {@link Settings#SEEKBAR_CUSTOM_COLOR_VALUE}.
      * Otherwise this is {@link #ORIGINAL_SEEKBAR_COLOR}.
      */
     private static int seekbarColor = ORIGINAL_SEEKBAR_COLOR;
@@ -44,11 +44,11 @@ public final class SeekbarColorPatch {
 
     private static void loadCustomSeekbarColor() {
         try {
-            seekbarColor = Color.parseColor(Setting.SEEKBAR_CUSTOM_COLOR_VALUE.getString());
+            seekbarColor = Color.parseColor(Settings.SEEKBAR_CUSTOM_COLOR_VALUE.getString());
             Color.colorToHSV(seekbarColor, customSeekbarColorHSV);
         } catch (Exception ex) {
             ReVancedUtils.showToastShort("Invalid seekbar color value. Using default value.");
-            Setting.SEEKBAR_CUSTOM_COLOR_VALUE.resetToDefault();
+            Settings.SEEKBAR_CUSTOM_COLOR_VALUE.resetToDefault();
             loadCustomSeekbarColor();
         }
     }
@@ -64,11 +64,11 @@ public final class SeekbarColorPatch {
      * Overrides all Litho components that use the YouTube seekbar color.
      * Used only for the video thumbnails seekbar.
      *
-     * If {@link Setting#HIDE_SEEKBAR_THUMBNAIL} is enabled, this returns a fully transparent color.
+     * If {@link Settings#HIDE_SEEKBAR_THUMBNAIL} is enabled, this returns a fully transparent color.
      */
     public static int getLithoColor(int colorValue) {
         if (colorValue == ORIGINAL_SEEKBAR_COLOR) {
-            if (Setting.HIDE_SEEKBAR_THUMBNAIL.getBoolean()) {
+            if (Settings.HIDE_SEEKBAR_THUMBNAIL.getBoolean()) {
                 return 0x00000000;
             }
             return getSeekbarColorValue(ORIGINAL_SEEKBAR_COLOR);

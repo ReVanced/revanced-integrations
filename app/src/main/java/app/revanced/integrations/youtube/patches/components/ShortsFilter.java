@@ -4,7 +4,7 @@ import android.os.Build;
 import android.view.View;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
-import app.revanced.integrations.youtube.settings.Setting;
+import app.revanced.integrations.youtube.settings.Settings;
 import com.google.android.libraries.youtube.rendering.ui.pivotbar.PivotBar;
 
 import static app.revanced.integrations.youtube.utils.ReVancedUtils.hideViewBy1dpUnderCondition;
@@ -28,7 +28,7 @@ public final class ShortsFilter extends Filter {
 
     public ShortsFilter() {
         var shorts = new StringFilterGroup(
-                Setting.HIDE_SHORTS,
+                Settings.HIDE_SHORTS,
                 "shorts_shelf",
                 "inline_shorts",
                 "shorts_grid",
@@ -39,13 +39,13 @@ public final class ShortsFilter extends Filter {
         // Feed Shorts shelf header.
         // Use a different filter group for this pattern, as it requires an additional check after matching.
         shelfHeader = new StringFilterGroup(
-                Setting.HIDE_SHORTS,
+                Settings.HIDE_SHORTS,
                 "shelf_header.eml"
         );
 
         // Home / subscription feed components.
         var thanksButton = new StringFilterGroup(
-                Setting.HIDE_SHORTS_THANKS_BUTTON,
+                Settings.HIDE_SHORTS_THANKS_BUTTON,
                 "suggested_action"
         );
 
@@ -53,32 +53,32 @@ public final class ShortsFilter extends Filter {
 
         // Shorts player components.
         var joinButton = new StringFilterGroup(
-                Setting.HIDE_SHORTS_JOIN_BUTTON,
+                Settings.HIDE_SHORTS_JOIN_BUTTON,
                 "sponsor_button"
         );
 
         subscribeButton = new StringFilterGroup(
-                Setting.HIDE_SHORTS_SUBSCRIBE_BUTTON,
+                Settings.HIDE_SHORTS_SUBSCRIBE_BUTTON,
                 "subscribe_button"
         );
 
         subscribeButtonPaused = new StringFilterGroup(
-                Setting.HIDE_SHORTS_SUBSCRIBE_BUTTON_PAUSED,
+                Settings.HIDE_SHORTS_SUBSCRIBE_BUTTON_PAUSED,
                 "shorts_paused_state"
         );
 
         channelBar = new StringFilterGroup(
-                Setting.HIDE_SHORTS_CHANNEL_BAR,
+                Settings.HIDE_SHORTS_CHANNEL_BAR,
                 REEL_CHANNEL_BAR_PATH
         );
 
         soundButton = new StringFilterGroup(
-                Setting.HIDE_SHORTS_SOUND_BUTTON,
+                Settings.HIDE_SHORTS_SOUND_BUTTON,
                 "reel_pivot_button"
         );
 
         infoPanel = new StringFilterGroup(
-                Setting.HIDE_SHORTS_INFO_PANEL,
+                Settings.HIDE_SHORTS_INFO_PANEL,
                 "shorts_info_panel_overview"
         );
 
@@ -93,17 +93,17 @@ public final class ShortsFilter extends Filter {
         );
 
         var shortsCommentButton = new ByteArrayFilterGroup(
-                Setting.HIDE_SHORTS_COMMENTS_BUTTON,
+                Settings.HIDE_SHORTS_COMMENTS_BUTTON,
                 "reel_comment_button"
         );
 
         var shortsShareButton = new ByteArrayFilterGroup(
-                Setting.HIDE_SHORTS_SHARE_BUTTON,
+                Settings.HIDE_SHORTS_SHARE_BUTTON,
                 "reel_share_button"
         );
 
         var shortsRemixButton = new ByteArrayFilterGroup(
-                Setting.HIDE_SHORTS_REMIX_BUTTON,
+                Settings.HIDE_SHORTS_REMIX_BUTTON,
                 "reel_remix_button"
         );
 
@@ -148,34 +148,34 @@ public final class ShortsFilter extends Filter {
     }
 
     public static void hideShortsShelf(final View shortsShelfView) {
-        hideViewBy1dpUnderCondition(Setting.HIDE_SHORTS, shortsShelfView);
+        hideViewBy1dpUnderCondition(Settings.HIDE_SHORTS, shortsShelfView);
     }
 
     // region Hide the buttons in older versions of YouTube. New versions use Litho.
 
     public static void hideShortsCommentsButton(final View commentsButtonView) {
-        hideViewUnderCondition(Setting.HIDE_SHORTS_COMMENTS_BUTTON, commentsButtonView);
+        hideViewUnderCondition(Settings.HIDE_SHORTS_COMMENTS_BUTTON, commentsButtonView);
     }
 
     public static void hideShortsRemixButton(final View remixButtonView) {
-        hideViewUnderCondition(Setting.HIDE_SHORTS_REMIX_BUTTON, remixButtonView);
+        hideViewUnderCondition(Settings.HIDE_SHORTS_REMIX_BUTTON, remixButtonView);
     }
 
     public static void hideShortsShareButton(final View shareButtonView) {
-        hideViewUnderCondition(Setting.HIDE_SHORTS_SHARE_BUTTON, shareButtonView);
+        hideViewUnderCondition(Settings.HIDE_SHORTS_SHARE_BUTTON, shareButtonView);
     }
 
     // endregion
 
     public static void hideNavigationBar() {
-        if (!Setting.HIDE_SHORTS_NAVIGATION_BAR.getBoolean()) return;
+        if (!Settings.HIDE_SHORTS_NAVIGATION_BAR.getBoolean()) return;
         if (pivotBar == null) return;
 
         pivotBar.setVisibility(View.GONE);
     }
 
     public static View hideNavigationBar(final View navigationBarView) {
-        if (Setting.HIDE_SHORTS_NAVIGATION_BAR.getBoolean())
+        if (Settings.HIDE_SHORTS_NAVIGATION_BAR.getBoolean())
             return null; // Hides the navigation bar.
 
         return navigationBarView;

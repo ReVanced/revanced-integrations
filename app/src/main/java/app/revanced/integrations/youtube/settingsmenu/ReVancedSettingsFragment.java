@@ -8,9 +8,10 @@ import android.os.Bundle;
 import android.preference.*;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import app.revanced.integrations.shared.settings.SettingsUtils;
+import app.revanced.integrations.shared.Utils;
+import app.revanced.integrations.shared.settings.Setting;
 import app.revanced.integrations.youtube.patches.playback.speed.CustomPlaybackSpeedPatch;
-import app.revanced.integrations.youtube.settings.Setting;
+import app.revanced.integrations.youtube.settings.Settings;
 import app.revanced.integrations.youtube.settings.SharedPrefCategory;
 import app.revanced.integrations.youtube.utils.LogHelper;
 import app.revanced.integrations.youtube.utils.ReVancedUtils;
@@ -32,7 +33,7 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
 
     SharedPreferences.OnSharedPreferenceChangeListener listener = (sharedPreferences, str) -> {
         try {
-            Setting setting = Setting.settingFromPath(str);
+            Setting setting = Setting.getSettingFromPath(str);
             if (setting == null) {
                 return;
             }
@@ -47,21 +48,21 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
                 if (settingImportInProgress) {
                     switchPref.setChecked(setting.getBoolean());
                 } else {
-                    Setting.setValue(setting, switchPref.isChecked());
+                    setting.setValue(switchPref.isChecked());
                 }
             } else if (pref instanceof EditTextPreference) {
                 EditTextPreference editPreference = (EditTextPreference) pref;
                 if (settingImportInProgress) {
                     editPreference.getEditText().setText(setting.getObjectValue().toString());
                 } else {
-                    Setting.setValue(setting, editPreference.getText());
+                    setting.setValue(editPreference.getText());
                 }
             } else if (pref instanceof ListPreference) {
                 ListPreference listPref = (ListPreference) pref;
                 if (settingImportInProgress) {
                     listPref.setValue(setting.getObjectValue().toString());
                 } else {
-                    Setting.setValue(setting, listPref.getValue());
+                    setting.setValue(listPref.getValue());
                 }
                 Setting.setListPreferenceSummary(listPref, setting);
             } else {
@@ -92,7 +93,7 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
         String positiveButton = str("in_app_update_restart_button");
         new AlertDialog.Builder(contxt).setMessage(str("pref_refresh_config"))
                 .setPositiveButton(positiveButton, (dialog, id) -> {
-                    SettingsUtils.restartApp(contxt);
+                    Utils.restartApp(contxt);
                 })
                 .setNegativeButton(android.R.string.cancel,  null)
                 .setCancelable(false)
@@ -114,7 +115,7 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
             Setting.setPreferencesEnabled(this);
 
             // if the preference was included, then initialize it based on the available playback speed
-            Preference defaultSpeedPreference = findPreference(Setting.PLAYBACK_SPEED_DEFAULT.key);
+            Preference defaultSpeedPreference = findPreference(Settings.PLAYBACK_SPEED_DEFAULT.key);
             if (defaultSpeedPreference instanceof ListPreference) {
                 CustomPlaybackSpeedPatch.initializeListPreference((ListPreference) defaultSpeedPreference);
             }
@@ -145,7 +146,7 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
                 })
                 .setNegativeButton(android.R.string.cancel, (dialog, id) -> {
                     Boolean defaultBooleanValue = (Boolean) setting.defaultValue;
-                    Setting.setValue(setting, defaultBooleanValue);
+                    setting.setValue(defaultBooleanValue);
                     switchPref.setChecked(defaultBooleanValue);
                 })
                 .setOnDismissListener(dialog -> {

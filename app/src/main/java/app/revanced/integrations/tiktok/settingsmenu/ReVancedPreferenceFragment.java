@@ -15,6 +15,7 @@ import android.preference.SwitchPreference;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import app.revanced.integrations.shared.Utils;
 import app.revanced.integrations.tiktok.settingsmenu.preference.DownloadPathPreference;
 import app.revanced.integrations.tiktok.settingsmenu.preference.RangeValuePreference;
 import app.revanced.integrations.tiktok.settingsmenu.preference.categories.DownloadsPreferenceCategory;
@@ -22,7 +23,6 @@ import app.revanced.integrations.tiktok.settingsmenu.preference.categories.FeedF
 import app.revanced.integrations.tiktok.settingsmenu.preference.categories.IntegrationsPreferenceCategory;
 import app.revanced.integrations.tiktok.settingsmenu.preference.categories.SimSpoofPreferenceCategory;
 import app.revanced.integrations.youtube.utils.LogHelper;
-import app.revanced.integrations.shared.settings.SettingsUtils;
 import app.revanced.integrations.tiktok.settings.SettingsEnum;
 import app.revanced.integrations.tiktok.settings.SharedPrefCategory;
 import app.revanced.integrations.tiktok.utils.ReVancedUtils;
@@ -113,7 +113,7 @@ public class ReVancedPreferenceFragment extends PreferenceFragment {
 
     private void rebootDialog(@NonNull Context context) {
         new AlertDialog.Builder(context).setMessage("Refresh and restart")
-                .setPositiveButton("Restart", (dialog, i) -> SettingsUtils.restartApp(context))
+                .setPositiveButton("Restart", (dialog, i) -> Utils.restartApp(context))
                 .setNegativeButton(android.R.string.cancel, null).show();
     }
 }

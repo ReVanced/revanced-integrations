@@ -10,7 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import app.revanced.integrations.youtube.patches.HideSeekbarPatch;
-import app.revanced.integrations.youtube.settings.Setting;
+import app.revanced.integrations.youtube.settings.Settings;
 
 /**
  * Used by {@link SeekbarColorPatch} change the color of the seekbar.
@@ -23,7 +23,7 @@ public class ProgressBarDrawable extends Drawable {
 
     @Override
     public void draw(@NonNull Canvas canvas) {
-        if (Setting.HIDE_SEEKBAR_THUMBNAIL.getBoolean()) {
+        if (Settings.HIDE_SEEKBAR_THUMBNAIL.getBoolean()) {
             return;
         }
         paint.setColor(SeekbarColorPatch.getSeekbarColor());

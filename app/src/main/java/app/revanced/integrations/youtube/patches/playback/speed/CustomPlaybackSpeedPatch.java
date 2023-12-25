@@ -6,7 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import app.revanced.integrations.youtube.patches.components.PlaybackSpeedMenuFilterPatch;
-import app.revanced.integrations.youtube.settings.Setting;
+import app.revanced.integrations.youtube.settings.Settings;
 import app.revanced.integrations.youtube.utils.LogHelper;
 import app.revanced.integrations.youtube.utils.ReVancedUtils;
 
@@ -43,12 +43,12 @@ public class CustomPlaybackSpeedPatch {
 
     private static void resetCustomSpeeds(@NonNull String toastMessage) {
         ReVancedUtils.showToastLong(toastMessage);
-        Setting.CUSTOM_PLAYBACK_SPEEDS.resetToDefault();
+        Settings.CUSTOM_PLAYBACK_SPEEDS.resetToDefault();
     }
 
     private static void loadCustomSpeeds() {
         try {
-            String[] speedStrings = Setting.CUSTOM_PLAYBACK_SPEEDS.getString().split("\\s+");
+            String[] speedStrings = Settings.CUSTOM_PLAYBACK_SPEEDS.getString().split("\\s+");
             Arrays.sort(speedStrings);
             if (speedStrings.length == 0) {
                 throw new IllegalArgumentException();

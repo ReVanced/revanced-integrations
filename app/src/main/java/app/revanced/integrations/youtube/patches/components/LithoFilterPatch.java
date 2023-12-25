@@ -4,8 +4,8 @@ import android.os.Build;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
-
-import app.revanced.integrations.youtube.settings.Setting;
+import app.revanced.integrations.shared.settings.Setting;
+import app.revanced.integrations.youtube.settings.Settings;
 import app.revanced.integrations.youtube.utils.*;
 
 import java.nio.ByteBuffer;
@@ -377,7 +377,7 @@ abstract class Filter {
      */
     boolean isFiltered(@Nullable String identifier, String path, byte[] protobufBufferArray,
                        StringFilterGroup matchedGroup, FilterContentType contentType, int contentIndex) {
-        if (Setting.DEBUG.getBoolean()) {
+        if (Settings.DEBUG.getBoolean()) {
             String filterSimpleName = getClass().getSimpleName();
             if (contentType == FilterContentType.IDENTIFIER) {
                 LogHelper.printDebug(() -> filterSimpleName + " Filtered identifier: " + identifier);
@@ -421,7 +421,7 @@ public final class LithoFilterPatch {
             builder.append(identifier);
             builder.append(" Path: ");
             builder.append(path);
-            if (Setting.DEBUG_PROTOBUFFER.getBoolean()) {
+            if (Settings.DEBUG_PROTOBUFFER.getBoolean()) {
                 builder.append(" BufferStrings: ");
                 findAsciiStrings(builder, protoBuffer);
             }

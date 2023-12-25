@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import app.revanced.integrations.youtube.patches.VideoInformation;
-import app.revanced.integrations.youtube.settings.Setting;
+import app.revanced.integrations.youtube.settings.Settings;
 import app.revanced.integrations.youtube.shared.PlayerType;
 import app.revanced.integrations.youtube.utils.LogHelper;
 import app.revanced.integrations.youtube.utils.ReVancedUtils;
@@ -90,7 +90,7 @@ public class SpoofSignaturePatch {
         try {
             LogHelper.printDebug(() -> "Original protobuf parameter value: " + parameters);
 
-            if (!Setting.SPOOF_SIGNATURE.getBoolean()) {
+            if (!Settings.SPOOF_SIGNATURE.getBoolean()) {
                 return parameters;
             }
 
@@ -114,7 +114,7 @@ public class SpoofSignaturePatch {
                     && containsAny(parameters, AUTOPLAY_PARAMETERS);
             if (isPlayingFeed) {
                 //noinspection AssignmentUsedAsCondition
-                if (useOriginalStoryboardRenderer = !Setting.SPOOF_SIGNATURE_IN_FEED.getBoolean()) {
+                if (useOriginalStoryboardRenderer = !Settings.SPOOF_SIGNATURE_IN_FEED.getBoolean()) {
                     // Don't spoof the feed video playback. This will cause video playback issues,
                     // but only if user continues watching for more than 1 minute.
                     return parameters;
@@ -132,7 +132,7 @@ public class SpoofSignaturePatch {
     }
 
     private static void fetchStoryboardRenderer() {
-        if (!Setting.SPOOF_STORYBOARD_RENDERER.getBoolean()) {
+        if (!Settings.SPOOF_STORYBOARD_RENDERER.getBoolean()) {
             lastPlayerResponseVideoId = null;
             rendererFuture = null;
             return;
@@ -150,7 +150,7 @@ public class SpoofSignaturePatch {
 
     private static String getStoryboardRendererSpec(String originalStoryboardRendererSpec,
                                                     boolean returnNullIfLiveStream) {
-        if (Setting.SPOOF_SIGNATURE.getBoolean() && !useOriginalStoryboardRenderer) {
+        if (Settings.SPOOF_SIGNATURE.getBoolean() && !useOriginalStoryboardRenderer) {
             StoryboardRenderer renderer = getRenderer(false);
             if (renderer != null) {
                 if (returnNullIfLiveStream && renderer.isLiveStream()) {
@@ -189,7 +189,7 @@ public class SpoofSignaturePatch {
      * Injection point.
      */
     public static int getRecommendedLevel(int originalLevel) {
-        if (Setting.SPOOF_SIGNATURE.getBoolean() && !useOriginalStoryboardRenderer) {
+        if (Settings.SPOOF_SIGNATURE.getBoolean() && !useOriginalStoryboardRenderer) {
             StoryboardRenderer renderer = getRenderer(false);
             if (renderer != null) {
                 Integer recommendedLevel = renderer.getRecommendedLevel();
@@ -202,10 +202,10 @@ public class SpoofSignaturePatch {
 
     /**
      * Injection point.  Forces seekbar to be shown for paid videos or
-     * if {@link Setting#SPOOF_STORYBOARD_RENDERER} is not enabled.
+     * if {@link Settings#SPOOF_STORYBOARD_RENDERER} is not enabled.
      */
     public static boolean getSeekbarThumbnailOverrideValue() {
-        if (!Setting.SPOOF_SIGNATURE.getBoolean()) {
+        if (!Settings.SPOOF_SIGNATURE.getBoolean()) {
             return false;
         }
         StoryboardRenderer renderer = getRenderer(false);
@@ -225,8 +225,8 @@ public class SpoofSignaturePatch {
      */
     public static void seekbarImageViewCreated(ImageView view) {
         try {
-            if (!Setting.SPOOF_SIGNATURE.getBoolean()
-                    || Setting.SPOOF_STORYBOARD_RENDERER.getBoolean()) {
+            if (!Settings.SPOOF_SIGNATURE.getBoolean()
+                    || Settings.SPOOF_STORYBOARD_RENDERER.getBoolean()) {
                 return;
             }
             if (isPlayingShorts) return;

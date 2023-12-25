@@ -5,7 +5,7 @@ import android.os.Build;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 
-import app.revanced.integrations.youtube.settings.Setting;
+import app.revanced.integrations.youtube.settings.Settings;
 import app.revanced.integrations.youtube.utils.LogHelper;
 import app.revanced.integrations.youtube.utils.StringTrieSearch;
 
@@ -21,7 +21,7 @@ public final class LayoutComponentsFilter extends Filter {
     private final CustomFilterGroup custom;
 
     private static final ByteArrayFilterGroup mixPlaylists = new ByteArrayFilterGroup(
-            Setting.HIDE_MIX_PLAYLISTS,
+            Settings.HIDE_MIX_PLAYLISTS,
             "&list="
     );
     private final StringFilterGroup searchResultShelfHeader;
@@ -51,12 +51,12 @@ public final class LayoutComponentsFilter extends Filter {
         // Identifiers.
 
         final var graySeparator = new StringFilterGroup(
-                Setting.HIDE_GRAY_SEPARATOR,
+                Settings.HIDE_GRAY_SEPARATOR,
                 "cell_divider" // layout residue (gray line above the buttoned ad),
         );
 
         final var chipsShelf = new StringFilterGroup(
-                Setting.HIDE_CHIPS_SHELF,
+                Settings.HIDE_CHIPS_SHELF,
                 "chips_shelf"
         );
 
@@ -68,64 +68,64 @@ public final class LayoutComponentsFilter extends Filter {
         // Paths.
 
         custom = new CustomFilterGroup(
-                Setting.CUSTOM_FILTER,
-                Setting.CUSTOM_FILTER_STRINGS
+                Settings.CUSTOM_FILTER,
+                Settings.CUSTOM_FILTER_STRINGS
         );
 
         final var communityPosts = new StringFilterGroup(
-                Setting.HIDE_COMMUNITY_POSTS,
+                Settings.HIDE_COMMUNITY_POSTS,
                 "post_base_wrapper"
         );
 
         final var communityGuidelines = new StringFilterGroup(
-                Setting.HIDE_COMMUNITY_GUIDELINES,
+                Settings.HIDE_COMMUNITY_GUIDELINES,
                 "community_guidelines"
         );
 
         final var subscribersCommunityGuidelines = new StringFilterGroup(
-                Setting.HIDE_SUBSCRIBERS_COMMUNITY_GUIDELINES,
+                Settings.HIDE_SUBSCRIBERS_COMMUNITY_GUIDELINES,
                 "sponsorships_comments_upsell"
         );
 
         final var channelMemberShelf = new StringFilterGroup(
-                Setting.HIDE_CHANNEL_MEMBER_SHELF,
+                Settings.HIDE_CHANNEL_MEMBER_SHELF,
                 "member_recognition_shelf"
         );
 
         final var compactBanner = new StringFilterGroup(
-                Setting.HIDE_COMPACT_BANNER,
+                Settings.HIDE_COMPACT_BANNER,
                 "compact_banner"
         );
 
         inFeedSurvey = new StringFilterGroup(
-                Setting.HIDE_FEED_SURVEY,
+                Settings.HIDE_FEED_SURVEY,
                 "in_feed_survey",
                 "slimline_survey"
         );
 
         final var medicalPanel = new StringFilterGroup(
-                Setting.HIDE_MEDICAL_PANELS,
+                Settings.HIDE_MEDICAL_PANELS,
                 "medical_panel"
         );
 
         final var paidContent = new StringFilterGroup(
-                Setting.HIDE_PAID_CONTENT,
+                Settings.HIDE_PAID_CONTENT,
                 "paid_content_overlay"
         );
 
         final var infoPanel = new StringFilterGroup(
-                Setting.HIDE_HIDE_INFO_PANELS,
+                Settings.HIDE_HIDE_INFO_PANELS,
                 "publisher_transparency_panel",
                 "single_item_information_panel"
         );
 
         final var latestPosts = new StringFilterGroup(
-                Setting.HIDE_HIDE_LATEST_POSTS,
+                Settings.HIDE_HIDE_LATEST_POSTS,
                 "post_shelf"
         );
 
         final var channelGuidelines = new StringFilterGroup(
-                Setting.HIDE_HIDE_CHANNEL_GUIDELINES,
+                Settings.HIDE_HIDE_CHANNEL_GUIDELINES,
                 "channel_guidelines_entry_banner"
         );
 
@@ -143,79 +143,79 @@ public final class LayoutComponentsFilter extends Filter {
         );
 
         final var artistCard = new StringFilterGroup(
-                Setting.HIDE_ARTIST_CARDS,
+                Settings.HIDE_ARTIST_CARDS,
                 "official_card"
         );
 
         expandableMetadata = new StringFilterGroup(
-                Setting.HIDE_EXPANDABLE_CHIP,
+                Settings.HIDE_EXPANDABLE_CHIP,
                 "inline_expander"
         );
 
         final var videoQualityMenuFooter = new StringFilterGroup(
-                Setting.HIDE_VIDEO_QUALITY_MENU_FOOTER,
+                Settings.HIDE_VIDEO_QUALITY_MENU_FOOTER,
                 "quality_sheet_footer"
         );
 
         final var channelBar = new StringFilterGroup(
-                Setting.HIDE_CHANNEL_BAR,
+                Settings.HIDE_CHANNEL_BAR,
                 "channel_bar"
         );
 
         final var relatedVideos = new StringFilterGroup(
-                Setting.HIDE_RELATED_VIDEOS,
+                Settings.HIDE_RELATED_VIDEOS,
                 "fullscreen_related_videos"
         );
 
         final var quickActions = new StringFilterGroup(
-                Setting.HIDE_QUICK_ACTIONS,
+                Settings.HIDE_QUICK_ACTIONS,
                 "quick_actions"
         );
 
         final var imageShelf = new StringFilterGroup(
-                Setting.HIDE_IMAGE_SHELF,
+                Settings.HIDE_IMAGE_SHELF,
                 "image_shelf"
         );
 
 
         final var timedReactions = new StringFilterGroup(
-                Setting.HIDE_TIMED_REACTIONS,
+                Settings.HIDE_TIMED_REACTIONS,
                 "emoji_control_panel",
                 "timed_reaction"
         );
 
         searchResultShelfHeader = new StringFilterGroup(
-                Setting.HIDE_SEARCH_RESULT_SHELF_HEADER,
+                Settings.HIDE_SEARCH_RESULT_SHELF_HEADER,
                 "shelf_header.eml"
         );
 
         notifyMe = new StringFilterGroup(
-                Setting.HIDE_NOTIFY_ME_BUTTON,
+                Settings.HIDE_NOTIFY_ME_BUTTON,
                 "set_reminder_button"
         );
 
         final var joinMembership = new StringFilterGroup(
-                Setting.HIDE_JOIN_MEMBERSHIP_BUTTON,
+                Settings.HIDE_JOIN_MEMBERSHIP_BUTTON,
                 "compact_sponsor_button"
         );
 
         final var channelWatermark = new StringFilterGroup(
-                Setting.HIDE_VIDEO_CHANNEL_WATERMARK,
+                Settings.HIDE_VIDEO_CHANNEL_WATERMARK,
                 "featured_channel_watermark_overlay"
         );
 
         final var forYouShelf = new StringFilterGroup(
-                Setting.HIDE_FOR_YOU_SHELF,
+                Settings.HIDE_FOR_YOU_SHELF,
                 "mixed_content_shelf"
         );
 
         searchResultVideo = new StringFilterGroup(
-                Setting.HIDE_SEARCH_RESULT_RECOMMENDATIONS,
+                Settings.HIDE_SEARCH_RESULT_RECOMMENDATIONS,
                 "search_video_with_context.eml"
         );
 
         searchResultRecommendations = new ByteArrayFilterGroup(
-                Setting.HIDE_SEARCH_RESULT_RECOMMENDATIONS,
+                Settings.HIDE_SEARCH_RESULT_RECOMMENDATIONS,
                 "endorsement_header_footer"
         );
 
@@ -295,6 +295,6 @@ public final class LayoutComponentsFilter extends Filter {
     }
 
     public static boolean showWatermark() {
-        return !Setting.HIDE_VIDEO_CHANNEL_WATERMARK.getBoolean();
+        return !Settings.HIDE_VIDEO_CHANNEL_WATERMARK.getBoolean();
     }
 }

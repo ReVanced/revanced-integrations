@@ -1,7 +1,5 @@
 package app.revanced.integrations.youtube.settingsmenu;
 
-import static app.revanced.integrations.youtube.utils.StringRef.str;
-
 import android.app.AlertDialog;
 import android.content.Context;
 import android.os.Bundle;
@@ -9,11 +7,12 @@ import android.preference.EditTextPreference;
 import android.util.AttributeSet;
 import android.widget.Button;
 import android.widget.EditText;
+import app.revanced.integrations.shared.settings.Setting;
+import app.revanced.integrations.youtube.utils.LogHelper;
 
 import java.util.Objects;
 
-import app.revanced.integrations.youtube.settings.Setting;
-import app.revanced.integrations.youtube.utils.LogHelper;
+import static app.revanced.integrations.youtube.utils.StringRef.str;
 
 public class ResettableEditTextPreference extends EditTextPreference {
 
@@ -33,7 +32,7 @@ public class ResettableEditTextPreference extends EditTextPreference {
     @Override
     protected void onPrepareDialogBuilder(AlertDialog.Builder builder) {
         super.onPrepareDialogBuilder(builder);
-        Setting setting = Setting.settingFromPath(getKey());
+        Setting setting = Setting.getSettingFromPath(getKey());
         if (setting != null) {
             builder.setNeutralButton(str("revanced_settings_reset"), null);
         }
@@ -50,7 +49,7 @@ public class ResettableEditTextPreference extends EditTextPreference {
         }
         button.setOnClickListener(v -> {
             try {
-                Setting setting = Objects.requireNonNull(Setting.settingFromPath(getKey()));
+                Setting setting = Objects.requireNonNull(Setting.getSettingFromPath(getKey()));
                 String defaultStringValue = setting.defaultValue.toString();
                 EditText editText = getEditText();
                 editText.setText(defaultStringValue);

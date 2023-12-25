@@ -16,7 +16,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.*;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import app.revanced.integrations.youtube.settings.Setting;
+import app.revanced.integrations.shared.settings.Setting;
 
 import java.text.Bidi;
 import java.util.Locale;

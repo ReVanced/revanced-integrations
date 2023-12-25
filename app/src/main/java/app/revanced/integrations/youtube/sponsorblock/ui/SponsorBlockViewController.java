@@ -14,7 +14,7 @@ import androidx.annotation.Nullable;
 import java.lang.ref.WeakReference;
 import java.util.Objects;
 
-import app.revanced.integrations.youtube.settings.Setting;
+import app.revanced.integrations.youtube.settings.Settings;
 import app.revanced.integrations.youtube.shared.PlayerType;
 import app.revanced.integrations.youtube.sponsorblock.objects.SponsorSegment;
 import app.revanced.integrations.youtube.utils.LogHelper;
@@ -213,7 +213,7 @@ public class SponsorBlockViewController {
             // the buttons automatically set themselves to visible when appropriate,
             // but if buttons are showing when the end of the video is reached then they need
             // to be forcefully hidden
-            if (!Setting.AUTO_REPEAT.getBoolean()) {
+            if (!Settings.AUTO_REPEAT.getBoolean()) {
                 CreateSegmentButtonController.hide();
                 VotingButtonController.hide();
             }

@@ -1,9 +1,9 @@
 package app.revanced.integrations.youtube.patches;
 
-import app.revanced.integrations.youtube.settings.Setting;
+import app.revanced.integrations.youtube.settings.Settings;
 
 public final class HideFloatingMicrophoneButtonPatch {
     public static boolean hideFloatingMicrophoneButton(final boolean original) {
-        return Setting.HIDE_FLOATING_MICROPHONE_BUTTON.getBoolean() || original;
+        return Settings.HIDE_FLOATING_MICROPHONE_BUTTON.getBoolean() || original;
     }
 }

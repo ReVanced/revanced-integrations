@@ -3,7 +3,7 @@ package app.revanced.integrations.youtube.patches;
 import android.view.View;
 
 import app.revanced.integrations.youtube.patches.spoof.SpoofAppVersionPatch;
-import app.revanced.integrations.youtube.settings.Setting;
+import app.revanced.integrations.youtube.settings.Settings;
 import app.revanced.integrations.youtube.utils.ReVancedUtils;
 
 public class HideBreakingNewsPatch {
@@ -21,7 +21,7 @@ public class HideBreakingNewsPatch {
      * Injection point.
      */
     public static void hideBreakingNews(View view) {
-        if (!Setting.HIDE_BREAKING_NEWS.getBoolean()
+        if (!Settings.HIDE_BREAKING_NEWS.getBoolean()
                 || isSpoofingOldVersionWithHorizontalCardListWatchHistory) return;
         ReVancedUtils.hideViewByLayoutParams(view);
     }
