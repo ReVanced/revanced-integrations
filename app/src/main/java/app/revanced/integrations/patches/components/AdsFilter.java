@@ -17,7 +17,6 @@ public final class AdsFilter extends Filter {
     private static long lastTimeClosedFullscreenAd = 0;
     private static final Instrumentation instrumentation = new Instrumentation();
     private final StringFilterGroup fullscreenAd;
-    private final StringFilterGroup interstitialAd;
 
     // endregion
 
@@ -47,11 +46,6 @@ public final class AdsFilter extends Filter {
         fullscreenAd = new StringFilterGroup(
                 SettingsEnum.HIDE_FULLSCREEN_ADS,
                 "fullscreen_ad"
-        );
-
-        interstitialAd = new StringFilterGroup(
-                SettingsEnum.HIDE_GENERAL_ADS,
-                "_interstitial"
         );
 
         final var buttonedAd = new StringFilterGroup(
@@ -126,7 +120,6 @@ public final class AdsFilter extends Filter {
                 viewProducts,
                 selfSponsor,
                 fullscreenAd,
-                interstitialAd,
                 webLinkPanel,
                 shoppingLinks,
                 movieAds
@@ -139,7 +132,7 @@ public final class AdsFilter extends Filter {
         if (exceptions.matches(path))
             return false;
 
-        if ((matchedGroup == fullscreenAd || matchedGroup == interstitialAd) && path.contains("|ImageType|")) {
+        if (matchedGroup == fullscreenAd && path.contains("|ImageType|")) {
             closeFullscreenAd();
         }
 
