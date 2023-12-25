@@ -318,7 +318,7 @@ public class Setting {
     @NonNull
     private volatile Object value;
 
-    private static final Map<String, Setting> pathToSetting = new HashMap<>(2 * values().length);
+    private static final Map<String, Setting> pathToSetting = new HashMap<>(2 * SETTINGS.size());
 
     Setting(String key, ReturnType returnType, Object defaultValue) {
         this(key, returnType, defaultValue, SharedPrefCategory.YOUTUBE, false, null, null);
@@ -437,6 +437,7 @@ public class Setting {
         }
 
         // endregion
+
         for (Setting setting : SETTINGS) {
             pathToSetting.put(setting.key, setting);
         }
