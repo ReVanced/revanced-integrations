@@ -1,3 +1,10 @@
+# [1.1.0-dev.4](https://github.com/ReVanced/revanced-integrations/compare/v1.1.0-dev.3...v1.1.0-dev.4) (2023-12-25)
+
+
+### Bug Fixes
+
+* **YouTube - SponsorBlock:** Do not auto skip end segments more than once if using a slow playback speed ([88b3ca4](https://github.com/ReVanced/revanced-integrations/commit/88b3ca4992e8278e1d43dbe5cc7607d4890c0eda))
+
 # [1.1.0-dev.3](https://github.com/ReVanced/revanced-integrations/compare/v1.1.0-dev.2...v1.1.0-dev.3) (2023-12-24)
 
 
