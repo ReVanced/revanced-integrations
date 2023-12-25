@@ -58,7 +58,8 @@ public final class AdsFilter extends Filter {
                 "_ad_with",
                 "text_image_button_group_layout",
                 "video_display_button_group_layout",
-                "landscape_image_wide_button_layout"
+                "landscape_image_wide_button_layout",
+                "video_display_carousel_button_group_layout"
         );
 
         final var generalAds = new StringFilterGroup(
