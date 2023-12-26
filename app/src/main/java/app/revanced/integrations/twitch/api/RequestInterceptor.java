@@ -4,7 +4,7 @@ import androidx.annotation.NonNull;
 import app.revanced.integrations.twitch.adblock.IAdblockService;
 import app.revanced.integrations.twitch.adblock.PurpleAdblockService;
 import app.revanced.integrations.twitch.adblock.LuminousService;
-import app.revanced.integrations.twitch.settings.SettingsEnum;
+import app.revanced.integrations.twitch.settings.Settings;
 import app.revanced.integrations.twitch.utils.LogHelper;
 import app.revanced.integrations.twitch.utils.ReVancedUtils;
 import okhttp3.Interceptor;
@@ -81,7 +81,7 @@ public class RequestInterceptor implements Interceptor {
     }
 
     private void updateActiveService() {
-        var current = SettingsEnum.BLOCK_EMBEDDED_ADS.getString();
+        var current = Settings.BLOCK_EMBEDDED_ADS.getString();
 
         if (current.equals(ReVancedUtils.getString("key_revanced_proxy_luminous")) && !(activeService instanceof LuminousService))
             activeService = new LuminousService();

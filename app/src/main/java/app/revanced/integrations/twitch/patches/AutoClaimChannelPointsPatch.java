@@ -1,9 +1,9 @@
 package app.revanced.integrations.twitch.patches;
 
-import app.revanced.integrations.twitch.settings.SettingsEnum;
+import app.revanced.integrations.twitch.settings.Settings;
 
 public class AutoClaimChannelPointsPatch {
     public static boolean shouldAutoClaim() {
-        return SettingsEnum.AUTO_CLAIM_CHANNEL_POINTS.getBoolean();
+        return Settings.AUTO_CLAIM_CHANNEL_POINTS.getBoolean();
     }
 }

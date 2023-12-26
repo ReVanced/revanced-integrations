@@ -2,7 +2,7 @@ package app.revanced.integrations.twitch.utils;
 
 import android.util.Log;
 
-import app.revanced.integrations.twitch.settings.SettingsEnum;
+import app.revanced.integrations.twitch.settings.Settings;
 
 /**
  * TODO: replace this with the higher performance logging code from {@link app.revanced.integrations.utils.LogHelper}
@@ -47,7 +47,7 @@ public class LogHelper {
     }
 
     private static void showDebugToast(String msg) {
-        if(SettingsEnum.DEBUG_MODE.getBoolean()) {
+        if(Settings.DEBUG_MODE.getBoolean()) {
             ReVancedUtils.toast(msg, false);
         }
     }

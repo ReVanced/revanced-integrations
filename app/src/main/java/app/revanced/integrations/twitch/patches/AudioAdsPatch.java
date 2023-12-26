@@ -1,9 +1,9 @@
 package app.revanced.integrations.twitch.patches;
 
-import app.revanced.integrations.twitch.settings.SettingsEnum;
+import app.revanced.integrations.twitch.settings.Settings;
 
 public class AudioAdsPatch {
     public static boolean shouldBlockAudioAds() {
-        return SettingsEnum.BLOCK_AUDIO_ADS.getBoolean();
+        return Settings.BLOCK_AUDIO_ADS.getBoolean();
     }
 }

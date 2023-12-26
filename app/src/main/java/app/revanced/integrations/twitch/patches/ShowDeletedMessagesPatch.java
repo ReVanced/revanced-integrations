@@ -8,20 +8,19 @@ import android.text.SpannedString;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StrikethroughSpan;
 import android.text.style.StyleSpan;
-
-import java.util.Objects;
-
-import app.revanced.integrations.twitch.settings.SettingsEnum;
+import app.revanced.integrations.twitch.settings.Settings;
 import app.revanced.integrations.twitch.utils.ReVancedUtils;
 import tv.twitch.android.shared.chat.util.ClickableUsernameSpan;
 
+import java.util.Objects;
+
 public class ShowDeletedMessagesPatch {
     public static boolean shouldUseSpoiler() {
-        return Objects.equals(SettingsEnum.SHOW_DELETED_MESSAGES.getString(), "spoiler");
+        return Objects.equals(Settings.SHOW_DELETED_MESSAGES.getString(), "spoiler");
     }
 
     public static boolean shouldCrossOut() {
-        return Objects.equals(SettingsEnum.SHOW_DELETED_MESSAGES.getString(), "cross-out");
+        return Objects.equals(Settings.SHOW_DELETED_MESSAGES.getString(), "cross-out");
     }
 
     public static Spanned reformatDeletedMessage(Spanned original) {
