@@ -1,3 +1,10 @@
+# [1.1.0-dev.6](https://github.com/ReVanced/revanced-integrations/compare/v1.1.0-dev.5...v1.1.0-dev.6) (2023-12-26)
+
+
+### Bug Fixes
+
+* **YouTube - VideoInformation:** Ignore video seek attempts during the last 250ms of video playback ([6263edc](https://github.com/ReVanced/revanced-integrations/commit/6263edce11077f9e9c0629d9260e2f2eaef1c0e8))
+
 # [1.1.0-dev.5](https://github.com/ReVanced/revanced-integrations/compare/v1.1.0-dev.4...v1.1.0-dev.5) (2023-12-25)
 
 
