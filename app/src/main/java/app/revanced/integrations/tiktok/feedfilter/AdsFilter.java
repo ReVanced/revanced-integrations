@@ -1,12 +1,12 @@
 package app.revanced.integrations.tiktok.feedfilter;
 
-import app.revanced.integrations.tiktok.settings.SettingsEnum;
+import app.revanced.integrations.tiktok.settings.Settings;
 import com.ss.android.ugc.aweme.feed.model.Aweme;
 
 public class AdsFilter implements IFilter {
     @Override
     public boolean getEnabled() {
-        return SettingsEnum.REMOVE_ADS.getBoolean();
+        return Settings.REMOVE_ADS.getBoolean();
     }
 
     @Override

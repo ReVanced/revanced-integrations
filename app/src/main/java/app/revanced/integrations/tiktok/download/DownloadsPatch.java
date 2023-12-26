@@ -1,13 +1,13 @@
 package app.revanced.integrations.tiktok.download;
 
-import app.revanced.integrations.tiktok.settings.SettingsEnum;
+import app.revanced.integrations.tiktok.settings.Settings;
 
 public class DownloadsPatch {
     public static String getDownloadPath() {
-        return SettingsEnum.DOWNLOAD_PATH.getString();
+        return Settings.DOWNLOAD_PATH.getString();
     }
 
     public static boolean shouldRemoveWatermark() {
-        return SettingsEnum.DOWNLOAD_WATERMARK.getBoolean();
+        return Settings.DOWNLOAD_WATERMARK.getBoolean();
     }
 }

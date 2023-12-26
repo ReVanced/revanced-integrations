@@ -2,7 +2,7 @@ package app.revanced.integrations.tiktok.utils;
 
 import android.util.Log;
 
-import app.revanced.integrations.tiktok.settings.SettingsEnum;
+import app.revanced.integrations.tiktok.settings.Settings;
 
 /**
  * TODO: replace this with the higher performance logging code from {@link app.revanced.integrations.utils.LogHelper}
@@ -10,7 +10,7 @@ import app.revanced.integrations.tiktok.settings.SettingsEnum;
 public class LogHelper {
 
     public static void debug(Class clazz, String message) {
-        if (SettingsEnum.DEBUG.getBoolean()) {
+        if (Settings.DEBUG.getBoolean()) {
             Log.d("revanced: " + (clazz != null ? clazz.getSimpleName() : ""), message);
         }
     }

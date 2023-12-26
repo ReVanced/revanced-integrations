@@ -5,27 +5,20 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.EditTextPreference;
-import android.preference.ListPreference;
-import android.preference.Preference;
-import android.preference.PreferenceFragment;
-import android.preference.PreferenceScreen;
-import android.preference.SwitchPreference;
-
+import android.preference.*;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
 import app.revanced.integrations.shared.Utils;
+import app.revanced.integrations.shared.settings.Setting;
+import app.revanced.integrations.tiktok.settings.SharedPrefCategory;
 import app.revanced.integrations.tiktok.settingsmenu.preference.DownloadPathPreference;
 import app.revanced.integrations.tiktok.settingsmenu.preference.RangeValuePreference;
 import app.revanced.integrations.tiktok.settingsmenu.preference.categories.DownloadsPreferenceCategory;
 import app.revanced.integrations.tiktok.settingsmenu.preference.categories.FeedFilterPreferenceCategory;
 import app.revanced.integrations.tiktok.settingsmenu.preference.categories.IntegrationsPreferenceCategory;
 import app.revanced.integrations.tiktok.settingsmenu.preference.categories.SimSpoofPreferenceCategory;
-import app.revanced.integrations.youtube.utils.LogHelper;
-import app.revanced.integrations.tiktok.settings.SettingsEnum;
-import app.revanced.integrations.tiktok.settings.SharedPrefCategory;
 import app.revanced.integrations.tiktok.utils.ReVancedUtils;
+import app.revanced.integrations.youtube.utils.LogHelper;
 
 @SuppressWarnings("deprecation")
 public class ReVancedPreferenceFragment extends PreferenceFragment {
@@ -34,7 +27,7 @@ public class ReVancedPreferenceFragment extends PreferenceFragment {
 
     SharedPreferences.OnSharedPreferenceChangeListener listener = (sharedPreferences, str) -> {
         try {
-            SettingsEnum setting = SettingsEnum.getSettingsFromPath(str);
+            Setting setting = Setting.getSettingFromPath(str);
             if (setting == null) {
                 return;
             }
@@ -44,20 +37,20 @@ public class ReVancedPreferenceFragment extends PreferenceFragment {
             }
             if (pref instanceof SwitchPreference) {
                 SwitchPreference switchPref = (SwitchPreference) pref;
-                SettingsEnum.setValue(setting, switchPref.isChecked());
+                setting.setValue(switchPref.isChecked());
             } else if (pref instanceof EditTextPreference) {
                 EditTextPreference editPreference = (EditTextPreference) pref;
-                SettingsEnum.setValue(setting, editPreference.getText());
+                setting.setValue(editPreference.getText());
             } else if (pref instanceof ListPreference) {
                 ListPreference listPref = (ListPreference) pref;
-                SettingsEnum.setValue(setting, listPref.getValue());
-                updateListPreferenceSummary((ListPreference) pref, setting);
+                setting.setValue(listPref.getValue());
+                Setting.setListPreference((ListPreference) pref, setting);
             } else if (pref instanceof RangeValuePreference) {
                 RangeValuePreference rangeValuePref = (RangeValuePreference) pref;
-                SettingsEnum.setValue(setting, rangeValuePref.getValue());
+                setting.setValue(rangeValuePref.getValue());
             } else if (pref instanceof DownloadPathPreference) {
                 DownloadPathPreference downloadPathPref = (DownloadPathPreference) pref;
-                SettingsEnum.setValue(setting, downloadPathPref.getValue());
+                setting.setValue(downloadPathPref.getValue());
             } else {
                 LogHelper.printException(() -> "Setting cannot be handled: " + pref.getClass() + " " + pref);
                 return;
@@ -69,17 +62,6 @@ public class ReVancedPreferenceFragment extends PreferenceFragment {
             LogHelper.printException(() -> "OnSharedPreferenceChangeListener failure", ex);
         }
     };
-
-    private void updateListPreferenceSummary(ListPreference listPreference, SettingsEnum setting) {
-        String objectStringValue = setting.getObjectValue().toString();
-        final int entryIndex = listPreference.findIndexOfValue(objectStringValue);
-        if (entryIndex >= 0) {
-            listPreference.setSummary(listPreference.getEntries()[entryIndex]);
-            listPreference.setValue(objectStringValue);
-        } else {
-            listPreference.setSummary(objectStringValue);
-        }
-    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {

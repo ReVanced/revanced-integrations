@@ -1,14 +1,14 @@
 package app.revanced.integrations.tiktok.spoof.sim;
 
-import app.revanced.integrations.tiktok.settings.SettingsEnum;
+import app.revanced.integrations.tiktok.settings.Settings;
 
 public class SpoofSimPatch {
     public static boolean isEnable() {
-        return SettingsEnum.SIM_SPOOF.getBoolean();
+        return Settings.SIM_SPOOF.getBoolean();
     }
     public static String getCountryIso(String value) {
         if (isEnable()) {
-            return SettingsEnum.SIM_SPOOF_ISO.getString();
+            return Settings.SIM_SPOOF_ISO.getString();
         } else {
             return value;
         }
@@ -16,14 +16,14 @@ public class SpoofSimPatch {
     }
     public static String getOperator(String value) {
         if (isEnable()) {
-            return SettingsEnum.SIMSPOOF_MCCMNC.getString();
+            return Settings.SIMSPOOF_MCCMNC.getString();
         } else {
             return value;
         }
     }
     public static String getOperatorName(String value) {
         if (isEnable()) {
-            return SettingsEnum.SIMSPOOF_OP_NAME.getString();
+            return Settings.SIMSPOOF_OP_NAME.getString();
         } else {
             return value;
         }

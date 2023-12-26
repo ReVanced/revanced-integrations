@@ -2,7 +2,7 @@ package app.revanced.integrations.tiktok.settingsmenu.preference.categories;
 
 import android.content.Context;
 import android.preference.PreferenceScreen;
-import app.revanced.integrations.tiktok.settings.SettingsEnum;
+import app.revanced.integrations.tiktok.settings.Settings;
 import app.revanced.integrations.tiktok.settingsmenu.SettingsStatus;
 import app.revanced.integrations.tiktok.settingsmenu.preference.DownloadPathPreference;
 import app.revanced.integrations.tiktok.settingsmenu.preference.TogglePreference;
@@ -24,12 +24,12 @@ public class DownloadsPreferenceCategory extends ConditionalPreferenceCategory {
         addPreference(new DownloadPathPreference(
                 context,
                 "Download path",
-                SettingsEnum.DOWNLOAD_PATH
+                Settings.DOWNLOAD_PATH
         ));
         addPreference(new TogglePreference(
                 context,
                 "Remove watermark", "",
-                SettingsEnum.DOWNLOAD_WATERMARK
+                Settings.DOWNLOAD_WATERMARK
         ));
     }
 }

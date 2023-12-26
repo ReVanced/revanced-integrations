@@ -14,8 +14,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-
-import app.revanced.integrations.tiktok.settings.SettingsEnum;
+import app.revanced.integrations.shared.settings.Setting;
 
 @SuppressWarnings("deprecation")
 public class DownloadPathPreference extends DialogPreference {
@@ -27,12 +26,12 @@ public class DownloadPathPreference extends DialogPreference {
     private int mediaPathIndex;
     private String childDownloadPath;
 
-    public DownloadPathPreference(Context context, String title, SettingsEnum setting) {
+    public DownloadPathPreference(Context context, String title, Setting setting) {
         super(context);
         this.context = context;
         this.setTitle(title);
         this.setSummary(Environment.getExternalStorageDirectory().getPath() + "/" + setting.getString());
-        this.setKey(setting.path);
+        this.setKey(setting.key);
         this.setValue(setting.getString());
     }
 

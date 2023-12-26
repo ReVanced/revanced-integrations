@@ -1,12 +1,12 @@
 package app.revanced.integrations.tiktok.feedfilter;
 
-import app.revanced.integrations.tiktok.settings.SettingsEnum;
+import app.revanced.integrations.tiktok.settings.Settings;
 import com.ss.android.ugc.aweme.feed.model.Aweme;
 
 public class ImageVideoFilter implements IFilter {
     @Override
     public boolean getEnabled() {
-        return SettingsEnum.HIDE_IMAGE.getBoolean();
+        return Settings.HIDE_IMAGE.getBoolean();
     }
 
     @Override

@@ -2,7 +2,7 @@ package app.revanced.integrations.tiktok.utils;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import app.revanced.integrations.tiktok.settings.SettingsEnum;
+import app.revanced.integrations.shared.settings.Setting;
 
 public class ReVancedUtils {
 
@@ -17,8 +17,8 @@ public class ReVancedUtils {
         return null;
     }
 
-    public static long[] parseMinMax(SettingsEnum setting) {
-        if (setting.returnType == SettingsEnum.ReturnType.STRING) {
+    public static long[] parseMinMax(Setting setting) {
+        if (setting.returnType == Setting.ReturnType.STRING) {
             final String[] minMax = setting.getString().split("-");
 
             if (minMax.length == 2)

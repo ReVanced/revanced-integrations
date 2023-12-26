@@ -12,8 +12,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
-import app.revanced.integrations.tiktok.settings.SettingsEnum;
+import app.revanced.integrations.shared.settings.Setting;
 
 @SuppressWarnings("deprecation")
 public class RangeValuePreference extends DialogPreference {
@@ -27,12 +26,12 @@ public class RangeValuePreference extends DialogPreference {
 
     private boolean mValueSet;
 
-    public RangeValuePreference(Context context, String title, String summary, SettingsEnum setting) {
+    public RangeValuePreference(Context context, String title, String summary, Setting setting) {
         super(context);
         this.context = context;
         setTitle(title);
         setSummary(summary);
-        setKey(setting.path);
+        setKey(setting.key);
         setValue(setting.getString());
     }
 

@@ -1,12 +1,12 @@
 package app.revanced.integrations.tiktok.cleardisplay;
 
-import app.revanced.integrations.tiktok.settings.SettingsEnum;
+import app.revanced.integrations.tiktok.settings.Settings;
 
 public class RememberClearDisplayPatch {
     public static boolean getClearDisplayState() {
-        return SettingsEnum.CLEAR_DISPLAY.getBoolean();
+        return Settings.CLEAR_DISPLAY.getBoolean();
     }
     public static void rememberClearDisplayState(boolean newState) {
-        SettingsEnum.CLEAR_DISPLAY.saveValue(newState);
+        Settings.CLEAR_DISPLAY.saveValue(newState);
     }
 }

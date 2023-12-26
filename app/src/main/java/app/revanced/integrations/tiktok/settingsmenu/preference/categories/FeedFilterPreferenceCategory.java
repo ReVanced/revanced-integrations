@@ -3,7 +3,7 @@ package app.revanced.integrations.tiktok.settingsmenu.preference.categories;
 import android.content.Context;
 import android.preference.PreferenceScreen;
 import app.revanced.integrations.tiktok.settingsmenu.preference.RangeValuePreference;
-import app.revanced.integrations.tiktok.settings.SettingsEnum;
+import app.revanced.integrations.tiktok.settings.Settings;
 import app.revanced.integrations.tiktok.settingsmenu.SettingsStatus;
 import app.revanced.integrations.tiktok.settingsmenu.preference.TogglePreference;
 
@@ -24,32 +24,32 @@ public class FeedFilterPreferenceCategory extends ConditionalPreferenceCategory 
         addPreference(new TogglePreference(
                 context,
                 "Remove feed ads", "Remove ads from feed.",
-                SettingsEnum.REMOVE_ADS
+                Settings.REMOVE_ADS
         ));
         addPreference(new TogglePreference(
                 context,
                 "Hide livestreams", "Hide livestreams from feed.",
-                SettingsEnum.HIDE_LIVE
+                Settings.HIDE_LIVE
         ));
         addPreference(new TogglePreference(
                 context,
                 "Hide story", "Hide story from feed.",
-                SettingsEnum.HIDE_STORY
+                Settings.HIDE_STORY
         ));
         addPreference(new TogglePreference(
                 context,
                 "Hide image video", "Hide image video from feed.",
-                SettingsEnum.HIDE_IMAGE
+                Settings.HIDE_IMAGE
         ));
         addPreference(new RangeValuePreference(
                 context,
                 "Min/Max views", "The minimum or maximum views of a video to show.",
-                SettingsEnum.MIN_MAX_VIEWS
+                Settings.MIN_MAX_VIEWS
         ));
         addPreference(new RangeValuePreference(
                 context,
                 "Min/Max likes", "The minimum or maximum likes of a video to show.",
-                SettingsEnum.MIN_MAX_LIKES
+                Settings.MIN_MAX_LIKES
         ));
     }
 }
