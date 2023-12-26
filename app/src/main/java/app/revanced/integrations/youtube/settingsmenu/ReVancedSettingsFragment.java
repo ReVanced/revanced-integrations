@@ -64,7 +64,7 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
                 } else {
                     setting.setValue(listPref.getValue());
                 }
-                Setting.setListPreferenceSummary(listPref, setting);
+                Setting.setListPreference(listPref, setting);
             } else {
                 LogHelper.printException(() -> "Setting cannot be handled: " + pref.getClass() + " " + pref);
                 return;

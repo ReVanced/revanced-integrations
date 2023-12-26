@@ -222,7 +222,7 @@ public class Setting {
      * <p>
      * This method is only to be used by the Settings preference code.
      */
-    public void setValue( @NonNull String newValue) {
+    public void setValue(@NonNull String newValue) {
         Objects.requireNonNull(newValue);
         switch (returnType) {
             case BOOLEAN:
@@ -248,7 +248,7 @@ public class Setting {
     /**
      * This method is only to be used by the Settings preference code.
      */
-    public void setValue( @NonNull Boolean newValue) {
+    public void setValue(@NonNull Boolean newValue) {
         returnType.validate(newValue);
         value = newValue;
     }
@@ -349,23 +349,23 @@ public class Setting {
 
     /** @noinspection deprecation*/
     public static void setPreferences(PreferenceFragment fragment) {
-        for (Setting setting : SETTINGS) {
-            Preference preference = fragment.findPreference(setting.key);
-            if (preference instanceof SwitchPreference) {
-                ((SwitchPreference) preference).setChecked(setting.getBoolean());
-            } else if (preference instanceof EditTextPreference) {
-                ((EditTextPreference) preference).setText(setting.getObjectValue().toString());
-            } else if (preference instanceof ListPreference) {
-                setListPreferenceSummary((ListPreference) preference, setting);
-            }
+        for (Setting setting : SETTINGS) setting.setPreference(fragment);
+    }
+
+    /** @noinspection deprecation*/
+    public void setPreference(PreferenceFragment fragment) {
+        Preference preference = fragment.findPreference(key);
+        if (preference instanceof SwitchPreference) {
+            ((SwitchPreference) preference).setChecked(getBoolean());
+        } else if (preference instanceof EditTextPreference) {
+            ((EditTextPreference) preference).setText(getObjectValue().toString());
+        } else if (preference instanceof ListPreference) {
+            setListPreference((ListPreference) preference, this);
         }
     }
 
-    /**
-     * @noinspection deprecation
-     * Sets summary text to the currently selected list option.
-     */
-    public static void setListPreferenceSummary(ListPreference listPreference, Setting setting) {
+    /** @noinspection deprecation*/
+    public static void setListPreference(ListPreference listPreference, Setting setting) {
         String objectStringValue = setting.getObjectValue().toString();
         final int entryIndex = listPreference.findIndexOfValue(objectStringValue);
         if (entryIndex >= 0) {
