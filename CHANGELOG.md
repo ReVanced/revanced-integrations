@@ -1,3 +1,15 @@
+# [1.1.0-dev.7](https://github.com/ReVanced/revanced-integrations/compare/v1.1.0-dev.6...v1.1.0-dev.7) (2023-12-27)
+
+
+### Bug Fixes
+
+* **YouTube - Hide layout components:** Hide emergency box when enabled ([6ca7946](https://github.com/ReVanced/revanced-integrations/commit/6ca7946e8f3d5be76241b88f1d7a5a881629dda9))
+
+
+### Features
+
+* **YouTube:** Add `Remove viewer discretion dialog` patch ([6f3f882](https://github.com/ReVanced/revanced-integrations/commit/6f3f88264e736b80f88103e795534f86f053c8d1))
+
 # [1.1.0-dev.6](https://github.com/ReVanced/revanced-integrations/compare/v1.1.0-dev.5...v1.1.0-dev.6) (2023-12-26)
 
 
