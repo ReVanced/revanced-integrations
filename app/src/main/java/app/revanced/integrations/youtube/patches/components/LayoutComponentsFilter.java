@@ -305,6 +305,6 @@ public final class LayoutComponentsFilter extends Filter {
     }
 
     public static boolean showWatermark() {
-        return !Settings.HIDE_VIDEO_CHANNEL_WATERMARK.getBoolean();
+        return !Settings.HIDE_VIDEO_CHANNEL_WATERMARK.get();
     }
 }

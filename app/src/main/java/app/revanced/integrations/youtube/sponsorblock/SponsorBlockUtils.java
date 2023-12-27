@@ -174,7 +174,7 @@ public class SponsorBlockUtils {
             for (int i = 0; i < voteOptions.length; i++) {
                 SegmentVote voteOption = voteOptions[i];
                 String title = voteOption.title.toString();
-                if (Settings.SB_USER_IS_VIP.getBoolean() && segment.isLocked && voteOption.shouldHighlight) {
+                if (Settings.SB_USER_IS_VIP.get() && segment.isLocked && voteOption.shouldHighlight) {
                     items[i] = Html.fromHtml(String.format("<font color=\"%s\">%s</font>", LOCKED_COLOR, title));
                 } else {
                     items[i] = title;
@@ -380,11 +380,11 @@ public class SponsorBlockUtils {
             return;
         }
         segment.recordedAsSkipped = true;
-        final long totalTimeSkipped = Settings.SB_LOCAL_TIME_SAVED_MILLISECONDS.getLong() + segment.length();
-        Settings.SB_LOCAL_TIME_SAVED_MILLISECONDS.saveValue(totalTimeSkipped);
-        Settings.SB_LOCAL_TIME_SAVED_NUMBER_SEGMENTS.saveValue(Settings.SB_LOCAL_TIME_SAVED_NUMBER_SEGMENTS.getInt() + 1);
+        final long totalTimeSkipped = Settings.SB_LOCAL_TIME_SAVED_MILLISECONDS.get() + segment.length();
+        Settings.SB_LOCAL_TIME_SAVED_MILLISECONDS.save(totalTimeSkipped);
+        Settings.SB_LOCAL_TIME_SAVED_NUMBER_SEGMENTS.save(Settings.SB_LOCAL_TIME_SAVED_NUMBER_SEGMENTS.get() + 1);
 
-        if (Settings.SB_TRACK_SKIP_COUNT.getBoolean()) {
+        if (Settings.SB_TRACK_SKIP_COUNT.get()) {
             Utils.runOnBackgroundThread(() -> SBRequester.sendSegmentSkippedViewedRequest(segment));
         }
     }

@@ -53,10 +53,10 @@ public class Logger {
      * so the performance cost of building strings is paid only if {@link Settings#DEBUG} is enabled.
      */
     public static void printDebug(@NonNull LogMessage message) {
-        if (Settings.DEBUG.getBoolean()) {
+        if (Settings.DEBUG.get()) {
             var messageString = message.buildMessageString();
 
-            if (Settings.DEBUG_STACKTRACE.getBoolean()) {
+            if (Settings.DEBUG_STACKTRACE.get()) {
                 var builder = new StringBuilder(messageString);
                 var sw = new StringWriter();
                 new Throwable().printStackTrace(new PrintWriter(sw));
@@ -123,7 +123,7 @@ public class Logger {
         } else {
             Log.e(logMessage, messageString, ex);
         }
-        if (Settings.DEBUG_TOAST_ON_ERROR.getBoolean()) {
+        if (Settings.DEBUG_TOAST_ON_ERROR.get()) {
             String toastMessageToDisplay = (userToastMessage != null)
                     ? userToastMessage
                     : outerClassSimpleName + ": " + messageString;

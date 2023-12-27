@@ -4,21 +4,23 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.widget.ImageView;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import app.revanced.integrations.shared.settings.Setting;
-import app.revanced.integrations.shared.Logger;
-import app.revanced.integrations.shared.Utils;
 
 import java.lang.ref.WeakReference;
 import java.util.Objects;
+
+import app.revanced.integrations.shared.Logger;
+import app.revanced.integrations.shared.Utils;
+import app.revanced.integrations.shared.settings.BooleanSetting;
 
 public abstract class BottomControlButton {
     private static final Animation fadeIn;
     private static final Animation fadeOut;
 
     private final WeakReference<ImageView> buttonRef;
-    private final Setting setting;
+    private final BooleanSetting setting;
     protected boolean isVisible;
 
     static {
@@ -41,13 +43,10 @@ public abstract class BottomControlButton {
     }
 
     public BottomControlButton(@NonNull ViewGroup bottomControlsViewGroup, @NonNull String imageViewButtonId,
-                               @NonNull Setting booleanSetting, @NonNull View.OnClickListener onClickListener,
+                               @NonNull BooleanSetting booleanSetting, @NonNull View.OnClickListener onClickListener,
                                @Nullable View.OnLongClickListener longClickListener) {
         Logger.printDebug(() -> "Initializing button: " + imageViewButtonId);
 
-        if (booleanSetting.returnType != Setting.ReturnType.BOOLEAN) {
-            throw new IllegalArgumentException();
-        }
         setting = booleanSetting;
 
         // Create the button.
@@ -73,7 +72,7 @@ public abstract class BottomControlButton {
         }
 
         imageView.clearAnimation();
-        if (visible && setting.getBoolean()) {
+        if (visible && setting.get()) {
             imageView.startAnimation(fadeIn);
             imageView.setVisibility(View.VISIBLE);
         } else if (imageView.getVisibility() == View.VISIBLE) {

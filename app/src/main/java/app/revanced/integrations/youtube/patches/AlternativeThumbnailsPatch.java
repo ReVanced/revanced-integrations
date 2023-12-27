@@ -4,6 +4,7 @@ import android.net.Uri;
 import androidx.annotation.GuardedBy;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
 import app.revanced.integrations.youtube.settings.Settings;
 import app.revanced.integrations.shared.Logger;
 import app.revanced.integrations.shared.Utils;
@@ -77,14 +78,14 @@ public final class AlternativeThumbnailsPatch {
      * Fix any bad imported data.
      */
     private static Uri validateSettings() {
-        final int altThumbnailType = Settings.ALT_THUMBNAIL_STILLS_TIME.getInt();
+        final int altThumbnailType = Settings.ALT_THUMBNAIL_STILLS_TIME.get();
         if (altThumbnailType < 1 || altThumbnailType > 3) {
             Utils.showToastLong("Invalid Alternative still thumbnail type: "
                     + altThumbnailType + ". Using default");
             Settings.ALT_THUMBNAIL_STILLS_TIME.resetToDefault();
         }
 
-        Uri apiUri = Uri.parse(Settings.ALT_THUMBNAIL_DEARROW_API_URL.getString());
+        Uri apiUri = Uri.parse(Settings.ALT_THUMBNAIL_DEARROW_API_URL.get());
         // Cannot use unsecured 'http', otherwise the connections fail to start and no callbacks hooks are made.
         String scheme = apiUri.getScheme();
         if (scheme == null || scheme.equals("http") || apiUri.getHost() == null) {
@@ -96,11 +97,11 @@ public final class AlternativeThumbnailsPatch {
     }
 
     private static boolean usingDeArrow() {
-        return Settings.ALT_THUMBNAIL_DEARROW.getBoolean();
+        return Settings.ALT_THUMBNAIL_DEARROW.get();
     }
 
     private static boolean usingVideoStills() {
-        return Settings.ALT_THUMBNAIL_STILLS.getBoolean();
+        return Settings.ALT_THUMBNAIL_STILLS.get();
     }
 
     /**
@@ -162,7 +163,7 @@ public final class AlternativeThumbnailsPatch {
         final long now = System.currentTimeMillis();
         if (timeToResumeDeArrowAPICalls < now) {
             timeToResumeDeArrowAPICalls = now + DEARROW_FAILURE_API_BACKOFF_MILLISECONDS;
-            if (Settings.ALT_THUMBNAIL_DEARROW_CONNECTION_TOAST.getBoolean()) {
+            if (Settings.ALT_THUMBNAIL_DEARROW_CONNECTION_TOAST.get()) {
                 String toastMessage = (statusCode != 0)
                         ? str("revanced_alt_thumbnail_dearrow_error", statusCode)
                         : str("revanced_alt_thumbnail_dearrow_error_generic");
@@ -356,7 +357,7 @@ public final class AlternativeThumbnailsPatch {
                 return null; // Not a thumbnail for a regular video.
             }
 
-            final boolean useFastQuality = Settings.ALT_THUMBNAIL_STILLS_FAST.getBoolean();
+            final boolean useFastQuality = Settings.ALT_THUMBNAIL_STILLS_FAST.get();
             switch (quality) {
                 case SDDEFAULT:
                     // SD alt images have somewhat worse quality with washed out color and poor contrast.
@@ -391,7 +392,7 @@ public final class AlternativeThumbnailsPatch {
         }
 
         String getAltImageNameToUse() {
-            return altImageName + Settings.ALT_THUMBNAIL_STILLS_TIME.getInt();
+            return altImageName + Settings.ALT_THUMBNAIL_STILLS_TIME.get();
         }
     }
 
@@ -436,7 +437,7 @@ public final class AlternativeThumbnailsPatch {
 
         static boolean verifyAltThumbnailExist(@NonNull String videoId, @NonNull ThumbnailQuality quality,
                                                @NonNull String imageUrl) {
-            VerifiedQualities verified = getVerifiedQualities(videoId, Settings.ALT_THUMBNAIL_STILLS_FAST.getBoolean());
+            VerifiedQualities verified = getVerifiedQualities(videoId, Settings.ALT_THUMBNAIL_STILLS_FAST.get());
             if (verified == null) return true; // Fast alt thumbnails is enabled.
             return verified.verifyYouTubeThumbnailExists(videoId, quality, imageUrl);
         }
@@ -487,7 +488,7 @@ public final class AlternativeThumbnailsPatch {
                 return true; // Previously verified as existing.
             }
 
-            final boolean fastQuality = Settings.ALT_THUMBNAIL_STILLS_FAST.getBoolean();
+            final boolean fastQuality = Settings.ALT_THUMBNAIL_STILLS_FAST.get();
             if (lowestQualityNotAvailable != null && lowestQualityNotAvailable.ordinal() <= quality.ordinal()) {
                 if (fastQuality || System.currentTimeMillis() < timeToReVerifyLowestQuality) {
                     return false; // Previously verified as not existing.

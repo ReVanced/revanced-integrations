@@ -4,6 +4,7 @@ import android.os.Build;
 import android.view.View;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+
 import app.revanced.integrations.youtube.settings.Settings;
 import com.google.android.libraries.youtube.rendering.ui.pivotbar.PivotBar;
 
@@ -168,14 +169,14 @@ public final class ShortsFilter extends Filter {
     // endregion
 
     public static void hideNavigationBar() {
-        if (!Settings.HIDE_SHORTS_NAVIGATION_BAR.getBoolean()) return;
+        if (!Settings.HIDE_SHORTS_NAVIGATION_BAR.get()) return;
         if (pivotBar == null) return;
 
         pivotBar.setVisibility(View.GONE);
     }
 
     public static View hideNavigationBar(final View navigationBarView) {
-        if (Settings.HIDE_SHORTS_NAVIGATION_BAR.getBoolean())
+        if (Settings.HIDE_SHORTS_NAVIGATION_BAR.get())
             return null; // Hides the navigation bar.
 
         return navigationBarView;

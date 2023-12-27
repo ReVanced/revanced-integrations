@@ -357,7 +357,7 @@ public enum SegmentCategory {
      */
     @NonNull
     StringRef getSkipButtonText(long segmentStartTime, long videoLength) {
-        if (Settings.SB_COMPACT_SKIP_BUTTON.getBoolean()) {
+        if (Settings.SB_COMPACT_SKIP_BUTTON.get()) {
             return (this == SegmentCategory.HIGHLIGHT)
                     ? skipSponsorTextCompactHighlight
                     : skipSponsorTextCompact;

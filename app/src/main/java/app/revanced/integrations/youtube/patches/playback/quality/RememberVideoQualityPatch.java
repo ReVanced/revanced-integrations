@@ -1,7 +1,8 @@
 package app.revanced.integrations.youtube.patches.playback.quality;
 
 import androidx.annotation.Nullable;
-import app.revanced.integrations.shared.settings.Setting;
+
+import app.revanced.integrations.shared.settings.IntegerSetting;
 import app.revanced.integrations.youtube.settings.Settings;
 import app.revanced.integrations.shared.Logger;
 import app.revanced.integrations.shared.Utils;
@@ -13,10 +14,11 @@ import java.util.List;
 
 import static app.revanced.integrations.shared.Utils.NetworkType;
 
+@SuppressWarnings("unused")
 public class RememberVideoQualityPatch {
     private static final int AUTOMATIC_VIDEO_QUALITY_VALUE = -2;
-    private static final Setting wifiQualitySetting = Settings.VIDEO_QUALITY_DEFAULT_WIFI;
-    private static final Setting mobileQualitySetting = Settings.VIDEO_QUALITY_DEFAULT_MOBILE;
+    private static final IntegerSetting wifiQualitySetting = Settings.VIDEO_QUALITY_DEFAULT_WIFI;
+    private static final IntegerSetting mobileQualitySetting = Settings.VIDEO_QUALITY_DEFAULT_MOBILE;
 
     private static boolean qualityNeedsUpdating;
 
@@ -40,10 +42,10 @@ public class RememberVideoQualityPatch {
     private static void changeDefaultQuality(int defaultQuality) {
         String networkTypeMessage;
         if (Utils.getNetworkType() == NetworkType.MOBILE) {
-            mobileQualitySetting.saveValue(defaultQuality);
+            mobileQualitySetting.save(defaultQuality);
             networkTypeMessage = "mobile";
         } else {
-            wifiQualitySetting.saveValue(defaultQuality);
+            wifiQualitySetting.save(defaultQuality);
             networkTypeMessage = "Wi-Fi";
         }
         Utils.showToastShort("Changed default " + networkTypeMessage
@@ -65,9 +67,9 @@ public class RememberVideoQualityPatch {
 
             final int preferredQuality;
             if (Utils.getNetworkType() == NetworkType.MOBILE) {
-                preferredQuality = mobileQualitySetting.getInt();
+                preferredQuality = mobileQualitySetting.get();
             } else {
-                preferredQuality = wifiQualitySetting.getInt();
+                preferredQuality = wifiQualitySetting.get();
             }
             if (!userChangedDefaultQuality && preferredQuality == AUTOMATIC_VIDEO_QUALITY_VALUE) {
                 return originalQualityIndex; // nothing to do
@@ -137,7 +139,7 @@ public class RememberVideoQualityPatch {
      * Injection point.  Old quality menu.
      */
     public static void userChangedQuality(int selectedQualityIndex) {
-        if (!Settings.REMEMBER_VIDEO_QUALITY_LAST_SELECTED.getBoolean()) return;
+        if (!Settings.REMEMBER_VIDEO_QUALITY_LAST_SELECTED.get()) return;
 
         userSelectedQualityIndex = selectedQualityIndex;
         userChangedDefaultQuality = true;
@@ -147,7 +149,7 @@ public class RememberVideoQualityPatch {
      * Injection point.  New quality menu.
      */
     public static void userChangedQualityInNewFlyout(int selectedQuality) {
-        if (!Settings.REMEMBER_VIDEO_QUALITY_LAST_SELECTED.getBoolean()) return;
+        if (!Settings.REMEMBER_VIDEO_QUALITY_LAST_SELECTED.get()) return;
 
         changeDefaultQuality(selectedQuality); // Quality is human readable resolution (ie: 1080).
     }

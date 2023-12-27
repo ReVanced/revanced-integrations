@@ -6,6 +6,7 @@ import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.widget.TextView;
 import androidx.annotation.RequiresApi;
+
 import app.revanced.integrations.youtube.patches.announcements.requests.AnnouncementsRoutes;
 import app.revanced.integrations.youtube.requests.Requester;
 import app.revanced.integrations.youtube.settings.Settings;
@@ -22,6 +23,7 @@ import java.util.UUID;
 import static android.text.Html.FROM_HTML_MODE_COMPACT;
 import static app.revanced.integrations.youtube.patches.announcements.requests.AnnouncementsRoutes.GET_LATEST_ANNOUNCEMENT;
 
+@SuppressWarnings("unused")
 public final class AnnouncementsPatch {
     private final static String CONSUMER = getOrSetConsumer();
 
@@ -30,7 +32,7 @@ public final class AnnouncementsPatch {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public static void showAnnouncement(final Activity context) {
-        if (!Settings.ANNOUNCEMENTS.getBoolean()) return;
+        if (!Settings.ANNOUNCEMENTS.get()) return;
 
         // Check if there is internet connection
         if (!Utils.isNetworkConnected()) return;
@@ -44,7 +46,7 @@ public final class AnnouncementsPatch {
                 try {
                     // Do not show the announcement if the request failed.
                     if (connection.getResponseCode() != 200) {
-                        if (Settings.ANNOUNCEMENT_LAST_HASH.getString().isEmpty()) return;
+                        if (Settings.ANNOUNCEMENT_LAST_HASH.get().isEmpty()) return;
 
                         Settings.ANNOUNCEMENT_LAST_HASH.resetToDefault();
                         Utils.showToastLong("Failed to get announcement");
@@ -63,7 +65,7 @@ public final class AnnouncementsPatch {
                 // Do not show the announcement if it is older or the same as the last one.
                 final byte[] hashBytes = MessageDigest.getInstance("SHA-256").digest(jsonString.getBytes(StandardCharsets.UTF_8));
                 final var hash = java.util.Base64.getEncoder().encodeToString(hashBytes);
-                if (hash.equals(Settings.ANNOUNCEMENT_LAST_HASH.getString())) return;
+                if (hash.equals(Settings.ANNOUNCEMENT_LAST_HASH.get())) return;
 
                 // Parse the announcement. Fall-back to raw string if it fails.
                 String title;
@@ -94,7 +96,7 @@ public final class AnnouncementsPatch {
                             .setMessage(finalMessage)
                             .setIcon(finalLevel.icon)
                             .setPositiveButton("Ok", (dialog, which) -> {
-                                Settings.ANNOUNCEMENT_LAST_HASH.saveValue(hash);
+                                Settings.ANNOUNCEMENT_LAST_HASH.save(hash);
                                 dialog.dismiss();
                             }).setNegativeButton("Dismiss", (dialog, which) -> {
                                 dialog.dismiss();
@@ -120,18 +122,18 @@ public final class AnnouncementsPatch {
      * @return true if the last announcement hash was empty.
      */
     private static boolean emptyLastAnnouncementHash() {
-        if (Settings.ANNOUNCEMENT_LAST_HASH.getString().isEmpty()) return true;
+        if (Settings.ANNOUNCEMENT_LAST_HASH.get().isEmpty()) return true;
         Settings.ANNOUNCEMENT_LAST_HASH.resetToDefault();
 
         return false;
     }
 
     private static String getOrSetConsumer() {
-        final var consumer = Settings.ANNOUNCEMENT_CONSUMER.getString();
+        final var consumer = Settings.ANNOUNCEMENT_CONSUMER.get();
         if (!consumer.isEmpty()) return consumer;
 
         final var uuid = UUID.randomUUID().toString();
-        Settings.ANNOUNCEMENT_CONSUMER.saveValue(uuid);
+        Settings.ANNOUNCEMENT_CONSUMER.save(uuid);
         return uuid;
     }
 

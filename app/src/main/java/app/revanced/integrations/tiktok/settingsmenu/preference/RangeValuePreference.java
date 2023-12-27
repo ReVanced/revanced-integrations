@@ -12,7 +12,8 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import app.revanced.integrations.shared.settings.Setting;
+
+import app.revanced.integrations.shared.settings.StringSetting;
 
 @SuppressWarnings("deprecation")
 public class RangeValuePreference extends DialogPreference {
@@ -26,13 +27,13 @@ public class RangeValuePreference extends DialogPreference {
 
     private boolean mValueSet;
 
-    public RangeValuePreference(Context context, String title, String summary, Setting setting) {
+    public RangeValuePreference(Context context, String title, String summary, StringSetting setting) {
         super(context);
         this.context = context;
         setTitle(title);
         setSummary(summary);
         setKey(setting.key);
-        setValue(setting.getString());
+        setValue(setting.get());
     }
 
     public void setValue(String value) {

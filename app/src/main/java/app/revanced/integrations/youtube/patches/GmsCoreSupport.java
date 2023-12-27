@@ -1,18 +1,20 @@
 package app.revanced.integrations.youtube.patches;
 
+import static app.revanced.integrations.shared.StringRef.str;
+
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
+
 import androidx.annotation.RequiresApi;
-import app.revanced.integrations.shared.Logger;
-import app.revanced.integrations.shared.Utils;
 
 import java.util.Objects;
 
-import static app.revanced.integrations.shared.StringRef.str;
+import app.revanced.integrations.shared.Logger;
+import app.revanced.integrations.shared.Utils;
 
 /**
  * @noinspection unused

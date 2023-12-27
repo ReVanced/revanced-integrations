@@ -17,23 +17,29 @@ import java.util.*;
 
 import static app.revanced.integrations.shared.StringRef.str;
 
-
-// TODO: Add generic type to Setting in order to add a Setting#get() method that returns the correct type.
-
-/**
- * A setting backed by a shared preference.
- */
-public class Setting {
+public abstract class Setting<T> {
     /**
      * All settings that were instantiated.
      * When a new setting is created, it is automatically added to this list.
      */
-    private static final List<Setting> SETTINGS = new LinkedList<>();
+    private static final List<Setting<?>> SETTINGS = new LinkedList<>();
 
     /**
      * Map of setting path to setting object.
      */
-    private static final Map<String, Setting> PATH_TO_SETTINGS = new HashMap<>();
+    private static final Map<String, Setting<?>> PATH_TO_SETTINGS = new HashMap<>();
+
+    /**
+     * Currently only Boolean types can be parents.
+     */
+    public static BooleanSetting[] getParents(BooleanSetting... parents) {
+        return parents;
+    }
+
+    @Nullable
+    public static Setting<?> getSettingFromPath(@NonNull String str) {
+        return PATH_TO_SETTINGS.get(str);
+    }
 
     /**
      * The key used to store the value in the shared preferences.
@@ -45,7 +51,7 @@ public class Setting {
      * The default value of the setting.
      */
     @NonNull
-    public final Object defaultValue;
+    public final T defaultValue;
 
     /**
      * The category of the shared preferences to store the value in.
@@ -54,28 +60,24 @@ public class Setting {
     public final SharedPrefCategory sharedPrefCategory;
 
     /**
-     * The type of the setting.
-     */
-    @NonNull
-    public final ReturnType returnType;
-
-    /**
      * If the app should be rebooted, if this setting is changed
      */
     public final boolean rebootApp;
 
     /**
+     * If this setting should be included when importing/exporting settings.
+     */
+    public final boolean includeWithImportExport;
+
+    /**
      * Set of boolean parent settings.
      * If any of the parents are enabled, then this setting is available to configure.
-     * <p>
-     * Declaration is not needed for items that do not appear in the ReVanced Settings UI.
      */
     @Nullable
-    private final Setting[] parents;
+    private final BooleanSetting[] parents;
 
     /**
      * Confirmation message to display, if the user tries to change the setting from the default value.
-     * Can only be used for {@link ReturnType#BOOLEAN} setting types.
      */
     @Nullable
     public final StringRef userDialogMessage;
@@ -86,143 +88,90 @@ public class Setting {
      * The value of the setting.
      */
     @NonNull
-    private volatile Object value;
+    protected volatile T value;
 
-    // TODO: Set this via a constructor parameter.
-    /**
-     * If this setting should be included when importing/exporting settings.
-     */
-    private final boolean includeWithImportExport = true;
-
-
-    public Setting(String key, ReturnType returnType, Object defaultValue) {
-        this(key, returnType, defaultValue, SharedPrefCategory.YOUTUBE, false, null, null);
+    public Setting(String key, T defaultValue) {
+        this(key, defaultValue, SharedPrefCategory.YOUTUBE, false, true, null, null);
     }
-
-    public Setting(String key, ReturnType returnType, Object defaultValue,
+    public Setting(String key, T defaultValue,
                    boolean rebootApp) {
-        this(key, returnType, defaultValue, SharedPrefCategory.YOUTUBE, rebootApp, null, null);
+        this(key, defaultValue, SharedPrefCategory.YOUTUBE, rebootApp, true, null, null);
     }
-
-    public Setting(String key, ReturnType returnType, Object defaultValue,
+    public Setting(@NonNull String key, @NonNull T defaultValue, boolean rebootApp, boolean includeWithImportExport) {
+        this(key, defaultValue, SharedPrefCategory.YOUTUBE, rebootApp, includeWithImportExport);
+    }
+    public Setting(String key, T defaultValue,
                    String userDialogMessage) {
-        this(key, returnType, defaultValue, SharedPrefCategory.YOUTUBE, false, userDialogMessage, null);
+        this(key, defaultValue, SharedPrefCategory.YOUTUBE, false, true, userDialogMessage, null);
     }
-
-    public Setting(String key, ReturnType returnType, Object defaultValue,
-                   Setting[] parents) {
-        this(key, returnType, defaultValue, SharedPrefCategory.YOUTUBE, false, null, parents);
+    public Setting(String key, T defaultValue,
+                   BooleanSetting[] parents) {
+        this(key, defaultValue, SharedPrefCategory.YOUTUBE, false, true, null, parents);
     }
-
-    public Setting(String key, ReturnType returnType, Object defaultValue,
+    public Setting(String key, T defaultValue,
                    boolean rebootApp, String userDialogMessage) {
-        this(key, returnType, defaultValue, SharedPrefCategory.YOUTUBE, rebootApp, userDialogMessage, null);
+        this(key, defaultValue, SharedPrefCategory.YOUTUBE, rebootApp, true, userDialogMessage, null);
     }
-
-    public Setting(String key, ReturnType returnType, Object defaultValue,
-                   boolean rebootApp, Setting[] parents) {
-        this(key, returnType, defaultValue, SharedPrefCategory.YOUTUBE, rebootApp, null, parents);
+    public Setting(String key, T defaultValue,
+                   boolean rebootApp, BooleanSetting[] parents) {
+        this(key, defaultValue, SharedPrefCategory.YOUTUBE, rebootApp, true, null, parents);
     }
-
-    public Setting(String key, ReturnType returnType, Object defaultValue,
-                   boolean rebootApp, String userDialogMessage, Setting[] parents) {
-        this(key, returnType, defaultValue, SharedPrefCategory.YOUTUBE, rebootApp, userDialogMessage, parents);
+    public Setting(String key, T defaultValue,
+                   boolean rebootApp, String userDialogMessage, BooleanSetting[] parents) {
+        this(key, defaultValue, SharedPrefCategory.YOUTUBE, rebootApp, true, userDialogMessage, parents);
     }
-
-    public Setting(String key, ReturnType returnType, Object defaultValue, SharedPrefCategory prefName) {
-        this(key, returnType, defaultValue, prefName, false, null, null);
+    public Setting(String key, T defaultValue, SharedPrefCategory prefName) {
+        this(key, defaultValue, prefName, false, true, null, null);
     }
-
-    public Setting(String key, ReturnType returnType, Object defaultValue, SharedPrefCategory prefName,
+    public Setting(String key, T defaultValue, SharedPrefCategory prefName,
                    boolean rebootApp) {
-        this(key, returnType, defaultValue, prefName, rebootApp, null, null);
+        this(key, defaultValue, prefName, rebootApp, true, null, null);
     }
-
-    public Setting(String key, ReturnType returnType, Object defaultValue, SharedPrefCategory prefName,
+    public Setting(String key, T defaultValue, SharedPrefCategory prefName,
                    String userDialogMessage) {
-        this(key, returnType, defaultValue, prefName, false, userDialogMessage, null);
+        this(key, defaultValue, prefName, false, true, userDialogMessage, null);
     }
-
-    public Setting(String key, ReturnType returnType, Object defaultValue, SharedPrefCategory prefName,
-                   Setting[] parents) {
-        this(key, returnType, defaultValue, prefName, false, null, parents);
+    public Setting(String key, T defaultValue, SharedPrefCategory prefName,
+                   BooleanSetting[] parents) {
+        this(key, defaultValue, prefName, false, true, null, parents);
+    }
+    public Setting(@NonNull String key, @NonNull T defaultValue, @NonNull SharedPrefCategory prefName, boolean rebootApp, boolean includeWithImportExport) {
+        this(key, defaultValue, prefName, rebootApp, includeWithImportExport, null, null);
     }
 
     /**
      * A setting backed by a shared preference.
      * @param key The key used to store the value in the shared preferences.
-     * @param returnType The type of the setting.
      * @param defaultValue The default value of the setting.
      * @param prefName The category of the shared preferences to store the value in.
      * @param rebootApp If the app should be rebooted, if this setting is changed.
+     * @param includeWithImportExport If this setting should be shown in the import/export dialog.
      * @param userDialogMessage Confirmation message to display, if the user tries to change the setting from the default value.
      * @param parents Set of boolean parent settings that must be enabled, for this setting to be available to configure.
      */
     public Setting(@NonNull String key,
-                   @NonNull ReturnType returnType,
-                   @NonNull Object defaultValue,
+                   @NonNull T defaultValue,
                    @NonNull SharedPrefCategory prefName,
                    boolean rebootApp,
+                   boolean includeWithImportExport,
                    @Nullable String userDialogMessage,
-                   @Nullable Setting[] parents
+                   @Nullable BooleanSetting[] parents
     ) {
-        this.key = Objects.requireNonNull(key);
-        this.returnType = Objects.requireNonNull(returnType);
-        this.value = this.defaultValue = Objects.requireNonNull(defaultValue);
-        this.sharedPrefCategory = Objects.requireNonNull(prefName);
+        this.key = key;
+        this.value = this.defaultValue = defaultValue;
+        this.sharedPrefCategory = prefName;
         this.rebootApp = rebootApp;
-
-        if (userDialogMessage == null) {
-            this.userDialogMessage = null;
-        } else {
-            if (returnType != ReturnType.BOOLEAN) {
-                throw new IllegalArgumentException("Must be Boolean type: " + key);
-            }
-            this.userDialogMessage = new StringRef(userDialogMessage);
-        }
-
+        this.includeWithImportExport = includeWithImportExport;
+        this.userDialogMessage = (userDialogMessage == null) ? null : new StringRef(userDialogMessage);
         this.parents = parents;
-        if (parents != null) {
-            for (Setting parent : parents) {
-                if (parent.returnType != ReturnType.BOOLEAN) {
-                    throw new IllegalArgumentException("Parent must be Boolean type: " + parent);
-                }
-            }
-        }
 
-        // Set the value of the setting saved in shared preferences.
-        switch (returnType) {
-            case BOOLEAN:
-                value = sharedPrefCategory.getBoolean(key, (boolean) defaultValue);
-                break;
-            case INTEGER:
-                value = sharedPrefCategory.getIntegerString(key, (Integer) defaultValue);
-                break;
-            case LONG:
-                value = sharedPrefCategory.getLongString(key, (Long) defaultValue);
-                break;
-            case FLOAT:
-                value = sharedPrefCategory.getFloatString(key, (Float) defaultValue);
-                break;
-            case STRING:
-                value = sharedPrefCategory.getString(key, (String) defaultValue);
-                break;
-            default:
-                throw new IllegalStateException(toString());
-        }
+        load();
 
         SETTINGS.add(this);
         PATH_TO_SETTINGS.put(key, this);
     }
 
-    public static Setting[] getParents(Setting... parents) {
-        return parents;
-    }
-
-    @Nullable
-    public static Setting getSettingFromPath(@NonNull String str) {
-        return PATH_TO_SETTINGS.get(str);
-    }
+    protected abstract void load();
 
     /**
      * Migrate a setting value if the path is renamed but otherwise the old and new settings are identical.
@@ -231,95 +180,50 @@ public class Setting {
         if (!oldSetting.isSetToDefault()) {
             Logger.printInfo(() -> "Migrating old setting of '" + oldSetting.value
                     + "' from: " + oldSetting + " into replacement setting: " + newSetting);
-            newSetting.saveValue(oldSetting.value);
+            newSetting.save(oldSetting.value);
             oldSetting.resetToDefault();
         }
     }
 
     /**
      * Sets, but does _not_ persistently save the value.
-     * <p>
-     * This intentionally is a static method, to deter accidental usage
-     * when {@link #saveValue(Object)} was intended.
-     * <p>
      * This method is only to be used by the Settings preference code.
+     *
+     * This intentionally is a static method to deter
+     * accidental usage when {@link #save(Object)} was intnded.
      */
-    public void setValue(@NonNull String newValue) {
-        Objects.requireNonNull(newValue);
-        switch (returnType) {
-            case BOOLEAN:
-                value = Boolean.valueOf(newValue);
-                break;
-            case INTEGER:
-                value = Integer.valueOf(newValue);
-                break;
-            case LONG:
-                value = Long.valueOf(newValue);
-                break;
-            case FLOAT:
-                value = Float.valueOf(newValue);
-                break;
-            case STRING:
-                value = newValue;
-                break;
-            default:
-                throw new IllegalStateException(toString());
-        }
+    public static void privateSetValueFromString(@NonNull Setting setting, @NonNull String newValue) {
+        setting.setValueFromString(newValue);
     }
 
-    /**
-     * This method is only to be used by the Settings preference code.
-     */
-    public void setValue(@NonNull Boolean newValue) {
-        returnType.validate(newValue);
-        value = newValue;
-    }
+    protected abstract void setValueFromString(@NonNull String newValue);
 
     /**
      * Sets the value, and persistently saves it.
      */
-    public void saveValue(@NonNull Object newValue) {
-        returnType.validate(newValue);
-        value = newValue; // Must set before saving to preferences (otherwise importing fails to update UI correctly).
-        switch (returnType) {
-            case BOOLEAN:
-                sharedPrefCategory.saveBoolean(key, (boolean) newValue);
-                break;
-            case INTEGER:
-                sharedPrefCategory.saveIntegerString(key, (Integer) newValue);
-                break;
-            case LONG:
-                sharedPrefCategory.saveLongString(key, (Long) newValue);
-                break;
-            case FLOAT:
-                sharedPrefCategory.saveFloatString(key, (Float) newValue);
-                break;
-            case STRING:
-                sharedPrefCategory.saveString(key, (String) newValue);
-                break;
-            default:
-                throw new IllegalStateException(toString());
-        }
-    }
+    public abstract void save(@NonNull T newValue);
+
+    @NonNull
+    public abstract T get();
+
+    protected abstract T getJsonValue(JSONObject json) throws JSONException;
 
     /**
-     * Identical to calling {@link #saveValue(Object)} using {@link #defaultValue}.
+     * Identical to calling {@link #save(Object)} using {@link #defaultValue}.
      */
     public void resetToDefault() {
-        saveValue(defaultValue);
+        save(defaultValue);
     }
 
     /**
      * @return if this setting can be configured and used.
-     * <p>
-     * Not to be confused with {@link #getBoolean()}
      */
     public boolean isAvailable() {
         if (parents == null) {
             return true;
         }
-        for (Setting parent : parents) {
-            if (parent.getBoolean()) return true;
+        for (BooleanSetting parent : parents) {
+            if (parent.get()) return true;
         }
         return false;
     }
@@ -330,36 +234,6 @@ public class Setting {
     public boolean isSetToDefault() {
         return value.equals(defaultValue);
     }
-
-    public boolean getBoolean() {
-        return (Boolean) value;
-    }
-
-    public int getInt() {
-        return (Integer) value;
-    }
-
-    public long getLong() {
-        return (Long) value;
-    }
-
-    public float getFloat() {
-        return (Float) value;
-    }
-
-    @NonNull
-    public String getString() {
-        return (String) value;
-    }
-
-    /**
-     * @return the value of this setting as generic object type.
-     */
-    @NonNull
-    public Object getObjectValue() {
-        return value;
-    }
-
 
     /** @noinspection deprecation*/
     public static void setPreferencesEnabled(PreferenceFragment fragment) {
@@ -378,9 +252,9 @@ public class Setting {
     public void setPreference(PreferenceFragment fragment) {
         Preference preference = fragment.findPreference(key);
         if (preference instanceof SwitchPreference) {
-            ((SwitchPreference) preference).setChecked(getBoolean());
+            ((SwitchPreference) preference).setChecked(((Setting<Boolean>) this).get());
         } else if (preference instanceof EditTextPreference) {
-            ((EditTextPreference) preference).setText(getObjectValue().toString());
+            ((EditTextPreference) preference).setText(get().toString());
         } else if (preference instanceof ListPreference) {
             setListPreference((ListPreference) preference, this);
         }
@@ -388,7 +262,7 @@ public class Setting {
 
     /** @noinspection deprecation*/
     public static void setListPreference(ListPreference listPreference, Setting setting) {
-        String objectStringValue = setting.getObjectValue().toString();
+        String objectStringValue = setting.get().toString();
         final int entryIndex = listPreference.findIndexOfValue(objectStringValue);
         if (entryIndex >= 0) {
             listPreference.setSummary(listPreference.getEntries()[entryIndex]);
@@ -404,7 +278,7 @@ public class Setting {
     @NotNull
     @Override
     public String toString() {
-        return key + "=" + getObjectValue();
+        return key + "=" + get();
     }
 
     @Override
@@ -462,7 +336,7 @@ public class Setting {
 
                 //noinspection ConstantValue
                 if (setting.includeWithImportExport && (!setting.isSetToDefault() | exportDefaultValues)) {
-                    json.put(importExportKey, setting.getObjectValue());
+                    json.put(importExportKey, setting.get());
                 }
             }
             SponsorBlockSettings.exportCategoriesToFlatJson(alertDialogContext, json);
@@ -497,29 +371,10 @@ public class Setting {
             for (Setting setting : SETTINGS) {
                 String key = setting.getImportExportKey();
                 if (json.has(key)) {
-                    Object value;
-                    switch (setting.returnType) {
-                        case BOOLEAN:
-                            value = json.getBoolean(key);
-                            break;
-                        case INTEGER:
-                            value = json.getInt(key);
-                            break;
-                        case LONG:
-                            value = json.getLong(key);
-                            break;
-                        case FLOAT:
-                            value = (float) json.getDouble(key);
-                            break;
-                        case STRING:
-                            value = json.getString(key);
-                            break;
-                        default:
-                            throw new IllegalStateException();
-                    }
-                    if (!setting.getObjectValue().equals(value)) {
+                    Object value = setting.getJsonValue(json);
+                    if (!setting.get().equals(value)) {
                         rebootSettingChanged |= setting.rebootApp;
-                        setting.saveValue(value);
+                        setting.save(value);
                     }
                     numberOfSettingsImported++;
                 } else if (setting.includeWithImportExport && !setting.isSetToDefault()) {
@@ -546,33 +401,4 @@ public class Setting {
 
     // End import / export
 
-    public enum ReturnType {
-        BOOLEAN,
-        INTEGER,
-        LONG,
-        FLOAT,
-        STRING;
-
-        public void validate(@Nullable Object obj) throws IllegalArgumentException {
-            if (!matches(obj)) {
-                throw new IllegalArgumentException("'" + obj + "' does not match:" + this);
-            }
-        }
-
-        public boolean matches(@Nullable Object obj) {
-            switch (this) {
-                case BOOLEAN:
-                    return obj instanceof Boolean;
-                case INTEGER:
-                    return obj instanceof Integer;
-                case LONG:
-                    return obj instanceof Long;
-                case FLOAT:
-                    return obj instanceof Float;
-                case STRING:
-                    return obj instanceof String;
-            }
-            return false;
-        }
-    }
 }

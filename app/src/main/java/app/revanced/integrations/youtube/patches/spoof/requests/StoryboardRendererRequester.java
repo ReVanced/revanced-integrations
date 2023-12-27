@@ -63,7 +63,7 @@ public class StoryboardRendererRequester {
 
             // Always show a toast for this, as a non 200 response means something is broken.
             handleConnectionError("Spoof storyboard not available: " + responseCode,
-                    null, showToastOnIOException || Settings.DEBUG_TOAST_ON_ERROR.getBoolean());
+                    null, showToastOnIOException || Settings.DEBUG_TOAST_ON_ERROR.get());
             connection.disconnect();
         } catch (SocketTimeoutException ex) {
             handleConnectionError("Spoof storyboard temporarily not available (API timed out)",

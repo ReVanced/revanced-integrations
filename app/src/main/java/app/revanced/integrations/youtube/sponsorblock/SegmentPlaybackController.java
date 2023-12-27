@@ -1,11 +1,24 @@
 package app.revanced.integrations.youtube.sponsorblock;
 
+import static app.revanced.integrations.shared.StringRef.str;
+
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.text.TextUtils;
 import android.util.TypedValue;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Objects;
+
+import app.revanced.integrations.shared.Logger;
+import app.revanced.integrations.shared.Utils;
 import app.revanced.integrations.youtube.patches.VideoInformation;
 import app.revanced.integrations.youtube.settings.Settings;
 import app.revanced.integrations.youtube.shared.PlayerType;
@@ -15,13 +28,6 @@ import app.revanced.integrations.youtube.sponsorblock.objects.SegmentCategory;
 import app.revanced.integrations.youtube.sponsorblock.objects.SponsorSegment;
 import app.revanced.integrations.youtube.sponsorblock.requests.SBRequester;
 import app.revanced.integrations.youtube.sponsorblock.ui.SponsorBlockViewController;
-import app.revanced.integrations.shared.Logger;
-import app.revanced.integrations.shared.Utils;
-
-import java.lang.reflect.Field;
-import java.util.*;
-
-import static app.revanced.integrations.shared.StringRef.str;
 
 /**
  * Handles showing, scheduling, and skipping of all {@link SponsorSegment} for the current video.
@@ -198,7 +204,7 @@ public class SegmentPlaybackController {
                 return;
             }
             clearData();
-            if (videoId == null || !Settings.SB_ENABLED.getBoolean()) {
+            if (videoId == null || !Settings.SB_ENABLED.get()) {
                 return;
             }
             if (PlayerType.getCurrent().isNoneOrHidden()) {
@@ -271,7 +277,7 @@ public class SegmentPlaybackController {
      */
     public static void setVideoTime(long millis) {
         try {
-            if (!Settings.SB_ENABLED.getBoolean()
+            if (!Settings.SB_ENABLED.get()
                 || PlayerType.getCurrent().isNoneOrHidden() // Shorts playback.
                 || segments == null || segments.length == 0) {
                 return;
@@ -489,7 +495,7 @@ public class SegmentPlaybackController {
         }
         segmentCurrentlyPlaying = segment;
         skipSegmentButtonEndTime = 0;
-        if (Settings.SB_AUTO_HIDE_SKIP_BUTTON.getBoolean()) {
+        if (Settings.SB_AUTO_HIDE_SKIP_BUTTON.get()) {
             if (hiddenSkipSegmentsForCurrentVideoTime.contains(segment)) {
                 // Playback exited a nested segment and the outer segment skip button was previously hidden.
                 Logger.printDebug(() -> "Ignoring previously auto-hidden segment: " + segment);
@@ -545,7 +551,7 @@ public class SegmentPlaybackController {
             final boolean videoIsPaused = VideoState.getCurrent() == VideoState.PAUSED;
             if (!userManuallySkipped) {
                 // check for any smaller embedded segments, and count those as autoskipped
-                final boolean showSkipToast = Settings.SB_TOAST_ON_SKIP.getBoolean();
+                final boolean showSkipToast = Settings.SB_TOAST_ON_SKIP.get();
                 for (final SponsorSegment otherSegment : Objects.requireNonNull(segments)) {
                     if (segmentToSkip.end < otherSegment.start) {
                         break; // no other segments can be contained
@@ -669,7 +675,7 @@ public class SegmentPlaybackController {
      */
     public static String appendTimeWithoutSegments(String totalTime) {
         try {
-            if (Settings.SB_ENABLED.getBoolean() && Settings.SB_VIDEO_LENGTH_WITHOUT_SEGMENTS.getBoolean()
+            if (Settings.SB_ENABLED.get() && Settings.SB_VIDEO_LENGTH_WITHOUT_SEGMENTS.get()
                     && !TextUtils.isEmpty(totalTime) && !TextUtils.isEmpty(timeWithoutSegments)) {
                 // Force LTR layout, to match the same LTR video time/length layout YouTube uses for all languages
                 return "\u202D" + totalTime + timeWithoutSegments; // u202D = left to right override
@@ -683,7 +689,7 @@ public class SegmentPlaybackController {
 
     private static void calculateTimeWithoutSegments() {
         final long currentVideoLength = VideoInformation.getVideoLength();
-        if (!Settings.SB_VIDEO_LENGTH_WITHOUT_SEGMENTS.getBoolean() || currentVideoLength <= 0
+        if (!Settings.SB_VIDEO_LENGTH_WITHOUT_SEGMENTS.get() || currentVideoLength <= 0
                 || segments == null || segments.length == 0) {
             timeWithoutSegments = null;
             return;

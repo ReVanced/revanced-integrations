@@ -1,24 +1,31 @@
 package app.revanced.integrations.youtube.patches.components;
 
 import android.os.Build;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+
+import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Spliterator;
+import java.util.function.Consumer;
+
 import app.revanced.integrations.shared.Logger;
 import app.revanced.integrations.shared.Utils;
-import app.revanced.integrations.shared.settings.Setting;
+import app.revanced.integrations.shared.settings.BooleanSetting;
+import app.revanced.integrations.shared.settings.StringSetting;
 import app.revanced.integrations.youtube.ByteTrieSearch;
 import app.revanced.integrations.youtube.StringTrieSearch;
 import app.revanced.integrations.youtube.TrieSearch;
 import app.revanced.integrations.youtube.settings.Settings;
 
-import java.nio.ByteBuffer;
-import java.util.*;
-import java.util.function.Consumer;
-
 abstract class FilterGroup<T> {
     final static class FilterGroupResult {
-        private Setting setting;
+        private BooleanSetting setting;
         private int matchedIndex;
         private int matchedLength;
         // In the future it might be useful to include which pattern matched,
@@ -28,11 +35,11 @@ abstract class FilterGroup<T> {
             this(null, -1, 0);
         }
 
-        FilterGroupResult(Setting setting, int matchedIndex, int matchedLength) {
+        FilterGroupResult(BooleanSetting setting, int matchedIndex, int matchedLength) {
             setValues(setting, matchedIndex, matchedLength);
         }
 
-        public void setValues(Setting setting, int matchedIndex, int matchedLength) {
+        public void setValues(BooleanSetting setting, int matchedIndex, int matchedLength) {
             this.setting = setting;
             this.matchedIndex = matchedIndex;
             this.matchedLength = matchedLength;
@@ -42,7 +49,7 @@ abstract class FilterGroup<T> {
          * A null value if the group has no setting,
          * or if no match is returned from {@link FilterGroupList#check(Object)}.
          */
-        public Setting getSetting() {
+        public BooleanSetting getSetting() {
             return setting;
         }
 
@@ -65,7 +72,7 @@ abstract class FilterGroup<T> {
         }
     }
 
-    protected final Setting setting;
+    protected final BooleanSetting setting;
     protected final T[] filters;
 
     /**
@@ -75,7 +82,7 @@ abstract class FilterGroup<T> {
      * @param filters The filters.
      */
     @SafeVarargs
-    public FilterGroup(final Setting setting, final T... filters) {
+    public FilterGroup(final BooleanSetting setting, final T... filters) {
         this.setting = setting;
         this.filters = filters;
         if (filters.length == 0) {
@@ -84,7 +91,7 @@ abstract class FilterGroup<T> {
     }
 
     public boolean isEnabled() {
-        return setting == null || setting.getBoolean();
+        return setting == null || setting.get();
     }
 
     /**
@@ -106,7 +113,7 @@ abstract class FilterGroup<T> {
 
 class StringFilterGroup extends FilterGroup<String> {
 
-    public StringFilterGroup(final Setting setting, final String... filters) {
+    public StringFilterGroup(final BooleanSetting setting, final String... filters) {
         super(setting, filters);
     }
 
@@ -132,8 +139,8 @@ class StringFilterGroup extends FilterGroup<String> {
 
 final class CustomFilterGroup extends StringFilterGroup {
 
-    private static String[] getFilterPatterns(Setting setting) {
-        String[] patterns = setting.getString().split("\\s+");
+    private static String[] getFilterPatterns(StringSetting setting) {
+        String[] patterns = setting.get().split("\\s+");
         for (String pattern : patterns) {
             if (!StringTrieSearch.isValidPattern(pattern)) {
                 Utils.showToastLong("Invalid custom filter, resetting to default");
@@ -144,7 +151,7 @@ final class CustomFilterGroup extends StringFilterGroup {
         return patterns;
     }
 
-    public CustomFilterGroup(Setting setting, Setting filter) {
+    public CustomFilterGroup(BooleanSetting setting, StringSetting filter) {
         super(setting, getFilterPatterns(filter));
     }
 }
@@ -195,7 +202,7 @@ class ByteArrayFilterGroup extends FilterGroup<byte[]> {
         return failure;
     }
 
-    public ByteArrayFilterGroup(Setting setting, byte[]... filters) {
+    public ByteArrayFilterGroup(BooleanSetting setting, byte[]... filters) {
         super(setting, filters);
     }
 
@@ -203,7 +210,7 @@ class ByteArrayFilterGroup extends FilterGroup<byte[]> {
      * Converts the Strings into byte arrays. Used to search for text in binary data.
      */
     @RequiresApi(api = Build.VERSION_CODES.N)
-    public ByteArrayFilterGroup(Setting setting, String... filters) {
+    public ByteArrayFilterGroup(BooleanSetting setting, String... filters) {
         super(setting, Arrays.stream(filters).map(String::getBytes).toArray(byte[][]::new));
     }
 
@@ -381,7 +388,7 @@ abstract class Filter {
      */
     boolean isFiltered(@Nullable String identifier, String path, byte[] protobufBufferArray,
                        StringFilterGroup matchedGroup, FilterContentType contentType, int contentIndex) {
-        if (app.revanced.integrations.shared.settings.Settings.DEBUG.getBoolean()) {
+        if (app.revanced.integrations.shared.settings.Settings.DEBUG.get()) {
             String filterSimpleName = getClass().getSimpleName();
             if (contentType == FilterContentType.IDENTIFIER) {
                 Logger.printDebug(() -> filterSimpleName + " Filtered identifier: " + identifier);
@@ -425,7 +432,7 @@ public final class LithoFilterPatch {
             builder.append(identifier);
             builder.append(" Path: ");
             builder.append(path);
-            if (Settings.DEBUG_PROTOBUFFER.getBoolean()) {
+            if (Settings.DEBUG_PROTOBUFFER.get()) {
                 builder.append(" BufferStrings: ");
                 findAsciiStrings(builder, protoBuffer);
             }

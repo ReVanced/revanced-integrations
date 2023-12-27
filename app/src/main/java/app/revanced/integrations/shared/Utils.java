@@ -14,15 +14,25 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.*;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.Toast;
+import android.widget.Toolbar;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import app.revanced.integrations.shared.settings.Setting;
 
 import java.text.Bidi;
 import java.util.Locale;
 import java.util.Objects;
-import java.util.concurrent.*;
+import java.util.concurrent.Callable;
+import java.util.concurrent.Future;
+import java.util.concurrent.SynchronousQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+
+import app.revanced.integrations.shared.settings.BooleanSetting;
 
 public class Utils {
 
@@ -65,8 +75,8 @@ public class Utils {
      * @param condition The setting to check for hiding the view.
      * @param view      The view to hide.
      */
-    public static void hideViewBy1dpUnderCondition(Setting condition, View view) {
-        if (!condition.getBoolean()) return;
+    public static void hideViewBy1dpUnderCondition(BooleanSetting condition, View view) {
+        if (!condition.get()) return;
 
         Logger.printDebug(() -> "Hiding view with setting: " + condition);
 
@@ -79,8 +89,8 @@ public class Utils {
      * @param condition The setting to check for hiding the view.
      * @param view      The view to hide.
      */
-    public static void hideViewUnderCondition(Setting condition, View view) {
-        if (!condition.getBoolean()) return;
+    public static void hideViewUnderCondition(BooleanSetting condition, View view) {
+        if (!condition.get()) return;
 
         Logger.printDebug(() -> "Hiding view with setting: " + condition);
 

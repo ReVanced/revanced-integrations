@@ -16,14 +16,14 @@ import app.revanced.integrations.youtube.settings.Settings;
  * Used by {@link SeekbarColorPatch} change the color of the seekbar.
  * and {@link HideSeekbarPatch} to hide the seekbar of the feed and watch history.
  */
+@SuppressWarnings("unused")
 public class ProgressBarDrawable extends Drawable {
-
 
     private final Paint paint = new Paint();
 
     @Override
     public void draw(@NonNull Canvas canvas) {
-        if (Settings.HIDE_SEEKBAR_THUMBNAIL.getBoolean()) {
+        if (Settings.HIDE_SEEKBAR_THUMBNAIL.get()) {
             return;
         }
         paint.setColor(SeekbarColorPatch.getSeekbarColor());

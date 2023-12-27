@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import app.revanced.integrations.shared.Logger;
 import app.revanced.integrations.shared.Utils;
+import app.revanced.integrations.shared.settings.BooleanSetting;
 import app.revanced.integrations.shared.settings.Setting;
 import app.revanced.integrations.tiktok.settings.SharedPrefCategory;
 import app.revanced.integrations.tiktok.settingsmenu.preference.DownloadPathPreference;
@@ -26,7 +27,7 @@ public class ReVancedPreferenceFragment extends PreferenceFragment {
 
     SharedPreferences.OnSharedPreferenceChangeListener listener = (sharedPreferences, str) -> {
         try {
-            Setting setting = Setting.getSettingFromPath(str);
+            Setting<?> setting = Setting.getSettingFromPath(str);
             if (setting == null) {
                 return;
             }
@@ -36,20 +37,20 @@ public class ReVancedPreferenceFragment extends PreferenceFragment {
             }
             if (pref instanceof SwitchPreference) {
                 SwitchPreference switchPref = (SwitchPreference) pref;
-                setting.setValue(switchPref.isChecked());
+                BooleanSetting.privateSetValue((BooleanSetting) setting, switchPref.isChecked());
             } else if (pref instanceof EditTextPreference) {
                 EditTextPreference editPreference = (EditTextPreference) pref;
-                setting.setValue(editPreference.getText());
+                Setting.privateSetValueFromString(setting, editPreference.getText());
             } else if (pref instanceof ListPreference) {
                 ListPreference listPref = (ListPreference) pref;
-                setting.setValue(listPref.getValue());
+                Setting.privateSetValueFromString(setting, listPref.getValue());
                 Setting.setListPreference((ListPreference) pref, setting);
             } else if (pref instanceof RangeValuePreference) {
                 RangeValuePreference rangeValuePref = (RangeValuePreference) pref;
-                setting.setValue(rangeValuePref.getValue());
+                Setting.privateSetValueFromString(setting, rangeValuePref.getValue());
             } else if (pref instanceof DownloadPathPreference) {
                 DownloadPathPreference downloadPathPref = (DownloadPathPreference) pref;
-                setting.setValue(downloadPathPref.getValue());
+                Setting.privateSetValueFromString(setting, downloadPathPref.getValue());
             } else {
                 Logger.printException(() -> "Setting cannot be handled: " + pref.getClass() + " " + pref);
                 return;

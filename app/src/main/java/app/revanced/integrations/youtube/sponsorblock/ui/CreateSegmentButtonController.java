@@ -88,7 +88,7 @@ public class CreateSegmentButtonController {
     }
 
     private static boolean shouldBeShown() {
-        return Settings.SB_ENABLED.getBoolean() && Settings.SB_CREATE_NEW_SEGMENT.getBoolean()
+        return Settings.SB_ENABLED.get() && Settings.SB_CREATE_NEW_SEGMENT.get()
                 && !VideoInformation.isAtEndOfVideo();
     }
 

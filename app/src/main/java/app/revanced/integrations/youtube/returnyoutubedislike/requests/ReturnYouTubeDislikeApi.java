@@ -206,7 +206,7 @@ public class ReturnYouTubeDislikeApi {
     }
 
     private static void handleConnectionError(@NonNull String toastMessage, @Nullable Exception ex) {
-        if (Settings.RYD_TOAST_ON_CONNECTION_ERROR.getBoolean()) {
+        if (Settings.RYD_TOAST_ON_CONNECTION_ERROR.get()) {
             Utils.showToastShort(toastMessage);
         }
         if (ex != null) {
@@ -379,14 +379,14 @@ public class ReturnYouTubeDislikeApi {
     private static String getUserId() {
         Utils.verifyOffMainThread();
 
-        String userId = Settings.RYD_USER_ID.getString();
+        String userId = Settings.RYD_USER_ID.get();
         if (!userId.isEmpty()) {
             return userId;
         }
 
         userId = registerAsNewUser();
         if (userId != null) {
-            Settings.RYD_USER_ID.saveValue(userId);
+            Settings.RYD_USER_ID.save(userId);
         }
         return userId;
     }

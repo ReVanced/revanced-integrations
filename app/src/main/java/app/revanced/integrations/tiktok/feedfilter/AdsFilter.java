@@ -6,7 +6,7 @@ import com.ss.android.ugc.aweme.feed.model.Aweme;
 public class AdsFilter implements IFilter {
     @Override
     public boolean getEnabled() {
-        return Settings.REMOVE_ADS.getBoolean();
+        return Settings.REMOVE_ADS.get();
     }
 
     @Override

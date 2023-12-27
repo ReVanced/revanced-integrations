@@ -1,25 +1,24 @@
 package app.revanced.integrations.tiktok.settings;
 
-import app.revanced.integrations.shared.settings.Setting;
-
-import static app.revanced.integrations.shared.settings.Setting.ReturnType.BOOLEAN;
-import static app.revanced.integrations.shared.settings.Setting.ReturnType.STRING;
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
 
+import app.revanced.integrations.shared.settings.BooleanSetting;
+import app.revanced.integrations.shared.settings.StringSetting;
+
 public class Settings {
-    public static final Setting DEBUG = new Setting("debug", BOOLEAN, FALSE); // Must be first value, otherwise logging during loading will not work.
-    public static final Setting REMOVE_ADS = new Setting("remove_ads", BOOLEAN, TRUE, true);
-    public static final Setting HIDE_LIVE = new Setting("hide_live", BOOLEAN, FALSE, true);
-    public static final Setting HIDE_STORY = new Setting("hide_story", BOOLEAN, FALSE, true);
-    public static final Setting HIDE_IMAGE = new Setting("hide_image", BOOLEAN, FALSE, true);
-    public static final Setting MIN_MAX_VIEWS = new Setting("min_max_views", STRING, "0-" + Long.MAX_VALUE, true);
-    public static final Setting MIN_MAX_LIKES = new Setting("min_max_likes", STRING, "0-" + Long.MAX_VALUE, true);
-    public static final Setting DOWNLOAD_PATH = new Setting("down_path", STRING, "DCIM/TikTok");
-    public static final Setting DOWNLOAD_WATERMARK = new Setting("down_watermark", BOOLEAN, TRUE);
-    public static final Setting CLEAR_DISPLAY = new Setting("clear_display", BOOLEAN, FALSE);
-    public static final Setting SIM_SPOOF = new Setting("simspoof", BOOLEAN, TRUE, true);
-    public static final Setting SIM_SPOOF_ISO = new Setting("simspoof_iso", STRING, "us");
-    public static final Setting SIMSPOOF_MCCMNC = new Setting("simspoof_mccmnc", STRING, "310160");
-    public static final Setting SIMSPOOF_OP_NAME = new Setting("simspoof_op_name", STRING, "T-Mobile");
+    public static final BooleanSetting DEBUG = new BooleanSetting("debug",FALSE); // Must be first value, otherwise logging during loading will not work.
+    public static final BooleanSetting REMOVE_ADS = new BooleanSetting("remove_ads",TRUE, true);
+    public static final BooleanSetting HIDE_LIVE = new BooleanSetting("hide_live",FALSE, true);
+    public static final BooleanSetting HIDE_STORY = new BooleanSetting("hide_story",FALSE, true);
+    public static final BooleanSetting HIDE_IMAGE = new BooleanSetting("hide_image",FALSE, true);
+    public static final StringSetting MIN_MAX_VIEWS = new StringSetting("min_max_views","0-" + Long.MAX_VALUE, true);
+    public static final StringSetting MIN_MAX_LIKES = new StringSetting("min_max_likes","0-" + Long.MAX_VALUE, true);
+    public static final StringSetting DOWNLOAD_PATH = new StringSetting("down_path","DCIM/TikTok");
+    public static final BooleanSetting DOWNLOAD_WATERMARK = new BooleanSetting("down_watermark",TRUE);
+    public static final BooleanSetting CLEAR_DISPLAY = new BooleanSetting("clear_display",FALSE);
+    public static final BooleanSetting SIM_SPOOF = new BooleanSetting("simspoof",TRUE, true);
+    public static final StringSetting SIM_SPOOF_ISO = new StringSetting("simspoof_iso","us");
+    public static final StringSetting SIMSPOOF_MCCMNC = new StringSetting("simspoof_mccmnc","310160");
+    public static final StringSetting SIMSPOOF_OP_NAME = new StringSetting("simspoof_op_name","T-Mobile");
 }

@@ -6,9 +6,10 @@ import app.revanced.integrations.youtube.settings.Settings;
 import app.revanced.integrations.shared.Logger;
 import app.revanced.integrations.shared.Utils;
 
+@SuppressWarnings("unused")
 public final class SeekbarColorPatch {
 
-    private static final boolean USE_SEEKBAR_CUSTOM_COLOR = Settings.SEEKBAR_CUSTOM_COLOR.getBoolean();
+    private static final boolean USE_SEEKBAR_CUSTOM_COLOR = Settings.SEEKBAR_CUSTOM_COLOR.get();
 
     /**
      * Default color of the seekbar.
@@ -44,7 +45,7 @@ public final class SeekbarColorPatch {
 
     private static void loadCustomSeekbarColor() {
         try {
-            seekbarColor = Color.parseColor(Settings.SEEKBAR_CUSTOM_COLOR_VALUE.getString());
+            seekbarColor = Color.parseColor(Settings.SEEKBAR_CUSTOM_COLOR_VALUE.get());
             Color.colorToHSV(seekbarColor, customSeekbarColorHSV);
         } catch (Exception ex) {
             Utils.showToastShort("Invalid seekbar color value. Using default value.");
@@ -68,7 +69,7 @@ public final class SeekbarColorPatch {
      */
     public static int getLithoColor(int colorValue) {
         if (colorValue == ORIGINAL_SEEKBAR_COLOR) {
-            if (Settings.HIDE_SEEKBAR_THUMBNAIL.getBoolean()) {
+            if (Settings.HIDE_SEEKBAR_THUMBNAIL.get()) {
                 return 0x00000000;
             }
             return getSeekbarColorValue(ORIGINAL_SEEKBAR_COLOR);

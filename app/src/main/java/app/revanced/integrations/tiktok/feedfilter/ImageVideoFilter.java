@@ -6,7 +6,7 @@ import com.ss.android.ugc.aweme.feed.model.Aweme;
 public class ImageVideoFilter implements IFilter {
     @Override
     public boolean getEnabled() {
-        return Settings.HIDE_IMAGE.getBoolean();
+        return Settings.HIDE_IMAGE.get();
     }
 
     @Override

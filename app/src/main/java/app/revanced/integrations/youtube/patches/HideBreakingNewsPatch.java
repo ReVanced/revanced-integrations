@@ -6,6 +6,7 @@ import app.revanced.integrations.youtube.patches.spoof.SpoofAppVersionPatch;
 import app.revanced.integrations.youtube.settings.Settings;
 import app.revanced.integrations.shared.Utils;
 
+@SuppressWarnings("unused")
 public class HideBreakingNewsPatch {
 
     /**
@@ -21,7 +22,7 @@ public class HideBreakingNewsPatch {
      * Injection point.
      */
     public static void hideBreakingNews(View view) {
-        if (!Settings.HIDE_BREAKING_NEWS.getBoolean()
+        if (!Settings.HIDE_BREAKING_NEWS.get()
                 || isSpoofingOldVersionWithHorizontalCardListWatchHistory) return;
         Utils.hideViewByLayoutParams(view);
     }

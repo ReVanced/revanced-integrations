@@ -13,6 +13,7 @@ import app.revanced.integrations.shared.Logger;
 import app.revanced.integrations.shared.Utils;
 import app.revanced.integrations.shared.StringRef;
 
+@SuppressWarnings("unused")
 public class ExternalDownloadButton extends BottomControlButton {
     @Nullable
     private static ExternalDownloadButton instance;
@@ -50,7 +51,7 @@ public class ExternalDownloadButton extends BottomControlButton {
 
         final var context = view.getContext();
         // Trim string to avoid any accidental whitespace.
-        var downloaderPackageName = Settings.EXTERNAL_DOWNLOADER_PACKAGE_NAME.getString().trim();
+        var downloaderPackageName = Settings.EXTERNAL_DOWNLOADER_PACKAGE_NAME.get().trim();
 
         boolean packageEnabled = false;
         try {

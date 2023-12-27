@@ -66,8 +66,8 @@ public class AlternativeThumbnailsStatusPreference extends Preference {
 
     private void updateUI() {
         Logger.printDebug(() -> "updateUI");
-        final boolean usingDeArrow = Settings.ALT_THUMBNAIL_DEARROW.getBoolean();
-        final boolean usingVideoStills = Settings.ALT_THUMBNAIL_STILLS.getBoolean();
+        final boolean usingDeArrow = Settings.ALT_THUMBNAIL_DEARROW.get();
+        final boolean usingVideoStills = Settings.ALT_THUMBNAIL_STILLS.get();
 
         final String summaryTextKey;
         if (usingDeArrow && usingVideoStills) {

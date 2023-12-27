@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+
 import app.revanced.integrations.youtube.settings.Settings;
 
 /** @noinspection unused*/
@@ -12,7 +13,7 @@ public final class DisableSuggestedVideoEndScreenPatch {
     private static View lastView;
 
     public static void closeEndScreen(final ImageView imageView) {
-        if (!Settings.DISABLE_SUGGESTED_VIDEO_END_SCREEN.getBoolean()) return;
+        if (!Settings.DISABLE_SUGGESTED_VIDEO_END_SCREEN.get()) return;
 
         // Get a parent view which can be listened to for layout changes.
         final var parent = imageView.getParent().getParent();

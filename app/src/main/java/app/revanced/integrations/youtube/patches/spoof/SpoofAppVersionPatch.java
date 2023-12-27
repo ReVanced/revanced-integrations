@@ -2,10 +2,11 @@ package app.revanced.integrations.youtube.patches.spoof;
 
 import app.revanced.integrations.youtube.settings.Settings;
 
+@SuppressWarnings("unused")
 public class SpoofAppVersionPatch {
 
-    private static final boolean SPOOF_APP_VERSION_ENABLED = Settings.SPOOF_APP_VERSION.getBoolean();
-    private static final String SPOOF_APP_VERSION_TARGET = Settings.SPOOF_APP_VERSION_TARGET.getString();
+    private static final boolean SPOOF_APP_VERSION_ENABLED = Settings.SPOOF_APP_VERSION.get();
+    private static final String SPOOF_APP_VERSION_TARGET = Settings.SPOOF_APP_VERSION_TARGET.get();
 
     /**
      * Injection point

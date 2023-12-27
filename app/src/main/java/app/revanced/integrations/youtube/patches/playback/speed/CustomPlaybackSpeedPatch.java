@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
+
 import app.revanced.integrations.youtube.patches.components.PlaybackSpeedMenuFilterPatch;
 import app.revanced.integrations.youtube.settings.Settings;
 import app.revanced.integrations.shared.Logger;
@@ -12,6 +13,7 @@ import app.revanced.integrations.shared.Utils;
 
 import java.util.Arrays;
 
+@SuppressWarnings("unused")
 public class CustomPlaybackSpeedPatch {
     /**
      * Maximum playback speed, exclusive value.  Custom speeds must be less than this value.
@@ -48,7 +50,7 @@ public class CustomPlaybackSpeedPatch {
 
     private static void loadCustomSpeeds() {
         try {
-            String[] speedStrings = Settings.CUSTOM_PLAYBACK_SPEEDS.getString().split("\\s+");
+            String[] speedStrings = Settings.CUSTOM_PLAYBACK_SPEEDS.get().split("\\s+");
             Arrays.sort(speedStrings);
             if (speedStrings.length == 0) {
                 throw new IllegalArgumentException();

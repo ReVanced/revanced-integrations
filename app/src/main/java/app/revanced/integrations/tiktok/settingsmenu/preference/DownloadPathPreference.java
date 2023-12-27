@@ -14,7 +14,8 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import app.revanced.integrations.shared.settings.Setting;
+
+import app.revanced.integrations.shared.settings.StringSetting;
 
 @SuppressWarnings("deprecation")
 public class DownloadPathPreference extends DialogPreference {
@@ -26,13 +27,13 @@ public class DownloadPathPreference extends DialogPreference {
     private int mediaPathIndex;
     private String childDownloadPath;
 
-    public DownloadPathPreference(Context context, String title, Setting setting) {
+    public DownloadPathPreference(Context context, String title, StringSetting setting) {
         super(context);
         this.context = context;
         this.setTitle(title);
-        this.setSummary(Environment.getExternalStorageDirectory().getPath() + "/" + setting.getString());
+        this.setSummary(Environment.getExternalStorageDirectory().getPath() + "/" + setting.get());
         this.setKey(setting.key);
-        this.setValue(setting.getString());
+        this.setValue(setting.get());
     }
 
     public String getValue() {

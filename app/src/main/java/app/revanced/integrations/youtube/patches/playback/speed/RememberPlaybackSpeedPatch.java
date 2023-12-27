@@ -5,6 +5,7 @@ import app.revanced.integrations.youtube.settings.Settings;
 import app.revanced.integrations.shared.Logger;
 import app.revanced.integrations.shared.Utils;
 
+@SuppressWarnings("unused")
 public final class RememberPlaybackSpeedPatch {
 
     /**
@@ -12,7 +13,7 @@ public final class RememberPlaybackSpeedPatch {
      */
     public static void newVideoStarted(Object ignoredPlayerController) {
         Logger.printDebug(() -> "newVideoStarted");
-        VideoInformation.overridePlaybackSpeed(Settings.PLAYBACK_SPEED_DEFAULT.getFloat());
+        VideoInformation.overridePlaybackSpeed(Settings.PLAYBACK_SPEED_DEFAULT.get());
     }
 
     /**
@@ -22,8 +23,8 @@ public final class RememberPlaybackSpeedPatch {
      * @param playbackSpeed The playback speed the user selected
      */
     public static void userSelectedPlaybackSpeed(float playbackSpeed) {
-        if (Settings.REMEMBER_PLAYBACK_SPEED_LAST_SELECTED.getBoolean()) {
-            Settings.PLAYBACK_SPEED_DEFAULT.saveValue(playbackSpeed);
+        if (Settings.REMEMBER_PLAYBACK_SPEED_LAST_SELECTED.get()) {
+            Settings.PLAYBACK_SPEED_DEFAULT.save(playbackSpeed);
             Utils.showToastLong("Changed default speed to: " + playbackSpeed + "x");
         }
     }

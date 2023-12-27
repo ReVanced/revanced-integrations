@@ -9,6 +9,6 @@ public class DisableResumingStartupShortsPlayerPatch {
      * Injection point.
      */
     public static boolean disableResumingStartupShortsPlayer() {
-        return Settings.DISABLE_RESUMING_SHORTS_PLAYER.getBoolean();
+        return Settings.DISABLE_RESUMING_SHORTS_PLAYER.get();
     }
 }

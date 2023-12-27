@@ -4,6 +4,7 @@ import app.revanced.integrations.youtube.settings.Settings;
 import app.revanced.integrations.shared.Utils;
 import app.revanced.integrations.youtube.ThemeHelper;
 
+@SuppressWarnings("unused")
 public class ThemePatch {
     // color constants used in relation with litho components
     private static final int[] WHITE_VALUES = {
@@ -42,7 +43,7 @@ public class ThemePatch {
     }
 
     public static boolean gradientLoadingScreenEnabled() {
-        return Settings.GRADIENT_LOADING_SCREEN.getBoolean();
+        return Settings.GRADIENT_LOADING_SCREEN.get();
     }
 
     private static int getBlackColor() {

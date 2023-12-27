@@ -7,21 +7,18 @@ import app.revanced.integrations.youtube.swipecontrols.SwipeControlsHostActivity
 
 /**
  * Patch class for 'hdr-auto-brightness' patch
- *
- * @usedBy app/revanced/patches/youtube/misc/hdrbrightness/patch/HDRBrightnessPatch
- * @smali app/revanced/integrations/patches/HDRAutoBrightnessPatch
  */
+@SuppressWarnings("unused")
 public class HDRAutoBrightnessPatch {
     /**
      * get brightness override for HDR brightness
      *
      * @param original brightness youtube would normally set
      * @return brightness to set on HRD video
-     * @smali getHDRBrightness(F)F
      */
     public static float getHDRBrightness(float original) {
         // do nothing if disabled
-        if (!Settings.HDR_AUTO_BRIGHTNESS.getBoolean()) {
+        if (!Settings.HDR_AUTO_BRIGHTNESS.get()) {
             return original;
         }
 

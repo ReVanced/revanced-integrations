@@ -90,7 +90,7 @@ public class VotingButtonController {
     }
 
     private static boolean shouldBeShown() {
-        return Settings.SB_ENABLED.getBoolean() && Settings.SB_VOTING_BUTTON.getBoolean()
+        return Settings.SB_ENABLED.get() && Settings.SB_VOTING_BUTTON.get()
                 && SegmentPlaybackController.videoHasSegments() && !VideoInformation.isAtEndOfVideo();
     }
 
