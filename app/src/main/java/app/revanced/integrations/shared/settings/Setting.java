@@ -20,7 +20,15 @@ import static app.revanced.integrations.youtube.utils.StringRef.str;
 
 /** @noinspection unused*/
 public class Setting {
+    /**
+     * All settings that were instantiated.
+     * When a new setting is created, it is automatically added to this list.
+     */
     private static final List<Setting> SETTINGS = new LinkedList<>();
+
+    /**
+     * Map of setting path to setting object.
+     */
     private static final Map<String, Setting> PATH_TO_SETTINGS = new HashMap<>();
 
     /**
@@ -136,6 +144,16 @@ public class Setting {
         this(key, returnType, defaultValue, prefName, false, null, parents);
     }
 
+    /**
+     * A setting backed by a shared preference.
+     * @param key The key used to store the value in the shared preferences.
+     * @param returnType The type of the setting.
+     * @param defaultValue The default value of the setting.
+     * @param prefName The category of the shared preferences to store the value in.
+     * @param rebootApp If the app should be rebooted, if this setting is changed.
+     * @param userDialogMessage Confirmation message to display, if the user tries to change the setting from the default value.
+     * @param parents Set of boolean parent settings that must be enabled, for this setting to be available to configure.
+     */
     public Setting(@NonNull String key,
                    @NonNull ReturnType returnType,
                    @NonNull Object defaultValue,
@@ -144,10 +162,10 @@ public class Setting {
                    @Nullable String userDialogMessage,
                    @Nullable Setting[] parents
     ) {
-        this.key = key;
-        this.returnType = returnType;
-        this.value = this.defaultValue = defaultValue;
-        this.sharedPrefCategory = prefName;
+        this.key = Objects.requireNonNull(key);
+        this.returnType = Objects.requireNonNull(returnType);
+        this.value = this.defaultValue = Objects.requireNonNull(defaultValue);
+        this.sharedPrefCategory = Objects.requireNonNull(prefName);
         this.rebootApp = rebootApp;
 
         if (userDialogMessage == null) {
