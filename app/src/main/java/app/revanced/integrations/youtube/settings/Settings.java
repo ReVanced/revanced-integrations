@@ -212,6 +212,8 @@ public class Settings {
     public static final Setting ANNOUNCEMENT_CONSUMER = new Setting("revanced_announcement_consumer", STRING, "");
     public static final Setting ANNOUNCEMENT_LAST_HASH = new Setting("revanced_announcement_last_hash", STRING, "");
     public static final Setting REMOVE_TRACKING_QUERY_PARAMETER = new Setting("revanced_remove_tracking_query_parameter", BOOLEAN, TRUE);
+    public static final Setting REMOVE_VIEWER_DISCRETION_DIALOG= new Setting("revanced_remove_viewer_discretion_dialog", BOOLEAN, FALSE,
+            "revanced_remove_viewer_discretion_dialog_user_dialog_message");
 
     // Swipe controls
     public static final Setting SWIPE_BRIGHTNESS = new Setting("revanced_swipe_brightness", BOOLEAN, TRUE);
