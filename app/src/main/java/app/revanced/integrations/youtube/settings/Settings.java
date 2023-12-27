@@ -27,9 +27,6 @@ public class Settings {
 
     // Video
     public static final BooleanSetting HDR_AUTO_BRIGHTNESS = new BooleanSetting("revanced_hdr_auto_brightness",TRUE);
-    /** @noinspection DeprecatedIsStillUsed*/
-    @Deprecated
-    public static final BooleanSetting SHOW_OLD_VIDEO_QUALITY_MENU = new BooleanSetting("revanced_show_old_video_quality_menu",TRUE);
     public static final BooleanSetting RESTORE_OLD_VIDEO_QUALITY_MENU = new BooleanSetting("revanced_restore_old_video_quality_menu",TRUE);
     public static final BooleanSetting REMEMBER_VIDEO_QUALITY_LAST_SELECTED = new BooleanSetting("revanced_remember_video_quality_last_selected",TRUE);
     public static final IntegerSetting VIDEO_QUALITY_DEFAULT_WIFI = new IntegerSetting("revanced_video_quality_default_wifi",-2);
@@ -114,9 +111,6 @@ public class Settings {
     public static final BooleanSetting HIDE_SUBSCRIPTIONS_BUTTON = new BooleanSetting("revanced_hide_subscriptions_button",FALSE, true);
     public static final BooleanSetting HIDE_TIMED_REACTIONS = new BooleanSetting("revanced_hide_timed_reactions",TRUE);
     public static final BooleanSetting HIDE_TIMESTAMP = new BooleanSetting("revanced_hide_timestamp",FALSE);
-    /** @noinspection DeprecatedIsStillUsed*/
-    @Deprecated
-    public static final BooleanSetting HIDE_VIDEO_WATERMARK = new BooleanSetting("revanced_hide_video_watermark",TRUE);
     public static final BooleanSetting HIDE_VIDEO_CHANNEL_WATERMARK = new BooleanSetting("revanced_hide_channel_watermark",TRUE);
     public static final BooleanSetting HIDE_FOR_YOU_SHELF = new BooleanSetting("revanced_hide_for_you_shelf",TRUE);
     public static final BooleanSetting HIDE_VIDEO_QUALITY_MENU_FOOTER = new BooleanSetting("revanced_hide_video_quality_menu_footer",TRUE);
@@ -153,9 +147,7 @@ public class Settings {
     public static final BooleanSetting HIDE_SHORTS_CHANNEL_BAR = new BooleanSetting("revanced_hide_shorts_channel_bar",FALSE);
     public static final BooleanSetting HIDE_SHORTS_NAVIGATION_BAR = new BooleanSetting("revanced_hide_shorts_navigation_bar",TRUE, true);
 
-    /** @noinspection DeprecatedIsStillUsed*/ // Seekbar
-    @Deprecated
-    public static final BooleanSetting ENABLE_OLD_SEEKBAR_THUMBNAILS = new BooleanSetting("revanced_enable_old_seekbar_thumbnails",TRUE);
+    // Seekbar
     public static final BooleanSetting RESTORE_OLD_SEEKBAR_THUMBNAILS = new BooleanSetting("revanced_restore_old_seekbar_thumbnails",TRUE);
     public static final BooleanSetting HIDE_SEEKBAR = new BooleanSetting("revanced_hide_seekbar",FALSE);
     public static final BooleanSetting HIDE_SEEKBAR_THUMBNAIL = new BooleanSetting("revanced_hide_seekbar_thumbnail",FALSE);
@@ -193,9 +185,6 @@ public class Settings {
     public static final BooleanSetting AUTO_REPEAT = new BooleanSetting("revanced_auto_repeat",FALSE);
     public static final BooleanSetting SEEKBAR_TAPPING = new BooleanSetting("revanced_seekbar_tapping",TRUE);
     public static final BooleanSetting SLIDE_TO_SEEK = new BooleanSetting("revanced_slide_to_seek",FALSE);
-    /** @noinspection DeprecatedIsStillUsed*/
-    @Deprecated
-    public static final BooleanSetting DISABLE_FINE_SCRUBBING_GESTURE = new BooleanSetting("revanced_disable_fine_scrubbing_gesture",TRUE);
     public static final BooleanSetting DISABLE_PRECISE_SEEKING_GESTURE = new BooleanSetting("revanced_disable_precise_seeking_gesture",TRUE);
     public static final BooleanSetting SPOOF_SIGNATURE = new BooleanSetting("revanced_spoof_signature_verification_enabled",TRUE, true,
             "revanced_spoof_signature_verification_enabled_user_dialog_message");
@@ -271,11 +260,6 @@ public class Settings {
 
     static {
         // region Migration
-
-        migrateOldSettingToNew(HIDE_VIDEO_WATERMARK, HIDE_VIDEO_CHANNEL_WATERMARK);
-        migrateOldSettingToNew(DISABLE_FINE_SCRUBBING_GESTURE, DISABLE_PRECISE_SEEKING_GESTURE);
-        migrateOldSettingToNew(SHOW_OLD_VIDEO_QUALITY_MENU, RESTORE_OLD_VIDEO_QUALITY_MENU);
-        migrateOldSettingToNew(ENABLE_OLD_SEEKBAR_THUMBNAILS, RESTORE_OLD_SEEKBAR_THUMBNAILS);
 
         // Do _not_ delete this SB private user id migration property until sometime in 2024.
         // This is the only setting that cannot be reconfigured if lost,
