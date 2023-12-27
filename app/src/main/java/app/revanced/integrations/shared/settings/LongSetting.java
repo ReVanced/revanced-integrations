@@ -61,6 +61,11 @@ public class LongSetting extends Setting<Long> {
     }
 
     @Override
+    protected Long readFromJSON(JSONObject json, String importExportKey) throws JSONException {
+        return json.getLong(importExportKey);
+    }
+
+    @Override
     protected void setValueFromString(@NonNull String newValue) {
         value = Long.valueOf(Objects.requireNonNull(newValue));
     }
@@ -76,10 +81,5 @@ public class LongSetting extends Setting<Long> {
     @Override
     public Long get() {
         return value;
-    }
-
-    @Override
-    protected Long getJsonValue(JSONObject json) throws JSONException {
-        return json.getLong(key);
     }
 }

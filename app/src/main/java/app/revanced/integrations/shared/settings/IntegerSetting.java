@@ -61,6 +61,11 @@ public class IntegerSetting extends Setting<Integer> {
     }
 
     @Override
+    protected Integer readFromJSON(JSONObject json, String importExportKey) throws JSONException {
+        return json.getInt(importExportKey);
+    }
+
+    @Override
     protected void setValueFromString(@NonNull String newValue) {
         value = Integer.valueOf(Objects.requireNonNull(newValue));
     }
@@ -76,10 +81,5 @@ public class IntegerSetting extends Setting<Integer> {
     @Override
     public Integer get() {
         return value;
-    }
-
-    @Override
-    protected Integer getJsonValue(JSONObject json) throws JSONException {
-        return json.getInt(key);
     }
 }

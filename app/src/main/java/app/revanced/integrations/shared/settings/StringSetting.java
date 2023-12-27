@@ -61,6 +61,11 @@ public class StringSetting extends Setting<String> {
     }
 
     @Override
+    protected String readFromJSON(JSONObject json, String importExportKey) throws JSONException {
+        return json.getString(importExportKey);
+    }
+
+    @Override
     protected void setValueFromString(@NonNull String newValue) {
         value = Objects.requireNonNull(newValue);
     }
@@ -77,10 +82,4 @@ public class StringSetting extends Setting<String> {
     public String get() {
         return value;
     }
-
-    @Override
-    protected String getJsonValue(JSONObject json) throws JSONException {
-        return json.getString(key);
-    }
-
 }

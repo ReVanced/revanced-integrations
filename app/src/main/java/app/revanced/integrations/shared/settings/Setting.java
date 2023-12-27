@@ -171,8 +171,6 @@ public abstract class Setting<T> {
         PATH_TO_SETTINGS.put(key, this);
     }
 
-    protected abstract void load();
-
     /**
      * Migrate a setting value if the path is renamed but otherwise the old and new settings are identical.
      */
@@ -190,23 +188,29 @@ public abstract class Setting<T> {
      * This method is only to be used by the Settings preference code.
      *
      * This intentionally is a static method to deter
-     * accidental usage when {@link #save(Object)} was intnded.
+     * accidental usage when {@link #save(Object)} was intended.
      */
     public static void privateSetValueFromString(@NonNull Setting setting, @NonNull String newValue) {
         setting.setValueFromString(newValue);
     }
 
+    /**
+     * Sets the value of {@link #value}, but do not save to {@link #sharedPrefCategory}.
+     */
     protected abstract void setValueFromString(@NonNull String newValue);
 
     /**
-     * Sets the value, and persistently saves it.
+     * Load and set the value of {@link #value}.
+     */
+    protected abstract void load();
+
+    /**
+     * Persistently saves the value.
      */
     public abstract void save(@NonNull T newValue);
 
     @NonNull
     public abstract T get();
-
-    protected abstract T getJsonValue(JSONObject json) throws JSONException;
 
     /**
      * Identical to calling {@link #save(Object)} using {@link #defaultValue}.
@@ -304,11 +308,23 @@ public abstract class Setting<T> {
         return key;
     }
 
-    private static Setting[] sortSettingsByValueForExport() {
-        Setting[] sorted = SETTINGS.toArray(new Setting[0]);
+    /**
+     * @return the value stored using the import/export key.  Do not set any values in this method.
+     */
+    protected abstract T readFromJSON(JSONObject json, String importExportKey) throws JSONException;
+
+    /**
+     * Saves this instance to JSON.
+     */
+    protected void writeToJSON(JSONObject json, String importExportKey) throws JSONException {
+        json.put(importExportKey, value);
+    }
+
+    private static Setting<?>[] sortSettingsByValueForExport() {
+        Setting<?>[] sorted = SETTINGS.toArray(new Setting<?>[0]);
 
         // TODO: Figure out an object oriented way to do this.
-        Arrays.sort(sorted, (Setting o1, Setting o2) -> {
+        Arrays.sort(sorted, (Setting<?> o1, Setting<?> o2) -> {
             // Organize SponsorBlock settings last.
             // final boolean o1IsSb = o1.sharedPrefCategory == SPONSOR_BLOCK;
             // final boolean o2IsSb = o2.sharedPrefCategory == SPONSOR_BLOCK;
@@ -325,18 +341,16 @@ public abstract class Setting<T> {
     public static String exportToJson(@Nullable Context alertDialogContext) {
         try {
             JSONObject json = new JSONObject();
-            for (Setting setting : sortSettingsByValueForExport()) {
+            for (Setting<?> setting : sortSettingsByValueForExport()) {
                 String importExportKey = setting.getImportExportKey();
-
                 if (json.has(importExportKey)) {
                     throw new IllegalArgumentException("duplicate key found: " + importExportKey);
                 }
 
-                final boolean exportDefaultValues = false; // Enable to see what all settings looks like in the UI.
-
                 //noinspection ConstantValue
+                final boolean exportDefaultValues = false; // Enable to see what all settings looks like in the UI.
                 if (setting.includeWithImportExport && (!setting.isSetToDefault() | exportDefaultValues)) {
-                    json.put(importExportKey, setting.get());
+                    setting.writeToJSON(json, importExportKey);
                 }
             }
             SponsorBlockSettings.exportCategoriesToFlatJson(alertDialogContext, json);
@@ -371,7 +385,7 @@ public abstract class Setting<T> {
             for (Setting setting : SETTINGS) {
                 String key = setting.getImportExportKey();
                 if (json.has(key)) {
-                    Object value = setting.getJsonValue(json);
+                    Object value = setting.readFromJSON(json, key);
                     if (!setting.get().equals(value)) {
                         rebootSettingChanged |= setting.rebootApp;
                         setting.save(value);

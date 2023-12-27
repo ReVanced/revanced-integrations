@@ -61,6 +61,11 @@ public class FloatSetting extends Setting<Float> {
     }
 
     @Override
+    protected Float readFromJSON(JSONObject json, String importExportKey) throws JSONException {
+        return (float) json.getDouble(importExportKey);
+    }
+
+    @Override
     protected void setValueFromString(@NonNull String newValue) {
         value = Float.valueOf(Objects.requireNonNull(newValue));
     }
@@ -76,10 +81,5 @@ public class FloatSetting extends Setting<Float> {
     @Override
     public Float get() {
         return value;
-    }
-
-    @Override
-    protected Float getJsonValue(JSONObject json) throws JSONException {
-        return (float) json.getDouble(key);
     }
 }

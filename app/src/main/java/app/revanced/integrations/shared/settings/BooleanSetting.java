@@ -71,6 +71,11 @@ public class BooleanSetting extends Setting<Boolean> {
     }
 
     @Override
+    protected Boolean readFromJSON(JSONObject json, String importExportKey) throws JSONException {
+        return json.getBoolean(importExportKey);
+    }
+
+    @Override
     protected void setValueFromString(@NonNull String newValue) {
         value = Boolean.valueOf(Objects.requireNonNull(newValue));
     }
@@ -86,10 +91,5 @@ public class BooleanSetting extends Setting<Boolean> {
     @Override
     public Boolean get() {
         return value;
-    }
-
-    @Override
-    protected Boolean getJsonValue(JSONObject json) throws JSONException {
-        return json.getBoolean(key);
     }
 }
