@@ -1,3 +1,25 @@
+# [1.1.0-dev.6](https://github.com/ReVanced/revanced-integrations/compare/v1.1.0-dev.5...v1.1.0-dev.6) (2023-12-26)
+
+
+### Bug Fixes
+
+* **YouTube - VideoInformation:** Ignore video seek attempts during the last 250ms of video playback ([6263edc](https://github.com/ReVanced/revanced-integrations/commit/6263edce11077f9e9c0629d9260e2f2eaef1c0e8))
+
+# [1.1.0-dev.5](https://github.com/ReVanced/revanced-integrations/compare/v1.1.0-dev.4...v1.1.0-dev.5) (2023-12-25)
+
+
+### Bug Fixes
+
+* **YouTube - Hide ads:** Hide new type of ad ([#545](https://github.com/ReVanced/revanced-integrations/issues/545)) ([e28b8cc](https://github.com/ReVanced/revanced-integrations/commit/e28b8cc59a445ba8f184ba6f5b9e076b7731129a))
+* **YouTube - Hide ads:** Use correct filter ([4397eed](https://github.com/ReVanced/revanced-integrations/commit/4397eedeeb21edda235cd27cd66088e94bde49e4))
+
+# [1.1.0-dev.4](https://github.com/ReVanced/revanced-integrations/compare/v1.1.0-dev.3...v1.1.0-dev.4) (2023-12-25)
+
+
+### Bug Fixes
+
+* **YouTube - SponsorBlock:** Do not auto skip end segments more than once if using a slow playback speed ([88b3ca4](https://github.com/ReVanced/revanced-integrations/commit/88b3ca4992e8278e1d43dbe5cc7607d4890c0eda))
+
 # [1.1.0-dev.3](https://github.com/ReVanced/revanced-integrations/compare/v1.1.0-dev.2...v1.1.0-dev.3) (2023-12-24)
 
 

@@ -3,8 +3,11 @@ package app.revanced.integrations.youtube.patches.components;
 import android.app.Instrumentation;
 import android.view.KeyEvent;
 import android.view.View;
+
 import androidx.annotation.Nullable;
+
 import app.revanced.integrations.youtube.settings.Settings;
+import app.revanced.integrations.youtube.utils.LogHelper;
 import app.revanced.integrations.youtube.utils.ReVancedUtils;
 import app.revanced.integrations.youtube.utils.StringTrieSearch;
 
@@ -42,7 +45,7 @@ public final class AdsFilter extends Filter {
 
         fullscreenAd = new StringFilterGroup(
                 Settings.HIDE_FULLSCREEN_ADS,
-                "fullscreen_ad"
+                "_interstitial"
         );
 
         final var buttonedAd = new StringFilterGroup(
@@ -52,7 +55,8 @@ public final class AdsFilter extends Filter {
                 "_ad_with",
                 "text_image_button_group_layout",
                 "video_display_button_group_layout",
-                "landscape_image_wide_button_layout"
+                "landscape_image_wide_button_layout",
+                "video_display_carousel_button_group_layout"
         );
 
         final var generalAds = new StringFilterGroup(
@@ -159,6 +163,8 @@ public final class AdsFilter extends Filter {
         // Prevent spamming the back button.
         if (currentTime - lastTimeClosedFullscreenAd < 10000) return;
         lastTimeClosedFullscreenAd = currentTime;
+
+        LogHelper.printDebug(() -> "Closing fullscreen ad");
 
         ReVancedUtils.runOnMainThreadDelayed(() -> instrumentation.sendKeyDownUpSync(KeyEvent.KEYCODE_BACK), 1000);
     }
