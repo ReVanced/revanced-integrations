@@ -4,24 +4,22 @@ import static app.revanced.integrations.shared.StringRef.str;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.util.Patterns;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.UUID;
 
-import app.revanced.integrations.youtube.settings.Settings;
-import app.revanced.integrations.youtube.settings.SharedPrefCategory;
-import app.revanced.integrations.youtube.sponsorblock.objects.CategoryBehaviour;
-import app.revanced.integrations.youtube.sponsorblock.objects.SegmentCategory;
 import app.revanced.integrations.shared.Logger;
 import app.revanced.integrations.shared.Utils;
+import app.revanced.integrations.shared.settings.Setting;
+import app.revanced.integrations.youtube.settings.Settings;
+import app.revanced.integrations.youtube.sponsorblock.objects.CategoryBehaviour;
+import app.revanced.integrations.youtube.sponsorblock.objects.SegmentCategory;
 
 public class SponsorBlockSettings {
     /**
@@ -29,7 +27,7 @@ public class SponsorBlockSettings {
      */
     private static final int SB_PRIVATE_USER_ID_MINIMUM_LENGTH = 30;
 
-    public static void importSettings(@NonNull String json) {
+    public static void importDesktopSettings(@NonNull String json) {
         Utils.verifyOnMainThread();
         try {
             JSONObject settingsJson = new JSONObject(json);
@@ -38,9 +36,9 @@ public class SponsorBlockSettings {
 
             for (SegmentCategory category : SegmentCategory.categoriesWithoutUnsubmitted()) {
                 // clear existing behavior, as browser plugin exports no behavior for ignored categories
-                category.behaviour = CategoryBehaviour.IGNORE;
-                if (barTypesObject.has(category.key)) {
-                    JSONObject categoryObject = barTypesObject.getJSONObject(category.key);
+                category.setBehaviour(CategoryBehaviour.IGNORE);
+                if (barTypesObject.has(category.keyValue)) {
+                    JSONObject categoryObject = barTypesObject.getJSONObject(category.keyValue);
                     category.setColor(categoryObject.getString("color"));
                 }
             }
@@ -54,24 +52,18 @@ public class SponsorBlockSettings {
                     continue; // unsupported category, ignore
                 }
 
-                final int desktopKey = categorySelectionObject.getInt("option");
-                CategoryBehaviour behaviour = CategoryBehaviour.byDesktopKey(desktopKey);
+                final int desktopValue = categorySelectionObject.getInt("option");
+                CategoryBehaviour behaviour = CategoryBehaviour.byDesktopKeyValue(desktopValue);
                 if (behaviour == null) {
-                    Utils.showToastLong(categoryKey + " unknown behavior key: " + desktopKey);
+                    Utils.showToastLong(categoryKey + " unknown desktop behavior value: " + desktopValue);
                 } else if (category == SegmentCategory.HIGHLIGHT && behaviour == CategoryBehaviour.SKIP_AUTOMATICALLY_ONCE) {
-                    Utils.showToastLong("Skip-once behavior not allowed for " + category.key);
-                    category.behaviour = CategoryBehaviour.SKIP_AUTOMATICALLY; // use closest match
+                    Utils.showToastLong("Skip-once behavior not allowed for " + category.keyValue);
+                    category.setBehaviour(CategoryBehaviour.SKIP_AUTOMATICALLY); // use closest match
                 } else {
-                    category.behaviour = behaviour;
+                    category.setBehaviour(behaviour);
                 }
             }
             SegmentCategory.updateEnabledCategories();
-
-            SharedPreferences.Editor editor = SharedPrefCategory.SPONSOR_BLOCK.preferences.edit();
-            for (SegmentCategory category : SegmentCategory.categoriesWithoutUnsubmitted()) {
-                category.save(editor);
-            }
-            editor.apply();
 
             if (settingsJson.has("userID")) {
                 // User id does not exist if user never voted or created any segments.
@@ -120,7 +112,7 @@ public class SponsorBlockSettings {
     }
 
     @NonNull
-    public static String exportSettings() {
+    public static String exportDesktopSettings() {
         Utils.verifyOnMainThread();
         try {
             Logger.printDebug(() -> "Creating SponsorBlock export settings string");
@@ -132,14 +124,14 @@ public class SponsorBlockSettings {
             SegmentCategory[] categories = SegmentCategory.categoriesWithoutUnsubmitted();
             for (SegmentCategory category : categories) {
                 JSONObject categoryObject = new JSONObject();
-                String categoryKey = category.key;
+                String categoryKey = category.keyValue;
                 categoryObject.put("color", category.colorString());
                 barTypesObject.put(categoryKey, categoryObject);
 
                 if (category.behaviour != CategoryBehaviour.IGNORE) {
                     JSONObject behaviorObject = new JSONObject();
                     behaviorObject.put("name", categoryKey);
-                    behaviorObject.put("option", category.behaviour.desktopKey);
+                    behaviorObject.put("option", category.behaviour.desktopKeyValue);
                     categorySelectionsArray.put(behaviorObject);
                 }
             }
@@ -169,8 +161,7 @@ public class SponsorBlockSettings {
     /**
      * Export the categories using flatten json (no embedded dictionaries or arrays).
      */
-    public static void exportCategoriesToFlatJson(@Nullable Context dialogContext,
-                                                  @NonNull JSONObject json) throws JSONException {
+    public static void showExportWarningIfNeeded(@Nullable Context dialogContext) {
         Utils.verifyOnMainThread();
         initialize();
 
@@ -185,31 +176,6 @@ public class SponsorBlockSettings {
                     .setCancelable(false)
                     .show();
         }
-
-        for (SegmentCategory category : SegmentCategory.categoriesWithoutUnsubmitted()) {
-            category.exportToFlatJSON(json);
-        }
-    }
-
-    /**
-     * Import the categories using flatten json (no embedded dictionaries or arrays).
-     *
-     * @return the number of settings imported
-     */
-    public static int importCategoriesFromFlatJson(JSONObject json) throws JSONException {
-        Utils.verifyOnMainThread();
-        initialize();
-
-        int numberOfImportedSettings = 0;
-        SharedPreferences.Editor editor = SharedPrefCategory.SPONSOR_BLOCK.preferences.edit();
-        for (SegmentCategory category : SegmentCategory.categoriesWithoutUnsubmitted()) {
-            numberOfImportedSettings += category.importFromFlatJSON(json, editor);
-        }
-        editor.apply();
-
-        SegmentCategory.updateEnabledCategories();
-
-        return numberOfImportedSettings;
     }
 
     public static boolean isValidSBUserId(@NonNull String userId) {
@@ -266,6 +232,13 @@ public class SponsorBlockSettings {
         }
         initialized = true;
 
-        SegmentCategory.loadFromPreferences();
+        SegmentCategory.updateEnabledCategories();
+    }
+
+    /**
+     * Updates internal data based on {@link Setting} values.
+     */
+    public static void updateFromImportedSettings() {
+        SegmentCategory.loadAllCategoriesFromSettings();
     }
 }

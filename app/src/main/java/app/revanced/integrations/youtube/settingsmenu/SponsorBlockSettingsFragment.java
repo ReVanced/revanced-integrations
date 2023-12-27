@@ -389,11 +389,11 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment {
         }
         importExport.getEditText().setTextSize(TypedValue.COMPLEX_UNIT_PT, 8);
         importExport.setOnPreferenceClickListener(preference1 -> {
-            importExport.getEditText().setText(SponsorBlockSettings.exportSettings());
+            importExport.getEditText().setText(SponsorBlockSettings.exportDesktopSettings());
             return true;
         });
         importExport.setOnPreferenceChangeListener((preference1, newValue) -> {
-            SponsorBlockSettings.importSettings((String) newValue);
+            SponsorBlockSettings.importDesktopSettings((String) newValue);
             updateSegmentCategories();
             fetchAndDisplayStats();
             updateUI();

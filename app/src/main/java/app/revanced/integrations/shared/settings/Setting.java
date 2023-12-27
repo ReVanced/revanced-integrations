@@ -176,8 +176,7 @@ public abstract class Setting<T> {
      */
     public static void migrateOldSettingToNew(Setting oldSetting, Setting newSetting) {
         if (!oldSetting.isSetToDefault()) {
-            Logger.printInfo(() -> "Migrating old setting of '" + oldSetting.value
-                    + "' from: " + oldSetting + " into replacement setting: " + newSetting);
+            Logger.printInfo(() -> "Migrating old setting value: " + oldSetting + " into replacement setting: " + newSetting);
             newSetting.save(oldSetting.value);
             oldSetting.resetToDefault();
         }
@@ -323,17 +322,7 @@ public abstract class Setting<T> {
     private static Setting<?>[] sortSettingsByValueForExport() {
         Setting<?>[] sorted = SETTINGS.toArray(new Setting<?>[0]);
 
-        // TODO: Figure out an object oriented way to do this.
-        Arrays.sort(sorted, (Setting<?> o1, Setting<?> o2) -> {
-            // Organize SponsorBlock settings last.
-            // final boolean o1IsSb = o1.sharedPrefCategory == SPONSOR_BLOCK;
-            // final boolean o2IsSb = o2.sharedPrefCategory == SPONSOR_BLOCK;
-            // if (o1IsSb != o2IsSb) {
-            //     return o1IsSb ? 1 : -1;
-            // }
-
-            return o1.key.compareTo(o2.key);
-        });
+        Arrays.sort(sorted, (Setting<?> o1, Setting<?> o2) -> o1.key.compareTo(o2.key));
         return sorted;
     }
 
@@ -353,7 +342,7 @@ public abstract class Setting<T> {
                     setting.writeToJSON(json, importExportKey);
                 }
             }
-            SponsorBlockSettings.exportCategoriesToFlatJson(alertDialogContext, json);
+            SponsorBlockSettings.showExportWarningIfNeeded(alertDialogContext);
 
             if (json.length() == 0) {
                 return "";
@@ -397,7 +386,12 @@ public abstract class Setting<T> {
                     setting.resetToDefault();
                 }
             }
-            numberOfSettingsImported += SponsorBlockSettings.importCategoriesFromFlatJson(json);
+
+            // SB Enum categories are saved using StringSettings.
+            // Which means they need to reload again if changed by other code (such as here).
+            // This call could be removed by creating a custom Setting class that manages the
+            // "String <-> Enum" logic.  But for now this is simple and works.
+            SponsorBlockSettings.updateFromImportedSettings();
 
             Utils.showToastLong(numberOfSettingsImported == 0
                     ? str("revanced_settings_import_reset")

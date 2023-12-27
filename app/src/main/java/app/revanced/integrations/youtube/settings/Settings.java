@@ -6,6 +6,10 @@ import static app.revanced.integrations.shared.settings.Setting.getParents;
 import static app.revanced.integrations.shared.settings.Setting.migrateOldSettingToNew;
 import static app.revanced.integrations.youtube.settings.SharedPrefCategory.RETURN_YOUTUBE_DISLIKE;
 import static app.revanced.integrations.youtube.settings.SharedPrefCategory.SPONSOR_BLOCK;
+import static app.revanced.integrations.youtube.sponsorblock.objects.CategoryBehaviour.IGNORE;
+import static app.revanced.integrations.youtube.sponsorblock.objects.CategoryBehaviour.MANUAL_SKIP;
+import static app.revanced.integrations.youtube.sponsorblock.objects.CategoryBehaviour.SKIP_AUTOMATICALLY;
+import static app.revanced.integrations.youtube.sponsorblock.objects.CategoryBehaviour.SKIP_AUTOMATICALLY_ONCE;
 
 import app.revanced.integrations.shared.Logger;
 import app.revanced.integrations.shared.settings.BooleanSetting;
@@ -250,16 +254,79 @@ public class Settings {
     public static final BooleanSetting SB_VIDEO_LENGTH_WITHOUT_SEGMENTS = new BooleanSetting("sb_video_length_without_segments",TRUE, SPONSOR_BLOCK, getParents(SB_ENABLED));
     public static final StringSetting SB_API_URL = new StringSetting("sb_api_url","https://sponsor.ajay.app", SPONSOR_BLOCK);
     public static final BooleanSetting SB_USER_IS_VIP = new BooleanSetting("sb_user_is_vip",FALSE, SPONSOR_BLOCK);
-
-    // SB Setting not exported
-    public static final LongSetting SB_LAST_VIP_CHECK = new LongSetting("sb_last_vip_check", 0L, SPONSOR_BLOCK, false, false);
-    public static final BooleanSetting SB_HIDE_EXPORT_WARNING = new BooleanSetting("sb_hide_export_warning",FALSE, SPONSOR_BLOCK, false, false);
-    public static final BooleanSetting SB_SEEN_GUIDELINES = new BooleanSetting("sb_seen_guidelines",FALSE, SPONSOR_BLOCK, false, false);
     public static final IntegerSetting SB_LOCAL_TIME_SAVED_NUMBER_SEGMENTS = new IntegerSetting("sb_local_time_saved_number_segments",0, SPONSOR_BLOCK);
     public static final LongSetting SB_LOCAL_TIME_SAVED_MILLISECONDS = new LongSetting("sb_local_time_saved_milliseconds", 0L, SPONSOR_BLOCK);
 
+    // SB segment categories
+
+    // TODO: delete these deprecated settings sometime in mid 2024.
+    public static final StringSetting DEPRECATED_SB_CATEGORY_SPONSOR = new StringSetting("sponsor", SKIP_AUTOMATICALLY_ONCE.reVancedKeyValue, SPONSOR_BLOCK);
+    public static final StringSetting DEPRECATED_SB_CATEGORY_SPONSOR_COLOR = new StringSetting("sponsor_color","#00D400", SPONSOR_BLOCK);
+    public static final StringSetting DEPRECATED_SB_CATEGORY_SELF_PROMO = new StringSetting("selfpromo", MANUAL_SKIP.reVancedKeyValue, SPONSOR_BLOCK);
+    public static final StringSetting DEPRECATED_SB_CATEGORY_SELF_PROMO_COLOR = new StringSetting("selfpromo_color","#FFFF00", SPONSOR_BLOCK);
+    public static final StringSetting DEPRECATED_SB_CATEGORY_INTERACTION = new StringSetting("interaction", MANUAL_SKIP.reVancedKeyValue, SPONSOR_BLOCK);
+    public static final StringSetting DEPRECATED_SB_CATEGORY_INTERACTION_COLOR = new StringSetting("interaction_color","#CC00FF", SPONSOR_BLOCK);
+    public static final StringSetting DEPRECATED_SB_CATEGORY_HIGHLIGHT = new StringSetting("highlight", MANUAL_SKIP.reVancedKeyValue, SPONSOR_BLOCK);
+    public static final StringSetting DEPRECATED_SB_CATEGORY_HIGHLIGHT_COLOR = new StringSetting("highlight_color","#FF1684", SPONSOR_BLOCK);
+    public static final StringSetting DEPRECATED_SB_CATEGORY_INTRO = new StringSetting("intro", MANUAL_SKIP.reVancedKeyValue, SPONSOR_BLOCK);
+    public static final StringSetting DEPRECATED_SB_CATEGORY_INTRO_COLOR = new StringSetting("intro_color","#00FFFF", SPONSOR_BLOCK);
+    public static final StringSetting DEPRECATED_SB_CATEGORY_OUTRO = new StringSetting("outro", MANUAL_SKIP.reVancedKeyValue, SPONSOR_BLOCK);
+    public static final StringSetting DEPRECATED_SB_CATEGORY_OUTRO_COLOR = new StringSetting("outro_color","#0202ED", SPONSOR_BLOCK);
+    public static final StringSetting DEPRECATED_SB_CATEGORY_PREVIEW = new StringSetting("preview", IGNORE.reVancedKeyValue, SPONSOR_BLOCK);
+    public static final StringSetting DEPRECATED_SB_CATEGORY_PREVIEW_COLOR = new StringSetting("preview_color","#008FD6", SPONSOR_BLOCK);
+    public static final StringSetting DEPRECATED_SB_CATEGORY_FILLER = new StringSetting("filler", IGNORE.reVancedKeyValue, SPONSOR_BLOCK);
+    public static final StringSetting DEPRECATED_SB_CATEGORY_FILLER_COLOR = new StringSetting("filler_color","#7300FF", SPONSOR_BLOCK);
+    public static final StringSetting DEPRECATED_SB_CATEGORY_MUSIC_OFFTOPIC = new StringSetting("music_offtopic", MANUAL_SKIP.reVancedKeyValue, SPONSOR_BLOCK);
+    public static final StringSetting DEPRECATED_SB_CATEGORY_MUSIC_COLOR_OFFTOPIC = new StringSetting("music_offtopic_color","#FF9900", SPONSOR_BLOCK);
+
+    public static final StringSetting SB_CATEGORY_SPONSOR = new StringSetting("sb_sponsor", SKIP_AUTOMATICALLY_ONCE.reVancedKeyValue, SPONSOR_BLOCK);
+    public static final StringSetting SB_CATEGORY_SPONSOR_COLOR = new StringSetting("sb_sponsor_color","#00D400", SPONSOR_BLOCK);
+    public static final StringSetting SB_CATEGORY_SELF_PROMO = new StringSetting("sb_selfpromo", MANUAL_SKIP.reVancedKeyValue, SPONSOR_BLOCK);
+    public static final StringSetting SB_CATEGORY_SELF_PROMO_COLOR = new StringSetting("sb_selfpromo_color","#FFFF00", SPONSOR_BLOCK);
+    public static final StringSetting SB_CATEGORY_INTERACTION = new StringSetting("sb_interaction", MANUAL_SKIP.reVancedKeyValue, SPONSOR_BLOCK);
+    public static final StringSetting SB_CATEGORY_INTERACTION_COLOR = new StringSetting("sb_interaction_color","#CC00FF", SPONSOR_BLOCK);
+    public static final StringSetting SB_CATEGORY_HIGHLIGHT = new StringSetting("sb_highlight", MANUAL_SKIP.reVancedKeyValue, SPONSOR_BLOCK);
+    public static final StringSetting SB_CATEGORY_HIGHLIGHT_COLOR = new StringSetting("sb_highlight_color","#FF1684", SPONSOR_BLOCK);
+    public static final StringSetting SB_CATEGORY_INTRO = new StringSetting("sb_intro", MANUAL_SKIP.reVancedKeyValue, SPONSOR_BLOCK);
+    public static final StringSetting SB_CATEGORY_INTRO_COLOR = new StringSetting("sb_intro_color","#00FFFF", SPONSOR_BLOCK);
+    public static final StringSetting SB_CATEGORY_OUTRO = new StringSetting("sb_outro", MANUAL_SKIP.reVancedKeyValue, SPONSOR_BLOCK);
+    public static final StringSetting SB_CATEGORY_OUTRO_COLOR = new StringSetting("sb_outro_color","#0202ED", SPONSOR_BLOCK);
+    public static final StringSetting SB_CATEGORY_PREVIEW = new StringSetting("sb_preview", IGNORE.reVancedKeyValue, SPONSOR_BLOCK);
+    public static final StringSetting SB_CATEGORY_PREVIEW_COLOR = new StringSetting("sb_preview_color","#008FD6", SPONSOR_BLOCK);
+    public static final StringSetting SB_CATEGORY_FILLER = new StringSetting("sb_filler", IGNORE.reVancedKeyValue, SPONSOR_BLOCK);
+    public static final StringSetting SB_CATEGORY_FILLER_COLOR = new StringSetting("sb_filler_color","#7300FF", SPONSOR_BLOCK);
+    public static final StringSetting SB_CATEGORY_MUSIC_OFFTOPIC = new StringSetting("sb_music_offtopic", MANUAL_SKIP.reVancedKeyValue, SPONSOR_BLOCK);
+    public static final StringSetting SB_CATEGORY_MUSIC_OFFTOPIC_COLOR = new StringSetting("sb_music_offtopic_color","#FF9900", SPONSOR_BLOCK);
+    public static final StringSetting SB_CATEGORY_UNSUBMITTED = new StringSetting("sb_unsubmitted", SKIP_AUTOMATICALLY.reVancedKeyValue, SPONSOR_BLOCK);
+    public static final StringSetting SB_CATEGORY_UNSUBMITTED_COLOR = new StringSetting("sb_unsubmitted_color","#FFFFFF", SPONSOR_BLOCK);
+
+    // SB Setting not exported
+    public static final LongSetting SB_LAST_VIP_CHECK = new LongSetting("sb_last_vip_check", 0L, SPONSOR_BLOCK, false, false);
+    public static final BooleanSetting SB_HIDE_EXPORT_WARNING = new BooleanSetting("sb_hide_export_warning", FALSE, SPONSOR_BLOCK, false, false);
+    public static final BooleanSetting SB_SEEN_GUIDELINES = new BooleanSetting("sb_seen_guidelines", FALSE, SPONSOR_BLOCK, false, false);
+
     static {
         // region Migration
+
+        // SponsorBlock
+        migrateOldSettingToNew(DEPRECATED_SB_CATEGORY_SPONSOR, SB_CATEGORY_SPONSOR);
+        migrateOldSettingToNew(DEPRECATED_SB_CATEGORY_SPONSOR_COLOR, SB_CATEGORY_SPONSOR_COLOR);
+        migrateOldSettingToNew(DEPRECATED_SB_CATEGORY_SELF_PROMO, SB_CATEGORY_SELF_PROMO);
+        migrateOldSettingToNew(DEPRECATED_SB_CATEGORY_SELF_PROMO_COLOR, SB_CATEGORY_SELF_PROMO_COLOR);
+        migrateOldSettingToNew(DEPRECATED_SB_CATEGORY_INTERACTION, SB_CATEGORY_INTERACTION);
+        migrateOldSettingToNew(DEPRECATED_SB_CATEGORY_INTERACTION_COLOR, SB_CATEGORY_INTERACTION_COLOR);
+        migrateOldSettingToNew(DEPRECATED_SB_CATEGORY_HIGHLIGHT, SB_CATEGORY_HIGHLIGHT);
+        migrateOldSettingToNew(DEPRECATED_SB_CATEGORY_HIGHLIGHT_COLOR, SB_CATEGORY_HIGHLIGHT_COLOR);
+        migrateOldSettingToNew(DEPRECATED_SB_CATEGORY_INTRO, SB_CATEGORY_INTRO);
+        migrateOldSettingToNew(DEPRECATED_SB_CATEGORY_INTRO_COLOR, SB_CATEGORY_INTRO_COLOR);
+        migrateOldSettingToNew(DEPRECATED_SB_CATEGORY_OUTRO, SB_CATEGORY_OUTRO);
+        migrateOldSettingToNew(DEPRECATED_SB_CATEGORY_OUTRO_COLOR, SB_CATEGORY_OUTRO_COLOR);
+        migrateOldSettingToNew(DEPRECATED_SB_CATEGORY_PREVIEW, SB_CATEGORY_PREVIEW);
+        migrateOldSettingToNew(DEPRECATED_SB_CATEGORY_PREVIEW_COLOR, SB_CATEGORY_PREVIEW_COLOR);
+        migrateOldSettingToNew(DEPRECATED_SB_CATEGORY_FILLER, SB_CATEGORY_FILLER);
+        migrateOldSettingToNew(DEPRECATED_SB_CATEGORY_FILLER_COLOR, SB_CATEGORY_FILLER_COLOR);
+        migrateOldSettingToNew(DEPRECATED_SB_CATEGORY_MUSIC_OFFTOPIC, SB_CATEGORY_MUSIC_OFFTOPIC);
+        migrateOldSettingToNew(DEPRECATED_SB_CATEGORY_MUSIC_COLOR_OFFTOPIC, SB_CATEGORY_MUSIC_OFFTOPIC_COLOR);
 
         // Do _not_ delete this SB private user id migration property until sometime in 2024.
         // This is the only setting that cannot be reconfigured if lost,

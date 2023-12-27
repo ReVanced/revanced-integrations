@@ -1,12 +1,8 @@
 package app.revanced.integrations.youtube.sponsorblock.objects;
 
-import static app.revanced.integrations.youtube.sponsorblock.objects.CategoryBehaviour.IGNORE;
-import static app.revanced.integrations.youtube.sponsorblock.objects.CategoryBehaviour.MANUAL_SKIP;
-import static app.revanced.integrations.youtube.sponsorblock.objects.CategoryBehaviour.SKIP_AUTOMATICALLY;
-import static app.revanced.integrations.youtube.sponsorblock.objects.CategoryBehaviour.SKIP_AUTOMATICALLY_ONCE;
+import static app.revanced.integrations.youtube.settings.Settings.*;
 import static app.revanced.integrations.shared.StringRef.sf;
 
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.text.Html;
@@ -16,56 +12,49 @@ import android.text.TextUtils;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import app.revanced.integrations.shared.Utils;
+import app.revanced.integrations.shared.settings.StringSetting;
 import app.revanced.integrations.youtube.settings.Settings;
-import app.revanced.integrations.youtube.settings.SharedPrefCategory;
 import app.revanced.integrations.shared.Logger;
 import app.revanced.integrations.shared.StringRef;
 
 public enum SegmentCategory {
     SPONSOR("sponsor", sf("sb_segments_sponsor"), sf("sb_segments_sponsor_sum"), sf("sb_skip_button_sponsor"), sf("sb_skipped_sponsor"),
-            SKIP_AUTOMATICALLY_ONCE, 0x00D400),
+            SB_CATEGORY_SPONSOR, SB_CATEGORY_SPONSOR_COLOR),
     SELF_PROMO("selfpromo", sf("sb_segments_selfpromo"), sf("sb_segments_selfpromo_sum"), sf("sb_skip_button_selfpromo"), sf("sb_skipped_selfpromo"),
-            MANUAL_SKIP, 0xFFFF00),
+            SB_CATEGORY_SELF_PROMO, SB_CATEGORY_SELF_PROMO_COLOR),
     INTERACTION("interaction", sf("sb_segments_interaction"), sf("sb_segments_interaction_sum"), sf("sb_skip_button_interaction"), sf("sb_skipped_interaction"),
-            MANUAL_SKIP, 0xCC00FF),
+            SB_CATEGORY_INTERACTION, SB_CATEGORY_INTERACTION_COLOR),
     /**
      * Unique category that is treated differently than the rest.
      */
     HIGHLIGHT("poi_highlight", sf("sb_segments_highlight"), sf("sb_segments_highlight_sum"), sf("sb_skip_button_highlight"), sf("sb_skipped_highlight"),
-            MANUAL_SKIP, 0xFF1684),
+            SB_CATEGORY_HIGHLIGHT, SB_CATEGORY_HIGHLIGHT_COLOR),
     INTRO("intro", sf("sb_segments_intro"), sf("sb_segments_intro_sum"),
             sf("sb_skip_button_intro_beginning"), sf("sb_skip_button_intro_middle"), sf("sb_skip_button_intro_end"),
             sf("sb_skipped_intro_beginning"), sf("sb_skipped_intro_middle"), sf("sb_skipped_intro_end"),
-            MANUAL_SKIP, 0x00FFFF),
+            SB_CATEGORY_INTRO, SB_CATEGORY_INTRO_COLOR),
     OUTRO("outro", sf("sb_segments_outro"), sf("sb_segments_outro_sum"), sf("sb_skip_button_outro"), sf("sb_skipped_outro"),
-            MANUAL_SKIP, 0x0202ED),
+            SB_CATEGORY_OUTRO, SB_CATEGORY_OUTRO_COLOR),
     PREVIEW("preview", sf("sb_segments_preview"), sf("sb_segments_preview_sum"),
             sf("sb_skip_button_preview_beginning"), sf("sb_skip_button_preview_middle"), sf("sb_skip_button_preview_end"),
             sf("sb_skipped_preview_beginning"), sf("sb_skipped_preview_middle"), sf("sb_skipped_preview_end"),
-            IGNORE, 0x008FD6),
+            SB_CATEGORY_PREVIEW, SB_CATEGORY_PREVIEW_COLOR),
     FILLER("filler", sf("sb_segments_filler"), sf("sb_segments_filler_sum"), sf("sb_skip_button_filler"), sf("sb_skipped_filler"),
-            IGNORE, 0x7300FF),
+            SB_CATEGORY_FILLER, SB_CATEGORY_FILLER_COLOR),
     MUSIC_OFFTOPIC("music_offtopic", sf("sb_segments_nomusic"), sf("sb_segments_nomusic_sum"), sf("sb_skip_button_nomusic"), sf("sb_skipped_nomusic"),
-            MANUAL_SKIP, 0xFF9900),
+            SB_CATEGORY_MUSIC_OFFTOPIC, SB_CATEGORY_MUSIC_OFFTOPIC_COLOR),
     UNSUBMITTED("unsubmitted", StringRef.empty, StringRef.empty, sf("sb_skip_button_unsubmitted"), sf("sb_skipped_unsubmitted"),
-            SKIP_AUTOMATICALLY, 0xFFFFFF);
+            SB_CATEGORY_UNSUBMITTED, SB_CATEGORY_UNSUBMITTED_COLOR),;
 
     private static final StringRef skipSponsorTextCompact = sf("sb_skip_button_compact");
     private static final StringRef skipSponsorTextCompactHighlight = sf("sb_skip_button_compact_highlight");
-
-    /**
-     * Prefix to use when serializing to flat JSON layout used with ReVanced import/export.
-     */
-    private static final String FLAT_JSON_IMPORT_EXPORT_PREFIX = "sb_";
 
     private static final SegmentCategory[] categoriesWithoutHighlights = new SegmentCategory[]{
             SPONSOR,
@@ -91,8 +80,6 @@ public enum SegmentCategory {
     };
     private static final Map<String, SegmentCategory> mValuesMap = new HashMap<>(2 * categoriesWithoutUnsubmitted.length);
 
-    private static final String COLOR_PREFERENCE_KEY_SUFFIX = "_color";
-
     /**
      * Categories currently enabled, formatted for an API call
      */
@@ -100,7 +87,7 @@ public enum SegmentCategory {
 
     static {
         for (SegmentCategory value : categoriesWithoutUnsubmitted)
-            mValuesMap.put(value.key, value);
+            mValuesMap.put(value.keyValue, value);
     }
 
     @NonNull
@@ -118,24 +105,17 @@ public enum SegmentCategory {
         return mValuesMap.get(key);
     }
 
-    public static void loadFromPreferences() {
-        SharedPreferences preferences = SharedPrefCategory.SPONSOR_BLOCK.preferences;
-        Logger.printDebug(() -> "loadFromPreferences");
-        for (SegmentCategory category : categoriesWithoutUnsubmitted()) {
-            category.load(preferences);
-        }
-        updateEnabledCategories();
-    }
-
     /**
      * Must be called if behavior of any category is changed
      */
     public static void updateEnabledCategories() {
+        Utils.verifyOnMainThread();
+        Logger.printDebug(() -> "updateEnabledCategories");
         SegmentCategory[] categories = categoriesWithoutUnsubmitted();
         List<String> enabledCategories = new ArrayList<>(categories.length);
         for (SegmentCategory category : categories) {
             if (category.behaviour != CategoryBehaviour.IGNORE) {
-                enabledCategories.add(category.key);
+                enabledCategories.add(category.keyValue);
             }
         }
 
@@ -146,8 +126,19 @@ public enum SegmentCategory {
             sponsorBlockAPIFetchCategories = "[%22" + TextUtils.join("%22,%22", enabledCategories) + "%22]";
     }
 
+    public static void loadAllCategoriesFromSettings() {
+        for (SegmentCategory category : values()) {
+            category.loadFromSettings();
+        }
+    }
+
     @NonNull
-    public final String key;
+    public final String keyValue;
+    @NonNull
+    private final StringSetting behaviorSetting;
+    @NonNull
+    private final StringSetting colorSetting;
+
     @NonNull
     public final StringRef title;
     @NonNull
@@ -186,35 +177,34 @@ public enum SegmentCategory {
 
     @NonNull
     public final Paint paint;
-    public final int defaultColor;
+
     /**
-     * If value is changed, then also call {@link #save(SharedPreferences.Editor)}
+     * Value must be changed using {@link #setColor(String)}.
      */
     public int color;
 
     /**
-     * If value is changed, then also call {@link #updateEnabledCategories()}
+     * Value must be changed using {@link #setBehaviour(CategoryBehaviour)}.
+     * Caller must also {@link #updateEnabledCategories()}.
      */
     @NonNull
-    public CategoryBehaviour behaviour;
-    @NonNull
-    public final CategoryBehaviour defaultBehaviour;
+    public CategoryBehaviour behaviour = CategoryBehaviour.IGNORE;
 
-    SegmentCategory(String key, StringRef title, StringRef description,
+    SegmentCategory(String keyValue, StringRef title, StringRef description,
                     StringRef skipButtonText,
                     StringRef skippedToastText,
-                    CategoryBehaviour defaultBehavior, int defaultColor) {
-        this(key, title, description,
+                    StringSetting behavior, StringSetting color) {
+        this(keyValue, title, description,
                 skipButtonText, skipButtonText, skipButtonText,
                 skippedToastText, skippedToastText, skippedToastText,
-                defaultBehavior, defaultColor);
+                behavior, color);
     }
 
-    SegmentCategory(String key, StringRef title, StringRef description,
+    SegmentCategory(String keyValue, StringRef title, StringRef description,
                     StringRef skipButtonTextBeginning, StringRef skipButtonTextMiddle, StringRef skipButtonTextEnd,
                     StringRef skippedToastBeginning, StringRef skippedToastMiddle, StringRef skippedToastEnd,
-                    CategoryBehaviour defaultBehavior, int defaultColor) {
-        this.key = Objects.requireNonNull(key);
+                    StringSetting behavior, StringSetting color) {
+        this.keyValue = Objects.requireNonNull(keyValue);
         this.title = Objects.requireNonNull(title);
         this.description = Objects.requireNonNull(description);
         this.skipButtonTextBeginning = Objects.requireNonNull(skipButtonTextBeginning);
@@ -223,93 +213,37 @@ public enum SegmentCategory {
         this.skippedToastBeginning = Objects.requireNonNull(skippedToastBeginning);
         this.skippedToastMiddle = Objects.requireNonNull(skippedToastMiddle);
         this.skippedToastEnd = Objects.requireNonNull(skippedToastEnd);
-        this.behaviour = this.defaultBehaviour = Objects.requireNonNull(defaultBehavior);
-        this.color = this.defaultColor = defaultColor;
+        this.behaviorSetting = Objects.requireNonNull(behavior);
+        this.colorSetting = Objects.requireNonNull(color);
         this.paint = new Paint();
-        setColor(defaultColor);
+        loadFromSettings();
     }
 
-    /**
-     * Caller must also call {@link #updateEnabledCategories()}
-     */
-    private void load(SharedPreferences preferences) {
-        String categoryColor = preferences.getString(key + COLOR_PREFERENCE_KEY_SUFFIX, null);
-        if (categoryColor == null) {
-            setColor(defaultColor);
-        } else {
-            setColor(categoryColor);
+    private void loadFromSettings() {
+        String behaviorString = behaviorSetting.get();
+        CategoryBehaviour savedBehavior = CategoryBehaviour.byReVancedKeyValue(behaviorString);
+        if (savedBehavior == null) {
+            Logger.printException(() -> "Invalid behavior: " + behaviorString);
+            behaviorSetting.resetToDefault();
+            loadFromSettings();
+            return;
         }
+        this.behaviour = savedBehavior;
 
-        String behaviorString = preferences.getString(key, null);
-        if (behaviorString == null) {
-            behaviour = defaultBehaviour;
-        } else {
-            CategoryBehaviour preferenceBehavior = CategoryBehaviour.byStringKey(behaviorString);
-            if (preferenceBehavior == null) {
-                Logger.printException(() -> "Unknown behavior: " + behaviorString); // should never happen
-                behaviour = defaultBehaviour;
-            } else {
-                behaviour = preferenceBehavior;
-            }
+        String colorString = colorSetting.get();
+        try {
+            setColor(colorString);
+        } catch (Exception ex) {
+            Logger.printException(() -> "Invalid color: " + colorString, ex);
+            colorSetting.resetToDefault();
+            loadFromSettings();
         }
     }
 
-    /**
-     * Saves the current color and behavior.
-     * Calling code is responsible for calling {@link SharedPreferences.Editor#apply()}
-     */
-    public void save(SharedPreferences.Editor editor) {
-        String colorString = (color == defaultColor)
-                ? null // remove any saved preference, so default is used on the next load
-                : colorString();
-        editor.putString(key + COLOR_PREFERENCE_KEY_SUFFIX, colorString);
-        editor.putString(key, behaviour.key);
+    public void setBehaviour(@NonNull CategoryBehaviour behaviour) {
+        this.behaviour = Objects.requireNonNull(behaviour);
+        this.behaviorSetting.save(behaviour.reVancedKeyValue);
     }
-
-    private String getFlatJsonBehaviorKey() {
-        return FLAT_JSON_IMPORT_EXPORT_PREFIX + key;
-    }
-    private String getFlatJsonColorKey() {
-        return FLAT_JSON_IMPORT_EXPORT_PREFIX + key + COLOR_PREFERENCE_KEY_SUFFIX;
-    }
-
-    public void exportToFlatJSON(JSONObject json) throws JSONException {
-        if (behaviour != defaultBehaviour) {
-            json.put(getFlatJsonBehaviorKey(), behaviour.key);
-        }
-        if (color != defaultColor) {
-            json.put(getFlatJsonColorKey(), colorString());
-        }
-    }
-
-    /**
-     * Calling code is responsible for calling {@link #updateEnabledCategories()} and {@link SharedPreferences.Editor#apply()}
-     */
-    public int importFromFlatJSON(JSONObject json, SharedPreferences.Editor editor) throws JSONException {
-        int numberOfSettingsImported = 0;
-        String behaviorKey = getFlatJsonBehaviorKey();
-        if (json.has(behaviorKey)) {
-            String behaviorString = json.getString(behaviorKey);
-            CategoryBehaviour importedBehavior = CategoryBehaviour.byStringKey(behaviorString);
-            if (importedBehavior == null) {
-                throw new IllegalArgumentException("unknown behavior: " + behaviorString);
-            }
-            behaviour = importedBehavior;
-            numberOfSettingsImported++;
-        } else {
-            behaviour = defaultBehaviour;
-        }
-        String colorKey = getFlatJsonColorKey();
-        if (json.has(colorKey)) {
-            setColor(json.getString(colorKey));
-            numberOfSettingsImported++;
-        } else {
-            color = defaultColor;
-        }
-        save(editor);
-        return numberOfSettingsImported;
-    }
-
     /**
      * @return HTML color format string
      */
@@ -319,14 +253,15 @@ public enum SegmentCategory {
     }
 
     public void setColor(@NonNull String colorString) throws IllegalArgumentException {
-        setColor(Color.parseColor(colorString));
-    }
-
-    public void setColor(int color) {
-        color &= 0xFFFFFF;
+        final int color = Color.parseColor(colorString) & 0xFFFFFF;
         this.color = color;
         paint.setColor(color);
         paint.setAlpha(255);
+        colorSetting.save(colorString); // Save after parsing.
+    }
+
+    public void resetColor() {
+        setColor(colorSetting.defaultValue);
     }
 
     @NonNull

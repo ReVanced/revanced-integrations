@@ -19,9 +19,15 @@ public enum CategoryBehaviour {
     // ignored categories are not exported to json, and ignore is the default behavior when importing
     IGNORE("ignore", -1, false, sf("sb_skip_ignore"));
 
+    /**
+     * ReVanced specific value.
+     */
     @NonNull
-    public final String key;
-    public final int desktopKey;
+    public final String reVancedKeyValue;
+    /**
+     * Desktop specific value.
+     */
+    public final int desktopKeyValue;
     /**
      * If the segment should skip automatically
      */
@@ -29,17 +35,17 @@ public enum CategoryBehaviour {
     @NonNull
     public final StringRef description;
 
-    CategoryBehaviour(String key, int desktopKey, boolean skipAutomatically, StringRef description) {
-        this.key = Objects.requireNonNull(key);
-        this.desktopKey = desktopKey;
+    CategoryBehaviour(String reVancedKeyValue, int desktopKeyValue, boolean skipAutomatically, StringRef description) {
+        this.reVancedKeyValue = Objects.requireNonNull(reVancedKeyValue);
+        this.desktopKeyValue = desktopKeyValue;
         this.skipAutomatically = skipAutomatically;
         this.description = Objects.requireNonNull(description);
     }
 
     @Nullable
-    public static CategoryBehaviour byStringKey(@NonNull String key) {
+    public static CategoryBehaviour byReVancedKeyValue(@NonNull String keyValue) {
         for (CategoryBehaviour behaviour : values()){
-            if (behaviour.key.equals(key)) {
+            if (behaviour.reVancedKeyValue.equals(keyValue)) {
                 return behaviour;
             }
         }
@@ -47,19 +53,19 @@ public enum CategoryBehaviour {
     }
 
     @Nullable
-    public static CategoryBehaviour byDesktopKey(int desktopKey) {
+    public static CategoryBehaviour byDesktopKeyValue(int desktopKeyValue) {
         for (CategoryBehaviour behaviour : values()) {
-            if (behaviour.desktopKey == desktopKey) {
+            if (behaviour.desktopKeyValue == desktopKeyValue) {
                 return behaviour;
             }
         }
         return null;
     }
 
-    private static String[] behaviorKeys;
+    private static String[] behaviorKeyValues;
     private static String[] behaviorDescriptions;
 
-    private static String[] behaviorKeysWithoutSkipOnce;
+    private static String[] behaviorKeyValuesWithoutSkipOnce;
     private static String[] behaviorDescriptionsWithoutSkipOnce;
 
     private static void createNameAndKeyArrays() {
@@ -67,38 +73,38 @@ public enum CategoryBehaviour {
 
         CategoryBehaviour[] behaviours = values();
         final int behaviorLength = behaviours.length;
-        behaviorKeys = new String[behaviorLength];
+        behaviorKeyValues = new String[behaviorLength];
         behaviorDescriptions = new String[behaviorLength];
-        behaviorKeysWithoutSkipOnce = new String[behaviorLength - 1];
+        behaviorKeyValuesWithoutSkipOnce = new String[behaviorLength - 1];
         behaviorDescriptionsWithoutSkipOnce = new String[behaviorLength - 1];
 
         int behaviorIndex = 0, behaviorHighlightIndex = 0;
         while (behaviorIndex < behaviorLength) {
             CategoryBehaviour behaviour = behaviours[behaviorIndex];
-            String key = behaviour.key;
+            String value = behaviour.reVancedKeyValue;
             String description = behaviour.description.toString();
-            behaviorKeys[behaviorIndex] = key;
+            behaviorKeyValues[behaviorIndex] = value;
             behaviorDescriptions[behaviorIndex] = description;
             behaviorIndex++;
             if (behaviour != SKIP_AUTOMATICALLY_ONCE) {
-                behaviorKeysWithoutSkipOnce[behaviorHighlightIndex] = key;
+                behaviorKeyValuesWithoutSkipOnce[behaviorHighlightIndex] = value;
                 behaviorDescriptionsWithoutSkipOnce[behaviorHighlightIndex] = description;
                 behaviorHighlightIndex++;
             }
         }
     }
 
-    static String[] getBehaviorKeys() {
-        if (behaviorKeys == null) {
+    static String[] getBehaviorKeyValues() {
+        if (behaviorKeyValues == null) {
             createNameAndKeyArrays();
         }
-        return behaviorKeys;
+        return behaviorKeyValues;
     }
-    static String[] getBehaviorKeysWithoutSkipOnce() {
-        if (behaviorKeysWithoutSkipOnce == null) {
+    static String[] getBehaviorKeyValuesWithoutSkipOnce() {
+        if (behaviorKeyValuesWithoutSkipOnce == null) {
             createNameAndKeyArrays();
         }
-        return behaviorKeysWithoutSkipOnce;
+        return behaviorKeyValuesWithoutSkipOnce;
     }
 
     static String[] getBehaviorDescriptions() {

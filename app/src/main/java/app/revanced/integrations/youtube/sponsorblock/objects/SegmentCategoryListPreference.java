@@ -5,7 +5,6 @@ import static app.revanced.integrations.shared.StringRef.str;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.preference.ListPreference;
 import android.text.Editable;
@@ -31,14 +30,14 @@ public class SegmentCategoryListPreference extends ListPreference {
         super(context);
         final boolean isHighlightCategory = category == SegmentCategory.HIGHLIGHT;
         this.category = Objects.requireNonNull(category);
-        setKey(category.key);
-        setDefaultValue(category.behaviour.key);
+        setKey(category.keyValue);
+        setDefaultValue(category.behaviour.reVancedKeyValue);
         setEntries(isHighlightCategory
                 ? CategoryBehaviour.getBehaviorDescriptionsWithoutSkipOnce()
                 : CategoryBehaviour.getBehaviorDescriptions());
         setEntryValues(isHighlightCategory
-                ? CategoryBehaviour.getBehaviorKeysWithoutSkipOnce()
-                : CategoryBehaviour.getBehaviorKeys());
+                ? CategoryBehaviour.getBehaviorKeyValuesWithoutSkipOnce()
+                : CategoryBehaviour.getBehaviorKeyValues());
         setSummary(category.description.toString());
         updateTitle();
     }
@@ -105,10 +104,7 @@ public class SegmentCategoryListPreference extends ListPreference {
             });
             builder.setNeutralButton(str("sb_reset_color"), (dialog, which) -> {
                 try {
-                    SharedPreferences.Editor editor = getSharedPreferences().edit();
-                    category.setColor(category.defaultColor);
-                    category.save(editor);
-                    editor.apply();
+                    category.resetColor();
                     updateTitle();
                     Utils.showToastShort(str("sb_color_reset"));
                 } catch (Exception ex) {
@@ -131,23 +127,18 @@ public class SegmentCategoryListPreference extends ListPreference {
                 String value = getEntryValues()[mClickedDialogEntryIndex].toString();
                 if (callChangeListener(value)) {
                     setValue(value);
-                    category.behaviour = Objects.requireNonNull(CategoryBehaviour.byStringKey(value));
+                    category.setBehaviour(Objects.requireNonNull(CategoryBehaviour.byReVancedKeyValue(value)));
                     SegmentCategory.updateEnabledCategories();
                 }
                 String colorString = mEditText.getText().toString();
                 try {
-                    final int color = Color.parseColor(colorString) & 0xFFFFFF;
-                    if (color != category.color) {
-                        category.setColor(color);
+                    if (!colorString.equals(category.colorString())) {
+                        category.setColor(colorString);
                         Utils.showToastShort(str("sb_color_changed"));
                     }
                 } catch (IllegalArgumentException ex) {
                     Utils.showToastShort(str("sb_color_invalid"));
                 }
-                // behavior is already saved, but color needs to be saved
-                SharedPreferences.Editor editor = getSharedPreferences().edit();
-                category.save(editor);
-                editor.apply();
                 updateTitle();
             }
         } catch (Exception ex) {
