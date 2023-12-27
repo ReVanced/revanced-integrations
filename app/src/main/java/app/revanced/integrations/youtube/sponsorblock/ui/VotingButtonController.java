@@ -1,6 +1,6 @@
 package app.revanced.integrations.youtube.sponsorblock.ui;
 
-import static app.revanced.integrations.youtube.utils.ReVancedUtils.getResourceIdentifier;
+import static app.revanced.integrations.shared.Utils.getResourceIdentifier;
 
 import android.view.View;
 import android.widget.ImageView;
@@ -12,8 +12,8 @@ import app.revanced.integrations.youtube.patches.VideoInformation;
 import app.revanced.integrations.youtube.settings.Settings;
 import app.revanced.integrations.youtube.sponsorblock.SegmentPlaybackController;
 import app.revanced.integrations.youtube.sponsorblock.SponsorBlockUtils;
-import app.revanced.integrations.youtube.utils.LogHelper;
-import app.revanced.integrations.youtube.utils.ReVancedUtils;
+import app.revanced.integrations.shared.Logger;
+import app.revanced.integrations.shared.Utils;
 import app.revanced.integrations.youtube.videoplayer.BottomControlButton;
 
 public class VotingButtonController {
@@ -25,7 +25,7 @@ public class VotingButtonController {
      */
     public static void initialize(View youtubeControlsLayout) {
         try {
-            LogHelper.printDebug(() -> "initializing voting button");
+            Logger.printDebug(() -> "initializing voting button");
             ImageView imageView = Objects.requireNonNull(youtubeControlsLayout.findViewById(
                     getResourceIdentifier("sb_voting_button", "id")));
             imageView.setVisibility(View.GONE);
@@ -35,7 +35,7 @@ public class VotingButtonController {
 
             buttonReference = new WeakReference<>(imageView);
         } catch (Exception ex) {
-            LogHelper.printException(() -> "Unable to set RelativeLayout", ex);
+            Logger.printException(() -> "Unable to set RelativeLayout", ex);
         }
     }
 
@@ -85,7 +85,7 @@ public class VotingButtonController {
                 iView.setVisibility(View.GONE);
             }
         } catch (Exception ex) {
-            LogHelper.printException(() -> "changeVisibility failure", ex);
+            Logger.printException(() -> "changeVisibility failure", ex);
         }
     }
 
@@ -98,7 +98,7 @@ public class VotingButtonController {
         if (!isShowing) {
             return;
         }
-        ReVancedUtils.verifyOnMainThread();
+        Utils.verifyOnMainThread();
         View v = buttonReference.get();
         if (v == null) {
             return;

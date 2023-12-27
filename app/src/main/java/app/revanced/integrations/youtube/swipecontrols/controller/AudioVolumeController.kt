@@ -4,7 +4,7 @@ import android.content.Context
 import android.media.AudioManager
 import android.os.Build
 import app.revanced.integrations.youtube.swipecontrols.misc.clamp
-import app.revanced.integrations.youtube.utils.LogHelper.printException
+import app.revanced.integrations.shared.Logger.printException
 import kotlin.properties.Delegates
 
 /**

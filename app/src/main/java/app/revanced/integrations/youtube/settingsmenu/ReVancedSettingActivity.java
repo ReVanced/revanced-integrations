@@ -6,13 +6,13 @@ import android.preference.PreferenceFragment;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import app.revanced.integrations.youtube.utils.LogHelper;
-import app.revanced.integrations.youtube.utils.ThemeHelper;
+import app.revanced.integrations.shared.Logger;
+import app.revanced.integrations.youtube.ThemeHelper;
 
 import java.util.Objects;
 
-import static app.revanced.integrations.youtube.utils.ReVancedUtils.getChildView;
-import static app.revanced.integrations.youtube.utils.ReVancedUtils.getResourceIdentifier;
+import static app.revanced.integrations.shared.Utils.getChildView;
+import static app.revanced.integrations.shared.Utils.getResourceIdentifier;
 
 public class ReVancedSettingActivity {
 
@@ -43,7 +43,7 @@ public class ReVancedSettingActivity {
                     fragment = new ReVancedSettingsFragment();
                     break;
                 default:
-                    LogHelper.printException(() -> "Unknown setting: " + dataString);
+                    Logger.printException(() -> "Unknown setting: " + dataString);
                     return;
             }
 
@@ -53,7 +53,7 @@ public class ReVancedSettingActivity {
                     .replace(getResourceIdentifier("revanced_settings_fragments", "id"), fragment)
                     .commit();
         } catch (Exception ex) {
-            LogHelper.printException(() -> "onCreate failure", ex);
+            Logger.printException(() -> "onCreate failure", ex);
         }
     }
 

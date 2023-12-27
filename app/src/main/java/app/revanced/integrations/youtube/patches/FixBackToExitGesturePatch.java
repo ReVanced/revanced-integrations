@@ -1,7 +1,7 @@
 package app.revanced.integrations.youtube.patches;
 
 import com.google.android.apps.youtube.app.watchwhile.WatchWhileActivity;
-import app.revanced.integrations.youtube.utils.LogHelper;
+import app.revanced.integrations.shared.Logger;
 
 public class FixBackToExitGesturePatch {
     /**
@@ -17,7 +17,7 @@ public class FixBackToExitGesturePatch {
     public static void onBackPressed(WatchWhileActivity activity) {
         if (!isTopView) return;
 
-        LogHelper.printDebug(() -> "Activity is closed");
+        Logger.printDebug(() -> "Activity is closed");
 
         activity.finish();
     }
@@ -26,7 +26,7 @@ public class FixBackToExitGesturePatch {
      * Handle the event when the homepage list of views is being scrolled.
      */
     public static void onScrollingViews() {
-        LogHelper.printDebug(() -> "Views are scrolling");
+        Logger.printDebug(() -> "Views are scrolling");
 
         isTopView = false;
     }
@@ -35,7 +35,7 @@ public class FixBackToExitGesturePatch {
      * Handle the event when the homepage list of views reached the top.
      */
     public static void onTopView() {
-        LogHelper.printDebug(() -> "Scrolling reached the top");
+        Logger.printDebug(() -> "Scrolling reached the top");
 
         isTopView = true;
     }

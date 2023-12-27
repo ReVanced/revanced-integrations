@@ -1,6 +1,6 @@
 package app.revanced.integrations.youtube.settingsmenu;
 
-import static app.revanced.integrations.youtube.utils.StringRef.str;
+import static app.revanced.integrations.shared.StringRef.str;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -10,8 +10,8 @@ import android.util.AttributeSet;
 
 import app.revanced.integrations.youtube.settings.Settings;
 import app.revanced.integrations.youtube.settings.SharedPrefCategory;
-import app.revanced.integrations.youtube.utils.LogHelper;
-import app.revanced.integrations.youtube.utils.ReVancedUtils;
+import app.revanced.integrations.shared.Logger;
+import app.revanced.integrations.shared.Utils;
 
 /**
  * Shows what thumbnails will be used based on the current settings.
@@ -25,7 +25,7 @@ public class AlternativeThumbnailsStatusPreference extends Preference {
         //
         // Push this call to the end of the main run queue,
         // so all other listeners are done and SettingsEnum is up to date.
-        ReVancedUtils.runOnMainThread(this::updateUI);
+        Utils.runOnMainThread(this::updateUI);
     };
 
     public AlternativeThumbnailsStatusPreference(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
@@ -42,12 +42,12 @@ public class AlternativeThumbnailsStatusPreference extends Preference {
     }
 
     private void addChangeListener() {
-        LogHelper.printDebug(() -> "addChangeListener");
+        Logger.printDebug(() -> "addChangeListener");
         SharedPrefCategory.YOUTUBE.preferences.registerOnSharedPreferenceChangeListener(listener);
     }
 
     private void removeChangeListener() {
-        LogHelper.printDebug(() -> "removeChangeListener");
+        Logger.printDebug(() -> "removeChangeListener");
         SharedPrefCategory.YOUTUBE.preferences.unregisterOnSharedPreferenceChangeListener(listener);
     }
 
@@ -65,7 +65,7 @@ public class AlternativeThumbnailsStatusPreference extends Preference {
     }
 
     private void updateUI() {
-        LogHelper.printDebug(() -> "updateUI");
+        Logger.printDebug(() -> "updateUI");
         final boolean usingDeArrow = Settings.ALT_THUMBNAIL_DEARROW.getBoolean();
         final boolean usingVideoStills = Settings.ALT_THUMBNAIL_STILLS.getBoolean();
 

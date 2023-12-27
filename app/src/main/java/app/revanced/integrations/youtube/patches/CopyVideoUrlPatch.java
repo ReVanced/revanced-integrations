@@ -1,11 +1,11 @@
 package app.revanced.integrations.youtube.patches;
 
-import static app.revanced.integrations.youtube.utils.StringRef.str;
+import static app.revanced.integrations.shared.StringRef.str;
 
 import android.os.Build;
 
-import app.revanced.integrations.youtube.utils.LogHelper;
-import app.revanced.integrations.youtube.utils.ReVancedUtils;
+import app.revanced.integrations.shared.Logger;
+import app.revanced.integrations.shared.Utils;
 
 public class CopyVideoUrlPatch {
 
@@ -30,17 +30,17 @@ public class CopyVideoUrlPatch {
                 }
             }
 
-            ReVancedUtils.setClipboard(builder.toString());
+            Utils.setClipboard(builder.toString());
             // Do not show a toast if using Android 13+ as it shows it's own toast.
             // But if the user copied with a timestamp then show a toast.
             // Unfortunately this will show 2 toasts on Android 13+, but no way around this.
             if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.S_V2 || (withTimestamp && currentVideoTimeInSeconds > 0)) {
-                ReVancedUtils.showToastShort(withTimestamp && currentVideoTimeInSeconds > 0
+                Utils.showToastShort(withTimestamp && currentVideoTimeInSeconds > 0
                         ? str("revanced_share_copy_url_timestamp_success")
                         : str("revanced_share_copy_url_success"));
             }
         } catch (Exception e) {
-            LogHelper.printException(() -> "Failed to generate video url", e);
+            Logger.printException(() -> "Failed to generate video url", e);
         }
     }
 

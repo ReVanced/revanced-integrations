@@ -7,8 +7,8 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import app.revanced.integrations.youtube.patches.components.PlaybackSpeedMenuFilterPatch;
 import app.revanced.integrations.youtube.settings.Settings;
-import app.revanced.integrations.youtube.utils.LogHelper;
-import app.revanced.integrations.youtube.utils.ReVancedUtils;
+import app.revanced.integrations.shared.Logger;
+import app.revanced.integrations.shared.Utils;
 
 import java.util.Arrays;
 
@@ -42,7 +42,7 @@ public class CustomPlaybackSpeedPatch {
     }
 
     private static void resetCustomSpeeds(@NonNull String toastMessage) {
-        ReVancedUtils.showToastLong(toastMessage);
+        Utils.showToastLong(toastMessage);
         Settings.CUSTOM_PLAYBACK_SPEEDS.resetToDefault();
     }
 
@@ -68,7 +68,7 @@ public class CustomPlaybackSpeedPatch {
                 customPlaybackSpeeds[i] = speed;
             }
         } catch (Exception ex) {
-            LogHelper.printInfo(() -> "parse error", ex);
+            Logger.printInfo(() -> "parse error", ex);
             resetCustomSpeeds("Invalid custom playback speeds. Using default values.");
             loadCustomSpeeds();
         }
@@ -137,7 +137,7 @@ public class CustomPlaybackSpeedPatch {
                 // Close the new Playback speed menu and show the old one.
                 showOldPlaybackSpeedMenu();
             } catch (Exception ex) {
-                LogHelper.printException(() -> "onFlyoutMenuCreate failure", ex);
+                Logger.printException(() -> "onFlyoutMenuCreate failure", ex);
             }
         });
     }
@@ -147,11 +147,11 @@ public class CustomPlaybackSpeedPatch {
         // To prevent this, ignore method reuse within 1 second.
         final long now = System.currentTimeMillis();
         if (now - lastTimeOldPlaybackMenuInvoked < 1000) {
-            LogHelper.printDebug(() -> "Ignoring call to showOldPlaybackSpeedMenu");
+            Logger.printDebug(() -> "Ignoring call to showOldPlaybackSpeedMenu");
             return;
         }
         lastTimeOldPlaybackMenuInvoked = now;
-        LogHelper.printDebug(() -> "Old video quality menu shown");
+        Logger.printDebug(() -> "Old video quality menu shown");
 
         // Rest of the implementation added by patch.
     }

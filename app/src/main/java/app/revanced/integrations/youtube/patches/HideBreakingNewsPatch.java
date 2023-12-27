@@ -4,7 +4,7 @@ import android.view.View;
 
 import app.revanced.integrations.youtube.patches.spoof.SpoofAppVersionPatch;
 import app.revanced.integrations.youtube.settings.Settings;
-import app.revanced.integrations.youtube.utils.ReVancedUtils;
+import app.revanced.integrations.shared.Utils;
 
 public class HideBreakingNewsPatch {
 
@@ -23,6 +23,6 @@ public class HideBreakingNewsPatch {
     public static void hideBreakingNews(View view) {
         if (!Settings.HIDE_BREAKING_NEWS.getBoolean()
                 || isSpoofingOldVersionWithHorizontalCardListWatchHistory) return;
-        ReVancedUtils.hideViewByLayoutParams(view);
+        Utils.hideViewByLayoutParams(view);
     }
 }

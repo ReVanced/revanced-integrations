@@ -6,8 +6,8 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 
 import app.revanced.integrations.youtube.settings.Settings;
-import app.revanced.integrations.youtube.utils.LogHelper;
-import app.revanced.integrations.youtube.utils.StringTrieSearch;
+import app.revanced.integrations.shared.Logger;
+import app.revanced.integrations.youtube.StringTrieSearch;
 
 @SuppressWarnings("unused")
 @RequiresApi(api = Build.VERSION_CODES.N)
@@ -279,7 +279,7 @@ public final class LayoutComponentsFilter extends Filter {
      */
     public static boolean filterMixPlaylists(final Object conversionContext, @Nullable final byte[] bytes) {
         if (bytes == null) {
-            LogHelper.printDebug(() -> "bytes is null");
+            Logger.printDebug(() -> "bytes is null");
             return false;
         }
 
@@ -294,7 +294,7 @@ public final class LayoutComponentsFilter extends Filter {
         if (mixPlaylistsExceptions2.check(bytes).isFiltered())
             return false;
 
-        LogHelper.printDebug(() -> "Filtered mix playlist");
+        Logger.printDebug(() -> "Filtered mix playlist");
         return true;
     }
 

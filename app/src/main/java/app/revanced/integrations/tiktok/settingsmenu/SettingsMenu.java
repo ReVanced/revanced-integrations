@@ -8,15 +8,15 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
+import app.revanced.integrations.shared.Logger;
+import app.revanced.integrations.shared.Utils;
 import com.bytedance.ies.ugc.aweme.commercialize.compliance.personalization.AdPersonalizationActivity;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
-import app.revanced.integrations.tiktok.utils.LogHelper;
-import app.revanced.integrations.tiktok.utils.ReVancedUtils;
 
-
+/** @noinspection unused */
 public class SettingsMenu {
     public static Object createSettingsEntry(String entryClazzName, String entryInfoClazzName) {
         try {
@@ -63,14 +63,14 @@ public class SettingsMenu {
     }
 
     private static void startSettingsActivity() {
-        Context appContext = ReVancedUtils.getAppContext();
+        Context appContext = Utils.getContext();
         if (appContext != null) {
             Intent intent = new Intent(appContext, AdPersonalizationActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             intent.putExtra("revanced", true);
             appContext.startActivity(intent);
         } else {
-            LogHelper.debug(SettingsMenu.class, "ReVancedUtils.getAppContext() return null");
+            Logger.printDebug(() -> "ReVancedUtils.getAppContext() return null");
         }
     }
 }

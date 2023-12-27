@@ -1,7 +1,7 @@
 package app.revanced.integrations.youtube.settingsmenu;
 
 import static android.text.Html.fromHtml;
-import static app.revanced.integrations.youtube.utils.StringRef.str;
+import static app.revanced.integrations.shared.StringRef.str;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -36,8 +36,8 @@ import app.revanced.integrations.youtube.sponsorblock.objects.SegmentCategoryLis
 import app.revanced.integrations.youtube.sponsorblock.objects.UserStats;
 import app.revanced.integrations.youtube.sponsorblock.requests.SBRequester;
 import app.revanced.integrations.youtube.sponsorblock.ui.SponsorBlockViewController;
-import app.revanced.integrations.youtube.utils.LogHelper;
-import app.revanced.integrations.youtube.utils.ReVancedUtils;
+import app.revanced.integrations.shared.Logger;
+import app.revanced.integrations.shared.Utils;
 
 @SuppressWarnings("deprecation")
 public class SponsorBlockSettingsFragment extends PreferenceFragment {
@@ -118,7 +118,7 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment {
             segmentCategory.setEnabled(enabled);
             statsCategory.setEnabled(enabled);
         } catch (Exception ex) {
-            LogHelper.printException(() -> "update settings UI failure", ex);
+            Logger.printException(() -> "update settings UI failure", ex);
         }
     }
 
@@ -165,7 +165,7 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment {
 
             updateUI();
         } catch (Exception ex) {
-            LogHelper.printException(() -> "onCreate failure", ex);
+            Logger.printException(() -> "onCreate failure", ex);
         }
     }
 
@@ -212,7 +212,7 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment {
         showSkipToast.setSummaryOn(str("sb_general_skiptoast_sum_on"));
         showSkipToast.setSummaryOff(str("sb_general_skiptoast_sum_off"));
         showSkipToast.setOnPreferenceClickListener(preference1 -> {
-            ReVancedUtils.showToastShort(str("sb_skipped_sponsor"));
+            Utils.showToastShort(str("sb_skipped_sponsor"));
             return false;
         });
         showSkipToast.setOnPreferenceChangeListener((preference1, newValue) -> {
@@ -268,7 +268,7 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment {
         newSegmentStep.setOnPreferenceChangeListener((preference1, newValue) -> {
             final int newAdjustmentValue = Integer.parseInt(newValue.toString());
             if (newAdjustmentValue == 0) {
-                ReVancedUtils.showToastLong(str("sb_general_adjusting_invalid"));
+                Utils.showToastLong(str("sb_general_adjusting_invalid"));
                 return false;
             }
             Settings.SB_CREATE_NEW_SEGMENT_STEP.saveValue(newAdjustmentValue);
@@ -329,7 +329,7 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment {
         privateUserId.setOnPreferenceChangeListener((preference1, newValue) -> {
             String newUUID = newValue.toString();
             if (!SponsorBlockSettings.isValidSBUserId(newUUID)) {
-                ReVancedUtils.showToastLong(str("sb_general_uuid_invalid"));
+                Utils.showToastLong(str("sb_general_uuid_invalid"));
                 return false;
             }
             Settings.SB_PRIVATE_USER_ID.saveValue(newUUID);
@@ -350,14 +350,14 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment {
             DialogInterface.OnClickListener urlChangeListener = (dialog, buttonPressed) -> {
                 if (buttonPressed == DialogInterface.BUTTON_NEUTRAL) {
                     Settings.SB_API_URL.resetToDefault();
-                    ReVancedUtils.showToastLong(str("sb_api_url_reset"));
+                    Utils.showToastLong(str("sb_api_url_reset"));
                 } else if (buttonPressed == DialogInterface.BUTTON_POSITIVE) {
                     String serverAddress = editText.getText().toString();
                     if (!SponsorBlockSettings.isValidSBServerAddress(serverAddress)) {
-                        ReVancedUtils.showToastLong(str("sb_api_url_invalid"));
+                        Utils.showToastLong(str("sb_api_url_invalid"));
                     } else if (!serverAddress.equals(Settings.SB_API_URL.getString())) {
                         Settings.SB_API_URL.saveValue(serverAddress);
-                        ReVancedUtils.showToastLong(str("sb_api_url_changed"));
+                        Utils.showToastLong(str("sb_api_url_changed"));
                     }
                 }
             };
@@ -375,7 +375,7 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment {
         importExport = new EditTextPreference(context) {
             protected void onPrepareDialogBuilder(AlertDialog.Builder builder) {
                 builder.setNeutralButton(str("sb_settings_copy"), (dialog, which) -> {
-                    ReVancedUtils.setClipboard(getEditText().getText().toString());
+                    Utils.setClipboard(getEditText().getText().toString());
                 });
             }
         };
@@ -411,7 +411,7 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment {
                 segmentCategory.addPreference(new SegmentCategoryListPreference(activity, category));
             }
         } catch (Exception ex) {
-            LogHelper.printException(() -> "updateSegmentCategories failure", ex);
+            Logger.printException(() -> "updateSegmentCategories failure", ex);
         }
     }
 
@@ -454,9 +454,9 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment {
             statsCategory.addPreference(loadingPlaceholderPreference);
             if (Settings.SB_ENABLED.getBoolean()) {
                 loadingPlaceholderPreference.setTitle(str("sb_stats_loading"));
-                ReVancedUtils.runOnBackgroundThread(() -> {
+                Utils.runOnBackgroundThread(() -> {
                     UserStats stats = SBRequester.retrieveUserStats();
-                    ReVancedUtils.runOnMainThread(() -> { // get back on main thread to modify UI elements
+                    Utils.runOnMainThread(() -> { // get back on main thread to modify UI elements
                         addUserStats(loadingPlaceholderPreference, stats);
                         addLocalUserStats();
                     });
@@ -465,12 +465,12 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment {
                 loadingPlaceholderPreference.setTitle(str("sb_stats_sb_disabled"));
             }
         } catch (Exception ex) {
-            LogHelper.printException(() -> "fetchAndDisplayStats failure", ex);
+            Logger.printException(() -> "fetchAndDisplayStats failure", ex);
         }
     }
 
     private void addUserStats(@NonNull Preference loadingPlaceholder, @Nullable UserStats stats) {
-        ReVancedUtils.verifyOnMainThread();
+        Utils.verifyOnMainThread();
         try {
             if (stats == null) {
                 loadingPlaceholder.setTitle(str("sb_stats_connection_failure"));
@@ -488,17 +488,17 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment {
                 preference.setSummary(str("sb_stats_username_change"));
                 preference.setText(userName);
                 preference.setOnPreferenceChangeListener((preference1, value) -> {
-                    ReVancedUtils.runOnBackgroundThread(() -> {
+                    Utils.runOnBackgroundThread(() -> {
                         String newUserName = (String) value;
                         String errorMessage = SBRequester.setUsername(newUserName);
-                        ReVancedUtils.runOnMainThread(() -> {
+                        Utils.runOnMainThread(() -> {
                             if (errorMessage == null) {
                                 preference.setTitle(fromHtml(str("sb_stats_username", newUserName)));
                                 preference.setText(newUserName);
-                                ReVancedUtils.showToastLong(str("sb_stats_username_changed"));
+                                Utils.showToastLong(str("sb_stats_username_changed"));
                             } else {
                                 preference.setText(userName); // revert to previous
-                                ReVancedUtils.showToastLong(errorMessage);
+                                Utils.showToastLong(errorMessage);
                             }
                         });
                     });
@@ -560,7 +560,7 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment {
                 });
             }
         } catch (Exception ex) {
-            LogHelper.printException(() -> "addUserStats failure", ex);
+            Logger.printException(() -> "addUserStats failure", ex);
         }
     }
 

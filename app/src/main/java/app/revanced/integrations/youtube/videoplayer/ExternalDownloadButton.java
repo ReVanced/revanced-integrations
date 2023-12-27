@@ -9,9 +9,9 @@ import androidx.annotation.Nullable;
 
 import app.revanced.integrations.youtube.patches.VideoInformation;
 import app.revanced.integrations.youtube.settings.Settings;
-import app.revanced.integrations.youtube.utils.LogHelper;
-import app.revanced.integrations.youtube.utils.ReVancedUtils;
-import app.revanced.integrations.youtube.utils.StringRef;
+import app.revanced.integrations.shared.Logger;
+import app.revanced.integrations.shared.Utils;
+import app.revanced.integrations.shared.StringRef;
 
 public class ExternalDownloadButton extends BottomControlButton {
     @Nullable
@@ -34,7 +34,7 @@ public class ExternalDownloadButton extends BottomControlButton {
         try {
             instance = new ExternalDownloadButton((ViewGroup) view);
         } catch (Exception ex) {
-            LogHelper.printException(() -> "initializeButton failure", ex);
+            Logger.printException(() -> "initializeButton failure", ex);
         }
     }
 
@@ -46,7 +46,7 @@ public class ExternalDownloadButton extends BottomControlButton {
     }
 
     private static void onDownloadClick(View view) {
-        LogHelper.printDebug(() -> "External download button clicked");
+        Logger.printDebug(() -> "External download button clicked");
 
         final var context = view.getContext();
         // Trim string to avoid any accidental whitespace.
@@ -56,12 +56,12 @@ public class ExternalDownloadButton extends BottomControlButton {
         try {
             packageEnabled = context.getPackageManager().getApplicationInfo(downloaderPackageName, 0).enabled;
         } catch (PackageManager.NameNotFoundException error) {
-            LogHelper.printDebug(() -> "External downloader could not be found: " + error);
+            Logger.printDebug(() -> "External downloader could not be found: " + error);
         }
 
         // If the package is not installed, show the toast
         if (!packageEnabled) {
-            ReVancedUtils.showToastLong(downloaderPackageName + " " + StringRef.str("external_downloader_not_installed_warning"));
+            Utils.showToastLong(downloaderPackageName + " " + StringRef.str("external_downloader_not_installed_warning"));
             return;
         }
 
@@ -75,9 +75,9 @@ public class ExternalDownloadButton extends BottomControlButton {
             intent.putExtra("android.intent.extra.TEXT", content);
             context.startActivity(intent);
 
-            LogHelper.printDebug(() -> "Launched the intent with the content: " + content);
+            Logger.printDebug(() -> "Launched the intent with the content: " + content);
         } catch (Exception error) {
-            LogHelper.printException(() -> "Failed to launch the intent: " + error, error);
+            Logger.printException(() -> "Failed to launch the intent: " + error, error);
         }
     }
 }

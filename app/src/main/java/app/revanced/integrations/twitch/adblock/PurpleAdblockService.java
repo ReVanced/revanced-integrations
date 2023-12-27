@@ -1,13 +1,15 @@
 package app.revanced.integrations.twitch.adblock;
 
+import app.revanced.integrations.shared.Logger;
 import app.revanced.integrations.twitch.api.RetrofitClient;
-import app.revanced.integrations.twitch.utils.LogHelper;
-import app.revanced.integrations.twitch.utils.ReVancedUtils;
 import okhttp3.HttpUrl;
 import okhttp3.Request;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+
+import static app.revanced.integrations.shared.StringRef.str;
 
 public class PurpleAdblockService implements IAdblockService {
     private final Map<String, Boolean> tunnels = new HashMap<>() {{
@@ -17,7 +19,7 @@ public class PurpleAdblockService implements IAdblockService {
 
     @Override
     public String friendlyName() {
-        return ReVancedUtils.getString("revanced_proxy_purpleadblock");
+        return str("revanced_proxy_purpleadblock");
     }
 
     @Override
@@ -33,19 +35,27 @@ public class PurpleAdblockService implements IAdblockService {
             try {
                 var response = RetrofitClient.getInstance().getPurpleAdblockApi().ping(tunnel).execute();
                 if (!response.isSuccessful()) {
-                    LogHelper.error("PurpleAdBlock tunnel $tunnel returned an error: HTTP code %d", response.code());
-                    LogHelper.debug(response.message());
+                    Logger.printException(() ->
+                            "PurpleAdBlock tunnel $tunnel returned an error: HTTP code " + response.code()
+                    );
+                    Logger.printDebug(response::message);
 
                     try (var errorBody = response.errorBody()) {
                         if (errorBody != null) {
-                            LogHelper.debug(errorBody.string());
+                            Logger.printDebug(() -> {
+                                try {
+                                    return errorBody.string();
+                                } catch (IOException e) {
+                                    throw new RuntimeException(e);
+                                }
+                            });
                         }
                     }
 
                     success = false;
                 }
             } catch (Exception ex) {
-                LogHelper.printException("PurpleAdBlock tunnel $tunnel is unavailable", ex);
+                Logger.printException(() -> "PurpleAdBlock tunnel $tunnel is unavailable", ex);
                 success = false;
             }
 
@@ -69,7 +79,7 @@ public class PurpleAdblockService implements IAdblockService {
             // Compose new URL
             var url = HttpUrl.parse(server + "/channel/" + IAdblockService.channelName(originalRequest));
             if (url == null) {
-                LogHelper.error("Failed to parse rewritten URL");
+                Logger.printException(() -> "Failed to parse rewritten URL");
                 return null;
             }
 
@@ -80,7 +90,7 @@ public class PurpleAdblockService implements IAdblockService {
                     .build();
         }
 
-        LogHelper.error("No tunnels are available");
+        Logger.printException(() -> "No tunnels are available");
         return null;
     }
 }

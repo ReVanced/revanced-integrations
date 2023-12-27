@@ -2,8 +2,8 @@ package app.revanced.integrations.youtube.patches.spoof.requests;
 
 import app.revanced.integrations.youtube.requests.Requester;
 import app.revanced.integrations.youtube.requests.Route;
-import app.revanced.integrations.youtube.utils.LogHelper;
-import app.revanced.integrations.youtube.utils.ReVancedUtils;
+import app.revanced.integrations.shared.Logger;
+import app.revanced.integrations.shared.Utils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -36,7 +36,7 @@ final class PlayerRoutes {
 
             JSONObject client = new JSONObject();
             client.put("clientName", "ANDROID");
-            client.put("clientVersion", ReVancedUtils.getVersionName());
+            client.put("clientVersion", Utils.getVersionName());
             client.put("androidSdkVersion", 34);
 
             context.put("client", client);
@@ -44,7 +44,7 @@ final class PlayerRoutes {
             innerTubeBody.put("context", context);
             innerTubeBody.put("videoId", "%s");
         } catch (JSONException e) {
-            LogHelper.printException(() -> "Failed to create innerTubeBody", e);
+            Logger.printException(() -> "Failed to create innerTubeBody", e);
         }
 
         ANDROID_INNER_TUBE_BODY = innerTubeBody.toString();
@@ -69,7 +69,7 @@ final class PlayerRoutes {
             tvEmbedInnerTubeBody.put("context", context);
             tvEmbedInnerTubeBody.put("videoId", "%s");
         } catch (JSONException e) {
-            LogHelper.printException(() -> "Failed to create tvEmbedInnerTubeBody", e);
+            Logger.printException(() -> "Failed to create tvEmbedInnerTubeBody", e);
         }
 
         TV_EMBED_INNER_TUBE_BODY = tvEmbedInnerTubeBody.toString();
@@ -84,7 +84,7 @@ final class PlayerRoutes {
 
         connection.setRequestProperty(
                 "User-Agent", "com.google.android.youtube/" +
-                        ReVancedUtils.getVersionName() +
+                        Utils.getVersionName() +
                         " (Linux; U; Android 12; GB) gzip"
         );
         connection.setRequestProperty("X-Goog-Api-Format-Version", "2");

@@ -2,7 +2,7 @@ package app.revanced.integrations.youtube.patches;
 
 import android.content.Intent;
 import app.revanced.integrations.youtube.settings.Settings;
-import app.revanced.integrations.youtube.utils.LogHelper;
+import app.revanced.integrations.shared.Logger;
 
 @SuppressWarnings("unused")
 public final class ChangeStartPagePatch {
@@ -10,7 +10,7 @@ public final class ChangeStartPagePatch {
         final var startPage = Settings.START_PAGE.getString();
         if (startPage.isEmpty()) return;
 
-        LogHelper.printDebug(() -> "Changing start page to " + startPage);
+        Logger.printDebug(() -> "Changing start page to " + startPage);
         intent.setAction("com.google.android.youtube.action." + startPage);
     }
 }

@@ -7,7 +7,7 @@ import androidx.annotation.Nullable;
 
 import app.revanced.integrations.youtube.patches.CopyVideoUrlPatch;
 import app.revanced.integrations.youtube.settings.Settings;
-import app.revanced.integrations.youtube.utils.LogHelper;
+import app.revanced.integrations.shared.Logger;
 
 public class CopyVideoUrlButton extends BottomControlButton {
     @Nullable
@@ -33,7 +33,7 @@ public class CopyVideoUrlButton extends BottomControlButton {
         try {
             instance = new CopyVideoUrlButton((ViewGroup) view);
         } catch (Exception ex) {
-            LogHelper.printException(() -> "initializeButton failure", ex);
+            Logger.printException(() -> "initializeButton failure", ex);
         }
     }
 

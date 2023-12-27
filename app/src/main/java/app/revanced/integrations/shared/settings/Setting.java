@@ -6,19 +6,23 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import app.revanced.integrations.youtube.settings.SharedPrefCategory;
 import app.revanced.integrations.youtube.sponsorblock.SponsorBlockSettings;
-import app.revanced.integrations.youtube.utils.LogHelper;
-import app.revanced.integrations.youtube.utils.ReVancedUtils;
-import app.revanced.integrations.youtube.utils.StringRef;
+import app.revanced.integrations.shared.Logger;
+import app.revanced.integrations.shared.Utils;
+import app.revanced.integrations.shared.StringRef;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.*;
 
-import static app.revanced.integrations.youtube.utils.StringRef.str;
+import static app.revanced.integrations.shared.StringRef.str;
 
 
-/** @noinspection unused*/
+// TODO: Add generic type to Setting in order to add a Setting#get() method that returns the correct type.
+
+/**
+ * A setting backed by a shared preference.
+ */
 public class Setting {
     /**
      * All settings that were instantiated.
@@ -225,7 +229,7 @@ public class Setting {
      */
     public static void migrateOldSettingToNew(Setting oldSetting, Setting newSetting) {
         if (!oldSetting.isSetToDefault()) {
-            LogHelper.printInfo(() -> "Migrating old setting of '" + oldSetting.value
+            Logger.printInfo(() -> "Migrating old setting of '" + oldSetting.value
                     + "' from: " + oldSetting + " into replacement setting: " + newSetting);
             newSetting.saveValue(oldSetting.value);
             oldSetting.resetToDefault();
@@ -473,7 +477,7 @@ public class Setting {
             // and leave less chance of the user forgetting to copy it
             return export.substring(2, export.length() - 2);
         } catch (JSONException e) {
-            LogHelper.printException(() -> "Export failure", e); // should never happen
+            Logger.printException(() -> "Export failure", e); // should never happen
             return "";
         }
     }
@@ -519,23 +523,23 @@ public class Setting {
                     }
                     numberOfSettingsImported++;
                 } else if (setting.includeWithImportExport && !setting.isSetToDefault()) {
-                    LogHelper.printDebug(() -> "Resetting to default: " + setting);
+                    Logger.printDebug(() -> "Resetting to default: " + setting);
                     rebootSettingChanged |= setting.rebootApp;
                     setting.resetToDefault();
                 }
             }
             numberOfSettingsImported += SponsorBlockSettings.importCategoriesFromFlatJson(json);
 
-            ReVancedUtils.showToastLong(numberOfSettingsImported == 0
+            Utils.showToastLong(numberOfSettingsImported == 0
                     ? str("revanced_settings_import_reset")
                     : str("revanced_settings_import_success", numberOfSettingsImported));
 
             return rebootSettingChanged;
         } catch (JSONException | IllegalArgumentException ex) {
-            ReVancedUtils.showToastLong(str("revanced_settings_import_failure_parse", ex.getMessage()));
-            LogHelper.printInfo(() -> "", ex);
+            Utils.showToastLong(str("revanced_settings_import_failure_parse", ex.getMessage()));
+            Logger.printInfo(() -> "", ex);
         } catch (Exception ex) {
-            LogHelper.printException(() -> "Import failure: " + ex.getMessage(), ex); // should never happen
+            Logger.printException(() -> "Import failure: " + ex.getMessage(), ex); // should never happen
         }
         return false;
     }

@@ -1,4 +1,4 @@
-package app.revanced.integrations.youtube.utils;
+package app.revanced.integrations.shared;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -102,7 +102,7 @@ public class StringRef {
     public String toString() {
         if (!resolved) {
             if (resources == null || packageName == null) {
-                Context context = ReVancedUtils.getContext();
+                Context context = Utils.getContext();
                 resources = context.getResources();
                 packageName = context.getPackageName();
             }
@@ -110,11 +110,11 @@ public class StringRef {
             if (resources != null) {
                 final int identifier = resources.getIdentifier(value, "string", packageName);
                 if (identifier == 0)
-                    LogHelper.printException(() -> "Resource not found: " + value);
+                    Logger.printException(() -> "Resource not found: " + value);
                 else
                     value = resources.getString(identifier);
             } else {
-                LogHelper.printException(() -> "Could not resolve resources!");
+                Logger.printException(() -> "Could not resolve resources!");
             }
         }
         return value;

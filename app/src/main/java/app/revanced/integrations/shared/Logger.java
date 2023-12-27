@@ -1,16 +1,14 @@
-package app.revanced.integrations.youtube.utils;
+package app.revanced.integrations.shared;
 
 import android.util.Log;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import app.revanced.integrations.shared.settings.Settings;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
-import app.revanced.integrations.youtube.settings.Settings;
-
-public class LogHelper {
+public class Logger {
 
     /**
      * Log messages using lambdas.
@@ -129,7 +127,7 @@ public class LogHelper {
             String toastMessageToDisplay = (userToastMessage != null)
                     ? userToastMessage
                     : outerClassSimpleName + ": " + messageString;
-            ReVancedUtils.showToastLong(toastMessageToDisplay);
+            Utils.showToastLong(toastMessageToDisplay);
         }
     }
 

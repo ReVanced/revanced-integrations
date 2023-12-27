@@ -1,6 +1,6 @@
 package app.revanced.integrations.youtube.sponsorblock.ui;
 
-import static app.revanced.integrations.youtube.utils.ReVancedUtils.getResourceIdentifier;
+import static app.revanced.integrations.shared.Utils.getResourceIdentifier;
 
 import android.view.View;
 import android.widget.ImageView;
@@ -10,8 +10,8 @@ import java.util.Objects;
 
 import app.revanced.integrations.youtube.patches.VideoInformation;
 import app.revanced.integrations.youtube.settings.Settings;
-import app.revanced.integrations.youtube.utils.LogHelper;
-import app.revanced.integrations.youtube.utils.ReVancedUtils;
+import app.revanced.integrations.shared.Logger;
+import app.revanced.integrations.shared.Utils;
 import app.revanced.integrations.youtube.videoplayer.BottomControlButton;
 
 public class CreateSegmentButtonController {
@@ -23,7 +23,7 @@ public class CreateSegmentButtonController {
      */
     public static void initialize(View youtubeControlsLayout) {
         try {
-            LogHelper.printDebug(() -> "initializing new segment button");
+            Logger.printDebug(() -> "initializing new segment button");
             ImageView imageView = Objects.requireNonNull(youtubeControlsLayout.findViewById(
                     getResourceIdentifier("sb_sponsorblock_button", "id")));
             imageView.setVisibility(View.GONE);
@@ -33,7 +33,7 @@ public class CreateSegmentButtonController {
 
             buttonReference = new WeakReference<>(imageView);
         } catch (Exception ex) {
-            LogHelper.printException(() -> "initialize failure", ex);
+            Logger.printException(() -> "initialize failure", ex);
         }
     }
 
@@ -83,7 +83,7 @@ public class CreateSegmentButtonController {
                 iView.setVisibility(View.GONE);
             }
         } catch (Exception ex) {
-            LogHelper.printException(() -> "changeVisibility failure", ex);
+            Logger.printException(() -> "changeVisibility failure", ex);
         }
     }
 
@@ -96,7 +96,7 @@ public class CreateSegmentButtonController {
         if (!isShowing) {
             return;
         }
-        ReVancedUtils.verifyOnMainThread();
+        Utils.verifyOnMainThread();
         View v = buttonReference.get();
         if (v == null) {
             return;

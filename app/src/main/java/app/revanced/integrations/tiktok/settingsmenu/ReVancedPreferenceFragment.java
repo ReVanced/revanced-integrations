@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.preference.*;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import app.revanced.integrations.shared.Logger;
 import app.revanced.integrations.shared.Utils;
 import app.revanced.integrations.shared.settings.Setting;
 import app.revanced.integrations.tiktok.settings.SharedPrefCategory;
@@ -17,8 +18,6 @@ import app.revanced.integrations.tiktok.settingsmenu.preference.categories.Downl
 import app.revanced.integrations.tiktok.settingsmenu.preference.categories.FeedFilterPreferenceCategory;
 import app.revanced.integrations.tiktok.settingsmenu.preference.categories.IntegrationsPreferenceCategory;
 import app.revanced.integrations.tiktok.settingsmenu.preference.categories.SimSpoofPreferenceCategory;
-import app.revanced.integrations.tiktok.utils.ReVancedUtils;
-import app.revanced.integrations.youtube.utils.LogHelper;
 
 @SuppressWarnings("deprecation")
 public class ReVancedPreferenceFragment extends PreferenceFragment {
@@ -52,14 +51,14 @@ public class ReVancedPreferenceFragment extends PreferenceFragment {
                 DownloadPathPreference downloadPathPref = (DownloadPathPreference) pref;
                 setting.setValue(downloadPathPref.getValue());
             } else {
-                LogHelper.printException(() -> "Setting cannot be handled: " + pref.getClass() + " " + pref);
+                Logger.printException(() -> "Setting cannot be handled: " + pref.getClass() + " " + pref);
                 return;
             }
-            if (ReVancedUtils.getAppContext() != null && this.settingsInitialized && setting.rebootApp) {
+            if (Utils.getContext() != null && this.settingsInitialized && setting.rebootApp) {
                 rebootDialog(getActivity());
             }
         } catch (Exception ex) {
-            LogHelper.printException(() -> "OnSharedPreferenceChangeListener failure", ex);
+            Logger.printException(() -> "OnSharedPreferenceChangeListener failure", ex);
         }
     };
 
@@ -95,7 +94,7 @@ public class ReVancedPreferenceFragment extends PreferenceFragment {
 
     private void rebootDialog(@NonNull Context context) {
         new AlertDialog.Builder(context).setMessage("Refresh and restart")
-                .setPositiveButton("Restart", (dialog, i) -> Utils.restartApp(context))
+                .setPositiveButton("Restart", (dialog, i) -> app.revanced.integrations.shared.Utils.restartApp(context))
                 .setNegativeButton(android.R.string.cancel, null).show();
     }
 }

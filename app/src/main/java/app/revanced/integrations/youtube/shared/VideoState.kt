@@ -1,6 +1,6 @@
 package app.revanced.integrations.youtube.shared
 
-import app.revanced.integrations.youtube.utils.LogHelper
+import app.revanced.integrations.shared.Logger
 import app.revanced.integrations.youtube.patches.VideoInformation
 
 /**
@@ -25,9 +25,9 @@ enum class VideoState {
         fun setFromString(enumName: String) {
             val state = nameToVideoState[enumName]
             if (state == null) {
-                LogHelper.printException { "Unknown VideoState encountered: $enumName" }
+                Logger.printException { "Unknown VideoState encountered: $enumName" }
             } else if (currentVideoState != state) {
-                LogHelper.printDebug { "VideoState changed to: $state" }
+                Logger.printDebug { "VideoState changed to: $state" }
                 currentVideoState = state
             }
         }

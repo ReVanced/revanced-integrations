@@ -1,4 +1,4 @@
-package app.revanced.integrations.youtube.utils;
+package app.revanced.integrations.youtube;
 
 /**
  * Text pattern searching using a prefix tree (trie).

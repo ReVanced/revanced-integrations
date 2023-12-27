@@ -1,8 +1,8 @@
 package app.revanced.integrations.youtube.patches.theme;
 
 import app.revanced.integrations.youtube.settings.Settings;
-import app.revanced.integrations.youtube.utils.ReVancedUtils;
-import app.revanced.integrations.youtube.utils.ThemeHelper;
+import app.revanced.integrations.shared.Utils;
+import app.revanced.integrations.youtube.ThemeHelper;
 
 public class ThemePatch {
     // color constants used in relation with litho components
@@ -46,12 +46,12 @@ public class ThemePatch {
     }
 
     private static int getBlackColor() {
-        if (blackColor == 0) blackColor = ReVancedUtils.getResourceColor("yt_black1");
+        if (blackColor == 0) blackColor = Utils.getResourceColor("yt_black1");
         return blackColor;
     }
 
     private static int getWhiteColor() {
-        if (whiteColor == 0) whiteColor = ReVancedUtils.getResourceColor("yt_white1");
+        if (whiteColor == 0) whiteColor = Utils.getResourceColor("yt_white1");
         return whiteColor;
     }
 

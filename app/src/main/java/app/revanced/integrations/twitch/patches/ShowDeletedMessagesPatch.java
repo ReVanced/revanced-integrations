@@ -9,10 +9,11 @@ import android.text.style.ForegroundColorSpan;
 import android.text.style.StrikethroughSpan;
 import android.text.style.StyleSpan;
 import app.revanced.integrations.twitch.settings.Settings;
-import app.revanced.integrations.twitch.utils.ReVancedUtils;
 import tv.twitch.android.shared.chat.util.ClickableUsernameSpan;
 
 import java.util.Objects;
+
+import static app.revanced.integrations.shared.StringRef.str;
 
 public class ShowDeletedMessagesPatch {
     public static boolean shouldUseSpoiler() {
@@ -29,7 +30,7 @@ public class ShowDeletedMessagesPatch {
 
         SpannableStringBuilder ssb = new SpannableStringBuilder(original);
         ssb.setSpan(new StrikethroughSpan(), 0, original.length(), 0);
-        ssb.append(" (").append(ReVancedUtils.getString("revanced_deleted_msg")).append(")");
+        ssb.append(" (").append(str("revanced_deleted_msg")).append(")");
         ssb.setSpan(new StyleSpan(Typeface.ITALIC), original.length(), ssb.length(), 0);
 
         // Gray-out username

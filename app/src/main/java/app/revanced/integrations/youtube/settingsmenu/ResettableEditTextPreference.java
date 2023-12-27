@@ -8,11 +8,11 @@ import android.util.AttributeSet;
 import android.widget.Button;
 import android.widget.EditText;
 import app.revanced.integrations.shared.settings.Setting;
-import app.revanced.integrations.youtube.utils.LogHelper;
+import app.revanced.integrations.shared.Logger;
 
 import java.util.Objects;
 
-import static app.revanced.integrations.youtube.utils.StringRef.str;
+import static app.revanced.integrations.shared.StringRef.str;
 
 public class ResettableEditTextPreference extends EditTextPreference {
 
@@ -55,7 +55,7 @@ public class ResettableEditTextPreference extends EditTextPreference {
                 editText.setText(defaultStringValue);
                 editText.setSelection(defaultStringValue.length()); // move cursor to end of text
             } catch (Exception ex) {
-                LogHelper.printException(() -> "reset failure", ex);
+                Logger.printException(() -> "reset failure", ex);
             }
         });
     }

@@ -1,6 +1,6 @@
 package app.revanced.integrations.youtube.sponsorblock;
 
-import static app.revanced.integrations.youtube.utils.StringRef.str;
+import static app.revanced.integrations.shared.StringRef.str;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -28,8 +28,8 @@ import app.revanced.integrations.youtube.sponsorblock.objects.SponsorSegment;
 import app.revanced.integrations.youtube.sponsorblock.objects.SponsorSegment.SegmentVote;
 import app.revanced.integrations.youtube.sponsorblock.requests.SBRequester;
 import app.revanced.integrations.youtube.sponsorblock.ui.SponsorBlockViewController;
-import app.revanced.integrations.youtube.utils.LogHelper;
-import app.revanced.integrations.youtube.utils.ReVancedUtils;
+import app.revanced.integrations.shared.Logger;
+import app.revanced.integrations.shared.Utils;
 
 /**
  * Not thread safe. All fields/methods must be accessed from the main thread.
@@ -76,7 +76,7 @@ public class SponsorBlockUtils {
                 SegmentCategory category = SegmentCategory.categoriesWithoutHighlights()[which];
                 final boolean enableButton;
                 if (category.behaviour == CategoryBehaviour.IGNORE) {
-                    ReVancedUtils.showToastLong(str("sb_new_segment_disabled_category"));
+                    Utils.showToastLong(str("sb_new_segment_disabled_category"));
                     enableButton = false;
                 } else {
                     newUserCreatedSegmentCategory = category;
@@ -87,7 +87,7 @@ public class SponsorBlockUtils {
                         .getButton(DialogInterface.BUTTON_POSITIVE)
                         .setEnabled(enableButton);
             } catch (Exception ex) {
-                LogHelper.printException(() -> "segmentTypeListener failure", ex);
+                Logger.printException(() -> "segmentTypeListener failure", ex);
             }
         }
     };
@@ -115,7 +115,7 @@ public class SponsorBlockUtils {
                         .getButton(DialogInterface.BUTTON_POSITIVE)
                         .setEnabled(false);
             } catch (Exception ex) {
-                LogHelper.printException(() -> "segmentReadyDialogButtonListener failure", ex);
+                Logger.printException(() -> "segmentReadyDialogButtonListener failure", ex);
             }
         }
     };
@@ -152,7 +152,7 @@ public class SponsorBlockUtils {
 
             dialog.dismiss();
         } catch (Exception ex) {
-            LogHelper.printException(() -> "editByHandDialogListener failure", ex);
+            Logger.printException(() -> "editByHandDialogListener failure", ex);
         }
     };
     private static final DialogInterface.OnClickListener segmentVoteClickListener = (dialog, which) -> {
@@ -161,7 +161,7 @@ public class SponsorBlockUtils {
             SponsorSegment[] segments = SegmentPlaybackController.getSegments();
             if (segments == null || segments.length == 0) {
                 // should never be reached
-                LogHelper.printException(() -> "Segment is no longer available on the client");
+                Logger.printException(() -> "Segment is no longer available on the client");
                 return;
             }
             SponsorSegment segment = segments[which];
@@ -196,7 +196,7 @@ public class SponsorBlockUtils {
                     })
                     .show();
         } catch (Exception ex) {
-            LogHelper.printException(() -> "segmentVoteClickListener failure", ex);
+            Logger.printException(() -> "segmentVoteClickListener failure", ex);
         }
     };
 
@@ -215,29 +215,29 @@ public class SponsorBlockUtils {
 
     private static void submitNewSegment() {
         try {
-            ReVancedUtils.verifyOnMainThread();
+            Utils.verifyOnMainThread();
             final long start = newSponsorSegmentStartMillis;
             final long end = newSponsorSegmentEndMillis;
             final String videoId = VideoInformation.getVideoId();
             final long videoLength = VideoInformation.getVideoLength();
             final SegmentCategory segmentCategory = newUserCreatedSegmentCategory;
             if (start < 0 || end < 0 || start >= end || videoLength <= 0 || videoId.isEmpty() || segmentCategory == null) {
-                LogHelper.printException(() -> "invalid parameters");
+                Logger.printException(() -> "invalid parameters");
                 return;
             }
             clearUnsubmittedSegmentTimes();
-            ReVancedUtils.runOnBackgroundThread(() -> {
+            Utils.runOnBackgroundThread(() -> {
                 SBRequester.submitSegments(videoId, segmentCategory.key, start, end, videoLength);
                 SegmentPlaybackController.executeDownloadSegments(videoId);
             });
         } catch (Exception e) {
-            LogHelper.printException(() -> "Unable to submit segment", e);
+            Logger.printException(() -> "Unable to submit segment", e);
         }
     }
 
     public static void onMarkLocationClicked() {
         try {
-            ReVancedUtils.verifyOnMainThread();
+            Utils.verifyOnMainThread();
             newSponsorSegmentDialogShownMillis = VideoInformation.getVideoTime();
 
             new AlertDialog.Builder(SponsorBlockViewController.getOverLaysViewGroupContext())
@@ -251,19 +251,19 @@ public class SponsorBlockUtils {
                     .setPositiveButton(str("sb_new_segment_mark_end"), newSponsorSegmentDialogListener)
                     .show();
         } catch (Exception ex) {
-            LogHelper.printException(() -> "onMarkLocationClicked failure", ex);
+            Logger.printException(() -> "onMarkLocationClicked failure", ex);
         }
     }
 
     public static void onPublishClicked() {
         try {
-            ReVancedUtils.verifyOnMainThread();
+            Utils.verifyOnMainThread();
             if (newSponsorSegmentStartMillis < 0 || newSponsorSegmentEndMillis < 0) {
-                ReVancedUtils.showToastShort(str("sb_new_segment_mark_locations_first"));
+                Utils.showToastShort(str("sb_new_segment_mark_locations_first"));
             } else if (newSponsorSegmentStartMillis >= newSponsorSegmentEndMillis) {
-                ReVancedUtils.showToastShort(str("sb_new_segment_start_is_before_end"));
+                Utils.showToastShort(str("sb_new_segment_start_is_before_end"));
             } else if (!newSponsorSegmentPreviewed && newSponsorSegmentStartMillis != 0) {
-                ReVancedUtils.showToastLong(str("sb_new_segment_preview_segment_first"));
+                Utils.showToastLong(str("sb_new_segment_preview_segment_first"));
             } else {
                 long length = (newSponsorSegmentEndMillis - newSponsorSegmentStartMillis) / 1000;
                 long start = (newSponsorSegmentStartMillis) / 1000;
@@ -279,19 +279,19 @@ public class SponsorBlockUtils {
                         .show();
             }
         } catch (Exception ex) {
-            LogHelper.printException(() -> "onPublishClicked failure", ex);
+            Logger.printException(() -> "onPublishClicked failure", ex);
         }
     }
 
     public static void onVotingClicked(@NonNull Context context) {
         try {
-            ReVancedUtils.verifyOnMainThread();
+            Utils.verifyOnMainThread();
             SponsorSegment[] segments = SegmentPlaybackController.getSegments();
             if (segments == null || segments.length == 0) {
                 // Button is hidden if no segments exist.
                 // But if prior video had segments, and current video does not,
                 // then the button persists until the overlay fades out (this is intentional, as abruptly hiding the button is jarring).
-                ReVancedUtils.showToastShort(str("sb_vote_no_segments"));
+                Utils.showToastShort(str("sb_vote_no_segments"));
                 return;
             }
 
@@ -333,13 +333,13 @@ public class SponsorBlockUtils {
                     .setItems(titles, segmentVoteClickListener)
                     .show();
         } catch (Exception ex) {
-            LogHelper.printException(() -> "onVotingClicked failure", ex);
+            Logger.printException(() -> "onVotingClicked failure", ex);
         }
     }
 
     private static void onNewCategorySelect(@NonNull SponsorSegment segment, @NonNull Context context) {
         try {
-            ReVancedUtils.verifyOnMainThread();
+            Utils.verifyOnMainThread();
             final SegmentCategory[] values = SegmentCategory.categoriesWithoutHighlights();
             CharSequence[] titles = new CharSequence[values.length];
             for (int i = 0; i < values.length; i++) {
@@ -351,17 +351,17 @@ public class SponsorBlockUtils {
                     .setItems(titles, (dialog, which) -> SBRequester.voteToChangeCategoryOnBackgroundThread(segment, values[which]))
                     .show();
         } catch (Exception ex) {
-            LogHelper.printException(() -> "onNewCategorySelect failure", ex);
+            Logger.printException(() -> "onNewCategorySelect failure", ex);
         }
     }
 
     public static void onPreviewClicked() {
         try {
-            ReVancedUtils.verifyOnMainThread();
+            Utils.verifyOnMainThread();
             if (newSponsorSegmentStartMillis < 0 || newSponsorSegmentEndMillis < 0) {
-                ReVancedUtils.showToastShort(str("sb_new_segment_mark_locations_first"));
+                Utils.showToastShort(str("sb_new_segment_mark_locations_first"));
             } else if (newSponsorSegmentStartMillis >= newSponsorSegmentEndMillis) {
-                ReVancedUtils.showToastShort(str("sb_new_segment_start_is_before_end"));
+                Utils.showToastShort(str("sb_new_segment_start_is_before_end"));
             } else {
                 SegmentPlaybackController.removeUnsubmittedSegments(); // If user hits preview more than once before playing.
                 SegmentPlaybackController.addUnsubmittedSegment(
@@ -370,7 +370,7 @@ public class SponsorBlockUtils {
                 VideoInformation.seekTo(newSponsorSegmentStartMillis - 2500);
             }
         } catch (Exception ex) {
-            LogHelper.printException(() -> "onPreviewClicked failure", ex);
+            Logger.printException(() -> "onPreviewClicked failure", ex);
         }
     }
 
@@ -385,13 +385,13 @@ public class SponsorBlockUtils {
         Settings.SB_LOCAL_TIME_SAVED_NUMBER_SEGMENTS.saveValue(Settings.SB_LOCAL_TIME_SAVED_NUMBER_SEGMENTS.getInt() + 1);
 
         if (Settings.SB_TRACK_SKIP_COUNT.getBoolean()) {
-            ReVancedUtils.runOnBackgroundThread(() -> SBRequester.sendSegmentSkippedViewedRequest(segment));
+            Utils.runOnBackgroundThread(() -> SBRequester.sendSegmentSkippedViewedRequest(segment));
         }
     }
 
     public static void onEditByHandClicked() {
         try {
-            ReVancedUtils.verifyOnMainThread();
+            Utils.verifyOnMainThread();
             new AlertDialog.Builder(SponsorBlockViewController.getOverLaysViewGroupContext())
                     .setTitle(str("sb_new_segment_edit_by_hand_title"))
                     .setMessage(str("sb_new_segment_edit_by_hand_content"))
@@ -400,7 +400,7 @@ public class SponsorBlockUtils {
                     .setPositiveButton(str("sb_new_segment_mark_end"), editByHandDialogListener)
                     .show();
         } catch (Exception ex) {
-            LogHelper.printException(() -> "onEditByHandClicked failure", ex);
+            Logger.printException(() -> "onEditByHandClicked failure", ex);
         }
     }
 
@@ -453,9 +453,9 @@ public class SponsorBlockUtils {
                             DialogInterface.BUTTON_NEGATIVE :
                             DialogInterface.BUTTON_POSITIVE);
             } catch (ParseException e) {
-                ReVancedUtils.showToastLong(str("sb_new_segment_edit_by_hand_parse_error"));
+                Utils.showToastLong(str("sb_new_segment_edit_by_hand_parse_error"));
             } catch (Exception ex) {
-                LogHelper.printException(() -> "EditByHandSaveDialogListener failure", ex);
+                Logger.printException(() -> "EditByHandSaveDialogListener failure", ex);
             }
         }
     }

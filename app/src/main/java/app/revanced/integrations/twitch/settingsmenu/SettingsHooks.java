@@ -2,18 +2,17 @@ package app.revanced.integrations.twitch.settingsmenu;
 
 import android.content.Intent;
 import android.os.Bundle;
-
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import app.revanced.integrations.shared.Logger;
+import app.revanced.integrations.shared.Utils;
+import tv.twitch.android.feature.settings.menu.SettingsMenuGroup;
+import tv.twitch.android.settings.SettingsActivity;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import app.revanced.integrations.twitch.utils.LogHelper;
-import app.revanced.integrations.twitch.utils.ReVancedUtils;
-import tv.twitch.android.feature.settings.menu.SettingsMenuGroup;
-import tv.twitch.android.settings.SettingsActivity;
-
+/** @noinspection unused */
 public class SettingsHooks {
     private static final int REVANCED_SETTINGS_MENU_ITEM_ID = 0x7;
     private static final String EXTRA_REVANCED_SETTINGS = "app.revanced.twitch.settings";
@@ -22,16 +21,18 @@ public class SettingsHooks {
      * Launches SettingsActivity and show ReVanced settings
      */
     public static void startSettingsActivity() {
-        LogHelper.debug("Launching ReVanced settings");
+        Logger.printDebug(() -> "Launching ReVanced settings");
 
-        ReVancedUtils.ifContextAttached((c) -> {
-            Intent intent = new Intent(c, SettingsActivity.class);
+        final var context = app.revanced.integrations.shared.Utils.getContext();
+
+        if (context != null) {
+            Intent intent = new Intent(context, SettingsActivity.class);
             Bundle bundle = new Bundle();
             bundle.putBoolean(EXTRA_REVANCED_SETTINGS, true);
             intent.putExtras(bundle);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            c.startActivity(intent);
-        });
+            context.startActivity(intent);
+        }
     }
 
     /**
@@ -39,7 +40,7 @@ public class SettingsHooks {
      * @return Returns string resource id
      */
     public static int getReVancedSettingsString() {
-        return ReVancedUtils.getStringId("revanced_settings");
+        return app.revanced.integrations.twitch.Utils.getStringId("revanced_settings");
     }
 
     /**
@@ -49,13 +50,12 @@ public class SettingsHooks {
     public static List<SettingsMenuGroup> handleSettingMenuCreation(List<SettingsMenuGroup> settingGroups, Object revancedEntry) {
         List<SettingsMenuGroup> groups = new ArrayList<>(settingGroups);
 
-        if(groups.size() < 1) {
+        if (groups.isEmpty()) {
             // Create new menu group if none exist yet
             List<Object> items = new ArrayList<>();
             items.add(revancedEntry);
             groups.add(new SettingsMenuGroup(items));
-        }
-        else {
+        } else {
             // Add to last menu group
             int groupIdx = groups.size() - 1;
             List<Object> items = new ArrayList<>(groups.remove(groupIdx).getSettingsMenuItems());
@@ -63,7 +63,7 @@ public class SettingsHooks {
             groups.add(new SettingsMenuGroup(items));
         }
 
-        LogHelper.debug("%d menu groups in list", settingGroups.size());
+        Logger.printDebug(() -> settingGroups.size() + " menu groups in list");
         return groups;
     }
 
@@ -73,8 +73,8 @@ public class SettingsHooks {
      */
     @SuppressWarnings("rawtypes")
     public static boolean handleSettingMenuOnClick(Enum item) {
-        LogHelper.debug("item %d clicked", item.ordinal());
-        if(item.ordinal() != REVANCED_SETTINGS_MENU_ITEM_ID) {
+        Logger.printDebug(() -> "item " + item.ordinal() + " clicked");
+        if (item.ordinal() != REVANCED_SETTINGS_MENU_ITEM_ID) {
             return false;
         }
 
@@ -87,20 +87,20 @@ public class SettingsHooks {
      * @return Returns true if the revanced settings have been requested by the user, otherwise false
      */
     public static boolean handleSettingsCreation(AppCompatActivity base) {
-        if(!base.getIntent().getBooleanExtra(EXTRA_REVANCED_SETTINGS, false)) {
-            LogHelper.debug("Revanced settings not requested");
+        if (!base.getIntent().getBooleanExtra(EXTRA_REVANCED_SETTINGS, false)) {
+            Logger.printDebug(() -> "Revanced settings not requested");
             return false; // User wants to enter another settings fragment
         }
-        LogHelper.debug("ReVanced settings requested");
+        Logger.printDebug(() -> "ReVanced settings requested");
 
         ReVancedSettingsFragment fragment = new ReVancedSettingsFragment();
         ActionBar supportActionBar = base.getSupportActionBar();
-        if(supportActionBar != null)
-            supportActionBar.setTitle(ReVancedUtils.getStringId("revanced_settings"));
+        if (supportActionBar != null)
+            supportActionBar.setTitle(app.revanced.integrations.twitch.Utils.getStringId("revanced_settings"));
 
         base.getFragmentManager()
                 .beginTransaction()
-                .replace(ReVancedUtils.getIdentifier("fragment_container", "id"), fragment)
+                .replace(Utils.getResourceIdentifier("fragment_container", "id"), fragment)
                 .commit();
         return true;
     }

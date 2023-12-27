@@ -4,9 +4,13 @@ import android.os.Build;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import app.revanced.integrations.shared.Logger;
+import app.revanced.integrations.shared.Utils;
 import app.revanced.integrations.shared.settings.Setting;
+import app.revanced.integrations.youtube.ByteTrieSearch;
+import app.revanced.integrations.youtube.StringTrieSearch;
+import app.revanced.integrations.youtube.TrieSearch;
 import app.revanced.integrations.youtube.settings.Settings;
-import app.revanced.integrations.youtube.utils.*;
 
 import java.nio.ByteBuffer;
 import java.util.*;
@@ -132,7 +136,7 @@ final class CustomFilterGroup extends StringFilterGroup {
         String[] patterns = setting.getString().split("\\s+");
         for (String pattern : patterns) {
             if (!StringTrieSearch.isValidPattern(pattern)) {
-                ReVancedUtils.showToastLong("Invalid custom filter, resetting to default");
+                Utils.showToastLong("Invalid custom filter, resetting to default");
                 setting.resetToDefault();
                 return getFilterPatterns(setting);
             }
@@ -205,7 +209,7 @@ class ByteArrayFilterGroup extends FilterGroup<byte[]> {
 
     private synchronized void buildFailurePatterns() {
         if (failurePatterns != null) return; // Thread race and another thread already initialized the search.
-        LogHelper.printDebug(() -> "Building failure array for: " + this);
+        Logger.printDebug(() -> "Building failure array for: " + this);
         int[][] failurePatterns = new int[filters.length][];
         int i = 0;
         for (byte[] pattern : filters) {
@@ -377,12 +381,12 @@ abstract class Filter {
      */
     boolean isFiltered(@Nullable String identifier, String path, byte[] protobufBufferArray,
                        StringFilterGroup matchedGroup, FilterContentType contentType, int contentIndex) {
-        if (Settings.DEBUG.getBoolean()) {
+        if (app.revanced.integrations.shared.settings.Settings.DEBUG.getBoolean()) {
             String filterSimpleName = getClass().getSimpleName();
             if (contentType == FilterContentType.IDENTIFIER) {
-                LogHelper.printDebug(() -> filterSimpleName + " Filtered identifier: " + identifier);
+                Logger.printDebug(() -> filterSimpleName + " Filtered identifier: " + identifier);
             } else {
-                LogHelper.printDebug(() -> filterSimpleName + " Filtered path: " + path);
+                Logger.printDebug(() -> filterSimpleName + " Filtered path: " + path);
             }
         }
         return true;
@@ -479,7 +483,7 @@ public final class LithoFilterPatch {
                     filter.pathCallbacks, Filter.FilterContentType.PATH);
         }
 
-        LogHelper.printDebug(() -> "Using: "
+        Logger.printDebug(() -> "Using: "
                 + identifierSearchTree.numberOfPatterns() + " identifier filters"
                 + " (" + identifierSearchTree.getEstimatedMemorySize() + " KB), "
                 + pathSearchTree.numberOfPatterns() + " path filters"
@@ -529,24 +533,24 @@ public final class LithoFilterPatch {
 
             ByteBuffer protobufBuffer = bufferThreadLocal.get();
             if (protobufBuffer == null) {
-                LogHelper.printException(() -> "Proto buffer is null"); // Should never happen.
+                Logger.printException(() -> "Proto buffer is null"); // Should never happen.
                 return false;
             }
 
             if (!protobufBuffer.hasArray()) {
-                LogHelper.printDebug(() -> "Proto buffer does not have an array");
+                Logger.printDebug(() -> "Proto buffer does not have an array");
                 return false;
             }
 
             LithoFilterParameters parameter = new LithoFilterParameters(lithoIdentifier, pathBuilder, protobufBuffer);
-            LogHelper.printDebug(() -> "Searching " + parameter);
+            Logger.printDebug(() -> "Searching " + parameter);
 
             if (parameter.identifier != null) {
                 if (identifierSearchTree.matches(parameter.identifier, parameter)) return true;
             }
             if (pathSearchTree.matches(parameter.path, parameter)) return true;
         } catch (Exception ex) {
-            LogHelper.printException(() -> "Litho filter failure", ex);
+            Logger.printException(() -> "Litho filter failure", ex);
         }
 
         return false;

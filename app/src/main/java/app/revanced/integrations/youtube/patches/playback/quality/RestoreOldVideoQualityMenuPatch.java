@@ -7,7 +7,7 @@ import android.widget.ListView;
 
 import app.revanced.integrations.youtube.patches.components.VideoQualityMenuFilterPatch;
 import app.revanced.integrations.youtube.settings.Settings;
-import app.revanced.integrations.youtube.utils.LogHelper;
+import app.revanced.integrations.shared.Logger;
 
 /**
  * This patch contains the logic to show the old video quality menu.
@@ -38,7 +38,7 @@ public final class RestoreOldVideoQualityMenuPatch {
                     }
                 }
             } catch (Exception ex) {
-                LogHelper.printException(() -> "onFlyoutMenuCreate failure", ex);
+                Logger.printException(() -> "onFlyoutMenuCreate failure", ex);
             }
         });
     }
@@ -52,14 +52,14 @@ public final class RestoreOldVideoQualityMenuPatch {
         listView.setOnHierarchyChangeListener(new ViewGroup.OnHierarchyChangeListener() {
             @Override
             public void onChildViewAdded(View parent, View child) {
-                LogHelper.printDebug(() -> "Added listener to old type of quality menu");
+                Logger.printDebug(() -> "Added listener to old type of quality menu");
 
                 parent.setVisibility(View.GONE);
 
                 final var indexOfAdvancedQualityMenuItem = 4;
                 if (listView.indexOfChild(child) != indexOfAdvancedQualityMenuItem) return;
 
-                LogHelper.printDebug(() -> "Found advanced menu item in old type of quality menu");
+                Logger.printDebug(() -> "Found advanced menu item in old type of quality menu");
 
                 final var qualityItemMenuPosition = 4;
                 listView.performItemClick(null, qualityItemMenuPosition, 0);

@@ -1,14 +1,14 @@
 package app.revanced.integrations.youtube.sponsorblock.objects;
 
-import static app.revanced.integrations.youtube.utils.StringRef.sf;
+import static app.revanced.integrations.shared.StringRef.sf;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import java.util.Objects;
 
-import app.revanced.integrations.youtube.utils.ReVancedUtils;
-import app.revanced.integrations.youtube.utils.StringRef;
+import app.revanced.integrations.shared.Utils;
+import app.revanced.integrations.shared.StringRef;
 
 public enum CategoryBehaviour {
     SKIP_AUTOMATICALLY("skip", 2, true, sf("sb_skip_automatically")),
@@ -63,7 +63,7 @@ public enum CategoryBehaviour {
     private static String[] behaviorDescriptionsWithoutSkipOnce;
 
     private static void createNameAndKeyArrays() {
-        ReVancedUtils.verifyOnMainThread();
+        Utils.verifyOnMainThread();
 
         CategoryBehaviour[] behaviours = values();
         final int behaviorLength = behaviours.length;

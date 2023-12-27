@@ -3,7 +3,7 @@ package app.revanced.integrations.youtube.shared
 import android.view.View
 import android.view.ViewGroup
 import app.revanced.integrations.youtube.swipecontrols.misc.Rectangle
-import app.revanced.integrations.youtube.utils.Event
+import app.revanced.integrations.youtube.Event
 
 /**
  * hooking class for player overlays

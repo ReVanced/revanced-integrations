@@ -1,6 +1,6 @@
 package app.revanced.integrations.youtube.sponsorblock.ui;
 
-import static app.revanced.integrations.youtube.utils.ReVancedUtils.getResourceIdentifier;
+import static app.revanced.integrations.shared.Utils.getResourceIdentifier;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -17,8 +17,8 @@ import java.util.Objects;
 import app.revanced.integrations.youtube.settings.Settings;
 import app.revanced.integrations.youtube.shared.PlayerType;
 import app.revanced.integrations.youtube.sponsorblock.objects.SponsorSegment;
-import app.revanced.integrations.youtube.utils.LogHelper;
-import app.revanced.integrations.youtube.utils.ReVancedUtils;
+import app.revanced.integrations.shared.Logger;
+import app.revanced.integrations.shared.Utils;
 
 public class SponsorBlockViewController {
     private static WeakReference<RelativeLayout> inlineSponsorOverlayRef = new WeakReference<>(null);
@@ -53,12 +53,12 @@ public class SponsorBlockViewController {
      */
     public static void initialize(ViewGroup viewGroup) {
         try {
-            LogHelper.printDebug(() -> "initializing");
+            Logger.printDebug(() -> "initializing");
 
             // hide any old components, just in case they somehow are still hanging around
             hideAll();
 
-            Context context = ReVancedUtils.getContext();
+            Context context = Utils.getContext();
             RelativeLayout layout = new RelativeLayout(context);
             layout.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,RelativeLayout.LayoutParams.MATCH_PARENT));
             LayoutInflater.from(context).inflate(getResourceIdentifier("inline_sponsor_overlay", "layout"), layout);
@@ -91,7 +91,7 @@ public class SponsorBlockViewController {
             skipHighlight = null;
             skipSegment = null;
         } catch (Exception ex) {
-            LogHelper.printException(() -> "initialize failure", ex);
+            Logger.printException(() -> "initialize failure", ex);
         }
     }
 
@@ -136,7 +136,7 @@ public class SponsorBlockViewController {
     public static void toggleNewSegmentLayoutVisibility() {
         NewSegmentLayout newSegmentLayout = newSegmentLayoutRef.get();
         if (newSegmentLayout == null) { // should never happen
-            LogHelper.printException(() -> "toggleNewSegmentLayoutVisibility failure");
+            Logger.printException(() -> "toggleNewSegmentLayoutVisibility failure");
             return;
         }
         newSegmentLayoutVisible = (newSegmentLayout.getVisibility() != View.VISIBLE);
@@ -179,7 +179,7 @@ public class SponsorBlockViewController {
             setSkipButtonMargins(skipSponsorButton, isWatchFullScreen);
             setViewVisibility(skipSponsorButton, skipSegment != null);
         } catch (Exception ex) {
-            LogHelper.printException(() -> "Player type changed failure", ex);
+            Logger.printException(() -> "Player type changed failure", ex);
         }
     }
 
@@ -197,7 +197,7 @@ public class SponsorBlockViewController {
                                          int defaultBottomMargin, int ctaBottomMargin) {
         RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) view.getLayoutParams();
         if (params == null) {
-            LogHelper.printException(() -> "Unable to setNewSegmentLayoutMargins (params are null)");
+            Logger.printException(() -> "Unable to setNewSegmentLayoutMargins (params are null)");
             return;
         }
         params.bottomMargin = fullScreen ? ctaBottomMargin : defaultBottomMargin;
@@ -209,7 +209,7 @@ public class SponsorBlockViewController {
      */
     public static void endOfVideoReached() {
         try {
-            LogHelper.printDebug(() -> "endOfVideoReached");
+            Logger.printDebug(() -> "endOfVideoReached");
             // the buttons automatically set themselves to visible when appropriate,
             // but if buttons are showing when the end of the video is reached then they need
             // to be forcefully hidden
@@ -218,7 +218,7 @@ public class SponsorBlockViewController {
                 VotingButtonController.hide();
             }
         } catch (Exception ex) {
-            LogHelper.printException(() -> "endOfVideoReached failure", ex);
+            Logger.printException(() -> "endOfVideoReached failure", ex);
         }
     }
 }

@@ -3,8 +3,8 @@ package app.revanced.integrations.youtube.patches.theme;
 import android.graphics.Color;
 
 import app.revanced.integrations.youtube.settings.Settings;
-import app.revanced.integrations.youtube.utils.LogHelper;
-import app.revanced.integrations.youtube.utils.ReVancedUtils;
+import app.revanced.integrations.shared.Logger;
+import app.revanced.integrations.shared.Utils;
 
 public final class SeekbarColorPatch {
 
@@ -47,7 +47,7 @@ public final class SeekbarColorPatch {
             seekbarColor = Color.parseColor(Settings.SEEKBAR_CUSTOM_COLOR_VALUE.getString());
             Color.colorToHSV(seekbarColor, customSeekbarColorHSV);
         } catch (Exception ex) {
-            ReVancedUtils.showToastShort("Invalid seekbar color value. Using default value.");
+            Utils.showToastShort("Invalid seekbar color value. Using default value.");
             Settings.SEEKBAR_CUSTOM_COLOR_VALUE.resetToDefault();
             loadCustomSeekbarColor();
         }
@@ -119,11 +119,11 @@ public final class SeekbarColorPatch {
 
             final int replacementAlpha = clamp(Color.alpha(seekbarColor) + alphaDifference, 0, 255);
             final int replacementColor = Color.HSVToColor(replacementAlpha, hsv);
-            LogHelper.printDebug(() -> String.format("Original color: #%08X  replacement color: #%08X",
+            Logger.printDebug(() -> String.format("Original color: #%08X  replacement color: #%08X",
                             originalColor, replacementColor));
             return replacementColor;
         } catch (Exception ex) {
-            LogHelper.printException(() -> "getSeekbarColorValue failure", ex);
+            Logger.printException(() -> "getSeekbarColorValue failure", ex);
             return originalColor;
         }
     }

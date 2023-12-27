@@ -4,7 +4,7 @@ import app.revanced.integrations.tiktok.settings.Settings;
 import com.ss.android.ugc.aweme.feed.model.Aweme;
 import com.ss.android.ugc.aweme.feed.model.AwemeStatistics;
 
-import static app.revanced.integrations.tiktok.utils.ReVancedUtils.parseMinMax;
+import static app.revanced.integrations.tiktok.Utils.parseMinMax;
 
 public class ViewCountFilter implements IFilter {
     final long minView;

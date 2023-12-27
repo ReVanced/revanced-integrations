@@ -7,9 +7,9 @@ import android.view.View;
 import androidx.annotation.Nullable;
 
 import app.revanced.integrations.youtube.settings.Settings;
-import app.revanced.integrations.youtube.utils.LogHelper;
-import app.revanced.integrations.youtube.utils.ReVancedUtils;
-import app.revanced.integrations.youtube.utils.StringTrieSearch;
+import app.revanced.integrations.shared.Logger;
+import app.revanced.integrations.shared.Utils;
+import app.revanced.integrations.youtube.StringTrieSearch;
 
 @SuppressWarnings("unused")
 public final class AdsFilter extends Filter {
@@ -149,7 +149,7 @@ public final class AdsFilter extends Filter {
      * @param view The view, which shows ads.
      */
     public static void hideAdAttributionView(View view) {
-        ReVancedUtils.hideViewBy1dpUnderCondition(Settings.HIDE_GENERAL_ADS, view);
+        Utils.hideViewBy1dpUnderCondition(Settings.HIDE_GENERAL_ADS, view);
     }
 
     /**
@@ -164,8 +164,8 @@ public final class AdsFilter extends Filter {
         if (currentTime - lastTimeClosedFullscreenAd < 10000) return;
         lastTimeClosedFullscreenAd = currentTime;
 
-        LogHelper.printDebug(() -> "Closing fullscreen ad");
+        Logger.printDebug(() -> "Closing fullscreen ad");
 
-        ReVancedUtils.runOnMainThreadDelayed(() -> instrumentation.sendKeyDownUpSync(KeyEvent.KEYCODE_BACK), 1000);
+        Utils.runOnMainThreadDelayed(() -> instrumentation.sendKeyDownUpSync(KeyEvent.KEYCODE_BACK), 1000);
     }
 }

@@ -4,8 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import app.revanced.integrations.youtube.utils.LogHelper;
-import app.revanced.integrations.youtube.utils.ReVancedUtils;
+import app.revanced.integrations.shared.Logger;
+import app.revanced.integrations.shared.Utils;
 
 import java.util.Objects;
 
@@ -31,11 +31,11 @@ public enum SharedPrefCategory {
 
     SharedPrefCategory(@NonNull String prefName) {
         this.prefName = Objects.requireNonNull(prefName);
-        preferences = Objects.requireNonNull(ReVancedUtils.getContext()).getSharedPreferences(prefName, Context.MODE_PRIVATE);
+        preferences = Objects.requireNonNull(Utils.getContext()).getSharedPreferences(prefName, Context.MODE_PRIVATE);
     }
 
     private void removeConflictingPreferenceKeyValue(@NonNull String key) {
-        LogHelper.printException(() -> "Found conflicting preference: " + key);
+        Logger.printException(() -> "Found conflicting preference: " + key);
         preferences.edit().remove(key).apply();
     }
 

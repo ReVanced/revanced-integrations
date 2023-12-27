@@ -9,8 +9,8 @@ import androidx.annotation.RequiresApi;
 import app.revanced.integrations.youtube.patches.announcements.requests.AnnouncementsRoutes;
 import app.revanced.integrations.youtube.requests.Requester;
 import app.revanced.integrations.youtube.settings.Settings;
-import app.revanced.integrations.youtube.utils.LogHelper;
-import app.revanced.integrations.youtube.utils.ReVancedUtils;
+import app.revanced.integrations.shared.Logger;
+import app.revanced.integrations.shared.Utils;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -33,13 +33,13 @@ public final class AnnouncementsPatch {
         if (!Settings.ANNOUNCEMENTS.getBoolean()) return;
 
         // Check if there is internet connection
-        if (!ReVancedUtils.isNetworkConnected()) return;
+        if (!Utils.isNetworkConnected()) return;
 
-        ReVancedUtils.runOnBackgroundThread(() -> {
+        Utils.runOnBackgroundThread(() -> {
             try {
                 HttpURLConnection connection = AnnouncementsRoutes.getAnnouncementsConnectionFromRoute(GET_LATEST_ANNOUNCEMENT, CONSUMER);
 
-                LogHelper.printDebug(() -> "Get latest announcement route connection url: " + connection.getURL().toString());
+                Logger.printDebug(() -> "Get latest announcement route connection url: " + connection.getURL().toString());
 
                 try {
                     // Do not show the announcement if the request failed.
@@ -47,14 +47,14 @@ public final class AnnouncementsPatch {
                         if (Settings.ANNOUNCEMENT_LAST_HASH.getString().isEmpty()) return;
 
                         Settings.ANNOUNCEMENT_LAST_HASH.resetToDefault();
-                        ReVancedUtils.showToastLong("Failed to get announcement");
+                        Utils.showToastLong("Failed to get announcement");
 
                         return;
                     }
                 } catch (IOException ex) {
                     final var message = "Failed connecting to announcements provider";
 
-                    LogHelper.printException(() -> message, ex);
+                    Logger.printException(() -> message, ex);
                     return;
                 }
 
@@ -77,7 +77,7 @@ public final class AnnouncementsPatch {
 
                     if (!announcement.isNull("level")) level = Level.fromInt(announcement.getInt("level"));
                 } catch (Throwable ex) {
-                    LogHelper.printException(() -> "Failed to parse announcement. Fall-backing to raw string", ex);
+                    Logger.printException(() -> "Failed to parse announcement. Fall-backing to raw string", ex);
 
                     title = "Announcement";
                     message = jsonString;
@@ -87,7 +87,7 @@ public final class AnnouncementsPatch {
                 final var finalMessage = Html.fromHtml(message, FROM_HTML_MODE_COMPACT);
                 final Level finalLevel = level;
 
-                ReVancedUtils.runOnMainThread(() -> {
+                Utils.runOnMainThread(() -> {
                     // Show the announcement.
                     var alertDialog = new android.app.AlertDialog.Builder(context)
                             .setTitle(finalTitle)
@@ -109,7 +109,7 @@ public final class AnnouncementsPatch {
             } catch (Exception e) {
                 final var message = "Failed to get announcement";
 
-                LogHelper.printException(() -> message, e);
+                Logger.printException(() -> message, e);
             }
         });
     }

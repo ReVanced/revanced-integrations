@@ -1,6 +1,6 @@
 package app.revanced.integrations.youtube.requests;
 
-import app.revanced.integrations.youtube.utils.ReVancedUtils;
+import app.revanced.integrations.shared.Utils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -24,7 +24,7 @@ public class Requester {
         String url = apiUrl + route.getCompiledRoute();
         HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
         connection.setRequestMethod(route.getMethod().name());
-        connection.setRequestProperty("User-Agent", System.getProperty("http.agent") + "; ReVanced/" + ReVancedUtils.getVersionName());
+        connection.setRequestProperty("User-Agent", System.getProperty("http.agent") + "; ReVanced/" + Utils.getVersionName());
 
         return connection;
     }

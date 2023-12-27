@@ -1,12 +1,12 @@
 package app.revanced.integrations.youtube.patches.spoof.requests;
 
-import static app.revanced.integrations.youtube.patches.spoof.requests.PlayerRoutes.ANDROID_INNER_TUBE_BODY;
-import static app.revanced.integrations.youtube.patches.spoof.requests.PlayerRoutes.GET_STORYBOARD_SPEC_RENDERER;
-import static app.revanced.integrations.youtube.patches.spoof.requests.PlayerRoutes.TV_EMBED_INNER_TUBE_BODY;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
+import app.revanced.integrations.shared.settings.Settings;
+import app.revanced.integrations.youtube.patches.spoof.StoryboardRenderer;
+import app.revanced.integrations.youtube.requests.Requester;
+import app.revanced.integrations.shared.Logger;
+import app.revanced.integrations.shared.Utils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -16,11 +16,7 @@ import java.net.SocketTimeoutException;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
-import app.revanced.integrations.youtube.patches.spoof.StoryboardRenderer;
-import app.revanced.integrations.youtube.requests.Requester;
-import app.revanced.integrations.youtube.settings.Settings;
-import app.revanced.integrations.youtube.utils.LogHelper;
-import app.revanced.integrations.youtube.utils.ReVancedUtils;
+import static app.revanced.integrations.youtube.patches.spoof.requests.PlayerRoutes.*;
 
 public class StoryboardRendererRequester {
 
@@ -39,21 +35,21 @@ public class StoryboardRendererRequester {
         final boolean randomlyWait = false; // Enable to simulate slow connection responses.
         if (randomlyWait) {
             final long maximumTimeToRandomlyWait = 10000;
-            ReVancedUtils.doNothingForDuration(maximumTimeToRandomlyWait);
+            Utils.doNothingForDuration(maximumTimeToRandomlyWait);
         }
     }
 
     private static void handleConnectionError(@NonNull String toastMessage, @Nullable Exception ex,
                                               boolean showToastOnIOException) {
-        if (showToastOnIOException) ReVancedUtils.showToastShort(toastMessage);
-        LogHelper.printInfo(() -> toastMessage, ex);
+        if (showToastOnIOException) Utils.showToastShort(toastMessage);
+        Logger.printInfo(() -> toastMessage, ex);
     }
 
     @Nullable
     private static JSONObject fetchPlayerResponse(@NonNull String requestBody, boolean showToastOnIOException) {
         final long startTime = System.currentTimeMillis();
         try {
-            ReVancedUtils.verifyOffMainThread();
+            Utils.verifyOffMainThread();
             Objects.requireNonNull(requestBody);
 
             final byte[] innerTubeBody = requestBody.getBytes(StandardCharsets.UTF_8);
@@ -76,9 +72,9 @@ public class StoryboardRendererRequester {
             handleConnectionError("Spoof storyboard temporarily not available: " + ex.getMessage(),
                     ex, showToastOnIOException);
         } catch (Exception ex) {
-            LogHelper.printException(() -> "Spoof storyboard fetch failed", ex); // Should never happen.
+            Logger.printException(() -> "Spoof storyboard fetch failed", ex); // Should never happen.
         } finally {
-            LogHelper.printDebug(() -> "Request took: " + (System.currentTimeMillis() - startTime) + "ms");
+            Logger.printDebug(() -> "Request took: " + (System.currentTimeMillis() - startTime) + "ms");
         }
 
         return null;
@@ -88,7 +84,7 @@ public class StoryboardRendererRequester {
         try {
             return playerResponse.getJSONObject("playabilityStatus").getString("status").equals("OK");
         } catch (JSONException e) {
-            LogHelper.printDebug(() -> "Failed to get playabilityStatus for response: " + playerResponse);
+            Logger.printDebug(() -> "Failed to get playabilityStatus for response: " + playerResponse);
         }
 
         return false;
@@ -112,9 +108,9 @@ public class StoryboardRendererRequester {
     @Nullable
     private static StoryboardRenderer getStoryboardRendererUsingResponse(@NonNull JSONObject playerResponse) {
         try {
-            LogHelper.printDebug(() -> "Parsing response: " + playerResponse);
+            Logger.printDebug(() -> "Parsing response: " + playerResponse);
             if (!playerResponse.has("storyboards")) {
-                LogHelper.printDebug(() -> "Using empty storyboard");
+                Logger.printDebug(() -> "Using empty storyboard");
                 return emptyStoryboard;
             }
             final JSONObject storyboards = playerResponse.getJSONObject("storyboards");
@@ -132,11 +128,11 @@ public class StoryboardRendererRequester {
                             : null
             );
 
-            LogHelper.printDebug(() -> "Fetched: " + renderer);
+            Logger.printDebug(() -> "Fetched: " + renderer);
 
             return renderer;
         } catch (JSONException e) {
-            LogHelper.printException(() -> "Failed to get storyboardRenderer", e);
+            Logger.printException(() -> "Failed to get storyboardRenderer", e);
         }
 
         return null;
@@ -149,11 +145,11 @@ public class StoryboardRendererRequester {
         var renderer = getStoryboardRendererUsingBody(
                 String.format(ANDROID_INNER_TUBE_BODY, videoId), false);
         if (renderer == null) {
-            LogHelper.printDebug(() -> videoId + " not available using Android client");
+            Logger.printDebug(() -> videoId + " not available using Android client");
             renderer = getStoryboardRendererUsingBody(
                     String.format(TV_EMBED_INNER_TUBE_BODY, videoId, videoId), true);
             if (renderer == null) {
-                LogHelper.printDebug(() -> videoId + " not available using TV embedded client");
+                Logger.printDebug(() -> videoId + " not available using TV embedded client");
             }
         }
 

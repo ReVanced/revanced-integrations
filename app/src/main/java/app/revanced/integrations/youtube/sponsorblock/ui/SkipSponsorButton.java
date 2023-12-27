@@ -1,9 +1,9 @@
 package app.revanced.integrations.youtube.sponsorblock.ui;
 
-import static app.revanced.integrations.youtube.utils.ReVancedUtils.getResourceColor;
-import static app.revanced.integrations.youtube.utils.ReVancedUtils.getResourceDimension;
-import static app.revanced.integrations.youtube.utils.ReVancedUtils.getResourceDimensionPixelSize;
-import static app.revanced.integrations.youtube.utils.ReVancedUtils.getResourceIdentifier;
+import static app.revanced.integrations.shared.Utils.getResourceColor;
+import static app.revanced.integrations.shared.Utils.getResourceDimension;
+import static app.revanced.integrations.shared.Utils.getResourceDimensionPixelSize;
+import static app.revanced.integrations.shared.Utils.getResourceIdentifier;
 
 import android.content.Context;
 import android.graphics.Canvas;

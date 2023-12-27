@@ -3,8 +3,8 @@ package app.revanced.integrations.youtube.patches;
 import androidx.annotation.NonNull;
 import app.revanced.integrations.youtube.patches.playback.speed.RememberPlaybackSpeedPatch;
 import app.revanced.integrations.youtube.shared.VideoState;
-import app.revanced.integrations.youtube.utils.LogHelper;
-import app.revanced.integrations.youtube.utils.ReVancedUtils;
+import app.revanced.integrations.shared.Logger;
+import app.revanced.integrations.shared.Utils;
 
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Method;
@@ -55,7 +55,7 @@ public final class VideoInformation {
             seekMethod = playerController.getClass().getMethod(SEEK_METHOD_NAME, Long.TYPE);
             seekMethod.setAccessible(true);
         } catch (Exception ex) {
-            LogHelper.printException(() -> "Failed to initialize", ex);
+            Logger.printException(() -> "Failed to initialize", ex);
         }
     }
 
@@ -66,7 +66,7 @@ public final class VideoInformation {
      */
     public static void setVideoId(@NonNull String newlyLoadedVideoId) {
         if (!videoId.equals(newlyLoadedVideoId)) {
-            LogHelper.printDebug(() -> "New video id: " + newlyLoadedVideoId);
+            Logger.printDebug(() -> "New video id: " + newlyLoadedVideoId);
             videoId = newlyLoadedVideoId;
         }
     }
@@ -87,7 +87,7 @@ public final class VideoInformation {
         if (!isShort || isShortAndOpeningOrPlaying) {
             if (videoIdIsShort != isShort) {
                 videoIdIsShort = isShort;
-                LogHelper.printDebug(() -> "videoIdIsShort: " + isShort);
+                Logger.printDebug(() -> "videoIdIsShort: " + isShort);
             }
         }
         return signature; // Return the original value since we are observing and not modifying.
@@ -100,7 +100,7 @@ public final class VideoInformation {
      */
     public static void setPlayerResponseVideoId(@NonNull String videoId, boolean isShortAndOpeningOrPlaying) {
         if (!playerResponseVideoId.equals(videoId)) {
-            LogHelper.printDebug(() -> "New player response video id: " + videoId);
+            Logger.printDebug(() -> "New player response video id: " + videoId);
             playerResponseVideoId = videoId;
         }
     }
@@ -112,7 +112,7 @@ public final class VideoInformation {
      * @param userSelectedPlaybackSpeed The playback speed the user selected
      */
     public static void userSelectedPlaybackSpeed(float userSelectedPlaybackSpeed) {
-        LogHelper.printDebug(() -> "User selected playback speed: " + userSelectedPlaybackSpeed);
+        Logger.printDebug(() -> "User selected playback speed: " + userSelectedPlaybackSpeed);
         playbackSpeed = userSelectedPlaybackSpeed;
     }
 
@@ -123,7 +123,7 @@ public final class VideoInformation {
      */
     public static void overridePlaybackSpeed(float speedOverride) {
         if (playbackSpeed != speedOverride) {
-            LogHelper.printDebug(() -> "Overriding playback speed to: " + speedOverride);
+            Logger.printDebug(() -> "Overriding playback speed to: " + speedOverride);
             playbackSpeed = speedOverride;
         }
     }
@@ -135,7 +135,7 @@ public final class VideoInformation {
      */
     public static void setVideoLength(final long length) {
         if (videoLength != length) {
-            LogHelper.printDebug(() -> "Current video length: " + length);
+            Logger.printDebug(() -> "Current video length: " + length);
             videoLength = length;
         }
     }
@@ -161,7 +161,7 @@ public final class VideoInformation {
      * @return true if the seek was successful.
      */
     public static boolean seekTo(final long seekTime) {
-        ReVancedUtils.verifyOnMainThread();
+        Utils.verifyOnMainThread();
         try {
             final long videoTime = getVideoTime();
             final long videoLength = getVideoLength();
@@ -172,16 +172,16 @@ public final class VideoInformation {
                 // Both the current video time and the seekTo are in the last 250ms of the video.
                 // Ignore this seek call, otherwise if a video ends with multiple closely timed segments
                 // then seeking here can create an infinite loop of skip attempts.
-                LogHelper.printDebug(() -> "Ignoring seekTo call as video playback is almost finished. "
+                Logger.printDebug(() -> "Ignoring seekTo call as video playback is almost finished. "
                         + " videoTime: " + videoTime + " videoLength: " + videoLength + " seekTo: " + seekTime);
                 return false;
             }
 
-            LogHelper.printDebug(() -> "Seeking to " + adjustedSeekTime);
+            Logger.printDebug(() -> "Seeking to " + adjustedSeekTime);
             //noinspection DataFlowIssue
             return (Boolean) seekMethod.invoke(playerControllerRef.get(), adjustedSeekTime);
         } catch (Exception ex) {
-            LogHelper.printException(() -> "Failed to seek", ex);
+            Logger.printException(() -> "Failed to seek", ex);
             return false;
         }
     }

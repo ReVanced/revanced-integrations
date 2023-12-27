@@ -1,4 +1,4 @@
-package app.revanced.integrations.youtube.utils;
+package app.revanced.integrations.youtube;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;

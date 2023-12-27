@@ -14,8 +14,8 @@ import java.util.Map;
 import app.revanced.integrations.youtube.patches.ReturnYouTubeDislikePatch;
 import app.revanced.integrations.youtube.patches.VideoInformation;
 import app.revanced.integrations.youtube.settings.Settings;
-import app.revanced.integrations.youtube.utils.LogHelper;
-import app.revanced.integrations.youtube.utils.TrieSearch;
+import app.revanced.integrations.shared.Logger;
+import app.revanced.integrations.youtube.TrieSearch;
 
 /**
  * Searches for video id's in the proto buffer of Shorts dislike.
@@ -60,11 +60,11 @@ public final class ReturnYouTubeDislikeFilterPatch extends Filter {
             }
             synchronized (lastVideoIds) {
                 if (lastVideoIds.put(videoId, Boolean.TRUE) == null) {
-                    LogHelper.printDebug(() -> "New Short video id: " + videoId);
+                    Logger.printDebug(() -> "New Short video id: " + videoId);
                 }
             }
         } catch (Exception ex) {
-            LogHelper.printException(() -> "newPlayerResponseVideoId failure", ex);
+            Logger.printException(() -> "newPlayerResponseVideoId failure", ex);
         }
     }
 

@@ -4,7 +4,7 @@ import static app.revanced.integrations.youtube.sponsorblock.objects.CategoryBeh
 import static app.revanced.integrations.youtube.sponsorblock.objects.CategoryBehaviour.MANUAL_SKIP;
 import static app.revanced.integrations.youtube.sponsorblock.objects.CategoryBehaviour.SKIP_AUTOMATICALLY;
 import static app.revanced.integrations.youtube.sponsorblock.objects.CategoryBehaviour.SKIP_AUTOMATICALLY_ONCE;
-import static app.revanced.integrations.youtube.utils.StringRef.sf;
+import static app.revanced.integrations.shared.StringRef.sf;
 
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -27,8 +27,8 @@ import java.util.Objects;
 
 import app.revanced.integrations.youtube.settings.Settings;
 import app.revanced.integrations.youtube.settings.SharedPrefCategory;
-import app.revanced.integrations.youtube.utils.LogHelper;
-import app.revanced.integrations.youtube.utils.StringRef;
+import app.revanced.integrations.shared.Logger;
+import app.revanced.integrations.shared.StringRef;
 
 public enum SegmentCategory {
     SPONSOR("sponsor", sf("sb_segments_sponsor"), sf("sb_segments_sponsor_sum"), sf("sb_skip_button_sponsor"), sf("sb_skipped_sponsor"),
@@ -120,7 +120,7 @@ public enum SegmentCategory {
 
     public static void loadFromPreferences() {
         SharedPreferences preferences = SharedPrefCategory.SPONSOR_BLOCK.preferences;
-        LogHelper.printDebug(() -> "loadFromPreferences");
+        Logger.printDebug(() -> "loadFromPreferences");
         for (SegmentCategory category : categoriesWithoutUnsubmitted()) {
             category.load(preferences);
         }
@@ -246,7 +246,7 @@ public enum SegmentCategory {
         } else {
             CategoryBehaviour preferenceBehavior = CategoryBehaviour.byStringKey(behaviorString);
             if (preferenceBehavior == null) {
-                LogHelper.printException(() -> "Unknown behavior: " + behaviorString); // should never happen
+                Logger.printException(() -> "Unknown behavior: " + behaviorString); // should never happen
                 behaviour = defaultBehaviour;
             } else {
                 behaviour = preferenceBehavior;

@@ -2,14 +2,13 @@ package app.revanced.integrations.youtube.settings;
 
 import app.revanced.integrations.shared.settings.Setting;
 import app.revanced.integrations.youtube.sponsorblock.SponsorBlockSettings;
-import app.revanced.integrations.youtube.utils.LogHelper;
+import app.revanced.integrations.shared.Logger;
 
 import java.util.LinkedList;
 import java.util.List;
 
+import static app.revanced.integrations.shared.settings.Setting.*;
 import static app.revanced.integrations.shared.settings.Setting.ReturnType.*;
-import static app.revanced.integrations.shared.settings.Setting.migrateOldSettingToNew;
-import static app.revanced.integrations.shared.settings.Setting.getParents;
 import static app.revanced.integrations.youtube.settings.SharedPrefCategory.RETURN_YOUTUBE_DISLIKE;
 import static app.revanced.integrations.youtube.settings.SharedPrefCategory.SPONSOR_BLOCK;
 import static java.lang.Boolean.FALSE;
@@ -233,10 +232,7 @@ public class Settings {
             getParents(SWIPE_BRIGHTNESS, SWIPE_VOLUME));
 
     // Debugging
-    public static final Setting DEBUG = new Setting("revanced_debug", BOOLEAN, FALSE);
-    public static final Setting DEBUG_STACKTRACE = new Setting("revanced_debug_stacktrace", BOOLEAN, FALSE, getParents(DEBUG));
-    public static final Setting DEBUG_PROTOBUFFER = new Setting("revanced_debug_protobuffer", BOOLEAN, FALSE, getParents(DEBUG));
-    public static final Setting DEBUG_TOAST_ON_ERROR = new Setting("revanced_debug_toast_on_error", BOOLEAN, TRUE, "revanced_debug_toast_on_error_user_dialog_message");
+    public static final Setting DEBUG_PROTOBUFFER = new Setting("revanced_debug_protobuffer", BOOLEAN, FALSE, getParents(app.revanced.integrations.shared.settings.Settings.DEBUG));
 
     // ReturnYoutubeDislike
     public static final Setting RYD_ENABLED = new Setting("ryd_enabled", BOOLEAN, TRUE, RETURN_YOUTUBE_DISLIKE);
@@ -293,7 +289,7 @@ public class Settings {
         // and also migrate any imported older settings that using commas.
         String componentsToFilter = Settings.CUSTOM_FILTER_STRINGS.getString();
         if (componentsToFilter.contains(",")) {
-            LogHelper.printInfo(() -> "Migrating custom filter strings to new line format");
+            Logger.printInfo(() -> "Migrating custom filter strings to new line format");
             Settings.CUSTOM_FILTER_STRINGS.saveValue(componentsToFilter.replace(",", "\n"));
         }
 

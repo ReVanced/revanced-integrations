@@ -11,10 +11,10 @@ import android.widget.ImageButton;
 import app.revanced.integrations.youtube.patches.VideoInformation;
 import app.revanced.integrations.youtube.settings.Settings;
 import app.revanced.integrations.youtube.sponsorblock.SponsorBlockUtils;
-import app.revanced.integrations.youtube.utils.LogHelper;
+import app.revanced.integrations.shared.Logger;
 
-import static app.revanced.integrations.youtube.utils.ReVancedUtils.getResourceDimensionPixelSize;
-import static app.revanced.integrations.youtube.utils.ReVancedUtils.getResourceIdentifier;
+import static app.revanced.integrations.shared.Utils.getResourceDimensionPixelSize;
+import static app.revanced.integrations.shared.Utils.getResourceIdentifier;
 
 public final class NewSegmentLayout extends FrameLayout {
     private static final ColorStateList rippleColorStateList = new ColorStateList(
@@ -115,7 +115,7 @@ public final class NewSegmentLayout extends FrameLayout {
 
         button.setOnClickListener((v) -> {
             handler.apply();
-            LogHelper.printDebug(() -> debugMessage);
+            Logger.printDebug(() -> debugMessage);
         });
     }
 

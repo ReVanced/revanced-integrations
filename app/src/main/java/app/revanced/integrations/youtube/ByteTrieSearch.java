@@ -1,4 +1,4 @@
-package app.revanced.integrations.youtube.utils;
+package app.revanced.integrations.youtube;
 
 public final class ByteTrieSearch extends TrieSearch<byte[]> {
 

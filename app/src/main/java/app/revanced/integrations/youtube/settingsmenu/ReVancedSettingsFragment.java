@@ -8,15 +8,14 @@ import android.os.Bundle;
 import android.preference.*;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import app.revanced.integrations.shared.Utils;
 import app.revanced.integrations.shared.settings.Setting;
 import app.revanced.integrations.youtube.patches.playback.speed.CustomPlaybackSpeedPatch;
 import app.revanced.integrations.youtube.settings.Settings;
 import app.revanced.integrations.youtube.settings.SharedPrefCategory;
-import app.revanced.integrations.youtube.utils.LogHelper;
-import app.revanced.integrations.youtube.utils.ReVancedUtils;
+import app.revanced.integrations.shared.Logger;
+import app.revanced.integrations.shared.Utils;
 
-import static app.revanced.integrations.youtube.utils.StringRef.str;
+import static app.revanced.integrations.shared.StringRef.str;
 
 /** @noinspection deprecation*/
 public class ReVancedSettingsFragment extends PreferenceFragment {
@@ -38,7 +37,7 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
                 return;
             }
             Preference pref = findPreference(str);
-            LogHelper.printDebug(() -> setting.key + ": " + " setting value:" + setting.getObjectValue()  + " pref:" + pref);
+            Logger.printDebug(() -> setting.key + ": " + " setting value:" + setting.getObjectValue()  + " pref:" + pref);
             if (pref == null) {
                 return;
             }
@@ -66,7 +65,7 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
                 }
                 Setting.setListPreference(listPref, setting);
             } else {
-                LogHelper.printException(() -> "Setting cannot be handled: " + pref.getClass() + " " + pref);
+                Logger.printException(() -> "Setting cannot be handled: " + pref.getClass() + " " + pref);
                 return;
             }
 
@@ -85,7 +84,7 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
             }
 
         } catch (Exception ex) {
-            LogHelper.printException(() -> "OnSharedPreferenceChangeListener failure", ex);
+            Logger.printException(() -> "OnSharedPreferenceChangeListener failure", ex);
         }
     };
 
@@ -110,7 +109,7 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
             preferenceManager.setSharedPreferencesName(SharedPrefCategory.YOUTUBE.prefName);
             preferenceManager.getSharedPreferences().registerOnSharedPreferenceChangeListener(listener);
 
-            addPreferencesFromResource(ReVancedUtils.getResourceIdentifier("revanced_prefs", "xml"));
+            addPreferencesFromResource(Utils.getResourceIdentifier("revanced_prefs", "xml"));
 
             Setting.setPreferencesEnabled(this);
 
@@ -124,7 +123,7 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
             Setting.setPreferences(this);
 
         } catch (Exception ex) {
-            LogHelper.printException(() -> "onActivityCreated() failure", ex);
+            Logger.printException(() -> "onActivityCreated() failure", ex);
         }
     }
 

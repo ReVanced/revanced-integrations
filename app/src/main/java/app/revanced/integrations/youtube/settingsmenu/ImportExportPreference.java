@@ -10,10 +10,10 @@ import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.widget.EditText;
 import app.revanced.integrations.shared.settings.Setting;
-import app.revanced.integrations.youtube.utils.LogHelper;
-import app.revanced.integrations.youtube.utils.ReVancedUtils;
+import app.revanced.integrations.shared.Logger;
+import app.revanced.integrations.shared.Utils;
 
-import static app.revanced.integrations.youtube.utils.StringRef.str;
+import static app.revanced.integrations.shared.StringRef.str;
 
 public class ImportExportPreference extends EditTextPreference implements Preference.OnPreferenceClickListener {
 
@@ -57,7 +57,7 @@ public class ImportExportPreference extends EditTextPreference implements Prefer
             existingSettings = Setting.exportToJson(getContext());
             getEditText().setText(existingSettings);
         } catch (Exception ex) {
-            LogHelper.printException(() -> "showDialog failure", ex);
+            Logger.printException(() -> "showDialog failure", ex);
         }
         return true;
     }
@@ -67,12 +67,12 @@ public class ImportExportPreference extends EditTextPreference implements Prefer
         try {
             // Show the user the settings in JSON format.
             builder.setNeutralButton(str("revanced_settings_import_copy"), (dialog, which) -> {
-                ReVancedUtils.setClipboard(getEditText().getText().toString());
+                Utils.setClipboard(getEditText().getText().toString());
             }).setPositiveButton(str("revanced_settings_import"), (dialog, which) -> {
                 importSettings(getEditText().getText().toString());
             });
         } catch (Exception ex) {
-            LogHelper.printException(() -> "onPrepareDialogBuilder failure", ex);
+            Logger.printException(() -> "onPrepareDialogBuilder failure", ex);
         }
     }
 
@@ -87,7 +87,7 @@ public class ImportExportPreference extends EditTextPreference implements Prefer
                 ReVancedSettingsFragment.showRestartDialog(getContext());
             }
         } catch (Exception ex) {
-            LogHelper.printException(() -> "importSettings failure", ex);
+            Logger.printException(() -> "importSettings failure", ex);
         } finally {
             ReVancedSettingsFragment.settingImportInProgress = false;
         }

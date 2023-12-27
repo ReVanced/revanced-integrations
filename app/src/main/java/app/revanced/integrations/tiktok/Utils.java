@@ -1,22 +1,8 @@
-package app.revanced.integrations.tiktok.utils;
+package app.revanced.integrations.tiktok;
 
-import android.annotation.SuppressLint;
-import android.content.Context;
 import app.revanced.integrations.shared.settings.Setting;
 
-public class ReVancedUtils {
-
-    @SuppressLint("StaticFieldLeak")
-    public static Context context;
-
-    public static Context getAppContext() {
-        if (context != null) {
-            return context;
-        }
-        LogHelper.printException(ReVancedUtils.class, "Context is null!");
-        return null;
-    }
-
+public class Utils {
     public static long[] parseMinMax(Setting setting) {
         if (setting.returnType == Setting.ReturnType.STRING) {
             final String[] minMax = setting.getString().split("-");

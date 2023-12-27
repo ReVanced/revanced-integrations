@@ -1,16 +1,18 @@
 package app.revanced.integrations.twitch.api;
 
 import androidx.annotation.NonNull;
+import app.revanced.integrations.shared.Logger;
+import app.revanced.integrations.shared.Utils;
 import app.revanced.integrations.twitch.adblock.IAdblockService;
-import app.revanced.integrations.twitch.adblock.PurpleAdblockService;
 import app.revanced.integrations.twitch.adblock.LuminousService;
+import app.revanced.integrations.twitch.adblock.PurpleAdblockService;
 import app.revanced.integrations.twitch.settings.Settings;
-import app.revanced.integrations.twitch.utils.LogHelper;
-import app.revanced.integrations.twitch.utils.ReVancedUtils;
 import okhttp3.Interceptor;
 import okhttp3.Response;
 
 import java.io.IOException;
+
+import static app.revanced.integrations.shared.StringRef.str;
 
 public class RequestInterceptor implements Interceptor {
     private IAdblockService activeService = null;
@@ -20,17 +22,22 @@ public class RequestInterceptor implements Interceptor {
     public Response intercept(@NonNull Chain chain) throws IOException {
         var originalRequest = chain.request();
 
-        LogHelper.debug("Intercepted request to URL: %s", originalRequest.url().toString());
+        Logger.printException(() -> "Intercepted request to URL:" + originalRequest.url());
 
         // Skip if not HLS manifest request
         if (!originalRequest.url().host().contains("usher.ttvnw.net")) {
             return chain.proceed(originalRequest);
         }
 
-        var isVod = "no";
+        final String isVod;
         if (IAdblockService.isVod(originalRequest)) isVod = "yes";
+        else isVod = "no";
 
-        LogHelper.debug("Found HLS manifest request. Is VOD? %s; Channel: %s", isVod, IAdblockService.channelName(originalRequest));
+        Logger.printDebug(() -> "Found HLS manifest request. Is VOD? " +
+                isVod +
+                "; Channel: " +
+                IAdblockService.channelName(originalRequest)
+        );
 
         // None of the services support VODs currently
         if (IAdblockService.isVod(originalRequest)) return chain.proceed(originalRequest);
@@ -43,11 +50,13 @@ public class RequestInterceptor implements Interceptor {
 
 
             if (!available || rewritten == null) {
-                ReVancedUtils.toast(String.format(ReVancedUtils.getString("revanced_embedded_ads_service_unavailable"), activeService.friendlyName()), true);
+                Utils.showToastShort(String.format(
+                        str("revanced_embedded_ads_service_unavailable"), activeService.friendlyName()
+                ));
                 return chain.proceed(originalRequest);
             }
 
-            LogHelper.debug("Rewritten HLS stream URL: %s", rewritten.url().toString());
+            Logger.printDebug(() -> "Rewritten HLS stream URL: " + rewritten.url());
 
             var maxAttempts = activeService.maxAttempts();
 
@@ -57,22 +66,31 @@ public class RequestInterceptor implements Interceptor {
                 response.close();
 
                 if (!response.isSuccessful()) {
-                    LogHelper.error("Request failed (attempt %d/%d): HTTP error %d (%s)", i, maxAttempts, response.code(), response.message());
+                    int attempt = i;
+                    Logger.printException(() -> "Request failed (attempt " +
+                            attempt +
+                            "/" + maxAttempts + "): HTTP error " +
+                            response.code() +
+                            " (" + response.message() + ")"
+                    );
+
                     try {
                         Thread.sleep(50);
                     } catch (InterruptedException e) {
-                        LogHelper.printException("Failed to sleep" ,e);
+                        Logger.printException(() -> "Failed to sleep", e);
                     }
                 } else {
                     // Accept response from ad blocker
-                    LogHelper.debug("Ad-blocker used");
+                    Logger.printDebug(() -> "Ad-blocker used");
                     return chain.proceed(rewritten);
                 }
             }
 
             // maxAttempts exceeded; giving up on using the ad blocker
-            ReVancedUtils.toast(String.format(ReVancedUtils.getString("revanced_embedded_ads_service_failed"), activeService.friendlyName()), true);
-
+            Utils.showToastLong(String.format(
+                    str("revanced_embedded_ads_service_failed"),
+                    activeService.friendlyName())
+            );
         }
 
         // Adblock disabled
@@ -83,11 +101,11 @@ public class RequestInterceptor implements Interceptor {
     private void updateActiveService() {
         var current = Settings.BLOCK_EMBEDDED_ADS.getString();
 
-        if (current.equals(ReVancedUtils.getString("key_revanced_proxy_luminous")) && !(activeService instanceof LuminousService))
+        if (current.equals(str("key_revanced_proxy_luminous")) && !(activeService instanceof LuminousService))
             activeService = new LuminousService();
-        else if (current.equals(ReVancedUtils.getString("key_revanced_proxy_purpleadblock")) && !(activeService instanceof PurpleAdblockService))
+        else if (current.equals(str("key_revanced_proxy_purpleadblock")) && !(activeService instanceof PurpleAdblockService))
             activeService = new PurpleAdblockService();
-        else if (current.equals(ReVancedUtils.getString("key_revanced_proxy_disabled")))
+        else if (current.equals(str("key_revanced_proxy_disabled")))
             activeService = null;
     }
 }

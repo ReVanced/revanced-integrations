@@ -3,15 +3,15 @@ package app.revanced.integrations.youtube.patches.playback.quality;
 import androidx.annotation.Nullable;
 import app.revanced.integrations.shared.settings.Setting;
 import app.revanced.integrations.youtube.settings.Settings;
-import app.revanced.integrations.youtube.utils.LogHelper;
-import app.revanced.integrations.youtube.utils.ReVancedUtils;
+import app.revanced.integrations.shared.Logger;
+import app.revanced.integrations.shared.Utils;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-import static app.revanced.integrations.youtube.utils.ReVancedUtils.NetworkType;
+import static app.revanced.integrations.shared.Utils.NetworkType;
 
 public class RememberVideoQualityPatch {
     private static final int AUTOMATIC_VIDEO_QUALITY_VALUE = -2;
@@ -39,14 +39,14 @@ public class RememberVideoQualityPatch {
 
     private static void changeDefaultQuality(int defaultQuality) {
         String networkTypeMessage;
-        if (ReVancedUtils.getNetworkType() == NetworkType.MOBILE) {
+        if (Utils.getNetworkType() == NetworkType.MOBILE) {
             mobileQualitySetting.saveValue(defaultQuality);
             networkTypeMessage = "mobile";
         } else {
             wifiQualitySetting.saveValue(defaultQuality);
             networkTypeMessage = "Wi-Fi";
         }
-        ReVancedUtils.showToastShort("Changed default " + networkTypeMessage
+        Utils.showToastShort("Changed default " + networkTypeMessage
                 + " quality to: " + defaultQuality +"p");
     }
 
@@ -64,7 +64,7 @@ public class RememberVideoQualityPatch {
             qualityNeedsUpdating = false;
 
             final int preferredQuality;
-            if (ReVancedUtils.getNetworkType() == NetworkType.MOBILE) {
+            if (Utils.getNetworkType() == NetworkType.MOBILE) {
                 preferredQuality = mobileQualitySetting.getInt();
             } else {
                 preferredQuality = wifiQualitySetting.getInt();
@@ -83,13 +83,13 @@ public class RememberVideoQualityPatch {
                         }
                     }
                 }
-                LogHelper.printDebug(() -> "videoQualities: " + videoQualities);
+                Logger.printDebug(() -> "videoQualities: " + videoQualities);
             }
 
             if (userChangedDefaultQuality) {
                 userChangedDefaultQuality = false;
                 final int quality = videoQualities.get(userSelectedQualityIndex);
-                LogHelper.printDebug(() -> "User changed default quality to: " + quality);
+                Logger.printDebug(() -> "User changed default quality to: " + quality);
                 changeDefaultQuality(quality);
                 return userSelectedQualityIndex;
             }
@@ -117,10 +117,10 @@ public class RememberVideoQualityPatch {
             // To prevent confusion, set the video index anyways (even if it matches the existing index)
             // As that will force the UI picker to not display "Auto" which may confuse the user.
             if (qualityIndexToUse == originalQualityIndex) {
-                LogHelper.printDebug(() -> "Video is already preferred quality: " + preferredQuality);
+                Logger.printDebug(() -> "Video is already preferred quality: " + preferredQuality);
             } else {
                 final int qualityToUseLog = qualityToUse;
-                LogHelper.printDebug(() -> "Quality changed from: "
+                Logger.printDebug(() -> "Quality changed from: "
                         + videoQualities.get(originalQualityIndex) + " to: " + qualityToUseLog);
             }
 
@@ -128,7 +128,7 @@ public class RememberVideoQualityPatch {
             m.invoke(qInterface, qualityToUse);
             return qualityIndexToUse;
         } catch (Exception ex) {
-            LogHelper.printException(() -> "Failed to set quality", ex);
+            Logger.printException(() -> "Failed to set quality", ex);
             return originalQualityIndex;
         }
     }
@@ -156,7 +156,7 @@ public class RememberVideoQualityPatch {
      * Injection point.
      */
     public static void newVideoStarted(Object ignoredPlayerController) {
-        LogHelper.printDebug(() -> "newVideoStarted");
+        Logger.printDebug(() -> "newVideoStarted");
         qualityNeedsUpdating = true;
         videoQualities = null;
     }

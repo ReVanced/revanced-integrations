@@ -16,8 +16,8 @@ import app.revanced.integrations.youtube.swipecontrols.controller.gesture.PressT
 import app.revanced.integrations.youtube.swipecontrols.controller.gesture.core.GestureController
 import app.revanced.integrations.youtube.swipecontrols.misc.Rectangle
 import app.revanced.integrations.youtube.swipecontrols.views.SwipeControlsOverlayLayout
-import app.revanced.integrations.youtube.utils.LogHelper.printDebug
-import app.revanced.integrations.youtube.utils.LogHelper.printException
+import app.revanced.integrations.shared.Logger.printDebug
+import app.revanced.integrations.shared.Logger.printException
 import java.lang.ref.WeakReference
 
 /**

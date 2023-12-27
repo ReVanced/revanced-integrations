@@ -1,6 +1,8 @@
-package app.revanced.integrations.youtube.utils;
+package app.revanced.integrations.youtube;
 
 import android.app.Activity;
+import app.revanced.integrations.shared.Logger;
+import app.revanced.integrations.shared.Utils;
 
 public class ThemeHelper {
     private static int themeValue;
@@ -9,7 +11,7 @@ public class ThemeHelper {
         final int newOrdinalValue = ((Enum) value).ordinal();
         if (themeValue != newOrdinalValue) {
             themeValue = newOrdinalValue;
-            LogHelper.printDebug(() -> "Theme value: " + newOrdinalValue);
+            Logger.printDebug(() -> "Theme value: " + newOrdinalValue);
         }
     }
 
@@ -21,7 +23,7 @@ public class ThemeHelper {
         final var theme = isDarkTheme()
                 ? "Theme.YouTube.Settings.Dark"
                 : "Theme.YouTube.Settings";
-        activity.setTheme(ReVancedUtils.getResourceIdentifier(theme, "style"));
+        activity.setTheme(Utils.getResourceIdentifier(theme, "style"));
     }
 
 }

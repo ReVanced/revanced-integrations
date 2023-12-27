@@ -7,8 +7,8 @@ import android.widget.ImageView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import app.revanced.integrations.shared.settings.Setting;
-import app.revanced.integrations.youtube.utils.LogHelper;
-import app.revanced.integrations.youtube.utils.ReVancedUtils;
+import app.revanced.integrations.shared.Logger;
+import app.revanced.integrations.shared.Utils;
 
 import java.lang.ref.WeakReference;
 import java.util.Objects;
@@ -23,11 +23,11 @@ public abstract class BottomControlButton {
 
     static {
         // TODO: check if these durations are correct.
-        fadeIn = ReVancedUtils.getResourceAnimation("fade_in");
-        fadeIn.setDuration(ReVancedUtils.getResourceInteger("fade_duration_fast"));
+        fadeIn = Utils.getResourceAnimation("fade_in");
+        fadeIn.setDuration(Utils.getResourceInteger("fade_duration_fast"));
 
-        fadeOut = ReVancedUtils.getResourceAnimation("fade_out");
-        fadeOut.setDuration(ReVancedUtils.getResourceInteger("fade_duration_scheduled"));
+        fadeOut = Utils.getResourceAnimation("fade_out");
+        fadeOut.setDuration(Utils.getResourceInteger("fade_duration_scheduled"));
     }
 
     @NonNull
@@ -43,7 +43,7 @@ public abstract class BottomControlButton {
     public BottomControlButton(@NonNull ViewGroup bottomControlsViewGroup, @NonNull String imageViewButtonId,
                                @NonNull Setting booleanSetting, @NonNull View.OnClickListener onClickListener,
                                @Nullable View.OnLongClickListener longClickListener) {
-        LogHelper.printDebug(() -> "Initializing button: " + imageViewButtonId);
+        Logger.printDebug(() -> "Initializing button: " + imageViewButtonId);
 
         if (booleanSetting.returnType != Setting.ReturnType.BOOLEAN) {
             throw new IllegalArgumentException();
@@ -52,7 +52,7 @@ public abstract class BottomControlButton {
 
         // Create the button.
         ImageView imageView = Objects.requireNonNull(bottomControlsViewGroup.findViewById(
-                ReVancedUtils.getResourceIdentifier(imageViewButtonId, "id")
+                Utils.getResourceIdentifier(imageViewButtonId, "id")
         ));
         imageView.setOnClickListener(onClickListener);
         if (longClickListener != null) {

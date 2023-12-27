@@ -1,7 +1,7 @@
 package app.revanced.integrations.youtube.patches.spoof;
 
 import static app.revanced.integrations.youtube.patches.spoof.requests.StoryboardRendererRequester.getStoryboardRenderer;
-import static app.revanced.integrations.youtube.utils.ReVancedUtils.containsAny;
+import static app.revanced.integrations.shared.Utils.containsAny;
 
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,8 +17,8 @@ import java.util.concurrent.TimeoutException;
 import app.revanced.integrations.youtube.patches.VideoInformation;
 import app.revanced.integrations.youtube.settings.Settings;
 import app.revanced.integrations.youtube.shared.PlayerType;
-import app.revanced.integrations.youtube.utils.LogHelper;
-import app.revanced.integrations.youtube.utils.ReVancedUtils;
+import app.revanced.integrations.shared.Logger;
+import app.revanced.integrations.shared.Utils;
 
 /** @noinspection unused*/
 public class SpoofSignaturePatch {
@@ -70,10 +70,10 @@ public class SpoofSignaturePatch {
                     return future.get(20000, TimeUnit.MILLISECONDS); // Any arbitrarily large timeout.
                 } // else, return null.
             } catch (TimeoutException ex) {
-                LogHelper.printDebug(() -> "Could not get renderer (get timed out)");
+                Logger.printDebug(() -> "Could not get renderer (get timed out)");
             } catch (ExecutionException | InterruptedException ex) {
                 // Should never happen.
-                LogHelper.printException(() -> "Could not get renderer", ex);
+                Logger.printException(() -> "Could not get renderer", ex);
             }
         }
         return null;
@@ -88,7 +88,7 @@ public class SpoofSignaturePatch {
      */
     public static String spoofParameter(String parameters, boolean isShortAndOpeningOrPlaying) {
         try {
-            LogHelper.printDebug(() -> "Original protobuf parameter value: " + parameters);
+            Logger.printDebug(() -> "Original protobuf parameter value: " + parameters);
 
             if (!Settings.SPOOF_SIGNATURE.getBoolean()) {
                 return parameters;
@@ -126,7 +126,7 @@ public class SpoofSignaturePatch {
 
             fetchStoryboardRenderer();
         } catch (Exception ex) {
-            LogHelper.printException(() -> "spoofParameter failure", ex);
+            Logger.printException(() -> "spoofParameter failure", ex);
         }
         return INCOGNITO_PARAMETERS;
     }
@@ -139,7 +139,7 @@ public class SpoofSignaturePatch {
         }
         String videoId = VideoInformation.getPlayerResponseVideoId();
         if (!videoId.equals(lastPlayerResponseVideoId)) {
-            rendererFuture = ReVancedUtils.submitOnBackgroundThread(() -> getStoryboardRenderer(videoId));
+            rendererFuture = Utils.submitOnBackgroundThread(() -> getStoryboardRenderer(videoId));
             lastPlayerResponseVideoId = videoId;
         }
         // Block until the renderer fetch completes.
@@ -236,7 +236,7 @@ public class SpoofSignaturePatch {
             ViewGroup parentLayout = (ViewGroup) view.getParent();
             parentLayout.setPadding(0, 0, 0, 0);
         } catch (Exception ex) {
-            LogHelper.printException(() -> "seekbarImageViewCreated failure", ex);
+            Logger.printException(() -> "seekbarImageViewCreated failure", ex);
         }
     }
 }

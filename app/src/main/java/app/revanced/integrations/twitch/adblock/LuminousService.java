@@ -1,14 +1,15 @@
 package app.revanced.integrations.twitch.adblock;
 
-import app.revanced.integrations.twitch.utils.LogHelper;
-import app.revanced.integrations.twitch.utils.ReVancedUtils;
+import app.revanced.integrations.shared.Logger;
 import okhttp3.HttpUrl;
 import okhttp3.Request;
+
+import static app.revanced.integrations.shared.StringRef.str;
 
 public class LuminousService implements IAdblockService {
     @Override
     public String friendlyName() {
-        return ReVancedUtils.getString("revanced_proxy_luminous");
+        return str("revanced_proxy_luminous");
     }
 
     @Override
@@ -33,7 +34,7 @@ public class LuminousService implements IAdblockService {
         );
 
         if (url == null) {
-            LogHelper.error("Failed to parse rewritten URL");
+            Logger.printException(() -> "Failed to parse rewritten URL");
             return null;
         }
 

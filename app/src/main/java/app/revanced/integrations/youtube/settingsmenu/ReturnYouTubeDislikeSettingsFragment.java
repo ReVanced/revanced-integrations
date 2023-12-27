@@ -1,23 +1,19 @@
 package app.revanced.integrations.youtube.settingsmenu;
 
-import static app.revanced.integrations.youtube.utils.StringRef.str;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.preference.Preference;
-import android.preference.PreferenceCategory;
-import android.preference.PreferenceFragment;
-import android.preference.PreferenceScreen;
-import android.preference.SwitchPreference;
-
+import android.preference.*;
 import app.revanced.integrations.youtube.patches.ReturnYouTubeDislikePatch;
 import app.revanced.integrations.youtube.returnyoutubedislike.ReturnYouTubeDislike;
 import app.revanced.integrations.youtube.returnyoutubedislike.requests.ReturnYouTubeDislikeApi;
 import app.revanced.integrations.youtube.settings.Settings;
 import app.revanced.integrations.youtube.settings.SharedPrefCategory;
 
+import static app.revanced.integrations.shared.StringRef.str;
+
+/** @noinspection deprecation*/
 public class ReturnYouTubeDislikeSettingsFragment extends PreferenceFragment {
 
     /**
@@ -149,7 +145,7 @@ public class ReturnYouTubeDislikeSettingsFragment extends PreferenceFragment {
 
         // RYD API connection statistics
         
-        if (Settings.DEBUG.getBoolean()) {
+        if (app.revanced.integrations.shared.settings.Settings.DEBUG.getBoolean()) {
             PreferenceCategory emptyCategory = new PreferenceCategory(context); // vertical padding
             preferenceScreen.addPreference(emptyCategory);
 

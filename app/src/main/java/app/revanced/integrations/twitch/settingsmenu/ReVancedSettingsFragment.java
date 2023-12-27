@@ -8,10 +8,11 @@ import android.os.Bundle;
 import android.preference.*;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import app.revanced.integrations.shared.Logger;
 import app.revanced.integrations.shared.Utils;
 import app.revanced.integrations.shared.settings.Setting;
-import app.revanced.integrations.twitch.utils.LogHelper;
-import app.revanced.integrations.twitch.utils.ReVancedUtils;
+
+import static app.revanced.integrations.shared.StringRef.str;
 
 /** @noinspection deprecation*/
 public class ReVancedSettingsFragment extends PreferenceFragment {
@@ -20,7 +21,7 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
     private boolean settingsInitialized = false;
 
     SharedPreferences.OnSharedPreferenceChangeListener listener = (sharedPreferences, key) -> {
-        LogHelper.debug("Setting '%s' changed", key);
+        Logger.printDebug(() -> "Setting '" + key + "' changed");
         syncPreference(key);
     };
 
@@ -39,11 +40,11 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
         Setting setting = Setting.getSettingFromPath(key);
         if (setting == null) return;
 
-        LogHelper.debug("Syncing setting '%s' with UI", setting.key);
+        Logger.printDebug(() -> "Syncing setting '" + setting.key + "' with UI");
 
         setting.setPreference(this);
 
-        if (ReVancedUtils.getContext() != null && settingsInitialized && setting.rebootApp)
+        if (Utils.getContext() != null && settingsInitialized && setting.rebootApp)
             showRestartDialog(getContext());
     }
 
@@ -71,7 +72,7 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
 
             this.registered = true;
         } catch (Throwable th) {
-            LogHelper.printException("Error during onCreate()", th);
+            Logger.printException(() -> "Error during onCreate()", th);
         }
     }
 
@@ -86,8 +87,8 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
 
     private void showRestartDialog(@NonNull Context context) {
         new AlertDialog.Builder(context).
-                setMessage(ReVancedUtils.getString("revanced_reboot_message")).
-                setPositiveButton(ReVancedUtils.getString("revanced_reboot"),
+                setMessage(str("revanced_reboot_message")).
+                setPositiveButton(str("revanced_reboot"),
                         (dialog, i) -> Utils.restartApp(context))
                 .setNegativeButton(android.R.string.cancel, null)
                 .show();

@@ -2,7 +2,7 @@ package app.revanced.integrations.youtube.patches.components;
 
 import androidx.annotation.Nullable;
 import app.revanced.integrations.youtube.settings.Settings;
-import app.revanced.integrations.youtube.utils.StringTrieSearch;
+import app.revanced.integrations.youtube.StringTrieSearch;
 
 @SuppressWarnings("unused")
 final class DescriptionComponentsFilter extends Filter {

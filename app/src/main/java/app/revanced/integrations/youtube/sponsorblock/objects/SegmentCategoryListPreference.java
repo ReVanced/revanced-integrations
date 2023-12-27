@@ -1,6 +1,6 @@
 package app.revanced.integrations.youtube.sponsorblock.objects;
 
-import static app.revanced.integrations.youtube.utils.StringRef.str;
+import static app.revanced.integrations.shared.StringRef.str;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -19,8 +19,8 @@ import android.widget.TextView;
 
 import java.util.Objects;
 
-import app.revanced.integrations.youtube.utils.LogHelper;
-import app.revanced.integrations.youtube.utils.ReVancedUtils;
+import app.revanced.integrations.shared.Logger;
+import app.revanced.integrations.shared.Utils;
 
 public class SegmentCategoryListPreference extends ListPreference {
     private final SegmentCategory category;
@@ -110,9 +110,9 @@ public class SegmentCategoryListPreference extends ListPreference {
                     category.save(editor);
                     editor.apply();
                     updateTitle();
-                    ReVancedUtils.showToastShort(str("sb_color_reset"));
+                    Utils.showToastShort(str("sb_color_reset"));
                 } catch (Exception ex) {
-                    LogHelper.printException(() -> "setNeutralButton failure", ex);
+                    Logger.printException(() -> "setNeutralButton failure", ex);
                 }
             });
             builder.setNegativeButton(android.R.string.cancel, null);
@@ -120,7 +120,7 @@ public class SegmentCategoryListPreference extends ListPreference {
             mClickedDialogEntryIndex = findIndexOfValue(getValue());
             builder.setSingleChoiceItems(getEntries(), mClickedDialogEntryIndex, (dialog, which) -> mClickedDialogEntryIndex = which);
         } catch (Exception ex) {
-            LogHelper.printException(() -> "onPrepareDialogBuilder failure", ex);
+            Logger.printException(() -> "onPrepareDialogBuilder failure", ex);
         }
     }
 
@@ -139,10 +139,10 @@ public class SegmentCategoryListPreference extends ListPreference {
                     final int color = Color.parseColor(colorString) & 0xFFFFFF;
                     if (color != category.color) {
                         category.setColor(color);
-                        ReVancedUtils.showToastShort(str("sb_color_changed"));
+                        Utils.showToastShort(str("sb_color_changed"));
                     }
                 } catch (IllegalArgumentException ex) {
-                    ReVancedUtils.showToastShort(str("sb_color_invalid"));
+                    Utils.showToastShort(str("sb_color_invalid"));
                 }
                 // behavior is already saved, but color needs to be saved
                 SharedPreferences.Editor editor = getSharedPreferences().edit();
@@ -151,7 +151,7 @@ public class SegmentCategoryListPreference extends ListPreference {
                 updateTitle();
             }
         } catch (Exception ex) {
-            LogHelper.printException(() -> "onDialogClosed failure", ex);
+            Logger.printException(() -> "onDialogClosed failure", ex);
         }
     }
 
