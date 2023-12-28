@@ -8,89 +8,140 @@ import android.os.Bundle;
 import android.preference.*;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import app.revanced.integrations.shared.settings.Setting;
 import app.revanced.integrations.shared.Logger;
 import app.revanced.integrations.shared.Utils;
-import app.revanced.integrations.shared.settings.Setting;
 
 import static app.revanced.integrations.shared.StringRef.str;
 
 /** @noinspection deprecation*/
 public class ReVancedSettingsFragment extends PreferenceFragment {
-
-    private boolean registered = false;
-    private boolean settingsInitialized = false;
-
-    SharedPreferences.OnSharedPreferenceChangeListener listener = (sharedPreferences, key) -> {
-        Logger.printDebug(() -> "Setting '" + key + "' changed");
-        syncPreference(key);
-    };
+    /**
+     * Indicates that if a preference changes,
+     * to apply the change from the Setting to the UI component.
+     */
+    static boolean settingImportInProgress;
 
     /**
-     * Sync preference
-     * @param key Preference to load. If key is null, all preferences are updated
+     * Used to prevent showing reboot dialog, if user cancels a setting user dialog.
      */
-    private void syncPreference(@Nullable String key) {
-        if (key == null) {
-            Setting.setPreferences(this);
-            // First onChange event is caused by initial state loading
-            this.settingsInitialized = true;
-            return;
+    private boolean showingUserDialogMessage;
+
+    SharedPreferences.OnSharedPreferenceChangeListener listener = (sharedPreferences, str) -> {
+        try {
+            Setting setting = Setting.getSettingFromPath(str);
+            if (setting == null) {
+                return;
+            }
+            Preference pref = findPreference(str);
+            Logger.printDebug(() -> setting.key + ": " + " setting value:" + setting.getObjectValue()  + " pref:" + pref);
+            if (pref == null) {
+                return;
+            }
+
+            if (pref instanceof SwitchPreference) {
+                SwitchPreference switchPref = (SwitchPreference) pref;
+                if (settingImportInProgress) {
+                    switchPref.setChecked(setting.getBoolean());
+                } else {
+                    setting.setValue(switchPref.isChecked());
+                }
+            } else if (pref instanceof EditTextPreference) {
+                EditTextPreference editPreference = (EditTextPreference) pref;
+                if (settingImportInProgress) {
+                    editPreference.getEditText().setText(setting.getObjectValue().toString());
+                } else {
+                    setting.setValue(editPreference.getText());
+                }
+            } else if (pref instanceof ListPreference) {
+                ListPreference listPref = (ListPreference) pref;
+                if (settingImportInProgress) {
+                    listPref.setValue(setting.getObjectValue().toString());
+                } else {
+                    setting.setValue(listPref.getValue());
+                }
+                Setting.setListPreference(listPref, setting);
+            } else {
+                Logger.printException(() -> "Setting cannot be handled: " + pref.getClass() + " " + pref);
+                return;
+            }
+
+            Setting.setPreferencesEnabled(this);
+
+            if (settingImportInProgress) {
+                return;
+            }
+
+            if (!showingUserDialogMessage) {
+                if (setting.userDialogMessage != null && ((SwitchPreference) pref).isChecked() != (Boolean) setting.defaultValue) {
+                    showSettingUserDialogConfirmation(getContext(), (SwitchPreference) pref, setting);
+                } else if (setting.rebootApp) {
+                    showRestartDialog(getContext());
+                }
+            }
+
+        } catch (Exception ex) {
+            Logger.printException(() -> "OnSharedPreferenceChangeListener failure", ex);
         }
+    };
 
-        Setting setting = Setting.getSettingFromPath(key);
-        if (setting == null) return;
-
-        Logger.printDebug(() -> "Syncing setting '" + setting.key + "' with UI");
-
-        setting.setPreference(this);
-
-        if (Utils.getContext() != null && settingsInitialized && setting.rebootApp)
-            showRestartDialog(getContext());
-    }
 
     @SuppressLint("ResourceType")
     @Override
-    public void onCreate(Bundle bundle) {
-        super.onCreate(bundle);
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
 
         try {
-            PreferenceManager manager = getPreferenceManager();
-            manager.setSharedPreferencesName("revanced_prefs");
-            manager.getSharedPreferences().registerOnSharedPreferenceChangeListener(this.listener);
+            PreferenceManager preferenceManager = getPreferenceManager();
+            preferenceManager.setSharedPreferencesName("revanced_prefs");
+            preferenceManager.getSharedPreferences().registerOnSharedPreferenceChangeListener(listener);
 
-            addPreferencesFromResource(
-                    getResources().getIdentifier(
-                            "revanced_prefs",
-                            "xml",
-                            this.getContext().getPackageName()
-                    )
-            );
+            addPreferencesFromResource(Utils.getResourceIdentifier("revanced_prefs", "xml"));
 
-            // TODO: remove this line.  On load the UI should apply the values from Settings using the code above.
-            // It should not apply the UI values to the Settings here
-            syncPreference(null);
+            Setting.setPreferencesEnabled(this);
 
-            this.registered = true;
-        } catch (Throwable th) {
-            Logger.printException(() -> "Error during onCreate()", th);
+            // Set the preference values to the current setting values.
+            Setting.setPreferences(this);
+
+        } catch (Exception ex) {
+            Logger.printException(() -> "onActivityCreated() failure", ex);
         }
     }
 
-    @Override
+    @Override // android.preference.PreferenceFragment, android.app.Fragment
     public void onDestroy() {
-        if (this.registered) {
-            getPreferenceManager().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this.listener);
-            this.registered = false;
-        }
+        getPreferenceManager().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(listener);
         super.onDestroy();
     }
 
-    private void showRestartDialog(@NonNull Context context) {
-        new AlertDialog.Builder(context).
-                setMessage(str("revanced_reboot_message")).
-                setPositiveButton(str("revanced_reboot"),
-                        (dialog, i) -> Utils.restartApp(context))
-                .setNegativeButton(android.R.string.cancel, null)
+    static void showRestartDialog(@NonNull Context context) {
+        String positiveButton = str("in_app_update_restart_button");
+        new AlertDialog.Builder(context).setMessage(str("pref_refresh_config"))
+                .setPositiveButton(positiveButton, (dialog, id) -> {
+                    Utils.restartApp(context);
+                })
+                .setNegativeButton(android.R.string.cancel,  null)
+                .setCancelable(false)
+                .show();
+    }
+
+    private void showSettingUserDialogConfirmation(@NonNull Context context, SwitchPreference switchPref, Setting setting) {
+        showingUserDialogMessage = true;
+        new AlertDialog.Builder(context)
+                .setTitle(str("revanced_settings_confirm_user_dialog_title"))
+                .setMessage(setting.userDialogMessage.toString())
+                .setPositiveButton(android.R.string.ok, (dialog, id) -> {
+                    if (setting.rebootApp) {
+                        showRestartDialog(context);
+                    }
+                })
+                .setNegativeButton(android.R.string.cancel, (dialog, id) -> {
+                    Boolean defaultBooleanValue = (Boolean) setting.defaultValue;
+                    setting.setValue(defaultBooleanValue);
+                    switchPref.setChecked(defaultBooleanValue);
+                })
+                .setOnDismissListener(dialog -> showingUserDialogMessage = false)
+                .setCancelable(false)
                 .show();
     }
 }
