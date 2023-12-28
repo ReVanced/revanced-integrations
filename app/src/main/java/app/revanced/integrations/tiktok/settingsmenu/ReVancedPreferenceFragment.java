@@ -55,8 +55,8 @@ public class ReVancedPreferenceFragment extends PreferenceFragment {
                 Logger.printException(() -> "Setting cannot be handled: " + pref.getClass() + " " + pref);
                 return;
             }
-            if (Utils.getContext() != null && this.settingsInitialized && setting.rebootApp) {
-                rebootDialog(getActivity());
+            if (this.settingsInitialized && setting.rebootApp) {
+                rebootDialog(getContext());
             }
         } catch (Exception ex) {
             Logger.printException(() -> "OnSharedPreferenceChangeListener failure", ex);
@@ -95,7 +95,7 @@ public class ReVancedPreferenceFragment extends PreferenceFragment {
 
     private void rebootDialog(@NonNull Context context) {
         new AlertDialog.Builder(context).setMessage("Refresh and restart")
-                .setPositiveButton("Restart", (dialog, i) -> app.revanced.integrations.shared.Utils.restartApp(context))
+                .setPositiveButton("Restart", (dialog, i) -> Utils.restartApp(context))
                 .setNegativeButton(android.R.string.cancel, null).show();
     }
 }
