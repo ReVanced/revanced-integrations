@@ -8,6 +8,7 @@ import org.json.JSONObject;
 
 import java.util.Objects;
 
+@SuppressWarnings("unused")
 public class BooleanSetting extends Setting<Boolean> {
     public BooleanSetting(String key, Boolean defaultValue) {
         super(key, defaultValue);
@@ -21,17 +22,17 @@ public class BooleanSetting extends Setting<Boolean> {
     public BooleanSetting(String key, Boolean defaultValue, String userDialogMessage) {
         super(key, defaultValue, userDialogMessage);
     }
-    public BooleanSetting(String key, Boolean defaultValue, BooleanSetting[] parents) {
-        super(key, defaultValue, parents);
+    public BooleanSetting(String key, Boolean defaultValue, Availability availability) {
+        super(key, defaultValue, availability);
     }
     public BooleanSetting(String key, Boolean defaultValue, boolean rebootApp, String userDialogMessage) {
         super(key, defaultValue, rebootApp, userDialogMessage);
     }
-    public BooleanSetting(String key, Boolean defaultValue, boolean rebootApp, BooleanSetting[] parents) {
-        super(key, defaultValue, rebootApp, parents);
+    public BooleanSetting(String key, Boolean defaultValue, boolean rebootApp, Availability availability) {
+        super(key, defaultValue, rebootApp, availability);
     }
-    public BooleanSetting(String key, Boolean defaultValue, boolean rebootApp, String userDialogMessage, BooleanSetting[] parents) {
-        super(key, defaultValue, rebootApp, userDialogMessage, parents);
+    public BooleanSetting(String key, Boolean defaultValue, boolean rebootApp, String userDialogMessage, Availability availability) {
+        super(key, defaultValue, rebootApp, userDialogMessage, availability);
     }
     public BooleanSetting(String key, Boolean defaultValue, SharedPrefCategory prefName) {
         super(key, defaultValue, prefName);
@@ -42,14 +43,14 @@ public class BooleanSetting extends Setting<Boolean> {
     public BooleanSetting(String key, Boolean defaultValue, SharedPrefCategory prefName, String userDialogMessage) {
         super(key, defaultValue, prefName, userDialogMessage);
     }
-    public BooleanSetting(String key, Boolean defaultValue, SharedPrefCategory prefName, BooleanSetting[] parents) {
-        super(key, defaultValue, prefName, parents);
+    public BooleanSetting(String key, Boolean defaultValue, SharedPrefCategory prefName, Availability availability) {
+        super(key, defaultValue, prefName, availability);
     }
     public BooleanSetting(String key, Boolean defaultValue, SharedPrefCategory prefName, boolean rebootApp, boolean includeWithImportExport) {
         super(key, defaultValue, prefName, rebootApp, includeWithImportExport);
     }
-    public BooleanSetting(@NonNull String key, @NonNull Boolean defaultValue, @NonNull SharedPrefCategory prefName, boolean rebootApp, boolean includeWithImportExport, @Nullable String userDialogMessage, @Nullable BooleanSetting[] parents) {
-        super(key, defaultValue, prefName, rebootApp, includeWithImportExport, userDialogMessage, parents);
+    public BooleanSetting(@NonNull String key, @NonNull Boolean defaultValue, @NonNull SharedPrefCategory prefName, boolean rebootApp, boolean includeWithImportExport, @Nullable String userDialogMessage, @Nullable Availability availability) {
+        super(key, defaultValue, prefName, rebootApp, includeWithImportExport, userDialogMessage, availability);
     }
 
     /**

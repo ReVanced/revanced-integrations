@@ -2,7 +2,8 @@ package app.revanced.integrations.youtube.settings;
 
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
-import static app.revanced.integrations.shared.settings.Setting.getParents;
+import static app.revanced.integrations.shared.settings.Setting.parent;
+import static app.revanced.integrations.shared.settings.Setting.parentsAny;
 import static app.revanced.integrations.shared.settings.Setting.migrateOldSettingToNew;
 import static app.revanced.integrations.youtube.sponsorblock.objects.CategoryBehaviour.IGNORE;
 import static app.revanced.integrations.youtube.sponsorblock.objects.CategoryBehaviour.MANUAL_SKIP;
@@ -26,7 +27,7 @@ public class Settings {
     // External downloader
     public static final BooleanSetting EXTERNAL_DOWNLOADER = new BooleanSetting("revanced_external_downloader", FALSE);
     public static final StringSetting EXTERNAL_DOWNLOADER_PACKAGE_NAME = new StringSetting("revanced_external_downloader_name",
-            "org.schabi.newpipe" /* NewPipe */, getParents(EXTERNAL_DOWNLOADER));
+            "org.schabi.newpipe" /* NewPipe */, parent(EXTERNAL_DOWNLOADER));
 
     // Copy video URL
     public static final BooleanSetting COPY_VIDEO_URL = new BooleanSetting("revanced_copy_video_url", FALSE);
@@ -58,14 +59,14 @@ public class Settings {
     public static final BooleanSetting HIDE_WEB_SEARCH_RESULTS = new BooleanSetting("revanced_hide_web_search_results", TRUE);
     // Layout
     public static final BooleanSetting ALT_THUMBNAIL_STILLS = new BooleanSetting("revanced_alt_thumbnail_stills", FALSE);
-    public static final IntegerSetting ALT_THUMBNAIL_STILLS_TIME = new IntegerSetting("revanced_alt_thumbnail_stills_time", 2, getParents(ALT_THUMBNAIL_STILLS));
-    public static final BooleanSetting ALT_THUMBNAIL_STILLS_FAST = new BooleanSetting("revanced_alt_thumbnail_stills_fast", FALSE, getParents(ALT_THUMBNAIL_STILLS));
+    public static final IntegerSetting ALT_THUMBNAIL_STILLS_TIME = new IntegerSetting("revanced_alt_thumbnail_stills_time", 2, parent(ALT_THUMBNAIL_STILLS));
+    public static final BooleanSetting ALT_THUMBNAIL_STILLS_FAST = new BooleanSetting("revanced_alt_thumbnail_stills_fast", FALSE, parent(ALT_THUMBNAIL_STILLS));
     public static final BooleanSetting ALT_THUMBNAIL_DEARROW = new BooleanSetting("revanced_alt_thumbnail_dearrow", FALSE);
     public static final StringSetting ALT_THUMBNAIL_DEARROW_API_URL = new StringSetting("revanced_alt_thumbnail_dearrow_api_url",
-            "https://dearrow-thumb.ajay.app/api/v1/getThumbnail", true, getParents(ALT_THUMBNAIL_DEARROW));
-    public static final BooleanSetting ALT_THUMBNAIL_DEARROW_CONNECTION_TOAST = new BooleanSetting("revanced_alt_thumbnail_dearrow_connection_toast", TRUE, getParents(ALT_THUMBNAIL_DEARROW));
+            "https://dearrow-thumb.ajay.app/api/v1/getThumbnail", true, parent(ALT_THUMBNAIL_DEARROW));
+    public static final BooleanSetting ALT_THUMBNAIL_DEARROW_CONNECTION_TOAST = new BooleanSetting("revanced_alt_thumbnail_dearrow_connection_toast", TRUE, parent(ALT_THUMBNAIL_DEARROW));
     public static final BooleanSetting CUSTOM_FILTER = new BooleanSetting("revanced_custom_filter", FALSE);
-    public static final StringSetting CUSTOM_FILTER_STRINGS = new StringSetting("revanced_custom_filter_strings", "", true, getParents(CUSTOM_FILTER));
+    public static final StringSetting CUSTOM_FILTER_STRINGS = new StringSetting("revanced_custom_filter_strings", "", true, parent(CUSTOM_FILTER));
     public static final BooleanSetting DISABLE_FULLSCREEN_AMBIENT_MODE = new BooleanSetting("revanced_disable_fullscreen_ambient_mode", TRUE, true);
     public static final BooleanSetting DISABLE_RESUMING_SHORTS_PLAYER = new BooleanSetting("revanced_disable_resuming_shorts_player", FALSE);
     public static final BooleanSetting DISABLE_ROLLING_NUMBER_ANIMATIONS = new BooleanSetting("revanced_disable_rolling_number_animations", FALSE);
@@ -125,7 +126,7 @@ public class Settings {
     public static final IntegerSetting PLAYER_OVERLAY_OPACITY = new IntegerSetting("revanced_player_overlay_opacity",100, true);
     public static final BooleanSetting PLAYER_POPUP_PANELS = new BooleanSetting("revanced_hide_player_popup_panels", FALSE);
     public static final BooleanSetting SPOOF_APP_VERSION = new BooleanSetting("revanced_spoof_app_version", FALSE, true, "revanced_spoof_app_version_user_dialog_message");
-    public static final StringSetting SPOOF_APP_VERSION_TARGET = new StringSetting("revanced_spoof_app_version_target", "17.08.35", true, getParents(SPOOF_APP_VERSION));
+    public static final StringSetting SPOOF_APP_VERSION_TARGET = new StringSetting("revanced_spoof_app_version_target", "17.08.35", true, parent(SPOOF_APP_VERSION));
     public static final BooleanSetting SWITCH_CREATE_WITH_NOTIFICATIONS_BUTTON = new BooleanSetting("revanced_switch_create_with_notifications_button", TRUE, true);
     public static final BooleanSetting TABLET_LAYOUT = new BooleanSetting("revanced_tablet_layout", FALSE, true, "revanced_tablet_layout_user_dialog_message");
     public static final BooleanSetting USE_TABLET_MINIPLAYER = new BooleanSetting("revanced_tablet_miniplayer", FALSE, true);
@@ -159,7 +160,7 @@ public class Settings {
     public static final BooleanSetting HIDE_SEEKBAR = new BooleanSetting("revanced_hide_seekbar", FALSE);
     public static final BooleanSetting HIDE_SEEKBAR_THUMBNAIL = new BooleanSetting("revanced_hide_seekbar_thumbnail", FALSE);
     public static final BooleanSetting SEEKBAR_CUSTOM_COLOR = new BooleanSetting("revanced_seekbar_custom_color", TRUE, true);
-    public static final StringSetting SEEKBAR_CUSTOM_COLOR_VALUE = new StringSetting("revanced_seekbar_custom_color_value", "#FF0000", true, getParents(SEEKBAR_CUSTOM_COLOR));
+    public static final StringSetting SEEKBAR_CUSTOM_COLOR_VALUE = new StringSetting("revanced_seekbar_custom_color_value", "#FF0000", true, parent(SEEKBAR_CUSTOM_COLOR));
 
     // Action buttons
     public static final BooleanSetting HIDE_LIKE_DISLIKE_BUTTON = new BooleanSetting("revanced_hide_like_dislike_button", FALSE);
@@ -196,9 +197,9 @@ public class Settings {
     public static final BooleanSetting SPOOF_SIGNATURE = new BooleanSetting("revanced_spoof_signature_verification_enabled", TRUE, true,
             "revanced_spoof_signature_verification_enabled_user_dialog_message");
     public static final BooleanSetting SPOOF_SIGNATURE_IN_FEED = new BooleanSetting("revanced_spoof_signature_in_feed_enabled", FALSE, false,
-            getParents(SPOOF_SIGNATURE));
+            parent(SPOOF_SIGNATURE));
     public static final BooleanSetting SPOOF_STORYBOARD_RENDERER = new BooleanSetting("revanced_spoof_storyboard", TRUE, true,
-            getParents(SPOOF_SIGNATURE));
+            parent(SPOOF_SIGNATURE));
     public static final BooleanSetting SPOOF_DEVICE_DIMENSIONS = new BooleanSetting("revanced_spoof_device_dimensions", FALSE, true);
     public static final BooleanSetting BYPASS_URL_REDIRECTS = new BooleanSetting("revanced_bypass_url_redirects", TRUE);
     public static final BooleanSetting ANNOUNCEMENTS = new BooleanSetting("revanced_announcements", TRUE);
@@ -212,30 +213,30 @@ public class Settings {
     public static final BooleanSetting SWIPE_BRIGHTNESS = new BooleanSetting("revanced_swipe_brightness", TRUE);
     public static final BooleanSetting SWIPE_VOLUME = new BooleanSetting("revanced_swipe_volume", TRUE);
     public static final BooleanSetting SWIPE_PRESS_TO_ENGAGE = new BooleanSetting("revanced_swipe_press_to_engage", FALSE, true,
-            getParents(SWIPE_BRIGHTNESS, SWIPE_VOLUME));
+            parentsAny(SWIPE_BRIGHTNESS, SWIPE_VOLUME));
     public static final BooleanSetting SWIPE_HAPTIC_FEEDBACK = new BooleanSetting("revanced_swipe_haptic_feedback", TRUE, true,
-            getParents(SWIPE_BRIGHTNESS, SWIPE_VOLUME));
+            parentsAny(SWIPE_BRIGHTNESS, SWIPE_VOLUME));
     public static final IntegerSetting SWIPE_MAGNITUDE_THRESHOLD = new IntegerSetting("revanced_swipe_threshold", 30, true,
-            getParents(SWIPE_BRIGHTNESS, SWIPE_VOLUME));
+            parentsAny(SWIPE_BRIGHTNESS, SWIPE_VOLUME));
     public static final IntegerSetting SWIPE_OVERLAY_BACKGROUND_ALPHA = new IntegerSetting("revanced_swipe_overlay_background_alpha", 127, true,
-            getParents(SWIPE_BRIGHTNESS, SWIPE_VOLUME));
+            parentsAny(SWIPE_BRIGHTNESS, SWIPE_VOLUME));
     public static final IntegerSetting SWIPE_OVERLAY_TEXT_SIZE = new IntegerSetting("revanced_swipe_text_overlay_size", 22, true,
-            getParents(SWIPE_BRIGHTNESS, SWIPE_VOLUME));
+            parentsAny(SWIPE_BRIGHTNESS, SWIPE_VOLUME));
     public static final LongSetting SWIPE_OVERLAY_TIMEOUT = new LongSetting("revanced_swipe_overlay_timeout", 500L, true,
-            getParents(SWIPE_BRIGHTNESS, SWIPE_VOLUME));
+            parentsAny(SWIPE_BRIGHTNESS, SWIPE_VOLUME));
     public static final BooleanSetting SWIPE_SAVE_AND_RESTORE_BRIGHTNESS = new BooleanSetting("revanced_swipe_save_and_restore_brightness", TRUE, true,
-            getParents(SWIPE_BRIGHTNESS, SWIPE_VOLUME));
+            parentsAny(SWIPE_BRIGHTNESS, SWIPE_VOLUME));
 
     // Debugging
-    public static final BooleanSetting DEBUG_PROTOBUFFER = new BooleanSetting("revanced_debug_protobuffer", FALSE, getParents(app.revanced.integrations.shared.settings.Settings.DEBUG));
+    public static final BooleanSetting DEBUG_PROTOBUFFER = new BooleanSetting("revanced_debug_protobuffer", FALSE, parent(app.revanced.integrations.shared.settings.Settings.DEBUG));
 
     // ReturnYoutubeDislike
     public static final BooleanSetting RYD_ENABLED = new BooleanSetting("ryd_enabled", TRUE, RETURN_YOUTUBE_DISLIKE);
     public static final StringSetting RYD_USER_ID = new StringSetting("ryd_user_id", "", RETURN_YOUTUBE_DISLIKE, false, false);
-    public static final BooleanSetting RYD_SHORTS = new BooleanSetting("ryd_shorts", TRUE, RETURN_YOUTUBE_DISLIKE, getParents(RYD_ENABLED));
-    public static final BooleanSetting RYD_DISLIKE_PERCENTAGE = new BooleanSetting("ryd_dislike_percentage", FALSE, RETURN_YOUTUBE_DISLIKE, getParents(RYD_ENABLED));
-    public static final BooleanSetting RYD_COMPACT_LAYOUT = new BooleanSetting("ryd_compact_layout", FALSE, RETURN_YOUTUBE_DISLIKE, getParents(RYD_ENABLED));
-    public static final BooleanSetting RYD_TOAST_ON_CONNECTION_ERROR = new BooleanSetting("ryd_toast_on_connection_error", TRUE, RETURN_YOUTUBE_DISLIKE, getParents(RYD_ENABLED));
+    public static final BooleanSetting RYD_SHORTS = new BooleanSetting("ryd_shorts", TRUE, RETURN_YOUTUBE_DISLIKE, parent(RYD_ENABLED));
+    public static final BooleanSetting RYD_DISLIKE_PERCENTAGE = new BooleanSetting("ryd_dislike_percentage", FALSE, RETURN_YOUTUBE_DISLIKE, parent(RYD_ENABLED));
+    public static final BooleanSetting RYD_COMPACT_LAYOUT = new BooleanSetting("ryd_compact_layout", FALSE, RETURN_YOUTUBE_DISLIKE, parent(RYD_ENABLED));
+    public static final BooleanSetting RYD_TOAST_ON_CONNECTION_ERROR = new BooleanSetting("ryd_toast_on_connection_error", TRUE, RETURN_YOUTUBE_DISLIKE, parent(RYD_ENABLED));
 
     // SponsorBlock
     public static final BooleanSetting SB_ENABLED = new BooleanSetting("sb_enabled", TRUE, SPONSOR_BLOCK);
@@ -244,16 +245,16 @@ public class Settings {
      */
     public static final StringSetting SB_PRIVATE_USER_ID = new StringSetting("sb_private_user_id_Do_Not_Share", "", SPONSOR_BLOCK);
     public static final StringSetting DEPRECATED_SB_UUID_OLD_MIGRATION_SETTING = new StringSetting("uuid", "", SPONSOR_BLOCK); // Delete sometime in 2024
-    public static final IntegerSetting SB_CREATE_NEW_SEGMENT_STEP = new IntegerSetting("sb_create_new_segment_step", 150, SPONSOR_BLOCK, getParents(SB_ENABLED));
-    public static final BooleanSetting SB_VOTING_BUTTON = new BooleanSetting("sb_voting_button", FALSE, SPONSOR_BLOCK, getParents(SB_ENABLED));
-    public static final BooleanSetting SB_CREATE_NEW_SEGMENT = new BooleanSetting("sb_create_new_segment", FALSE, SPONSOR_BLOCK, getParents(SB_ENABLED));
-    public static final BooleanSetting SB_COMPACT_SKIP_BUTTON = new BooleanSetting("sb_compact_skip_button", FALSE, SPONSOR_BLOCK, getParents(SB_ENABLED));
-    public static final BooleanSetting SB_AUTO_HIDE_SKIP_BUTTON = new BooleanSetting("sb_auto_hide_skip_button", TRUE, SPONSOR_BLOCK, getParents(SB_ENABLED));
-    public static final BooleanSetting SB_TOAST_ON_SKIP = new BooleanSetting("sb_toast_on_skip", TRUE, SPONSOR_BLOCK, getParents(SB_ENABLED));
-    public static final BooleanSetting SB_TOAST_ON_CONNECTION_ERROR = new BooleanSetting("sb_toast_on_connection_error", TRUE, SPONSOR_BLOCK, getParents(SB_ENABLED));
-    public static final BooleanSetting SB_TRACK_SKIP_COUNT = new BooleanSetting("sb_track_skip_count", TRUE, SPONSOR_BLOCK, getParents(SB_ENABLED));
-    public static final FloatSetting SB_SEGMENT_MIN_DURATION = new FloatSetting("sb_min_segment_duration", 0F, SPONSOR_BLOCK, getParents(SB_ENABLED));
-    public static final BooleanSetting SB_VIDEO_LENGTH_WITHOUT_SEGMENTS = new BooleanSetting("sb_video_length_without_segments", TRUE, SPONSOR_BLOCK, getParents(SB_ENABLED));
+    public static final IntegerSetting SB_CREATE_NEW_SEGMENT_STEP = new IntegerSetting("sb_create_new_segment_step", 150, SPONSOR_BLOCK, parent(SB_ENABLED));
+    public static final BooleanSetting SB_VOTING_BUTTON = new BooleanSetting("sb_voting_button", FALSE, SPONSOR_BLOCK, parent(SB_ENABLED));
+    public static final BooleanSetting SB_CREATE_NEW_SEGMENT = new BooleanSetting("sb_create_new_segment", FALSE, SPONSOR_BLOCK, parent(SB_ENABLED));
+    public static final BooleanSetting SB_COMPACT_SKIP_BUTTON = new BooleanSetting("sb_compact_skip_button", FALSE, SPONSOR_BLOCK, parent(SB_ENABLED));
+    public static final BooleanSetting SB_AUTO_HIDE_SKIP_BUTTON = new BooleanSetting("sb_auto_hide_skip_button", TRUE, SPONSOR_BLOCK, parent(SB_ENABLED));
+    public static final BooleanSetting SB_TOAST_ON_SKIP = new BooleanSetting("sb_toast_on_skip", TRUE, SPONSOR_BLOCK, parent(SB_ENABLED));
+    public static final BooleanSetting SB_TOAST_ON_CONNECTION_ERROR = new BooleanSetting("sb_toast_on_connection_error", TRUE, SPONSOR_BLOCK, parent(SB_ENABLED));
+    public static final BooleanSetting SB_TRACK_SKIP_COUNT = new BooleanSetting("sb_track_skip_count", TRUE, SPONSOR_BLOCK, parent(SB_ENABLED));
+    public static final FloatSetting SB_SEGMENT_MIN_DURATION = new FloatSetting("sb_min_segment_duration", 0F, SPONSOR_BLOCK, parent(SB_ENABLED));
+    public static final BooleanSetting SB_VIDEO_LENGTH_WITHOUT_SEGMENTS = new BooleanSetting("sb_video_length_without_segments", TRUE, SPONSOR_BLOCK, parent(SB_ENABLED));
     public static final StringSetting SB_API_URL = new StringSetting("sb_api_url","https://sponsor.ajay.app", SPONSOR_BLOCK);
     public static final BooleanSetting SB_USER_IS_VIP = new BooleanSetting("sb_user_is_vip", FALSE, SPONSOR_BLOCK);
     public static final IntegerSetting SB_LOCAL_TIME_SAVED_NUMBER_SEGMENTS = new IntegerSetting("sb_local_time_saved_number_segments", 0, SPONSOR_BLOCK);

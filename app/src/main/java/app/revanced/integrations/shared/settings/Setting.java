@@ -17,7 +17,52 @@ import java.util.*;
 
 import static app.revanced.integrations.shared.StringRef.str;
 
+@SuppressWarnings("unused")
 public abstract class Setting<T> {
+
+    /**
+     * Indicates if a {@link Setting} is available to edit and use.
+     * Typically this is dependent upon other BooleanSetting(s) set to 'true',
+     * but this can be used to call into integrations code and check other conditions.
+     */
+    public interface Availability {
+        boolean isAvailable();
+    }
+
+    /**
+     * Availability based on a single parent setting being enabled.
+     */
+    @NonNull
+    public static Availability parent(@NonNull BooleanSetting parent) {
+        return () -> parent.get();
+    }
+
+    /**
+     * Availability based on all parents being enabled.
+     */
+    @NonNull
+    public static Availability parentsAll(@NonNull BooleanSetting... parents) {
+        return () -> {
+            for (BooleanSetting parent : parents) {
+                if (!parent.get()) return false;
+            }
+            return true;
+        };
+    }
+
+    /**
+     * Availability based on any parent being enabled.
+     */
+    @NonNull
+    public static Availability parentsAny(@NonNull BooleanSetting... parents) {
+        return () -> {
+            for (BooleanSetting parent : parents) {
+                if (parent.get()) return true;
+            }
+            return false;
+        };
+    }
+
     /**
      * Default preference to use if an instance does not specify one.
      */
@@ -34,13 +79,6 @@ public abstract class Setting<T> {
      * Map of setting path to setting object.
      */
     private static final Map<String, Setting<?>> PATH_TO_SETTINGS = new HashMap<>();
-
-    /**
-     * Currently only Boolean types can be parents.
-     */
-    public static BooleanSetting[] getParents(BooleanSetting... parents) {
-        return parents;
-    }
 
     @Nullable
     public static Setting<?> getSettingFromPath(@NonNull String str) {
@@ -76,11 +114,11 @@ public abstract class Setting<T> {
     public final boolean includeWithImportExport;
 
     /**
-     * Set of boolean parent settings.
-     * If any of the parents are enabled, then this setting is available to configure.
+     * If this setting is available to edit and use.
+     * Not to be confused with it's status returned from {@link #get()}.
      */
     @Nullable
-    private final BooleanSetting[] parents;
+    private final Availability availability;
 
     /**
      * Confirmation message to display, if the user tries to change the setting from the default value.
@@ -108,17 +146,17 @@ public abstract class Setting<T> {
     public Setting(String key, T defaultValue, String userDialogMessage) {
         this(key, defaultValue, defaultPreferences, false, true, userDialogMessage, null);
     }
-    public Setting(String key, T defaultValue, BooleanSetting[] parents) {
-        this(key, defaultValue, defaultPreferences, false, true, null, parents);
+    public Setting(String key, T defaultValue, Availability availability) {
+        this(key, defaultValue, defaultPreferences, false, true, null, availability);
     }
     public Setting(String key, T defaultValue, boolean rebootApp, String userDialogMessage) {
         this(key, defaultValue, defaultPreferences, rebootApp, true, userDialogMessage, null);
     }
-    public Setting(String key, T defaultValue, boolean rebootApp, BooleanSetting[] parents) {
-        this(key, defaultValue, defaultPreferences, rebootApp, true, null, parents);
+    public Setting(String key, T defaultValue, boolean rebootApp, Availability availability) {
+        this(key, defaultValue, defaultPreferences, rebootApp, true, null, availability);
     }
-    public Setting(String key, T defaultValue, boolean rebootApp, String userDialogMessage, BooleanSetting[] parents) {
-        this(key, defaultValue, defaultPreferences, rebootApp, true, userDialogMessage, parents);
+    public Setting(String key, T defaultValue, boolean rebootApp, String userDialogMessage, Availability availability) {
+        this(key, defaultValue, defaultPreferences, rebootApp, true, userDialogMessage, availability);
     }
     public Setting(String key, T defaultValue, SharedPrefCategory prefName) {
         this(key, defaultValue, prefName, false, true, null, null);
@@ -129,8 +167,8 @@ public abstract class Setting<T> {
     public Setting(String key, T defaultValue, SharedPrefCategory prefName, String userDialogMessage) {
         this(key, defaultValue, prefName, false, true, userDialogMessage, null);
     }
-    public Setting(String key, T defaultValue, SharedPrefCategory prefName, BooleanSetting[] parents) {
-        this(key, defaultValue, prefName, false, true, null, parents);
+    public Setting(String key, T defaultValue, SharedPrefCategory prefName, Availability availability) {
+        this(key, defaultValue, prefName, false, true, null, availability);
     }
     public Setting(String key, T defaultValue, SharedPrefCategory prefName, boolean rebootApp, boolean includeWithImportExport) {
         this(key, defaultValue, prefName, rebootApp, includeWithImportExport, null, null);
@@ -144,7 +182,7 @@ public abstract class Setting<T> {
      * @param rebootApp If the app should be rebooted, if this setting is changed.
      * @param includeWithImportExport If this setting should be shown in the import/export dialog.
      * @param userDialogMessage Confirmation message to display, if the user tries to change the setting from the default value.
-     * @param parents Set of boolean parent settings that must be enabled, for this setting to be available to configure.
+     * @param availability Condition that must be true, for this setting to be available to configure.
      */
     public Setting(@NonNull String key,
                    @NonNull T defaultValue,
@@ -152,7 +190,7 @@ public abstract class Setting<T> {
                    boolean rebootApp,
                    boolean includeWithImportExport,
                    @Nullable String userDialogMessage,
-                   @Nullable BooleanSetting[] parents
+                   @Nullable Availability availability
     ) {
         this.key = Objects.requireNonNull(key);
         this.value = this.defaultValue = Objects.requireNonNull(defaultValue);
@@ -160,7 +198,7 @@ public abstract class Setting<T> {
         this.rebootApp = rebootApp;
         this.includeWithImportExport = includeWithImportExport;
         this.userDialogMessage = (userDialogMessage == null) ? null : new StringRef(userDialogMessage);
-        this.parents = parents;
+        this.availability = availability;
 
         load();
 
@@ -219,13 +257,7 @@ public abstract class Setting<T> {
      * @return if this setting can be configured and used.
      */
     public boolean isAvailable() {
-        if (parents == null) {
-            return true;
-        }
-        for (BooleanSetting parent : parents) {
-            if (parent.get()) return true;
-        }
-        return false;
+        return availability == null || availability.isAvailable();
     }
 
     /**
@@ -286,7 +318,7 @@ public abstract class Setting<T> {
     @Override
     public boolean equals(Object obj) {
         if (!(obj instanceof Setting)) return false;
-        return key.equals(((Setting) obj).key);
+        return key.equals(((Setting<?>) obj).key);
     }
 
     // region Import / export

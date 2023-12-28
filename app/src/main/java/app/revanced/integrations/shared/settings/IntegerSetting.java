@@ -8,6 +8,7 @@ import org.json.JSONObject;
 
 import java.util.Objects;
 
+@SuppressWarnings("unused")
 public class IntegerSetting extends Setting<Integer> {
 
     public IntegerSetting(String key, Integer defaultValue) {
@@ -22,17 +23,17 @@ public class IntegerSetting extends Setting<Integer> {
     public IntegerSetting(String key, Integer defaultValue, String userDialogMessage) {
         super(key, defaultValue, userDialogMessage);
     }
-    public IntegerSetting(String key, Integer defaultValue, BooleanSetting[] parents) {
-        super(key, defaultValue, parents);
+    public IntegerSetting(String key, Integer defaultValue, Availability availability) {
+        super(key, defaultValue, availability);
     }
     public IntegerSetting(String key, Integer defaultValue, boolean rebootApp, String userDialogMessage) {
         super(key, defaultValue, rebootApp, userDialogMessage);
     }
-    public IntegerSetting(String key, Integer defaultValue, boolean rebootApp, BooleanSetting[] parents) {
-        super(key, defaultValue, rebootApp, parents);
+    public IntegerSetting(String key, Integer defaultValue, boolean rebootApp, Availability availability) {
+        super(key, defaultValue, rebootApp, availability);
     }
-    public IntegerSetting(String key, Integer defaultValue, boolean rebootApp, String userDialogMessage, BooleanSetting[] parents) {
-        super(key, defaultValue, rebootApp, userDialogMessage, parents);
+    public IntegerSetting(String key, Integer defaultValue, boolean rebootApp, String userDialogMessage, Availability availability) {
+        super(key, defaultValue, rebootApp, userDialogMessage, availability);
     }
     public IntegerSetting(String key, Integer defaultValue, SharedPrefCategory prefName) {
         super(key, defaultValue, prefName);
@@ -43,14 +44,14 @@ public class IntegerSetting extends Setting<Integer> {
     public IntegerSetting(String key, Integer defaultValue, SharedPrefCategory prefName, String userDialogMessage) {
         super(key, defaultValue, prefName, userDialogMessage);
     }
-    public IntegerSetting(String key, Integer defaultValue, SharedPrefCategory prefName, BooleanSetting[] parents) {
-        super(key, defaultValue, prefName, parents);
+    public IntegerSetting(String key, Integer defaultValue, SharedPrefCategory prefName, Availability availability) {
+        super(key, defaultValue, prefName, availability);
     }
     public IntegerSetting(String key, Integer defaultValue, SharedPrefCategory prefName, boolean rebootApp, boolean includeWithImportExport) {
         super(key, defaultValue, prefName, rebootApp, includeWithImportExport);
     }
-    public IntegerSetting(@NonNull String key, @NonNull Integer defaultValue, @NonNull SharedPrefCategory prefName, boolean rebootApp, boolean includeWithImportExport, @Nullable String userDialogMessage, @Nullable BooleanSetting[] parents) {
-        super(key, defaultValue, prefName, rebootApp, includeWithImportExport, userDialogMessage, parents);
+    public IntegerSetting(@NonNull String key, @NonNull Integer defaultValue, @NonNull SharedPrefCategory prefName, boolean rebootApp, boolean includeWithImportExport, @Nullable String userDialogMessage, @Nullable Availability availability) {
+        super(key, defaultValue, prefName, rebootApp, includeWithImportExport, userDialogMessage, availability);
     }
 
     @Override

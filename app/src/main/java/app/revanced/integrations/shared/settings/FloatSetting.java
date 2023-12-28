@@ -8,6 +8,7 @@ import org.json.JSONObject;
 
 import java.util.Objects;
 
+@SuppressWarnings("unused")
 public class FloatSetting extends Setting<Float> {
 
     public FloatSetting(String key, Float defaultValue) {
@@ -22,17 +23,17 @@ public class FloatSetting extends Setting<Float> {
     public FloatSetting(String key, Float defaultValue, String userDialogMessage) {
         super(key, defaultValue, userDialogMessage);
     }
-    public FloatSetting(String key, Float defaultValue, BooleanSetting[] parents) {
-        super(key, defaultValue, parents);
+    public FloatSetting(String key, Float defaultValue, Availability availability) {
+        super(key, defaultValue, availability);
     }
     public FloatSetting(String key, Float defaultValue, boolean rebootApp, String userDialogMessage) {
         super(key, defaultValue, rebootApp, userDialogMessage);
     }
-    public FloatSetting(String key, Float defaultValue, boolean rebootApp, BooleanSetting[] parents) {
-        super(key, defaultValue, rebootApp, parents);
+    public FloatSetting(String key, Float defaultValue, boolean rebootApp, Availability availability) {
+        super(key, defaultValue, rebootApp, availability);
     }
-    public FloatSetting(String key, Float defaultValue, boolean rebootApp, String userDialogMessage, BooleanSetting[] parents) {
-        super(key, defaultValue, rebootApp, userDialogMessage, parents);
+    public FloatSetting(String key, Float defaultValue, boolean rebootApp, String userDialogMessage, Availability availability) {
+        super(key, defaultValue, rebootApp, userDialogMessage, availability);
     }
     public FloatSetting(String key, Float defaultValue, SharedPrefCategory prefName) {
         super(key, defaultValue, prefName);
@@ -43,14 +44,14 @@ public class FloatSetting extends Setting<Float> {
     public FloatSetting(String key, Float defaultValue, SharedPrefCategory prefName, String userDialogMessage) {
         super(key, defaultValue, prefName, userDialogMessage);
     }
-    public FloatSetting(String key, Float defaultValue, SharedPrefCategory prefName, BooleanSetting[] parents) {
-        super(key, defaultValue, prefName, parents);
+    public FloatSetting(String key, Float defaultValue, SharedPrefCategory prefName, Availability availability) {
+        super(key, defaultValue, prefName, availability);
     }
     public FloatSetting(String key, Float defaultValue, SharedPrefCategory prefName, boolean rebootApp, boolean includeWithImportExport) {
         super(key, defaultValue, prefName, rebootApp, includeWithImportExport);
     }
-    public FloatSetting(@NonNull String key, @NonNull Float defaultValue, @NonNull SharedPrefCategory prefName, boolean rebootApp, boolean includeWithImportExport, @Nullable String userDialogMessage, @Nullable BooleanSetting[] parents) {
-        super(key, defaultValue, prefName, rebootApp, includeWithImportExport, userDialogMessage, parents);
+    public FloatSetting(@NonNull String key, @NonNull Float defaultValue, @NonNull SharedPrefCategory prefName, boolean rebootApp, boolean includeWithImportExport, @Nullable String userDialogMessage, @Nullable Availability availability) {
+        super(key, defaultValue, prefName, rebootApp, includeWithImportExport, userDialogMessage, availability);
     }
 
     @Override

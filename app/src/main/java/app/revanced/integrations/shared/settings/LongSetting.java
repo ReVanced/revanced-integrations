@@ -8,6 +8,7 @@ import org.json.JSONObject;
 
 import java.util.Objects;
 
+@SuppressWarnings("unused")
 public class LongSetting extends Setting<Long> {
 
     public LongSetting(String key, Long defaultValue) {
@@ -22,17 +23,17 @@ public class LongSetting extends Setting<Long> {
     public LongSetting(String key, Long defaultValue, String userDialogMessage) {
         super(key, defaultValue, userDialogMessage);
     }
-    public LongSetting(String key, Long defaultValue, BooleanSetting[] parents) {
-        super(key, defaultValue, parents);
+    public LongSetting(String key, Long defaultValue, Availability availability) {
+        super(key, defaultValue, availability);
     }
     public LongSetting(String key, Long defaultValue, boolean rebootApp, String userDialogMessage) {
         super(key, defaultValue, rebootApp, userDialogMessage);
     }
-    public LongSetting(String key, Long defaultValue, boolean rebootApp, BooleanSetting[] parents) {
-        super(key, defaultValue, rebootApp, parents);
+    public LongSetting(String key, Long defaultValue, boolean rebootApp, Availability availability) {
+        super(key, defaultValue, rebootApp, availability);
     }
-    public LongSetting(String key, Long defaultValue, boolean rebootApp, String userDialogMessage, BooleanSetting[] parents) {
-        super(key, defaultValue, rebootApp, userDialogMessage, parents);
+    public LongSetting(String key, Long defaultValue, boolean rebootApp, String userDialogMessage, Availability availability) {
+        super(key, defaultValue, rebootApp, userDialogMessage, availability);
     }
     public LongSetting(String key, Long defaultValue, SharedPrefCategory prefName) {
         super(key, defaultValue, prefName);
@@ -43,14 +44,14 @@ public class LongSetting extends Setting<Long> {
     public LongSetting(String key, Long defaultValue, SharedPrefCategory prefName, String userDialogMessage) {
         super(key, defaultValue, prefName, userDialogMessage);
     }
-    public LongSetting(String key, Long defaultValue, SharedPrefCategory prefName, BooleanSetting[] parents) {
-        super(key, defaultValue, prefName, parents);
+    public LongSetting(String key, Long defaultValue, SharedPrefCategory prefName, Availability availability) {
+        super(key, defaultValue, prefName, availability);
     }
     public LongSetting(String key, Long defaultValue, SharedPrefCategory prefName, boolean rebootApp, boolean includeWithImportExport) {
         super(key, defaultValue, prefName, rebootApp, includeWithImportExport);
     }
-    public LongSetting(@NonNull String key, @NonNull Long defaultValue, @NonNull SharedPrefCategory prefName, boolean rebootApp, boolean includeWithImportExport, @Nullable String userDialogMessage, @Nullable BooleanSetting[] parents) {
-        super(key, defaultValue, prefName, rebootApp, includeWithImportExport, userDialogMessage, parents);
+    public LongSetting(@NonNull String key, @NonNull Long defaultValue, @NonNull SharedPrefCategory prefName, boolean rebootApp, boolean includeWithImportExport, @Nullable String userDialogMessage, @Nullable Availability availability) {
+        super(key, defaultValue, prefName, rebootApp, includeWithImportExport, userDialogMessage, availability);
     }
 
     @Override

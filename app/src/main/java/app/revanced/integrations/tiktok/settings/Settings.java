@@ -7,7 +7,7 @@ import app.revanced.integrations.shared.settings.BooleanSetting;
 import app.revanced.integrations.shared.settings.StringSetting;
 
 public class Settings {
-    public static final BooleanSetting DEBUG = new BooleanSetting("debug", FALSE); // Must be first value, otherwise logging during loading will not work.
+    public static final BooleanSetting DEBUG = new BooleanSetting("debug", FALSE);
     public static final BooleanSetting REMOVE_ADS = new BooleanSetting("remove_ads", TRUE, true);
     public static final BooleanSetting HIDE_LIVE = new BooleanSetting("hide_live", FALSE, true);
     public static final BooleanSetting HIDE_STORY = new BooleanSetting("hide_story", FALSE, true);
