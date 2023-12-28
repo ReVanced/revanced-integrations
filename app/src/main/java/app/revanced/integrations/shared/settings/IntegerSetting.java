@@ -8,8 +8,6 @@ import org.json.JSONObject;
 
 import java.util.Objects;
 
-import app.revanced.integrations.youtube.settings.SharedPrefCategory;
-
 public class IntegerSetting extends Setting<Integer> {
 
     public IntegerSetting(String key, Integer defaultValue) {
@@ -18,7 +16,7 @@ public class IntegerSetting extends Setting<Integer> {
     public IntegerSetting(String key, Integer defaultValue, boolean rebootApp) {
         super(key, defaultValue, rebootApp);
     }
-    public IntegerSetting(@NonNull String key, @NonNull Integer defaultValue, boolean rebootApp, boolean includeWithImportExport) {
+    public IntegerSetting(String key, Integer defaultValue, boolean rebootApp, boolean includeWithImportExport) {
         super(key, defaultValue, rebootApp, includeWithImportExport);
     }
     public IntegerSetting(String key, Integer defaultValue, String userDialogMessage) {
@@ -48,7 +46,7 @@ public class IntegerSetting extends Setting<Integer> {
     public IntegerSetting(String key, Integer defaultValue, SharedPrefCategory prefName, BooleanSetting[] parents) {
         super(key, defaultValue, prefName, parents);
     }
-    public IntegerSetting(@NonNull String key, @NonNull Integer defaultValue, @NonNull SharedPrefCategory prefName, boolean rebootApp, boolean includeWithImportExport) {
+    public IntegerSetting(String key, Integer defaultValue, SharedPrefCategory prefName, boolean rebootApp, boolean includeWithImportExport) {
         super(key, defaultValue, prefName, rebootApp, includeWithImportExport);
     }
     public IntegerSetting(@NonNull String key, @NonNull Integer defaultValue, @NonNull SharedPrefCategory prefName, boolean rebootApp, boolean includeWithImportExport, @Nullable String userDialogMessage, @Nullable BooleanSetting[] parents) {

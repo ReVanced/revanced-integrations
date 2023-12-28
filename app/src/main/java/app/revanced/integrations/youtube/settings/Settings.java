@@ -4,8 +4,6 @@ import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
 import static app.revanced.integrations.shared.settings.Setting.getParents;
 import static app.revanced.integrations.shared.settings.Setting.migrateOldSettingToNew;
-import static app.revanced.integrations.youtube.settings.SharedPrefCategory.RETURN_YOUTUBE_DISLIKE;
-import static app.revanced.integrations.youtube.settings.SharedPrefCategory.SPONSOR_BLOCK;
 import static app.revanced.integrations.youtube.sponsorblock.objects.CategoryBehaviour.IGNORE;
 import static app.revanced.integrations.youtube.sponsorblock.objects.CategoryBehaviour.MANUAL_SKIP;
 import static app.revanced.integrations.youtube.sponsorblock.objects.CategoryBehaviour.SKIP_AUTOMATICALLY;
@@ -16,10 +14,15 @@ import app.revanced.integrations.shared.settings.BooleanSetting;
 import app.revanced.integrations.shared.settings.FloatSetting;
 import app.revanced.integrations.shared.settings.IntegerSetting;
 import app.revanced.integrations.shared.settings.LongSetting;
+import app.revanced.integrations.shared.settings.Setting;
+import app.revanced.integrations.shared.settings.SharedPrefCategory;
 import app.revanced.integrations.shared.settings.StringSetting;
 import app.revanced.integrations.youtube.sponsorblock.SponsorBlockSettings;
 
 public class Settings {
+    public static SharedPrefCategory RETURN_YOUTUBE_DISLIKE = new SharedPrefCategory("ryd");
+    public static SharedPrefCategory SPONSOR_BLOCK = new SharedPrefCategory("sponsor-block");
+
     // External downloader
     public static final BooleanSetting EXTERNAL_DOWNLOADER = new BooleanSetting("revanced_external_downloader", FALSE);
     public static final StringSetting EXTERNAL_DOWNLOADER_PACKAGE_NAME = new StringSetting("revanced_external_downloader_name",

@@ -72,7 +72,7 @@ public abstract class AbstractPreferenceFragment extends PreferenceFragment {
                 return;
             }
 
-            Setting.setPreferencesEnabled(this);
+            Setting.updatePreferencesAvailable(this);
 
             if (settingImportInProgress) {
                 return;
@@ -106,8 +106,8 @@ public abstract class AbstractPreferenceFragment extends PreferenceFragment {
         if (identifier == 0) return;
         addPreferencesFromResource(identifier);
 
-        Setting.setPreferencesEnabled(this);
-        Setting.setPreferences(this);
+        Setting.updatePreferencesAvailable(this);
+        Setting.updatePreferences(this);
     }
 
     private void showSettingUserDialogConfirmation(SwitchPreference switchPref, BooleanSetting setting) {

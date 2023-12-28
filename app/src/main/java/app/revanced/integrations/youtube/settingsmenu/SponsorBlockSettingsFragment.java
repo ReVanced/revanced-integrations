@@ -18,7 +18,6 @@ import androidx.annotation.Nullable;
 import app.revanced.integrations.shared.Logger;
 import app.revanced.integrations.shared.Utils;
 import app.revanced.integrations.youtube.settings.Settings;
-import app.revanced.integrations.youtube.settings.SharedPrefCategory;
 import app.revanced.integrations.youtube.sponsorblock.SegmentPlaybackController;
 import app.revanced.integrations.youtube.sponsorblock.SponsorBlockSettings;
 import app.revanced.integrations.youtube.sponsorblock.SponsorBlockUtils;
@@ -119,7 +118,7 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment {
         super.onCreate(savedInstanceState);
         try {
             PreferenceManager preferenceManager = getPreferenceManager();
-            preferenceManager.setSharedPreferencesName(SharedPrefCategory.SPONSOR_BLOCK.prefName);
+            preferenceManager.setSharedPreferencesName(Settings.SPONSOR_BLOCK.prefName);
 
             final Activity context = getActivity();
             PreferenceScreen preferenceScreen = preferenceManager.createPreferenceScreen(context);

@@ -8,8 +8,6 @@ import org.json.JSONObject;
 
 import java.util.Objects;
 
-import app.revanced.integrations.youtube.settings.SharedPrefCategory;
-
 public class BooleanSetting extends Setting<Boolean> {
     public BooleanSetting(String key, Boolean defaultValue) {
         super(key, defaultValue);
@@ -17,7 +15,7 @@ public class BooleanSetting extends Setting<Boolean> {
     public BooleanSetting(String key, Boolean defaultValue, boolean rebootApp) {
         super(key, defaultValue, rebootApp);
     }
-    public BooleanSetting(@NonNull String key, @NonNull Boolean defaultValue, boolean rebootApp, boolean includeWithImportExport) {
+    public BooleanSetting(String key, Boolean defaultValue, boolean rebootApp, boolean includeWithImportExport) {
         super(key, defaultValue, rebootApp, includeWithImportExport);
     }
     public BooleanSetting(String key, Boolean defaultValue, String userDialogMessage) {
@@ -47,7 +45,7 @@ public class BooleanSetting extends Setting<Boolean> {
     public BooleanSetting(String key, Boolean defaultValue, SharedPrefCategory prefName, BooleanSetting[] parents) {
         super(key, defaultValue, prefName, parents);
     }
-    public BooleanSetting(@NonNull String key, @NonNull Boolean defaultValue, @NonNull SharedPrefCategory prefName, boolean rebootApp, boolean includeWithImportExport) {
+    public BooleanSetting(String key, Boolean defaultValue, SharedPrefCategory prefName, boolean rebootApp, boolean includeWithImportExport) {
         super(key, defaultValue, prefName, rebootApp, includeWithImportExport);
     }
     public BooleanSetting(@NonNull String key, @NonNull Boolean defaultValue, @NonNull SharedPrefCategory prefName, boolean rebootApp, boolean includeWithImportExport, @Nullable String userDialogMessage, @Nullable BooleanSetting[] parents) {

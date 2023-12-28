@@ -8,8 +8,6 @@ import org.json.JSONObject;
 
 import java.util.Objects;
 
-import app.revanced.integrations.youtube.settings.SharedPrefCategory;
-
 public class FloatSetting extends Setting<Float> {
 
     public FloatSetting(String key, Float defaultValue) {
@@ -18,7 +16,7 @@ public class FloatSetting extends Setting<Float> {
     public FloatSetting(String key, Float defaultValue, boolean rebootApp) {
         super(key, defaultValue, rebootApp);
     }
-    public FloatSetting(@NonNull String key, @NonNull Float defaultValue, boolean rebootApp, boolean includeWithImportExport) {
+    public FloatSetting(String key, Float defaultValue, boolean rebootApp, boolean includeWithImportExport) {
         super(key, defaultValue, rebootApp, includeWithImportExport);
     }
     public FloatSetting(String key, Float defaultValue, String userDialogMessage) {
@@ -48,7 +46,7 @@ public class FloatSetting extends Setting<Float> {
     public FloatSetting(String key, Float defaultValue, SharedPrefCategory prefName, BooleanSetting[] parents) {
         super(key, defaultValue, prefName, parents);
     }
-    public FloatSetting(@NonNull String key, @NonNull Float defaultValue, @NonNull SharedPrefCategory prefName, boolean rebootApp, boolean includeWithImportExport) {
+    public FloatSetting(String key, Float defaultValue, SharedPrefCategory prefName, boolean rebootApp, boolean includeWithImportExport) {
         super(key, defaultValue, prefName, rebootApp, includeWithImportExport);
     }
     public FloatSetting(@NonNull String key, @NonNull Float defaultValue, @NonNull SharedPrefCategory prefName, boolean rebootApp, boolean includeWithImportExport, @Nullable String userDialogMessage, @Nullable BooleanSetting[] parents) {

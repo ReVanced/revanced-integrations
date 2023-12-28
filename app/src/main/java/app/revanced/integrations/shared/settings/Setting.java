@@ -4,7 +4,7 @@ import android.content.Context;
 import android.preference.*;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import app.revanced.integrations.youtube.settings.SharedPrefCategory;
+
 import app.revanced.integrations.youtube.sponsorblock.SponsorBlockSettings;
 import app.revanced.integrations.shared.Logger;
 import app.revanced.integrations.shared.Utils;
@@ -19,10 +19,16 @@ import static app.revanced.integrations.shared.StringRef.str;
 
 public abstract class Setting<T> {
     /**
+     * Default preference to use if an instance does not specify one.
+     */
+    // FIXME: This should be a plain "revanced" named category.
+    public static final SharedPrefCategory defaultPreferences = new SharedPrefCategory("youtube");
+
+    /**
      * All settings that were instantiated.
      * When a new setting is created, it is automatically added to this list.
      */
-    private static final List<Setting<?>> SETTINGS = new LinkedList<>();
+    private static final List<Setting<?>> SETTINGS = new ArrayList<>();
 
     /**
      * Map of setting path to setting object.
@@ -91,51 +97,42 @@ public abstract class Setting<T> {
     protected volatile T value;
 
     public Setting(String key, T defaultValue) {
-        this(key, defaultValue, SharedPrefCategory.YOUTUBE, false, true, null, null);
+        this(key, defaultValue, defaultPreferences, false, true, null, null);
     }
-    public Setting(String key, T defaultValue,
-                   boolean rebootApp) {
-        this(key, defaultValue, SharedPrefCategory.YOUTUBE, rebootApp, true, null, null);
+    public Setting(String key, T defaultValue, boolean rebootApp) {
+        this(key, defaultValue, defaultPreferences, rebootApp, true, null, null);
     }
-    public Setting(@NonNull String key, @NonNull T defaultValue, boolean rebootApp, boolean includeWithImportExport) {
-        this(key, defaultValue, SharedPrefCategory.YOUTUBE, rebootApp, includeWithImportExport);
+    public Setting(String key, T defaultValue, boolean rebootApp, boolean includeWithImportExport) {
+        this(key, defaultValue, defaultPreferences, rebootApp, includeWithImportExport);
     }
-    public Setting(String key, T defaultValue,
-                   String userDialogMessage) {
-        this(key, defaultValue, SharedPrefCategory.YOUTUBE, false, true, userDialogMessage, null);
+    public Setting(String key, T defaultValue, String userDialogMessage) {
+        this(key, defaultValue, defaultPreferences, false, true, userDialogMessage, null);
     }
-    public Setting(String key, T defaultValue,
-                   BooleanSetting[] parents) {
-        this(key, defaultValue, SharedPrefCategory.YOUTUBE, false, true, null, parents);
+    public Setting(String key, T defaultValue, BooleanSetting[] parents) {
+        this(key, defaultValue, defaultPreferences, false, true, null, parents);
     }
-    public Setting(String key, T defaultValue,
-                   boolean rebootApp, String userDialogMessage) {
-        this(key, defaultValue, SharedPrefCategory.YOUTUBE, rebootApp, true, userDialogMessage, null);
+    public Setting(String key, T defaultValue, boolean rebootApp, String userDialogMessage) {
+        this(key, defaultValue, defaultPreferences, rebootApp, true, userDialogMessage, null);
     }
-    public Setting(String key, T defaultValue,
-                   boolean rebootApp, BooleanSetting[] parents) {
-        this(key, defaultValue, SharedPrefCategory.YOUTUBE, rebootApp, true, null, parents);
+    public Setting(String key, T defaultValue, boolean rebootApp, BooleanSetting[] parents) {
+        this(key, defaultValue, defaultPreferences, rebootApp, true, null, parents);
     }
-    public Setting(String key, T defaultValue,
-                   boolean rebootApp, String userDialogMessage, BooleanSetting[] parents) {
-        this(key, defaultValue, SharedPrefCategory.YOUTUBE, rebootApp, true, userDialogMessage, parents);
+    public Setting(String key, T defaultValue, boolean rebootApp, String userDialogMessage, BooleanSetting[] parents) {
+        this(key, defaultValue, defaultPreferences, rebootApp, true, userDialogMessage, parents);
     }
     public Setting(String key, T defaultValue, SharedPrefCategory prefName) {
         this(key, defaultValue, prefName, false, true, null, null);
     }
-    public Setting(String key, T defaultValue, SharedPrefCategory prefName,
-                   boolean rebootApp) {
+    public Setting(String key, T defaultValue, SharedPrefCategory prefName, boolean rebootApp) {
         this(key, defaultValue, prefName, rebootApp, true, null, null);
     }
-    public Setting(String key, T defaultValue, SharedPrefCategory prefName,
-                   String userDialogMessage) {
+    public Setting(String key, T defaultValue, SharedPrefCategory prefName, String userDialogMessage) {
         this(key, defaultValue, prefName, false, true, userDialogMessage, null);
     }
-    public Setting(String key, T defaultValue, SharedPrefCategory prefName,
-                   BooleanSetting[] parents) {
+    public Setting(String key, T defaultValue, SharedPrefCategory prefName, BooleanSetting[] parents) {
         this(key, defaultValue, prefName, false, true, null, parents);
     }
-    public Setting(@NonNull String key, @NonNull T defaultValue, @NonNull SharedPrefCategory prefName, boolean rebootApp, boolean includeWithImportExport) {
+    public Setting(String key, T defaultValue, SharedPrefCategory prefName, boolean rebootApp, boolean includeWithImportExport) {
         this(key, defaultValue, prefName, rebootApp, includeWithImportExport, null, null);
     }
 
@@ -157,9 +154,9 @@ public abstract class Setting<T> {
                    @Nullable String userDialogMessage,
                    @Nullable BooleanSetting[] parents
     ) {
-        this.key = key;
-        this.value = this.defaultValue = defaultValue;
-        this.sharedPrefCategory = prefName;
+        this.key = Objects.requireNonNull(key);
+        this.value = this.defaultValue = Objects.requireNonNull(defaultValue);
+        this.sharedPrefCategory = Objects.requireNonNull(prefName);
         this.rebootApp = rebootApp;
         this.includeWithImportExport = includeWithImportExport;
         this.userDialogMessage = (userDialogMessage == null) ? null : new StringRef(userDialogMessage);
@@ -174,7 +171,7 @@ public abstract class Setting<T> {
     /**
      * Migrate a setting value if the path is renamed but otherwise the old and new settings are identical.
      */
-    public static void migrateOldSettingToNew(Setting oldSetting, Setting newSetting) {
+    public static void migrateOldSettingToNew(@NonNull Setting<?> oldSetting, @NonNull Setting newSetting) {
         if (!oldSetting.isSetToDefault()) {
             Logger.printInfo(() -> "Migrating old setting value: " + oldSetting + " into replacement setting: " + newSetting);
             newSetting.save(oldSetting.value);
@@ -189,7 +186,7 @@ public abstract class Setting<T> {
      * This intentionally is a static method to deter
      * accidental usage when {@link #save(Object)} was intended.
      */
-    public static void privateSetValueFromString(@NonNull Setting setting, @NonNull String newValue) {
+    public static void privateSetValueFromString(@NonNull Setting<?> setting, @NonNull String newValue) {
         setting.setValueFromString(newValue);
     }
 
@@ -239,23 +236,25 @@ public abstract class Setting<T> {
     }
 
     /** @noinspection deprecation*/
-    public static void setPreferencesEnabled(PreferenceFragment fragment) {
-        for (Setting setting : SETTINGS) {
+    public static void updatePreferencesAvailable(PreferenceFragment fragment) {
+        for (Setting<?> setting : SETTINGS) {
             Preference preference = fragment.findPreference(setting.key);
             if (preference != null) preference.setEnabled(setting.isAvailable());
         }
     }
 
     /** @noinspection deprecation*/
-    public static void setPreferences(PreferenceFragment fragment) {
-        for (Setting setting : SETTINGS) setting.setPreference(fragment);
+    public static void updatePreferences(PreferenceFragment fragment) {
+        for (Setting<?> setting : SETTINGS) {
+            setting.updatePreference(fragment);
+        }
     }
 
     /** @noinspection deprecation*/
-    public void setPreference(PreferenceFragment fragment) {
+    public void updatePreference(PreferenceFragment fragment) {
         Preference preference = fragment.findPreference(key);
         if (preference instanceof SwitchPreference) {
-            ((SwitchPreference) preference).setChecked(((Setting<Boolean>) this).get());
+            ((SwitchPreference) preference).setChecked((Boolean) get());
         } else if (preference instanceof EditTextPreference) {
             ((EditTextPreference) preference).setText(get().toString());
         } else if (preference instanceof ListPreference) {
@@ -264,7 +263,7 @@ public abstract class Setting<T> {
     }
 
     /** @noinspection deprecation*/
-    public static void setListPreference(ListPreference listPreference, Setting setting) {
+    public static void setListPreference(ListPreference listPreference, Setting<?> setting) {
         String objectStringValue = setting.get().toString();
         final int entryIndex = listPreference.findIndexOfValue(objectStringValue);
         if (entryIndex >= 0) {
@@ -336,9 +335,9 @@ public abstract class Setting<T> {
                     throw new IllegalArgumentException("duplicate key found: " + importExportKey);
                 }
 
-                //noinspection ConstantValue
                 final boolean exportDefaultValues = false; // Enable to see what all settings looks like in the UI.
-                if (setting.includeWithImportExport && (!setting.isSetToDefault() | exportDefaultValues)) {
+                //noinspection ConstantValue
+                if (setting.includeWithImportExport && (!setting.isSetToDefault() || exportDefaultValues)) {
                     setting.writeToJSON(json, importExportKey);
                 }
             }

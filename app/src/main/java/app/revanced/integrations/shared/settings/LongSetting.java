@@ -8,8 +8,6 @@ import org.json.JSONObject;
 
 import java.util.Objects;
 
-import app.revanced.integrations.youtube.settings.SharedPrefCategory;
-
 public class LongSetting extends Setting<Long> {
 
     public LongSetting(String key, Long defaultValue) {
@@ -18,7 +16,7 @@ public class LongSetting extends Setting<Long> {
     public LongSetting(String key, Long defaultValue, boolean rebootApp) {
         super(key, defaultValue, rebootApp);
     }
-    public LongSetting(@NonNull String key, @NonNull Long defaultValue, boolean rebootApp, boolean includeWithImportExport) {
+    public LongSetting(String key, Long defaultValue, boolean rebootApp, boolean includeWithImportExport) {
         super(key, defaultValue, rebootApp, includeWithImportExport);
     }
     public LongSetting(String key, Long defaultValue, String userDialogMessage) {
@@ -48,7 +46,7 @@ public class LongSetting extends Setting<Long> {
     public LongSetting(String key, Long defaultValue, SharedPrefCategory prefName, BooleanSetting[] parents) {
         super(key, defaultValue, prefName, parents);
     }
-    public LongSetting(@NonNull String key, @NonNull Long defaultValue, @NonNull SharedPrefCategory prefName, boolean rebootApp, boolean includeWithImportExport) {
+    public LongSetting(String key, Long defaultValue, SharedPrefCategory prefName, boolean rebootApp, boolean includeWithImportExport) {
         super(key, defaultValue, prefName, rebootApp, includeWithImportExport);
     }
     public LongSetting(@NonNull String key, @NonNull Long defaultValue, @NonNull SharedPrefCategory prefName, boolean rebootApp, boolean includeWithImportExport, @Nullable String userDialogMessage, @Nullable BooleanSetting[] parents) {

@@ -8,10 +8,10 @@ import android.preference.Preference;
 import android.preference.PreferenceManager;
 import android.util.AttributeSet;
 
-import app.revanced.integrations.youtube.settings.Settings;
-import app.revanced.integrations.youtube.settings.SharedPrefCategory;
 import app.revanced.integrations.shared.Logger;
 import app.revanced.integrations.shared.Utils;
+import app.revanced.integrations.shared.settings.Setting;
+import app.revanced.integrations.youtube.settings.Settings;
 
 /**
  * Shows what thumbnails will be used based on the current settings.
@@ -43,12 +43,12 @@ public class AlternativeThumbnailsStatusPreference extends Preference {
 
     private void addChangeListener() {
         Logger.printDebug(() -> "addChangeListener");
-        SharedPrefCategory.YOUTUBE.preferences.registerOnSharedPreferenceChangeListener(listener);
+        Setting.defaultPreferences.preferences.registerOnSharedPreferenceChangeListener(listener);
     }
 
     private void removeChangeListener() {
         Logger.printDebug(() -> "removeChangeListener");
-        SharedPrefCategory.YOUTUBE.preferences.unregisterOnSharedPreferenceChangeListener(listener);
+        Setting.defaultPreferences.preferences.unregisterOnSharedPreferenceChangeListener(listener);
     }
 
     @Override

@@ -1,4 +1,4 @@
-package app.revanced.integrations.youtube.settings;
+package app.revanced.integrations.shared.settings;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -20,18 +20,13 @@ import app.revanced.integrations.shared.Utils;
  * If saved numbers will not be used with a preference fragment,
  * then store the primitive numbers using {@link #preferences}.
  */
-public enum SharedPrefCategory {
-    YOUTUBE("youtube"),
-    RETURN_YOUTUBE_DISLIKE("ryd"),
-    SPONSOR_BLOCK("sponsor-block"),
-    REVANCED_PREFS("revanced_prefs");
-
+public class SharedPrefCategory {
     @NonNull
     public final String prefName;
     @NonNull
     public final SharedPreferences preferences;
 
-    SharedPrefCategory(@NonNull String prefName) {
+    public SharedPrefCategory(@NonNull String prefName) {
         this.prefName = Objects.requireNonNull(prefName);
         preferences = Objects.requireNonNull(Utils.getContext()).getSharedPreferences(prefName, Context.MODE_PRIVATE);
     }
