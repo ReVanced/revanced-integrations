@@ -135,9 +135,9 @@ public abstract class AbstractPreferenceFragment extends PreferenceFragment {
     }
 
     public static void showRestartDialog(@NonNull final Context context) {
-        String positiveButton = str("in_app_update_restart_button");
+        String positiveButton = str("revanced_settings_restart");
 
-        new AlertDialog.Builder(context).setMessage(str("pref_refresh_config"))
+        new AlertDialog.Builder(context).setMessage(str("revanced_settings_restart_title"))
                 .setPositiveButton(positiveButton, (dialog, id) -> {
                     Utils.restartApp(context);
                 })
@@ -145,7 +145,6 @@ public abstract class AbstractPreferenceFragment extends PreferenceFragment {
                 .setCancelable(false)
                 .show();
     }
-
 
     @SuppressLint("ResourceType")
     @Override
