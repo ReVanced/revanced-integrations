@@ -23,7 +23,7 @@ public class RequestInterceptor implements Interceptor {
     public Response intercept(@NonNull Chain chain) throws IOException {
         var originalRequest = chain.request();
 
-        Logger.printException(() -> "Intercepted request to URL:" + originalRequest.url());
+        Logger.printDebug(() -> "Intercepted request to URL:" + originalRequest.url());
 
         // Skip if not HLS manifest request
         if (!originalRequest.url().host().contains("usher.ttvnw.net")) {
