@@ -3,7 +3,6 @@ package app.revanced.integrations.tiktok.settingsmenu;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.preference.PreferenceFragment;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
@@ -56,7 +55,7 @@ public class SettingsMenu {
         linearLayout.addView(fragment);
         base.setContentView(linearLayout);
 
-        PreferenceFragment preferenceFragment = new ReVancedPreferenceFragment();
+        android.preference.PreferenceFragment preferenceFragment = new PreferenceFragment();
         base.getFragmentManager().beginTransaction().replace(fragmentId, preferenceFragment).commit();
 
         return true;
@@ -70,7 +69,7 @@ public class SettingsMenu {
             intent.putExtra("revanced", true);
             appContext.startActivity(intent);
         } else {
-            Logger.printDebug(() -> "ReVancedUtils.getAppContext() return null");
+            Logger.printDebug(() -> "Utils.getContext() return null");
         }
     }
 }

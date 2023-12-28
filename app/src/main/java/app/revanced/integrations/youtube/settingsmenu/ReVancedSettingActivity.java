@@ -2,7 +2,6 @@ package app.revanced.integrations.youtube.settingsmenu;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.preference.PreferenceFragment;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -26,7 +25,7 @@ public class ReVancedSettingActivity {
                     getResourceIdentifier("revanced_settings_with_toolbar", "layout"));
             setBackButton(licenseActivity);
 
-            PreferenceFragment fragment;
+            android.preference.PreferenceFragment fragment;
             String toolbarTitleResourceName;
             String dataString = licenseActivity.getIntent().getDataString();
             switch (dataString) {
@@ -40,7 +39,7 @@ public class ReVancedSettingActivity {
                     break;
                 case "revanced_settings":
                     toolbarTitleResourceName = "revanced_settings_title";
-                    fragment = new ReVancedSettingsFragment();
+                    fragment = new PreferenceFragment();
                     break;
                 default:
                     Logger.printException(() -> "Unknown setting: " + dataString);

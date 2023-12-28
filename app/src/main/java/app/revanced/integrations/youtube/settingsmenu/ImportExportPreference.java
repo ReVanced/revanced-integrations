@@ -15,6 +15,7 @@ import app.revanced.integrations.shared.Utils;
 
 import static app.revanced.integrations.shared.StringRef.str;
 
+/** @noinspection deprecation*/
 public class ImportExportPreference extends EditTextPreference implements Preference.OnPreferenceClickListener {
 
     private String existingSettings;
@@ -81,15 +82,15 @@ public class ImportExportPreference extends EditTextPreference implements Prefer
             if (replacementSettings.equals(existingSettings)) {
                 return;
             }
-            ReVancedSettingsFragment.settingImportInProgress = true;
+            PreferenceFragment.settingImportInProgress = true;
             final boolean rebootNeeded = Setting.importFromJSON(replacementSettings);
             if (rebootNeeded) {
-                ReVancedSettingsFragment.showRestartDialog(getContext());
+                PreferenceFragment.showRestartDialog(getContext());
             }
         } catch (Exception ex) {
             Logger.printException(() -> "importSettings failure", ex);
         } finally {
-            ReVancedSettingsFragment.settingImportInProgress = false;
+            PreferenceFragment.settingImportInProgress = false;
         }
     }
 

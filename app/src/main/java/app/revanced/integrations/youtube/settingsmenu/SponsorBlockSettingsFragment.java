@@ -1,8 +1,5 @@
 package app.revanced.integrations.youtube.settingsmenu;
 
-import static android.text.Html.fromHtml;
-import static app.revanced.integrations.shared.StringRef.str;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -11,21 +8,15 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.preference.EditTextPreference;
-import android.preference.Preference;
-import android.preference.PreferenceCategory;
-import android.preference.PreferenceFragment;
-import android.preference.PreferenceManager;
-import android.preference.PreferenceScreen;
-import android.preference.SwitchPreference;
+import android.preference.*;
 import android.text.Html;
 import android.text.InputType;
 import android.util.TypedValue;
 import android.widget.EditText;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
+import app.revanced.integrations.shared.Logger;
+import app.revanced.integrations.shared.Utils;
 import app.revanced.integrations.youtube.settings.Settings;
 import app.revanced.integrations.youtube.settings.SharedPrefCategory;
 import app.revanced.integrations.youtube.sponsorblock.SegmentPlaybackController;
@@ -36,8 +27,9 @@ import app.revanced.integrations.youtube.sponsorblock.objects.SegmentCategoryLis
 import app.revanced.integrations.youtube.sponsorblock.objects.UserStats;
 import app.revanced.integrations.youtube.sponsorblock.requests.SBRequester;
 import app.revanced.integrations.youtube.sponsorblock.ui.SponsorBlockViewController;
-import app.revanced.integrations.shared.Logger;
-import app.revanced.integrations.shared.Utils;
+
+import static android.text.Html.fromHtml;
+import static app.revanced.integrations.shared.StringRef.str;
 
 @SuppressWarnings("deprecation")
 public class SponsorBlockSettingsFragment extends PreferenceFragment {
@@ -129,7 +121,7 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment {
             PreferenceManager preferenceManager = getPreferenceManager();
             preferenceManager.setSharedPreferencesName(SharedPrefCategory.SPONSOR_BLOCK.prefName);
 
-            Activity context = this.getActivity();
+            final Activity context = getActivity();
             PreferenceScreen preferenceScreen = preferenceManager.createPreferenceScreen(context);
             setPreferenceScreen(preferenceScreen);
 

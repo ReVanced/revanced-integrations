@@ -1,4 +1,4 @@
-package app.revanced.integrations.twitch.settingsmenu;
+package app.revanced.integrations.shared.settingsmenu;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -15,13 +15,18 @@ import app.revanced.integrations.shared.settings.Setting;
 
 import static app.revanced.integrations.shared.StringRef.str;
 
-/** @noinspection deprecation*/
-public class ReVancedSettingsFragment extends PreferenceFragment {
+/** @noinspection deprecation, DataFlowIssue , unused */
+public abstract class AbstractPreferenceFragment extends PreferenceFragment {
+    /**
+     * The name of the shared preferences.
+     */
+    private final String prefName;
+
     /**
      * Indicates that if a preference changes,
      * to apply the change from the Setting to the UI component.
      */
-    static boolean settingImportInProgress;
+    public static boolean settingImportInProgress;
 
     /**
      * Used to prevent showing reboot dialog, if user cancels a setting user dialog.
@@ -75,7 +80,7 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
 
             if (!showingUserDialogMessage) {
                 if (setting.userDialogMessage != null && ((SwitchPreference) pref).isChecked() != (Boolean) setting.defaultValue) {
-                    showSettingUserDialogConfirmation(getContext(), (SwitchPreference) pref, (BooleanSetting) setting);
+                    showSettingUserDialogConfirmation((SwitchPreference) pref, (BooleanSetting) setting);
                 } else if (setting.rebootApp) {
                     showRestartDialog(getContext());
                 }
@@ -86,46 +91,28 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
         }
     };
 
-    static void showRestartDialog(@NonNull Context contxt) {
-        String positiveButton = str("in_app_update_restart_button");
-        new AlertDialog.Builder(contxt).setMessage(str("pref_refresh_config"))
-                .setPositiveButton(positiveButton, (dialog, id) -> {
-                    Utils.restartApp(contxt);
-                })
-                .setNegativeButton(android.R.string.cancel,  null)
-                .setCancelable(false)
-                .show();
+    public AbstractPreferenceFragment(String prefName) {
+        this.prefName = prefName;
     }
 
-    @SuppressLint("ResourceType")
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-
-        try {
-            PreferenceManager preferenceManager = getPreferenceManager();
-            preferenceManager.setSharedPreferencesName("revanced_prefs");
-            preferenceManager.getSharedPreferences().registerOnSharedPreferenceChangeListener(listener);
-
-            addPreferencesFromResource(Utils.getResourceIdentifier("revanced_prefs", "xml"));
-
-            Setting.setPreferencesEnabled(this);
-
-            // Set the preference values to the current setting values.
-            Setting.setPreferences(this);
-
-        } catch (Exception ex) {
-            Logger.printException(() -> "onActivityCreated() failure", ex);
-        }
+    public AbstractPreferenceFragment() {
+        this.prefName = "revanced_prefs";
     }
 
-    @Override // android.preference.PreferenceFragment, android.app.Fragment
-    public void onDestroy() {
-        getPreferenceManager().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(listener);
-        super.onDestroy();
+
+    protected void initialize() {
+        final var identifier = Utils.getResourceIdentifier("revanced_prefs", "xml");
+
+        if (identifier == 0) return;
+        addPreferencesFromResource(identifier);
+
+        Setting.setPreferencesEnabled(this);
+        Setting.setPreferences(this);
     }
 
-    private void showSettingUserDialogConfirmation(@NonNull Context context, SwitchPreference switchPref, BooleanSetting setting) {
+    private void showSettingUserDialogConfirmation(SwitchPreference switchPref, BooleanSetting setting) {
+        final var context = getContext();
+
         showingUserDialogMessage = true;
         new AlertDialog.Builder(context)
                 .setTitle(str("revanced_settings_confirm_user_dialog_title"))
@@ -145,5 +132,40 @@ public class ReVancedSettingsFragment extends PreferenceFragment {
                 })
                 .setCancelable(false)
                 .show();
+    }
+
+    public static void showRestartDialog(@NonNull final Context context) {
+        String positiveButton = str("in_app_update_restart_button");
+
+        new AlertDialog.Builder(context).setMessage(str("pref_refresh_config"))
+                .setPositiveButton(positiveButton, (dialog, id) -> {
+                    Utils.restartApp(context);
+                })
+                .setNegativeButton(android.R.string.cancel, null)
+                .setCancelable(false)
+                .show();
+    }
+
+
+    @SuppressLint("ResourceType")
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        try {
+            PreferenceManager preferenceManager = getPreferenceManager();
+            preferenceManager.setSharedPreferencesName(prefName);
+            preferenceManager.getSharedPreferences().registerOnSharedPreferenceChangeListener(listener);
+
+            initialize();
+        } catch (Exception ex) {
+            Logger.printException(() -> "onActivityCreated() failure", ex);
+        }
+    }
+
+    @Override // android.preference.PreferenceFragment, android.app.Fragment
+    public void onDestroy() {
+        getPreferenceManager().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(listener);
+        super.onDestroy();
     }
 }
