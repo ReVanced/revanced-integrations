@@ -5,7 +5,7 @@ import app.revanced.integrations.utils.Event
 import app.revanced.integrations.utils.LogHelper
 
 /**
- * WatchWhile player type.
+ * Main player type.
  */
 enum class PlayerType {
     /**
