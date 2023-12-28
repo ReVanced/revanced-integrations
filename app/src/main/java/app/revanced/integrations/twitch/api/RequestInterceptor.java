@@ -18,10 +18,19 @@ import okhttp3.Response;
 public class RequestInterceptor implements Interceptor {
     private IAdblockService activeService = null;
 
+    private static final String PROXY_DISABLED = str("key_revanced_proxy_disabled");
+    private static final String LUMINOUS_SERVICE = str("key_revanced_proxy_luminous");
+    private static final String PURPLE_ADBLOCK_SERVICE = str("key_revanced_proxy_purpleadblock");
+
+
     @NonNull
     @Override
     public Response intercept(@NonNull Chain chain) throws IOException {
         var originalRequest = chain.request();
+
+        if (Settings.BLOCK_EMBEDDED_ADS.getString().equals(PROXY_DISABLED)) {
+            return chain.proceed(originalRequest);
+        }
 
         Logger.printDebug(() -> "Intercepted request to URL:" + originalRequest.url());
 
@@ -102,11 +111,11 @@ public class RequestInterceptor implements Interceptor {
     private void updateActiveService() {
         var current = Settings.BLOCK_EMBEDDED_ADS.get();
 
-        if (current.equals(str("key_revanced_proxy_luminous")) && !(activeService instanceof LuminousService))
+        if (current.equals(LUMINOUS_SERVICE) && !(activeService instanceof LuminousService))
             activeService = new LuminousService();
-        else if (current.equals(str("key_revanced_proxy_purpleadblock")) && !(activeService instanceof PurpleAdblockService))
+        else if (current.equals(PURPLE_ADBLOCK_SERVICE) && !(activeService instanceof PurpleAdblockService))
             activeService = new PurpleAdblockService();
-        else if (current.equals(str("key_revanced_proxy_disabled")))
+        else if (current.equals(PROXY_DISABLED))
             activeService = null;
     }
 }
