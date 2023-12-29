@@ -1,3 +1,10 @@
+## [1.1.1-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v1.1.0...v1.1.1-dev.1) (2023-12-29)
+
+
+### Bug Fixes
+
+* **YouTube - Hide ads:** Fix dimmed screen at launch by not filtering fullscreen ads ([1a1f44d](https://github.com/ReVanced/revanced-integrations/commit/1a1f44d2355bb5e93eefca77b8df41211f6fff42))
+
 # [1.1.0](https://github.com/ReVanced/revanced-integrations/compare/v1.0.0...v1.1.0) (2023-12-28)
 
 
