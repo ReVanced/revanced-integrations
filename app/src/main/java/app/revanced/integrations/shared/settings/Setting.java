@@ -64,12 +64,6 @@ public abstract class Setting<T> {
     }
 
     /**
-     * Default preference to use if an instance does not specify one.
-     */
-    // FIXME: This should be a plain "revanced" named category.
-    public static final SharedPrefCategory defaultPreferences = new SharedPrefCategory("youtube");
-
-    /**
      * All settings that were instantiated.
      * When a new setting is created, it is automatically added to this list.
      */
@@ -80,9 +74,26 @@ public abstract class Setting<T> {
      */
     private static final Map<String, Setting<?>> PATH_TO_SETTINGS = new HashMap<>();
 
+    /**
+     * Preference name of {@link #defaultPreferences}.
+     */
+    public static final String DEFAULT_PREFERENCE_NAME = "revanced_prefs";
+    /**
+     * Default preference to use if an instance does not specify one.
+     */
+    public static final SharedPrefCategory defaultPreferences = new SharedPrefCategory(DEFAULT_PREFERENCE_NAME);
+
     @Nullable
     public static Setting<?> getSettingFromPath(@NonNull String str) {
         return PATH_TO_SETTINGS.get(str);
+    }
+
+    /**
+     * @return All settings that have been created.
+     */
+    @NonNull
+    public static List<Setting<?>> allLoadedSettings() {
+        return Collections.unmodifiableList(SETTINGS);
     }
 
     /**
@@ -215,6 +226,41 @@ public abstract class Setting<T> {
             newSetting.save(oldSetting.value);
             oldSetting.resetToDefault();
         }
+    }
+
+    /**
+     * Migrate an old Setting value previously stored in a different SharedPreference.
+     *
+     * This method will be deleted in the future.
+     */
+    public static void migrateFromOldPreferences(@NonNull SharedPrefCategory oldPrefs, @NonNull Setting setting) {
+        String settingKey = setting.key;
+        if (!oldPrefs.preferences.contains(settingKey)) {
+            return; // Nothing to do.
+        }
+        Object newValue = setting.get();
+        final Object migratedValue;
+        if (setting instanceof BooleanSetting) {
+            migratedValue = oldPrefs.getBoolean(settingKey, (Boolean) newValue);
+        } else if (setting instanceof IntegerSetting) {
+            migratedValue = oldPrefs.getIntegerString(settingKey, (Integer) newValue);
+        } else if (setting instanceof LongSetting) {
+            migratedValue = oldPrefs.getLongString(settingKey, (Long) newValue);
+        } else if (setting instanceof FloatSetting) {
+            migratedValue = oldPrefs.getFloatString(settingKey, (Float) newValue);
+        } else if (setting instanceof StringSetting) {
+            migratedValue = oldPrefs.getString(settingKey, (String) newValue);
+        } else {
+            Logger.printException(() -> "Unknown setting: " + setting);
+            return;
+        }
+        oldPrefs.preferences.edit().remove(settingKey).apply(); // Remove the old setting.
+        if (migratedValue.equals(newValue)) {
+            Logger.printDebug(() -> "Value does not need migrating: " + settingKey);
+            return; // Old value is already equal to the new setting value.
+        }
+        Logger.printDebug(() -> "Migrating old preference vale into current preference: " + settingKey);
+        setting.save(migratedValue);
     }
 
     /**

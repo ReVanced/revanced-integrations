@@ -7,7 +7,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.*;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import app.revanced.integrations.shared.Logger;
 import app.revanced.integrations.shared.Utils;
 import app.revanced.integrations.shared.settings.BooleanSetting;
@@ -96,9 +95,8 @@ public abstract class AbstractPreferenceFragment extends PreferenceFragment {
     }
 
     public AbstractPreferenceFragment() {
-        this.prefName = "revanced_prefs";
+        this(Setting.DEFAULT_PREFERENCE_NAME);
     }
-
 
     protected void initialize() {
         final var identifier = Utils.getResourceIdentifier("revanced_prefs", "xml");
@@ -148,9 +146,8 @@ public abstract class AbstractPreferenceFragment extends PreferenceFragment {
 
     @SuppressLint("ResourceType")
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         try {
             PreferenceManager preferenceManager = getPreferenceManager();
             preferenceManager.setSharedPreferencesName(prefName);
@@ -158,7 +155,7 @@ public abstract class AbstractPreferenceFragment extends PreferenceFragment {
 
             initialize();
         } catch (Exception ex) {
-            Logger.printException(() -> "onActivityCreated() failure", ex);
+            Logger.printException(() -> "onCreate() failure", ex);
         }
     }
 

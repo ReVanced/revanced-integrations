@@ -2,9 +2,10 @@ package app.revanced.integrations.youtube.settings;
 
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
+import static app.revanced.integrations.shared.settings.Setting.migrateFromOldPreferences;
+import static app.revanced.integrations.shared.settings.Setting.migrateOldSettingToNew;
 import static app.revanced.integrations.shared.settings.Setting.parent;
 import static app.revanced.integrations.shared.settings.Setting.parentsAny;
-import static app.revanced.integrations.shared.settings.Setting.migrateOldSettingToNew;
 import static app.revanced.integrations.youtube.sponsorblock.objects.CategoryBehaviour.IGNORE;
 import static app.revanced.integrations.youtube.sponsorblock.objects.CategoryBehaviour.MANUAL_SKIP;
 import static app.revanced.integrations.youtube.sponsorblock.objects.CategoryBehaviour.SKIP_AUTOMATICALLY;
@@ -311,7 +312,16 @@ public class Settings {
     static {
         // region Migration
 
-        // SponsorBlock
+        // Migrate settings from old Preference categories into replacement "revanced_prefs" category.
+        // This region must run before all other migration code.
+        SharedPrefCategory ytPrefs = new SharedPrefCategory("youtube");
+        ytPrefs.saveBoolean(DEBUG_PROTOBUFFER.key, TRUE);
+
+        for (Setting<?> setting : Setting.allLoadedSettings()) {
+            migrateFromOldPreferences(ytPrefs, setting);
+        }
+
+        // SponsorBlock categories.
         migrateOldSettingToNew(DEPRECATED_SB_CATEGORY_SPONSOR, SB_CATEGORY_SPONSOR);
         migrateOldSettingToNew(DEPRECATED_SB_CATEGORY_SPONSOR_COLOR, SB_CATEGORY_SPONSOR_COLOR);
         migrateOldSettingToNew(DEPRECATED_SB_CATEGORY_SELF_PROMO, SB_CATEGORY_SELF_PROMO);
