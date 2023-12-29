@@ -12,7 +12,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -100,6 +99,15 @@ public abstract class Setting<T> {
      */
     @NonNull
     public static List<Setting<?>> allLoadedSettings() {
+        return Collections.unmodifiableList(SETTINGS);
+    }
+
+    /**
+     * @return All settings that have been created, sorted by keys.
+     */
+    @NonNull
+    private static List<Setting<?>> allLoadedSettingsSorted() {
+        Collections.sort(SETTINGS, (Setting<?> o1, Setting<?> o2) -> o1.key.compareTo(o2.key));
         return Collections.unmodifiableList(SETTINGS);
     }
 
@@ -363,18 +371,11 @@ public abstract class Setting<T> {
         json.put(importExportKey, value);
     }
 
-    private static Setting<?>[] sortSettingsByValueForExport() {
-        Setting<?>[] sorted = SETTINGS.toArray(new Setting<?>[0]);
-
-        Arrays.sort(sorted, (Setting<?> o1, Setting<?> o2) -> o1.key.compareTo(o2.key));
-        return sorted;
-    }
-
     @NonNull
     public static String exportToJson(@Nullable Context alertDialogContext) {
         try {
             JSONObject json = new JSONObject();
-            for (Setting<?> setting : sortSettingsByValueForExport()) {
+            for (Setting<?> setting : allLoadedSettingsSorted()) {
                 String importExportKey = setting.getImportExportKey();
                 if (json.has(importExportKey)) {
                     throw new IllegalArgumentException("duplicate key found: " + importExportKey);
@@ -435,7 +436,8 @@ public abstract class Setting<T> {
             // SB Enum categories are saved using StringSettings.
             // Which means they need to reload again if changed by other code (such as here).
             // This call could be removed by creating a custom Setting class that manages the
-            // "String <-> Enum" logic.  But for now this is simple and works.
+            // "String <-> Enum" logic or by adding an event hook of when settings are imported.
+            // But for now this is simple and works.
             SponsorBlockSettings.updateFromImportedSettings();
 
             Utils.showToastLong(numberOfSettingsImported == 0
