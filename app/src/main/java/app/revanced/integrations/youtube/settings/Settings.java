@@ -315,8 +315,6 @@ public class Settings {
         // Migrate settings from old Preference categories into replacement "revanced_prefs" category.
         // This region must run before all other migration code.
         SharedPrefCategory ytPrefs = new SharedPrefCategory("youtube");
-        ytPrefs.saveBoolean(DEBUG_PROTOBUFFER.key, TRUE);
-
         for (Setting<?> setting : Setting.allLoadedSettings()) {
             migrateFromOldPreferences(ytPrefs, setting);
         }
