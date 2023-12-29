@@ -1,21 +1,28 @@
 package app.revanced.integrations.shared.settings;
 
+import static app.revanced.integrations.shared.StringRef.str;
+
 import android.content.Context;
-import android.preference.*;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import app.revanced.integrations.youtube.sponsorblock.SponsorBlockSettings;
-import app.revanced.integrations.shared.Logger;
-import app.revanced.integrations.shared.Utils;
-import app.revanced.integrations.shared.StringRef;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
-import static app.revanced.integrations.shared.StringRef.str;
+import app.revanced.integrations.shared.Logger;
+import app.revanced.integrations.shared.StringRef;
+import app.revanced.integrations.shared.Utils;
+import app.revanced.integrations.youtube.sponsorblock.SponsorBlockSettings;
 
 @SuppressWarnings("unused")
 public abstract class Setting<T> {
@@ -34,7 +41,7 @@ public abstract class Setting<T> {
      */
     @NonNull
     public static Availability parent(@NonNull BooleanSetting parent) {
-        return () -> parent.get();
+        return parent::get;
     }
 
     /**
@@ -223,6 +230,7 @@ public abstract class Setting<T> {
     public static void migrateOldSettingToNew(@NonNull Setting<?> oldSetting, @NonNull Setting newSetting) {
         if (!oldSetting.isSetToDefault()) {
             Logger.printInfo(() -> "Migrating old setting value: " + oldSetting + " into replacement setting: " + newSetting);
+            //noinspection unchecked
             newSetting.save(oldSetting.value);
             oldSetting.resetToDefault();
         }
@@ -259,7 +267,8 @@ public abstract class Setting<T> {
             Logger.printDebug(() -> "Value does not need migrating: " + settingKey);
             return; // Old value is already equal to the new setting value.
         }
-        Logger.printDebug(() -> "Migrating old preference vale into current preference: " + settingKey);
+        Logger.printDebug(() -> "Migrating old preference value into current preference: " + settingKey);
+        //noinspection unchecked
         setting.save(migratedValue);
     }
 
@@ -311,48 +320,6 @@ public abstract class Setting<T> {
      */
     public boolean isSetToDefault() {
         return value.equals(defaultValue);
-    }
-
-    /** @noinspection deprecation*/
-    public static void updatePreferencesAvailable(PreferenceFragment fragment) {
-        for (Setting<?> setting : SETTINGS) {
-            Preference preference = fragment.findPreference(setting.key);
-            if (preference != null) preference.setEnabled(setting.isAvailable());
-        }
-    }
-
-    /** @noinspection deprecation*/
-    public static void updatePreferences(PreferenceFragment fragment) {
-        for (Setting<?> setting : SETTINGS) {
-            setting.updatePreference(fragment);
-        }
-    }
-
-    /** @noinspection deprecation*/
-    public void updatePreference(PreferenceFragment fragment) {
-        Preference preference = fragment.findPreference(key);
-        if (preference instanceof SwitchPreference) {
-            ((SwitchPreference) preference).setChecked((Boolean) get());
-        } else if (preference instanceof EditTextPreference) {
-            ((EditTextPreference) preference).setText(get().toString());
-        } else if (preference instanceof ListPreference) {
-            setListPreference((ListPreference) preference, this);
-        }
-    }
-
-    /** @noinspection deprecation*/
-    public static void setListPreference(ListPreference listPreference, Setting<?> setting) {
-        String objectStringValue = setting.get().toString();
-        final int entryIndex = listPreference.findIndexOfValue(objectStringValue);
-        if (entryIndex >= 0) {
-            listPreference.setSummary(listPreference.getEntries()[entryIndex]);
-            listPreference.setValue(objectStringValue);
-        } else {
-            // Value is not an available option.
-            // User manually edited import data, or options changed and current selection is no longer available.
-            // Still show the value in the summary, so it's clear that something is selected.
-            listPreference.setSummary(objectStringValue);
-        }
     }
 
     @NotNull
@@ -454,6 +421,7 @@ public abstract class Setting<T> {
                     Object value = setting.readFromJSON(json, key);
                     if (!setting.get().equals(value)) {
                         rebootSettingChanged |= setting.rebootApp;
+                        //noinspection unchecked
                         setting.save(value);
                     }
                     numberOfSettingsImported++;

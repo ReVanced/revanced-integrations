@@ -117,11 +117,10 @@ public class SponsorBlockSettingsFragment extends PreferenceFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         try {
-            PreferenceManager preferenceManager = getPreferenceManager();
-            preferenceManager.setSharedPreferencesName(Settings.SPONSOR_BLOCK.prefName);
-
-            final Activity context = getActivity();
-            PreferenceScreen preferenceScreen = preferenceManager.createPreferenceScreen(context);
+            Activity context = getActivity();
+            PreferenceManager manager = getPreferenceManager();
+            manager.setSharedPreferencesName(Settings.SPONSOR_BLOCK.prefName);
+            PreferenceScreen preferenceScreen = manager.createPreferenceScreen(context);
             setPreferenceScreen(preferenceScreen);
 
             SponsorBlockSettings.initialize();

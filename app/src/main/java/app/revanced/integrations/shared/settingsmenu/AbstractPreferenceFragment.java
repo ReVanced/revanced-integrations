@@ -46,10 +46,11 @@ public abstract class AbstractPreferenceFragment extends PreferenceFragment {
 
             if (pref instanceof SwitchPreference) {
                 SwitchPreference switchPref = (SwitchPreference) pref;
+                BooleanSetting boolSetting = (BooleanSetting) setting;
                 if (settingImportInProgress) {
-                    switchPref.setChecked(((BooleanSetting) setting).get());
+                    switchPref.setChecked(boolSetting.get());
                 } else {
-                    BooleanSetting.privateSetValue((BooleanSetting) setting, switchPref.isChecked());
+                    BooleanSetting.privateSetValue(boolSetting, switchPref.isChecked());
                 }
             } else if (pref instanceof EditTextPreference) {
                 EditTextPreference editPreference = (EditTextPreference) pref;
@@ -65,13 +66,13 @@ public abstract class AbstractPreferenceFragment extends PreferenceFragment {
                 } else {
                     Setting.privateSetValueFromString(setting, listPref.getValue());
                 }
-                Setting.setListPreference(listPref, setting);
+                updateListPreference(listPref, setting);
             } else {
                 Logger.printException(() -> "Setting cannot be handled: " + pref.getClass() + " " + pref);
                 return;
             }
 
-            Setting.updatePreferencesAvailable(this);
+            updatePreferencesAvailable();
 
             if (settingImportInProgress) {
                 return;
@@ -104,8 +105,7 @@ public abstract class AbstractPreferenceFragment extends PreferenceFragment {
         if (identifier == 0) return;
         addPreferencesFromResource(identifier);
 
-        Setting.updatePreferencesAvailable(this);
-        Setting.updatePreferences(this);
+        updatePreferencesAvailable();
     }
 
     private void showSettingUserDialogConfirmation(SwitchPreference switchPref, BooleanSetting setting) {
@@ -130,6 +130,27 @@ public abstract class AbstractPreferenceFragment extends PreferenceFragment {
                 })
                 .setCancelable(false)
                 .show();
+    }
+
+    private void updatePreferencesAvailable() {
+        for (Setting<?> setting : Setting.allLoadedSettings()) {
+            Preference preference = findPreference(setting.key);
+            if (preference != null) preference.setEnabled(setting.isAvailable());
+        }
+    }
+
+    private static void updateListPreference(ListPreference listPreference, Setting<?> setting) {
+        String objectStringValue = setting.get().toString();
+        final int entryIndex = listPreference.findIndexOfValue(objectStringValue);
+        if (entryIndex >= 0) {
+            listPreference.setSummary(listPreference.getEntries()[entryIndex]);
+            listPreference.setValue(objectStringValue);
+        } else {
+            // Value is not an available option.
+            // User manually edited import data, or options changed and current selection is no longer available.
+            // Still show the value in the summary, so it's clear that something is selected.
+            listPreference.setSummary(objectStringValue);
+        }
     }
 
     public static void showRestartDialog(@NonNull final Context context) {
