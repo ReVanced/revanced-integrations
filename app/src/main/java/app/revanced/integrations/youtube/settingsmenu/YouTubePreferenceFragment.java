@@ -7,7 +7,7 @@ import app.revanced.integrations.youtube.patches.playback.speed.CustomPlaybackSp
 import app.revanced.integrations.youtube.settings.Settings;
 
 /** @noinspection deprecation*/
-public class PreferenceFragment extends AbstractPreferenceFragment {
+public class YouTubePreferenceFragment extends AbstractPreferenceFragment {
     @Override
     protected void initialize() {
         // If the preference was included, then initialize it based on the available playback speed

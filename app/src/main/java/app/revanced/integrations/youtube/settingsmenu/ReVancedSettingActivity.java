@@ -13,6 +13,7 @@ import java.util.Objects;
 import static app.revanced.integrations.shared.Utils.getChildView;
 import static app.revanced.integrations.shared.Utils.getResourceIdentifier;
 
+@SuppressWarnings("unused")
 public class ReVancedSettingActivity {
 
     /**
@@ -39,7 +40,7 @@ public class ReVancedSettingActivity {
                     break;
                 case "revanced_settings":
                     toolbarTitleResourceName = "revanced_settings_title";
-                    fragment = new PreferenceFragment();
+                    fragment = new YouTubePreferenceFragment();
                     break;
                 default:
                     Logger.printException(() -> "Unknown setting: " + dataString);

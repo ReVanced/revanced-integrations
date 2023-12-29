@@ -12,10 +12,11 @@ import android.widget.EditText;
 import app.revanced.integrations.shared.settings.Setting;
 import app.revanced.integrations.shared.Logger;
 import app.revanced.integrations.shared.Utils;
+import app.revanced.integrations.shared.settingsmenu.AbstractPreferenceFragment;
 
 import static app.revanced.integrations.shared.StringRef.str;
 
-/** @noinspection deprecation*/
+/** @noinspection deprecation, unused */
 public class ImportExportPreference extends EditTextPreference implements Preference.OnPreferenceClickListener {
 
     private String existingSettings;
@@ -82,15 +83,15 @@ public class ImportExportPreference extends EditTextPreference implements Prefer
             if (replacementSettings.equals(existingSettings)) {
                 return;
             }
-            PreferenceFragment.settingImportInProgress = true;
+            AbstractPreferenceFragment.settingImportInProgress = true;
             final boolean rebootNeeded = Setting.importFromJSON(replacementSettings);
             if (rebootNeeded) {
-                PreferenceFragment.showRestartDialog(getContext());
+                AbstractPreferenceFragment.showRestartDialog(getContext());
             }
         } catch (Exception ex) {
             Logger.printException(() -> "importSettings failure", ex);
         } finally {
-            PreferenceFragment.settingImportInProgress = false;
+            AbstractPreferenceFragment.settingImportInProgress = false;
         }
     }
 
