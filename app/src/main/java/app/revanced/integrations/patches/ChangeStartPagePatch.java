@@ -6,7 +6,7 @@ import app.revanced.integrations.utils.LogHelper;
 
 @SuppressWarnings("unused")
 public final class ChangeStartPagePatch {
-    public static void changeIntent(Intent intent) {
+    public static void changeIntent(final Intent intent) {
         final var startPage = SettingsEnum.START_PAGE.getString();
         if (startPage.isEmpty()) return;
 
