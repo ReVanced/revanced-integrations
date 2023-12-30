@@ -1,12 +1,13 @@
 package app.revanced.integrations.twitch.settings;
 
 import app.revanced.integrations.shared.settings.BooleanSetting;
+import app.revanced.integrations.shared.settings.SharedSettings;
 import app.revanced.integrations.shared.settings.StringSetting;
 
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
 
-public class Settings {
+public class Settings extends SharedSettings {
     /* Ads */
     public static final BooleanSetting BLOCK_VIDEO_ADS = new BooleanSetting("revanced_block_video_ads", TRUE);
     public static final BooleanSetting BLOCK_AUDIO_ADS = new BooleanSetting("revanced_block_audio_ads", TRUE);

@@ -17,6 +17,7 @@ public class TikTokPreferenceFragment extends AbstractPreferenceFragment {
         PreferenceScreen preferenceScreen = getPreferenceManager().createPreferenceScreen(context);
         setPreferenceScreen(preferenceScreen);
 
+        // Custom categories reference app specific Settings class.
         new FeedFilterPreferenceCategory(context, preferenceScreen);
         new DownloadsPreferenceCategory(context, preferenceScreen);
         new SimSpoofPreferenceCategory(context, preferenceScreen);

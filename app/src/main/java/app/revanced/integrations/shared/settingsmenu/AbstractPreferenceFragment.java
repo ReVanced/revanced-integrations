@@ -101,6 +101,13 @@ public abstract class AbstractPreferenceFragment extends PreferenceFragment {
         this(Setting.preferences.name);
     }
 
+    /**
+     * Initialize this instance, and do any custom behavior.
+     * <p>
+     * To ensure all {@link Setting} instances are correctly synced to the UI,
+     * it is important that subclasses make a call or otherwise reference their Settings class bundle
+     * so all app specific {@link Setting} instances are loaded before this method returns.
+     */
     protected void initialize() {
         final var identifier = Utils.getResourceIdentifier("revanced_prefs", "xml");
 
