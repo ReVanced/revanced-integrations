@@ -34,23 +34,8 @@ public class BooleanSetting extends Setting<Boolean> {
     public BooleanSetting(String key, Boolean defaultValue, boolean rebootApp, String userDialogMessage, Availability availability) {
         super(key, defaultValue, rebootApp, userDialogMessage, availability);
     }
-    public BooleanSetting(String key, Boolean defaultValue, SharedPrefCategory prefName) {
-        super(key, defaultValue, prefName);
-    }
-    public BooleanSetting(String key, Boolean defaultValue, SharedPrefCategory prefName, boolean rebootApp) {
-        super(key, defaultValue, prefName, rebootApp);
-    }
-    public BooleanSetting(String key, Boolean defaultValue, SharedPrefCategory prefName, String userDialogMessage) {
-        super(key, defaultValue, prefName, userDialogMessage);
-    }
-    public BooleanSetting(String key, Boolean defaultValue, SharedPrefCategory prefName, Availability availability) {
-        super(key, defaultValue, prefName, availability);
-    }
-    public BooleanSetting(String key, Boolean defaultValue, SharedPrefCategory prefName, boolean rebootApp, boolean includeWithImportExport) {
-        super(key, defaultValue, prefName, rebootApp, includeWithImportExport);
-    }
     public BooleanSetting(@NonNull String key, @NonNull Boolean defaultValue, @NonNull SharedPrefCategory prefName, boolean rebootApp, boolean includeWithImportExport, @Nullable String userDialogMessage, @Nullable Availability availability) {
-        super(key, defaultValue, prefName, rebootApp, includeWithImportExport, userDialogMessage, availability);
+        super(key, defaultValue, rebootApp, includeWithImportExport, userDialogMessage, availability);
     }
 
     /**
@@ -66,7 +51,7 @@ public class BooleanSetting extends Setting<Boolean> {
 
     @Override
     protected void load() {
-        value = sharedPrefCategory.getBoolean(key, defaultValue);
+        value = preferences.getBoolean(key, defaultValue);
     }
 
     @Override
@@ -83,7 +68,7 @@ public class BooleanSetting extends Setting<Boolean> {
     public void save(@NonNull Boolean newValue) {
         // Must set before saving to preferences (otherwise importing fails to update UI correctly).
         value = Objects.requireNonNull(newValue);
-        sharedPrefCategory.saveBoolean(key, newValue);
+        preferences.saveBoolean(key, newValue);
     }
 
     @NonNull

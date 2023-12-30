@@ -35,28 +35,13 @@ public class FloatSetting extends Setting<Float> {
     public FloatSetting(String key, Float defaultValue, boolean rebootApp, String userDialogMessage, Availability availability) {
         super(key, defaultValue, rebootApp, userDialogMessage, availability);
     }
-    public FloatSetting(String key, Float defaultValue, SharedPrefCategory prefName) {
-        super(key, defaultValue, prefName);
-    }
-    public FloatSetting(String key, Float defaultValue, SharedPrefCategory prefName, boolean rebootApp) {
-        super(key, defaultValue, prefName, rebootApp);
-    }
-    public FloatSetting(String key, Float defaultValue, SharedPrefCategory prefName, String userDialogMessage) {
-        super(key, defaultValue, prefName, userDialogMessage);
-    }
-    public FloatSetting(String key, Float defaultValue, SharedPrefCategory prefName, Availability availability) {
-        super(key, defaultValue, prefName, availability);
-    }
-    public FloatSetting(String key, Float defaultValue, SharedPrefCategory prefName, boolean rebootApp, boolean includeWithImportExport) {
-        super(key, defaultValue, prefName, rebootApp, includeWithImportExport);
-    }
-    public FloatSetting(@NonNull String key, @NonNull Float defaultValue, @NonNull SharedPrefCategory prefName, boolean rebootApp, boolean includeWithImportExport, @Nullable String userDialogMessage, @Nullable Availability availability) {
-        super(key, defaultValue, prefName, rebootApp, includeWithImportExport, userDialogMessage, availability);
+    public FloatSetting(@NonNull String key, @NonNull Float defaultValue, boolean rebootApp, boolean includeWithImportExport, @Nullable String userDialogMessage, @Nullable Availability availability) {
+        super(key, defaultValue, rebootApp, includeWithImportExport, userDialogMessage, availability);
     }
 
     @Override
     protected void load() {
-        value = sharedPrefCategory.getFloatString(key, defaultValue);
+        value = preferences.getFloatString(key, defaultValue);
     }
 
     @Override
@@ -73,7 +58,7 @@ public class FloatSetting extends Setting<Float> {
     public void save(@NonNull Float newValue) {
         // Must set before saving to preferences (otherwise importing fails to update UI correctly).
         value = Objects.requireNonNull(newValue);
-        sharedPrefCategory.saveFloatString(key, newValue);
+        preferences.saveFloatString(key, newValue);
     }
 
     @NonNull

@@ -1,21 +1,27 @@
 package app.revanced.integrations.youtube.settingsmenu;
 
+import static app.revanced.integrations.shared.StringRef.str;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.preference.*;
+import android.preference.Preference;
+import android.preference.PreferenceCategory;
+import android.preference.PreferenceFragment;
+import android.preference.PreferenceManager;
+import android.preference.PreferenceScreen;
+import android.preference.SwitchPreference;
+
+import androidx.annotation.Nullable;
 
 import app.revanced.integrations.shared.Logger;
+import app.revanced.integrations.shared.settings.Setting;
 import app.revanced.integrations.shared.settings.SharedSettings;
 import app.revanced.integrations.youtube.patches.ReturnYouTubeDislikePatch;
 import app.revanced.integrations.youtube.returnyoutubedislike.ReturnYouTubeDislike;
 import app.revanced.integrations.youtube.returnyoutubedislike.requests.ReturnYouTubeDislikeApi;
 import app.revanced.integrations.youtube.settings.Settings;
-
-import static app.revanced.integrations.shared.StringRef.str;
-
-import androidx.annotation.Nullable;
 
 /** @noinspection deprecation*/
 public class ReturnYouTubeDislikeSettingsFragment extends PreferenceFragment {
@@ -53,7 +59,7 @@ public class ReturnYouTubeDislikeSettingsFragment extends PreferenceFragment {
         try {
             Activity context = getActivity();
             PreferenceManager manager = getPreferenceManager();
-            manager.setSharedPreferencesName(Settings.RETURN_YOUTUBE_DISLIKE.prefName);
+            manager.setSharedPreferencesName(Setting.preferences.name);
             PreferenceScreen preferenceScreen = manager.createPreferenceScreen(context);
             setPreferenceScreen(preferenceScreen);
 

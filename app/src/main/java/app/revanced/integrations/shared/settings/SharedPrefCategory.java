@@ -22,13 +22,13 @@ import app.revanced.integrations.shared.Utils;
  */
 public class SharedPrefCategory {
     @NonNull
-    public final String prefName;
+    public final String name;
     @NonNull
     public final SharedPreferences preferences;
 
-    public SharedPrefCategory(@NonNull String prefName) {
-        this.prefName = Objects.requireNonNull(prefName);
-        preferences = Objects.requireNonNull(Utils.getContext()).getSharedPreferences(prefName, Context.MODE_PRIVATE);
+    public SharedPrefCategory(@NonNull String name) {
+        this.name = Objects.requireNonNull(name);
+        preferences = Objects.requireNonNull(Utils.getContext()).getSharedPreferences(name, Context.MODE_PRIVATE);
     }
 
     private void removeConflictingPreferenceKeyValue(@NonNull String key) {
@@ -153,6 +153,6 @@ public class SharedPrefCategory {
     @NonNull
     @Override
     public String toString() {
-        return prefName;
+        return name;
     }
 }

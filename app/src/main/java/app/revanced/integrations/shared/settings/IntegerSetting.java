@@ -35,28 +35,13 @@ public class IntegerSetting extends Setting<Integer> {
     public IntegerSetting(String key, Integer defaultValue, boolean rebootApp, String userDialogMessage, Availability availability) {
         super(key, defaultValue, rebootApp, userDialogMessage, availability);
     }
-    public IntegerSetting(String key, Integer defaultValue, SharedPrefCategory prefName) {
-        super(key, defaultValue, prefName);
-    }
-    public IntegerSetting(String key, Integer defaultValue, SharedPrefCategory prefName, boolean rebootApp) {
-        super(key, defaultValue, prefName, rebootApp);
-    }
-    public IntegerSetting(String key, Integer defaultValue, SharedPrefCategory prefName, String userDialogMessage) {
-        super(key, defaultValue, prefName, userDialogMessage);
-    }
-    public IntegerSetting(String key, Integer defaultValue, SharedPrefCategory prefName, Availability availability) {
-        super(key, defaultValue, prefName, availability);
-    }
-    public IntegerSetting(String key, Integer defaultValue, SharedPrefCategory prefName, boolean rebootApp, boolean includeWithImportExport) {
-        super(key, defaultValue, prefName, rebootApp, includeWithImportExport);
-    }
-    public IntegerSetting(@NonNull String key, @NonNull Integer defaultValue, @NonNull SharedPrefCategory prefName, boolean rebootApp, boolean includeWithImportExport, @Nullable String userDialogMessage, @Nullable Availability availability) {
-        super(key, defaultValue, prefName, rebootApp, includeWithImportExport, userDialogMessage, availability);
+    public IntegerSetting(@NonNull String key, @NonNull Integer defaultValue, boolean rebootApp, boolean includeWithImportExport, @Nullable String userDialogMessage, @Nullable Availability availability) {
+        super(key, defaultValue, rebootApp, includeWithImportExport, userDialogMessage, availability);
     }
 
     @Override
     protected void load() {
-        value = sharedPrefCategory.getIntegerString(key, defaultValue);
+        value = preferences.getIntegerString(key, defaultValue);
     }
 
     @Override
@@ -73,7 +58,7 @@ public class IntegerSetting extends Setting<Integer> {
     public void save(@NonNull Integer newValue) {
         // Must set before saving to preferences (otherwise importing fails to update UI correctly).
         value = Objects.requireNonNull(newValue);
-        sharedPrefCategory.saveIntegerString(key, newValue);
+        preferences.saveIntegerString(key, newValue);
     }
 
     @NonNull

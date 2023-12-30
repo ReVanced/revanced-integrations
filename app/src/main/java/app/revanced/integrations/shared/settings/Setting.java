@@ -81,13 +81,9 @@ public abstract class Setting<T> {
     private static final Map<String, Setting<?>> PATH_TO_SETTINGS = new HashMap<>();
 
     /**
-     * Preference name of {@link #defaultPreferences}.
+     * Preference all instances are saved to.
      */
-    public static final String DEFAULT_PREFERENCE_NAME = "revanced_prefs";
-    /**
-     * Default preference to use if an instance does not specify one.
-     */
-    public static final SharedPrefCategory defaultPreferences = new SharedPrefCategory(DEFAULT_PREFERENCE_NAME);
+    public static final SharedPrefCategory preferences = new SharedPrefCategory("revanced_prefs");
 
     @Nullable
     public static Setting<?> getSettingFromPath(@NonNull String str) {
@@ -124,12 +120,6 @@ public abstract class Setting<T> {
     public final T defaultValue;
 
     /**
-     * The category of the shared preferences to store the value in.
-     */
-    @NonNull
-    public final SharedPrefCategory sharedPrefCategory;
-
-    /**
      * If the app should be rebooted, if this setting is changed
      */
     public final boolean rebootApp;
@@ -161,58 +151,42 @@ public abstract class Setting<T> {
     protected volatile T value;
 
     public Setting(String key, T defaultValue) {
-        this(key, defaultValue, defaultPreferences, false, true, null, null);
+        this(key, defaultValue, false, true, null, null);
     }
     public Setting(String key, T defaultValue, boolean rebootApp) {
-        this(key, defaultValue, defaultPreferences, rebootApp, true, null, null);
+        this(key, defaultValue, rebootApp, true, null, null);
     }
     public Setting(String key, T defaultValue, boolean rebootApp, boolean includeWithImportExport) {
-        this(key, defaultValue, defaultPreferences, rebootApp, includeWithImportExport);
+        this(key, defaultValue, rebootApp, includeWithImportExport, null, null);
     }
     public Setting(String key, T defaultValue, String userDialogMessage) {
-        this(key, defaultValue, defaultPreferences, false, true, userDialogMessage, null);
+        this(key, defaultValue, false, true, userDialogMessage, null);
     }
     public Setting(String key, T defaultValue, Availability availability) {
-        this(key, defaultValue, defaultPreferences, false, true, null, availability);
+        this(key, defaultValue, false, true, null, availability);
     }
     public Setting(String key, T defaultValue, boolean rebootApp, String userDialogMessage) {
-        this(key, defaultValue, defaultPreferences, rebootApp, true, userDialogMessage, null);
+        this(key, defaultValue, rebootApp, true, userDialogMessage, null);
     }
     public Setting(String key, T defaultValue, boolean rebootApp, Availability availability) {
-        this(key, defaultValue, defaultPreferences, rebootApp, true, null, availability);
+        this(key, defaultValue, rebootApp, true, null, availability);
     }
     public Setting(String key, T defaultValue, boolean rebootApp, String userDialogMessage, Availability availability) {
-        this(key, defaultValue, defaultPreferences, rebootApp, true, userDialogMessage, availability);
-    }
-    public Setting(String key, T defaultValue, SharedPrefCategory prefName) {
-        this(key, defaultValue, prefName, false, true, null, null);
-    }
-    public Setting(String key, T defaultValue, SharedPrefCategory prefName, boolean rebootApp) {
-        this(key, defaultValue, prefName, rebootApp, true, null, null);
-    }
-    public Setting(String key, T defaultValue, SharedPrefCategory prefName, String userDialogMessage) {
-        this(key, defaultValue, prefName, false, true, userDialogMessage, null);
-    }
-    public Setting(String key, T defaultValue, SharedPrefCategory prefName, Availability availability) {
-        this(key, defaultValue, prefName, false, true, null, availability);
-    }
-    public Setting(String key, T defaultValue, SharedPrefCategory prefName, boolean rebootApp, boolean includeWithImportExport) {
-        this(key, defaultValue, prefName, rebootApp, includeWithImportExport, null, null);
+        this(key, defaultValue, rebootApp, true, userDialogMessage, availability);
     }
 
     /**
      * A setting backed by a shared preference.
-     * @param key The key used to store the value in the shared preferences.
-     * @param defaultValue The default value of the setting.
-     * @param prefName The category of the shared preferences to store the value in.
-     * @param rebootApp If the app should be rebooted, if this setting is changed.
+     *
+     * @param key                     The key used to store the value in the shared preferences.
+     * @param defaultValue            The default value of the setting.
+     * @param rebootApp               If the app should be rebooted, if this setting is changed.
      * @param includeWithImportExport If this setting should be shown in the import/export dialog.
-     * @param userDialogMessage Confirmation message to display, if the user tries to change the setting from the default value.
-     * @param availability Condition that must be true, for this setting to be available to configure.
+     * @param userDialogMessage       Confirmation message to display, if the user tries to change the setting from the default value.
+     * @param availability            Condition that must be true, for this setting to be available to configure.
      */
     public Setting(@NonNull String key,
                    @NonNull T defaultValue,
-                   @NonNull SharedPrefCategory prefName,
                    boolean rebootApp,
                    boolean includeWithImportExport,
                    @Nullable String userDialogMessage,
@@ -220,7 +194,6 @@ public abstract class Setting<T> {
     ) {
         this.key = Objects.requireNonNull(key);
         this.value = this.defaultValue = Objects.requireNonNull(defaultValue);
-        this.sharedPrefCategory = Objects.requireNonNull(prefName);
         this.rebootApp = rebootApp;
         this.includeWithImportExport = includeWithImportExport;
         this.userDialogMessage = (userDialogMessage == null) ? null : new StringRef(userDialogMessage);
@@ -249,8 +222,7 @@ public abstract class Setting<T> {
      *
      * This method will be deleted in the future.
      */
-    public static void migrateFromOldPreferences(@NonNull SharedPrefCategory oldPrefs, @NonNull Setting setting) {
-        String settingKey = setting.key;
+    public static void migrateFromOldPreferences(@NonNull SharedPrefCategory oldPrefs, @NonNull Setting setting, String settingKey) {
         if (!oldPrefs.preferences.contains(settingKey)) {
             return; // Nothing to do.
         }
@@ -292,7 +264,7 @@ public abstract class Setting<T> {
     }
 
     /**
-     * Sets the value of {@link #value}, but do not save to {@link #sharedPrefCategory}.
+     * Sets the value of {@link #value}, but do not save to {@link #preferences}.
      */
     protected abstract void setValueFromString(@NonNull String newValue);
 

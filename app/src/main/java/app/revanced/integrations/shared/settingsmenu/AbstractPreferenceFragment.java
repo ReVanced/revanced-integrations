@@ -98,7 +98,7 @@ public abstract class AbstractPreferenceFragment extends PreferenceFragment {
     }
 
     public AbstractPreferenceFragment() {
-        this(Setting.DEFAULT_PREFERENCE_NAME);
+        this(Setting.preferences.name);
     }
 
     protected void initialize() {

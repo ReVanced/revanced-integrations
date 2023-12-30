@@ -43,12 +43,12 @@ public class AlternativeThumbnailsStatusPreference extends Preference {
 
     private void addChangeListener() {
         Logger.printDebug(() -> "addChangeListener");
-        Setting.defaultPreferences.preferences.registerOnSharedPreferenceChangeListener(listener);
+        Setting.preferences.preferences.registerOnSharedPreferenceChangeListener(listener);
     }
 
     private void removeChangeListener() {
         Logger.printDebug(() -> "removeChangeListener");
-        Setting.defaultPreferences.preferences.unregisterOnSharedPreferenceChangeListener(listener);
+        Setting.preferences.preferences.unregisterOnSharedPreferenceChangeListener(listener);
     }
 
     @Override

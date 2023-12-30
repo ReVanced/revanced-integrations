@@ -17,6 +17,9 @@ public class StringSetting extends Setting<String> {
     public StringSetting(String key, String defaultValue, boolean rebootApp) {
         super(key, defaultValue, rebootApp);
     }
+    public StringSetting(String key, String defaultValue, boolean rebootApp, boolean includeWithImportExport) {
+        super(key, defaultValue, rebootApp, includeWithImportExport);
+    }
     public StringSetting(String key, String defaultValue, String userDialogMessage) {
         super(key, defaultValue, userDialogMessage);
     }
@@ -32,31 +35,13 @@ public class StringSetting extends Setting<String> {
     public StringSetting(String key, String defaultValue, boolean rebootApp, String userDialogMessage, Availability availability) {
         super(key, defaultValue, rebootApp, userDialogMessage, availability);
     }
-    public StringSetting(String key, String defaultValue, SharedPrefCategory prefName) {
-        super(key, defaultValue, prefName);
-    }
-    public StringSetting(String key, String defaultValue, SharedPrefCategory prefName, boolean rebootApp) {
-        super(key, defaultValue, prefName, rebootApp);
-    }
-    public StringSetting(String key, String defaultValue, boolean rebootApp, boolean includeWithImportExport) {
-        super(key, defaultValue, rebootApp, includeWithImportExport);
-    }
-    public StringSetting(String key, String defaultValue, SharedPrefCategory prefName, String userDialogMessage) {
-        super(key, defaultValue, prefName, userDialogMessage);
-    }
-    public StringSetting(String key, String defaultValue, SharedPrefCategory prefName, Availability availability) {
-        super(key, defaultValue, prefName, availability);
-    }
-    public StringSetting(String key, String defaultValue, SharedPrefCategory prefName, boolean rebootApp, boolean includeWithImportExport) {
-        super(key, defaultValue, prefName, rebootApp, includeWithImportExport);
-    }
-    public StringSetting(@NonNull String key, @NonNull String defaultValue, @NonNull SharedPrefCategory prefName, boolean rebootApp, boolean includeWithImportExport, @Nullable String userDialogMessage, @Nullable Availability availability) {
-        super(key, defaultValue, prefName, rebootApp, includeWithImportExport, userDialogMessage, availability);
+    public StringSetting(@NonNull String key, @NonNull String defaultValue, boolean rebootApp, boolean includeWithImportExport, @Nullable String userDialogMessage, @Nullable Availability availability) {
+        super(key, defaultValue, rebootApp, includeWithImportExport, userDialogMessage, availability);
     }
 
     @Override
     protected void load() {
-        value = sharedPrefCategory.getString(key, defaultValue);
+        value = preferences.getString(key, defaultValue);
     }
 
     @Override
@@ -73,7 +58,7 @@ public class StringSetting extends Setting<String> {
     public void save(@NonNull String newValue) {
         // Must set before saving to preferences (otherwise importing fails to update UI correctly).
         value = Objects.requireNonNull(newValue);
-        sharedPrefCategory.saveString(key, newValue);
+        preferences.saveString(key, newValue);
     }
 
     @NonNull
