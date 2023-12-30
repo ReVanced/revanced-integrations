@@ -34,7 +34,7 @@ public class BooleanSetting extends Setting<Boolean> {
     public BooleanSetting(String key, Boolean defaultValue, boolean rebootApp, String userDialogMessage, Availability availability) {
         super(key, defaultValue, rebootApp, userDialogMessage, availability);
     }
-    public BooleanSetting(@NonNull String key, @NonNull Boolean defaultValue, @NonNull SharedPrefCategory prefName, boolean rebootApp, boolean includeWithImportExport, @Nullable String userDialogMessage, @Nullable Availability availability) {
+    public BooleanSetting(@NonNull String key, @NonNull Boolean defaultValue, boolean rebootApp, boolean includeWithImportExport, @Nullable String userDialogMessage, @Nullable Availability availability) {
         super(key, defaultValue, rebootApp, includeWithImportExport, userDialogMessage, availability);
     }
 

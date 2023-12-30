@@ -3,6 +3,7 @@ package app.revanced.integrations.shared;
 import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
 import app.revanced.integrations.shared.settings.SharedSettings;
 
 import java.io.PrintWriter;
@@ -129,6 +130,15 @@ public class Logger {
                     : outerClassSimpleName + ": " + messageString;
             Utils.showToastLong(toastMessageToDisplay);
         }
+    }
+
+    /**
+     * Logging to use if {@link SharedSettings#DEBUG} or {@link Utils#context} may not be initialized.
+     * Always logs even if Debugging is not enabled.
+     * Normally this method should not be used.
+     */
+    public static void initializationError(@NonNull Class<?> callingClass, @NonNull String message) {
+        Log.e(REVANCED_LOG_PREFIX + callingClass.getSimpleName(), message);
     }
 
 }

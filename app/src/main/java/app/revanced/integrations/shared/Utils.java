@@ -223,11 +223,10 @@ public class Utils {
     }
 
     public static Context getContext() {
-        if (context != null) {
-            return context;
+        if (context == null) {
+            Logger.initializationError(Utils.class, "Context is null, returning null!");
         }
-        Logger.printException(() -> "Context is null, returning null!");
-        return null;
+        return context;
     }
 
     public static void setClipboard(@NonNull String text) {
@@ -271,9 +270,8 @@ public class Utils {
     private static void showToast(@NonNull String messageToToast, int toastDuration) {
         Objects.requireNonNull(messageToToast);
         runOnMainThreadNowOrLater(() -> {
-                    // cannot use getContext(), otherwise if context is null it will cause infinite recursion of error logging
                     if (context == null) {
-                        Logger.printDebug(() -> "Cannot show toast (context is null)");
+                        Logger.initializationError(Utils.class, "Cannot show toast (context is null): " + messageToToast);
                     } else {
                         Logger.printDebug(() -> "Showing toast: " + messageToToast);
                         Toast.makeText(context, messageToToast, toastDuration).show();

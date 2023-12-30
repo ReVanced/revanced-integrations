@@ -199,10 +199,13 @@ public abstract class Setting<T> {
         this.userDialogMessage = (userDialogMessage == null) ? null : new StringRef(userDialogMessage);
         this.availability = availability;
 
-        load();
-
         SETTINGS.add(this);
-        PATH_TO_SETTINGS.put(key, this);
+        if (PATH_TO_SETTINGS.put(key, this) != null) {
+            // Debug setting may not be created yet, so log as an initialization error.
+            Logger.initializationError(Setting.class, "Created duplicate setting: " + key);
+        }
+
+        load();
     }
 
     /**
