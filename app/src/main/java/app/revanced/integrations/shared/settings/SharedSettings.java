@@ -7,7 +7,7 @@ import static app.revanced.integrations.shared.settings.Setting.parent;
 /**
  * Settings shared across multiple apps.
  */
-public class Settings {
+public class SharedSettings {
     public static final BooleanSetting DEBUG = new BooleanSetting("revanced_debug", FALSE);
     public static final BooleanSetting DEBUG_STACKTRACE = new BooleanSetting("revanced_debug_stacktrace", FALSE, parent(DEBUG));
     public static final BooleanSetting DEBUG_TOAST_ON_ERROR = new BooleanSetting("revanced_debug_toast_on_error", TRUE, "revanced_debug_toast_on_error_user_dialog_message");

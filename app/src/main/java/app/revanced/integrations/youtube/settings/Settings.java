@@ -18,6 +18,7 @@ import app.revanced.integrations.shared.settings.IntegerSetting;
 import app.revanced.integrations.shared.settings.LongSetting;
 import app.revanced.integrations.shared.settings.Setting;
 import app.revanced.integrations.shared.settings.SharedPrefCategory;
+import app.revanced.integrations.shared.settings.SharedSettings;
 import app.revanced.integrations.shared.settings.StringSetting;
 import app.revanced.integrations.youtube.sponsorblock.SponsorBlockSettings;
 
@@ -229,7 +230,7 @@ public class Settings {
             parentsAny(SWIPE_BRIGHTNESS, SWIPE_VOLUME));
 
     // Debugging
-    public static final BooleanSetting DEBUG_PROTOBUFFER = new BooleanSetting("revanced_debug_protobuffer", FALSE, parent(app.revanced.integrations.shared.settings.Settings.DEBUG));
+    public static final BooleanSetting DEBUG_PROTOBUFFER = new BooleanSetting("revanced_debug_protobuffer", FALSE, parent(SharedSettings.DEBUG));
 
     // ReturnYoutubeDislike
     public static final BooleanSetting RYD_ENABLED = new BooleanSetting("ryd_enabled", TRUE, RETURN_YOUTUBE_DISLIKE);

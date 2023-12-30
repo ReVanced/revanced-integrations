@@ -3,7 +3,7 @@ package app.revanced.integrations.shared;
 import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import app.revanced.integrations.shared.settings.Settings;
+import app.revanced.integrations.shared.settings.SharedSettings;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -50,13 +50,13 @@ public class Logger {
     /**
      * Logs debug messages under the outer class name of the code calling this method.
      * Whenever possible, the log string should be constructed entirely inside {@link LogMessage#buildMessageString()}
-     * so the performance cost of building strings is paid only if {@link Settings#DEBUG} is enabled.
+     * so the performance cost of building strings is paid only if {@link SharedSettings#DEBUG} is enabled.
      */
     public static void printDebug(@NonNull LogMessage message) {
-        if (Settings.DEBUG.get()) {
+        if (SharedSettings.DEBUG.get()) {
             var messageString = message.buildMessageString();
 
-            if (Settings.DEBUG_STACKTRACE.get()) {
+            if (SharedSettings.DEBUG_STACKTRACE.get()) {
                 var builder = new StringBuilder(messageString);
                 var sw = new StringWriter();
                 new Throwable().printStackTrace(new PrintWriter(sw));
@@ -123,7 +123,7 @@ public class Logger {
         } else {
             Log.e(logMessage, messageString, ex);
         }
-        if (Settings.DEBUG_TOAST_ON_ERROR.get()) {
+        if (SharedSettings.DEBUG_TOAST_ON_ERROR.get()) {
             String toastMessageToDisplay = (userToastMessage != null)
                     ? userToastMessage
                     : outerClassSimpleName + ": " + messageString;
