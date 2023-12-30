@@ -3,6 +3,9 @@ package app.revanced.integrations.tiktok;
 import app.revanced.integrations.shared.settings.StringSetting;
 
 public class Utils {
+
+    // Edit: This could be handled using a custom Setting<Long[]> class
+    // that saves its value to preferences and JSON using the formatted String created here.
     public static long[] parseMinMax(StringSetting setting) {
         final String[] minMax = setting.get().split("-");
         if (minMax.length == 2) {

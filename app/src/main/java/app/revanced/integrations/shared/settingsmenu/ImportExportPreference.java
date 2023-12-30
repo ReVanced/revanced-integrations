@@ -1,4 +1,4 @@
-package app.revanced.integrations.youtube.settingsmenu;
+package app.revanced.integrations.shared.settingsmenu;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -12,7 +12,6 @@ import android.widget.EditText;
 import app.revanced.integrations.shared.settings.Setting;
 import app.revanced.integrations.shared.Logger;
 import app.revanced.integrations.shared.Utils;
-import app.revanced.integrations.shared.settingsmenu.AbstractPreferenceFragment;
 
 import static app.revanced.integrations.shared.StringRef.str;
 

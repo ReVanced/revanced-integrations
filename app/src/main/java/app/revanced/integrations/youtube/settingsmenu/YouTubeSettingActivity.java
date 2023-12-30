@@ -15,7 +15,7 @@ import static app.revanced.integrations.shared.Utils.getChildView;
 import static app.revanced.integrations.shared.Utils.getResourceIdentifier;
 
 @SuppressWarnings("unused")
-public class ReVancedSettingActivity {
+public class YouTubeSettingActivity {
 
     /**
      * Injection point.
