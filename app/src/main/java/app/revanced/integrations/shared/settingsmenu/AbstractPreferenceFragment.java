@@ -108,6 +108,7 @@ public abstract class AbstractPreferenceFragment extends PreferenceFragment {
         addPreferencesFromResource(identifier);
 
         updatePreferencesAvailable();
+        updateAllListPreferences();
     }
 
     private void showSettingUserDialogConfirmation(SwitchPreference switchPref, BooleanSetting setting) {
@@ -138,6 +139,15 @@ public abstract class AbstractPreferenceFragment extends PreferenceFragment {
         for (Setting<?> setting : Setting.allLoadedSettings()) {
             Preference preference = findPreference(setting.key);
             if (preference != null) preference.setEnabled(setting.isAvailable());
+        }
+    }
+
+    private void updateAllListPreferences() {
+        for (Setting<?> setting : Setting.allLoadedSettings()) {
+            Preference preference = findPreference(setting.key);
+            if (preference instanceof ListPreference) {
+                updateListPreference((ListPreference) preference, setting);
+            }
         }
     }
 
