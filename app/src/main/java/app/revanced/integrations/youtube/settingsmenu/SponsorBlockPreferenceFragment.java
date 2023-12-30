@@ -32,7 +32,7 @@ import static android.text.Html.fromHtml;
 import static app.revanced.integrations.shared.StringRef.str;
 
 @SuppressWarnings("deprecation")
-public class SponsorBlockSettingsFragment extends PreferenceFragment {
+public class SponsorBlockPreferenceFragment extends PreferenceFragment {
 
     private SwitchPreference sbEnabled;
     private SwitchPreference addNewSegment;

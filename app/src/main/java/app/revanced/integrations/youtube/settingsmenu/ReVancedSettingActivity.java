@@ -2,6 +2,7 @@ package app.revanced.integrations.youtube.settingsmenu;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.preference.PreferenceFragment;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -26,17 +27,17 @@ public class ReVancedSettingActivity {
                     getResourceIdentifier("revanced_settings_with_toolbar", "layout"));
             setBackButton(licenseActivity);
 
-            android.preference.PreferenceFragment fragment;
+            PreferenceFragment fragment;
             String toolbarTitleResourceName;
             String dataString = licenseActivity.getIntent().getDataString();
             switch (dataString) {
                 case "sponsorblock_settings":
                     toolbarTitleResourceName = "revanced_sponsorblock_settings_title";
-                    fragment = new SponsorBlockSettingsFragment();
+                    fragment = new SponsorBlockPreferenceFragment();
                     break;
                 case "ryd_settings":
                     toolbarTitleResourceName = "revanced_ryd_settings_title";
-                    fragment = new ReturnYouTubeDislikeSettingsFragment();
+                    fragment = new ReturnYouTubeDislikePreferenceFragment();
                     break;
                 case "revanced_settings":
                     toolbarTitleResourceName = "revanced_settings_title";

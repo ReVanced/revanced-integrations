@@ -192,7 +192,7 @@ public abstract class AbstractPreferenceFragment extends PreferenceFragment {
         }
     }
 
-    @Override // android.preference.PreferenceFragment, android.app.Fragment
+    @Override
     public void onDestroy() {
         getPreferenceManager().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(listener);
         super.onDestroy();

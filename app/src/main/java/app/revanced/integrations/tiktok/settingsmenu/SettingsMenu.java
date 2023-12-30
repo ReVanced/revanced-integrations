@@ -3,6 +3,7 @@ package app.revanced.integrations.tiktok.settingsmenu;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.preference.PreferenceFragment;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
@@ -55,7 +56,7 @@ public class SettingsMenu {
         linearLayout.addView(fragment);
         base.setContentView(linearLayout);
 
-        android.preference.PreferenceFragment preferenceFragment = new PreferenceFragment();
+        PreferenceFragment preferenceFragment = new TikTokPreferenceFragment();
         base.getFragmentManager().beginTransaction().replace(fragmentId, preferenceFragment).commit();
 
         return true;

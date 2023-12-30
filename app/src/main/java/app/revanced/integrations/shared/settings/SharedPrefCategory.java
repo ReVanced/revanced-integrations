@@ -2,6 +2,7 @@ package app.revanced.integrations.shared.settings;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.preference.PreferenceFragment;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -15,7 +16,7 @@ import app.revanced.integrations.shared.Utils;
  * Shared categories, and helper methods.
  *
  * The various save methods store numbers as Strings,
- * which is required if using {@link android.preference.PreferenceFragment}.
+ * which is required if using {@link PreferenceFragment}.
  *
  * If saved numbers will not be used with a preference fragment,
  * then store the primitive numbers using {@link #preferences}.

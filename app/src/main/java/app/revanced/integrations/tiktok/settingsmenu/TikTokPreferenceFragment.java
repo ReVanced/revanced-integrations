@@ -8,7 +8,7 @@ import app.revanced.integrations.tiktok.settingsmenu.preference.categories.Integ
 import app.revanced.integrations.tiktok.settingsmenu.preference.categories.SimSpoofPreferenceCategory;
 
 @SuppressWarnings("deprecation")
-public class PreferenceFragment extends AbstractPreferenceFragment {
+public class TikTokPreferenceFragment extends AbstractPreferenceFragment {
 
     @Override
     protected void initialize() {

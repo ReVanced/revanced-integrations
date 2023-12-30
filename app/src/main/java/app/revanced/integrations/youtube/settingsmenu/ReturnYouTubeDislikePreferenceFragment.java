@@ -24,7 +24,7 @@ import app.revanced.integrations.youtube.returnyoutubedislike.requests.ReturnYou
 import app.revanced.integrations.youtube.settings.Settings;
 
 /** @noinspection deprecation*/
-public class ReturnYouTubeDislikeSettingsFragment extends PreferenceFragment {
+public class ReturnYouTubeDislikePreferenceFragment extends PreferenceFragment {
 
     /**
      * If dislikes are shown on Shorts.
