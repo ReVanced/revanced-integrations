@@ -32,7 +32,7 @@ public abstract class AbstractPreferenceFragment extends PreferenceFragment {
      */
     private boolean showingUserDialogMessage;
 
-    SharedPreferences.OnSharedPreferenceChangeListener listener = (sharedPreferences, str) -> {
+    private final SharedPreferences.OnSharedPreferenceChangeListener listener = (sharedPreferences, str) -> {
         try {
             Setting<?> setting = Setting.getSettingFromPath(str);
             if (setting == null) {
@@ -44,7 +44,7 @@ public abstract class AbstractPreferenceFragment extends PreferenceFragment {
             }
             Logger.printDebug(() -> "Preference changed: " + setting.key);
 
-            // Apply Preference -> Setting, unless during importing when it needs to be Preference <- Setting.
+            // Apply 'Setting <- Preference', unless during importing when it needs to be 'Setting -> Preference'.
             updatePreference(pref, setting, true, settingImportInProgress);
             // Update any other preference availability that may now be different.
             updateUIAvailability();
@@ -78,8 +78,6 @@ public abstract class AbstractPreferenceFragment extends PreferenceFragment {
 
         if (identifier == 0) return;
         addPreferencesFromResource(identifier);
-
-        updateUIToSettingValues();
     }
 
     private void showSettingUserDialogConfirmation(SwitchPreference switchPref, BooleanSetting setting) {
@@ -123,19 +121,19 @@ public abstract class AbstractPreferenceFragment extends PreferenceFragment {
      */
     private void updatePreferenceScreen(@NonNull PreferenceScreen screen,
                                         boolean syncSettingValue,
-                                        boolean syncPreferenceFromSetting) {
+                                        boolean applySettingToPreference) {
         // Alternatively this could iterate thru all Settings and check for any matching Preferences,
         // but there are many more Settings than UI preferences so it's more efficient to only check
         // the Preferences.
         for (int i = 0, prefCount = screen.getPreferenceCount(); i < prefCount; i++) {
             Preference pref = screen.getPreference(i);
             if (pref instanceof PreferenceScreen) {
-                updatePreferenceScreen((PreferenceScreen) pref, syncSettingValue, syncPreferenceFromSetting);
+                updatePreferenceScreen((PreferenceScreen) pref, syncSettingValue, applySettingToPreference);
             } else if (pref.hasKey()) {
                 String key = pref.getKey();
                 Setting<?> setting = Setting.getSettingFromPath(key);
                 if (setting != null) {
-                    updatePreference(pref, setting, syncSettingValue, syncPreferenceFromSetting);
+                    updatePreference(pref, setting, syncSettingValue, applySettingToPreference);
                 }
             }
         }
@@ -146,33 +144,33 @@ public abstract class AbstractPreferenceFragment extends PreferenceFragment {
      * If needed, subclasses can override this to handle additional UI Preference types.
      *
      * @param syncSetting If the UI should be synced {@link Setting} <-> Preference
-     * @param syncPreferenceFromSetting If true, then apply {@link Setting} -> Preference.
-     *                                  If false, then apply {@link Setting} <- Preference.
+     * @param applySettingToPreference If true, then apply {@link Setting} -> Preference.
+     *                                 If false, then apply {@link Setting} <- Preference.
      */
     protected void updatePreference(@NonNull Preference pref, @NonNull Setting<?> setting,
-                                    boolean syncSetting, boolean syncPreferenceFromSetting) {
-        if (!syncSetting && syncPreferenceFromSetting) {
+                                    boolean syncSetting, boolean applySettingToPreference) {
+        if (!syncSetting && applySettingToPreference) {
             throw new InvalidParameterException();
         }
         if (syncSetting) {
             if (pref instanceof SwitchPreference) {
                 SwitchPreference switchPref = (SwitchPreference) pref;
                 BooleanSetting boolSetting = (BooleanSetting) setting;
-                if (syncPreferenceFromSetting) {
+                if (applySettingToPreference) {
                     switchPref.setChecked(boolSetting.get());
                 } else {
                     BooleanSetting.privateSetValue(boolSetting, switchPref.isChecked());
                 }
             } else if (pref instanceof EditTextPreference) {
                 EditTextPreference editPreference = (EditTextPreference) pref;
-                if (syncPreferenceFromSetting) {
+                if (applySettingToPreference) {
                     editPreference.getEditText().setText(setting.get().toString());
                 } else {
                     Setting.privateSetValueFromString(setting, editPreference.getText());
                 }
             } else if (pref instanceof ListPreference) {
                 ListPreference listPref = (ListPreference) pref;
-                if (syncPreferenceFromSetting) {
+                if (applySettingToPreference) {
                     listPref.setValue(setting.get().toString());
                 } else {
                     Setting.privateSetValueFromString(setting, listPref.getValue());
@@ -227,6 +225,7 @@ public abstract class AbstractPreferenceFragment extends PreferenceFragment {
             // otherwise the syncing of Setting -> UI
             // causes a callback to the listener even though nothing changed.
             initialize();
+            updateUIToSettingValues();
 
             preferenceManager.getSharedPreferences().registerOnSharedPreferenceChangeListener(listener);
         } catch (Exception ex) {

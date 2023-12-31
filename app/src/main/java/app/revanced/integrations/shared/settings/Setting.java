@@ -1,28 +1,20 @@
 package app.revanced.integrations.shared.settings;
 
-import static app.revanced.integrations.shared.StringRef.str;
-
 import android.content.Context;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
+import app.revanced.integrations.shared.Logger;
+import app.revanced.integrations.shared.StringRef;
+import app.revanced.integrations.shared.Utils;
 import app.revanced.integrations.shared.settings.preference.SharedPrefCategory;
+import app.revanced.integrations.youtube.sponsorblock.SponsorBlockSettings;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
-import app.revanced.integrations.shared.Logger;
-import app.revanced.integrations.shared.StringRef;
-import app.revanced.integrations.shared.Utils;
-import app.revanced.integrations.youtube.sponsorblock.SponsorBlockSettings;
+import static app.revanced.integrations.shared.StringRef.str;
 
 @SuppressWarnings("unused")
 public abstract class Setting<T> {
@@ -338,6 +330,12 @@ public abstract class Setting<T> {
 
     /**
      * Saves this instance to JSON.
+     * <p>
+     * To keep the JSON simple and readable,
+     * subclasses should not write out any embedded types (such as JSON Array or Dictionaries).
+     * <p>
+     * If this instance is not a type supported natively by JSON (ie: it's not a String/Integer/Float/Long),
+     * then subclasses can override this method and write out a String value representing the value.
      */
     protected void writeToJSON(JSONObject json, String importExportKey) throws JSONException {
         json.put(importExportKey, value);

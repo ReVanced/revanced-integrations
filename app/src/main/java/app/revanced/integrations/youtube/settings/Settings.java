@@ -295,6 +295,10 @@ public class Settings extends BaseSettings {
         // region Migrate settings from old Preference categories into replacement "revanced_prefs" category.
         // This region must run before all other migration code.
 
+        // The YT and RYD migration portion of this can be removed anytime,
+        // but the SB migration should remain until late 2024 or early 2025
+        // because it migrates the SB private user id which cannot be recovered if lost.
+
         // Categories were previously saved without a 'sb_' key prefix, so they need an additional adjustment.
         Set<Setting<?>> sbCategories = new HashSet<>(Arrays.asList(
                 SB_CATEGORY_SPONSOR,
