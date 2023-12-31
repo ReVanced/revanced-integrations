@@ -1,3 +1,74 @@
+## [1.1.1-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v1.1.0...v1.1.1-dev.1) (2023-12-29)
+
+
+### Bug Fixes
+
+* **YouTube - Hide ads:** Fix dimmed screen at launch by not filtering fullscreen ads ([1a1f44d](https://github.com/ReVanced/revanced-integrations/commit/1a1f44d2355bb5e93eefca77b8df41211f6fff42))
+
+# [1.1.0](https://github.com/ReVanced/revanced-integrations/compare/v1.0.0...v1.1.0) (2023-12-28)
+
+
+### Bug Fixes
+
+* **Tiktok - Remember clear display:** Use correct name ([2003b91](https://github.com/ReVanced/revanced-integrations/commit/2003b910b12cba445822bfaede7975e00220a81a))
+* **YouTube - Hide ads:** Hide new type of ad ([#545](https://github.com/ReVanced/revanced-integrations/issues/545)) ([e28b8cc](https://github.com/ReVanced/revanced-integrations/commit/e28b8cc59a445ba8f184ba6f5b9e076b7731129a))
+* **YouTube - Hide ads:** Use correct filter ([4397eed](https://github.com/ReVanced/revanced-integrations/commit/4397eedeeb21edda235cd27cd66088e94bde49e4))
+* **YouTube - Hide layout components:** Hide emergency box when enabled ([6ca7946](https://github.com/ReVanced/revanced-integrations/commit/6ca7946e8f3d5be76241b88f1d7a5a881629dda9))
+* **YouTube - Return YouTube Dislike:** Do not prefetch Shorts shelf items on app startup ([697c2aa](https://github.com/ReVanced/revanced-integrations/commit/697c2aaac68976c985f0d838795b03f284e907e8))
+* **YouTube - SponsorBlock:** Do not auto skip end segments more than once if using a slow playback speed ([88b3ca4](https://github.com/ReVanced/revanced-integrations/commit/88b3ca4992e8278e1d43dbe5cc7607d4890c0eda))
+* **YouTube - SponsorBlock:** Export local statistics with saved settings ([#542](https://github.com/ReVanced/revanced-integrations/issues/542)) ([0ed8e5a](https://github.com/ReVanced/revanced-integrations/commit/0ed8e5a2988c07f3dfbd5dd4e9ef8ed53378fbbe))
+* **YouTube - VideoInformation:** Ignore video seek attempts during the last 250ms of video playback ([6263edc](https://github.com/ReVanced/revanced-integrations/commit/6263edce11077f9e9c0629d9260e2f2eaef1c0e8))
+
+
+### Features
+
+* **Tiktok:** Add `Remember clear mode` patch ([#544](https://github.com/ReVanced/revanced-integrations/issues/544)) ([05eddb6](https://github.com/ReVanced/revanced-integrations/commit/05eddb68d5d5de1b76545c42313d4e9f9ba6712e))
+* **YouTube - Hide ads:** Hide fullscreen ads ([0f6dee5](https://github.com/ReVanced/revanced-integrations/commit/0f6dee5bae6b8017a53830587e09079942bc24aa))
+* **YouTube - Hide layout components:** Hide search result recommendations ([d241e43](https://github.com/ReVanced/revanced-integrations/commit/d241e437ee25cc2211bf06b4a7f8fd1c295fad25))
+* **YouTube:** Add `Remove viewer discretion dialog` patch ([6f3f882](https://github.com/ReVanced/revanced-integrations/commit/6f3f88264e736b80f88103e795534f86f053c8d1))
+
+# [1.1.0-dev.7](https://github.com/ReVanced/revanced-integrations/compare/v1.1.0-dev.6...v1.1.0-dev.7) (2023-12-27)
+
+
+### Bug Fixes
+
+* **YouTube - Hide layout components:** Hide emergency box when enabled ([6ca7946](https://github.com/ReVanced/revanced-integrations/commit/6ca7946e8f3d5be76241b88f1d7a5a881629dda9))
+
+
+### Features
+
+* **YouTube:** Add `Remove viewer discretion dialog` patch ([6f3f882](https://github.com/ReVanced/revanced-integrations/commit/6f3f88264e736b80f88103e795534f86f053c8d1))
+
+# [1.1.0-dev.6](https://github.com/ReVanced/revanced-integrations/compare/v1.1.0-dev.5...v1.1.0-dev.6) (2023-12-26)
+
+
+### Bug Fixes
+
+* **YouTube - VideoInformation:** Ignore video seek attempts during the last 250ms of video playback ([6263edc](https://github.com/ReVanced/revanced-integrations/commit/6263edce11077f9e9c0629d9260e2f2eaef1c0e8))
+
+# [1.1.0-dev.5](https://github.com/ReVanced/revanced-integrations/compare/v1.1.0-dev.4...v1.1.0-dev.5) (2023-12-25)
+
+
+### Bug Fixes
+
+* **YouTube - Hide ads:** Hide new type of ad ([#545](https://github.com/ReVanced/revanced-integrations/issues/545)) ([e28b8cc](https://github.com/ReVanced/revanced-integrations/commit/e28b8cc59a445ba8f184ba6f5b9e076b7731129a))
+* **YouTube - Hide ads:** Use correct filter ([4397eed](https://github.com/ReVanced/revanced-integrations/commit/4397eedeeb21edda235cd27cd66088e94bde49e4))
+
+# [1.1.0-dev.4](https://github.com/ReVanced/revanced-integrations/compare/v1.1.0-dev.3...v1.1.0-dev.4) (2023-12-25)
+
+
+### Bug Fixes
+
+* **YouTube - SponsorBlock:** Do not auto skip end segments more than once if using a slow playback speed ([88b3ca4](https://github.com/ReVanced/revanced-integrations/commit/88b3ca4992e8278e1d43dbe5cc7607d4890c0eda))
+
+# [1.1.0-dev.3](https://github.com/ReVanced/revanced-integrations/compare/v1.1.0-dev.2...v1.1.0-dev.3) (2023-12-24)
+
+
+### Features
+
+* **YouTube - Hide ads:** Hide fullscreen ads ([0f6dee5](https://github.com/ReVanced/revanced-integrations/commit/0f6dee5bae6b8017a53830587e09079942bc24aa))
+* **YouTube - Hide layout components:** Hide search result recommendations ([d241e43](https://github.com/ReVanced/revanced-integrations/commit/d241e437ee25cc2211bf06b4a7f8fd1c295fad25))
+
 # [1.1.0-dev.2](https://github.com/ReVanced/revanced-integrations/compare/v1.1.0-dev.1...v1.1.0-dev.2) (2023-12-21)
 
 

@@ -28,6 +28,8 @@ public final class LayoutComponentsFilter extends Filter {
     private final StringFilterGroup inFeedSurvey;
     private final StringFilterGroup notifyMe;
     private final StringFilterGroup expandableMetadata;
+    private final ByteArrayFilterGroup searchResultRecommendations;
+    private final StringFilterGroup searchResultVideo;
 
     static {
         mixPlaylistsExceptions.addPatterns(
@@ -41,6 +43,7 @@ public final class LayoutComponentsFilter extends Filter {
         exceptions.addPatterns(
                 "home_video_with_context",
                 "related_video_with_context",
+                "search_video_with_context",
                 "comment_thread", // Whitelist comments
                 "|comment.", // Whitelist comment replies
                 "library_recent_shelf"
@@ -85,7 +88,6 @@ public final class LayoutComponentsFilter extends Filter {
                 "sponsorships_comments_upsell"
         );
 
-
         final var channelMemberShelf = new StringFilterGroup(
                 SettingsEnum.HIDE_CHANNEL_MEMBER_SHELF,
                 "member_recognition_shelf"
@@ -126,6 +128,11 @@ public final class LayoutComponentsFilter extends Filter {
         final var channelGuidelines = new StringFilterGroup(
                 SettingsEnum.HIDE_HIDE_CHANNEL_GUIDELINES,
                 "channel_guidelines_entry_banner"
+        );
+
+        final var emergencyBox = new StringFilterGroup(
+                SettingsEnum.HIDE_EMERGENCY_BOX,
+                "emergency_onebox"
         );
 
         // The player audio track button does the exact same function as the audio track flyout menu option.
@@ -208,6 +215,16 @@ public final class LayoutComponentsFilter extends Filter {
                 "mixed_content_shelf"
         );
 
+        searchResultVideo = new StringFilterGroup(
+                SettingsEnum.HIDE_SEARCH_RESULT_RECOMMENDATIONS,
+                "search_video_with_context.eml"
+        );
+
+        searchResultRecommendations = new ByteArrayFilterGroup(
+                SettingsEnum.HIDE_SEARCH_RESULT_RECOMMENDATIONS,
+                "endorsement_header_footer"
+        );
+
         addPathCallbacks(
                 custom,
                 expandableMetadata,
@@ -216,6 +233,7 @@ public final class LayoutComponentsFilter extends Filter {
                 channelBar,
                 communityPosts,
                 paidContent,
+                searchResultVideo,
                 latestPosts,
                 channelWatermark,
                 communityGuidelines,
@@ -226,6 +244,7 @@ public final class LayoutComponentsFilter extends Filter {
                 medicalPanel,
                 videoQualityMenuFooter,
                 infoPanel,
+                emergencyBox,
                 subscribersCommunityGuidelines,
                 channelGuidelines,
                 audioTrackButton,
@@ -240,10 +259,15 @@ public final class LayoutComponentsFilter extends Filter {
     @Override
     public boolean isFiltered(@Nullable String identifier, String path, byte[] protobufBufferArray,
                               StringFilterGroup matchedGroup, FilterContentType contentType, int contentIndex) {
+        if (matchedGroup == searchResultVideo) {
+            if (searchResultRecommendations.check(protobufBufferArray).isFiltered()) {
+                return super.isFiltered(identifier, path, protobufBufferArray, matchedGroup, contentType, contentIndex);
+            }
+        }
 
         // The groups are excluded from the filter due to the exceptions list below.
         // Filter them separately here.
-        if (matchedGroup == notifyMe || matchedGroup == inFeedSurvey || matchedGroup == expandableMetadata) 
+        if (matchedGroup == notifyMe || matchedGroup == inFeedSurvey || matchedGroup == expandableMetadata)
             return super.isFiltered(identifier, path, protobufBufferArray, matchedGroup, contentType, contentIndex);
 
         if (matchedGroup != custom && exceptions.matches(path))
