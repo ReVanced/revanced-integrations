@@ -201,8 +201,10 @@ public abstract class Setting<T> {
 
         SETTINGS.add(this);
         if (PATH_TO_SETTINGS.put(key, this) != null) {
-            // Debug setting may not be created yet, so log as an initialization error.
-            Logger.initializationError(Setting.class, "Created duplicate setting: " + key, null);
+            // Debug setting may not be created yet so using Logger may cause an initialization crash.
+            // Show a toast instead.
+            Utils.showToastLong(this.getClass().getSimpleName()
+                    + " error: Duplicate Setting key found: " + key);
         }
 
         load();
