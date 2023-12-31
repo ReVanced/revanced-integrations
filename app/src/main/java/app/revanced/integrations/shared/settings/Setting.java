@@ -314,12 +314,6 @@ public abstract class Setting<T> {
         return key + "=" + get();
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (!(obj instanceof Setting)) return false;
-        return key.equals(((Setting<?>) obj).key);
-    }
-
     // region Import / export
 
     /**
