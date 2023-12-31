@@ -1,5 +1,7 @@
 package app.revanced.integrations.twitch.patches;
 
+import static app.revanced.integrations.shared.StringRef.str;
+
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.text.SpannableStringBuilder;
@@ -9,23 +11,22 @@ import android.text.style.ForegroundColorSpan;
 import android.text.style.StrikethroughSpan;
 import android.text.style.StyleSpan;
 
+import androidx.annotation.Nullable;
+
 import app.revanced.integrations.twitch.settings.Settings;
 import tv.twitch.android.shared.chat.util.ClickableUsernameSpan;
-
-import java.util.Objects;
-
-import static app.revanced.integrations.shared.StringRef.str;
 
 @SuppressWarnings("unused")
 public class ShowDeletedMessagesPatch {
     public static boolean shouldUseSpoiler() {
-        return Objects.equals(Settings.SHOW_DELETED_MESSAGES.get(), "spoiler");
+        return "spoiler".equals(Settings.SHOW_DELETED_MESSAGES.get());
     }
 
     public static boolean shouldCrossOut() {
-        return Objects.equals(Settings.SHOW_DELETED_MESSAGES.get(), "cross-out");
+        return "cross-out".equals(Settings.SHOW_DELETED_MESSAGES.get());
     }
 
+    @Nullable
     public static Spanned reformatDeletedMessage(Spanned original) {
         if (!shouldCrossOut())
             return null;
