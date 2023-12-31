@@ -1,10 +1,14 @@
 package app.revanced.integrations.shared;
 
+import static app.revanced.integrations.shared.settings.BaseSettings.DEBUG;
+import static app.revanced.integrations.shared.settings.BaseSettings.DEBUG_STACKTRACE;
+import static app.revanced.integrations.shared.settings.BaseSettings.DEBUG_TOAST_ON_ERROR;
+
 import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import app.revanced.integrations.shared.settings.SharedSettings;
+import app.revanced.integrations.shared.settings.BaseSettings;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -51,13 +55,13 @@ public class Logger {
     /**
      * Logs debug messages under the outer class name of the code calling this method.
      * Whenever possible, the log string should be constructed entirely inside {@link LogMessage#buildMessageString()}
-     * so the performance cost of building strings is paid only if {@link SharedSettings#DEBUG} is enabled.
+     * so the performance cost of building strings is paid only if {@link BaseSettings#DEBUG} is enabled.
      */
     public static void printDebug(@NonNull LogMessage message) {
-        if (SharedSettings.DEBUG.get()) {
+        if (DEBUG.get()) {
             var messageString = message.buildMessageString();
 
-            if (SharedSettings.DEBUG_STACKTRACE.get()) {
+            if (DEBUG_STACKTRACE.get()) {
                 var builder = new StringBuilder(messageString);
                 var sw = new StringWriter();
                 new Throwable().printStackTrace(new PrintWriter(sw));
@@ -124,7 +128,7 @@ public class Logger {
         } else {
             Log.e(logMessage, messageString, ex);
         }
-        if (SharedSettings.DEBUG_TOAST_ON_ERROR.get()) {
+        if (DEBUG_TOAST_ON_ERROR.get()) {
             String toastMessageToDisplay = (userToastMessage != null)
                     ? userToastMessage
                     : outerClassSimpleName + ": " + messageString;
@@ -133,7 +137,7 @@ public class Logger {
     }
 
     /**
-     * Logging to use if {@link SharedSettings#DEBUG} or {@link Utils#context} may not be initialized.
+     * Logging to use if {@link BaseSettings#DEBUG} or {@link Utils#context} may not be initialized.
      * Always logs even if Debugging is not enabled.
      * Normally this method should not be used.
      */

@@ -17,7 +17,7 @@ import java.util.function.Consumer;
 import app.revanced.integrations.shared.Logger;
 import app.revanced.integrations.shared.Utils;
 import app.revanced.integrations.shared.settings.BooleanSetting;
-import app.revanced.integrations.shared.settings.SharedSettings;
+import app.revanced.integrations.shared.settings.BaseSettings;
 import app.revanced.integrations.shared.settings.StringSetting;
 import app.revanced.integrations.youtube.ByteTrieSearch;
 import app.revanced.integrations.youtube.StringTrieSearch;
@@ -389,7 +389,7 @@ abstract class Filter {
      */
     boolean isFiltered(@Nullable String identifier, String path, byte[] protobufBufferArray,
                        StringFilterGroup matchedGroup, FilterContentType contentType, int contentIndex) {
-        if (SharedSettings.DEBUG.get()) {
+        if (BaseSettings.DEBUG.get()) {
             String filterSimpleName = getClass().getSimpleName();
             if (contentType == FilterContentType.IDENTIFIER) {
                 Logger.printDebug(() -> filterSimpleName + " Filtered identifier: " + identifier);

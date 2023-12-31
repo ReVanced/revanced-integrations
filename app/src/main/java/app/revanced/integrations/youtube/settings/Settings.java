@@ -22,11 +22,11 @@ import app.revanced.integrations.shared.settings.IntegerSetting;
 import app.revanced.integrations.shared.settings.LongSetting;
 import app.revanced.integrations.shared.settings.Setting;
 import app.revanced.integrations.shared.settings.SharedPrefCategory;
-import app.revanced.integrations.shared.settings.SharedSettings;
+import app.revanced.integrations.shared.settings.BaseSettings;
 import app.revanced.integrations.shared.settings.StringSetting;
 import app.revanced.integrations.youtube.sponsorblock.SponsorBlockSettings;
 
-public class Settings extends SharedSettings {
+public class Settings extends BaseSettings {
     // External downloader
     public static final BooleanSetting EXTERNAL_DOWNLOADER = new BooleanSetting("revanced_external_downloader", FALSE);
     public static final StringSetting EXTERNAL_DOWNLOADER_PACKAGE_NAME = new StringSetting("revanced_external_downloader_name",
@@ -231,7 +231,7 @@ public class Settings extends SharedSettings {
             parentsAny(SWIPE_BRIGHTNESS, SWIPE_VOLUME));
 
     // Debugging
-    public static final BooleanSetting DEBUG_PROTOBUFFER = new BooleanSetting("revanced_debug_protobuffer", FALSE, parent(SharedSettings.DEBUG));
+    public static final BooleanSetting DEBUG_PROTOBUFFER = new BooleanSetting("revanced_debug_protobuffer", FALSE, parent(BaseSettings.DEBUG));
 
     // ReturnYoutubeDislike
     public static final BooleanSetting RYD_ENABLED = new BooleanSetting("ryd_enabled", TRUE);

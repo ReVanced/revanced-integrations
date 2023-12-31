@@ -4,10 +4,11 @@ import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
 
 import app.revanced.integrations.shared.settings.BooleanSetting;
-import app.revanced.integrations.shared.settings.SharedSettings;
+import app.revanced.integrations.shared.settings.BaseSettings;
 import app.revanced.integrations.shared.settings.StringSetting;
 
-public class Settings extends SharedSettings {
+public class Settings extends BaseSettings {
+    // TODO: Rename this to something different so it does not collide with the shared Debug setting.
     public static final BooleanSetting DEBUG = new BooleanSetting("debug", FALSE);
     public static final BooleanSetting REMOVE_ADS = new BooleanSetting("remove_ads", TRUE, true);
     public static final BooleanSetting HIDE_LIVE = new BooleanSetting("hide_live", FALSE, true);
