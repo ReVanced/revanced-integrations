@@ -5,6 +5,6 @@ import app.revanced.integrations.twitch.settings.Settings;
 @SuppressWarnings("unused")
 public class DebugModePatch {
     public static boolean isDebugModeEnabled() {
-        return Settings.DEBUG_MODE.get();
+        return Settings.TWITCH_DEBUG_MODE.get();
     }
 }

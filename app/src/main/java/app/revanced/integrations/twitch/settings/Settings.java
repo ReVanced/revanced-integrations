@@ -18,5 +18,8 @@ public class Settings extends BaseSettings {
     public static final BooleanSetting AUTO_CLAIM_CHANNEL_POINTS = new BooleanSetting("revanced_auto_claim_channel_points", TRUE);
 
     /* Misc */
-    public static final BooleanSetting DEBUG_MODE = new BooleanSetting("revanced_debug_mode", FALSE, true);
+    /**
+     * Not to be confused with {@link BaseSettings#DEBUG}.
+     */
+    public static final BooleanSetting TWITCH_DEBUG_MODE = new BooleanSetting("revanced_twitch_debug_mode", FALSE, true);
 }
