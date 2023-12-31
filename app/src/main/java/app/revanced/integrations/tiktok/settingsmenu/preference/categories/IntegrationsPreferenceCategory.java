@@ -2,7 +2,8 @@ package app.revanced.integrations.tiktok.settingsmenu.preference.categories;
 
 import android.content.Context;
 import android.preference.PreferenceScreen;
-import app.revanced.integrations.tiktok.settings.Settings;
+
+import app.revanced.integrations.shared.settings.BaseSettings;
 import app.revanced.integrations.tiktok.settingsmenu.preference.TogglePreference;
 
 @SuppressWarnings("deprecation")
@@ -22,7 +23,7 @@ public class IntegrationsPreferenceCategory extends ConditionalPreferenceCategor
         addPreference(new TogglePreference(context,
                 "Enable debug log",
                 "Show integration debug log.",
-                Settings.DEBUG
+                BaseSettings.DEBUG
         ));
     }
 }
