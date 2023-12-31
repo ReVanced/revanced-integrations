@@ -141,8 +141,8 @@ public class Logger {
      * Always logs even if Debugging is not enabled.
      * Normally this method should not be used.
      */
-    public static void initializationError(@NonNull Class<?> callingClass, @NonNull String message) {
-        Log.e(REVANCED_LOG_PREFIX + callingClass.getSimpleName(), message);
+    public static void initializationError(@NonNull Class<?> callingClass, @NonNull String message, @Nullable Exception ex) {
+        Log.e(REVANCED_LOG_PREFIX + callingClass.getSimpleName(), message, ex);
     }
 
 }
