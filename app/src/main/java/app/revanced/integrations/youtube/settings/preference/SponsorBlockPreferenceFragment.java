@@ -1,4 +1,4 @@
-package app.revanced.integrations.youtube.settingsmenu;
+package app.revanced.integrations.youtube.settings.preference;
 
 import android.app.Activity;
 import android.app.AlertDialog;

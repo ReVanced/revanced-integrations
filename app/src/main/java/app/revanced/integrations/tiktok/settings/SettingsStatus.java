@@ -1,4 +1,4 @@
-package app.revanced.integrations.tiktok.settingsmenu;
+package app.revanced.integrations.tiktok.settings;
 
 public class SettingsStatus {
     public static boolean feedFilterEnabled = false;

@@ -1,4 +1,4 @@
-package app.revanced.integrations.youtube.settingsmenu;
+package app.revanced.integrations.youtube.settings;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -8,19 +8,29 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import app.revanced.integrations.shared.Logger;
 import app.revanced.integrations.youtube.ThemeHelper;
+import app.revanced.integrations.youtube.settings.preference.ReVancedPreferenceFragment;
+import app.revanced.integrations.youtube.settings.preference.ReturnYouTubeDislikePreferenceFragment;
+import app.revanced.integrations.youtube.settings.preference.SponsorBlockPreferenceFragment;
 
 import java.util.Objects;
 
 import static app.revanced.integrations.shared.Utils.getChildView;
 import static app.revanced.integrations.shared.Utils.getResourceIdentifier;
 
+/**
+ * Hooks LicenseActivity.
+ * <p>
+ * This class is responsible for injecting our own fragment by replacing the LicenseActivity.
+ */
 @SuppressWarnings("unused")
-public class YouTubeSettingActivity {
+public class LicenseActivityHook {
 
     /**
      * Injection point.
+     * <p>
+     * Hooks LicenseActivity#onCreate in order to inject our own fragment.
      */
-    public static void initializeSettings(Activity licenseActivity) {
+    public static void initialize(Activity licenseActivity) {
         try {
             ThemeHelper.setActivityTheme(licenseActivity);
             licenseActivity.setContentView(
@@ -41,7 +51,7 @@ public class YouTubeSettingActivity {
                     break;
                 case "revanced_settings":
                     toolbarTitleResourceName = "revanced_settings_title";
-                    fragment = new YouTubePreferenceFragment();
+                    fragment = new ReVancedPreferenceFragment();
                     break;
                 default:
                     Logger.printException(() -> "Unknown setting: " + dataString);

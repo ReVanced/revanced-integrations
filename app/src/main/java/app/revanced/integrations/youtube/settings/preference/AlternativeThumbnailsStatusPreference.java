@@ -1,17 +1,16 @@
-package app.revanced.integrations.youtube.settingsmenu;
-
-import static app.revanced.integrations.shared.StringRef.str;
+package app.revanced.integrations.youtube.settings.preference;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.Preference;
 import android.preference.PreferenceManager;
 import android.util.AttributeSet;
-
 import app.revanced.integrations.shared.Logger;
 import app.revanced.integrations.shared.Utils;
 import app.revanced.integrations.shared.settings.Setting;
 import app.revanced.integrations.youtube.settings.Settings;
+
+import static app.revanced.integrations.shared.StringRef.str;
 
 /**
  * Shows what thumbnails will be used based on the current settings.

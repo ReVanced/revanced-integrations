@@ -1,4 +1,4 @@
-package app.revanced.integrations.tiktok.settingsmenu.preference;
+package app.revanced.integrations.tiktok.settings.preference;
 
 import android.app.AlertDialog;
 import android.content.Context;

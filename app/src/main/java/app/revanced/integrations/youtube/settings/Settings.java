@@ -21,7 +21,7 @@ import app.revanced.integrations.shared.settings.FloatSetting;
 import app.revanced.integrations.shared.settings.IntegerSetting;
 import app.revanced.integrations.shared.settings.LongSetting;
 import app.revanced.integrations.shared.settings.Setting;
-import app.revanced.integrations.shared.settings.SharedPrefCategory;
+import app.revanced.integrations.shared.settings.preference.SharedPrefCategory;
 import app.revanced.integrations.shared.settings.BaseSettings;
 import app.revanced.integrations.shared.settings.StringSetting;
 import app.revanced.integrations.youtube.sponsorblock.SponsorBlockSettings;

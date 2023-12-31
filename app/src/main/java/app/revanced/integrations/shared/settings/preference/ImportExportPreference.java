@@ -1,4 +1,4 @@
-package app.revanced.integrations.shared.settingsmenu;
+package app.revanced.integrations.shared.settings.preference;
 
 import android.app.AlertDialog;
 import android.content.Context;

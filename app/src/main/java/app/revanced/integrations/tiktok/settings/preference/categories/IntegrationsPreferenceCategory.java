@@ -1,10 +1,10 @@
-package app.revanced.integrations.tiktok.settingsmenu.preference.categories;
+package app.revanced.integrations.tiktok.settings.preference.categories;
 
 import android.content.Context;
 import android.preference.PreferenceScreen;
 
 import app.revanced.integrations.shared.settings.BaseSettings;
-import app.revanced.integrations.tiktok.settingsmenu.preference.TogglePreference;
+import app.revanced.integrations.tiktok.settings.preference.TogglePreference;
 
 @SuppressWarnings("deprecation")
 public class IntegrationsPreferenceCategory extends ConditionalPreferenceCategory {

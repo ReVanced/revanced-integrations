@@ -1,11 +1,11 @@
-package app.revanced.integrations.tiktok.settingsmenu.preference.categories;
+package app.revanced.integrations.tiktok.settings.preference.categories;
 
 import android.content.Context;
 import android.preference.PreferenceScreen;
 import app.revanced.integrations.tiktok.settings.Settings;
-import app.revanced.integrations.tiktok.settingsmenu.SettingsStatus;
-import app.revanced.integrations.tiktok.settingsmenu.preference.DownloadPathPreference;
-import app.revanced.integrations.tiktok.settingsmenu.preference.TogglePreference;
+import app.revanced.integrations.tiktok.settings.SettingsStatus;
+import app.revanced.integrations.tiktok.settings.preference.DownloadPathPreference;
+import app.revanced.integrations.tiktok.settings.preference.TogglePreference;
 
 @SuppressWarnings("deprecation")
 public class DownloadsPreferenceCategory extends ConditionalPreferenceCategory {

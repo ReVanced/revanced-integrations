@@ -1,10 +1,13 @@
-package app.revanced.integrations.twitch.settingsmenu;
+package app.revanced.integrations.twitch.settings.preference;
 
 import app.revanced.integrations.shared.Logger;
-import app.revanced.integrations.shared.settingsmenu.AbstractPreferenceFragment;
+import app.revanced.integrations.shared.settings.preference.AbstractPreferenceFragment;
 import app.revanced.integrations.twitch.settings.Settings;
 
-public class TwitchPreferenceFragment extends AbstractPreferenceFragment {
+/**
+ * Preference fragment for ReVanced settings
+ */
+public class ReVancedPreferenceFragment extends AbstractPreferenceFragment {
 
     @Override
     protected void initialize() {

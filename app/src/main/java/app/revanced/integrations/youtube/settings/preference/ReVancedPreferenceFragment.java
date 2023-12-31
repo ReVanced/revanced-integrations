@@ -1,13 +1,17 @@
-package app.revanced.integrations.youtube.settingsmenu;
+package app.revanced.integrations.youtube.settings.preference;
 
 import android.preference.ListPreference;
 import android.preference.Preference;
-import app.revanced.integrations.shared.settingsmenu.AbstractPreferenceFragment;
+import app.revanced.integrations.shared.settings.preference.AbstractPreferenceFragment;
 import app.revanced.integrations.youtube.patches.playback.speed.CustomPlaybackSpeedPatch;
 import app.revanced.integrations.youtube.settings.Settings;
 
-/** @noinspection deprecation*/
-public class YouTubePreferenceFragment extends AbstractPreferenceFragment {
+/**
+ * Preference fragment for ReVanced settings.
+ *
+ * @noinspection deprecation
+ */
+public class ReVancedPreferenceFragment extends AbstractPreferenceFragment {
     @Override
     protected void initialize() {
         // If the preference was included, then initialize it based on the available playback speed

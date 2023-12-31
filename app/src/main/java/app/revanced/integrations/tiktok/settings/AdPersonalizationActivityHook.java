@@ -1,4 +1,4 @@
-package app.revanced.integrations.tiktok.settingsmenu;
+package app.revanced.integrations.tiktok.settings;
 
 import android.content.Context;
 import android.content.Intent;
@@ -7,17 +7,22 @@ import android.preference.PreferenceFragment;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-
 import app.revanced.integrations.shared.Logger;
 import app.revanced.integrations.shared.Utils;
+import app.revanced.integrations.tiktok.settings.preference.ReVancedPreferenceFragment;
 import com.bytedance.ies.ugc.aweme.commercialize.compliance.personalization.AdPersonalizationActivity;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
-
-/** @noinspection unused */
-public class SettingsMenu {
+/**
+ * Hooks AdPersonalizationActivity.
+ * <p>
+ * This class is responsible for injecting our own fragment by replacing the AdPersonalizationActivity.
+ *
+ * @noinspection unused
+ */
+public class AdPersonalizationActivityHook {
     public static Object createSettingsEntry(String entryClazzName, String entryInfoClazzName) {
         try {
             Class<?> entryClazz = Class.forName(entryClazzName);
@@ -26,7 +31,8 @@ public class SettingsMenu {
             Constructor<?> entryInfoConstructor = entryInfoClazz.getDeclaredConstructors()[0];
             Object buttonInfo = entryInfoConstructor.newInstance("ReVanced settings", null, (View.OnClickListener) view -> startSettingsActivity(), "revanced");
             return entryConstructor.newInstance(buttonInfo);
-        } catch (ClassNotFoundException | NoSuchMethodException | InvocationTargetException | IllegalAccessException | InstantiationException e) {
+        } catch (ClassNotFoundException | NoSuchMethodException | InvocationTargetException | IllegalAccessException |
+                 InstantiationException e) {
             throw new RuntimeException(e);
         }
     }
@@ -36,7 +42,7 @@ public class SettingsMenu {
      * @param base The activity to initialize the settings menu on.
      * @return Whether the settings menu should be initialized.
      */
-    public static boolean initializeSettings(AdPersonalizationActivity base) {
+    public static boolean initialize(AdPersonalizationActivity base) {
         Bundle extras = base.getIntent().getExtras();
         if (extras != null && !extras.getBoolean("revanced", false)) return false;
 
@@ -56,7 +62,7 @@ public class SettingsMenu {
         linearLayout.addView(fragment);
         base.setContentView(linearLayout);
 
-        PreferenceFragment preferenceFragment = new TikTokPreferenceFragment();
+        PreferenceFragment preferenceFragment = new ReVancedPreferenceFragment();
         base.getFragmentManager().beginTransaction().replace(fragmentId, preferenceFragment).commit();
 
         return true;

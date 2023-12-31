@@ -1,4 +1,4 @@
-package app.revanced.integrations.youtube.settingsmenu;
+package app.revanced.integrations.youtube.settings.preference;
 
 import static app.revanced.integrations.shared.StringRef.str;
 

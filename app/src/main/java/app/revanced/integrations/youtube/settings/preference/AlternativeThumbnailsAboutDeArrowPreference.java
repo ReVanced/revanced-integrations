@@ -1,4 +1,4 @@
-package app.revanced.integrations.youtube.settingsmenu;
+package app.revanced.integrations.youtube.settings.preference;
 
 import android.content.Context;
 import android.content.Intent;

@@ -1,30 +1,25 @@
-package app.revanced.integrations.shared.settingsmenu;
-
-import static app.revanced.integrations.shared.StringRef.str;
+package app.revanced.integrations.shared.settings.preference;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.EditTextPreference;
-import android.preference.ListPreference;
-import android.preference.Preference;
-import android.preference.PreferenceFragment;
-import android.preference.PreferenceManager;
-import android.preference.PreferenceScreen;
-import android.preference.SwitchPreference;
-
+import android.preference.*;
 import androidx.annotation.NonNull;
-
-import java.security.InvalidParameterException;
-
 import app.revanced.integrations.shared.Logger;
 import app.revanced.integrations.shared.Utils;
 import app.revanced.integrations.shared.settings.BooleanSetting;
 import app.revanced.integrations.shared.settings.Setting;
 
-/** @noinspection deprecation, DataFlowIssue , unused */
+import java.security.InvalidParameterException;
+
+import static app.revanced.integrations.shared.StringRef.str;
+
+/**
+ *
+ *
+ * @noinspection deprecation, DataFlowIssue , unused */
 public abstract class AbstractPreferenceFragment extends PreferenceFragment {
     /**
      * Indicates that if a preference changes,

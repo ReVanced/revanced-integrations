@@ -1,19 +1,24 @@
-package app.revanced.integrations.twitch.settingsmenu;
+package app.revanced.integrations.twitch.settings;
 
 import android.content.Intent;
 import android.os.Bundle;
 import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
 import app.revanced.integrations.shared.Logger;
 import app.revanced.integrations.shared.Utils;
+import app.revanced.integrations.twitch.settings.preference.ReVancedPreferenceFragment;
 import tv.twitch.android.feature.settings.menu.SettingsMenuGroup;
 import tv.twitch.android.settings.SettingsActivity;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/** @noinspection unused */
-public class SettingsHooks {
+/**
+ * Hooks AppCompatActivity.
+ * <p>
+ * This class is responsible for injecting our own fragment by replacing the AppCompatActivity.
+ * @noinspection unused
+ */
+public class AppCompatActivityHook {
     private static final int REVANCED_SETTINGS_MENU_ITEM_ID = 0x7;
     private static final String EXTRA_REVANCED_SETTINGS = "app.revanced.twitch.settings";
 
@@ -86,14 +91,14 @@ public class SettingsHooks {
      * Intercepts fragment loading in SettingsActivity.onCreate
      * @return Returns true if the revanced settings have been requested by the user, otherwise false
      */
-    public static boolean handleSettingsCreation(AppCompatActivity base) {
+    public static boolean handleSettingsCreation(androidx.appcompat.app.AppCompatActivity base) {
         if (!base.getIntent().getBooleanExtra(EXTRA_REVANCED_SETTINGS, false)) {
             Logger.printDebug(() -> "Revanced settings not requested");
             return false; // User wants to enter another settings fragment
         }
         Logger.printDebug(() -> "ReVanced settings requested");
 
-        TwitchPreferenceFragment fragment = new TwitchPreferenceFragment();
+        ReVancedPreferenceFragment fragment = new ReVancedPreferenceFragment();
         ActionBar supportActionBar = base.getSupportActionBar();
         if (supportActionBar != null)
             supportActionBar.setTitle(app.revanced.integrations.twitch.Utils.getStringId("revanced_settings"));

@@ -1,4 +1,4 @@
-package app.revanced.integrations.twitch.settingsmenu.preference;
+package app.revanced.integrations.twitch.settings.preference;
 
 import android.content.Context;
 import android.graphics.Color;

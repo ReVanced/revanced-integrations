@@ -1,4 +1,4 @@
-package app.revanced.integrations.tiktok.settingsmenu.preference.categories;
+package app.revanced.integrations.tiktok.settings.preference.categories;
 
 import android.content.Context;
 import android.preference.PreferenceCategory;
