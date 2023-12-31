@@ -19,7 +19,7 @@ import app.revanced.integrations.shared.Utils;
  * which is required if using {@link PreferenceFragment}.
  *
  * If saved numbers will not be used with a preference fragment,
- * then store the primitive numbers using {@link #preferences}.
+ * then store the primitive numbers using the {@link #preferences} itself.
  */
 public class SharedPrefCategory {
     @NonNull

@@ -13,8 +13,6 @@ import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
 import android.preference.SwitchPreference;
 
-import androidx.annotation.Nullable;
-
 import app.revanced.integrations.shared.Logger;
 import app.revanced.integrations.shared.settings.Setting;
 import app.revanced.integrations.shared.settings.SharedSettings;
@@ -54,8 +52,8 @@ public class ReturnYouTubeDislikePreferenceFragment extends PreferenceFragment {
     }
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         try {
             Activity context = getActivity();
             PreferenceManager manager = getPreferenceManager();
@@ -222,7 +220,7 @@ public class ReturnYouTubeDislikePreferenceFragment extends PreferenceFragment {
                 preferenceScreen.addPreference(statisticPreference);
             }
         } catch (Exception ex) {
-            Logger.printException(() -> "onActivityCreated failure", ex);
+            Logger.printException(() -> "onCreate failure", ex);
         }
     }
 

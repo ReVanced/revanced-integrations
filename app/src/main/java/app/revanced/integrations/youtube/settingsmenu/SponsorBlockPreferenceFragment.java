@@ -115,8 +115,8 @@ public class SponsorBlockPreferenceFragment extends PreferenceFragment {
     }
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         try {
             Activity context = getActivity();
             PreferenceManager manager = getPreferenceManager();
@@ -156,7 +156,7 @@ public class SponsorBlockPreferenceFragment extends PreferenceFragment {
 
             updateUI();
         } catch (Exception ex) {
-            Logger.printException(() -> "onActivityCreated failure", ex);
+            Logger.printException(() -> "onCreate failure", ex);
         }
     }
 
