@@ -20,7 +20,7 @@ import app.revanced.twitch.settings.SettingsEnum;
 import app.revanced.twitch.utils.LogHelper;
 import app.revanced.twitch.utils.Utils;
 
-public class TwitchSettingsFragment extends PreferenceFragment {
+public class ReVancedPreferenceFragment extends PreferenceFragment {
 
     private boolean registered = false;
     private boolean settingsInitialized = false;

@@ -24,7 +24,7 @@ import app.revanced.integrations.utils.LogHelper;
 import app.revanced.integrations.utils.Utils;
 import app.revanced.shared.settings.SettingsUtils;
 
-public class YouTubeSettingsFragment extends PreferenceFragment {
+public class ReVancedPreferenceFragment extends PreferenceFragment {
     /**
      * Indicates that if a preference changes,
      * to apply the change from the Setting to the UI component.

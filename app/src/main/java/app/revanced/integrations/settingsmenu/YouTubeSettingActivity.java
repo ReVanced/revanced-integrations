@@ -41,7 +41,7 @@ public class YouTubeSettingActivity {
                     break;
                 case "revanced_settings_intent":
                     toolbarTitleResourceName = "revanced_settings_title";
-                    fragment = new YouTubeSettingsFragment();
+                    fragment = new ReVancedPreferenceFragment();
                     break;
                 default:
                     LogHelper.printException(() -> "Unknown setting: " + dataString);

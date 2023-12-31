@@ -28,7 +28,7 @@ import app.revanced.tiktok.settingsmenu.preference.categories.SimSpoofPreference
 import app.revanced.tiktok.utils.Utils;
 
 @SuppressWarnings("deprecation")
-public class TikTokSettingsFragment extends PreferenceFragment {
+public class ReVancedPreferenceFragment extends PreferenceFragment {
     private boolean registered = false;
     private boolean settingsInitialized = false;
 

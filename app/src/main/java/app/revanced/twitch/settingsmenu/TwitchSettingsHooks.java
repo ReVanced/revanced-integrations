@@ -96,7 +96,7 @@ public class TwitchSettingsHooks {
         }
         LogHelper.debug("ReVanced settings requested");
 
-        TwitchSettingsFragment fragment = new TwitchSettingsFragment();
+        ReVancedPreferenceFragment fragment = new ReVancedPreferenceFragment();
         ActionBar supportActionBar = base.getSupportActionBar();
         if(supportActionBar != null)
             supportActionBar.setTitle(getStringId("revanced_settings"));
