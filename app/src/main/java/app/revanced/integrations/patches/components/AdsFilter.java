@@ -167,6 +167,6 @@ public final class AdsFilter extends Filter {
 
         LogHelper.printDebug(() -> "Closing fullscreen ad");
 
-        ReVancedUtils.runOnMainThreadDelayed(() -> instrumentation.sendKeyDownUpSync(KeyEvent.KEYCODE_BACK), 1000);
+        Utils.runOnMainThreadDelayed(() -> instrumentation.sendKeyDownUpSync(KeyEvent.KEYCODE_BACK), 1000);
     }
 }
