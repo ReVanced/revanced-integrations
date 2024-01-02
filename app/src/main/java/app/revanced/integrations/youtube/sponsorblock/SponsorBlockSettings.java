@@ -169,8 +169,8 @@ public class SponsorBlockSettings {
         if (dialogContext != null && SponsorBlockSettings.userHasSBPrivateId()
                 && !Settings.SB_HIDE_EXPORT_WARNING.get()) {
             new AlertDialog.Builder(dialogContext)
-                    .setMessage(str("sb_settings_revanced_export_user_id_warning"))
-                    .setNeutralButton(str("sb_settings_revanced_export_user_id_warning_dismiss"),
+                    .setMessage(str("revanced_sb_settings_revanced_export_user_id_warning"))
+                    .setNeutralButton(str("revanced_sb_settings_revanced_export_user_id_warning_dismiss"),
                             (dialog, which) -> Settings.SB_HIDE_EXPORT_WARNING.save(true))
                     .setPositiveButton(android.R.string.ok, null)
                     .setCancelable(false)
