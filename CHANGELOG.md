@@ -1,3 +1,10 @@
+## [1.1.1-dev.2](https://github.com/ReVanced/revanced-integrations/compare/v1.1.1-dev.1...v1.1.1-dev.2) (2024-01-02)
+
+
+### Bug Fixes
+
+* **YouTube - SponsorBlock:** Update categories after import JSON import ([211f954](https://github.com/ReVanced/revanced-integrations/commit/211f9542e8a725ca9cbfff9d3b42b4fc40734db3))
+
 ## [1.1.1-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v1.1.0...v1.1.1-dev.1) (2023-12-29)
 
 
