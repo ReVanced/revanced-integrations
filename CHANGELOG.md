@@ -1,3 +1,10 @@
+## [1.1.1-dev.3](https://github.com/ReVanced/revanced-integrations/compare/v1.1.1-dev.2...v1.1.1-dev.3) (2024-01-05)
+
+
+### Bug Fixes
+
+* **YouTube - Hide ads:** Do not leave screen at launch non interactable when hiding fullscreen ads ([fbdb490](https://github.com/ReVanced/revanced-integrations/commit/fbdb4908ea96a99b80ced99384b2dfdcc8fccd8a))
+
 ## [1.1.1-dev.2](https://github.com/ReVanced/revanced-integrations/compare/v1.1.1-dev.1...v1.1.1-dev.2) (2024-01-02)
 
 
