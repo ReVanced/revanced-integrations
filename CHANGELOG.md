@@ -1,3 +1,10 @@
+## [1.1.1-dev.4](https://github.com/ReVanced/revanced-integrations/compare/v1.1.1-dev.3...v1.1.1-dev.4) (2024-01-06)
+
+
+### Bug Fixes
+
+* **YouTube - Settings:** Correctly initialize default values ([752544b](https://github.com/ReVanced/revanced-integrations/commit/752544b9627c57c1044cc8e93b42aca32cdb8518))
+
 ## [1.1.1-dev.3](https://github.com/ReVanced/revanced-integrations/compare/v1.1.1-dev.2...v1.1.1-dev.3) (2024-01-05)
 
 
