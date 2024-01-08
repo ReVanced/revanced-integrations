@@ -1,3 +1,10 @@
+## [1.1.1-dev.5](https://github.com/ReVanced/revanced-integrations/compare/v1.1.1-dev.4...v1.1.1-dev.5) (2024-01-08)
+
+
+### Bug Fixes
+
+* **YouTube - DeArrow:** Correctly handle http status 304 ([3e380df](https://github.com/ReVanced/revanced-integrations/commit/3e380dfce27c6fbf68f44d67929a92ca069b1ba2))
+
 ## [1.1.1-dev.4](https://github.com/ReVanced/revanced-integrations/compare/v1.1.1-dev.3...v1.1.1-dev.4) (2024-01-06)
 
 
