@@ -1,3 +1,24 @@
+# [1.2.0-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v1.1.1-dev.5...v1.2.0-dev.1) (2024-01-10)
+
+
+### Features
+
+* **Tiktok - Playback speed:** Remember playback speed ([#543](https://github.com/ReVanced/revanced-integrations/issues/543)) ([21ced14](https://github.com/ReVanced/revanced-integrations/commit/21ced14791c6c26745ad88af5ce9d4970ad4c951))
+
+## [1.1.1-dev.5](https://github.com/ReVanced/revanced-integrations/compare/v1.1.1-dev.4...v1.1.1-dev.5) (2024-01-08)
+
+
+### Bug Fixes
+
+* **YouTube - DeArrow:** Correctly handle http status 304 ([3e380df](https://github.com/ReVanced/revanced-integrations/commit/3e380dfce27c6fbf68f44d67929a92ca069b1ba2))
+
+## [1.1.1-dev.4](https://github.com/ReVanced/revanced-integrations/compare/v1.1.1-dev.3...v1.1.1-dev.4) (2024-01-06)
+
+
+### Bug Fixes
+
+* **YouTube - Settings:** Correctly initialize default values ([752544b](https://github.com/ReVanced/revanced-integrations/commit/752544b9627c57c1044cc8e93b42aca32cdb8518))
+
 ## [1.1.1-dev.3](https://github.com/ReVanced/revanced-integrations/compare/v1.1.1-dev.2...v1.1.1-dev.3) (2024-01-05)
 
 
