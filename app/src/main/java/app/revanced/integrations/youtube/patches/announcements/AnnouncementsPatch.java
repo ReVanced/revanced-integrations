@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
+import java.util.Locale;
 import java.util.UUID;
 
 import static android.text.Html.FROM_HTML_MODE_COMPACT;
@@ -40,7 +41,8 @@ public final class AnnouncementsPatch {
 
         Utils.runOnBackgroundThread(() -> {
             try {
-                HttpURLConnection connection = AnnouncementsRoutes.getAnnouncementsConnectionFromRoute(GET_LATEST_ANNOUNCEMENT, CONSUMER);
+                HttpURLConnection connection = AnnouncementsRoutes.getAnnouncementsConnectionFromRoute(
+                        GET_LATEST_ANNOUNCEMENT, CONSUMER, Locale.getDefault().toLanguageTag());
 
                 Logger.printDebug(() -> "Get latest announcement route connection url: " + connection.getURL());
 
