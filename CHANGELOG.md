@@ -1,3 +1,10 @@
+# [1.2.0-dev.2](https://github.com/ReVanced/revanced-integrations/compare/v1.2.0-dev.1...v1.2.0-dev.2) (2024-01-16)
+
+
+### Features
+
+* **YouTube:** Support versions `18.48.39`, `18.49.37`, `19.01.34` ([#547](https://github.com/ReVanced/revanced-integrations/issues/547)) ([eaaa6fb](https://github.com/ReVanced/revanced-integrations/commit/eaaa6fbd20630f15bfec7c57713ec353f4072ac2))
+
 # [1.2.0-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v1.1.1-dev.5...v1.2.0-dev.1) (2024-01-10)
 
 
