@@ -44,7 +44,7 @@ public final class NewSegmentLayout extends FrameLayout {
         super(context, attributeSet, defStyleAttr, defStyleRes);
 
         LayoutInflater.from(context).inflate(
-                getResourceIdentifier(context, "new_segment", "layout"), this, true
+                getResourceIdentifier(context, "revanced_sb_new_segment", "layout"), this, true
         );
 
         TypedValue rippleEffect = new TypedValue();

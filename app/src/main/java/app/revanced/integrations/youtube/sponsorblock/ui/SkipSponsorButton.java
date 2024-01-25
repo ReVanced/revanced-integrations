@@ -47,7 +47,7 @@ public class SkipSponsorButton extends FrameLayout {
     public SkipSponsorButton(Context context, AttributeSet attributeSet, int defStyleAttr, int defStyleRes) {
         super(context, attributeSet, defStyleAttr, defStyleRes);
 
-        LayoutInflater.from(context).inflate(getResourceIdentifier(context, "skip_sponsor_button", "layout"), this, true);  // layout:skip_ad_button
+        LayoutInflater.from(context).inflate(getResourceIdentifier(context, "revanced_sb_skip_sponsor_button", "layout"), this, true);  // layout:skip_ad_button
         setMinimumHeight(getResourceDimensionPixelSize("ad_skip_ad_button_min_height"));  // dimen:ad_skip_ad_button_min_height
         skipSponsorBtnContainer = Objects.requireNonNull((LinearLayout) findViewById(getResourceIdentifier(context, "revanced_sb_skip_sponsor_button_container", "id")));  // id:skip_ad_button_container
         background = new Paint();
