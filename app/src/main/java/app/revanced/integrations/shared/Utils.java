@@ -419,7 +419,7 @@ public class Utils {
         int prefIndex = 0;
         for (Preference pref : preferences.values()) {
             int indexToSet = prefIndex++;
-            if (pref instanceof PreferenceGroup) {
+            if (pref instanceof PreferenceGroup || pref.getIntent() != null) {
                 // Place preference groups last.
                 // Use an offset to push the group to the end.
                 indexToSet += 1000;
