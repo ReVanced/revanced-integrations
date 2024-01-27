@@ -1,3 +1,11 @@
+# [1.2.0-dev.3](https://github.com/ReVanced/revanced-integrations/compare/v1.2.0-dev.2...v1.2.0-dev.3) (2024-01-27)
+
+
+### Features
+
+* Move strings to resources for localization ([#420](https://github.com/ReVanced/revanced-integrations/issues/420)) ([7ae10be](https://github.com/ReVanced/revanced-integrations/commit/7ae10be507244594adf6704975fdf4cfd797a96e))
+* **YouTube - Spoof app version:** Add `18.09.39` to restore library tab ([#552](https://github.com/ReVanced/revanced-integrations/issues/552)) ([3bd48dc](https://github.com/ReVanced/revanced-integrations/commit/3bd48dca09094f58f68b8cfb6ff047fafa40b7e3))
+
 # [1.2.0-dev.2](https://github.com/ReVanced/revanced-integrations/compare/v1.2.0-dev.1...v1.2.0-dev.2) (2024-01-16)
 
 
