@@ -1,3 +1,10 @@
+## [1.2.1](https://github.com/ReVanced/revanced-integrations/compare/v1.2.0...v1.2.1) (2024-01-28)
+
+
+### Bug Fixes
+
+* **Twitch:** Correct patch resources to fix build ([fe03467](https://github.com/ReVanced/revanced-integrations/commit/fe034678392b3600f03362489f5fd96644b35995))
+
 ## [1.2.1-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v1.2.0...v1.2.1-dev.1) (2024-01-27)
 
 
