@@ -1,3 +1,10 @@
+## [1.2.2-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v1.2.1...v1.2.2-dev.1) (2024-01-28)
+
+
+### Bug Fixes
+
+* **YouTube:** Correctly show channel page on tablet devices ([#558](https://github.com/ReVanced/revanced-integrations/issues/558)) ([d0edafb](https://github.com/ReVanced/revanced-integrations/commit/d0edafb1afc7b87a8eeb085a9e48dc2d20af2f3a))
+
 ## [1.2.1](https://github.com/ReVanced/revanced-integrations/compare/v1.2.0...v1.2.1) (2024-01-28)
 
 
