@@ -1,3 +1,10 @@
+## [1.2.2-dev.2](https://github.com/ReVanced/revanced-integrations/compare/v1.2.2-dev.1...v1.2.2-dev.2) (2024-01-29)
+
+
+### Bug Fixes
+
+* **YouTube - ReturnYouTubeDislike:** Do not show more than 1 connection toasts if the API is broken ([#560](https://github.com/ReVanced/revanced-integrations/issues/560)) ([2c73209](https://github.com/ReVanced/revanced-integrations/commit/2c7320937adc01221017c740b86c4d6851c96797))
+
 ## [1.2.2-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v1.2.1...v1.2.2-dev.1) (2024-01-28)
 
 
