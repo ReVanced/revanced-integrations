@@ -62,7 +62,7 @@ public class ReturnYouTubeDislikeApi {
      * How long to wait until API calls are resumed, if the API requested a back off.
      * No clear guideline of how long to wait until resuming.
      */
-    private static final int BACKOFF_RATE_LIMIT_MILLISECONDS = 5 * 60 * 1000; // 5 Minutes.
+    private static final int BACKOFF_RATE_LIMIT_MILLISECONDS = 10 * 60 * 1000; // 10 Minutes.
 
     /**
      * How long to wait until API calls are resumed, if any connection error occurs.
@@ -72,7 +72,13 @@ public class ReturnYouTubeDislikeApi {
     /**
      * If non zero, then the system time of when API calls can resume.
      */
-    private static volatile long timeToResumeAPICalls; // must be volatile, since different threads read/write to this
+    private static volatile long timeToResumeAPICalls;
+
+    /**
+     * If the last API getVotes call failed for any reason (including server requested rate limit).
+     * Used to prevent showing repeat connection toasts when the API is down.
+     */
+    private static volatile boolean lastApiCallFailed;
 
     /**
      * Number of times {@link #HTTP_STATUS_CODE_RATE_LIMIT} was requested by RYD api.
@@ -149,6 +155,18 @@ public class ReturnYouTubeDislikeApi {
     }
 
     /**
+     * Clears any backoff rate limits in effect.
+     * Should be called if RYD is turned on/off.
+     */
+    public static void resetRateLimits() {
+        if (lastApiCallFailed || timeToResumeAPICalls != 0) {
+            Logger.printDebug(() -> "Reset rate limit");
+        }
+        lastApiCallFailed = false;
+        timeToResumeAPICalls = 0;
+    }
+
+    /**
      * @return True, if api rate limit is in effect.
      */
     private static boolean checkIfRateLimitInEffect(String apiEndPointName) {
@@ -193,25 +211,30 @@ public class ReturnYouTubeDislikeApi {
             timeToResumeAPICalls = System.currentTimeMillis() + BACKOFF_CONNECTION_ERROR_MILLISECONDS;
             fetchCallResponseTimeLast = responseTimeOfFetchCall;
             fetchCallNumberOfFailures++;
+            lastApiCallFailed = true;
         } else if (rateLimitHit) {
             Logger.printDebug(() -> "API rate limit was hit. Stopping API calls for the next "
                     + BACKOFF_RATE_LIMIT_MILLISECONDS + " seconds");
             timeToResumeAPICalls = System.currentTimeMillis() + BACKOFF_RATE_LIMIT_MILLISECONDS;
             numberOfRateLimitRequestsEncountered++;
             fetchCallResponseTimeLast = FETCH_CALL_RESPONSE_TIME_VALUE_RATE_LIMIT;
-            Utils.showToastLong(str("revanced_ryd_failure_client_rate_limit_requested"));
+            if (!lastApiCallFailed && Settings.RYD_TOAST_ON_CONNECTION_ERROR.get()) {
+                Utils.showToastLong(str("revanced_ryd_failure_client_rate_limit_requested"));
+            }
+            lastApiCallFailed = true;
         } else {
             fetchCallResponseTimeLast = responseTimeOfFetchCall;
+            lastApiCallFailed = false;
         }
     }
 
     private static void handleConnectionError(@NonNull String toastMessage, @Nullable Exception ex) {
-        if (Settings.RYD_TOAST_ON_CONNECTION_ERROR.get()) {
+        if (!lastApiCallFailed && Settings.RYD_TOAST_ON_CONNECTION_ERROR.get()) {
             Utils.showToastShort(toastMessage);
         }
-        if (ex != null) {
-            Logger.printInfo(() -> toastMessage, ex);
-        }
+        lastApiCallFailed = true;
+
+        Logger.printInfo(() -> toastMessage, ex);
     }
 
     /**
