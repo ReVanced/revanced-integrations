@@ -1,3 +1,10 @@
+## [1.2.2-dev.3](https://github.com/ReVanced/revanced-integrations/compare/v1.2.2-dev.2...v1.2.2-dev.3) (2024-01-31)
+
+
+### Bug Fixes
+
+* **TikTok:** Add missing settings strings ([#561](https://github.com/ReVanced/revanced-integrations/issues/561)) ([04621f8](https://github.com/ReVanced/revanced-integrations/commit/04621f8a36490df0b35a3940ecc1fbebd6ee287f))
+
 ## [1.2.2-dev.2](https://github.com/ReVanced/revanced-integrations/compare/v1.2.2-dev.1...v1.2.2-dev.2) (2024-01-29)
 
 
