@@ -11,6 +11,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import app.revanced.integrations.shared.Logger;
 import app.revanced.integrations.shared.Utils;
@@ -24,12 +26,12 @@ import app.revanced.integrations.youtube.settings.Settings;
 @SuppressWarnings("unused")
 final class CustomFilter extends Filter {
 
-    private static void showInvalidCharactersToast(@NonNull String expression) {
-        Utils.showToastLong(str("revanced_custom_filter_toast_invalid_characters", expression));
-    }
-
     private static void showInvalidSyntaxToast(@NonNull String expression) {
         Utils.showToastLong(str("revanced_custom_filter_toast_invalid_syntax", expression));
+    }
+
+    private static void showInvalidCharactersToast(@NonNull String expression) {
+        Utils.showToastLong(str("revanced_custom_filter_toast_invalid_characters", expression));
     }
 
     private static class CustomFilterGroup extends StringFilterGroup {
@@ -42,34 +44,50 @@ final class CustomFilter extends Filter {
         /**
          * Optional character that separates the path from a proto buffer string pattern.
          */
-        public static final String SYNTAX_BUFFER_DELIMITER = "$";
+        public static final String SYNTAX_BUFFER_SYMBOL = "$";
 
         /**
          * @return the parsed objects, or NULL if there was a parse error.
          */
         @Nullable
+        @SuppressWarnings("ConstantConditions")
         static Collection<CustomFilterGroup> parseCustomFilterGroups() {
-            String rawCustomFilterText =  Settings.CUSTOM_FILTER_STRINGS.get();
+            String rawCustomFilterText = Settings.CUSTOM_FILTER_STRINGS.get();
             if (rawCustomFilterText.isBlank()) {
                 return Collections.emptyList();
             }
 
-            // Key is path including special characters (^ and/or $)
+            // Map key is the path including optional special characters (^ and/or $)
             Map<String, CustomFilterGroup> result = new HashMap<>();
+            Pattern pattern = Pattern.compile(
+                    "(" // map key group
+                            + "(\\Q" + SYNTAX_STARTS_WITH + "\\E?)" // optional starts with
+                            + "([^\\Q" + SYNTAX_BUFFER_SYMBOL + "\\E]*)" // path
+                            + "(\\Q" + SYNTAX_BUFFER_SYMBOL + "\\E?)" // optional buffer symbol
+                            + ")" // end map key group
+                            + "(.*)"); // optional buffer string
 
             for (String expression : rawCustomFilterText.split("\n")) {
-                final int indexOfBufferDelimiter = expression.indexOf(SYNTAX_BUFFER_DELIMITER);
-                final boolean hasBufferStrings = indexOfBufferDelimiter >= 0;
-                final boolean pathStartsWith = expression.startsWith(SYNTAX_STARTS_WITH);
-                final int pathEndIndex = hasBufferStrings ? indexOfBufferDelimiter : expression.length();
+                if (expression.isBlank()) continue;
 
-                final String mapKey = expression.substring(0, pathEndIndex);
-                final String path = pathStartsWith ? mapKey.substring(SYNTAX_STARTS_WITH.length()) : mapKey;
-                if (path.isEmpty()) {
+                Matcher matcher = pattern.matcher(expression);
+                if (!matcher.find()) {
                     showInvalidSyntaxToast(expression);
                     return null;
                 }
-                if (!StringTrieSearch.isValidPattern(path)) {
+
+                final String mapKey = matcher.group(1);
+                final boolean pathStartsWith = !matcher.group(2).isEmpty();
+                final String path = matcher.group(3);
+                final boolean hasBufferSymbol = !matcher.group(4).isEmpty();
+                final String bufferString = matcher.group(5);
+
+                if (path.isBlank() || (hasBufferSymbol && bufferString.isBlank())) {
+                    showInvalidSyntaxToast(expression);
+                    return null;
+                }
+                if (!StringTrieSearch.isValidPattern(path)
+                        || (hasBufferSymbol && !StringTrieSearch.isValidPattern(bufferString))) {
                     // Currently only ASCII is allowed.
                     showInvalidCharactersToast(path);
                     return null;
@@ -83,24 +101,7 @@ final class CustomFilter extends Filter {
                     group = new CustomFilterGroup(pathStartsWith, path);
                     result.put(mapKey, group);
                 }
-
-                if (hasBufferStrings) {
-                    if (indexOfBufferDelimiter == 0
-                            || (pathStartsWith && indexOfBufferDelimiter == SYNTAX_STARTS_WITH.length())) {
-                        // Expression has no path.
-                        showInvalidSyntaxToast(expression);
-                        return null;
-                    }
-                    String bufferString = expression.substring(
-                            indexOfBufferDelimiter + SYNTAX_BUFFER_DELIMITER.length());
-                    if (bufferString.isBlank()) {
-                        showInvalidSyntaxToast(expression);
-                        return null;
-                    }
-                    if (!StringTrieSearch.isValidPattern(bufferString)) {
-                        showInvalidCharactersToast(bufferString);
-                        return null;
-                    }
+                if (hasBufferSymbol) {
                     group.addBufferString(bufferString);
                 }
             }
