@@ -1,3 +1,10 @@
+# [1.3.0-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v1.2.2-dev.3...v1.3.0-dev.1) (2024-02-02)
+
+
+### Features
+
+* **YouTube - Custom filter:** Custom filtering of the protocol buffer ([#562](https://github.com/ReVanced/revanced-integrations/issues/562)) ([0eb7f3f](https://github.com/ReVanced/revanced-integrations/commit/0eb7f3f3af99bf6566526f9c48db2248d93e166c))
+
 ## [1.2.2-dev.3](https://github.com/ReVanced/revanced-integrations/compare/v1.2.2-dev.2...v1.2.2-dev.3) (2024-01-31)
 
 
