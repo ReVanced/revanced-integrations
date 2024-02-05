@@ -1,3 +1,31 @@
+# [1.3.0-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v1.2.2-dev.3...v1.3.0-dev.1) (2024-02-02)
+
+
+### Features
+
+* **YouTube - Custom filter:** Custom filtering of the protocol buffer ([#562](https://github.com/ReVanced/revanced-integrations/issues/562)) ([0eb7f3f](https://github.com/ReVanced/revanced-integrations/commit/0eb7f3f3af99bf6566526f9c48db2248d93e166c))
+
+## [1.2.2-dev.3](https://github.com/ReVanced/revanced-integrations/compare/v1.2.2-dev.2...v1.2.2-dev.3) (2024-01-31)
+
+
+### Bug Fixes
+
+* **TikTok:** Add missing settings strings ([#561](https://github.com/ReVanced/revanced-integrations/issues/561)) ([04621f8](https://github.com/ReVanced/revanced-integrations/commit/04621f8a36490df0b35a3940ecc1fbebd6ee287f))
+
+## [1.2.2-dev.2](https://github.com/ReVanced/revanced-integrations/compare/v1.2.2-dev.1...v1.2.2-dev.2) (2024-01-29)
+
+
+### Bug Fixes
+
+* **YouTube - ReturnYouTubeDislike:** Do not show more than 1 connection toasts if the API is broken ([#560](https://github.com/ReVanced/revanced-integrations/issues/560)) ([2c73209](https://github.com/ReVanced/revanced-integrations/commit/2c7320937adc01221017c740b86c4d6851c96797))
+
+## [1.2.2-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v1.2.1...v1.2.2-dev.1) (2024-01-28)
+
+
+### Bug Fixes
+
+* **YouTube:** Correctly show channel page on tablet devices ([#558](https://github.com/ReVanced/revanced-integrations/issues/558)) ([d0edafb](https://github.com/ReVanced/revanced-integrations/commit/d0edafb1afc7b87a8eeb085a9e48dc2d20af2f3a))
+
 ## [1.2.1](https://github.com/ReVanced/revanced-integrations/compare/v1.2.0...v1.2.1) (2024-01-28)
 
 
