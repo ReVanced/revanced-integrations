@@ -1,3 +1,10 @@
+## [1.3.1](https://github.com/ReVanced/revanced-integrations/compare/v1.3.0...v1.3.1) (2024-02-07)
+
+
+### Bug Fixes
+
+* **YouTube - Litho Filter:** Do not show toast if protobuffer is empty or null ([#563](https://github.com/ReVanced/revanced-integrations/issues/563)) ([ea5748c](https://github.com/ReVanced/revanced-integrations/commit/ea5748ca8e0c7130face5ca4c86cfe5e00a3ed65))
+
 ## [1.3.1-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v1.3.0...v1.3.1-dev.1) (2024-02-07)
 
 
