@@ -509,6 +509,8 @@ public final class LithoFilterPatch {
         // The buffer will be cleared from memory after a new buffer is set by the same thread,
         // or when the calling thread eventually dies.
         if (protobufBuffer == null) {
+            // It appears the buffer can be cleared out just before the call to #filter()
+            // Ignore this null value and retain the last buffer that was set.
             Logger.printDebug(() -> "Ignoring null protobuffer");
         } else {
             bufferThreadLocal.set(protobufBuffer);
