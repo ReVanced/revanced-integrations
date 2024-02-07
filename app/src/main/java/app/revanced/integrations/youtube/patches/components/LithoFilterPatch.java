@@ -523,10 +523,12 @@ public final class LithoFilterPatch {
 
             ByteBuffer protobufBuffer = bufferThreadLocal.get();
             final byte[] bufferArray;
+            // The buffer can be null or empty when using YT 19.x.
+            // This is likely caused by different threads setting the buffer and calling this method.
+            // 100% fixing this would require passing the buffer into this method (which may not be so simple).
+            // For now, still filter with an empty buffer so the non proto buffer filters work correctly.
             if (protobufBuffer == null) {
-                // The buffer can be null or empty in some situations.
-                // Still attempt to filter on the id/path with an empty buffer.
-                Logger.printDebug(() -> "Proto buffer is null"); // Can remove this log statement if it occurs too often.
+                Logger.printDebug(() -> "Proto buffer is null");
                 bufferArray = EMPTY_BYTE_ARRAY;
             } else if (!protobufBuffer.hasArray()) {
                 Logger.printDebug(() -> "Proto buffer does not have an array");
