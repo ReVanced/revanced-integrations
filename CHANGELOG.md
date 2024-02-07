@@ -1,3 +1,10 @@
+## [1.3.2-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v1.3.1...v1.3.2-dev.1) (2024-02-07)
+
+
+### Bug Fixes
+
+* **YouTube - Litho Filter:** Ignore null buffers ([#565](https://github.com/ReVanced/revanced-integrations/issues/565)) ([f72faa7](https://github.com/ReVanced/revanced-integrations/commit/f72faa761cca306952f270208bee4a8f59c59dda))
+
 ## [1.3.1](https://github.com/ReVanced/revanced-integrations/compare/v1.3.0...v1.3.1) (2024-02-07)
 
 
