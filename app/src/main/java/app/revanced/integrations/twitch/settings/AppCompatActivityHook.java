@@ -45,7 +45,7 @@ public class AppCompatActivityHook {
      * @return Returns string resource id
      */
     public static int getReVancedSettingsString() {
-        return app.revanced.integrations.twitch.Utils.getStringId("revanced_settings");
+        return app.revanced.integrations.twitch.Utils.getStringId("revanced_settings_title");
     }
 
     /**
@@ -101,7 +101,7 @@ public class AppCompatActivityHook {
         ReVancedPreferenceFragment fragment = new ReVancedPreferenceFragment();
         ActionBar supportActionBar = base.getSupportActionBar();
         if (supportActionBar != null)
-            supportActionBar.setTitle(app.revanced.integrations.twitch.Utils.getStringId("revanced_settings"));
+            supportActionBar.setTitle(app.revanced.integrations.twitch.Utils.getStringId("revanced_settings_title"));
 
         base.getFragmentManager()
                 .beginTransaction()
