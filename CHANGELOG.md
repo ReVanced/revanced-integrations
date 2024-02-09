@@ -1,3 +1,10 @@
+# [1.4.0-dev.2](https://github.com/ReVanced/revanced-integrations/compare/v1.4.0-dev.1...v1.4.0-dev.2) (2024-02-09)
+
+
+### Features
+
+* **Sync for Reddit:** Add `Fix /s/ links` patch ([a8c82ad](https://github.com/ReVanced/revanced-integrations/commit/a8c82ad27b74e929311536227dee0909ebc27ee1))
+
 # [1.4.0-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v1.3.2...v1.4.0-dev.1) (2024-02-09)
 
 
