@@ -1,3 +1,10 @@
+# [1.4.0-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v1.3.2...v1.4.0-dev.1) (2024-02-09)
+
+
+### Features
+
+* **YouTube - Change start page:** Add more start pages ([27421fb](https://github.com/ReVanced/revanced-integrations/commit/27421fb5783e677075ab0c220030d6af64cfaa18))
+
 ## [1.3.2](https://github.com/ReVanced/revanced-integrations/compare/v1.3.1...v1.3.2) (2024-02-08)
 
 
