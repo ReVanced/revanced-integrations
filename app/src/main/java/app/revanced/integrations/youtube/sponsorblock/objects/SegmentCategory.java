@@ -106,7 +106,7 @@ public enum SegmentCategory {
     }
 
     /**
-     * Must be called if behavior of any category is changed
+     * Must be called if behavior of any category is changed.
      */
     public static void updateEnabledCategories() {
         Utils.verifyOnMainThread();
