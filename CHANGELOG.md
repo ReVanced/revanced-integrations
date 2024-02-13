@@ -1,3 +1,10 @@
+# [1.4.0-dev.3](https://github.com/ReVanced/revanced-integrations/compare/v1.4.0-dev.2...v1.4.0-dev.3) (2024-02-13)
+
+
+### Bug Fixes
+
+* **YouTube - Hide ads:** Do not show error toast and hide full screen ads ([#569](https://github.com/ReVanced/revanced-integrations/issues/569)) ([0b0d46f](https://github.com/ReVanced/revanced-integrations/commit/0b0d46f5183c88f73d58c8f7b9320d38976ddd4e))
+
 # [1.4.0-dev.2](https://github.com/ReVanced/revanced-integrations/compare/v1.4.0-dev.1...v1.4.0-dev.2) (2024-02-09)
 
 
