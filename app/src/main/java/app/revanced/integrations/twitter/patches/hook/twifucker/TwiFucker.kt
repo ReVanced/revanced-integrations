@@ -1,5 +1,8 @@
 package app.revanced.integrations.twitter.patches.hook.twifucker
 
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.util.Log
 import app.revanced.integrations.twitter.patches.hook.twifucker.TwiFuckerUtils.forEach
 import app.revanced.integrations.twitter.patches.hook.twifucker.TwiFuckerUtils.forEachIndexed
@@ -210,6 +213,17 @@ internal object TwiFucker {
     fun hidePromotedAds(json: JSONObject) {
         json.filterInstructions { it.entriesRemoveAnnoyance() }
         json.jsonGetData()?.dataCheckAndRemove()
+    }
+
+    fun openWithChooser(context: Context, intent: Intent) {
+        context.startActivity(
+            Intent.createChooser(
+                Intent(
+                    "android.intent.action.VIEW",
+                    Uri.parse(intent.dataString)
+                ), ""
+            )
+        )
     }
 
     private fun JSONObject.filterInstructions(action: (JSONArray) -> Unit) {
