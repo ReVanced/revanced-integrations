@@ -1,8 +1,5 @@
 package app.revanced.integrations.twitter.patches.hook.twifucker
 
-import android.content.Context
-import android.content.Intent
-import android.net.Uri
 import android.util.Log
 import app.revanced.integrations.twitter.patches.hook.twifucker.TwiFuckerUtils.forEach
 import app.revanced.integrations.twitter.patches.hook.twifucker.TwiFuckerUtils.forEachIndexed
@@ -12,8 +9,7 @@ import org.json.JSONObject
 // https://raw.githubusercontent.com/Dr-TSNG/TwiFucker/880cdf1c1622e54ab45561ffcb4f53d94ed97bae/app/src/main/java/icu/nullptr/twifucker/hook/JsonHook.kt
 internal object TwiFucker {
     // root
-    private fun JSONObject.jsonGetInstructions(): JSONArray? =
-        optJSONObject("timeline")?.optJSONArray("instructions")
+    private fun JSONObject.jsonGetInstructions(): JSONArray? = optJSONObject("timeline")?.optJSONArray("instructions")
 
     private fun JSONObject.jsonGetData(): JSONObject? = optJSONObject("data")
 
@@ -45,10 +41,11 @@ internal object TwiFucker {
 
     // data
     private fun JSONObject.dataGetInstructions(): JSONArray? {
-        val timeline = optJSONObject("user_result")?.optJSONObject("result")
-            ?.optJSONObject("timeline_response")?.optJSONObject("timeline")
-            ?: optJSONObject("timeline_response")?.optJSONObject("timeline")
-            ?: optJSONObject("timeline_response")
+        val timeline =
+            optJSONObject("user_result")?.optJSONObject("result")
+                ?.optJSONObject("timeline_response")?.optJSONObject("timeline")
+                ?: optJSONObject("timeline_response")?.optJSONObject("timeline")
+                ?: optJSONObject("timeline_response")
         return timeline?.optJSONArray("instructions")
     }
 
@@ -67,7 +64,6 @@ internal object TwiFucker {
             }
         }?.optJSONObject("legacy")
 
-
     // entry
     private fun JSONObject.entryHasPromotedMetadata(): Boolean =
         optJSONObject("content")?.optJSONObject("item")?.optJSONObject("content")
@@ -80,11 +76,9 @@ internal object TwiFucker {
         optJSONObject("content")?.optJSONArray("items")
             ?: optJSONObject("content")?.optJSONObject("timelineModule")?.optJSONArray("items")
 
-    private fun JSONObject.entryIsTweetDetailRelatedTweets(): Boolean =
-        optString("entryId").startsWith("tweetdetailrelatedtweets-")
+    private fun JSONObject.entryIsTweetDetailRelatedTweets(): Boolean = optString("entryId").startsWith("tweetdetailrelatedtweets-")
 
-    private fun JSONObject.entryGetTrends(): JSONArray? =
-        optJSONObject("content")?.optJSONObject("timelineModule")?.optJSONArray("items")
+    private fun JSONObject.entryGetTrends(): JSONArray? = optJSONObject("content")?.optJSONObject("timelineModule")?.optJSONArray("items")
 
     // trend
     private fun JSONObject.trendHasPromotedMetadata(): Boolean =
@@ -107,8 +101,7 @@ internal object TwiFucker {
     // instruction
     private fun JSONObject.instructionTimelineAddEntries(): JSONArray? = optJSONArray("entries")
 
-    private fun JSONObject.instructionGetAddEntries(): JSONArray? =
-        optJSONObject("addEntries")?.optJSONArray("entries")
+    private fun JSONObject.instructionGetAddEntries(): JSONArray? = optJSONObject("addEntries")?.optJSONArray("entries")
 
     private fun JSONObject.instructionCheckAndRemove(action: (JSONArray) -> Unit) {
         instructionTimelineAddEntries()?.let(action)
@@ -167,9 +160,10 @@ internal object TwiFucker {
         entriesRemoveTweetDetailRelatedTweets()
     }
 
-    private fun JSONObject.entryIsWhoToFollow(): Boolean = optString("entryId").let {
-        it.startsWith("whoToFollow-") || it.startsWith("who-to-follow-") || it.startsWith("connect-module-")
-    }
+    private fun JSONObject.entryIsWhoToFollow(): Boolean =
+        optString("entryId").let {
+            it.startsWith("whoToFollow-") || it.startsWith("who-to-follow-") || it.startsWith("connect-module-")
+        }
 
     private fun JSONObject.itemContainsPromotedUser(): Boolean =
         optJSONObject("item")?.optJSONObject("content")
@@ -213,17 +207,6 @@ internal object TwiFucker {
     fun hidePromotedAds(json: JSONObject) {
         json.filterInstructions { it.entriesRemoveAnnoyance() }
         json.jsonGetData()?.dataCheckAndRemove()
-    }
-
-    fun openWithChooser(context: Context, intent: Intent) {
-        context.startActivity(
-            Intent.createChooser(
-                Intent(
-                    "android.intent.action.VIEW",
-                    Uri.parse(intent.dataString)
-                ), ""
-            )
-        )
     }
 
     private fun JSONObject.filterInstructions(action: (JSONArray) -> Unit) {
