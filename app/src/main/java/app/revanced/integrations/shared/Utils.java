@@ -205,7 +205,9 @@ public class Utils {
     public static <T extends View> T getChildView(@NonNull ViewGroup viewGroup, @NonNull MatchFilter filter) {
         for (int i = 0, childCount = viewGroup.getChildCount(); i < childCount; i++) {
             View childAt = viewGroup.getChildAt(i);
+            //noinspection unchecked
             if (filter.matches(childAt)) {
+                //noinspection unchecked
                 return (T) childAt;
             }
         }
@@ -396,33 +398,37 @@ public class Utils {
     private static final Regex punctuationRegex = new Regex("\\p{P}+");
 
     /**
-     * Sort the preferences by title and ignore the casing.
+     * Sort the preferences by preference key and/or title and ignore text casing.
      *
-     * Android Preferences are automatically sorted by title,
-     * but if using a localized string key it sorts on the key and not the actual title text that's used at runtime.
-     *
-     * @param menuDepthToSort Maximum menu depth to sort. Menus deeper than this value
-     *                        will show preferences in the order created in patches.
+     * @param menuDepthToSortByKey Menu depth to sort using the preference key.  Index 1 is the first level.
+     *                             Menus deeper than this value are sorted by localized title.
+     * @param menuDepthToSort Maximum menu depth to sort by localized title.
+     *                        Menus deeper than this value will show preferences in the order created during patching.
      */
-    public static void sortPreferenceGroupByTitle(PreferenceGroup group, int menuDepthToSort) {
+    public static void sortPreferenceGroupByTitle(PreferenceGroup group, int menuDepthToSortByKey, int menuDepthToSort) {
         if (menuDepthToSort == 0) return;
 
         SortedMap<String, Preference> preferences = new TreeMap<>();
         for (int i = 0, prefCount = group.getPreferenceCount(); i < prefCount; i++) {
             Preference preference = group.getPreference(i);
             if (preference instanceof PreferenceGroup) {
-                sortPreferenceGroupByTitle((PreferenceGroup) preference, menuDepthToSort - 1);
+                sortPreferenceGroupByTitle((PreferenceGroup) preference,
+                        menuDepthToSortByKey - 1, menuDepthToSort - 1);
             }
-            preferences.put(removePunctuationConvertToLowercase(preference.getTitle()), preference);
+            String sortValue = preference.getKey();
+            if (sortValue == null || menuDepthToSortByKey <= 0) {
+                sortValue = removePunctuationConvertToLowercase(preference.getTitle());
+            }
+            preferences.put(sortValue, preference);
         }
 
         int prefIndex = 0;
         for (Preference pref : preferences.values()) {
             int indexToSet = prefIndex++;
             if (pref instanceof PreferenceGroup || pref.getIntent() != null) {
-                // Place preference groups last.
-                // Use an offset to push the group to the end.
-                indexToSet += 1000;
+                // Place preference groups first.
+                // Use an offset to push the group to the start.
+                indexToSet -= 1000;
             }
             pref.setOrder(indexToSet);
         }

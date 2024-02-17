@@ -85,7 +85,7 @@ public abstract class AbstractPreferenceFragment extends PreferenceFragment {
 
         if (identifier == 0) return;
         addPreferencesFromResource(identifier);
-        Utils.sortPreferenceGroupByTitle(getPreferenceScreen(), 2);
+        Utils.sortPreferenceGroupByTitle(getPreferenceScreen(), 1, 2);
     }
 
     private void showSettingUserDialogConfirmation(SwitchPreference switchPref, BooleanSetting setting) {
