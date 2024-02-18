@@ -12,6 +12,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.preference.Preference;
 import android.preference.PreferenceGroup;
+import android.preference.PreferenceScreen;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -347,6 +348,12 @@ public class Utils {
         }
     }
 
+    public enum NetworkType {
+        NONE,
+        MOBILE,
+        OTHER,
+    }
+
     public static boolean isNetworkConnected() {
         NetworkType networkType = getNetworkType();
         return networkType == NetworkType.MOBILE
@@ -395,29 +402,82 @@ public class Utils {
         }
     }
 
+    /**
+     * PreferenceScreen and Group sorting styles.
+     */
+    private enum SortStyle {
+        /**
+         * Sort alphabetically by the localized title.
+         */
+        TITLE("_sort_title"),
+        /**
+         * Sort by preference key.
+         */
+        KEY("_sort_key"),
+        /**
+         * Leaves everything unsorted, and retain the order created during patching.
+         */
+        UNSORTED("_sort_ignore");
+
+        final String suffix;
+
+        SortStyle(String suffix) {
+            this.suffix = suffix;
+        }
+
+        /**
+         * Defaults to {@link #TITLE} if the key does not match.
+         */
+        @NonNull
+        static SortStyle sortForSuffix(@Nullable String key) {
+            if (key != null) {
+                for (SortStyle sort : values()) {
+                    if (key.endsWith(sort.suffix)) {
+                        return sort;
+                    }
+                }
+            }
+            return TITLE;
+        }
+    }
+
     private static final Regex punctuationRegex = new Regex("\\p{P}+");
 
     /**
-     * Sort the preferences by preference key and/or title and ignore text casing.
-     *
-     * @param menuDepthToSortByKey Menu depth to sort using the preference key.  Index 1 is the first level.
-     *                             Menus deeper than this value are sorted by localized title.
-     * @param menuDepthToSort Maximum menu depth to sort by localized title.
-     *                        Menus deeper than this value will show preferences in the order created during patching.
+     * Strips all punctionation and converts to lower case.  A null parameter returns an empty string.
      */
-    public static void sortPreferenceGroupByTitle(PreferenceGroup group, int menuDepthToSortByKey, int menuDepthToSort) {
-        if (menuDepthToSort == 0) return;
+    public static String removePunctuationConvertToLowercase(@Nullable CharSequence original) {
+        if (original == null) return "";
+        return punctuationRegex.replace(original, "").toLowerCase();
+    }
+
+    /**
+     * Sort the a PreferenceGroup based by either title, by key, or to retain the original order,
+     * based on the suffix of the key.
+     *
+     * If no suffix key is present, then the preferences are sorted by title.
+     */
+    public static void sortPreferenceGroups(PreferenceGroup group) {
+        SortStyle sortToUse = SortStyle.sortForSuffix(group.getKey());
 
         SortedMap<String, Preference> preferences = new TreeMap<>();
         for (int i = 0, prefCount = group.getPreferenceCount(); i < prefCount; i++) {
             Preference preference = group.getPreference(i);
             if (preference instanceof PreferenceGroup) {
-                sortPreferenceGroupByTitle((PreferenceGroup) preference,
-                        menuDepthToSortByKey - 1, menuDepthToSort - 1);
+                sortPreferenceGroups((PreferenceGroup) preference);
             }
-            String sortValue = preference.getKey();
-            if (sortValue == null || menuDepthToSortByKey <= 0) {
-                sortValue = removePunctuationConvertToLowercase(preference.getTitle());
+            final String sortValue;
+            switch (sortToUse) {
+                case TITLE:
+                    sortValue = removePunctuationConvertToLowercase(preference.getTitle());
+                    break;
+                case KEY:
+                    sortValue = preference.getKey();
+                    break;
+                case UNSORTED:
+                    continue; // Keep original sorting.
+                default:
+                    throw new IllegalStateException();
             }
             preferences.put(sortValue, preference);
         }
@@ -425,22 +485,12 @@ public class Utils {
         int prefIndex = 0;
         for (Preference pref : preferences.values()) {
             int indexToSet = prefIndex++;
-            if (pref instanceof PreferenceGroup || pref.getIntent() != null) {
-                // Place preference groups first.
-                // Use an offset to push the group to the start.
+            if (pref instanceof PreferenceScreen || pref.getIntent() != null) {
+                // Place sub menus first
+                // Use an offset to pull to the top.
                 indexToSet -= 1000;
             }
             pref.setOrder(indexToSet);
         }
-    }
-
-    public static String removePunctuationConvertToLowercase(CharSequence original) {
-        return punctuationRegex.replace(original, "").toLowerCase();
-    }
-
-    public enum NetworkType {
-        NONE,
-        MOBILE,
-        OTHER,
     }
 }
