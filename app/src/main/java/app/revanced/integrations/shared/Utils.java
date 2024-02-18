@@ -103,7 +103,6 @@ public class Utils {
         view.setVisibility(View.GONE);
     }
 
-
     /**
      * General purpose pool for network calls and other background tasks.
      * All tasks run at max thread priority.
@@ -403,7 +402,7 @@ public class Utils {
     }
 
     /**
-     * PreferenceScreen and Group sorting styles.
+     * {@link PreferenceScreen} and {@link PreferenceGroup} sorting styles.
      */
     private enum SortStyle {
         /**
@@ -415,7 +414,7 @@ public class Utils {
          */
         KEY("_sort_key"),
         /**
-         * Leaves everything unsorted, and retain the order created during patching.
+         * Keep everything unsorted, and retain the original preference order created during patching.
          */
         UNSORTED("_sort_ignore");
 
@@ -426,7 +425,7 @@ public class Utils {
         }
 
         /**
-         * Defaults to {@link #TITLE} if the key does not match.
+         * Defaults to {@link #TITLE} if key is null or has no sort suffix.
          */
         @NonNull
         static SortStyle sortForSuffix(@Nullable String key) {
@@ -444,7 +443,7 @@ public class Utils {
     private static final Regex punctuationRegex = new Regex("\\p{P}+");
 
     /**
-     * Strips all punctionation and converts to lower case.  A null parameter returns an empty string.
+     * Strips all punctuation and converts to lower case.  A null parameter returns an empty string.
      */
     public static String removePunctuationConvertToLowercase(@Nullable CharSequence original) {
         if (original == null) return "";
@@ -452,12 +451,14 @@ public class Utils {
     }
 
     /**
-     * Sort the a PreferenceGroup based by either title, by key, or to retain the original order,
-     * based on the suffix of the key.
+     * Sort a PreferenceGroup and all it's sub groups by title or key.
      *
-     * If no suffix key is present, then the preferences are sorted by title.
+     * Sort order is determined by the preference key SortStyle suffix.
+     *
+     * If a preference has no key or no SortStyle suffix,
+     * then the preferences are sorted by the localized title.
      */
-    public static void sortPreferenceGroups(PreferenceGroup group) {
+    public static void sortPreferenceGroups(@NonNull PreferenceGroup group) {
         SortStyle sortToUse = SortStyle.sortForSuffix(group.getKey());
 
         SortedMap<String, Preference> preferences = new TreeMap<>();
