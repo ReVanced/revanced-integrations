@@ -53,7 +53,7 @@ dependencies {
 }
 
 tasks {
-    // Required to run tasks because Gradle semantic-release plugin runs the publish task.
+    // Needed by gradle-semantic-release-plugin.
     // Tracking: https://github.com/KengoTODA/gradle-semantic-release-plugin/issues/435
     register("publish") {
         group = "publishing"
