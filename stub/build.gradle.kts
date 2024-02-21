@@ -1,15 +1,14 @@
 plugins {
-    id("com.android.library")
+    alias(libs.plugins.android.library)
 }
 
 android {
-    namespace = "app.revanced.dummy"
+    namespace = "app.revanced.integrations.stub"
     compileSdk = 33
-    buildToolsVersion = "33.0.1"
 
     defaultConfig {
+        multiDexEnabled = false
         minSdk = 23
-        targetSdk = 33
     }
 
     buildTypes {

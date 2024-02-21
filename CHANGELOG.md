@@ -1,3 +1,10 @@
+# [1.4.0-dev.4](https://github.com/ReVanced/revanced-integrations/compare/v1.4.0-dev.3...v1.4.0-dev.4) (2024-02-21)
+
+
+### Features
+
+* **X:** Add `Open links as query` patch ([#570](https://github.com/ReVanced/revanced-integrations/issues/570)) ([95ca632](https://github.com/ReVanced/revanced-integrations/commit/95ca632d40b90ea8160dbbf33fd5d7f2281cf711))
+
 # [1.4.0-dev.3](https://github.com/ReVanced/revanced-integrations/compare/v1.4.0-dev.2...v1.4.0-dev.3) (2024-02-13)
 
 

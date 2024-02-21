@@ -1,11 +1,19 @@
 plugins {
-    id("com.android.application")
-    id("org.jetbrains.kotlin.android")
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin)
 }
 
 android {
-    compileSdk = 33
     namespace = "app.revanced.integrations"
+    compileSdk = 33
+
+    applicationVariants.all {
+        outputs.all {
+            this as com.android.build.gradle.internal.api.ApkVariantOutputImpl
+
+            outputFileName = "${rootProject.name}-$versionName.apk"
+        }
+    }
 
     defaultConfig {
         applicationId = "app.revanced.integrations"
@@ -20,32 +28,37 @@ android {
             isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                "proguard-rules.pro",
             )
         }
-        applicationVariants.all {
-            outputs.all {
-                this as com.android.build.gradle.internal.api.ApkVariantOutputImpl
+    }
 
-                outputFileName = "${rootProject.name}-$versionName.apk"
-            }
-        }
-    }
     compileOptions {
-        sourceCompatibility(JavaVersion.VERSION_11)
-        targetCompatibility(JavaVersion.VERSION_11)
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
+
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_11.toString()
     }
 }
 
 dependencies {
-    compileOnly(project(mapOf("path" to ":dummy")))
-    compileOnly("androidx.annotation:annotation:1.7.0")
-    compileOnly("androidx.appcompat:appcompat:1.7.0-alpha03")
-    compileOnly("com.squareup.okhttp3:okhttp:5.0.0-alpha.11")
-    compileOnly("com.squareup.retrofit2:retrofit:2.9.0")
+    compileOnly(libs.appcompat)
+    compileOnly(libs.annotation)
+    compileOnly(libs.okhttp)
+    compileOnly(libs.retrofit)
+
+    compileOnly(project(":stub"))
 }
 
-tasks.register("publish") { dependsOn("build") }
+tasks {
+    // Needed by gradle-semantic-release-plugin.
+    // Tracking: https://github.com/KengoTODA/gradle-semantic-release-plugin/issues/435
+    register("publish") {
+        group = "publishing"
+        description = "Publishes all publications produced by this project."
+
+        dependsOn(build)
+    }
+}
