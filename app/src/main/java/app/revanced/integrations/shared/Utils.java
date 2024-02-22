@@ -27,10 +27,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import java.text.Bidi;
-import java.util.Locale;
-import java.util.Objects;
-import java.util.SortedMap;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 import java.util.concurrent.SynchronousQueue;
@@ -404,39 +401,41 @@ public class Utils {
     /**
      * {@link PreferenceScreen} and {@link PreferenceGroup} sorting styles.
      */
-    private enum SortStyle {
+    private enum Sort {
         /**
-         * Sort alphabetically by the localized title.
+         * Sort by the localized preference title.
          */
-        TITLE("_sort_title"),
-        /**
-         * Sort by preference key.
-         */
-        KEY("_sort_key"),
-        /**
-         * Keep everything unsorted, and retain the original preference order created during patching.
-         */
-        UNSORTED("_sort_ignore");
+        BY_TITLE("_sort_by_title"),
 
-        final String suffix;
+        /**
+         * Sort by the preference keys.
+         */
+        BY_KEY("_sort_by_key"),
 
-        SortStyle(String suffix) {
-            this.suffix = suffix;
+        /**
+         * Unspecified sorting.
+         */
+        UNSORTED("_sort_by_unsorted");
+
+        final String keySuffix;
+
+        Sort(String keySuffix) {
+            this.keySuffix = keySuffix;
         }
 
         /**
-         * Defaults to {@link #TITLE} if key is null or has no sort suffix.
+         * Defaults to {@link #BY_TITLE} if key is null or has no sort suffix.
          */
         @NonNull
-        static SortStyle sortForSuffix(@Nullable String key) {
+        static Sort fromKey(@Nullable String key) {
             if (key != null) {
-                for (SortStyle sort : values()) {
-                    if (key.endsWith(sort.suffix)) {
+                for (Sort sort : values()) {
+                    if (key.endsWith(sort.keySuffix)) {
                         return sort;
                     }
                 }
             }
-            return TITLE;
+            return BY_TITLE;
         }
     }
 
@@ -453,26 +452,27 @@ public class Utils {
     /**
      * Sort a PreferenceGroup and all it's sub groups by title or key.
      *
-     * Sort order is determined by the preference key SortStyle suffix.
+     * Sort order is determined by the preferences key {@link Sort} suffix.
      *
-     * If a preference has no key or no SortStyle suffix,
+     * If a preference has no key or no {@link Sort} suffix,
      * then the preferences are sorted by the localized title.
      */
     public static void sortPreferenceGroups(@NonNull PreferenceGroup group) {
-        SortStyle sortToUse = SortStyle.sortForSuffix(group.getKey());
-
         SortedMap<String, Preference> preferences = new TreeMap<>();
+
         for (int i = 0, prefCount = group.getPreferenceCount(); i < prefCount; i++) {
             Preference preference = group.getPreference(i);
+
             if (preference instanceof PreferenceGroup) {
                 sortPreferenceGroups((PreferenceGroup) preference);
             }
+
             final String sortValue;
-            switch (sortToUse) {
-                case TITLE:
+            switch (Sort.fromKey(group.getKey())) {
+                case BY_TITLE:
                     sortValue = removePunctuationConvertToLowercase(preference.getTitle());
                     break;
-                case KEY:
+                case BY_KEY:
                     sortValue = preference.getKey();
                     break;
                 case UNSORTED:
@@ -480,18 +480,21 @@ public class Utils {
                 default:
                     throw new IllegalStateException();
             }
+
             preferences.put(sortValue, preference);
         }
 
-        int prefIndex = 0;
+        int index = 0;
         for (Preference pref : preferences.values()) {
-            int indexToSet = prefIndex++;
+            int order = index++;
+
+            // If the preference is a PreferenceScreen or is an intent preference, move to the top.
             if (pref instanceof PreferenceScreen || pref.getIntent() != null) {
-                // Place sub menus first
-                // Use an offset to pull to the top.
-                indexToSet -= 1000;
+                // Arbitrary high number.
+                order -= 1000;
             }
-            pref.setOrder(indexToSet);
+
+            pref.setOrder(order);
         }
     }
 }
