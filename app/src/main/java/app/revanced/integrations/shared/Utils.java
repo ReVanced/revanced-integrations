@@ -424,7 +424,7 @@ public class Utils {
         }
 
         /**
-         * Defaults to {@link #BY_TITLE} if key is null or has no sort suffix.
+         * Defaults to {@link #UNSORTED} if key is null or has no sort suffix.
          */
         @NonNull
         static Sort fromKey(@Nullable String key) {
@@ -435,7 +435,7 @@ public class Utils {
                     }
                 }
             }
-            return BY_TITLE;
+            return UNSORTED;
         }
     }
 
@@ -455,9 +455,10 @@ public class Utils {
      * Sort order is determined by the preferences key {@link Sort} suffix.
      *
      * If a preference has no key or no {@link Sort} suffix,
-     * then the preferences are sorted by the localized title.
+     * then the preferences are left unsorted.
      */
     public static void sortPreferenceGroups(@NonNull PreferenceGroup group) {
+        Sort sort = Sort.fromKey(group.getKey());
         SortedMap<String, Preference> preferences = new TreeMap<>();
 
         for (int i = 0, prefCount = group.getPreferenceCount(); i < prefCount; i++) {
@@ -468,7 +469,7 @@ public class Utils {
             }
 
             final String sortValue;
-            switch (Sort.fromKey(group.getKey())) {
+            switch (sort) {
                 case BY_TITLE:
                     sortValue = removePunctuationConvertToLowercase(preference.getTitle());
                     break;
