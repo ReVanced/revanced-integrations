@@ -23,4 +23,6 @@ jobs:
         run: echo "JAVA_HOME=$JAVA_HOME_17_X64" >> $GITHUB_ENV
 
       - name: Build
-        run: ./gradlew build --no-daemon
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          run: ./gradlew build --no-daemon
