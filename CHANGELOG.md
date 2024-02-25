@@ -1,3 +1,11 @@
+# [1.4.0-dev.5](https://github.com/ReVanced/revanced-integrations/compare/v1.4.0-dev.4...v1.4.0-dev.5) (2024-02-25)
+
+
+### Bug Fixes
+
+* **Twitter - Hide ads:** Hide ads in search ([b40687c](https://github.com/ReVanced/revanced-integrations/commit/b40687c5c7fa301c78035219b27c0bd85c968bb2))
+* **YouTube - Disable suggested end screen:** Reliably hide end screen ([b4ab5f6](https://github.com/ReVanced/revanced-integrations/commit/b4ab5f65d5607678a000783aae14257b845706b5))
+
 # [1.4.0-dev.4](https://github.com/ReVanced/revanced-integrations/compare/v1.4.0-dev.3...v1.4.0-dev.4) (2024-02-21)
 
 
