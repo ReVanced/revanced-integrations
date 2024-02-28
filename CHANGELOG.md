@@ -1,3 +1,10 @@
+# [1.4.0-dev.6](https://github.com/ReVanced/revanced-integrations/compare/v1.4.0-dev.5...v1.4.0-dev.6) (2024-02-28)
+
+
+### Bug Fixes
+
+* **YouTube - Hide Shorts:** Hide Shorts in feed when using tablet layout ([#572](https://github.com/ReVanced/revanced-integrations/issues/572)) ([7f5e7df](https://github.com/ReVanced/revanced-integrations/commit/7f5e7dfd68ad0200e9ea36d45f18a85ddfe534f8))
+
 # [1.4.0-dev.5](https://github.com/ReVanced/revanced-integrations/compare/v1.4.0-dev.4...v1.4.0-dev.5) (2024-02-25)
 
 
