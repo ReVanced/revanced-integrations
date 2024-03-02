@@ -1,3 +1,10 @@
+# [1.4.0-dev.8](https://github.com/ReVanced/revanced-integrations/compare/v1.4.0-dev.7...v1.4.0-dev.8) (2024-03-02)
+
+
+### Features
+
+* **YouTube - Spoof app version:** Add target versions ([#574](https://github.com/ReVanced/revanced-integrations/issues/574)) ([da57fb9](https://github.com/ReVanced/revanced-integrations/commit/da57fb95233ed251518fbd5c56a92bc39c4e0015))
+
 # [1.4.0-dev.7](https://github.com/ReVanced/revanced-integrations/compare/v1.4.0-dev.6...v1.4.0-dev.7) (2024-02-29)
 
 
