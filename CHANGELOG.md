@@ -1,3 +1,10 @@
+# [1.4.0-dev.9](https://github.com/ReVanced/revanced-integrations/compare/v1.4.0-dev.8...v1.4.0-dev.9) (2024-03-02)
+
+
+### Features
+
+* **YouTube:** Reorganize settings menu ([#571](https://github.com/ReVanced/revanced-integrations/issues/571)) ([eea4a48](https://github.com/ReVanced/revanced-integrations/commit/eea4a48cd565712c09d0ddd35ae256871ebe1964))
+
 # [1.4.0-dev.8](https://github.com/ReVanced/revanced-integrations/compare/v1.4.0-dev.7...v1.4.0-dev.8) (2024-03-02)
 
 
