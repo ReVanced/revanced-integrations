@@ -1,6 +1,7 @@
 package app.revanced.integrations.youtube.sponsorblock;
 
 import static app.revanced.integrations.shared.StringRef.str;
+import static app.revanced.integrations.shared.settings.Setting.ImportExportCallback;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -159,9 +160,18 @@ public class SponsorBlockSettings {
     }
 
     /**
-     * Export the categories using flatten json (no embedded dictionaries or arrays).
+     * Updates internal data based on {@link Setting} values.
      */
-    public static void showExportWarningIfNeeded(@Nullable Context dialogContext) {
+    private static void updateFromImportedSettings() {
+        // SB Enum categories are saved using StringSettings.
+        // Which means they need to reload again if changed by other code.
+        SegmentCategory.loadAllCategoriesFromSettings();
+    }
+
+    /**
+     * Shows a warning, if a private SB user id exists.
+     */
+    private static void showExportWarningIfNeeded(@Nullable Context dialogContext) {
         Utils.verifyOnMainThread();
         initialize();
 
@@ -177,6 +187,17 @@ public class SponsorBlockSettings {
                     .show();
         }
     }
+
+    public static final ImportExportCallback SB_IMPORT_EXPORT_CALLBACK = new ImportExportCallback() {
+        @Override
+        public void settingsImported(@Nullable Context context) {
+            updateFromImportedSettings();
+        }
+        @Override
+        public void settingsExported(@Nullable Context context) {
+            showExportWarningIfNeeded(context);
+        }
+    };
 
     public static boolean isValidSBUserId(@NonNull String userId) {
         return !userId.isEmpty() && userId.length() >= SB_PRIVATE_USER_ID_MINIMUM_LENGTH;
@@ -233,12 +254,5 @@ public class SponsorBlockSettings {
         initialized = true;
 
         SegmentCategory.updateEnabledCategories();
-    }
-
-    /**
-     * Updates internal data based on {@link Setting} values.
-     */
-    public static void updateFromImportedSettings() {
-        SegmentCategory.loadAllCategoriesFromSettings();
     }
 }

@@ -337,11 +337,17 @@ public class Settings extends BaseSettings {
             }
         }
 
-
         // Do _not_ delete this SB private user id migration property until sometime in 2024.
         // This is the only setting that cannot be reconfigured if lost,
         // and more time should be given for users who rarely upgrade.
         migrateOldSettingToNew(DEPRECATED_SB_UUID_OLD_MIGRATION_SETTING, SB_PRIVATE_USER_ID);
+
+        // endregion
+
+
+        // region SB import/export callbacks
+
+        Setting.addImportExportCallback(SponsorBlockSettings.SB_IMPORT_EXPORT_CALLBACK);
 
         // endregion
     }
