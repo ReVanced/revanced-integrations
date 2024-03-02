@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin)
+    publishing
 }
 
 android {
@@ -20,7 +21,7 @@ android {
         minSdk = 23
         targetSdk = 33
         multiDexEnabled = false
-        versionName = project.version as String
+        versionName = version as String
     }
 
     buildTypes {
@@ -53,12 +54,27 @@ dependencies {
 }
 
 tasks {
-    // Needed by gradle-semantic-release-plugin.
-    // Tracking: https://github.com/KengoTODA/gradle-semantic-release-plugin/issues/435
-    register("publish") {
-        group = "publishing"
-        description = "Publishes all publications produced by this project."
+    // Because the signing plugin doesn't support signing APKs, do it manually.
+    register("sign") {
+        group = "signing"
 
         dependsOn(build)
+
+        doLast {
+            val outputDirectory = layout.buildDirectory.dir("outputs/apk/release").get().asFile
+            val integrationsApk = outputDirectory.resolve("${rootProject.name}-$version.apk")
+
+            org.gradle.security.internal.gnupg.GnupgSignatoryFactory().createSignatory(project).sign(
+                integrationsApk.inputStream(),
+                outputDirectory.resolve("${integrationsApk.name}.asc").outputStream(),
+            )
+        }
+    }
+
+    // Needed by gradle-semantic-release-plugin.
+    // Tracking: https://github.com/KengoTODA/gradle-semantic-release-plugin/issues/435
+    publish {
+        dependsOn(build)
+        dependsOn("sign")
     }
 }

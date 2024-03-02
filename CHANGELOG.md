@@ -1,3 +1,32 @@
+# [1.4.0-dev.8](https://github.com/ReVanced/revanced-integrations/compare/v1.4.0-dev.7...v1.4.0-dev.8) (2024-03-02)
+
+
+### Features
+
+* **YouTube - Spoof app version:** Add target versions ([#574](https://github.com/ReVanced/revanced-integrations/issues/574)) ([da57fb9](https://github.com/ReVanced/revanced-integrations/commit/da57fb95233ed251518fbd5c56a92bc39c4e0015))
+
+# [1.4.0-dev.7](https://github.com/ReVanced/revanced-integrations/compare/v1.4.0-dev.6...v1.4.0-dev.7) (2024-02-29)
+
+
+### Bug Fixes
+
+* **YouTube - Spoof app version:** Remove broken versions ([#573](https://github.com/ReVanced/revanced-integrations/issues/573)) ([fb4aab7](https://github.com/ReVanced/revanced-integrations/commit/fb4aab792ae93fc7e7decbc19bd71ae700d5d235))
+
+# [1.4.0-dev.6](https://github.com/ReVanced/revanced-integrations/compare/v1.4.0-dev.5...v1.4.0-dev.6) (2024-02-28)
+
+
+### Bug Fixes
+
+* **YouTube - Hide Shorts:** Hide Shorts in feed when using tablet layout ([#572](https://github.com/ReVanced/revanced-integrations/issues/572)) ([7f5e7df](https://github.com/ReVanced/revanced-integrations/commit/7f5e7dfd68ad0200e9ea36d45f18a85ddfe534f8))
+
+# [1.4.0-dev.5](https://github.com/ReVanced/revanced-integrations/compare/v1.4.0-dev.4...v1.4.0-dev.5) (2024-02-25)
+
+
+### Bug Fixes
+
+* **Twitter - Hide ads:** Hide ads in search ([b40687c](https://github.com/ReVanced/revanced-integrations/commit/b40687c5c7fa301c78035219b27c0bd85c968bb2))
+* **YouTube - Disable suggested end screen:** Reliably hide end screen ([b4ab5f6](https://github.com/ReVanced/revanced-integrations/commit/b4ab5f65d5607678a000783aae14257b845706b5))
+
 # [1.4.0-dev.4](https://github.com/ReVanced/revanced-integrations/compare/v1.4.0-dev.3...v1.4.0-dev.4) (2024-02-21)
 
 
