@@ -1,3 +1,10 @@
+## [1.4.1-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v1.4.0...v1.4.1-dev.1) (2024-03-02)
+
+
+### Bug Fixes
+
+* **YouTube - Announcements:** Only compare ID to not show same announcement after a fix-up ([#579](https://github.com/ReVanced/revanced-integrations/issues/579)) ([5d14f53](https://github.com/ReVanced/revanced-integrations/commit/5d14f53acd0b1eabd6951543edd7d7c662b6c502))
+
 # [1.4.0](https://github.com/ReVanced/revanced-integrations/compare/v1.3.2...v1.4.0) (2024-03-02)
 
 
