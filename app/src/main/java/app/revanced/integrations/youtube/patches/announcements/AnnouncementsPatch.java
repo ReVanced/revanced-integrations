@@ -48,7 +48,7 @@ public final class AnnouncementsPatch {
                 try {
                     // Do not show the announcement if the request failed.
                     if (connection.getResponseCode() != 200) {
-                        if (Settings.ANNOUNCEMENT_LAST_ID.get().equals(Settings.ANNOUNCEMENT_LAST_ID.defaultValue))
+                        if (Settings.ANNOUNCEMENT_LAST_ID.isSetToDefault())
                             return;
 
                         Settings.ANNOUNCEMENT_LAST_ID.resetToDefault();
@@ -87,8 +87,7 @@ public final class AnnouncementsPatch {
                 }
 
                 // TODO: Remove this migration code after a few months.
-                final var lastHash = Settings.DEPRECATED_ANNOUNCEMENT_LAST_HASH.get();
-                if (!lastHash.equals(Settings.DEPRECATED_ANNOUNCEMENT_LAST_HASH.defaultValue)){
+                if (!Settings.DEPRECATED_ANNOUNCEMENT_LAST_HASH.isSetToDefault()){
                     final byte[] hashBytes = MessageDigest
                             .getInstance("SHA-256")
                             .digest(jsonString.getBytes(StandardCharsets.UTF_8));
@@ -96,7 +95,7 @@ public final class AnnouncementsPatch {
                     final var hash = java.util.Base64.getEncoder().encodeToString(hashBytes);
 
                     // Migrate to saving the id instead of the hash.
-                    if (hash.equals(lastHash)) {
+                    if (hash.equals(Settings.DEPRECATED_ANNOUNCEMENT_LAST_HASH.get())) {
                         Settings.ANNOUNCEMENT_LAST_ID.save(id);
                     }
 
