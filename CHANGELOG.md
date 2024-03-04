@@ -1,3 +1,10 @@
+## [1.4.1-dev.2](https://github.com/ReVanced/revanced-integrations/compare/v1.4.1-dev.1...v1.4.1-dev.2) (2024-03-04)
+
+
+### Bug Fixes
+
+* **YouTube - Client spoof:**  Allow playback for links with timestamp ([#582](https://github.com/ReVanced/revanced-integrations/issues/582)) ([eee3f35](https://github.com/ReVanced/revanced-integrations/commit/eee3f352c59141f47f6bda6c6cd350f1a16f1450))
+
 ## [1.4.1-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v1.4.0...v1.4.1-dev.1) (2024-03-02)
 
 
