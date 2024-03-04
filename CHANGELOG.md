@@ -1,3 +1,10 @@
+# [1.5.0-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v1.4.1-dev.4...v1.5.0-dev.1) (2024-03-04)
+
+
+### Features
+
+* **YouTube - External downloader:** Add ability to use in-app download button ([771a0de](https://github.com/ReVanced/revanced-integrations/commit/771a0de3bc9bec3ec5a8e4f8b02edfa9df7b1997))
+
 ## [1.4.1-dev.4](https://github.com/ReVanced/revanced-integrations/compare/v1.4.1-dev.3...v1.4.1-dev.4) (2024-03-04)
 
 
