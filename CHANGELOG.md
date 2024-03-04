@@ -1,3 +1,51 @@
+## [1.4.1-dev.2](https://github.com/ReVanced/revanced-integrations/compare/v1.4.1-dev.1...v1.4.1-dev.2) (2024-03-04)
+
+
+### Bug Fixes
+
+* **YouTube - Client spoof:**  Allow playback for links with timestamp ([#582](https://github.com/ReVanced/revanced-integrations/issues/582)) ([eee3f35](https://github.com/ReVanced/revanced-integrations/commit/eee3f352c59141f47f6bda6c6cd350f1a16f1450))
+
+## [1.4.1-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v1.4.0...v1.4.1-dev.1) (2024-03-02)
+
+
+### Bug Fixes
+
+* **YouTube - Announcements:** Only compare ID to not show same announcement after a fix-up ([#579](https://github.com/ReVanced/revanced-integrations/issues/579)) ([5d14f53](https://github.com/ReVanced/revanced-integrations/commit/5d14f53acd0b1eabd6951543edd7d7c662b6c502))
+
+# [1.4.0](https://github.com/ReVanced/revanced-integrations/compare/v1.3.2...v1.4.0) (2024-03-02)
+
+
+### Bug Fixes
+
+* **Twitter - Hide ads:** Hide ads in search ([b40687c](https://github.com/ReVanced/revanced-integrations/commit/b40687c5c7fa301c78035219b27c0bd85c968bb2))
+* **YouTube - Disable suggested end screen:** Reliably hide end screen ([b4ab5f6](https://github.com/ReVanced/revanced-integrations/commit/b4ab5f65d5607678a000783aae14257b845706b5))
+* **YouTube - Hide ads:** Do not show error toast and hide full screen ads ([#569](https://github.com/ReVanced/revanced-integrations/issues/569)) ([0b0d46f](https://github.com/ReVanced/revanced-integrations/commit/0b0d46f5183c88f73d58c8f7b9320d38976ddd4e))
+* **YouTube - Hide Shorts:** Hide Shorts in feed when using tablet layout ([#572](https://github.com/ReVanced/revanced-integrations/issues/572)) ([7f5e7df](https://github.com/ReVanced/revanced-integrations/commit/7f5e7dfd68ad0200e9ea36d45f18a85ddfe534f8))
+* **YouTube - Spoof app version:** Remove broken versions ([#573](https://github.com/ReVanced/revanced-integrations/issues/573)) ([fb4aab7](https://github.com/ReVanced/revanced-integrations/commit/fb4aab792ae93fc7e7decbc19bd71ae700d5d235))
+
+
+### Features
+
+* **Sync for Reddit:** Add `Fix /s/ links` patch ([a8c82ad](https://github.com/ReVanced/revanced-integrations/commit/a8c82ad27b74e929311536227dee0909ebc27ee1))
+* **X:** Add `Open links as query` patch ([#570](https://github.com/ReVanced/revanced-integrations/issues/570)) ([95ca632](https://github.com/ReVanced/revanced-integrations/commit/95ca632d40b90ea8160dbbf33fd5d7f2281cf711))
+* **YouTube - Change start page:** Add more start pages ([27421fb](https://github.com/ReVanced/revanced-integrations/commit/27421fb5783e677075ab0c220030d6af64cfaa18))
+* **YouTube - Spoof app version:** Add target versions ([#574](https://github.com/ReVanced/revanced-integrations/issues/574)) ([da57fb9](https://github.com/ReVanced/revanced-integrations/commit/da57fb95233ed251518fbd5c56a92bc39c4e0015))
+* **YouTube:** Reorganize settings menu ([#571](https://github.com/ReVanced/revanced-integrations/issues/571)) ([eea4a48](https://github.com/ReVanced/revanced-integrations/commit/eea4a48cd565712c09d0ddd35ae256871ebe1964))
+
+# [1.4.0-dev.9](https://github.com/ReVanced/revanced-integrations/compare/v1.4.0-dev.8...v1.4.0-dev.9) (2024-03-02)
+
+
+### Features
+
+* **YouTube:** Reorganize settings menu ([#571](https://github.com/ReVanced/revanced-integrations/issues/571)) ([eea4a48](https://github.com/ReVanced/revanced-integrations/commit/eea4a48cd565712c09d0ddd35ae256871ebe1964))
+
+# [1.4.0-dev.8](https://github.com/ReVanced/revanced-integrations/compare/v1.4.0-dev.7...v1.4.0-dev.8) (2024-03-02)
+
+
+### Features
+
+* **YouTube - Spoof app version:** Add target versions ([#574](https://github.com/ReVanced/revanced-integrations/issues/574)) ([da57fb9](https://github.com/ReVanced/revanced-integrations/commit/da57fb95233ed251518fbd5c56a92bc39c4e0015))
+
 # [1.4.0-dev.7](https://github.com/ReVanced/revanced-integrations/compare/v1.4.0-dev.6...v1.4.0-dev.7) (2024-02-29)
 
 
