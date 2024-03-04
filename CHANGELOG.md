@@ -1,3 +1,10 @@
+## [1.4.1-dev.4](https://github.com/ReVanced/revanced-integrations/compare/v1.4.1-dev.3...v1.4.1-dev.4) (2024-03-04)
+
+
+### Bug Fixes
+
+* **YouTube - Hide seekbar:** Use original seekbar color if Theme patch is not included ([#580](https://github.com/ReVanced/revanced-integrations/issues/580)) ([8d48a90](https://github.com/ReVanced/revanced-integrations/commit/8d48a90a8b8bc7ce9e22580b7a66c4c12fd6d54f))
+
 ## [1.4.1-dev.3](https://github.com/ReVanced/revanced-integrations/compare/v1.4.1-dev.2...v1.4.1-dev.3) (2024-03-04)
 
 
