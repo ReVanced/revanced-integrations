@@ -1,3 +1,10 @@
+## [1.4.1-dev.3](https://github.com/ReVanced/revanced-integrations/compare/v1.4.1-dev.2...v1.4.1-dev.3) (2024-03-04)
+
+
+### Bug Fixes
+
+* Revert AGP dependency update ([ab07a56](https://github.com/ReVanced/revanced-integrations/commit/ab07a563b9ef890dc8a673eeb4268ce1c9f15a69))
+
 ## [1.4.1-dev.2](https://github.com/ReVanced/revanced-integrations/compare/v1.4.1-dev.1...v1.4.1-dev.2) (2024-03-04)
 
 
