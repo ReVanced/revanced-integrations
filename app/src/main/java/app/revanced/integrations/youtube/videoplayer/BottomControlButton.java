@@ -1,5 +1,6 @@
 package app.revanced.integrations.youtube.videoplayer;
 
+import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -20,6 +21,7 @@ public abstract class BottomControlButton {
     private static final Animation fadeOut;
 
     private final WeakReference<ImageView> buttonRef;
+    private final WeakReference<Context> activityContextRef;
     private final BooleanSetting setting;
     protected boolean isVisible;
 
@@ -60,11 +62,12 @@ public abstract class BottomControlButton {
         imageView.setVisibility(View.GONE);
 
         buttonRef = new WeakReference<>(imageView);
+        activityContextRef = new WeakReference<>(imageView.getContext());
     }
 
     @Nullable
-    public ImageView getButtonImageView() {
-        return buttonRef.get();
+    public Context getActivityContext() {
+        return activityContextRef.get();
     }
 
     public void setVisibility(boolean visible) {

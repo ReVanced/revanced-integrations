@@ -27,13 +27,13 @@ public final class DownloadsPatch {
             Context context = Utils.getContext();
             boolean isActivityContext = false;
 
-            // Use the overlay button image view (which is part of an intent) if it's available.
+            // If possible, use the context of the overlay button group (which is part of an activity).
             // Otherwise fall back on using the application context.
             ExternalDownloadButton instance = ExternalDownloadButton.getInstance();
             if (instance != null) {
-                ImageView view = instance.getButtonImageView();
-                if (view != null) {
-                    context = view.getContext();
+                Context activityContext = instance.getActivityContext();
+                if (activityContext != null) {
+                    context = activityContext;
                     isActivityContext = true;
                 }
             }
