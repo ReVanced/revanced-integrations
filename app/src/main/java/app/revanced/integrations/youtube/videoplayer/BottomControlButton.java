@@ -62,6 +62,11 @@ public abstract class BottomControlButton {
         buttonRef = new WeakReference<>(imageView);
     }
 
+    @Nullable
+    public ImageView getButtonImageView() {
+        return buttonRef.get();
+    }
+
     public void setVisibility(boolean visible) {
         if (isVisible == visible) return;
         isVisible = visible;

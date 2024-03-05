@@ -5,10 +5,9 @@ import android.view.ViewGroup;
 
 import androidx.annotation.Nullable;
 
-import app.revanced.integrations.youtube.patches.DownloadsPatch;
-import app.revanced.integrations.youtube.patches.VideoInformation;
-import app.revanced.integrations.youtube.settings.Settings;
 import app.revanced.integrations.shared.Logger;
+import app.revanced.integrations.youtube.patches.DownloadsPatch;
+import app.revanced.integrations.youtube.settings.Settings;
 
 @SuppressWarnings("unused")
 public class ExternalDownloadButton extends BottomControlButton {
@@ -36,6 +35,11 @@ public class ExternalDownloadButton extends BottomControlButton {
         }
     }
 
+    @Nullable
+    public static ExternalDownloadButton getInstance() {
+        return instance;
+    }
+
     /**
      * Injection point.
      */
@@ -44,7 +48,7 @@ public class ExternalDownloadButton extends BottomControlButton {
     }
 
     private static void onDownloadClick(View view) {
-        DownloadsPatch.launchExternalDownloader();
+        DownloadsPatch.launchExternalDownloader(view.getContext(), false);
     }
 }
 
