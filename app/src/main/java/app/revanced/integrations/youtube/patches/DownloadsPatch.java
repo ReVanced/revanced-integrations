@@ -25,7 +25,7 @@ public final class DownloadsPatch {
 
             // Utils context is the application context, and not an activity context.
             Context context = Utils.getContext();
-            boolean useIntentNewTask = true;
+            boolean isActivityContext = false;
 
             // Use the overlay button image view (which is part of an intent) if it's available.
             // Otherwise fall back on using the application context.
@@ -34,10 +34,10 @@ public final class DownloadsPatch {
                 ImageView view = instance.getButtonImageView();
                 if (view != null) {
                     context = view.getContext();
-                    useIntentNewTask = false;
+                    isActivityContext = true;
                 }
             }
-            launchExternalDownloader(context, useIntentNewTask);
+            launchExternalDownloader(context, isActivityContext);
             return true;
         } catch (Exception ex) {
             Logger.printException(() -> "inAppDownloadButtonOnClick failure", ex);
@@ -46,12 +46,10 @@ public final class DownloadsPatch {
     }
 
     /**
-     * @param useIntentNewTask If the intent should use the new task flag.
-     *                         Setting this to true will always minimize YT when the intent is launched,
-     *                         even when using NewPipe or any other app that initially opens as an overlay.
-     *                         This should be used only if the context is not that of an activity.
+     * @param isActivityContext If the context parameter is for an Activity.  If this is false, then
+     *                          the downloader is opened as a new task (which forces YT to minimize).
      */
-    public static void launchExternalDownloader(Context context, boolean useIntentNewTask) {
+    public static void launchExternalDownloader(Context context, boolean isActivityContext) {
         Logger.printDebug(() -> "Launching external downloader");
 
         // Trim string to avoid any accidental whitespace.
@@ -78,7 +76,7 @@ public final class DownloadsPatch {
             intent.setType("text/plain");
             intent.setPackage(downloaderPackageName);
             intent.putExtra("android.intent.extra.TEXT", content);
-            if (useIntentNewTask) {
+            if (isActivityContext) {
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             }
             context.startActivity(intent);

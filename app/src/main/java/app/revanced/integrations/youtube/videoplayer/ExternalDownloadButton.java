@@ -48,7 +48,7 @@ public class ExternalDownloadButton extends BottomControlButton {
     }
 
     private static void onDownloadClick(View view) {
-        DownloadsPatch.launchExternalDownloader(view.getContext(), false);
+        DownloadsPatch.launchExternalDownloader(view.getContext(), true);
     }
 }
 
