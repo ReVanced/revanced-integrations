@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import java.lang.ref.WeakReference;
 
@@ -25,6 +26,21 @@ public final class DownloadsPatch {
      */
     public static void activityCreated(Activity mainActivity) {
         activityRef = new WeakReference<>(mainActivity);
+    }
+
+    /**
+     * Injection point.
+     *
+     * Call if download playlist is pressed, or if download button is used
+     * for old spoofed version (both playlists and the player action button).
+     */
+    public static boolean inAppDownloadPlaylistLegacyOnClick(@Nullable String videoId) {
+        if (videoId == null || videoId.isEmpty()) {
+            // videoId is null or empty if download playlist is pressed.
+            Logger.printDebug(() -> "Ignoring playlist download button press");
+            return false;
+        }
+        return inAppDownloadButtonOnClick();
     }
 
     /**
