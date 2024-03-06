@@ -35,11 +35,6 @@ public class ExternalDownloadButton extends BottomControlButton {
         }
     }
 
-    @Nullable
-    public static ExternalDownloadButton getInstance() {
-        return instance;
-    }
-
     /**
      * Injection point.
      */
