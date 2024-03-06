@@ -1,18 +1,30 @@
 package app.revanced.integrations.youtube.patches;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.widget.ImageView;
+
+import androidx.annotation.NonNull;
+
+import java.lang.ref.WeakReference;
 
 import app.revanced.integrations.shared.Logger;
 import app.revanced.integrations.shared.StringRef;
 import app.revanced.integrations.shared.Utils;
 import app.revanced.integrations.youtube.settings.Settings;
-import app.revanced.integrations.youtube.videoplayer.ExternalDownloadButton;
 
 @SuppressWarnings("unused")
 public final class DownloadsPatch {
+
+    private static WeakReference<Activity> activityRef = new WeakReference<>(null);
+
+    /**
+     * Injection point.
+     */
+    public static void activityCreated(Activity mainActivity) {
+        activityRef = new WeakReference<>(mainActivity);
+    }
 
     /**
      * Injection point.
@@ -23,20 +35,16 @@ public final class DownloadsPatch {
                 return false;
             }
 
-            // Utils context is the application context, and not an activity context.
-            Context context = Utils.getContext();
-            boolean isActivityContext = false;
-
-            // If possible, use the context of the overlay button group (which is part of an activity).
+            // If possible, use the main activity as the context.
             // Otherwise fall back on using the application context.
-            ExternalDownloadButton instance = ExternalDownloadButton.getInstance();
-            if (instance != null) {
-                Context activityContext = instance.getActivityContext();
-                if (activityContext != null) {
-                    context = activityContext;
-                    isActivityContext = true;
-                }
+            Context context = activityRef.get();
+            boolean isActivityContext = true;
+            if (context == null) {
+                // Utils context is the application context, and not an activity context.
+                context = Utils.getContext();
+                isActivityContext = false;
             }
+
             launchExternalDownloader(context, isActivityContext);
             return true;
         } catch (Exception ex) {
@@ -49,8 +57,8 @@ public final class DownloadsPatch {
      * @param isActivityContext If the context parameter is for an Activity.  If this is false, then
      *                          the downloader is opened as a new task (which forces YT to minimize).
      */
-    public static void launchExternalDownloader(Context context, boolean isActivityContext) {
-        Logger.printDebug(() -> "Launching external downloader");
+    public static void launchExternalDownloader(@NonNull Context context, boolean isActivityContext) {
+        Logger.printDebug(() -> "Launching external downloader with context: " + context);
 
         // Trim string to avoid any accidental whitespace.
         var downloaderPackageName = Settings.EXTERNAL_DOWNLOADER_PACKAGE_NAME.get().trim();
@@ -76,14 +84,13 @@ public final class DownloadsPatch {
             intent.setType("text/plain");
             intent.setPackage(downloaderPackageName);
             intent.putExtra("android.intent.extra.TEXT", content);
-            if (isActivityContext) {
+            if (!isActivityContext) {
+                Logger.printDebug(() -> "Using new task intent");
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             }
             context.startActivity(intent);
-
-            Logger.printDebug(() -> "Launched the intent with the content: " + content);
         } catch (Exception error) {
-            Logger.printException(() -> "Failed to launch the intent: " + error, error);
+            Logger.printException(() -> "Failed to launch intent: " + error, error);
         }
     }
 }
