@@ -338,7 +338,7 @@ public class Settings extends BaseSettings {
         migrateOldSettingToNew(DEPRECATED_SB_UUID_OLD_MIGRATION_SETTING, SB_PRIVATE_USER_ID);
 
 
-        // Old spoof versions that no longer work reliably
+        // Old spoof versions that no longer work reliably.
         if (SpoofAppVersionPatch.isSpoofingToLessThan("17.33.00")) {
             Logger.printInfo(() -> "Resetting spoof app version target");
             Settings.SPOOF_APP_VERSION_TARGET.resetToDefault();
