@@ -12,6 +12,7 @@ import java.lang.ref.WeakReference;
 import app.revanced.integrations.shared.Logger;
 import app.revanced.integrations.shared.StringRef;
 import app.revanced.integrations.shared.Utils;
+import app.revanced.integrations.youtube.patches.spoof.SpoofAppVersionPatch;
 import app.revanced.integrations.youtube.settings.Settings;
 
 @SuppressWarnings("unused")
@@ -24,6 +25,10 @@ public final class DownloadsPatch {
      */
     public static void activityCreated(Activity mainActivity) {
         activityRef = new WeakReference<>(mainActivity);
+    }
+
+    public static boolean shouldHideActionButtonOverridePreference() {
+        return SpoofAppVersionPatch.isSpoofingToLessThan("18.24.00");
     }
 
     /**

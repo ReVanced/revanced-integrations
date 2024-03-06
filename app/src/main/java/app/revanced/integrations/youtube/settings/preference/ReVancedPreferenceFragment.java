@@ -3,12 +3,13 @@ package app.revanced.integrations.youtube.settings.preference;
 import android.os.Build;
 import android.preference.ListPreference;
 import android.preference.Preference;
+import android.preference.PreferenceGroup;
 
 import androidx.annotation.RequiresApi;
 
 import app.revanced.integrations.shared.settings.preference.AbstractPreferenceFragment;
+import app.revanced.integrations.youtube.patches.DownloadsPatch;
 import app.revanced.integrations.youtube.patches.playback.speed.CustomPlaybackSpeedPatch;
-import app.revanced.integrations.youtube.patches.spoof.SpoofAppVersionPatch;
 import app.revanced.integrations.youtube.settings.Settings;
 
 /**
@@ -31,9 +32,14 @@ public class ReVancedPreferenceFragment extends AbstractPreferenceFragment {
 
         // Action button hook does not work on older versions.
         // Remove the preference to make things simpler.
-        Preference downloadActionButton = findPreference(Settings.EXTERNAL_DOWNLOADER_ACTION_BUTTON.key);
-        if (downloadActionButton != null && SpoofAppVersionPatch.isSpoofingToEqualOrLessThan("18.23.36")) {
-            downloadActionButton.getParent().removePreference(downloadActionButton);
+        if (DownloadsPatch.shouldHideActionButtonOverridePreference()) {
+            Preference downloadActionButton = findPreference(Settings.EXTERNAL_DOWNLOADER_ACTION_BUTTON.key);
+            if (downloadActionButton != null) {
+                PreferenceGroup group = downloadActionButton.getParent();
+                if (group != null) {
+                    downloadActionButton.getParent().removePreference(downloadActionButton);
+                }
+            }
         }
     }
 }
