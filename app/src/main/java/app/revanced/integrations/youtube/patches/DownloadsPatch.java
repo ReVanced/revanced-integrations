@@ -27,10 +27,6 @@ public final class DownloadsPatch {
         activityRef = new WeakReference<>(mainActivity);
     }
 
-    public static boolean shouldHideActionButtonOverridePreference() {
-        return SpoofAppVersionPatch.isSpoofingToLessThan("18.24.00");
-    }
-
     /**
      * Injection point.
      */
