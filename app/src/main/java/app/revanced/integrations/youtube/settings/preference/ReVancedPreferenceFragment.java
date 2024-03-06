@@ -26,7 +26,7 @@ public class ReVancedPreferenceFragment extends AbstractPreferenceFragment {
         super.initialize();
 
         try {
-            // If the preference was included, then initialize it based on the available playback speed
+            // If the preference was included, then initialize it based on the available playback speed.
             Preference defaultSpeedPreference = findPreference(Settings.PLAYBACK_SPEED_DEFAULT.key);
             if (defaultSpeedPreference instanceof ListPreference) {
                 CustomPlaybackSpeedPatch.initializeListPreference((ListPreference) defaultSpeedPreference);
