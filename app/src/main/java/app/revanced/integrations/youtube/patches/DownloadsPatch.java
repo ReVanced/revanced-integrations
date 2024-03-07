@@ -33,6 +33,9 @@ public final class DownloadsPatch {
      *
      * Call if download playlist is pressed, or if download button is used
      * for old spoofed version (both playlists and the player action button).
+     *
+     * Downloading playlists is not supported yet,
+     * as the hooked code does not easily expose the playlist id.
      */
     public static boolean inAppDownloadPlaylistLegacyOnClick(@Nullable String videoId) {
         if (videoId == null || videoId.isEmpty()) {
