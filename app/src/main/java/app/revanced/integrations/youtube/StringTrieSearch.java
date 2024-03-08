@@ -26,18 +26,6 @@ public final class StringTrieSearch extends TrieSearch<String> {
         }
     }
 
-    /**
-     * @return If the pattern is valid to add to this instance.
-     */
-    public static boolean isValidPattern(String pattern) {
-        for (int i = 0, length = pattern.length(); i < length; i++) {
-            if (TrieNode.isInvalidRange(pattern.charAt(i))) {
-                return false;
-            }
-        }
-        return true;
-    }
-
     public StringTrieSearch() {
         super(new StringTrieNode());
     }

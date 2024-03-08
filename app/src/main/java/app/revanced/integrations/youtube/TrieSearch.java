@@ -11,9 +11,6 @@ import java.util.Objects;
 /**
  * Searches for a group of different patterns using a trie (prefix tree).
  * Can significantly speed up searching for multiple patterns.
- *
- * Currently only supports ASCII non-control characters (letters/numbers/symbols).
- * But could be modified to also support UTF-8 unicode.
  */
 public abstract class TrieSearch<T> {
 
@@ -76,19 +73,10 @@ public abstract class TrieSearch<T> {
          */
         private static final char ROOT_NODE_CHARACTER_VALUE = 0;  // ASCII null character.
 
-        // Support only ASCII letters/numbers/symbols and filter out all control characters.
-        private static final char MIN_VALID_CHAR = 32; // Space character.
-        private static final char MAX_VALID_CHAR = 126; // 127 = delete character.
-
         /**
          * How much to expand the children array when resizing.
          */
         private static final int CHILDREN_ARRAY_INCREASE_SIZE_INCREMENT = 2;
-        private static final int CHILDREN_ARRAY_MAX_SIZE = MAX_VALID_CHAR - MIN_VALID_CHAR + 1;
-
-        static boolean isInvalidRange(char character) {
-            return character < MIN_VALID_CHAR || character > MAX_VALID_CHAR;
-        }
 
         /**
          * Character this node represents.
@@ -172,9 +160,6 @@ public abstract class TrieSearch<T> {
                 return;
             }
             final char character = getCharValue(pattern, patternIndex);
-            if (isInvalidRange(character)) {
-                throw new IllegalArgumentException("invalid character at index " + patternIndex + ": " + pattern);
-            }
             final int arrayIndex = hashIndexForTableSize(children.length, character);
             TrieNode<T> child = children[arrayIndex];
             if (child == null) {
@@ -190,7 +175,6 @@ public abstract class TrieSearch<T> {
 
         /**
          * Resizes the children table until all nodes hash to exactly one array index.
-         * Worse case, this will resize the array to {@link #CHILDREN_ARRAY_MAX_SIZE} elements.
          */
         private void expandChildArray(TrieNode<T> child) {
             int replacementArraySize = Objects.requireNonNull(children).length;
@@ -209,7 +193,6 @@ public abstract class TrieSearch<T> {
                     }
                 }
                 if (collision) {
-                    if (replacementArraySize > CHILDREN_ARRAY_MAX_SIZE) throw new IllegalStateException();
                     continue;
                 }
                 children = replacement;

@@ -15,17 +15,18 @@ import app.revanced.integrations.shared.Logger;
 import app.revanced.integrations.shared.Utils;
 import app.revanced.integrations.shared.settings.StringSetting;
 import app.revanced.integrations.youtube.ByteTrieSearch;
-import app.revanced.integrations.youtube.StringTrieSearch;
 import app.revanced.integrations.youtube.settings.Settings;
 
 /**
+ * <pre>
  * Allows hiding home feed and search results based on keywords and/or channel names.
  *
  * Limitations:
- * - For now only ASCII is allowed.
- * - Keywords are case sensitive, but some casing variation is manually added.
- *   (such as "Mr Beast" automatically also filtering "mr beast" and "MR BEAST").
+ * - Searching for a keyword phrase will give no search results
+ * - Filtering a channel name can still show Shorts from that channel in the search results
  * - Some layout component residue will remain, such as the video chapter previews for some search results.
+ * - Keywords are case sensitive, but some casing variation is manually added.
+ *   (such as "Mr Beast" automatically filtering "mr beast" and "MR BEAST").
  */
 @SuppressWarnings("unused")
 @RequiresApi(api = Build.VERSION_CODES.N)
@@ -66,11 +67,8 @@ final class HideKeywordContentFilter extends Filter {
             phrase = phrase.stripTrailing();
             if (phrase.isBlank()) continue;
 
-            final boolean isValidLength = phrase.length() >= MINIMUM_KEYWORD_LENGTH;
-            if (!StringTrieSearch.isValidPattern(phrase) || !isValidLength) {
-                Utils.showToastLong(!isValidLength
-                        ? str("revanced_hide_keyword_toast_invalid_length", MINIMUM_KEYWORD_LENGTH, phrase)
-                        : str("revanced_hide_keyword_toast_invalid_characters", phrase));
+            if (phrase.length() < MINIMUM_KEYWORD_LENGTH) {
+                Utils.showToastLong(str("revanced_hide_keyword_toast_invalid_length", MINIMUM_KEYWORD_LENGTH, phrase));
                 Utils.showToastLong(str("revanced_hide_keyword_toast_reset"));
                 setting.resetToDefault();
                 return splitAndVerifyStrings(setting);
