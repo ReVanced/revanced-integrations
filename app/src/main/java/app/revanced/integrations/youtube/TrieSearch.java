@@ -42,14 +42,14 @@ public abstract class TrieSearch<T> {
      */
     private static final class TrieCompressedPath<T> {
         final T pattern;
-        final int patternLength;
         final int patternStartIndex;
+        final int patternLength;
         final TriePatternMatchedCallback<T> callback;
 
-        TrieCompressedPath(T pattern, int patternLength, int patternStartIndex, TriePatternMatchedCallback<T> callback) {
+        TrieCompressedPath(T pattern, int patternStartIndex, int patternLength, TriePatternMatchedCallback<T> callback) {
             this.pattern = pattern;
-            this.patternLength = patternLength;
             this.patternStartIndex = patternStartIndex;
+            this.patternLength = patternLength;
             this.callback = callback;
         }
         boolean matches(TrieNode<T> enclosingNode, // Used only for the get character method.
@@ -69,7 +69,7 @@ public abstract class TrieSearch<T> {
 
     static abstract class TrieNode<T> {
         /**
-         * Dummy value used for root node. Value can be anything as it's never referenced.
+         * Dummy value used for root node. Value can be anything as it's never referenced..
          */
         private static final char ROOT_NODE_CHARACTER_VALUE = 0;  // ASCII null character.
 
@@ -132,11 +132,11 @@ public abstract class TrieSearch<T> {
 
         /**
          * @param pattern       Pattern to add.
-         * @param patternLength Length of the pattern.
          * @param patternIndex  Current recursive index of the pattern.
+         * @param patternLength Length of the pattern.
          * @param callback      Callback, where a value of NULL indicates to always accept a pattern match.
          */
-        private void addPattern(@NonNull T pattern, int patternLength, int patternIndex,
+        private void addPattern(@NonNull T pattern, int patternIndex, int patternLength,
                                 @Nullable TriePatternMatchedCallback<T> callback) {
             if (patternIndex == patternLength) { // Reached the end of the pattern.
                 if (endOfPatternCallback == null) {
@@ -153,10 +153,10 @@ public abstract class TrieSearch<T> {
                 children = new TrieNode[1];
                 TrieCompressedPath<T> temp = leaf;
                 leaf = null;
-                addPattern(temp.pattern, temp.patternLength, temp.patternStartIndex, temp.callback);
+                addPattern(temp.pattern, temp.patternStartIndex, temp.patternLength, temp.callback);
                 // Continue onward and add the parameter pattern.
             } else if (children == null) {
-                leaf = new TrieCompressedPath<>(pattern, patternLength, patternIndex, callback);
+                leaf = new TrieCompressedPath<>(pattern, patternIndex, patternLength, callback);
                 return;
             }
             final char character = getCharValue(pattern, patternIndex);
@@ -170,7 +170,7 @@ public abstract class TrieSearch<T> {
                 child = createNode(character);
                 expandChildArray(child);
             }
-            child.addPattern(pattern, patternLength, patternIndex + 1, callback);
+            child.addPattern(pattern, patternIndex + 1, patternLength, callback);
         }
 
         /**
@@ -215,22 +215,23 @@ public abstract class TrieSearch<T> {
 
         /**
          * This method is static and uses a loop to avoid all recursion.
-         * This is done for performance since the JVM does not do tail recursion optimization.
+         * This is done for performance since the JVM does not optimize tail recursion.
          *
          * @param startNode          Node to start the search from.
          * @param searchText         Text to search for patterns in.
-         * @param searchTextLength   Length of the search text.
-         * @param searchTextIndex    Current recursive search text index. Also, the end index of the current pattern match.
+         * @param searchTextIndex    Start index, inclusive.
+         * @param searchTextEndIndex End index, exclusive.
          * @return If any pattern matches, and it's associated callback halted the search.
          */
-        private static <T> boolean matches(final TrieNode<T> startNode, final T searchText, final int searchTextLength,
-                                           int searchTextIndex, final Object callbackParameter) {
+        private static <T> boolean matches(final TrieNode<T> startNode, final T searchText,
+                                           int searchTextIndex, final int searchTextEndIndex,
+                                           final Object callbackParameter) {
             TrieNode<T> node = startNode;
             int currentMatchLength = 0;
 
             while (true) {
                 TrieCompressedPath<T> leaf = node.leaf;
-                if (leaf != null && leaf.matches(node, searchText, searchTextLength, searchTextIndex, callbackParameter)) {
+                if (leaf != null && leaf.matches(startNode, searchText, searchTextEndIndex, searchTextIndex, callbackParameter)) {
                     return true; // Leaf exists and it matched the search text.
                 }
                 List<TriePatternMatchedCallback<T>> endOfPatternCallback = node.endOfPatternCallback;
@@ -249,7 +250,7 @@ public abstract class TrieSearch<T> {
                 if (children == null) {
                     return false; // Reached a graph end point and there's no further patterns to search.
                 }
-                if (searchTextIndex == searchTextLength) {
+                if (searchTextIndex == searchTextEndIndex) {
                     return false; // Reached end of the search text and found no matches.
                 }
 
@@ -338,7 +339,7 @@ public abstract class TrieSearch<T> {
         if (patternLength == 0) return; // Nothing to match
 
         patterns.add(pattern);
-        root.addPattern(pattern, patternLength, 0, callback);
+        root.addPattern(pattern, 0, patternLength, callback);
     }
 
     public final boolean matches(@NonNull T textToSearch) {
@@ -381,7 +382,7 @@ public abstract class TrieSearch<T> {
             return false; // No patterns were added.
         }
         for (int i = startIndex; i < endIndex; i++) {
-            if (TrieNode.matches(root, textToSearch, endIndex, i, callbackParameter)) return true;
+            if (TrieNode.matches(root, textToSearch, i, endIndex, callbackParameter)) return true;
         }
         return false;
     }
