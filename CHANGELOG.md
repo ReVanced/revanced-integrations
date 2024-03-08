@@ -1,3 +1,10 @@
+# [1.5.0-dev.2](https://github.com/ReVanced/revanced-integrations/compare/v1.5.0-dev.1...v1.5.0-dev.2) (2024-03-08)
+
+
+### Bug Fixes
+
+* **YouTube - Downloads:** Use new task context ([#583](https://github.com/ReVanced/revanced-integrations/issues/583)) ([468dfac](https://github.com/ReVanced/revanced-integrations/commit/468dfac0544e282658675a8be65b4e43aa351068))
+
 # [1.5.0-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v1.4.1-dev.4...v1.5.0-dev.1) (2024-03-04)
 
 
