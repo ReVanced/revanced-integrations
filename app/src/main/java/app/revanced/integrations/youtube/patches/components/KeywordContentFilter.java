@@ -29,7 +29,7 @@ import app.revanced.integrations.youtube.settings.Settings;
  */
 @SuppressWarnings("unused")
 @RequiresApi(api = Build.VERSION_CODES.N)
-final class HideKeywordContentFilter extends Filter {
+final class KeywordContentFilter extends Filter {
 
     /**
      * Minimum keyword/phrase length to prevent excessively broad content filtering.
@@ -113,7 +113,7 @@ final class HideKeywordContentFilter extends Filter {
         bufferSearch.addPatterns(convertStringsToBytes(keywords.toArray(new String[0])));
     }
 
-    public HideKeywordContentFilter() {
+    public KeywordContentFilter() {
         parseKeywords();
 
         if (bufferSearch.numberOfPatterns() != 0) {
