@@ -8,12 +8,11 @@ import android.os.Build;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 import app.revanced.integrations.shared.Logger;
 import app.revanced.integrations.shared.Utils;
-import app.revanced.integrations.shared.settings.StringSetting;
 import app.revanced.integrations.youtube.ByteTrieSearch;
 import app.revanced.integrations.youtube.settings.Settings;
 
@@ -26,11 +25,16 @@ import app.revanced.integrations.youtube.settings.Settings;
  * - Filtering a channel name can still show Shorts from that channel in the search results
  * - Some layout component residue will remain, such as the video chapter previews for some search results.
  * - Keywords are case sensitive, but some casing variation is manually added.
- *   (such as "Mr Beast" automatically filtering "mr beast" and "MR BEAST").
+ *   (ie: "mr beast" automatically filters "Mr Beast" and "MR BEAST").
  */
 @SuppressWarnings("unused")
 @RequiresApi(api = Build.VERSION_CODES.N)
 final class HideKeywordContentFilter extends Filter {
+
+    /**
+     * Minimum keyword/phrase length to prevent excessively broad content filtering.
+     */
+    private static final int MINIMUM_KEYWORD_LENGTH = 3;
 
     /**
      * Substrings that are always first in the path.
@@ -54,13 +58,34 @@ final class HideKeywordContentFilter extends Filter {
     private final ByteTrieSearch bufferSearch = new ByteTrieSearch();
 
     /**
-     * Minimum keyword/phrase length to prevent excessively broad content filtering.
+     * Capitalize the first letter of each word.
      */
-    private static final int MINIMUM_KEYWORD_LENGTH = 3;
+    private static String capitalizeFirstLetters(String sentence) {
+        final int delimiter = ' ';
+        // Use code points and not characters to handle unicode surrogates.
+        int[] codePoints = sentence.codePoints().toArray();
+        boolean capitalizeNext = true;
+        for (int i = 0, length = codePoints.length; i < length; i++) {
+            final int codePoint = codePoints[i];
+            if (codePoint == delimiter) {
+                capitalizeNext = true;
+            } else if (capitalizeNext) {
+                // Use title case, which better handles some foreign languages compared to uppercase.
+                codePoints[i] = Character.toTitleCase(codePoint);
+                capitalizeNext = false;
+            }
+        }
+        return new String(codePoints, 0, codePoints.length);
+    }
 
-    private static List<String> splitAndVerifyStrings(StringSetting setting) {
-        String[] split = setting.get().split("\n");
-        List<String> keywords = new ArrayList<>(split.length);
+    private void parseKeywords() {
+        String[] split = Settings.HIDE_KEYWORD_CONTENT_PHRASES.get().split("\n");
+        if (split.length == 0) {
+            return;
+        }
+
+        // Linked Set so log statement are more organized and easier to read.
+        Set<String> keywords = new LinkedHashSet<>(5 * split.length);
 
         for (String phrase : split) {
             // Remove any trailing white space the user may have accidentally included.
@@ -68,48 +93,24 @@ final class HideKeywordContentFilter extends Filter {
             if (phrase.isBlank()) continue;
 
             if (phrase.length() < MINIMUM_KEYWORD_LENGTH) {
+                // Do not reset the setting. Keep the invalid keywords so the user can fix the mistake.
                 Utils.showToastLong(str("revanced_hide_keyword_toast_invalid_length", MINIMUM_KEYWORD_LENGTH, phrase));
                 continue;
             }
             keywords.add(phrase);
+
+            // Add common casing that might appear.
+            // This could be simplified by adding case insensitive search to the prefix search,
+            // but that also brings a small performance hit.
+            // Instead add all common variations of the keywords.
+            String lowerCase = phrase.toLowerCase();
+            keywords.add(lowerCase);
+            keywords.add(capitalizeFirstLetters(lowerCase));
+            keywords.add(phrase.toUpperCase());
         }
 
-        return keywords;
-    }
-
-    private void parseKeywords() {
-        List<String> keywords = splitAndVerifyStrings(Settings.HIDE_KEYWORD_CONTENT_PHRASES);
-        if (keywords.isEmpty()) {
-            return;
-        }
-
-        // Add common casing that might appear.
-        // If a desired keyword has mixed casing (such as "Matt Whatever")
-        // the user will need to add that exact string.
-        // This could be simplified by adding case insensitive search to the prefix search,
-        // but that also brings a small performance hit.
-        List<String> modifiedKeywords = new ArrayList<>();
-        for (String keyword : keywords) {
-            modifiedKeywords.add(keyword); // Original casing as added by the user
-
-            // Add lower case and upper case variants.
-            String lowerCase = keyword.toLowerCase();
-            if (!keyword.equals(lowerCase)) {
-                modifiedKeywords.add(lowerCase);
-            }
-            String upperCase = keyword.toUpperCase();
-            if (!keyword.equals(upperCase)) {
-                modifiedKeywords.add(upperCase);
-            }
-            // Include first letter capitalization variant.
-            String sentenceCapital = Character.toUpperCase(keyword.charAt(0))
-                    + keyword.substring(1);
-            if (!sentenceCapital.equals(keyword) && !sentenceCapital.equals(upperCase)) {
-                modifiedKeywords.add(sentenceCapital);
-            }
-        }
-        Logger.printDebug(() -> "Using keywords: " + modifiedKeywords);
-        bufferSearch.addPatterns(convertStringsToBytes(modifiedKeywords.toArray(new String[0])));
+        Logger.printDebug(() -> "Using keywords: " + keywords);
+        bufferSearch.addPatterns(convertStringsToBytes(keywords.toArray(new String[0])));
     }
 
     public HideKeywordContentFilter() {
