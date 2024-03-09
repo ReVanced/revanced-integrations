@@ -68,7 +68,7 @@ final class CustomFilter extends Filter {
                 Matcher matcher = pattern.matcher(expression);
                 if (!matcher.find()) {
                     showInvalidSyntaxToast(expression);
-                    return null;
+                    continue;
                 }
 
                 final String mapKey = matcher.group(1);
@@ -79,7 +79,7 @@ final class CustomFilter extends Filter {
 
                 if (path.isBlank() || (hasBufferSymbol && bufferString.isBlank())) {
                     showInvalidSyntaxToast(expression);
-                    return null;
+                    continue;
                 }
 
                 // Use one group object for all expressions with the same path.
@@ -138,11 +138,6 @@ final class CustomFilter extends Filter {
 
     public CustomFilter() {
         Collection<CustomFilterGroup> groups = CustomFilterGroup.parseCustomFilterGroups();
-        if (groups == null) {
-            Settings.CUSTOM_FILTER_STRINGS.resetToDefault();
-            Utils.showToastLong(str("revanced_custom_filter_toast_reset"));
-            groups = Objects.requireNonNull(CustomFilterGroup.parseCustomFilterGroups());
-        }
 
         if (!groups.isEmpty()) {
             CustomFilterGroup[] groupsArray = groups.toArray(new CustomFilterGroup[0]);

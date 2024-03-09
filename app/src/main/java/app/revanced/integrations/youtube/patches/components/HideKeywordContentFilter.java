@@ -69,9 +69,7 @@ final class HideKeywordContentFilter extends Filter {
 
             if (phrase.length() < MINIMUM_KEYWORD_LENGTH) {
                 Utils.showToastLong(str("revanced_hide_keyword_toast_invalid_length", MINIMUM_KEYWORD_LENGTH, phrase));
-                Utils.showToastLong(str("revanced_hide_keyword_toast_reset"));
-                setting.resetToDefault();
-                return splitAndVerifyStrings(setting);
+                continue;
             }
             keywords.add(phrase);
         }
