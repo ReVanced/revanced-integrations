@@ -69,7 +69,7 @@ public abstract class TrieSearch<T> {
 
     static abstract class TrieNode<T> {
         /**
-         * Dummy value used for root node. Value can be anything as it's never referenced..
+         * Dummy value used for root node. Value can be anything as it's never referenced.
          */
         private static final char ROOT_NODE_CHARACTER_VALUE = 0;  // ASCII null character.
 
