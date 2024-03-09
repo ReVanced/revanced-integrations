@@ -127,8 +127,9 @@ final class KeywordContentFilter extends Filter {
             keywords.add(phrase.toUpperCase());
         }
 
-        Logger.printDebug(() -> "Using keywords: " + keywords);
         bufferSearch.addPatterns(convertStringsToBytes(keywords.toArray(new String[0])));
+
+        Logger.printDebug(() -> "Using: (" + bufferSearch.getEstimatedMemorySize() + " KB) keywords: " + keywords);
     }
 
     public KeywordContentFilter() {
