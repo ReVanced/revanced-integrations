@@ -1,3 +1,10 @@
+# [1.5.0-dev.3](https://github.com/ReVanced/revanced-integrations/compare/v1.5.0-dev.2...v1.5.0-dev.3) (2024-03-09)
+
+
+### Bug Fixes
+
+* **YouTube - Disable suggested video end screen:** Disable by default to fix autoplay issues ([#578](https://github.com/ReVanced/revanced-integrations/issues/578)) ([b9c1eec](https://github.com/ReVanced/revanced-integrations/commit/b9c1eec69fab64f213dd77d1f932e3244d81ab2d))
+
 # [1.5.0-dev.2](https://github.com/ReVanced/revanced-integrations/compare/v1.5.0-dev.1...v1.5.0-dev.2) (2024-03-08)
 
 
