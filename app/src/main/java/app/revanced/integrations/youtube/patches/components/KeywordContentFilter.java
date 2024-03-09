@@ -58,9 +58,27 @@ final class KeywordContentFilter extends Filter {
     private final ByteTrieSearch bufferSearch = new ByteTrieSearch();
 
     /**
-     * Capitalize the first letter of each word.
+     * Change first letter of the first word to use title case.
      */
-    private static String capitalizeFirstLetters(String sentence) {
+    private static String titleCaseFirstLetterOnly(String sentence) {
+        if (sentence.isEmpty()) {
+            return sentence;
+        }
+        final int firstCodePoint = sentence.codePointAt(0);
+        // In some non English languages title case is different than upper case.
+        return new StringBuilder()
+                .appendCodePoint(Character.toTitleCase(firstCodePoint))
+                .append(sentence, Character.charCount(firstCodePoint), sentence.length())
+                .toString();
+    }
+
+    /**
+     * Uppercase the first letter of each word.
+     */
+    private static String capitalizeAllFirstLetters(String sentence) {
+        if (sentence.isEmpty()) {
+            return sentence;
+        }
         final int delimiter = ' ';
         // Use code points and not characters to handle unicode surrogates.
         int[] codePoints = sentence.codePoints().toArray();
@@ -70,8 +88,7 @@ final class KeywordContentFilter extends Filter {
             if (codePoint == delimiter) {
                 capitalizeNext = true;
             } else if (capitalizeNext) {
-                // Use title case, which better handles some foreign languages compared to uppercase.
-                codePoints[i] = Character.toTitleCase(codePoint);
+                codePoints[i] = Character.toUpperCase(codePoint);
                 capitalizeNext = false;
             }
         }
@@ -85,7 +102,7 @@ final class KeywordContentFilter extends Filter {
         }
 
         // Linked Set so log statement are more organized and easier to read.
-        Set<String> keywords = new LinkedHashSet<>(5 * split.length);
+        Set<String> keywords = new LinkedHashSet<>(10 * split.length);
 
         for (String phrase : split) {
             // Remove any trailing white space the user may have accidentally included.
@@ -105,7 +122,8 @@ final class KeywordContentFilter extends Filter {
             // Instead add all common variations of the keywords.
             String lowerCase = phrase.toLowerCase();
             keywords.add(lowerCase);
-            keywords.add(capitalizeFirstLetters(lowerCase));
+            keywords.add(titleCaseFirstLetterOnly(phrase));
+            keywords.add(capitalizeAllFirstLetters(lowerCase));
             keywords.add(phrase.toUpperCase());
         }
 
