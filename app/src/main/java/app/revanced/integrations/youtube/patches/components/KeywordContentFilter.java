@@ -44,6 +44,7 @@ final class KeywordContentFilter extends Filter {
             "home_video_with_content.eml",
             "search_video_with_context.eml",
             "related_video_with_content",
+            "compact_video.eml",
             "inline_shorts",
             "shorts_video_cell",
             "shorts_pivot_item.eml");
