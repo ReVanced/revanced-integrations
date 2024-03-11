@@ -21,9 +21,14 @@ import app.revanced.integrations.youtube.settings.Settings;
  * Allows hiding home feed and search results based on keywords and/or channel names.
  *
  * Limitations:
- * - Searching for a keyword phrase will give no search results
- * - Filtering a channel name can still show Shorts from that channel in the search results
+ * - Searching for a keyword phrase will give no search results.
+ *   This is because the buffer for each video contains the text the user searched for, and everything
+ *   will be filtered away (even if that video title/channel does not contain any keywords).
+ * - Filtering a channel name can still show Shorts from that channel in the search results.
+ *   The most common Shorts layouts do not include the channel name, so they will not be filtered.
  * - Some layout component residue will remain, such as the video chapter previews for some search results.
+ *   These components do not include the video title or channel name, and they
+ *   appear outside the filtered components so they are not caught.
  * - Keywords are case sensitive, but some casing variation is manually added.
  *   (ie: "mr beast" automatically filters "Mr Beast" and "MR BEAST").
  */
@@ -118,9 +123,15 @@ final class KeywordContentFilter extends Filter {
             keywords.add(phrase);
 
             // Add common casing that might appear.
+            //
             // This could be simplified by adding case insensitive search to the prefix search,
-            // but that also brings a small performance hit.
-            // Instead add all common variations of the keywords.
+            // which is very simple to add to StringTreSearch for Unicode and ByteTrieSearch for ASCII.
+            //
+            // But to support Unicode with ByteTrieSearch would require major changes because
+            // UTF-8 characters can be different byte lengths, which does
+            // not allow comparing two different byte arrays using simple plain array indexes.
+            //
+            // Instead add all common case variations of the words.
             String lowerCase = phrase.toLowerCase();
             keywords.add(lowerCase);
             keywords.add(titleCaseFirstLetterOnly(phrase));
