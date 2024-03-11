@@ -59,7 +59,8 @@ final class KeywordContentFilter extends Filter {
      */
     private final StringFilterGroup containsFilter = new StringFilterGroup(
             Settings.HIDE_KEYWORD_CONTENT,
-            "modern_type_shelf_header_content.eml");
+            "modern_type_shelf_header_content.eml",
+            "shorts_lockup_cell.eml"); // part of 'shorts_shelf_carousel.eml' and usually shown to tablet layout.
 
     private final ByteTrieSearch bufferSearch = new ByteTrieSearch();
 
