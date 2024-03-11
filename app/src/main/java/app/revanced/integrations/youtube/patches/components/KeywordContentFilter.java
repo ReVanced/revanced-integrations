@@ -62,7 +62,14 @@ final class KeywordContentFilter extends Filter {
             "modern_type_shelf_header_content.eml",
             "shorts_lockup_cell.eml"); // part of 'shorts_shelf_carousel.eml' and usually shown to tablet layout.
 
-    private final ByteTrieSearch bufferSearch = new ByteTrieSearch();
+    /**
+     * The last value of {@link Settings#HIDE_KEYWORD_CONTENT_PHRASES}
+     * parsed and loaded into {@link #bufferSearch}.
+     * Used to allow changing the keywords without restarting the app.
+     */
+    private volatile String lastKeywordPhrasesParsed;
+
+    private volatile ByteTrieSearch bufferSearch;
 
     /**
      * Change first letter of the first word to use title case.
@@ -102,56 +109,58 @@ final class KeywordContentFilter extends Filter {
         return new String(codePoints, 0, codePoints.length);
     }
 
-    private void parseKeywords() {
-        String[] split = Settings.HIDE_KEYWORD_CONTENT_PHRASES.get().split("\n");
-        if (split.length == 0) {
-            return;
+    private synchronized void parseKeywords() { // Must be synchronized since Litho is multithreaded.
+        String rawKeywords = Settings.HIDE_KEYWORD_CONTENT_PHRASES.get();
+        if (rawKeywords == lastKeywordPhrasesParsed) {
+            Logger.printDebug(() -> "Using previously initialized search");
+            return; // Another thread won the race, and search is already initialized.
         }
 
-        // Linked Set so log statement are more organized and easier to read.
-        Set<String> keywords = new LinkedHashSet<>(10 * split.length);
+        ByteTrieSearch search = new ByteTrieSearch();
+        String[] split = rawKeywords.split("\n");
+        if (split.length != 0) {
+            // Linked Set so log statement are more organized and easier to read.
+            Set<String> keywords = new LinkedHashSet<>(10 * split.length);
 
-        for (String phrase : split) {
-            // Remove any trailing white space the user may have accidentally included.
-            phrase = phrase.stripTrailing();
-            if (phrase.isBlank()) continue;
+            for (String phrase : split) {
+                // Remove any trailing white space the user may have accidentally included.
+                phrase = phrase.stripTrailing();
+                if (phrase.isBlank()) continue;
 
-            if (phrase.length() < MINIMUM_KEYWORD_LENGTH) {
-                // Do not reset the setting. Keep the invalid keywords so the user can fix the mistake.
-                Utils.showToastLong(str("revanced_hide_keyword_toast_invalid_length", MINIMUM_KEYWORD_LENGTH, phrase));
-                continue;
+                if (phrase.length() < MINIMUM_KEYWORD_LENGTH) {
+                    // Do not reset the setting. Keep the invalid keywords so the user can fix the mistake.
+                    Utils.showToastLong(str("revanced_hide_keyword_toast_invalid_length", MINIMUM_KEYWORD_LENGTH, phrase));
+                    continue;
+                }
+                keywords.add(phrase);
+
+                // Add common casing that might appear.
+                //
+                // This could be simplified by adding case insensitive search to the prefix search,
+                // which is very simple to add to StringTreSearch for Unicode and ByteTrieSearch for ASCII.
+                //
+                // But to support Unicode with ByteTrieSearch would require major changes because
+                // UTF-8 characters can be different byte lengths, which does
+                // not allow comparing two different byte arrays using simple plain array indexes.
+                //
+                // Instead add all common case variations of the words.
+                keywords.add(phrase.toLowerCase());
+                keywords.add(titleCaseFirstWordOnly(phrase));
+                keywords.add(capitalizeAllFirstLetters(phrase));
+                keywords.add(phrase.toUpperCase());
             }
-            keywords.add(phrase);
 
-            // Add common casing that might appear.
-            //
-            // This could be simplified by adding case insensitive search to the prefix search,
-            // which is very simple to add to StringTreSearch for Unicode and ByteTrieSearch for ASCII.
-            //
-            // But to support Unicode with ByteTrieSearch would require major changes because
-            // UTF-8 characters can be different byte lengths, which does
-            // not allow comparing two different byte arrays using simple plain array indexes.
-            //
-            // Instead add all common case variations of the words.
-            String lowerCase = phrase.toLowerCase();
-            keywords.add(lowerCase);
-            keywords.add(titleCaseFirstWordOnly(phrase));
-            keywords.add(capitalizeAllFirstLetters(lowerCase));
-            keywords.add(phrase.toUpperCase());
+            search.addPatterns(convertStringsToBytes(keywords.toArray(new String[0])));
+            Logger.printDebug(() -> "Search using: (" + search.getEstimatedMemorySize() + " KB) keywords: " + keywords);
         }
 
-        bufferSearch.addPatterns(convertStringsToBytes(keywords.toArray(new String[0])));
-
-        Logger.printDebug(() -> "Using: (" + bufferSearch.getEstimatedMemorySize() + " KB) keywords: " + keywords);
+        bufferSearch = search;
+        lastKeywordPhrasesParsed = rawKeywords; // Must set last.
     }
 
     public KeywordContentFilter() {
-        parseKeywords();
-
-        if (bufferSearch.numberOfPatterns() != 0) {
-            // Add the callbacks only if there are keywords to search.
-            addPathCallbacks(startsWithFilter, containsFilter);
-        }
+        // Keywords are parsed on first call to isFiltered()
+        addPathCallbacks(startsWithFilter, containsFilter);
     }
 
     @Override
@@ -159,6 +168,11 @@ final class KeywordContentFilter extends Filter {
                               StringFilterGroup matchedGroup, FilterContentType contentType, int contentIndex) {
         if (contentIndex != 0 && matchedGroup == startsWithFilter) {
             return false;
+        }
+        // Field is intentionally compared using reference equality.
+        if (Settings.HIDE_KEYWORD_CONTENT_PHRASES.get() != lastKeywordPhrasesParsed) {
+            // User changed the keywords.
+            parseKeywords();
         }
         if (!bufferSearch.matches(protobufBufferArray)) {
             return false;
