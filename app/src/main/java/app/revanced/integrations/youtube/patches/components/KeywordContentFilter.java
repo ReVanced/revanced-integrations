@@ -67,7 +67,7 @@ final class KeywordContentFilter extends Filter {
     /**
      * Change first letter of the first word to use title case.
      */
-    private static String titleCaseFirstLetterOnly(String sentence) {
+    private static String titleCaseFirstWordOnly(String sentence) {
         if (sentence.isEmpty()) {
             return sentence;
         }
@@ -135,7 +135,7 @@ final class KeywordContentFilter extends Filter {
             // Instead add all common case variations of the words.
             String lowerCase = phrase.toLowerCase();
             keywords.add(lowerCase);
-            keywords.add(titleCaseFirstLetterOnly(phrase));
+            keywords.add(titleCaseFirstWordOnly(phrase));
             keywords.add(capitalizeAllFirstLetters(lowerCase));
             keywords.add(phrase.toUpperCase());
         }
