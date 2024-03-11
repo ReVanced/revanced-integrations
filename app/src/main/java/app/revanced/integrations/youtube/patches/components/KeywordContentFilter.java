@@ -46,9 +46,9 @@ final class KeywordContentFilter extends Filter {
      */
     private final StringFilterGroup startsWithFilter = new StringFilterGroup(
             Settings.HIDE_KEYWORD_CONTENT,
-            "home_video_with_content.eml",
+            "home_video_with_context.eml",
             "search_video_with_context.eml",
-            "related_video_with_content",
+            "related_video_with_context",
             "compact_video.eml",
             "inline_shorts",
             "shorts_video_cell",
