@@ -1,3 +1,10 @@
+# [1.5.0-dev.4](https://github.com/ReVanced/revanced-integrations/compare/v1.5.0-dev.3...v1.5.0-dev.4) (2024-03-11)
+
+
+### Bug Fixes
+
+* **YouTube - HDR auto brightness:** Remove non functional and obsolete patch ([#585](https://github.com/ReVanced/revanced-integrations/issues/585)) ([b060732](https://github.com/ReVanced/revanced-integrations/commit/b060732e861b011cac8737ed597385a3315f6057))
+
 # [1.5.0-dev.3](https://github.com/ReVanced/revanced-integrations/compare/v1.5.0-dev.2...v1.5.0-dev.3) (2024-03-09)
 
 
