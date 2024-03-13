@@ -59,8 +59,12 @@ final class KeywordContentFilter extends Filter {
      */
     private final StringFilterGroup containsFilter = new StringFilterGroup(
             Settings.HIDE_KEYWORD_CONTENT,
-            "modern_type_shelf_header_content.eml",
-            "shorts_lockup_cell.eml"); // part of 'shorts_shelf_carousel.eml' and usually shown to tablet layout.
+            "modern_type_shelf_header_content.eml"
+            // Part of 'shorts_shelf_carousel.eml' and usually shown to tablet layout.
+            // For now, do not filter, as this is also used in the subscription feed
+            // And this feature is presented as filtering only the home and search.
+            // "shorts_lockup_cell.eml"
+    );
 
     /**
      * The last value of {@link Settings#HIDE_KEYWORD_CONTENT_PHRASES}
