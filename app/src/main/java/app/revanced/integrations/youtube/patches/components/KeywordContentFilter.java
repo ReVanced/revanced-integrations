@@ -2,6 +2,7 @@ package app.revanced.integrations.youtube.patches.components;
 
 import static app.revanced.integrations.shared.StringRef.str;
 import static app.revanced.integrations.youtube.ByteTrieSearch.convertStringsToBytes;
+import static app.revanced.integrations.youtube.patches.NavigationButtonsPatch.NavigationButton;
 
 import android.os.Build;
 
@@ -14,7 +15,9 @@ import java.util.Set;
 import app.revanced.integrations.shared.Logger;
 import app.revanced.integrations.shared.Utils;
 import app.revanced.integrations.youtube.ByteTrieSearch;
+import app.revanced.integrations.youtube.patches.NavigationButtonsPatch;
 import app.revanced.integrations.youtube.settings.Settings;
+import app.revanced.integrations.youtube.shared.PlayerType;
 
 /**
  * <pre>
@@ -45,25 +48,24 @@ final class KeywordContentFilter extends Filter {
      * Substrings that are always first in the path.
      */
     private final StringFilterGroup startsWithFilter = new StringFilterGroup(
-            Settings.HIDE_KEYWORD_CONTENT,
+            null, // Multiple settings are used and must be individually checked if active.
             "home_video_with_context.eml",
             "search_video_with_context.eml",
+            "video_with_context.eml", // Subscription tab videos.
             "related_video_with_context",
             "compact_video.eml",
             "inline_shorts",
             "shorts_video_cell",
-            "shorts_pivot_item.eml");
+            "shorts_pivot_item.eml"
+    );
 
     /**
      * Substrings that are never at the start of the path.
      */
     private final StringFilterGroup containsFilter = new StringFilterGroup(
-            Settings.HIDE_KEYWORD_CONTENT,
-            "modern_type_shelf_header_content.eml"
-            // Part of 'shorts_shelf_carousel.eml' and usually shown to tablet layout.
-            // For now, do not filter, as this is also used in the subscription feed
-            // And this feature is presented as filtering only the home and search.
-            // "shorts_lockup_cell.eml"
+            null,
+            "modern_type_shelf_header_content.eml",
+             "shorts_lockup_cell.eml" // Part of 'shorts_shelf_carousel.eml'
     );
 
     /**
@@ -113,7 +115,7 @@ final class KeywordContentFilter extends Filter {
         return new String(codePoints, 0, codePoints.length);
     }
 
-    private synchronized void parseKeywords() { // Must be synchronized since Litho is multithreaded.
+    private synchronized void parseKeywords() { // Must be synchronized since Litho is multi-threaded.
         String rawKeywords = Settings.HIDE_KEYWORD_CONTENT_PHRASES.get();
         if (rawKeywords == lastKeywordPhrasesParsed) {
             Logger.printDebug(() -> "Using previously initialized search");
@@ -167,20 +169,59 @@ final class KeywordContentFilter extends Filter {
         addPathCallbacks(startsWithFilter, containsFilter);
     }
 
+    private static void logNavigationState(String state) {
+        // Enable locally to debug filtering. Default off to reduce log spam.
+        final boolean LOG_NAVIGATION_STATE = false;
+        if (LOG_NAVIGATION_STATE) {
+            Logger.printDebug(() -> "Navigation state: " + state);
+        }
+    }
+
     @Override
     public boolean isFiltered(@Nullable String identifier, String path, byte[] protobufBufferArray,
                               StringFilterGroup matchedGroup, FilterContentType contentType, int contentIndex) {
         if (contentIndex != 0 && matchedGroup == startsWithFilter) {
             return false;
         }
+
+        if (NavigationButtonsPatch.isSearchBarActive()) {
+            // Search bar can be active with almost any tab active.
+            if (!Settings.HIDE_KEYWORD_CONTENT_SEARCH.get()) {
+                return false;
+            }
+            logNavigationState("Search");
+        } else if (PlayerType.getCurrent().isMaximizedOrFullscreen()) {
+            // For now, consider the under video results the same as the home feed.
+            if (!Settings.HIDE_KEYWORD_CONTENT_HOME.get()) {
+                return false;
+            }
+            logNavigationState("Player active");
+        } else if (NavigationButton.HOME.isActive()) {
+            // Could use a Switch statement, but there is only 2 tabs of interest.
+            if (!Settings.HIDE_KEYWORD_CONTENT_HOME.get()) {
+                return false;
+            }
+            logNavigationState("Home tab");
+        } else if (NavigationButton.SUBSCRIPTIONS.isActive()) {
+            if (!Settings.HIDE_KEYWORD_CONTENT_HOME.get()) {
+                return false;
+            }
+            logNavigationState("Subscription tab");
+        } else {
+            logNavigationState("Ignored tab");
+            return false; // User is in the Library or Notifications tab.
+        }
+
         // Field is intentionally compared using reference equality.
         if (Settings.HIDE_KEYWORD_CONTENT_PHRASES.get() != lastKeywordPhrasesParsed) {
             // User changed the keywords.
             parseKeywords();
         }
+
         if (!bufferSearch.matches(protobufBufferArray)) {
             return false;
         }
+
         return super.isFiltered(identifier, path, protobufBufferArray, matchedGroup, contentType, contentIndex);
     }
 }
