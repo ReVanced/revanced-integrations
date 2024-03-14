@@ -2,7 +2,7 @@ package app.revanced.integrations.youtube.patches.components;
 
 import static app.revanced.integrations.shared.StringRef.str;
 import static app.revanced.integrations.youtube.ByteTrieSearch.convertStringsToBytes;
-import static app.revanced.integrations.youtube.patches.NavigationButtonsPatch.NavigationButton;
+import static app.revanced.integrations.youtube.shared.NavigationBar.NavigationButton;
 
 import android.os.Build;
 
@@ -15,7 +15,7 @@ import java.util.Set;
 import app.revanced.integrations.shared.Logger;
 import app.revanced.integrations.shared.Utils;
 import app.revanced.integrations.youtube.ByteTrieSearch;
-import app.revanced.integrations.youtube.patches.NavigationButtonsPatch;
+import app.revanced.integrations.youtube.shared.NavigationBar;
 import app.revanced.integrations.youtube.settings.Settings;
 import app.revanced.integrations.youtube.shared.PlayerType;
 
@@ -172,6 +172,7 @@ final class KeywordContentFilter extends Filter {
     private static void logNavigationState(String state) {
         // Enable locally to debug filtering. Default off to reduce log spam.
         final boolean LOG_NAVIGATION_STATE = false;
+        // noinspection ConstantValue
         if (LOG_NAVIGATION_STATE) {
             Logger.printDebug(() -> "Navigation state: " + state);
         }
@@ -184,7 +185,7 @@ final class KeywordContentFilter extends Filter {
             return false;
         }
 
-        if (NavigationButtonsPatch.isSearchBarActive()) {
+        if (NavigationBar.isSearchBarActive()) {
             // Search bar can be active with almost any tab active.
             if (!Settings.HIDE_KEYWORD_CONTENT_SEARCH.get()) {
                 return false;

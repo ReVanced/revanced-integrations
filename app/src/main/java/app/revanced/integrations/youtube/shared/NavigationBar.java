@@ -1,4 +1,4 @@
-package app.revanced.integrations.youtube.patches;
+package app.revanced.integrations.youtube.shared;
 
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,16 +13,7 @@ import app.revanced.integrations.shared.Utils;
 import app.revanced.integrations.youtube.settings.Settings;
 
 @SuppressWarnings("unused")
-public final class NavigationButtonsPatch {
-    private static final Boolean SWITCH_CREATE_WITH_NOTIFICATIONS_BUTTON
-            = Settings.SWITCH_CREATE_WITH_NOTIFICATIONS_BUTTON.get();
-    private static final Boolean HIDE_CREATE_BUTTON = Settings.HIDE_CREATE_BUTTON.get();
-
-    /**
-     * Last YT navigation enum loaded.  Not necessarily the active navigation tab.
-     */
-    private static volatile Enum lastYTAppNavigationEnum;
-
+public final class NavigationBar {
     private static volatile boolean searchbarIsActive;
 
     /**
@@ -42,6 +33,12 @@ public final class NavigationButtonsPatch {
         return searchbarIsActive;
     }
 
+
+    /**
+     * Last YT navigation enum loaded.  Not necessarily the active navigation tab.
+     */
+    private static volatile Enum lastYTAppNavigationEnum;
+
     /**
      * Injection point.
      */
@@ -51,20 +48,8 @@ public final class NavigationButtonsPatch {
 
     /**
      * Injection point.
-     */
-    public static void createTabLoaded(final View view) {
-        view.setVisibility(HIDE_CREATE_BUTTON ? View.GONE : View.VISIBLE);
-    }
-
-    /**
-     * Injection point.
-     */
-    public static boolean switchCreateWithNotificationButton() {
-        return SWITCH_CREATE_WITH_NOTIFICATIONS_BUTTON;
-    }
-
-    /**
-     * Injection point.
+     *
+     * Called for most, but not all, of the navigation tabs.
      */
     public static void navigationTabLoaded(final View navigationButtonGroup) {
         try {
@@ -73,13 +58,12 @@ public final class NavigationButtonsPatch {
             String lastYTEnumName = lastYTAppNavigationEnum.name();
             for (NavigationButton button : NavigationButton.values()) {
                 if (button.ytEnumName.equals(lastYTEnumName)) {
-                    if (button.shouldHide) navigationButtonGroup.setVisibility(View.GONE);
-
                     ImageView imageView = Utils.getChildView((ViewGroup) navigationButtonGroup,
                             true, view -> view instanceof ImageView);
                     if (imageView != null) {
                         Logger.printDebug(() -> "navigationTabLoaded: " + lastYTEnumName);
                         button.imageViewRef = new WeakReference<>(imageView);
+                        navigationTabCreatedCallback(button, navigationButtonGroup);
                         return;
                     }
                 }
@@ -95,23 +79,42 @@ public final class NavigationButtonsPatch {
         }
     }
 
+    /**
+     * Injection point.
+     *
+     * Unique hook just for the create button.
+     */
+    public static void createTabLoaded(View view) {
+        navigationTabCreatedCallback(NavigationButton.CREATE, view);
+    }
+
+    private static void navigationTabCreatedCallback(NavigationBar.NavigationButton button, View tabView) {
+        // Code is added during patching.
+    }
+
     public enum NavigationButton {
-        HOME("PIVOT_HOME", Settings.HIDE_HOME_BUTTON.get()),
-        SHORTS("TAB_SHORTS", Settings.HIDE_SHORTS_BUTTON.get()),
-        SUBSCRIPTIONS("PIVOT_SUBSCRIPTIONS", Settings.HIDE_SUBSCRIPTIONS_BUTTON.get()),
+        HOME("PIVOT_HOME"),
+        SHORTS("TAB_SHORTS"),
+        /**
+         * Create new video tab, and has no YT enum name.
+         *
+         * {@link #isActive()} always returns false, even if the create video UI is on screen.
+         */
+        CREATE(""),
+        SUBSCRIPTIONS("PIVOT_SUBSCRIPTIONS"),
         /**
          * Notifications tab.  Only present when
          * {@link Settings#SWITCH_CREATE_WITH_NOTIFICATIONS_BUTTON} is active.
          */
-        ACTIVITY("TAB_ACTIVITY", false),
+        ACTIVITY("TAB_ACTIVITY"),
         /**
          * Incognito mode Library/You tab.
          */
-        INCOGNITO("INCOGNITO_CIRCLE", false),
+        INCOGNITO("INCOGNITO_CIRCLE"),
         /**
          * Old library tab (pre 'You' layout).
          */
-        VIDEO_LIBRARY("VIDEO_LIBRARY_WHITE", false);
+        VIDEO_LIBRARY("VIDEO_LIBRARY_WHITE");
 
         /**
          * @return The active navigation tab. If the library tab is active this returns NULL.
@@ -128,12 +131,10 @@ public final class NavigationButtonsPatch {
          * YouTube enum name for this tab.
          */
         private final String ytEnumName;
-        private final boolean shouldHide;
         private volatile WeakReference<ImageView> imageViewRef = new WeakReference<>(null);
 
-        NavigationButton(String ytEnumName, boolean shouldHide) {
+        NavigationButton(String ytEnumName) {
             this.ytEnumName = ytEnumName;
-            this.shouldHide = shouldHide;
         }
 
         public boolean isActive() {
