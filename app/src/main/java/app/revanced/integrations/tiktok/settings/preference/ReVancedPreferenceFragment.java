@@ -18,7 +18,9 @@ import org.jetbrains.annotations.NotNull;
 public class ReVancedPreferenceFragment extends AbstractPreferenceFragment {
 
     @Override
-    protected void handlePreference(@NonNull @NotNull Preference pref, @NonNull @NotNull Setting<?> setting, boolean syncSetting, boolean applySettingToPreference) {
+    protected void syncSettingWithPreference(@NonNull @NotNull Preference pref,
+                                             @NonNull @NotNull Setting<?> setting,
+                                             boolean applySettingToPreference) {
         if (pref instanceof RangeValuePreference) {
             RangeValuePreference rangeValuePref = (RangeValuePreference) pref;
             Setting.privateSetValueFromString(setting, rangeValuePref.getValue());
@@ -26,7 +28,7 @@ public class ReVancedPreferenceFragment extends AbstractPreferenceFragment {
             DownloadPathPreference downloadPathPref = (DownloadPathPreference) pref;
             Setting.privateSetValueFromString(setting, downloadPathPref.getValue());
         } else {
-            super.handlePreference(pref, setting, syncSetting, applySettingToPreference);
+            super.syncSettingWithPreference(pref, setting, applySettingToPreference);
         }
     }
 

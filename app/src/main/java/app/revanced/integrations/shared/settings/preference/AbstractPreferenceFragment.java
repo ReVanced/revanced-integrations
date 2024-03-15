@@ -155,12 +155,12 @@ public abstract class AbstractPreferenceFragment extends PreferenceFragment {
      * Handles syncing a UI Preference with the {@link Setting} that backs it.
      * If needed, subclasses can override this to handle additional UI Preference types.
      *
-     * @param syncSetting If the UI should be synced {@link Setting} <-> Preference
      * @param applySettingToPreference If true, then apply {@link Setting} -> Preference.
      *                                 If false, then apply {@link Setting} <- Preference.
      */
-    protected void handlePreference(@NonNull Preference pref, @NonNull Setting<?> setting,
-                                    boolean syncSetting, boolean applySettingToPreference) {
+    protected void syncSettingWithPreference(@NonNull Preference pref,
+                                             @NonNull Setting<?> setting,
+                                             boolean applySettingToPreference) {
         if (pref instanceof SwitchPreference) {
             SwitchPreference switchPref = (SwitchPreference) pref;
             BooleanSetting boolSetting = (BooleanSetting) setting;
@@ -186,7 +186,6 @@ public abstract class AbstractPreferenceFragment extends PreferenceFragment {
             updateListPreferenceSummary(listPref, setting);
         } else {
             Logger.printException(() -> "Setting cannot be handled: " + pref.getClass() + ": " + pref);
-            return;
         }
     }
 
@@ -198,13 +197,13 @@ public abstract class AbstractPreferenceFragment extends PreferenceFragment {
      *                                 If false, then apply {@link Setting} <- Preference.
      */
     private void updatePreference(@NonNull Preference pref, @NonNull Setting<?> setting,
-                                    boolean syncSetting, boolean applySettingToPreference) {
+                                  boolean syncSetting, boolean applySettingToPreference) {
         if (!syncSetting && applySettingToPreference) {
             throw new IllegalArgumentException();
         }
 
         if (syncSetting) {
-            handlePreference(pref, setting, true, applySettingToPreference);
+            syncSettingWithPreference(pref, setting, applySettingToPreference);
         }
 
         updatePreferenceAvailability(pref, setting);
