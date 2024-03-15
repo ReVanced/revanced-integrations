@@ -1,3 +1,10 @@
+# [1.5.0-dev.5](https://github.com/ReVanced/revanced-integrations/compare/v1.5.0-dev.4...v1.5.0-dev.5) (2024-03-15)
+
+
+### Features
+
+* **YouTube - Downloads:** Use external downloader when selecting 'Download' in home feed flyout menu ([#587](https://github.com/ReVanced/revanced-integrations/issues/587)) ([254da31](https://github.com/ReVanced/revanced-integrations/commit/254da31d16c39781f46e1cdea1e9ba22e2fce6d1))
+
 # [1.5.0-dev.4](https://github.com/ReVanced/revanced-integrations/compare/v1.5.0-dev.3...v1.5.0-dev.4) (2024-03-11)
 
 
