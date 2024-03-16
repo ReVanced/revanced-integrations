@@ -1,3 +1,10 @@
+# [1.5.0-dev.6](https://github.com/ReVanced/revanced-integrations/compare/v1.5.0-dev.5...v1.5.0-dev.6) (2024-03-16)
+
+
+### Bug Fixes
+
+* Handle custom preferences ([#586](https://github.com/ReVanced/revanced-integrations/issues/586)) ([ad477e4](https://github.com/ReVanced/revanced-integrations/commit/ad477e4859ef69beda297f7a2a6c29a918077628))
+
 # [1.5.0-dev.5](https://github.com/ReVanced/revanced-integrations/compare/v1.5.0-dev.4...v1.5.0-dev.5) (2024-03-15)
 
 
