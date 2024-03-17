@@ -5,13 +5,14 @@ import static app.revanced.integrations.shared.settings.BaseSettings.DEBUG_STACK
 import static app.revanced.integrations.shared.settings.BaseSettings.DEBUG_TOAST_ON_ERROR;
 
 import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import app.revanced.integrations.shared.settings.BaseSettings;
-
 import java.io.PrintWriter;
 import java.io.StringWriter;
+
+import app.revanced.integrations.shared.settings.BaseSettings;
 
 public class Logger {
 
@@ -137,8 +138,15 @@ public class Logger {
     }
 
     /**
-     * Logging to use if {@link BaseSettings#DEBUG} or {@link Utils#context} may not be initialized.
-     * Always logs even if Debugging is not enabled.
+     * Logging to use if {@link BaseSettings#DEBUG} or {@link Utils#getContext()} may not be initialized.
+     * Normally this method should not be used.
+     */
+    public static void initializationInfo(@NonNull Class<?> callingClass, @NonNull String message) {
+        Log.i(REVANCED_LOG_PREFIX + callingClass.getSimpleName(), message);
+    }
+
+    /**
+     * Logging to use if {@link BaseSettings#DEBUG} or {@link Utils#getContext()} may not be initialized.
      * Normally this method should not be used.
      */
     public static void initializationError(@NonNull Class<?> callingClass, @NonNull String message, @Nullable Exception ex) {
