@@ -6,7 +6,7 @@ import app.revanced.integrations.youtube.settings.Settings;
 import app.revanced.integrations.youtube.shared.NavigationBar;
 
 @SuppressWarnings("unused")
-public final class HideNavigationButtonsPatch {
+public final class NavigationButtonsPatch {
     private static final Boolean HIDE_HOME_BUTTON = Settings.HIDE_HOME_BUTTON.get();
     private static final Boolean HIDE_CREATE_BUTTON = Settings.HIDE_CREATE_BUTTON.get();
     private static final Boolean HIDE_SHORTS_BUTTON = Settings.HIDE_SHORTS_BUTTON.get();
