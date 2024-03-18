@@ -229,7 +229,7 @@ public class Utils {
 
     public static Context getContext() {
         if (context == null) {
-            Logger.initializationError(Utils.class, "Context is null, returning null!",  null);
+            Logger.initializationException(Utils.class, "Context is null, returning null!",  null);
         }
         return context;
     }
@@ -290,7 +290,7 @@ public class Utils {
         Objects.requireNonNull(messageToToast);
         runOnMainThreadNowOrLater(() -> {
                     if (context == null) {
-                        Logger.initializationError(Utils.class, "Cannot show toast (context is null): " + messageToToast, null);
+                        Logger.initializationException(Utils.class, "Cannot show toast (context is null): " + messageToToast, null);
                     } else {
                         Logger.printDebug(() -> "Showing toast: " + messageToToast);
                         Toast.makeText(context, messageToToast, toastDuration).show();
