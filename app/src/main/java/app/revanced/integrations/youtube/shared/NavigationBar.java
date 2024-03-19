@@ -98,7 +98,7 @@ public final class NavigationBar {
         /**
          * Create new video tab.
          *
-         * {@link #isActive()} always returns false, even if the create video UI is on screen.
+         * {@link #isSelected()} always returns false, even if the create video UI is on screen.
          */
         CREATE("CREATION_TAB_LARGE"),
         SUBSCRIPTIONS("PIVOT_SUBSCRIPTIONS"),
@@ -117,12 +117,12 @@ public final class NavigationBar {
         VIDEO_LIBRARY("VIDEO_LIBRARY_WHITE");
 
         /**
-         * @return The active navigation tab. If the library tab is active this returns NULL.
+         * @return The active navigation tab. If the library tab is selected this returns NULL.
          */
         @Nullable
         public static NavigationButton getActiveNavigationButton() {
             for (NavigationButton button : values()) {
-                if (button.isActive()) return button;
+                if (button.isSelected()) return button;
             }
             return null;
         }
@@ -137,7 +137,7 @@ public final class NavigationBar {
             this.ytEnumName = ytEnumName;
         }
 
-        public boolean isActive() {
+        public boolean isSelected() {
             ImageView view = imageViewRef.get();
             return view != null && view.isSelected();
         }

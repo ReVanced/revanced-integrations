@@ -197,13 +197,13 @@ final class KeywordContentFilter extends Filter {
                 return false;
             }
             logNavigationState("Player active");
-        } else if (NavigationButton.HOME.isActive()) {
+        } else if (NavigationButton.HOME.isSelected()) {
             // Could use a Switch statement, but there is only 2 tabs of interest.
             if (!Settings.HIDE_KEYWORD_CONTENT_HOME.get()) {
                 return false;
             }
             logNavigationState("Home tab");
-        } else if (NavigationButton.SUBSCRIPTIONS.isActive()) {
+        } else if (NavigationButton.SUBSCRIPTIONS.isSelected()) {
             if (!Settings.HIDE_KEYWORD_CONTENT_HOME.get()) {
                 return false;
             }
