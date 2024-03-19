@@ -34,6 +34,9 @@ import app.revanced.integrations.youtube.shared.PlayerType;
  *   appear outside the filtered components so they are not caught.
  * - Keywords are case sensitive, but some casing variation is manually added.
  *   (ie: "mr beast" automatically filters "Mr Beast" and "MR BEAST").
+ * - Keywords present in the layout or video data cannot be used as filters, otherwise all videos
+ *   will always be hidden.  This patch checks for some words a user might enter,
+ *   but some keywords will still hide all videos.
  */
 @SuppressWarnings("unused")
 @RequiresApi(api = Build.VERSION_CODES.N)
@@ -43,6 +46,23 @@ final class KeywordContentFilter extends Filter {
      * Minimum keyword/phrase length to prevent excessively broad content filtering.
      */
     private static final int MINIMUM_KEYWORD_LENGTH = 3;
+
+    /**
+     * Words found in the buffer for every video that the user might enter as a keyword.
+     * This list is not exhaustive and can be updated as needed.
+     *
+     * Words must be lowercase.
+     */
+    private static final String[] COMMON_WORDS_IN_EVERY_VIDEO_BUFFER = {
+            // Video playback url
+            "google",
+            "youtube",
+            "android",
+            // Video decoders
+            "decoder",
+            "ffmpeg",
+            "intel"
+    };
 
     /**
      * Substrings that are always first in the path.
@@ -138,7 +158,14 @@ final class KeywordContentFilter extends Filter {
                     Utils.showToastLong(str("revanced_hide_keyword_toast_invalid_length", MINIMUM_KEYWORD_LENGTH, phrase));
                     continue;
                 }
-                keywords.add(phrase);
+
+                // Check if the phrase will cause every video to be hidden.
+                // This is not an exhaustive check.
+                String lowerCase = phrase.toLowerCase();
+                if (Utils.containsAny(lowerCase, COMMON_WORDS_IN_EVERY_VIDEO_BUFFER)) {
+                    Utils.showToastLong(str("revanced_hide_keyword_toast_invalid_common", phrase));
+                    continue;
+                }
 
                 // Add common casing that might appear.
                 //
@@ -150,7 +177,8 @@ final class KeywordContentFilter extends Filter {
                 // not allow comparing two different byte arrays using simple plain array indexes.
                 //
                 // Instead add all common case variations of the words.
-                keywords.add(phrase.toLowerCase());
+                keywords.add(phrase);
+                keywords.add(lowerCase);
                 keywords.add(titleCaseFirstWordOnly(phrase));
                 keywords.add(capitalizeAllFirstLetters(phrase));
                 keywords.add(phrase.toUpperCase());
