@@ -96,11 +96,11 @@ public final class NavigationBar {
         HOME("PIVOT_HOME"),
         SHORTS("TAB_SHORTS"),
         /**
-         * Create new video tab, and has no YT enum name.
+         * Create new video tab.
          *
          * {@link #isActive()} always returns false, even if the create video UI is on screen.
          */
-        CREATE(""),
+        CREATE("CREATION_TAB_LARGE"),
         SUBSCRIPTIONS("PIVOT_SUBSCRIPTIONS"),
         /**
          * Notifications tab.  Only present when
