@@ -30,7 +30,7 @@ public final class ByteTrieSearch extends TrieSearch<byte[]> {
     /**
      * Helper method for the common usage of converting Strings to raw UTF-8 bytes.
      */
-    public static byte[][] convertStringsToBytes(@NonNull String[] strings) {
+    public static byte[][] convertStringsToBytes(String... strings) {
         final int length = strings.length;
         byte[][] replacement = new byte[length][];
         for (int i = 0; i < length; i++) {
@@ -39,7 +39,7 @@ public final class ByteTrieSearch extends TrieSearch<byte[]> {
         return replacement;
     }
 
-    public ByteTrieSearch() {
-        super(new ByteTrieNode());
+    public ByteTrieSearch(@NonNull byte[]... patterns) {
+        super(new ByteTrieNode(), patterns);
     }
 }

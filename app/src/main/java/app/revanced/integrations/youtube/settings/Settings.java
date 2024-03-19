@@ -228,6 +228,10 @@ public class Settings extends BaseSettings {
             parentsAny(SWIPE_BRIGHTNESS, SWIPE_VOLUME));
 
     // Debugging
+    /**
+     * When enabled, share the debug logs with care.
+     * The buffer contains select user data, including the client ip address and information that could identify the YT account.
+     */
     public static final BooleanSetting DEBUG_PROTOBUFFER = new BooleanSetting("revanced_debug_protobuffer", FALSE, parent(BaseSettings.DEBUG));
 
     // ReturnYoutubeDislike

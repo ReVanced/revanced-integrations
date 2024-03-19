@@ -6,17 +6,19 @@ import static app.revanced.integrations.youtube.shared.NavigationBar.NavigationB
 
 import android.os.Build;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 
+import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
 import app.revanced.integrations.shared.Logger;
 import app.revanced.integrations.shared.Utils;
 import app.revanced.integrations.youtube.ByteTrieSearch;
-import app.revanced.integrations.youtube.shared.NavigationBar;
 import app.revanced.integrations.youtube.settings.Settings;
+import app.revanced.integrations.youtube.shared.NavigationBar;
 import app.revanced.integrations.youtube.shared.PlayerType;
 
 /**
@@ -35,8 +37,7 @@ import app.revanced.integrations.youtube.shared.PlayerType;
  * - Keywords are case sensitive, but some casing variation is manually added.
  *   (ie: "mr beast" automatically filters "Mr Beast" and "MR BEAST").
  * - Keywords present in the layout or video data cannot be used as filters, otherwise all videos
- *   will always be hidden.  This patch checks for some words a user might enter,
- *   but some keywords will still hide all videos.
+ *   will always be hidden.  This patch checks for some words of these words.
  */
 @SuppressWarnings("unused")
 @RequiresApi(api = Build.VERSION_CODES.N)
@@ -48,31 +49,45 @@ final class KeywordContentFilter extends Filter {
     private static final int MINIMUM_KEYWORD_LENGTH = 3;
 
     /**
-     * Words found in the buffer for every video that the user might enter as a keyword.
-     * This list is not exhaustive and can be updated as needed.
+     * Strings found in the buffer for every videos.
+     * Full strings should be specified, as they are compared using {@link String#contains(CharSequence)}.
      *
-     * Words must be lowercase.
+     * This list does not include every common buffer string, and this can be added/changed as needed.
+     * Words must be entered with the exact casing as found in the buffer.
      */
-    private static final String[] COMMON_WORDS_IN_EVERY_VIDEO_BUFFER = {
-            // Video playback url
-            "google",
-            "youtube",
-            "android",
-            // Video decoders
-            "decoder",
-            "ffmpeg",
-            "intel"
+    private static final String[] STRINGS_IN_EVERY_BUFFER = {
+            // Video playback data.
+            "https://i.ytimg.com/vi/", // Thumbnail url.
+            "sddefault.jpg", // More video sizes exist, but for most devices only these 2 are used.
+            "hqdefault.webp",
+            "googlevideo.com/initplayback?source=youtube", // Video url.
+            "ANDROID", // Video url parameter.
+            // Video decoders.
+            "OMX.ffmpeg.vp9.decoder",
+            "OMX.Intel.sw_vd.vp9",
+            "OMX.sprd.av1.decoder",
+            "OMX.MTK.VIDEO.DECODER.SW.VP9",
+            "c2.android.av1.decoder",
+            "c2.mtk.sw.vp9.decoder",
+            // User analytics.
+            "https://ad.doubleclick.net/ddm/activity/",
+            "DEVICE_ADVERTISER_ID_FOR_CONVERSION_TRACKING",
+            // Litho components frequently found in the buffer that belong to the path filter items.
+            "metadata.eml",
+            "thumbnail.eml",
+            "avatar.eml",
+            "overflow_button.eml",
     };
 
     /**
-     * Substrings that are always first in the path.
+     * Substrings that are always first in the identifier.
      */
     private final StringFilterGroup startsWithFilter = new StringFilterGroup(
             null, // Multiple settings are used and must be individually checked if active.
             "home_video_with_context.eml",
             "search_video_with_context.eml",
             "video_with_context.eml", // Subscription tab videos.
-            "related_video_with_context",
+            "related_video_with_context.eml",
             "compact_video.eml",
             "inline_shorts",
             "shorts_video_cell",
@@ -135,6 +150,18 @@ final class KeywordContentFilter extends Filter {
         return new String(codePoints, 0, codePoints.length);
     }
 
+    /**
+     * @return If the phrase will will hide all videos. Not an exhaustive check.
+     */
+    private static boolean phrasesWillHideAllVideos(@NonNull String[] phrases) {
+        for (String commonString : STRINGS_IN_EVERY_BUFFER) {
+            if (Utils.containsAny(commonString, phrases)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private synchronized void parseKeywords() { // Must be synchronized since Litho is multi-threaded.
         String rawKeywords = Settings.HIDE_KEYWORD_CONTENT_PHRASES.get();
         if (rawKeywords == lastKeywordPhrasesParsed) {
@@ -159,14 +186,6 @@ final class KeywordContentFilter extends Filter {
                     continue;
                 }
 
-                // Check if the phrase will cause every video to be hidden.
-                // This is not an exhaustive check.
-                String lowerCase = phrase.toLowerCase();
-                if (Utils.containsAny(lowerCase, COMMON_WORDS_IN_EVERY_VIDEO_BUFFER)) {
-                    Utils.showToastLong(str("revanced_hide_keyword_toast_invalid_common", phrase));
-                    continue;
-                }
-
                 // Add common casing that might appear.
                 //
                 // This could be simplified by adding case insensitive search to the prefix search,
@@ -177,11 +196,19 @@ final class KeywordContentFilter extends Filter {
                 // not allow comparing two different byte arrays using simple plain array indexes.
                 //
                 // Instead add all common case variations of the words.
-                keywords.add(phrase);
-                keywords.add(lowerCase);
-                keywords.add(titleCaseFirstWordOnly(phrase));
-                keywords.add(capitalizeAllFirstLetters(phrase));
-                keywords.add(phrase.toUpperCase());
+                String[] phraseVariations = {
+                        phrase,
+                        phrase.toLowerCase(),
+                        titleCaseFirstWordOnly(phrase),
+                        capitalizeAllFirstLetters(phrase),
+                        phrase.toUpperCase()
+                };
+                if (phrasesWillHideAllVideos(phraseVariations)) {
+                    Utils.showToastLong(str("revanced_hide_keyword_toast_invalid_common", phrase));
+                    continue;
+                }
+
+                keywords.addAll(Arrays.asList(phraseVariations));
             }
 
             search.addPatterns(convertStringsToBytes(keywords.toArray(new String[0])));
@@ -232,7 +259,7 @@ final class KeywordContentFilter extends Filter {
             }
             logNavigationState("Home tab");
         } else if (NavigationButton.SUBSCRIPTIONS.isSelected()) {
-            if (!Settings.HIDE_KEYWORD_CONTENT_HOME.get()) {
+            if (!Settings.HIDE_SUBSCRIPTIONS_BUTTON.get()) {
                 return false;
             }
             logNavigationState("Subscription tab");

@@ -307,8 +307,10 @@ public abstract class TrieSearch<T> {
      */
     private final List<T> patterns = new ArrayList<>();
 
-    TrieSearch(@NonNull TrieNode<T> root) {
+    @SafeVarargs
+    TrieSearch(@NonNull TrieNode<T> root, @NonNull T... patterns) {
         this.root = Objects.requireNonNull(root);
+        addPatterns(patterns);
     }
 
     @SafeVarargs
