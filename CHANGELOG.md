@@ -1,3 +1,17 @@
+# [1.5.0-dev.7](https://github.com/ReVanced/revanced-integrations/compare/v1.5.0-dev.6...v1.5.0-dev.7) (2024-03-18)
+
+
+### Bug Fixes
+
+* **TikTok:** Hook application context earlier to prevent crash ([#588](https://github.com/ReVanced/revanced-integrations/issues/588)) ([9ac2d63](https://github.com/ReVanced/revanced-integrations/commit/9ac2d634897d961eba1b704f2722ea757bb83e0a))
+
+# [1.5.0-dev.6](https://github.com/ReVanced/revanced-integrations/compare/v1.5.0-dev.5...v1.5.0-dev.6) (2024-03-16)
+
+
+### Bug Fixes
+
+* Handle custom preferences ([#586](https://github.com/ReVanced/revanced-integrations/issues/586)) ([ad477e4](https://github.com/ReVanced/revanced-integrations/commit/ad477e4859ef69beda297f7a2a6c29a918077628))
+
 # [1.5.0-dev.5](https://github.com/ReVanced/revanced-integrations/compare/v1.5.0-dev.4...v1.5.0-dev.5) (2024-03-15)
 
 
