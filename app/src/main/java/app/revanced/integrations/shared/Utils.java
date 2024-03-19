@@ -195,6 +195,10 @@ public class Utils {
         return getContext().getResources().getDimension(getResourceIdentifier(resourceIdentifierName, "dimen"));
     }
 
+    public interface MatchFilter<T> {
+        boolean matches(T object);
+    }
+
     /**
      * @param searchRecursively If children ViewGroups should also be
      *                          recursively searched using depth first search.
@@ -202,10 +206,9 @@ public class Utils {
      */
     @Nullable
     public static <T extends View> T getChildView(@NonNull ViewGroup viewGroup, boolean searchRecursively,
-                                                  @NonNull MatchFilter filter) {
+                                                  @NonNull MatchFilter<View> filter) {
         for (int i = 0, childCount = viewGroup.getChildCount(); i < childCount; i++) {
             View childAt = viewGroup.getChildAt(i);
-            //noinspection unchecked
             if (filter.matches(childAt)) {
                 //noinspection unchecked
                 return (T) childAt;
@@ -228,10 +231,6 @@ public class Utils {
         mainIntent.setPackage(packageName);
         context.startActivity(mainIntent);
         System.exit(0);
-    }
-
-    public interface MatchFilter<T> {
-        boolean matches(T object);
     }
 
     public static Context getContext() {
