@@ -37,13 +37,15 @@ public final class NavigationBar {
     /**
      * Last YT navigation enum loaded.  Not necessarily the active navigation tab.
      */
-    private static volatile Enum lastYTAppNavigationEnum;
+    private static volatile String lastYTNavigationEnumName;
 
     /**
      * Injection point.
      */
     public static void setLastAppNavigationEnum(Enum ytNavigationButtonEnum) {
-        lastYTAppNavigationEnum = ytNavigationButtonEnum;
+        if (ytNavigationButtonEnum != null) {
+            lastYTNavigationEnumName = ytNavigationButtonEnum.name();
+        }
     }
 
     /**
@@ -53,15 +55,13 @@ public final class NavigationBar {
      */
     public static void navigationTabLoaded(final View navigationButtonGroup) {
         try {
-            if (lastYTAppNavigationEnum == null) return;
-
-            String lastYTEnumName = lastYTAppNavigationEnum.name();
+            String lastEnumName = lastYTNavigationEnumName;
             for (NavigationButton button : NavigationButton.values()) {
-                if (button.ytEnumName.equals(lastYTEnumName)) {
+                if (button.ytEnumName.equals(lastEnumName)) {
                     ImageView imageView = Utils.getChildView((ViewGroup) navigationButtonGroup,
                             true, view -> view instanceof ImageView);
                     if (imageView != null) {
-                        Logger.printDebug(() -> "navigationTabLoaded: " + lastYTEnumName);
+                        Logger.printDebug(() -> "navigationTabLoaded: " + lastEnumName);
                         button.imageViewRef = new WeakReference<>(imageView);
                         navigationTabCreatedCallback(button, navigationButtonGroup);
                         return;
@@ -71,7 +71,7 @@ public final class NavigationBar {
             // Log the unknown tab as exception level, only if debug is enabled.
             // This is because unknown tabs do no harm and it's only relevant to developers.
             if (Settings.DEBUG.get()) {
-                Logger.printException(() -> "Unknown tab: " + lastYTEnumName
+                Logger.printException(() -> "Unknown tab: " + lastEnumName
                         + " view: " + navigationButtonGroup.getClass());
             }
         } catch (Exception ex) {
@@ -86,6 +86,17 @@ public final class NavigationBar {
      */
     public static void createTabLoaded(View view) {
         navigationTabCreatedCallback(NavigationButton.CREATE, view);
+    }
+
+    /**
+     * Injection point.
+     *
+     * Unique hook just for the 'You' library tab.
+     */
+    public static void youTabLoaded(View view) {
+        // Tab has no YT enum name and the enum hook is not called, so the name is set manually.
+        lastYTNavigationEnumName = NavigationButton.YOU_LIBRARY.ytEnumName;
+        navigationTabLoaded(view);
     }
 
     private static void navigationTabCreatedCallback(NavigationBar.NavigationButton button, View tabView) {
@@ -114,10 +125,13 @@ public final class NavigationBar {
         /**
          * Old library tab (pre 'You' layout).
          */
-        VIDEO_LIBRARY("VIDEO_LIBRARY_WHITE");
+        VIDEO_LIBRARY("VIDEO_LIBRARY_WHITE"),
+        // YT Enum name is not clear, and a dummy name is used here.
+        YOU_LIBRARY("YOU_LIBRARY_DUMMY_PLACEHOLDER_NAME");
 
         /**
-         * @return The active navigation tab. If the library tab is selected this returns NULL.
+         * @return The active navigation tab.
+         *         If the user is in the create new video UI, this returns NULL.
          */
         @Nullable
         public static NavigationButton getActiveNavigationButton() {
