@@ -45,7 +45,7 @@ public final class NavigationBar {
     /**
      * Injection point.
      */
-    public static void setLastAppNavigationEnum(Enum ytNavigationEnumName) {
+    public static void setLastAppNavigationEnum(@Nullable Enum ytNavigationEnumName) {
         if (ytNavigationEnumName != null) {
             lastYTNavigationEnumName = ytNavigationEnumName.name();
         }
@@ -87,7 +87,7 @@ public final class NavigationBar {
      */
     public static void navigationImageResourceTabLoaded(View view) {
         // 'You' tab has no YT enum name and the enum hook is not called for it.
-        // Comparing the last enum set to figure out which tab this actually is.
+        // Compare the last enum to figure out which tab this actually is.
         if (CREATE.ytEnumName.equals(lastYTNavigationEnumName)) {
             navigationTabLoaded(view);
         } else {
@@ -124,7 +124,17 @@ public final class NavigationBar {
          * Old library tab (pre 'You' layout).
          */
         VIDEO_LIBRARY("VIDEO_LIBRARY_WHITE"),
-        // YT Enum name is not clear, and a dummy name is used here.
+        /**
+         * 'You' library tab that is sometimes temporarily loaded.
+         *
+         * This likely is a temporary tab used while the user profile photo is loading,
+         * but this is not entirely clear.
+         */
+        PIVOT_LIBRARY("PIVOT_LIBRARY"),
+        /**
+         * Modern library tab with 'You' layout.
+         */
+        // The hooked YT code does not use an enum, and a dummy name is used here.
         YOU_LIBRARY("YOU_LIBRARY_DUMMY_PLACEHOLDER_NAME");
 
         /**
@@ -137,6 +147,15 @@ public final class NavigationBar {
                 if (button.isSelected()) return button;
             }
             return null;
+        }
+
+        /**
+         * @return If the currently selected tab is a 'You' or library type.
+         *         Covers all known app states including incognito mode and version spoofing.
+         */
+        public static boolean libraryOrYouTabIsActive() {
+            return YOU_LIBRARY.isSelected() || PIVOT_LIBRARY.isSelected()
+                    || VIDEO_LIBRARY.isSelected() || INCOGNITO.isSelected();
         }
 
         /**
