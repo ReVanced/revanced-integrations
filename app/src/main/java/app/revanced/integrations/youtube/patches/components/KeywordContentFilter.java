@@ -106,7 +106,7 @@ final class KeywordContentFilter extends Filter {
     /**
      * The last value of {@link Settings#HIDE_KEYWORD_CONTENT_PHRASES}
      * parsed and loaded into {@link #bufferSearch}.
-     * Used to allow changing the keywords without restarting the app.
+     * Allows changing the keywords without restarting the app.
      */
     private volatile String lastKeywordPhrasesParsed;
 
@@ -264,8 +264,9 @@ final class KeywordContentFilter extends Filter {
             }
             logNavigationState("Subscription tab");
         } else {
+            // User is in the Library or Notifications tab.
             logNavigationState("Ignored tab");
-            return false; // User is in the Library or Notifications tab.
+            return false;
         }
 
         // Field is intentionally compared using reference equality.

@@ -1,5 +1,7 @@
 package app.revanced.integrations.youtube.shared;
 
+import static app.revanced.integrations.youtube.shared.NavigationBar.NavigationButton.CREATE;
+
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -37,21 +39,20 @@ public final class NavigationBar {
     /**
      * Last YT navigation enum loaded.  Not necessarily the active navigation tab.
      */
+    @Nullable
     private static volatile String lastYTNavigationEnumName;
 
     /**
      * Injection point.
      */
-    public static void setLastAppNavigationEnum(Enum ytNavigationButtonEnum) {
-        if (ytNavigationButtonEnum != null) {
-            lastYTNavigationEnumName = ytNavigationButtonEnum.name();
+    public static void setLastAppNavigationEnum(Enum ytNavigationEnumName) {
+        if (ytNavigationEnumName != null) {
+            lastYTNavigationEnumName = ytNavigationEnumName.name();
         }
     }
 
     /**
      * Injection point.
-     *
-     * Called for most, but not all, of the navigation tabs.
      */
     public static void navigationTabLoaded(final View navigationButtonGroup) {
         try {
@@ -82,23 +83,20 @@ public final class NavigationBar {
     /**
      * Injection point.
      *
-     * Unique hook just for the create button.
+     * Unique hook just for the create and 'You' tab.
      */
-    public static void createTabLoaded(View view) {
-        navigationTabCreatedCallback(NavigationButton.CREATE, view);
+    public static void navigationImageResourceTabLoaded(View view) {
+        // 'You' tab has no YT enum name and the enum hook is not called for it.
+        // Comparing the last enum set to figure out which tab this actually is.
+        if (CREATE.ytEnumName.equals(lastYTNavigationEnumName)) {
+            navigationTabLoaded(view);
+        } else {
+            lastYTNavigationEnumName = NavigationButton.YOU_LIBRARY.ytEnumName;
+            navigationTabLoaded(view);
+        }
     }
 
-    /**
-     * Injection point.
-     *
-     * Unique hook just for the 'You' library tab.
-     */
-    public static void youTabLoaded(View view) {
-        // Tab has no YT enum name and the enum hook is not called, so the name is set manually.
-        lastYTNavigationEnumName = NavigationButton.YOU_LIBRARY.ytEnumName;
-        navigationTabLoaded(view);
-    }
-
+    /** @noinspection EmptyMethod*/
     private static void navigationTabCreatedCallback(NavigationBar.NavigationButton button, View tabView) {
         // Code is added during patching.
     }
