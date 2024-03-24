@@ -91,7 +91,7 @@ public final class NavigationBar {
         if (CREATE.ytEnumName.equals(lastYTNavigationEnumName)) {
             navigationTabLoaded(view);
         } else {
-            lastYTNavigationEnumName = NavigationButton.YOU_LIBRARY.ytEnumName;
+            lastYTNavigationEnumName = NavigationButton.LIBRARY_YOU.ytEnumName;
             navigationTabLoaded(view);
         }
     }
@@ -117,25 +117,30 @@ public final class NavigationBar {
          */
         ACTIVITY("TAB_ACTIVITY"),
         /**
-         * Incognito mode Library/You tab.
+         * Library tab when the user is not logged in.
          */
-        INCOGNITO("INCOGNITO_CIRCLE"),
+        LIBRARY_LOGGED_OUT("ACCOUNT_CIRCLE"),
         /**
-         * Old library tab (pre 'You' layout).
+         * User is logged in with incognito mode enabled.
          */
-        VIDEO_LIBRARY("VIDEO_LIBRARY_WHITE"),
+        LIBRARY_INCOGNITO("INCOGNITO_CIRCLE"),
         /**
-         * 'You' library tab that is sometimes temporarily loaded.
+         * Old library tab (pre 'You' layout), only present when version spoofing.
+         */
+        LIBRARY_OLD_UI("VIDEO_LIBRARY_WHITE"),
+        /**
+         * 'You' library tab that is sometimes loaded momentarily.
+         * When this is loaded, {@link #LIBRARY_YOU} is also present.
          *
-         * This likely is a temporary tab used while the user profile photo is loading,
-         * but this is not entirely clear.
+         * This might be a temporary tab used while the user profile photo is loading,
+         * but it's exact purpose is not entirely clear.
          */
-        PIVOT_LIBRARY("PIVOT_LIBRARY"),
+        LIBRARY_PIVOT_UNKNOWN("PIVOT_LIBRARY"),
         /**
          * Modern library tab with 'You' layout.
          */
         // The hooked YT code does not use an enum, and a dummy name is used here.
-        YOU_LIBRARY("YOU_LIBRARY_DUMMY_PLACEHOLDER_NAME");
+        LIBRARY_YOU("YOU_LIBRARY_DUMMY_PLACEHOLDER_NAME");
 
         /**
          * @return The active navigation tab.
@@ -154,8 +159,9 @@ public final class NavigationBar {
          *         Covers all known app states including incognito mode and version spoofing.
          */
         public static boolean libraryOrYouTabIsActive() {
-            return YOU_LIBRARY.isSelected() || PIVOT_LIBRARY.isSelected()
-                    || VIDEO_LIBRARY.isSelected() || INCOGNITO.isSelected();
+            return LIBRARY_YOU.isSelected() || LIBRARY_PIVOT_UNKNOWN.isSelected()
+                    || LIBRARY_OLD_UI.isSelected() || LIBRARY_INCOGNITO.isSelected()
+                    || LIBRARY_LOGGED_OUT.isSelected();
         }
 
         /**
