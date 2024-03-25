@@ -345,6 +345,10 @@ public class Settings extends BaseSettings {
         }
 
 
+        // Remove any previously saved announcement consumer (a random generated string).
+        Setting.preferences.saveString("revanced_announcement_consumer", null);
+
+
         // endregion
     }
 }
