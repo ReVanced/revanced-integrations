@@ -1,3 +1,10 @@
+# [1.5.0-dev.8](https://github.com/ReVanced/revanced-integrations/compare/v1.5.0-dev.7...v1.5.0-dev.8) (2024-03-25)
+
+
+### Bug Fixes
+
+* **YouTube - Hide ads:** Prevent app crash if hiding fullscreen ads is not possible ([#590](https://github.com/ReVanced/revanced-integrations/issues/590)) ([4ec955f](https://github.com/ReVanced/revanced-integrations/commit/4ec955fd0133643826e47be7089fbfa07fd9a089))
+
 # [1.5.0-dev.7](https://github.com/ReVanced/revanced-integrations/compare/v1.5.0-dev.6...v1.5.0-dev.7) (2024-03-18)
 
 
