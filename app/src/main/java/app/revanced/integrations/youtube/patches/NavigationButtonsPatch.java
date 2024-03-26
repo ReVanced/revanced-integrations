@@ -1,15 +1,22 @@
 package app.revanced.integrations.youtube.patches;
 
 import android.view.View;
-
 import app.revanced.integrations.youtube.settings.Settings;
 import app.revanced.integrations.youtube.shared.NavigationBar;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @SuppressWarnings("unused")
 public final class NavigationButtonsPatch {
-    private static final Boolean HIDE_HOME_BUTTON = Settings.HIDE_HOME_BUTTON.get();
-    private static final Boolean HIDE_CREATE_BUTTON = Settings.HIDE_CREATE_BUTTON.get();
-    private static final Boolean HIDE_SHORTS_BUTTON = Settings.HIDE_SHORTS_BUTTON.get();
+    private static final Map<NavigationBar.NavigationButton, Boolean> shouldHideMap = new HashMap<>() {
+        {
+            put(NavigationBar.NavigationButton.HOME, Settings.HIDE_HOME_BUTTON.get());
+            put(NavigationBar.NavigationButton.CREATE, Settings.HIDE_CREATE_BUTTON.get());
+            put(NavigationBar.NavigationButton.SHORTS, Settings.HIDE_SHORTS_BUTTON.get());
+        }
+    };
+
     private static final Boolean SWITCH_CREATE_WITH_NOTIFICATIONS_BUTTON
             = Settings.SWITCH_CREATE_WITH_NOTIFICATIONS_BUTTON.get();
 
@@ -20,22 +27,11 @@ public final class NavigationButtonsPatch {
         return SWITCH_CREATE_WITH_NOTIFICATIONS_BUTTON;
     }
 
+    /**
+     * Injection point.
+     */
     public static void navigationTabCreated(NavigationBar.NavigationButton button, View tabView) {
-        final boolean shouldHide;
-        switch (button) {
-            case HOME:
-                shouldHide = HIDE_HOME_BUTTON;
-                break;
-            case SHORTS:
-                shouldHide = HIDE_SHORTS_BUTTON;
-                break;
-            case CREATE:
-                shouldHide = HIDE_CREATE_BUTTON;
-                break;
-            default:
-                return;
-        }
-        if (shouldHide) {
+        if (Boolean.TRUE.equals(shouldHideMap.get(button))) {
             tabView.setVisibility(View.GONE);
         }
     }

@@ -1,18 +1,16 @@
 package app.revanced.integrations.youtube.shared;
 
-import static app.revanced.integrations.youtube.shared.NavigationBar.NavigationButton.CREATE;
-
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-
 import androidx.annotation.Nullable;
-
-import java.lang.ref.WeakReference;
-
 import app.revanced.integrations.shared.Logger;
 import app.revanced.integrations.shared.Utils;
 import app.revanced.integrations.youtube.settings.Settings;
+
+import java.lang.ref.WeakReference;
+
+import static app.revanced.integrations.youtube.shared.NavigationBar.NavigationButton.CREATE;
 
 @SuppressWarnings("unused")
 public final class NavigationBar {
@@ -70,7 +68,7 @@ public final class NavigationBar {
                 }
             }
             // Log the unknown tab as exception level, only if debug is enabled.
-            // This is because unknown tabs do no harm and it's only relevant to developers.
+            // This is because unknown tabs do no harm, and it's only relevant to developers.
             if (Settings.DEBUG.get()) {
                 Logger.printException(() -> "Unknown tab: " + lastEnumName
                         + " view: " + navigationButtonGroup.getClass());
@@ -83,7 +81,7 @@ public final class NavigationBar {
     /**
      * Injection point.
      *
-     * Unique hook just for the create and 'You' tab.
+     * Unique hook just for the 'Create' and 'You' tab.
      */
     public static void navigationImageResourceTabLoaded(View view) {
         // 'You' tab has no YT enum name and the enum hook is not called for it.
@@ -133,7 +131,7 @@ public final class NavigationBar {
          * When this is loaded, {@link #LIBRARY_YOU} is also present.
          *
          * This might be a temporary tab while the user profile photo is loading,
-         * but it's exact purpose is not entirely clear.
+         * but its exact purpose is not entirely clear.
          */
         LIBRARY_PIVOT_UNKNOWN("PIVOT_LIBRARY"),
         /**
