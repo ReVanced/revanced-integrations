@@ -22,6 +22,7 @@ public final class NavigationBar {
     public static void searchBarResultsViewLoaded(View searchbarResults) {
         searchbarResults.getViewTreeObserver().addOnGlobalLayoutListener(() -> {
             final boolean isActive = searchbarResults.getParent() != null;
+
             if (searchbarIsActive != isActive) {
                 searchbarIsActive = isActive;
                 Logger.printDebug(() -> "searchbarIsActive: " + isActive);
@@ -59,10 +60,13 @@ public final class NavigationBar {
                 if (button.ytEnumName.equals(lastEnumName)) {
                     ImageView imageView = Utils.getChildView((ViewGroup) navigationButtonGroup,
                             true, view -> view instanceof ImageView);
+
                     if (imageView != null) {
                         Logger.printDebug(() -> "navigationTabLoaded: " + lastEnumName);
+
                         button.imageViewRef = new WeakReference<>(imageView);
                         navigationTabCreatedCallback(button, navigationButtonGroup);
+
                         return;
                     }
                 }
