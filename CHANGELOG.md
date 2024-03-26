@@ -1,3 +1,41 @@
+# [1.5.0-dev.9](https://github.com/ReVanced/revanced-integrations/compare/v1.5.0-dev.8...v1.5.0-dev.9) (2024-03-26)
+
+
+### Bug Fixes
+
+* Check index of pattern in string instead of the other way around ([e3ba343](https://github.com/ReVanced/revanced-integrations/commit/e3ba343d890bf3cf79642b1b196c96934a4c0007))
+* **YouTube - Hide layout components:** Correctly hide Join button ([b945e2f](https://github.com/ReVanced/revanced-integrations/commit/b945e2f44b1a62326e6d45345c1467668d803f53))
+* **YouTube - Hide Shorts components:** Correctly hide join button ([b7a8995](https://github.com/ReVanced/revanced-integrations/commit/b7a8995f798e386ee1d9ab5bbd857c1736cc5a29))
+
+
+### Features
+
+* **YouTube - Hide Shorts components:** Hide like and dislike buttons ([2a08e5a](https://github.com/ReVanced/revanced-integrations/commit/2a08e5a98e9e9a00bb306313ff487d67c042a92e))
+* **YouTube - Hide Shorts components:** Hide sound metadata label ([46d8ef6](https://github.com/ReVanced/revanced-integrations/commit/46d8ef6f88bd4c912a45357541291af38b5fc81f))
+* **YouTube - Hide Shorts components:** Hide title and full video link label ([59165de](https://github.com/ReVanced/revanced-integrations/commit/59165de801a5481fa4055dcf1797fe84dce235c0))
+
+# [1.5.0-dev.9](https://github.com/ReVanced/revanced-integrations/compare/v1.5.0-dev.8...v1.5.0-dev.9) (2024-03-26)
+
+
+### Bug Fixes
+
+* **YouTube - Hide layout components:** Correctly hide Join button ([b945e2f](https://github.com/ReVanced/revanced-integrations/commit/b945e2f44b1a62326e6d45345c1467668d803f53))
+* **YouTube - Hide Shorts components:** Correctly hide join button ([0ab9c70](https://github.com/ReVanced/revanced-integrations/commit/0ab9c701376ba700abb573fcd7dd3a06be65e52e))
+
+
+### Features
+
+* **YouTube - Hide Shorts components:** Hide like and dislike buttons ([2a08e5a](https://github.com/ReVanced/revanced-integrations/commit/2a08e5a98e9e9a00bb306313ff487d67c042a92e))
+* **YouTube - Hide Shorts components:** Hide sound metadata label ([827beff](https://github.com/ReVanced/revanced-integrations/commit/827beffde0c7c6b27a3ac4bbec727f51d17dd3cd))
+* **YouTube - Hide Shorts components:** Hide title and full video link label ([59165de](https://github.com/ReVanced/revanced-integrations/commit/59165de801a5481fa4055dcf1797fe84dce235c0))
+
+# [1.5.0-dev.8](https://github.com/ReVanced/revanced-integrations/compare/v1.5.0-dev.7...v1.5.0-dev.8) (2024-03-25)
+
+
+### Bug Fixes
+
+* **YouTube - Hide ads:** Prevent app crash if hiding fullscreen ads is not possible ([#590](https://github.com/ReVanced/revanced-integrations/issues/590)) ([4ec955f](https://github.com/ReVanced/revanced-integrations/commit/4ec955fd0133643826e47be7089fbfa07fd9a089))
+
 # [1.5.0-dev.7](https://github.com/ReVanced/revanced-integrations/compare/v1.5.0-dev.6...v1.5.0-dev.7) (2024-03-18)
 
 
