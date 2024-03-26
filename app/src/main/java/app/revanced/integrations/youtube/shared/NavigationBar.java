@@ -129,10 +129,10 @@ public final class NavigationBar {
          */
         LIBRARY_OLD_UI("VIDEO_LIBRARY_WHITE"),
         /**
-         * 'You' library tab that is sometimes loaded momentarily.
+         * 'You' library tab that is sometimes momentarily loaded.
          * When this is loaded, {@link #LIBRARY_YOU} is also present.
          *
-         * This might be a temporary tab used while the user profile photo is loading,
+         * This might be a temporary tab while the user profile photo is loading,
          * but it's exact purpose is not entirely clear.
          */
         LIBRARY_PIVOT_UNKNOWN("PIVOT_LIBRARY"),
@@ -147,7 +147,7 @@ public final class NavigationBar {
          *         If the user is in the create new video UI, this returns NULL.
          */
         @Nullable
-        public static NavigationButton getActiveNavigationButton() {
+        public static NavigationButton getSelectedNavigationButton() {
             for (NavigationButton button : values()) {
                 if (button.isSelected()) return button;
             }
@@ -158,7 +158,7 @@ public final class NavigationBar {
          * @return If the currently selected tab is a 'You' or library type.
          *         Covers all known app states including incognito mode and version spoofing.
          */
-        public static boolean libraryOrYouTabIsActive() {
+        public static boolean libraryOrYouTabIsSelected() {
             return LIBRARY_YOU.isSelected() || LIBRARY_PIVOT_UNKNOWN.isSelected()
                     || LIBRARY_OLD_UI.isSelected() || LIBRARY_INCOGNITO.isSelected()
                     || LIBRARY_LOGGED_OUT.isSelected();
