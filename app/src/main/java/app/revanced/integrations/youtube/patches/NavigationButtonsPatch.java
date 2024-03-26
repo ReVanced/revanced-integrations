@@ -1,19 +1,22 @@
 package app.revanced.integrations.youtube.patches;
 
-import android.view.View;
-import app.revanced.integrations.youtube.settings.Settings;
-import app.revanced.integrations.youtube.shared.NavigationBar;
+import static app.revanced.integrations.youtube.shared.NavigationBar.NavigationButton;
 
-import java.util.HashMap;
+import android.view.View;
+
+import java.util.EnumMap;
 import java.util.Map;
+
+import app.revanced.integrations.youtube.settings.Settings;
 
 @SuppressWarnings("unused")
 public final class NavigationButtonsPatch {
-    private static final Map<NavigationBar.NavigationButton, Boolean> shouldHideMap = new HashMap<>() {
+
+    private static final Map<NavigationButton, Boolean> shouldHideMap = new EnumMap<>(NavigationButton.class) {
         {
-            put(NavigationBar.NavigationButton.HOME, Settings.HIDE_HOME_BUTTON.get());
-            put(NavigationBar.NavigationButton.CREATE, Settings.HIDE_CREATE_BUTTON.get());
-            put(NavigationBar.NavigationButton.SHORTS, Settings.HIDE_SHORTS_BUTTON.get());
+            put(NavigationButton.HOME, Settings.HIDE_HOME_BUTTON.get());
+            put(NavigationButton.CREATE, Settings.HIDE_CREATE_BUTTON.get());
+            put(NavigationButton.SHORTS, Settings.HIDE_SHORTS_BUTTON.get());
         }
     };
 
@@ -30,7 +33,7 @@ public final class NavigationButtonsPatch {
     /**
      * Injection point.
      */
-    public static void navigationTabCreated(NavigationBar.NavigationButton button, View tabView) {
+    public static void navigationTabCreated(NavigationButton button, View tabView) {
         if (Boolean.TRUE.equals(shouldHideMap.get(button))) {
             tabView.setVisibility(View.GONE);
         }
