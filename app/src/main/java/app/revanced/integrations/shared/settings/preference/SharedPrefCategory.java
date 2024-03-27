@@ -112,12 +112,11 @@ public class SharedPrefCategory {
                     removeKey(key);
                 }
             }
-            return _default;
         } catch (ClassCastException ex) {
             // Value stored is a completely different type (should never happen).
             removeConflictingPreferenceKeyValue(key);
-            return _default;
         }
+        return _default;
     }
 
     public boolean getBoolean(@NonNull String key, boolean _default) {
@@ -137,7 +136,6 @@ public class SharedPrefCategory {
             if (value != null) {
                 return Integer.valueOf(value);
             }
-            return _default;
         } catch (ClassCastException ex) {
             try {
                 // Old data previously stored as primitive.
@@ -145,9 +143,9 @@ public class SharedPrefCategory {
             } catch (ClassCastException ex2) {
                 // Value stored is a completely different type (should never happen).
                 removeConflictingPreferenceKeyValue(key);
-                return _default;
             }
         }
+        return _default;
     }
 
     @NonNull
@@ -157,15 +155,14 @@ public class SharedPrefCategory {
             if (value != null) {
                 return Long.valueOf(value);
             }
-            return _default;
         } catch (ClassCastException ex) {
             try {
                 return preferences.getLong(key, _default);
             } catch (ClassCastException ex2) {
                 removeConflictingPreferenceKeyValue(key);
-                return _default;
             }
         }
+        return _default;
     }
 
     @NonNull
@@ -175,15 +172,14 @@ public class SharedPrefCategory {
             if (value != null) {
                 return Float.valueOf(value);
             }
-            return _default;
         } catch (ClassCastException ex) {
             try {
                 return preferences.getFloat(key, _default);
             } catch (ClassCastException ex2) {
                 removeConflictingPreferenceKeyValue(key);
-                return _default;
             }
         }
+        return _default;
     }
 
     @NonNull

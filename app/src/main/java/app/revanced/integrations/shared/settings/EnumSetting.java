@@ -16,7 +16,7 @@ import app.revanced.integrations.shared.Logger;
  * non existent value will be reverted to the default value
  * (the event is logged, but no user error is displayed).
  *
- * All JSON text is also converted to lowercase to keep the output less obnoxious.
+ * All saved JSON text is converted to lowercase to keep the output less obnoxious.
  */
 @SuppressWarnings("unused")
 public class EnumSetting<T extends Enum> extends Setting<T> {

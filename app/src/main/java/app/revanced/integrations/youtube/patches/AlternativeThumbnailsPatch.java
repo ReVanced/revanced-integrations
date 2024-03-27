@@ -574,7 +574,7 @@ public final class AlternativeThumbnailsPatch {
                 // to run the url connection thru the integrations thread pool which runs at the highest priority.
                 final long start = System.currentTimeMillis();
                 imageFileFound = Utils.submitOnBackgroundThread(() -> {
-                    final int connectionTimeoutMillis = 10000;
+                    final int connectionTimeoutMillis = 10000; // 10 seconds.
                     HttpURLConnection connection = (HttpURLConnection) new URL(imageUrl).openConnection();
                     connection.setConnectTimeout(connectionTimeoutMillis);
                     connection.setReadTimeout(connectionTimeoutMillis);
