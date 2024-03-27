@@ -1,7 +1,5 @@
 package app.revanced.integrations.shared.settings;
 
-import android.preference.ListPreference;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 

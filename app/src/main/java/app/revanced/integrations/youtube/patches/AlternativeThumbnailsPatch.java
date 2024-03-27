@@ -570,12 +570,11 @@ public final class AlternativeThumbnailsPatch {
 
             boolean imageFileFound;
             try {
-                Logger.printDebug(() -> "Verifying image: " + imageUrl);
                 // This hooked code is running on a low priority thread, and it's slightly faster
                 // to run the url connection thru the integrations thread pool which runs at the highest priority.
                 final long start = System.currentTimeMillis();
                 imageFileFound = Utils.submitOnBackgroundThread(() -> {
-                    final int connectionTimeoutMillis = 5000;
+                    final int connectionTimeoutMillis = 10000;
                     HttpURLConnection connection = (HttpURLConnection) new URL(imageUrl).openConnection();
                     connection.setConnectTimeout(connectionTimeoutMillis);
                     connection.setReadTimeout(connectionTimeoutMillis);
@@ -593,7 +592,7 @@ public final class AlternativeThumbnailsPatch {
                     }
                     return false;
                 }).get();
-                Logger.printDebug(() -> "Alt verification took: " + (System.currentTimeMillis() - start) + "ms");
+                Logger.printDebug(() -> "Verification took: " + (System.currentTimeMillis() - start) + "ms for image: " + imageUrl);
             } catch (ExecutionException | InterruptedException ex) {
                 Logger.printInfo(() -> "Could not verify alt url: " + imageUrl, ex);
                 imageFileFound = false;
@@ -657,7 +656,7 @@ public final class AlternativeThumbnailsPatch {
                     ? "" : fullUrl.substring(imageExtensionEndIndex);
         }
 
-        /** @noinspection SameParameterValue*/
+        /** @noinspection SameParameterValue */
         String createStillsUrl(@NonNull ThumbnailQuality qualityToUse, boolean includeViewTracking) {
             // Images could be upgraded to webp if they are not already, but this fails quite often,
             // especially for new videos uploaded in the last hour.
