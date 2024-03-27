@@ -28,6 +28,8 @@ import static app.revanced.integrations.shared.StringRef.str;
 import static app.revanced.integrations.youtube.settings.Settings.ALT_THUMBNAIL_HOME;
 import static app.revanced.integrations.youtube.settings.Settings.ALT_THUMBNAIL_SEARCH;
 import static app.revanced.integrations.youtube.settings.Settings.ALT_THUMBNAIL_SUBSCRIPTIONS;
+import static app.revanced.integrations.youtube.settings.Settings.ALT_THUMBNAIL_WATCH_HISTORY;
+import static app.revanced.integrations.youtube.shared.NavigationBar.NavigationButton;
 
 /**
  * Alternative YouTube thumbnails.
@@ -46,12 +48,6 @@ import static app.revanced.integrations.youtube.settings.Settings.ALT_THUMBNAIL_
  * If a failed thumbnail load is reloaded (ie: scroll off, then on screen), then the original thumbnail
  * is reloaded instead.  Fast thumbnails requires using SD or lower thumbnail resolution,
  * because a noticeable number of videos do not have hq720 and too much fail to load.
- * <p>
- * Ideas for improvements:
- * - Selectively allow using original thumbnails in some situations,
- *   such as videos subscription feed, watch history, or in search results.
- * - Save to a temporary file the video id's verified to have alt thumbnails.
- *   This would speed up loading the watch history and users saved playlists.
  */
 @SuppressWarnings("unused")
 public final class AlternativeThumbnailsPatch {
@@ -62,7 +58,8 @@ public final class AlternativeThumbnailsPatch {
         public static boolean usingDeArrowAnywhere() {
             return ALT_THUMBNAIL_HOME.get().useDeArrow
                     || ALT_THUMBNAIL_SUBSCRIPTIONS.get().useDeArrow
-                    || ALT_THUMBNAIL_SEARCH.get().useDeArrow;
+                    || ALT_THUMBNAIL_SEARCH.get().useDeArrow
+                    || ALT_THUMBNAIL_WATCH_HISTORY.get().useDeArrow;
         }
 
         @Override
@@ -75,7 +72,8 @@ public final class AlternativeThumbnailsPatch {
         public static boolean usingStillImagesAnywhere() {
             return ALT_THUMBNAIL_HOME.get().useStillImages
                     || ALT_THUMBNAIL_SUBSCRIPTIONS.get().useStillImages
-                    || ALT_THUMBNAIL_SEARCH.get().useStillImages;
+                    || ALT_THUMBNAIL_SEARCH.get().useStillImages
+                    || ALT_THUMBNAIL_WATCH_HISTORY.get().useStillImages;
         }
 
         @Override
@@ -90,8 +88,8 @@ public final class AlternativeThumbnailsPatch {
         DEARROW_STILL_IMAGES(true, true),
         STILL_IMAGES(false, true);
 
-        public final boolean useDeArrow;
-        public final boolean useStillImages;
+        final boolean useDeArrow;
+        final boolean useStillImages;
 
         ThumbnailOption(boolean useDeArrow, boolean useStillImages) {
             this.useDeArrow = useDeArrow;
@@ -105,9 +103,9 @@ public final class AlternativeThumbnailsPatch {
         END(3);
 
         /**
-         * The url image number. Such as the 2 in 'hq720_2.jpg'
+         * The url alt image number. Such as the 2 in 'hq720_2.jpg'
          */
-        private final int altImageNumber;
+        final int altImageNumber;
 
         ThumbnailStillTime(int altImageNumber) {
             this.altImageNumber = altImageNumber;
@@ -158,12 +156,14 @@ public final class AlternativeThumbnailsPatch {
         if (NavigationBar.isSearchBarActive()) { // Must check search first.
             return ALT_THUMBNAIL_SEARCH.get();
         }
-        if (NavigationBar.NavigationButton.HOME.isSelected()
+        if (NavigationButton.HOME.isSelected()
                 || PlayerType.getCurrent().isMaximizedOrFullscreen()) {
             return ALT_THUMBNAIL_HOME.get();
         }
-        // User is in the subscription, notification, or the library tab.
-        // For now, also change the history tab thumbnails if subscriptions are enabled.
+        if (NavigationButton.libraryOrYouTabIsSelected()) {
+            return ALT_THUMBNAIL_WATCH_HISTORY.get();
+        }
+        // User is in the subscription or notification tab.
         return ALT_THUMBNAIL_SUBSCRIPTIONS.get();
     }
 
@@ -392,13 +392,13 @@ public final class AlternativeThumbnailsPatch {
             for (ThumbnailQuality quality : values()) {
                 originalNameToEnum.put(quality.originalName, quality);
 
-                for (int i = 1; i <= 3; i++) {
+                for (ThumbnailStillTime time : ThumbnailStillTime.values()) {
                     // 'custom' thumbnails set by the content creator.
                     // These show up in place of regular thumbnails
-                    // and seem to be limited to [1, 3] range.
-                    originalNameToEnum.put(quality.originalName + "_custom_" + i, quality);
+                    // and seem to be limited to the same [1, 3] range as the still captures.
+                    originalNameToEnum.put(quality.originalName + "_custom_" + time.altImageNumber, quality);
 
-                    altNameToEnum.put(quality.altImageName + i, quality);
+                    altNameToEnum.put(quality.altImageName + time.altImageNumber, quality);
                 }
             }
         }
