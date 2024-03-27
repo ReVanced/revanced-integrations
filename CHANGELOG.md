@@ -1,3 +1,21 @@
+# [1.5.0-dev.9](https://github.com/ReVanced/revanced-integrations/compare/v1.5.0-dev.8...v1.5.0-dev.9) (2024-03-27)
+
+
+### Bug Fixes
+
+* Check index of pattern in string instead of the other way around ([96a1e46](https://github.com/ReVanced/revanced-integrations/commit/96a1e4680d23be7154bb83290b1887fcd1a22f53))
+* **YouTube - Hide layout components:** Correctly hide Join button ([b945e2f](https://github.com/ReVanced/revanced-integrations/commit/b945e2f44b1a62326e6d45345c1467668d803f53))
+* **YouTube - Hide Shorts components:** Correctly hide join button ([b7a8995](https://github.com/ReVanced/revanced-integrations/commit/b7a8995f798e386ee1d9ab5bbd857c1736cc5a29))
+* **YouTube:** Fix video playback by switching to ReVanced GmsCore vendor ([#589](https://github.com/ReVanced/revanced-integrations/issues/589)) ([6e947e2](https://github.com/ReVanced/revanced-integrations/commit/6e947e24c2ac36e1bddcd25412870a36aa6c85c8))
+
+
+### Features
+
+* **YouTube - Hide layout components:** Filter home/search results by keywords ([#584](https://github.com/ReVanced/revanced-integrations/issues/584)) ([0cbad98](https://github.com/ReVanced/revanced-integrations/commit/0cbad9820577c476f1f29b6ac77611b38afbb950))
+* **YouTube - Hide Shorts components:** Hide like and dislike buttons ([2a08e5a](https://github.com/ReVanced/revanced-integrations/commit/2a08e5a98e9e9a00bb306313ff487d67c042a92e))
+* **YouTube - Hide Shorts components:** Hide sound metadata label ([46d8ef6](https://github.com/ReVanced/revanced-integrations/commit/46d8ef6f88bd4c912a45357541291af38b5fc81f))
+* **YouTube - Hide Shorts components:** Hide title and full video link label ([59165de](https://github.com/ReVanced/revanced-integrations/commit/59165de801a5481fa4055dcf1797fe84dce235c0))
+
 # [1.5.0-dev.8](https://github.com/ReVanced/revanced-integrations/compare/v1.5.0-dev.7...v1.5.0-dev.8) (2024-03-25)
 
 
