@@ -141,11 +141,10 @@ public class Settings extends BaseSettings {
     public static final BooleanSetting HIDE_TRANSCIPT_SECTION = new BooleanSetting("revanced_hide_transcript_section", TRUE);
 
     // Shorts
-    @Deprecated
-    public static final BooleanSetting DEPRECATED_HIDE_SHORTS = new BooleanSetting("revanced_hide_shorts", FALSE, true);
-    public static final BooleanSetting HIDE_SHORTS_HOME = new BooleanSetting("revanced_hide_shorts_home", FALSE, true);
-    public static final BooleanSetting HIDE_SHORTS_SUBSCRIPTIONS = new BooleanSetting("revanced_hide_shorts_subscriptions", FALSE, true);
-    public static final BooleanSetting HIDE_SHORTS_SEARCH = new BooleanSetting("revanced_hide_shorts_search", FALSE, true);
+    @Deprecated public static final BooleanSetting DEPRECATED_HIDE_SHORTS = new BooleanSetting("revanced_hide_shorts", FALSE);
+    public static final BooleanSetting HIDE_SHORTS_HOME = new BooleanSetting("revanced_hide_shorts_home", FALSE);
+    public static final BooleanSetting HIDE_SHORTS_SUBSCRIPTIONS = new BooleanSetting("revanced_hide_shorts_subscriptions", FALSE);
+    public static final BooleanSetting HIDE_SHORTS_SEARCH = new BooleanSetting("revanced_hide_shorts_search", FALSE);
     public static final BooleanSetting HIDE_SHORTS_JOIN_BUTTON = new BooleanSetting("revanced_hide_shorts_join_button", TRUE);
     public static final BooleanSetting HIDE_SHORTS_SUBSCRIBE_BUTTON = new BooleanSetting("revanced_hide_shorts_subscribe_button", TRUE);
     public static final BooleanSetting HIDE_SHORTS_SUBSCRIBE_BUTTON_PAUSED = new BooleanSetting("revanced_hide_shorts_subscribe_button_paused", FALSE);
