@@ -104,10 +104,13 @@ public final class AlternativeThumbnailsPatch {
         MIDDLE(2),
         END(3);
 
-        private final int urlSuffix;
+        /**
+         * The url image number. Such as the 2 in 'hq720_2.jpg'
+         */
+        private final int altImageNumber;
 
-        ThumbnailStillTime(int urlSuffix) {
-            this.urlSuffix = urlSuffix;
+        ThumbnailStillTime(int altImageNumber) {
+            this.altImageNumber = altImageNumber;
         }
     }
 
@@ -455,7 +458,7 @@ public final class AlternativeThumbnailsPatch {
         }
 
         String getAltImageNameToUse() {
-            return altImageName + Settings.ALT_THUMBNAIL_STILLS_TIME.get().urlSuffix;
+            return altImageName + Settings.ALT_THUMBNAIL_STILLS_TIME.get().altImageNumber;
         }
     }
 

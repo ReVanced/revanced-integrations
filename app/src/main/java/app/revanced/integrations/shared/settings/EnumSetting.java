@@ -14,9 +14,9 @@ import java.util.Objects;
 import app.revanced.integrations.shared.Logger;
 
 /**
- * If using with {@link ListPreference}, the entries must be the same name as the
- * enum values but any casing can be used. So <code>EnumClass.WHATEVER</code>
- * can be displayed in the UI as as 'Whatever'.
+ * If an Enum value is removed or changed, any saved or imported data using the
+ * non existent value will be reverted to the default value
+ * (the event is logged, but no user error is displayed).
  *
  * All JSON text is also converted to lowercase to keep the output less obnoxious.
  */
