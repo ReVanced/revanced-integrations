@@ -1,3 +1,10 @@
+# [1.5.0-dev.10](https://github.com/ReVanced/revanced-integrations/compare/v1.5.0-dev.9...v1.5.0-dev.10) (2024-03-27)
+
+
+### Features
+
+* **YouTube - Hide Shorts components:** Selectively hide Shorts for home / subscription / search ([#592](https://github.com/ReVanced/revanced-integrations/issues/592)) ([1ee99aa](https://github.com/ReVanced/revanced-integrations/commit/1ee99aa6f0b4af15eeca25c7e21e8a0f5e9d189a))
+
 # [1.5.0-dev.9](https://github.com/ReVanced/revanced-integrations/compare/v1.5.0-dev.8...v1.5.0-dev.9) (2024-03-27)
 
 
