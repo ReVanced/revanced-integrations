@@ -32,15 +32,29 @@ public class SharedPrefCategory {
 
     private void removeConflictingPreferenceKeyValue(@NonNull String key) {
         Logger.printException(() -> "Found conflicting preference: " + key);
-        preferences.edit().remove(key).apply();
+        removeKey(key);
     }
 
     private void saveObjectAsString(@NonNull String key, @Nullable Object value) {
         preferences.edit().putString(key, (value == null ? null : value.toString())).apply();
     }
 
+    /**
+     * Removes any preference data type that has the specified key.
+     */
+    public void removeKey(@NonNull String key) {
+        preferences.edit().remove(Objects.requireNonNull(key)).apply();
+    }
+
     public void saveBoolean(@NonNull String key, boolean value) {
         preferences.edit().putBoolean(key, value).apply();
+    }
+
+    /**
+     * @param value a NULL parameter removes the value from the preferences
+     */
+    public void saveEnumAsString(@NonNull String key, @Nullable Enum value) {
+        saveObjectAsString(key, value);
     }
 
     /**
@@ -76,6 +90,29 @@ public class SharedPrefCategory {
         Objects.requireNonNull(_default);
         try {
             return preferences.getString(key, _default);
+        } catch (ClassCastException ex) {
+            // Value stored is a completely different type (should never happen).
+            removeConflictingPreferenceKeyValue(key);
+            return _default;
+        }
+    }
+
+    @NonNull
+    public <T extends Enum> T getEnum(@NonNull String key, @NonNull T _default) {
+        Objects.requireNonNull(_default);
+        try {
+            String enumName = preferences.getString(key, null);
+            if (enumName != null) {
+                try {
+                    // noinspection unchecked
+                    return (T) Enum.valueOf(_default.getClass(), enumName);
+                } catch (IllegalArgumentException ex) {
+                    // Info level to allow removing enum values in the future without showing any user errors.
+                    Logger.printInfo(() -> "Using default, and ignoring unknown enum value: "  + enumName);
+                    removeKey(key);
+                }
+            }
+            return _default;
         } catch (ClassCastException ex) {
             // Value stored is a completely different type (should never happen).
             removeConflictingPreferenceKeyValue(key);
