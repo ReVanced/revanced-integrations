@@ -1,5 +1,5 @@
 [versions]
-agp = "8.2.2"
+agp = "8.2.2" # 8.3.0 causes java verifier error: https://github.com/ReVanced/revanced-patches/issues/2818
 annotation = "1.7.1"
 kotlin = "1.9.22"
 appcompat = "1.7.0-alpha03"
