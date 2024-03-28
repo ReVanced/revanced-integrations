@@ -1,3 +1,10 @@
+## [1.5.1-dev.2](https://github.com/ReVanced/revanced-integrations/compare/v1.5.1-dev.1...v1.5.1-dev.2) (2024-03-28)
+
+
+### Bug Fixes
+
+* **YouTube - Navigation buttons:** Hide subscriptions tab ([623d11b](https://github.com/ReVanced/revanced-integrations/commit/623d11b8e8b9f5166b53d8ae195a5d5a6c644661))
+
 ## [1.5.1-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v1.5.0...v1.5.1-dev.1) (2024-03-27)
 
 
