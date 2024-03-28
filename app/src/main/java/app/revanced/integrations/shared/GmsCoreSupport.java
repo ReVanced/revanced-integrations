@@ -40,9 +40,13 @@ public class GmsCoreSupport {
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         Utils.getContext().startActivity(intent);
 
+        // Gracefully exit, otherwise without Gms the app crashes and Android can nag the user.
         System.exit(0);
     }
 
+    /**
+     * Injection point.
+     */
     @RequiresApi(api = Build.VERSION_CODES.N)
     public static void checkAvailability() {
         var context = Objects.requireNonNull(Utils.getContext());
@@ -52,6 +56,7 @@ public class GmsCoreSupport {
         } catch (PackageManager.NameNotFoundException exception) {
             Logger.printInfo(() -> "GmsCore was not found", exception);
             open(getGmsCoreDownload(), str("gms_core_not_installed_warning"));
+            return;
         }
 
         try (var client = context.getContentResolver().acquireContentProviderClient(GMS_CORE_PROVIDER)) {
@@ -59,6 +64,8 @@ public class GmsCoreSupport {
 
             Logger.printInfo(() -> "GmsCore is not running in the background");
             open(DONT_KILL_MY_APP_LINK, str("gms_core_not_running_warning"));
+        } catch (Exception ex) {
+            Logger.printException(() -> "Could not check GmsCore background task", ex);
         }
     }
 
