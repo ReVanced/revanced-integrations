@@ -2,6 +2,7 @@ package app.revanced.integrations.youtube.shared;
 
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import androidx.annotation.Nullable;
 import app.revanced.integrations.shared.Logger;
@@ -30,6 +31,19 @@ public final class NavigationBar {
         });
     }
 
+    /**
+     * When the search bar is dismissed, YT uses a fade out animation
+     * and during the fade out this method will still report the search is active
+     * even though it's being dismissed.
+     *
+     * Depending on which hook this is called from,
+     * if switching tabs with search active then this may return an outdated value.
+     *
+     * @return If the search bar is on screen.
+     *         A value of 'false' always means search is not active,
+     *         but a value of 'true' can be a false positive if the search is being dismissed
+     *         or the navigation tab is changing when search is on screen.
+     */
     public static boolean isSearchBarActive() {
         return searchbarIsActive;
     }
@@ -99,7 +113,7 @@ public final class NavigationBar {
     }
 
     /** @noinspection EmptyMethod*/
-    private static void navigationTabCreatedCallback(NavigationBar.NavigationButton button, View tabView) {
+    private static void navigationTabCreatedCallback(NavigationButton button, View tabView) {
         // Code is added during patching.
     }
 

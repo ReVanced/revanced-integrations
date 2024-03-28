@@ -5,6 +5,8 @@ import androidx.annotation.GuardedBy;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import app.revanced.integrations.shared.settings.BaseSettings;
+import app.revanced.integrations.shared.settings.EnumSetting;
 import app.revanced.integrations.shared.settings.Setting;
 import app.revanced.integrations.youtube.settings.Settings;
 import app.revanced.integrations.shared.Logger;
@@ -129,6 +131,11 @@ public final class AlternativeThumbnailsPatch {
      */
     private static volatile long timeToResumeDeArrowAPICalls;
 
+    /**
+     * Used only for debug logging.
+     */
+    private static volatile EnumSetting<ThumbnailOption> currentOptionSetting;
+
     static {
         dearrowApiUri = validateSettings();
         final int port = dearrowApiUri.getPort();
@@ -152,19 +159,19 @@ public final class AlternativeThumbnailsPatch {
         return apiUri;
     }
 
-    private static ThumbnailOption thumbnailOptionForCurrentNavigation() {
+    private static EnumSetting<ThumbnailOption> optionSettingForCurrentNavigation() {
         if (NavigationBar.isSearchBarActive()) { // Must check search first.
-            return ALT_THUMBNAIL_SEARCH.get();
+            return ALT_THUMBNAIL_SEARCH;
         }
         if (NavigationButton.HOME.isSelected()
                 || PlayerType.getCurrent().isMaximizedOrFullscreen()) {
-            return ALT_THUMBNAIL_HOME.get();
+            return ALT_THUMBNAIL_HOME;
         }
         if (NavigationButton.libraryOrYouTabIsSelected()) {
-            return ALT_THUMBNAIL_WATCH_HISTORY.get();
+            return ALT_THUMBNAIL_WATCH_HISTORY;
         }
         // User is in the subscription or notification tab.
-        return ALT_THUMBNAIL_SUBSCRIPTIONS.get();
+        return ALT_THUMBNAIL_SUBSCRIPTIONS;
     }
 
     /**
@@ -242,7 +249,15 @@ public final class AlternativeThumbnailsPatch {
      */
     public static String overrideImageURL(String originalUrl) {
         try {
-            ThumbnailOption option = thumbnailOptionForCurrentNavigation();
+            EnumSetting<ThumbnailOption> optionSetting = optionSettingForCurrentNavigation();
+            ThumbnailOption option = optionSetting.get();
+            if (BaseSettings.DEBUG.get()) {
+                if (currentOptionSetting != optionSetting) {
+                    currentOptionSetting = optionSetting;
+                    Logger.printDebug(() -> "Changed to setting: " + optionSetting.key);
+                }
+            }
+
             if (option == ThumbnailOption.ORIGINAL) {
                 return originalUrl;
             }

@@ -41,7 +41,7 @@ final class CustomFilter extends Filter {
         public static final String SYNTAX_BUFFER_SYMBOL = "$";
 
         /**
-         * @return the parsed objects, or NULL if there was a parse error.
+         * @return the parsed objects
          */
         @NonNull
         @SuppressWarnings("ConstantConditions")
