@@ -2,18 +2,16 @@ package app.revanced.integrations.shared.settings;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
+import app.revanced.integrations.shared.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Locale;
 import java.util.Objects;
 
-import app.revanced.integrations.shared.Logger;
-
 /**
  * If an Enum value is removed or changed, any saved or imported data using the
- * non existent value will be reverted to the default value
+ * non-existent value will be reverted to the default value
  * (the event is logged, but no user error is displayed).
  *
  * All saved JSON text is converted to lowercase to keep the output less obnoxious.
