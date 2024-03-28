@@ -41,7 +41,6 @@ public class GmsCoreSupport {
         Utils.getContext().startActivity(intent);
 
         System.exit(0);
-        throw new RuntimeException();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
