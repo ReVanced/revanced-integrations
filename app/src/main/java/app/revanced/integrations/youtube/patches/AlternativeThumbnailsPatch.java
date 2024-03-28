@@ -5,7 +5,10 @@ import androidx.annotation.GuardedBy;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import app.revanced.integrations.shared.settings.BaseSettings;
+import app.revanced.integrations.shared.settings.EnumSetting;
 import app.revanced.integrations.shared.settings.Setting;
+import app.revanced.integrations.youtube.patches.components.AlternativeThumbnailsFilter;
 import app.revanced.integrations.youtube.settings.Settings;
 import app.revanced.integrations.shared.Logger;
 import app.revanced.integrations.shared.Utils;
@@ -25,6 +28,7 @@ import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 import static app.revanced.integrations.shared.StringRef.str;
+import static app.revanced.integrations.youtube.settings.Settings.ALT_THUMBNAIL_CHANNEL_PAGES;
 import static app.revanced.integrations.youtube.settings.Settings.ALT_THUMBNAIL_HOME;
 import static app.revanced.integrations.youtube.settings.Settings.ALT_THUMBNAIL_SEARCH;
 import static app.revanced.integrations.youtube.settings.Settings.ALT_THUMBNAIL_SUBSCRIPTIONS;
@@ -59,6 +63,7 @@ public final class AlternativeThumbnailsPatch {
             return ALT_THUMBNAIL_HOME.get().useDeArrow
                     || ALT_THUMBNAIL_SUBSCRIPTIONS.get().useDeArrow
                     || ALT_THUMBNAIL_SEARCH.get().useDeArrow
+                    || ALT_THUMBNAIL_CHANNEL_PAGES.get().useDeArrow
                     || ALT_THUMBNAIL_WATCH_HISTORY.get().useDeArrow;
         }
 
@@ -73,6 +78,7 @@ public final class AlternativeThumbnailsPatch {
             return ALT_THUMBNAIL_HOME.get().useStillImages
                     || ALT_THUMBNAIL_SUBSCRIPTIONS.get().useStillImages
                     || ALT_THUMBNAIL_SEARCH.get().useStillImages
+                    || ALT_THUMBNAIL_CHANNEL_PAGES.get().useStillImages
                     || ALT_THUMBNAIL_WATCH_HISTORY.get().useStillImages;
         }
 
@@ -111,6 +117,12 @@ public final class AlternativeThumbnailsPatch {
             this.altImageNumber = altImageNumber;
         }
     }
+
+    /**
+     * Used only for debug logging. The setting for the last thumbnail loaded.
+     */
+    private static volatile EnumSetting<ThumbnailOption> lastNavigationSetting;
+
 
     private static final Uri dearrowApiUri;
 
@@ -152,19 +164,24 @@ public final class AlternativeThumbnailsPatch {
         return apiUri;
     }
 
-    private static ThumbnailOption thumbnailOptionForCurrentNavigation() {
+    private static EnumSetting<ThumbnailOption> settingForCurrentNavigation() {
         if (NavigationBar.isSearchBarActive()) { // Must check search first.
-            return ALT_THUMBNAIL_SEARCH.get();
+            return ALT_THUMBNAIL_SEARCH;
         }
-        if (NavigationButton.HOME.isSelected()
-                || PlayerType.getCurrent().isMaximizedOrFullscreen()) {
-            return ALT_THUMBNAIL_HOME.get();
+        if (PlayerType.getCurrent().isMaximizedOrFullscreen()) {
+            return ALT_THUMBNAIL_HOME;
+        }
+        if (AlternativeThumbnailsFilter.channelPageWasLastLoaded()) {
+            return ALT_THUMBNAIL_CHANNEL_PAGES;
+        }
+        if (NavigationButton.HOME.isSelected()) {
+            return ALT_THUMBNAIL_HOME;
         }
         if (NavigationButton.libraryOrYouTabIsSelected()) {
-            return ALT_THUMBNAIL_WATCH_HISTORY.get();
+            return ALT_THUMBNAIL_WATCH_HISTORY;
         }
         // User is in the subscription or notification tab.
-        return ALT_THUMBNAIL_SUBSCRIPTIONS.get();
+        return ALT_THUMBNAIL_SUBSCRIPTIONS;
     }
 
     /**
@@ -242,7 +259,14 @@ public final class AlternativeThumbnailsPatch {
      */
     public static String overrideImageURL(String originalUrl) {
         try {
-            ThumbnailOption option = thumbnailOptionForCurrentNavigation();
+            EnumSetting<ThumbnailOption> currentSetting = settingForCurrentNavigation();
+            if (BaseSettings.DEBUG.get()) {
+                if (currentSetting != lastNavigationSetting) {
+                    lastNavigationSetting = currentSetting;
+                    Logger.printDebug(() -> "Changed to setting: " + currentSetting.key);
+                }
+            }
+            ThumbnailOption option = currentSetting.get();
             if (option == ThumbnailOption.ORIGINAL) {
                 return originalUrl;
             }
