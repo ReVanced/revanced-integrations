@@ -1,37 +1,37 @@
 package app.revanced.integrations.youtube.shared;
 
+import static app.revanced.integrations.youtube.shared.NavigationBar.NavigationButton.CREATE;
+
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+
 import androidx.annotation.Nullable;
+
+import java.lang.ref.WeakReference;
+
 import app.revanced.integrations.shared.Logger;
 import app.revanced.integrations.shared.Utils;
 import app.revanced.integrations.youtube.settings.Settings;
 
-import java.lang.ref.WeakReference;
-
-import static app.revanced.integrations.youtube.shared.NavigationBar.NavigationButton.CREATE;
-
 @SuppressWarnings("unused")
 public final class NavigationBar {
-    private static volatile boolean searchbarIsActive;
+
+    private static volatile WeakReference<View> searchBarResultsRef = new WeakReference<>(null);
 
     /**
      * Injection point.
      */
     public static void searchBarResultsViewLoaded(View searchbarResults) {
-        searchbarResults.getViewTreeObserver().addOnGlobalLayoutListener(() -> {
-            final boolean isActive = searchbarResults.getParent() != null;
-
-            if (searchbarIsActive != isActive) {
-                searchbarIsActive = isActive;
-                Logger.printDebug(() -> "searchbarIsActive: " + isActive);
-            }
-        });
+        searchBarResultsRef = new WeakReference<>(searchbarResults);
     }
 
+    /**
+     * @return If the search bar is on screen.
+     */
     public static boolean isSearchBarActive() {
-        return searchbarIsActive;
+        View searchbarResults = searchBarResultsRef.get();
+        return searchbarResults != null && searchbarResults.getParent() != null;
     }
 
 
@@ -99,7 +99,7 @@ public final class NavigationBar {
     }
 
     /** @noinspection EmptyMethod*/
-    private static void navigationTabCreatedCallback(NavigationBar.NavigationButton button, View tabView) {
+    private static void navigationTabCreatedCallback(NavigationButton button, View tabView) {
         // Code is added during patching.
     }
 
