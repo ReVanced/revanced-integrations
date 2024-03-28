@@ -136,7 +136,7 @@ public class SharedPrefCategory {
             if (value != null) {
                 return Integer.valueOf(value);
             }
-        } catch (ClassCastException ex) {
+        } catch (ClassCastException | NumberFormatException ex) {
             try {
                 // Old data previously stored as primitive.
                 return preferences.getInt(key, _default);
@@ -155,7 +155,7 @@ public class SharedPrefCategory {
             if (value != null) {
                 return Long.valueOf(value);
             }
-        } catch (ClassCastException ex) {
+        } catch (ClassCastException | NumberFormatException ex) {
             try {
                 return preferences.getLong(key, _default);
             } catch (ClassCastException ex2) {
@@ -172,7 +172,7 @@ public class SharedPrefCategory {
             if (value != null) {
                 return Float.valueOf(value);
             }
-        } catch (ClassCastException ex) {
+        } catch (ClassCastException | NumberFormatException ex) {
             try {
                 return preferences.getFloat(key, _default);
             } catch (ClassCastException ex2) {
