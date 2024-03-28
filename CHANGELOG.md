@@ -1,3 +1,10 @@
+# [1.6.0-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v1.5.1-dev.2...v1.6.0-dev.1) (2024-03-28)
+
+
+### Features
+
+* **GmsCore support:** Open download link if possible ([#596](https://github.com/ReVanced/revanced-integrations/issues/596)) ([999727d](https://github.com/ReVanced/revanced-integrations/commit/999727d5e6889b6242473f1b14bf618918417e77))
+
 ## [1.5.1-dev.2](https://github.com/ReVanced/revanced-integrations/compare/v1.5.1-dev.1...v1.5.1-dev.2) (2024-03-28)
 
 
