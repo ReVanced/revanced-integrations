@@ -1,3 +1,16 @@
+# [1.6.0](https://github.com/ReVanced/revanced-integrations/compare/v1.5.0...v1.6.0) (2024-03-28)
+
+
+### Bug Fixes
+
+* **YouTube - Hide layout components:** Correctly hide community posts ([fbc8066](https://github.com/ReVanced/revanced-integrations/commit/fbc80667735778877f262763d6d53afb1dba3bf6))
+* **YouTube - Navigation buttons:** Hide subscriptions tab ([623d11b](https://github.com/ReVanced/revanced-integrations/commit/623d11b8e8b9f5166b53d8ae195a5d5a6c644661))
+
+
+### Features
+
+* **GmsCore support:** Open download link if possible ([#596](https://github.com/ReVanced/revanced-integrations/issues/596)) ([999727d](https://github.com/ReVanced/revanced-integrations/commit/999727d5e6889b6242473f1b14bf618918417e77))
+
 # [1.6.0-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v1.5.1-dev.2...v1.6.0-dev.1) (2024-03-28)
 
 
