@@ -53,18 +53,27 @@ public class GmsCoreSupport {
     public static void checkAvailability() {
         var context = Objects.requireNonNull(Utils.getContext());
 
+        // Check, if GmsCore is installed.
         try {
             context.getPackageManager().getPackageInfo(GMS_CORE_PACKAGE_NAME, PackageManager.GET_ACTIVITIES);
         } catch (PackageManager.NameNotFoundException exception) {
-            Logger.printInfo(() -> "GmsCore was not found", exception);
+            Logger.printDebug(() -> "GmsCore was not found");
             open(getGmsCoreDownload(), str("gms_core_not_installed_warning"));
         }
 
-        try (var client = context.getContentResolver().acquireContentProviderClient(GMS_CORE_PROVIDER)) {
-            if (client != null) return;
+        // Check, if GmsCore is whitelisted from battery optimizations.
+        var powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+        if (!powerManager.isIgnoringBatteryOptimizations(GMS_CORE_PACKAGE_NAME)) {
+            Logger.printDebug(() -> "GmsCore is not whitelisted from battery optimizations");
+            open(DONT_KILL_MY_APP_LINK, str("gms_core_not_whitelisted_warning"));
+        }
 
-            Logger.printInfo(() -> "GmsCore is not running in the background");
-            open(DONT_KILL_MY_APP_LINK, str("gms_core_not_running_warning"));
+        // Check, if GmsCore is running in the background.
+        try (var client = context.getContentResolver().acquireContentProviderClient(GMS_CORE_PROVIDER)) {
+            if (client == null) {
+                Logger.printDebug(() -> "GmsCore is not running in the background");
+                open(DONT_KILL_MY_APP_LINK, str("gms_core_not_whitelisted_warning"));
+            }
         } catch (Exception ex) {
             Logger.printException(() -> "Could not check GmsCore background task", ex);
         }
