@@ -1,3 +1,10 @@
+# [1.7.0-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v1.6.0...v1.7.0-dev.1) (2024-03-29)
+
+
+### Features
+
+* **YouTube - Alternative thumbnails:** Selectively enable for home / subscription / search ([#593](https://github.com/ReVanced/revanced-integrations/issues/593)) ([4c81e96](https://github.com/ReVanced/revanced-integrations/commit/4c81e96a74cfc49923238c4a294b59f36b5e6c36))
+
 # [1.6.0](https://github.com/ReVanced/revanced-integrations/compare/v1.5.0...v1.6.0) (2024-03-28)
 
 
