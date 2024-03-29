@@ -54,14 +54,25 @@ public class GmsCoreSupport {
         System.exit(0);
     }
 
-    private static void showDoNotKillMyAppDialog(Context context, String messageKey, String link) {
+    private static void showToastOrDialog(Context context, String toastMessageKey, String dialogMessageKey, String link) {
+        if (!(context instanceof Activity)) {
+            // Context is for the application and cannot show a dialog using it.
+            // This situation only occurs for YT Music.
+            // Of note: Even if the context was for an Activity,
+            // YT Music cannot show a dialog if Gms is not installed
+            // because without Gms it crashes before the app can finish initializing.
+            Utils.showToastLong(str(toastMessageKey));
+            open(link);
+            return;
+        }
+
         // Use a delay to allow the activity to finish initializing.
         // Otherwise, if device is in dark mode the dialog is shown with wrong color scheme.
         Utils.runOnMainThreadDelayed(() -> {
             new AlertDialog.Builder(context)
                     .setIcon(android.R.drawable.ic_dialog_alert)
                     .setTitle(str("gms_core_dialog_title"))
-                    .setMessage(str(messageKey))
+                    .setMessage(str(dialogMessageKey))
                     .setPositiveButton(str("gms_core_dialog_ok_button_text"), (dialog, id) -> {
                         open(link);
                     })
@@ -76,44 +87,41 @@ public class GmsCoreSupport {
      * Injection point.
      */
     @RequiresApi(api = Build.VERSION_CODES.N)
-    public static void checkGmsCore(Context activityContext) {
+    public static void checkGmsCore(Context context) {
         try {
             // Verify GmsCore is installed.
             try {
-                PackageManager manager = activityContext.getPackageManager();
+                PackageManager manager = context.getPackageManager();
                 manager.getPackageInfo(GMS_CORE_PACKAGE_NAME, PackageManager.GET_ACTIVITIES);
             } catch (PackageManager.NameNotFoundException exception) {
                 Logger.printDebug(() -> "GmsCore was not found");
                 gmsIsNotInstalled = true;
-                showDoNotKillMyAppDialog(
-                        activityContext,
-                        "gms_core_not_installed_message",
-                        getGmsCoreDownload()
-                );
+                showToastOrDialog(context,
+                        "gms_core_toast_not_installed_message",
+                        "gms_core_dialog_not_installed_message",
+                        getGmsCoreDownload());
                 return;
             }
 
             // Check if GmsCore is whitelisted from battery optimizations.
-            var powerManager = (PowerManager) activityContext.getSystemService(Context.POWER_SERVICE);
+            var powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
             if (!powerManager.isIgnoringBatteryOptimizations(GMS_CORE_PACKAGE_NAME)) {
                 Logger.printDebug(() -> "GmsCore is not whitelisted from battery optimizations");
-                showDoNotKillMyAppDialog(
-                        activityContext,
-                        "gms_core_not_whitelisted_using_battery_optimizations_message",
-                        DONT_KILL_MY_APP_LINK
-                );
+                showToastOrDialog(context,
+                        "gms_core_toast_not_whitelisted_message",
+                        "gms_core_dialog_not_whitelisted_using_battery_optimizations_message",
+                        DONT_KILL_MY_APP_LINK);
                 return;
             }
 
             // Check if GmsCore is running in the background.
-            try (var client = activityContext.getContentResolver().acquireContentProviderClient(GMS_CORE_PROVIDER)) {
+            try (var client = context.getContentResolver().acquireContentProviderClient(GMS_CORE_PROVIDER)) {
                 if (client == null) {
                     Logger.printDebug(() -> "GmsCore is not running in the background");
-                    showDoNotKillMyAppDialog(
-                            activityContext,
-                            "gms_core_not_whitelisted_not_allowed_in_background_message",
-                            DONT_KILL_MY_APP_LINK
-                    );
+                    showToastOrDialog(context,
+                            "gms_core_toast_not_whitelisted_message",
+                            "gms_core_dialog_not_whitelisted_not_allowed_in_background_message",
+                            DONT_KILL_MY_APP_LINK);
                 }
             }
         } catch (Exception ex) {
