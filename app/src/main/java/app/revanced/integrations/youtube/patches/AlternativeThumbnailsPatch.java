@@ -28,9 +28,10 @@ import java.util.concurrent.ExecutionException;
 
 import static app.revanced.integrations.shared.StringRef.str;
 import static app.revanced.integrations.youtube.settings.Settings.ALT_THUMBNAIL_HOME;
+import static app.revanced.integrations.youtube.settings.Settings.ALT_THUMBNAIL_LIBRARY;
+import static app.revanced.integrations.youtube.settings.Settings.ALT_THUMBNAIL_PLAYER;
 import static app.revanced.integrations.youtube.settings.Settings.ALT_THUMBNAIL_SEARCH;
 import static app.revanced.integrations.youtube.settings.Settings.ALT_THUMBNAIL_SUBSCRIPTIONS;
-import static app.revanced.integrations.youtube.settings.Settings.ALT_THUMBNAIL_WATCH_HISTORY;
 import static app.revanced.integrations.youtube.shared.NavigationBar.NavigationButton;
 
 /**
@@ -60,8 +61,9 @@ public final class AlternativeThumbnailsPatch {
         public static boolean usingDeArrowAnywhere() {
             return ALT_THUMBNAIL_HOME.get().useDeArrow
                     || ALT_THUMBNAIL_SUBSCRIPTIONS.get().useDeArrow
-                    || ALT_THUMBNAIL_SEARCH.get().useDeArrow
-                    || ALT_THUMBNAIL_WATCH_HISTORY.get().useDeArrow;
+                    || ALT_THUMBNAIL_LIBRARY.get().useDeArrow
+                    || ALT_THUMBNAIL_PLAYER.get().useDeArrow
+                    || ALT_THUMBNAIL_SEARCH.get().useDeArrow;
         }
 
         @Override
@@ -74,8 +76,9 @@ public final class AlternativeThumbnailsPatch {
         public static boolean usingStillImagesAnywhere() {
             return ALT_THUMBNAIL_HOME.get().useStillImages
                     || ALT_THUMBNAIL_SUBSCRIPTIONS.get().useStillImages
-                    || ALT_THUMBNAIL_SEARCH.get().useStillImages
-                    || ALT_THUMBNAIL_WATCH_HISTORY.get().useStillImages;
+                    || ALT_THUMBNAIL_LIBRARY.get().useStillImages
+                    || ALT_THUMBNAIL_PLAYER.get().useStillImages
+                    || ALT_THUMBNAIL_SEARCH.get().useStillImages;
         }
 
         @Override
@@ -163,15 +166,17 @@ public final class AlternativeThumbnailsPatch {
         if (NavigationBar.isSearchBarActive()) { // Must check search first.
             return ALT_THUMBNAIL_SEARCH;
         }
-        if (NavigationButton.HOME.isSelected()
-                || PlayerType.getCurrent().isMaximizedOrFullscreen()) {
+        if (PlayerType.getCurrent().isMaximizedOrFullscreen()) {
+            return ALT_THUMBNAIL_PLAYER;
+        }
+        if (NavigationButton.HOME.isSelected()) {
             return ALT_THUMBNAIL_HOME;
         }
-        if (NavigationButton.libraryOrYouTabIsSelected()) {
-            return ALT_THUMBNAIL_WATCH_HISTORY;
+        if (NavigationButton.SUBSCRIPTIONS.isSelected() || NavigationButton.NOTIFICATIONS.isSelected()) {
+            return ALT_THUMBNAIL_SUBSCRIPTIONS;
         }
-        // User is in the subscription or notification tab.
-        return ALT_THUMBNAIL_SUBSCRIPTIONS;
+        // A library tab variant is active.
+        return ALT_THUMBNAIL_LIBRARY;
     }
 
     /**

@@ -117,7 +117,7 @@ public final class NavigationBar {
          * Notifications tab.  Only present when
          * {@link Settings#SWITCH_CREATE_WITH_NOTIFICATIONS_BUTTON} is active.
          */
-        ACTIVITY("TAB_ACTIVITY"),
+        NOTIFICATIONS("TAB_ACTIVITY"),
         /**
          * Library tab when the user is not logged in.
          */
