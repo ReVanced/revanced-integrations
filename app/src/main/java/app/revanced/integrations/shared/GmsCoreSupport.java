@@ -71,12 +71,14 @@ public class GmsCoreSupport {
         // Otherwise if device is in dark mode the dialog is missing a dark mode color scheme.
         Utils.runOnMainThreadDelayed(() -> {
             new AlertDialog.Builder(context)
+                    .setIcon(android.R.drawable.ic_dialog_alert)
                     .setTitle(str("gms_core_not_whitelisted_title"))
                     .setMessage(str(messageKey))
                     .setPositiveButton(android.R.string.ok, (dialog, id) -> {
                         open(DONT_KILL_MY_APP_LINK);
                         System.exit(0);
                     })
+                    .setCancelable(false)
                     // Do not use .setCancelable(), so if something is wrong
                     // the user can use back button to dismiss the dialog (without shutting down).
                     .show();
