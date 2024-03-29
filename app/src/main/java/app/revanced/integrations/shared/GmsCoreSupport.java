@@ -54,39 +54,20 @@ public class GmsCoreSupport {
         System.exit(0);
     }
 
-    /**
-     * Injection point.
-     */
-    @RequiresApi(api = Build.VERSION_CODES.N)
-    public static void checkGmsCoreInstalled(Activity activity) {
-        try {
-            // Verify, GmsCore is installed.
-            PackageManager manager = activity.getPackageManager();
-            manager.getPackageInfo(GMS_CORE_PACKAGE_NAME, PackageManager.GET_ACTIVITIES);
-        } catch (PackageManager.NameNotFoundException exception) {
-            Logger.printDebug(() -> "GmsCore was not found");
-            Utils.showToastLong(str("gms_core_not_installed_warning"));
-            open(getGmsCoreDownload());
-        } catch (Exception ex) {
-            Logger.printException(() -> "checkAvailability failure", ex);
-        }
-    }
-
-    private static void showDoNotKillMyAppDialog(Context context, String messageKey) {
+    private static void showDoNotKillMyAppDialog(Context context, String messageKey, String link) {
         // Use a delay to allow the activity to finish initializing.
         // Otherwise, if device is in dark mode the dialog is missing a dark mode color scheme.
         Utils.runOnMainThreadDelayed(() -> {
             new AlertDialog.Builder(context)
                     .setIcon(android.R.drawable.ic_dialog_alert)
-                    .setTitle(str("gms_core_not_whitelisted_title"))
+                    .setTitle(str("gms_core_dialog_title"))
                     .setMessage(str(messageKey))
-                    .setPositiveButton(android.R.string.ok, (dialog, id) -> {
-                        open(DONT_KILL_MY_APP_LINK);
-                        System.exit(0);
+                    .setPositiveButton(str("gms_core_dialog_ok_button_text"), (dialog, id) -> {
+                        open(link);
                     })
-                    .setCancelable(false)
-                    // Do not use .setCancelable(), so if something is wrong
-                    // the user can use back button to dismiss the dialog (without shutting down).
+                    // Manually allow using the back button to dismiss the dialog with the back button,
+                    // if troubleshooting and somehow the Gms verification checks always fail.
+                    .setCancelable(true)
                     .show();
         }, 100);
     }
@@ -95,25 +76,48 @@ public class GmsCoreSupport {
      * Injection point.
      */
     @RequiresApi(api = Build.VERSION_CODES.N)
-    public static void checkGmsCoreWhitelisted(Activity context) {
+    public static void checkGmsCore(Activity context) {
         try {
-            // Check, if GmsCore is whitelisted from battery optimizations.
-            var powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
-            if (!powerManager.isIgnoringBatteryOptimizations(GMS_CORE_PACKAGE_NAME)) {
-                Logger.printDebug(() -> "GmsCore is not whitelisted from battery optimizations");
-                showDoNotKillMyAppDialog(context, "gms_core_not_whitelisted_using_battery_optimizations_message");
+            // Verify GmsCore is installed.
+            try {
+                PackageManager manager = context.getPackageManager();
+                manager.getPackageInfo(GMS_CORE_PACKAGE_NAME, PackageManager.GET_ACTIVITIES);
+            } catch (PackageManager.NameNotFoundException exception) {
+                Logger.printDebug(() -> "GmsCore was not found");
+                gmsIsNotInstalled = true;
+                showDoNotKillMyAppDialog(
+                        context,
+                        "gms_core_not_installed_message",
+                        getGmsCoreDownload()
+                );
                 return;
             }
 
-            // Check, if GmsCore is running in the background.
+            // Check if GmsCore is whitelisted from battery optimizations.
+            var powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+            if (!powerManager.isIgnoringBatteryOptimizations(GMS_CORE_PACKAGE_NAME)) {
+                Logger.printDebug(() -> "GmsCore is not whitelisted from battery optimizations");
+                showDoNotKillMyAppDialog(
+                        context,
+                        "gms_core_not_whitelisted_using_battery_optimizations_message",
+                        DONT_KILL_MY_APP_LINK
+                );
+                return;
+            }
+
+            // Check if GmsCore is running in the background.
             try (var client = context.getContentResolver().acquireContentProviderClient(GMS_CORE_PROVIDER)) {
                 if (client == null) {
                     Logger.printDebug(() -> "GmsCore is not running in the background");
-                    showDoNotKillMyAppDialog(context, "gms_core_not_whitelisted_not_allowed_in_background_message");
+                    showDoNotKillMyAppDialog(
+                            context,
+                            "gms_core_not_whitelisted_not_allowed_in_background_message",
+                            DONT_KILL_MY_APP_LINK
+                    );
                 }
             }
         } catch (Exception ex) {
-            Logger.printException(() -> "checkGmsWhitelisted failure", ex);
+            Logger.printException(() -> "checkGmsCore failure", ex);
         }
     }
 
