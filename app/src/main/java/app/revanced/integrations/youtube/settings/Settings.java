@@ -76,7 +76,7 @@ public class Settings extends BaseSettings {
     public static final BooleanSetting HIDE_ALBUM_CARDS = new BooleanSetting("revanced_hide_album_cards", FALSE, true);
     public static final BooleanSetting HIDE_ARTIST_CARDS = new BooleanSetting("revanced_hide_artist_cards", FALSE);
     public static final BooleanSetting HIDE_AUTOPLAY_BUTTON = new BooleanSetting("revanced_hide_autoplay_button", TRUE, true);
-    public static final BooleanSetting HIDE_SUGGESTIONS_SHELF = new BooleanSetting("revanced_hide_suggestions_shelf", FALSE, true);
+    public static final BooleanSetting HIDE_SUGGESTIONS_SHELF = new BooleanSetting("revanced_hide_suggestions_shelf", TRUE, true);
     public static final BooleanSetting HIDE_CAPTIONS_BUTTON = new BooleanSetting("revanced_hide_captions_button", FALSE);
     public static final BooleanSetting HIDE_CAST_BUTTON = new BooleanSetting("revanced_hide_cast_button", TRUE, true);
     public static final BooleanSetting HIDE_CHANNEL_BAR = new BooleanSetting("revanced_hide_channel_bar", FALSE);

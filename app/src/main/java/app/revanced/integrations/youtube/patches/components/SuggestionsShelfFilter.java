@@ -13,7 +13,7 @@ import app.revanced.integrations.youtube.shared.NavigationBar;
 public final class SuggestionsShelfFilter extends Filter {
 
     /**
-     * When spoofing to app versions 17.31.00 and older, the watch history preview bar uses
+     * When spoofing to app versions less than 18.01.00 and older, the watch history preview bar uses
      * the same layout components as the breaking news shelf.
      *
      * Breaking news does not appear to be present in these older versions anyways.
