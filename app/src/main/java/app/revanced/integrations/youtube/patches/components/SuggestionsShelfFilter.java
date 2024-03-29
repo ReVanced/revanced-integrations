@@ -27,9 +27,7 @@ public final class SuggestionsShelfFilter extends Filter {
     }
 
     private static boolean shouldHideSuggestionsShelf() {
-        if (NavigationBar.NavigationButton.HOME.isSelected())
-            return Settings.HIDE_SUGGESTIONS_SHELF.get();
-
-        return false;
+        return Settings.HIDE_SUGGESTIONS_SHELF.get() &&
+                NavigationBar.NavigationButton.HOME.isSelected();
     }
 }
