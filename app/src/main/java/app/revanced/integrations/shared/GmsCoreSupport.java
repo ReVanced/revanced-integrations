@@ -27,6 +27,15 @@ public class GmsCoreSupport {
     private static final String DONT_KILL_MY_APP_LINK
             = "https://dontkillmyapp.com";
 
+    private static volatile boolean gmsIsNotInstalled;
+
+    /**
+     * If GmsCore is not installed.
+     */
+    public static boolean gmsIsNotInstalled() {
+        return gmsIsNotInstalled;
+    }
+
     private static void open(String queryOrLink) {
         Intent intent;
         try {

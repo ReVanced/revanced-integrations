@@ -6,6 +6,8 @@ import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.widget.TextView;
 import androidx.annotation.RequiresApi;
+
+import app.revanced.integrations.shared.GmsCoreSupport;
 import app.revanced.integrations.shared.Logger;
 import app.revanced.integrations.shared.Utils;
 import app.revanced.integrations.youtube.patches.announcements.requests.AnnouncementsRoutes;
@@ -34,6 +36,12 @@ public final class AnnouncementsPatch {
 
         // Check if there is internet connection
         if (!Utils.isNetworkConnected()) return;
+
+        // If GmsCore is not installed, the https call will always fail with a security exception.
+        if (GmsCoreSupport.gmsIsNotInstalled()) {
+            Logger.printDebug(() -> "GmsCore not installed. Skipping announcement check");
+            return;
+        }
 
         Utils.runOnBackgroundThread(() -> {
             try {
