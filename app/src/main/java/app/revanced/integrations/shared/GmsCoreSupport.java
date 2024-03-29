@@ -9,13 +9,10 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.PowerManager;
-
-import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Objects;
 
 import static app.revanced.integrations.shared.StringRef.str;
 
@@ -52,9 +49,9 @@ public class GmsCoreSupport {
      * Injection point.
      */
     @RequiresApi(api = Build.VERSION_CODES.N)
-    public static void checkGmsInstalled(Activity activity) {
+    public static void checkGmsCoreInstalled(Activity activity) {
         try {
-            // verify GmsCore is installed.
+            // Verify, GmsCore is installed.
             PackageManager manager = activity.getPackageManager();
             manager.getPackageInfo(GMS_CORE_PACKAGE_NAME, PackageManager.GET_ACTIVITIES);
         } catch (PackageManager.NameNotFoundException exception) {
@@ -68,7 +65,7 @@ public class GmsCoreSupport {
 
     private static void showDoNotKillMyAppDialog(Context context, String messageKey) {
         // Use a delay to allow the activity to finish initializing.
-        // Otherwise if device is in dark mode the dialog is missing a dark mode color scheme.
+        // Otherwise, if device is in dark mode the dialog is missing a dark mode color scheme.
         Utils.runOnMainThreadDelayed(() -> {
             new AlertDialog.Builder(context)
                     .setIcon(android.R.drawable.ic_dialog_alert)
@@ -89,7 +86,7 @@ public class GmsCoreSupport {
      * Injection point.
      */
     @RequiresApi(api = Build.VERSION_CODES.N)
-    public static void checkGmsWhitelisted(Activity context) {
+    public static void checkGmsCoreWhitelisted(Activity context) {
         try {
             // Check, if GmsCore is whitelisted from battery optimizations.
             var powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
