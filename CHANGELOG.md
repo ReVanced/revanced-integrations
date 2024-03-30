@@ -1,3 +1,17 @@
+# [1.7.0-dev.2](https://github.com/ReVanced/revanced-integrations/compare/v1.7.0-dev.1...v1.7.0-dev.2) (2024-03-30)
+
+
+### Features
+
+* **YouTube - GmsCore:** Require ignoring battery optimizations ([#599](https://github.com/ReVanced/revanced-integrations/issues/599)) ([fd2a9d0](https://github.com/ReVanced/revanced-integrations/commit/fd2a9d0287599aaafa817987fd0815e4f0ae72b9))
+
+# [1.7.0-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v1.6.0...v1.7.0-dev.1) (2024-03-29)
+
+
+### Features
+
+* **YouTube - Alternative thumbnails:** Selectively enable for home / subscription / search ([#593](https://github.com/ReVanced/revanced-integrations/issues/593)) ([4c81e96](https://github.com/ReVanced/revanced-integrations/commit/4c81e96a74cfc49923238c4a294b59f36b5e6c36))
+
 # [1.6.0](https://github.com/ReVanced/revanced-integrations/compare/v1.5.0...v1.6.0) (2024-03-28)
 
 
