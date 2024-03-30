@@ -57,7 +57,7 @@ public class GmsCoreSupport {
         // Otherwise, if device is in dark mode the dialog is shown with wrong color scheme.
         Utils.runOnMainThreadDelayed(() -> {
             new AlertDialog.Builder(context)
-                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .setIconAttribute(android.R.attr.alertDialogIcon)
                     .setTitle(str("gms_core_dialog_title"))
                     .setMessage(str(dialogMessageKey))
                     .setPositiveButton(str("gms_core_dialog_ok_button_text"), (dialog, id) -> {
