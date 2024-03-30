@@ -27,15 +27,6 @@ public class GmsCoreSupport {
     private static final String DONT_KILL_MY_APP_LINK
             = "https://dontkillmyapp.com";
 
-    private static volatile boolean gmsCoreIsNotInstalled;
-
-    /**
-     * If GmsCore is not installed.
-     */
-    public static boolean gmsCoreIsNotInstalled() {
-        return gmsCoreIsNotInstalled;
-    }
-
     private static void open(String queryOrLink) {
         Intent intent;
         try {
@@ -57,11 +48,6 @@ public class GmsCoreSupport {
     private static void showToastOrDialog(Context context, String toastMessageKey, String dialogMessageKey, String link) {
         if (!(context instanceof Activity)) {
             // Context is for the application and cannot show a dialog using it.
-            // Of note:
-            // This situation also occurs for YT Music.
-            // Even if the context was for an Activity,
-            // YT Music cannot show a dialog if GmsCore is not installed
-            // because without GmsCore it crashes before the app can finish initializing.
             Utils.showToastLong(str(toastMessageKey));
             open(link);
             return;
@@ -96,11 +82,10 @@ public class GmsCoreSupport {
                 manager.getPackageInfo(GMS_CORE_PACKAGE_NAME, PackageManager.GET_ACTIVITIES);
             } catch (PackageManager.NameNotFoundException exception) {
                 Logger.printDebug(() -> "GmsCore was not found");
-                gmsCoreIsNotInstalled = true;
-                showToastOrDialog(context,
-                        "gms_core_toast_not_installed_message",
-                        "gms_core_dialog_not_installed_message",
-                        getGmsCoreDownload());
+                // Cannot show a dialog and must show a toast,
+                // because on some installations the app crashes before the dialog can display.
+                Utils.showToastLong(str("gms_core_toast_not_installed_message"));
+                open(getGmsCoreDownload());
                 return;
             }
 

@@ -37,12 +37,6 @@ public final class AnnouncementsPatch {
         // Check if there is internet connection
         if (!Utils.isNetworkConnected()) return;
 
-        // If GmsCore is not installed, the https call will always fail with a security exception.
-        if (GmsCoreSupport.gmsCoreIsNotInstalled()) {
-            Logger.printDebug(() -> "GmsCore not installed. Skipping announcement check");
-            return;
-        }
-
         Utils.runOnBackgroundThread(() -> {
             try {
                 HttpURLConnection connection = AnnouncementsRoutes.getAnnouncementsConnectionFromRoute(
