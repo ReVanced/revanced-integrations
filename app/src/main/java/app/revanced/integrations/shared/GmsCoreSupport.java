@@ -27,13 +27,13 @@ public class GmsCoreSupport {
     private static final String DONT_KILL_MY_APP_LINK
             = "https://dontkillmyapp.com";
 
-    private static volatile boolean gmsIsNotInstalled;
+    private static volatile boolean gmsCoreIsNotInstalled;
 
     /**
      * If GmsCore is not installed.
      */
-    public static boolean gmsIsNotInstalled() {
-        return gmsIsNotInstalled;
+    public static boolean gmsCoreIsNotInstalled() {
+        return gmsCoreIsNotInstalled;
     }
 
     private static void open(String queryOrLink) {
@@ -57,10 +57,11 @@ public class GmsCoreSupport {
     private static void showToastOrDialog(Context context, String toastMessageKey, String dialogMessageKey, String link) {
         if (!(context instanceof Activity)) {
             // Context is for the application and cannot show a dialog using it.
-            // This situation only occurs for YT Music.
-            // Of note: Even if the context was for an Activity,
-            // YT Music cannot show a dialog if Gms is not installed
-            // because without Gms it crashes before the app can finish initializing.
+            // Of note:
+            // This situation also occurs for YT Music.
+            // Even if the context was for an Activity,
+            // YT Music cannot show a dialog if GmsCore is not installed
+            // because without GmsCore it crashes before the app can finish initializing.
             Utils.showToastLong(str(toastMessageKey));
             open(link);
             return;
@@ -77,7 +78,7 @@ public class GmsCoreSupport {
                         open(link);
                     })
                     // Manually allow using the back button to dismiss the dialog with the back button,
-                    // if troubleshooting and somehow the Gms verification checks always fail.
+                    // if troubleshooting and somehow the GmsCore verification checks always fail.
                     .setCancelable(true)
                     .show();
         }, 100);
@@ -95,7 +96,7 @@ public class GmsCoreSupport {
                 manager.getPackageInfo(GMS_CORE_PACKAGE_NAME, PackageManager.GET_ACTIVITIES);
             } catch (PackageManager.NameNotFoundException exception) {
                 Logger.printDebug(() -> "GmsCore was not found");
-                gmsIsNotInstalled = true;
+                gmsCoreIsNotInstalled = true;
                 showToastOrDialog(context,
                         "gms_core_toast_not_installed_message",
                         "gms_core_dialog_not_installed_message",
