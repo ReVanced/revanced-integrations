@@ -46,11 +46,9 @@ public class GmsCoreSupport {
     }
 
     private static void showBatteryOptimizationToastOrDialog(Context context, String dialogMessageRef) {
-        String appName = getGmsCoreAppDisplayName();
-
         if (!(context instanceof Activity)) {
             // Context is for the application and cannot show a dialog using it.
-            Utils.showToastLong(str("gms_core_toast_not_whitelisted_message", appName));
+            Utils.showToastLong(str("gms_core_toast_not_whitelisted_message"));
             open(DONT_KILL_MY_APP_LINK);
             return;
         }
@@ -61,7 +59,7 @@ public class GmsCoreSupport {
             new AlertDialog.Builder(context)
                     .setIconAttribute(android.R.attr.alertDialogIcon)
                     .setTitle(str("gms_core_dialog_title"))
-                    .setMessage(str(dialogMessageRef, appName, appName))
+                    .setMessage(str(dialogMessageRef))
                     .setPositiveButton(str("gms_core_dialog_ok_button_text"), (dialog, id) ->
                         open(DONT_KILL_MY_APP_LINK)
                     )
@@ -86,7 +84,7 @@ public class GmsCoreSupport {
                 Logger.printDebug(() -> "GmsCore was not found");
                 // Cannot show a dialog and must show a toast,
                 // because on some installations the app crashes before a dialog can be displayed.
-                Utils.showToastLong(str("gms_core_toast_not_installed_message", getGmsCoreAppDisplayName()));
+                Utils.showToastLong(str("gms_core_toast_not_installed_message"));
                 open(getGmsCoreDownload());
                 return;
             }
@@ -113,18 +111,6 @@ public class GmsCoreSupport {
             Logger.printException(() -> "checkGmsCore failure", ex);
         }
     }
-
-    private static String getGmsCoreAppDisplayName() {
-        final var vendorGroupId = getGmsCoreVendorGroupId();
-        //noinspection SwitchStatementWithTooFewBranches
-        switch (vendorGroupId) {
-            case "app.revanced":
-                return "MicroG";
-            default:
-                return "GmsCore";
-        }
-    }
-
 
     private static String getGmsCoreDownload() {
         final var vendorGroupId = getGmsCoreVendorGroupId();
