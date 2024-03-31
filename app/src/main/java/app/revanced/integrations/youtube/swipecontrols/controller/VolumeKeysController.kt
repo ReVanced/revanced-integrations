@@ -9,7 +9,7 @@ import app.revanced.integrations.youtube.swipecontrols.SwipeControlsHostActivity
  * @param controller main controller instance
  */
 class VolumeKeysController(
-    private val controller: SwipeControlsHostActivity,
+    private val controller: SwipeControlsHostActivity
 ) {
     /**
      * key event handler

@@ -13,7 +13,7 @@ import app.revanced.integrations.youtube.swipecontrols.misc.toPoint
  * @param controller reference to the main swipe controller
  */
 class PressToSwipeController(
-    private val controller: SwipeControlsHostActivity,
+    private val controller: SwipeControlsHostActivity
 ) : BaseGestureController(controller) {
     /**
      * monitors if the user is currently in a swipe session.
@@ -59,7 +59,7 @@ class PressToSwipeController(
         from: MotionEvent,
         to: MotionEvent,
         distanceX: Double,
-        distanceY: Double,
+        distanceY: Double
     ): Boolean {
         // cancel if not in swipe session or vertical
         if (!isInSwipeSession || currentSwipe != SwipeDetector.SwipeDirection.VERTICAL) return false

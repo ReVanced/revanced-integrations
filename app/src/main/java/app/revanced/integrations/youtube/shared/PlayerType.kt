@@ -44,7 +44,7 @@ enum class PlayerType {
      */
     INLINE_MINIMAL,
     VIRTUAL_REALITY_FULLSCREEN,
-    WATCH_WHILE_PICTURE_IN_PICTURE,
+    WATCH_WHILE_PICTURE_IN_PICTURE
     ;
 
     companion object {

@@ -15,7 +15,7 @@ import kotlin.properties.Delegates
  */
 class AudioVolumeController(
     context: Context,
-    private val targetStream: Int = AudioManager.STREAM_MUSIC,
+    private val targetStream: Int = AudioManager.STREAM_MUSIC
 ) {
 
     /**
@@ -36,7 +36,7 @@ class AudioVolumeController(
             minimumVolumeIndex =
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                     audioManager.getStreamMinVolume(
-                        targetStream,
+                        targetStream
                     )
                 } else {
                     0
