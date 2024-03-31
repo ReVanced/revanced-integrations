@@ -5,13 +5,11 @@ import static app.revanced.integrations.shared.StringRef.str;
 import android.app.Instrumentation;
 import android.view.KeyEvent;
 import android.view.View;
-
 import androidx.annotation.Nullable;
-
-import app.revanced.integrations.youtube.settings.Settings;
 import app.revanced.integrations.shared.Logger;
 import app.revanced.integrations.shared.Utils;
 import app.revanced.integrations.youtube.StringTrieSearch;
+import app.revanced.integrations.youtube.settings.Settings;
 
 @SuppressWarnings("unused")
 public final class AdsFilter extends Filter {

@@ -1,5 +1,9 @@
 package app.revanced.integrations.twitch.api;
 
+import static app.revanced.integrations.shared.StringRef.str;
+
+import java.io.IOException;
+
 import androidx.annotation.NonNull;
 import app.revanced.integrations.shared.Logger;
 import app.revanced.integrations.shared.Utils;
@@ -9,10 +13,6 @@ import app.revanced.integrations.twitch.adblock.PurpleAdblockService;
 import app.revanced.integrations.twitch.settings.Settings;
 import okhttp3.Interceptor;
 import okhttp3.Response;
-
-import java.io.IOException;
-
-import static app.revanced.integrations.shared.StringRef.str;
 
 public class RequestInterceptor implements Interceptor {
     private IAdblockService activeService = null;

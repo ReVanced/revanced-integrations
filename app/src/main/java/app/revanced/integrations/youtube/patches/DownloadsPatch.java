@@ -1,15 +1,13 @@
 package app.revanced.integrations.youtube.patches;
 
+import java.lang.ref.WeakReference;
+import java.util.Objects;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-
 import androidx.annotation.NonNull;
-
-import java.lang.ref.WeakReference;
-import java.util.Objects;
-
 import app.revanced.integrations.shared.Logger;
 import app.revanced.integrations.shared.StringRef;
 import app.revanced.integrations.shared.Utils;

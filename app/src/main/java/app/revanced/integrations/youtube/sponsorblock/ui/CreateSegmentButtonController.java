@@ -2,16 +2,15 @@ package app.revanced.integrations.youtube.sponsorblock.ui;
 
 import static app.revanced.integrations.shared.Utils.getResourceIdentifier;
 
-import android.view.View;
-import android.widget.ImageView;
-
 import java.lang.ref.WeakReference;
 import java.util.Objects;
 
-import app.revanced.integrations.youtube.patches.VideoInformation;
-import app.revanced.integrations.youtube.settings.Settings;
+import android.view.View;
+import android.widget.ImageView;
 import app.revanced.integrations.shared.Logger;
 import app.revanced.integrations.shared.Utils;
+import app.revanced.integrations.youtube.patches.VideoInformation;
+import app.revanced.integrations.youtube.settings.Settings;
 import app.revanced.integrations.youtube.videoplayer.BottomControlButton;
 
 public class CreateSegmentButtonController {

@@ -2,6 +2,8 @@ package app.revanced.integrations.youtube.sponsorblock.objects;
 
 import static app.revanced.integrations.shared.StringRef.str;
 
+import java.util.Objects;
+
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -10,14 +12,7 @@ import android.preference.ListPreference;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.TableLayout;
-import android.widget.TableRow;
-import android.widget.TextView;
-
-import java.util.Objects;
-
+import android.widget.*;
 import app.revanced.integrations.shared.Logger;
 import app.revanced.integrations.shared.Utils;
 

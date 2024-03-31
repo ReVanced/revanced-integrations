@@ -2,7 +2,6 @@ package app.revanced.integrations.tiktok.settings.preference;
 
 import android.content.Context;
 import android.preference.EditTextPreference;
-
 import app.revanced.integrations.shared.settings.StringSetting;
 
 public class InputTextPreference extends EditTextPreference {

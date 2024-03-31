@@ -5,10 +5,8 @@ import android.graphics.ColorFilter;
 import android.graphics.Paint;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.Drawable;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
 import app.revanced.integrations.youtube.patches.HideSeekbarPatch;
 import app.revanced.integrations.youtube.settings.Settings;
 

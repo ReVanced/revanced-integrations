@@ -1,18 +1,17 @@
 package app.revanced.integrations.youtube.patches.components;
 
-import androidx.annotation.GuardedBy;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 
+import androidx.annotation.GuardedBy;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import app.revanced.integrations.shared.Logger;
+import app.revanced.integrations.youtube.TrieSearch;
 import app.revanced.integrations.youtube.patches.ReturnYouTubeDislikePatch;
 import app.revanced.integrations.youtube.patches.VideoInformation;
 import app.revanced.integrations.youtube.settings.Settings;
-import app.revanced.integrations.shared.Logger;
-import app.revanced.integrations.youtube.TrieSearch;
 
 /**
  * Searches for video id's in the proto buffer of Shorts dislike.

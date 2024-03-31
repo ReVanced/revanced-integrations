@@ -1,8 +1,8 @@
 package app.revanced.integrations.youtube;
 
-import androidx.annotation.NonNull;
-
 import java.nio.charset.StandardCharsets;
+
+import androidx.annotation.NonNull;
 
 public final class ByteTrieSearch extends TrieSearch<byte[]> {
 

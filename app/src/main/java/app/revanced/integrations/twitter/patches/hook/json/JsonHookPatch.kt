@@ -3,9 +3,9 @@ package app.revanced.integrations.twitter.patches.hook.json
 import app.revanced.integrations.twitter.patches.hook.patch.dummy.DummyHook
 import app.revanced.integrations.twitter.utils.json.JsonUtils.parseJson
 import app.revanced.integrations.twitter.utils.stream.StreamUtils
-import org.json.JSONException
 import java.io.IOException
 import java.io.InputStream
+import org.json.JSONException
 
 object JsonHookPatch {
     // Additional hooks added by corresponding patch.

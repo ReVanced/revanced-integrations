@@ -1,10 +1,11 @@
 package app.revanced.integrations.tiktok.feedfilter;
 
-import app.revanced.integrations.tiktok.settings.Settings;
+import static app.revanced.integrations.tiktok.Utils.parseMinMax;
+
 import com.ss.android.ugc.aweme.feed.model.Aweme;
 import com.ss.android.ugc.aweme.feed.model.AwemeStatistics;
 
-import static app.revanced.integrations.tiktok.Utils.parseMinMax;
+import app.revanced.integrations.tiktok.settings.Settings;
 
 public final class LikeCountFilter implements IFilter {
     final long minLike;

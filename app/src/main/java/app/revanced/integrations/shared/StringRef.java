@@ -1,13 +1,12 @@
 package app.revanced.integrations.shared;
 
-import android.content.Context;
-import android.content.res.Resources;
-
-import androidx.annotation.NonNull;
-
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+
+import android.content.Context;
+import android.content.res.Resources;
+import androidx.annotation.NonNull;
 
 public class StringRef {
     private static Resources resources;

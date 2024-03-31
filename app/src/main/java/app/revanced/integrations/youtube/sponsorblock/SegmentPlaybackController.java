@@ -2,21 +2,15 @@ package app.revanced.integrations.youtube.sponsorblock;
 
 import static app.revanced.integrations.shared.StringRef.str;
 
+import java.lang.reflect.Field;
+import java.util.*;
+
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.text.TextUtils;
 import android.util.TypedValue;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Objects;
-
 import app.revanced.integrations.shared.Logger;
 import app.revanced.integrations.shared.Utils;
 import app.revanced.integrations.youtube.patches.VideoInformation;

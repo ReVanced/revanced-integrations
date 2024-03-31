@@ -2,13 +2,6 @@ package app.revanced.integrations.youtube.sponsorblock.requests;
 
 import static app.revanced.integrations.shared.StringRef.str;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.SocketTimeoutException;
@@ -17,6 +10,14 @@ import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import app.revanced.integrations.shared.Logger;
+import app.revanced.integrations.shared.Utils;
 import app.revanced.integrations.youtube.requests.Requester;
 import app.revanced.integrations.youtube.requests.Route;
 import app.revanced.integrations.youtube.settings.Settings;
@@ -25,8 +26,6 @@ import app.revanced.integrations.youtube.sponsorblock.objects.SegmentCategory;
 import app.revanced.integrations.youtube.sponsorblock.objects.SponsorSegment;
 import app.revanced.integrations.youtube.sponsorblock.objects.SponsorSegment.SegmentVote;
 import app.revanced.integrations.youtube.sponsorblock.objects.UserStats;
-import app.revanced.integrations.shared.Logger;
-import app.revanced.integrations.shared.Utils;
 
 public class SBRequester {
     private static final String TIME_TEMPLATE = "%.3f";

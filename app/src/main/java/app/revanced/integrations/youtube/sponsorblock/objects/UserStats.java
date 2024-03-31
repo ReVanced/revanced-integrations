@@ -1,9 +1,9 @@
 package app.revanced.integrations.youtube.sponsorblock.objects;
 
-import androidx.annotation.NonNull;
-
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import androidx.annotation.NonNull;
 
 /**
  * SponsorBlock user stats

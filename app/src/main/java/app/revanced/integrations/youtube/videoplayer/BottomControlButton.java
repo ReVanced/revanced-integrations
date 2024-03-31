@@ -1,16 +1,14 @@
 package app.revanced.integrations.youtube.videoplayer;
 
+import java.lang.ref.WeakReference;
+import java.util.Objects;
+
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.widget.ImageView;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
-import java.lang.ref.WeakReference;
-import java.util.Objects;
-
 import app.revanced.integrations.shared.Logger;
 import app.revanced.integrations.shared.Utils;
 import app.revanced.integrations.shared.settings.BooleanSetting;

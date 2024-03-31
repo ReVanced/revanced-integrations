@@ -2,17 +2,12 @@ package app.revanced.integrations.youtube.patches.components;
 
 import static app.revanced.integrations.shared.StringRef.str;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import app.revanced.integrations.shared.Logger;
 import app.revanced.integrations.shared.Utils;
 import app.revanced.integrations.youtube.ByteTrieSearch;

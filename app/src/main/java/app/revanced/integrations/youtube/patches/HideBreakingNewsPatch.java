@@ -1,10 +1,9 @@
 package app.revanced.integrations.youtube.patches;
 
 import android.view.View;
-
+import app.revanced.integrations.shared.Utils;
 import app.revanced.integrations.youtube.patches.spoof.SpoofAppVersionPatch;
 import app.revanced.integrations.youtube.settings.Settings;
-import app.revanced.integrations.shared.Utils;
 
 @SuppressWarnings("unused")
 public class HideBreakingNewsPatch {

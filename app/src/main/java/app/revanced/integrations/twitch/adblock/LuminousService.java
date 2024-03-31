@@ -1,10 +1,10 @@
 package app.revanced.integrations.twitch.adblock;
 
+import static app.revanced.integrations.shared.StringRef.str;
+
 import app.revanced.integrations.shared.Logger;
 import okhttp3.HttpUrl;
 import okhttp3.Request;
-
-import static app.revanced.integrations.shared.StringRef.str;
 
 public class LuminousService implements IAdblockService {
     @Override

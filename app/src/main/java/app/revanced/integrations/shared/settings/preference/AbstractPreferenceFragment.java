@@ -1,5 +1,7 @@
 package app.revanced.integrations.shared.settings.preference;
 
+import static app.revanced.integrations.shared.StringRef.str;
+
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -8,13 +10,10 @@ import android.os.Bundle;
 import android.preference.*;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
 import app.revanced.integrations.shared.Logger;
 import app.revanced.integrations.shared.Utils;
 import app.revanced.integrations.shared.settings.BooleanSetting;
 import app.revanced.integrations.shared.settings.Setting;
-
-import static app.revanced.integrations.shared.StringRef.str;
 
 /**
  *

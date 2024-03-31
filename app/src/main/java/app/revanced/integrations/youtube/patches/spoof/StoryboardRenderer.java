@@ -1,8 +1,8 @@
 package app.revanced.integrations.youtube.patches.spoof;
 
-import androidx.annotation.Nullable;
-
 import org.jetbrains.annotations.NotNull;
+
+import androidx.annotation.Nullable;
 
 @Deprecated
 public final class StoryboardRenderer {

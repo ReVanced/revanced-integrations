@@ -1,21 +1,16 @@
 package app.revanced.integrations.youtube.patches.components;
 
+import java.nio.ByteBuffer;
+import java.util.*;
+import java.util.function.Consumer;
+
 import android.os.Build;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
-
-import java.nio.ByteBuffer;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Spliterator;
-import java.util.function.Consumer;
-
 import app.revanced.integrations.shared.Logger;
-import app.revanced.integrations.shared.settings.BooleanSetting;
 import app.revanced.integrations.shared.settings.BaseSettings;
+import app.revanced.integrations.shared.settings.BooleanSetting;
 import app.revanced.integrations.youtube.ByteTrieSearch;
 import app.revanced.integrations.youtube.StringTrieSearch;
 import app.revanced.integrations.youtube.TrieSearch;

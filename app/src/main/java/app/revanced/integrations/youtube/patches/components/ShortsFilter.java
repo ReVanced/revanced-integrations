@@ -2,12 +2,10 @@ package app.revanced.integrations.youtube.patches.components;
 
 import static app.revanced.integrations.shared.Utils.hideViewUnderCondition;
 
-import android.view.View;
-
-import androidx.annotation.Nullable;
-
 import com.google.android.libraries.youtube.rendering.ui.pivotbar.PivotBar;
 
+import android.view.View;
+import androidx.annotation.Nullable;
 import app.revanced.integrations.shared.Utils;
 import app.revanced.integrations.youtube.settings.Settings;
 import app.revanced.integrations.youtube.shared.NavigationBar;

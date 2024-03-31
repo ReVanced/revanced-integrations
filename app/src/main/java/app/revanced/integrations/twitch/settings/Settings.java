@@ -1,11 +1,11 @@
 package app.revanced.integrations.twitch.settings;
 
-import app.revanced.integrations.shared.settings.BooleanSetting;
-import app.revanced.integrations.shared.settings.BaseSettings;
-import app.revanced.integrations.shared.settings.StringSetting;
-
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
+
+import app.revanced.integrations.shared.settings.BaseSettings;
+import app.revanced.integrations.shared.settings.BooleanSetting;
+import app.revanced.integrations.shared.settings.StringSetting;
 
 public class Settings extends BaseSettings {
     /* Ads */

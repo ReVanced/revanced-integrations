@@ -2,14 +2,12 @@ package app.revanced.integrations.youtube.shared;
 
 import static app.revanced.integrations.youtube.shared.NavigationBar.NavigationButton.CREATE;
 
+import java.lang.ref.WeakReference;
+
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-
 import androidx.annotation.Nullable;
-
-import java.lang.ref.WeakReference;
-
 import app.revanced.integrations.shared.Logger;
 import app.revanced.integrations.shared.Utils;
 import app.revanced.integrations.youtube.settings.Settings;

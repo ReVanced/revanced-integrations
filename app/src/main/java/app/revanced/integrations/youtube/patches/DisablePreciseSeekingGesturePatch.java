@@ -2,7 +2,6 @@ package app.revanced.integrations.youtube.patches;
 
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
-
 import app.revanced.integrations.youtube.settings.Settings;
 
 @SuppressWarnings("unused")

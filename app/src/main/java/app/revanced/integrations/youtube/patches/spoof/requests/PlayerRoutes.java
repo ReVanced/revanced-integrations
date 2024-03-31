@@ -1,14 +1,15 @@
 package app.revanced.integrations.youtube.patches.spoof.requests;
 
-import app.revanced.integrations.youtube.requests.Requester;
-import app.revanced.integrations.youtube.requests.Route;
-import app.revanced.integrations.shared.Logger;
-import app.revanced.integrations.shared.Utils;
+import java.io.IOException;
+import java.net.HttpURLConnection;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
-import java.net.HttpURLConnection;
+import app.revanced.integrations.shared.Logger;
+import app.revanced.integrations.shared.Utils;
+import app.revanced.integrations.youtube.requests.Requester;
+import app.revanced.integrations.youtube.requests.Route;
 
 @Deprecated
 final class PlayerRoutes {

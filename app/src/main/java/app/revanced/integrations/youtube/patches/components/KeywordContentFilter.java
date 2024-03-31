@@ -4,16 +4,14 @@ import static app.revanced.integrations.shared.StringRef.str;
 import static app.revanced.integrations.youtube.ByteTrieSearch.convertStringsToBytes;
 import static app.revanced.integrations.youtube.shared.NavigationBar.NavigationButton;
 
-import android.os.Build;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
-
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import android.os.Build;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import app.revanced.integrations.shared.Logger;
 import app.revanced.integrations.shared.Utils;
 import app.revanced.integrations.youtube.ByteTrieSearch;

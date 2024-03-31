@@ -2,18 +2,16 @@ package app.revanced.integrations.youtube.sponsorblock;
 
 import static app.revanced.integrations.shared.StringRef.str;
 
-import android.app.AlertDialog;
-import android.content.Context;
-import android.util.Patterns;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import java.util.UUID;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.util.UUID;
-
+import android.app.AlertDialog;
+import android.content.Context;
+import android.util.Patterns;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import app.revanced.integrations.shared.Logger;
 import app.revanced.integrations.shared.Utils;
 import app.revanced.integrations.shared.settings.Setting;

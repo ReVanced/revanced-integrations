@@ -2,14 +2,9 @@ package app.revanced.integrations.all.connectivity.wifi.spoof;
 
 import android.app.PendingIntent;
 import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.Network;
-import android.net.NetworkCapabilities;
-import android.net.NetworkInfo;
-import android.net.NetworkRequest;
+import android.net.*;
 import android.os.Build;
 import android.os.Handler;
-
 import androidx.annotation.RequiresApi;
 
 public class SpoofWifiPatch {

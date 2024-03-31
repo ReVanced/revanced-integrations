@@ -1,7 +1,6 @@
 package app.revanced.integrations.youtube.patches;
 
 import android.view.WindowManager;
-
 import app.revanced.integrations.youtube.settings.Settings;
 import app.revanced.integrations.youtube.swipecontrols.SwipeControlsHostActivity;
 

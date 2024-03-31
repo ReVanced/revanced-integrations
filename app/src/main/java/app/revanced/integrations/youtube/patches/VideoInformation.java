@@ -1,14 +1,14 @@
 package app.revanced.integrations.youtube.patches;
 
-import androidx.annotation.NonNull;
-import app.revanced.integrations.youtube.patches.playback.speed.RememberPlaybackSpeedPatch;
-import app.revanced.integrations.youtube.shared.VideoState;
-import app.revanced.integrations.shared.Logger;
-import app.revanced.integrations.shared.Utils;
-
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Method;
 import java.util.Objects;
+
+import androidx.annotation.NonNull;
+import app.revanced.integrations.shared.Logger;
+import app.revanced.integrations.shared.Utils;
+import app.revanced.integrations.youtube.patches.playback.speed.RememberPlaybackSpeedPatch;
+import app.revanced.integrations.youtube.shared.VideoState;
 
 /**
  * Hooking class for the current playing video.

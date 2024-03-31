@@ -2,12 +2,10 @@ package app.revanced.integrations.youtube.videoplayer;
 
 import android.view.View;
 import android.view.ViewGroup;
-
 import androidx.annotation.Nullable;
-
+import app.revanced.integrations.shared.Logger;
 import app.revanced.integrations.youtube.patches.CopyVideoUrlPatch;
 import app.revanced.integrations.youtube.settings.Settings;
-import app.revanced.integrations.shared.Logger;
 
 public class CopyVideoUrlTimestampButton extends BottomControlButton {
     @Nullable

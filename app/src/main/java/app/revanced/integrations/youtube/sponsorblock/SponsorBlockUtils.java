@@ -2,15 +2,6 @@ package app.revanced.integrations.youtube.sponsorblock;
 
 import static app.revanced.integrations.shared.StringRef.str;
 
-import android.annotation.SuppressLint;
-import android.app.AlertDialog;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.text.Html;
-import android.widget.EditText;
-
-import androidx.annotation.NonNull;
-
 import java.lang.ref.WeakReference;
 import java.text.NumberFormat;
 import java.text.ParseException;
@@ -20,6 +11,15 @@ import java.util.Date;
 import java.util.Objects;
 import java.util.TimeZone;
 
+import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.text.Html;
+import android.widget.EditText;
+import androidx.annotation.NonNull;
+import app.revanced.integrations.shared.Logger;
+import app.revanced.integrations.shared.Utils;
 import app.revanced.integrations.youtube.patches.VideoInformation;
 import app.revanced.integrations.youtube.settings.Settings;
 import app.revanced.integrations.youtube.sponsorblock.objects.CategoryBehaviour;
@@ -28,8 +28,6 @@ import app.revanced.integrations.youtube.sponsorblock.objects.SponsorSegment;
 import app.revanced.integrations.youtube.sponsorblock.objects.SponsorSegment.SegmentVote;
 import app.revanced.integrations.youtube.sponsorblock.requests.SBRequester;
 import app.revanced.integrations.youtube.sponsorblock.ui.SponsorBlockViewController;
-import app.revanced.integrations.shared.Logger;
-import app.revanced.integrations.shared.Utils;
 
 /**
  * Not thread safe. All fields/methods must be accessed from the main thread.

@@ -1,10 +1,10 @@
 package app.revanced.integrations.twitter.utils.json
 
 import app.revanced.integrations.twitter.utils.stream.StreamUtils
-import org.json.JSONException
-import org.json.JSONObject
 import java.io.IOException
 import java.io.InputStream
+import org.json.JSONException
+import org.json.JSONObject
 
 object JsonUtils {
     @JvmStatic

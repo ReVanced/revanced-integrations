@@ -1,5 +1,10 @@
 package app.revanced.integrations.shared;
 
+import static app.revanced.integrations.shared.StringRef.str;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.SearchManager;
@@ -10,11 +15,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.PowerManager;
 import androidx.annotation.RequiresApi;
-
-import java.net.MalformedURLException;
-import java.net.URL;
-
-import static app.revanced.integrations.shared.StringRef.str;
 
 /**
  * @noinspection unused

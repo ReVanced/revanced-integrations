@@ -1,5 +1,13 @@
 package app.revanced.integrations.shared.settings;
 
+import static app.revanced.integrations.shared.StringRef.str;
+
+import java.util.*;
+
+import org.jetbrains.annotations.NotNull;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -8,13 +16,6 @@ import app.revanced.integrations.shared.StringRef;
 import app.revanced.integrations.shared.Utils;
 import app.revanced.integrations.shared.settings.preference.SharedPrefCategory;
 import app.revanced.integrations.youtube.sponsorblock.SponsorBlockSettings;
-import org.jetbrains.annotations.NotNull;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.*;
-
-import static app.revanced.integrations.shared.StringRef.str;
 
 @SuppressWarnings("unused")
 public abstract class Setting<T> {

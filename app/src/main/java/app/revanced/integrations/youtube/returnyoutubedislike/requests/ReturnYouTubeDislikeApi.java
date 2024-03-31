@@ -1,15 +1,7 @@
 package app.revanced.integrations.youtube.returnyoutubedislike.requests;
 
-import static app.revanced.integrations.youtube.returnyoutubedislike.requests.ReturnYouTubeDislikeRoutes.getRYDConnectionFromRoute;
 import static app.revanced.integrations.shared.StringRef.str;
-
-import android.util.Base64;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import org.json.JSONException;
-import org.json.JSONObject;
+import static app.revanced.integrations.youtube.returnyoutubedislike.requests.ReturnYouTubeDislikeRoutes.getRYDConnectionFromRoute;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -22,11 +14,17 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.Objects;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import android.util.Base64;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import app.revanced.integrations.shared.Logger;
+import app.revanced.integrations.shared.Utils;
 import app.revanced.integrations.youtube.requests.Requester;
 import app.revanced.integrations.youtube.returnyoutubedislike.ReturnYouTubeDislike;
 import app.revanced.integrations.youtube.settings.Settings;
-import app.revanced.integrations.shared.Logger;
-import app.revanced.integrations.shared.Utils;
 
 public class ReturnYouTubeDislikeApi {
     /**

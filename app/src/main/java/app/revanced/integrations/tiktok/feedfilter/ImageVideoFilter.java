@@ -1,7 +1,8 @@
 package app.revanced.integrations.tiktok.feedfilter;
 
-import app.revanced.integrations.tiktok.settings.Settings;
 import com.ss.android.ugc.aweme.feed.model.Aweme;
+
+import app.revanced.integrations.tiktok.settings.Settings;
 
 public class ImageVideoFilter implements IFilter {
     @Override

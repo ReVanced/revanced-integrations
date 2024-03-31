@@ -1,19 +1,18 @@
 package app.revanced.integrations.youtube.patches.playback.quality;
 
-import androidx.annotation.Nullable;
-
-import app.revanced.integrations.shared.settings.IntegerSetting;
-import app.revanced.integrations.youtube.settings.Settings;
-import app.revanced.integrations.shared.Logger;
-import app.revanced.integrations.shared.Utils;
+import static app.revanced.integrations.shared.StringRef.str;
+import static app.revanced.integrations.shared.Utils.NetworkType;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-import static app.revanced.integrations.shared.StringRef.str;
-import static app.revanced.integrations.shared.Utils.NetworkType;
+import androidx.annotation.Nullable;
+import app.revanced.integrations.shared.Logger;
+import app.revanced.integrations.shared.Utils;
+import app.revanced.integrations.shared.settings.IntegerSetting;
+import app.revanced.integrations.youtube.settings.Settings;
 
 @SuppressWarnings("unused")
 public class RememberVideoQualityPatch {
