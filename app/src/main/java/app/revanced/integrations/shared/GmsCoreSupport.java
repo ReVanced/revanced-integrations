@@ -45,11 +45,13 @@ public class GmsCoreSupport {
         System.exit(0);
     }
 
-    private static void showToastOrDialog(Context context, String toastMessageKey, String dialogMessageKey, String link) {
+    private static void showBatteryOptimizationToastOrDialog(Context context, String dialogMessageRef) {
+        String appName = getGmsCoreAppDisplayName();
+
         if (!(context instanceof Activity)) {
             // Context is for the application and cannot show a dialog using it.
-            Utils.showToastLong(str(toastMessageKey));
-            open(link);
+            Utils.showToastLong(str("gms_core_toast_not_whitelisted_message", appName));
+            open(DONT_KILL_MY_APP_LINK);
             return;
         }
 
@@ -59,10 +61,10 @@ public class GmsCoreSupport {
             new AlertDialog.Builder(context)
                     .setIconAttribute(android.R.attr.alertDialogIcon)
                     .setTitle(str("gms_core_dialog_title"))
-                    .setMessage(str(dialogMessageKey))
-                    .setPositiveButton(str("gms_core_dialog_ok_button_text"), (dialog, id) -> {
-                        open(link);
-                    })
+                    .setMessage(str(dialogMessageRef, appName, appName))
+                    .setPositiveButton(str("gms_core_dialog_ok_button_text"), (dialog, id) ->
+                        open(DONT_KILL_MY_APP_LINK)
+                    )
                     // Manually allow using the back button to dismiss the dialog with the back button,
                     // if troubleshooting and somehow the GmsCore verification checks always fail.
                     .setCancelable(true)
@@ -83,37 +85,46 @@ public class GmsCoreSupport {
             } catch (PackageManager.NameNotFoundException exception) {
                 Logger.printDebug(() -> "GmsCore was not found");
                 // Cannot show a dialog and must show a toast,
-                // because on some installations the app crashes before the dialog can display.
-                Utils.showToastLong(str("gms_core_toast_not_installed_message"));
+                // because on some installations the app crashes before a dialog can be displayed.
+                Utils.showToastLong(str("gms_core_toast_not_installed_message", getGmsCoreAppDisplayName()));
                 open(getGmsCoreDownload());
                 return;
+            }
+
+            // Check if GmsCore is running in the background.
+            // Do this check before the battery optimization check.
+            try (var client = context.getContentResolver().acquireContentProviderClient(GMS_CORE_PROVIDER)) {
+                if (client == null) {
+                    Logger.printDebug(() -> "GmsCore is not running in the background");
+                    showBatteryOptimizationToastOrDialog(context,
+                            "gms_core_dialog_not_whitelisted_not_allowed_in_background_message");
+                    return;
+                }
             }
 
             // Check if GmsCore is whitelisted from battery optimizations.
             var powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
             if (!powerManager.isIgnoringBatteryOptimizations(GMS_CORE_PACKAGE_NAME)) {
                 Logger.printDebug(() -> "GmsCore is not whitelisted from battery optimizations");
-                showToastOrDialog(context,
-                        "gms_core_toast_not_whitelisted_message",
-                        "gms_core_dialog_not_whitelisted_using_battery_optimizations_message",
-                        DONT_KILL_MY_APP_LINK);
-                return;
-            }
-
-            // Check if GmsCore is running in the background.
-            try (var client = context.getContentResolver().acquireContentProviderClient(GMS_CORE_PROVIDER)) {
-                if (client == null) {
-                    Logger.printDebug(() -> "GmsCore is not running in the background");
-                    showToastOrDialog(context,
-                            "gms_core_toast_not_whitelisted_message",
-                            "gms_core_dialog_not_whitelisted_not_allowed_in_background_message",
-                            DONT_KILL_MY_APP_LINK);
-                }
+                showBatteryOptimizationToastOrDialog(context,
+                        "gms_core_dialog_not_whitelisted_using_battery_optimizations_message");
             }
         } catch (Exception ex) {
             Logger.printException(() -> "checkGmsCore failure", ex);
         }
     }
+
+    private static String getGmsCoreAppDisplayName() {
+        final var vendorGroupId = getGmsCoreVendorGroupId();
+        //noinspection SwitchStatementWithTooFewBranches
+        switch (vendorGroupId) {
+            case "app.revanced":
+                return "MicroG";
+            default:
+                return "GmsCore";
+        }
+    }
+
 
     private static String getGmsCoreDownload() {
         final var vendorGroupId = getGmsCoreVendorGroupId();
