@@ -1,3 +1,10 @@
+## [1.7.1-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v1.7.0...v1.7.1-dev.1) (2024-04-01)
+
+
+### Bug Fixes
+
+* **YouTube - Disable suggested video end screen:** Require app restart ([38ae5aa](https://github.com/ReVanced/revanced-integrations/commit/38ae5aac845745824218a08053db519a3325d7a9))
+
 # [1.7.0](https://github.com/ReVanced/revanced-integrations/compare/v1.6.0...v1.7.0) (2024-03-30)
 
 
