@@ -4,7 +4,7 @@ annotation = "1.7.1"
 kotlin = "1.9.22"
 appcompat = "1.7.0-alpha03"
 okhttp = "5.0.0-alpha.12"
-retrofit = "2.9.0"
+retrofit = "2.11.0"
 
 [libraries]
 annotation = { module = "androidx.annotation:annotation", version.ref = "annotation" }
