@@ -27,7 +27,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import java.text.Bidi;
-import java.text.DateFormat;
 import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
@@ -49,7 +48,7 @@ public class Utils {
     } // utility class
 
     /**
-     * Injection point.
+     * @return The manifest 'Version' entry of the patches.jar used during patching.
      */
     public static String getPatchesReleaseVersion() {
         return ""; // Value is replaced during patching.
@@ -198,6 +197,7 @@ public class Utils {
     }
 
     public static int getResourceColor(@NonNull String resourceIdentifierName) throws Resources.NotFoundException {
+        //noinspection deprecation
         return getContext().getResources().getColor(getResourceIdentifier(resourceIdentifierName, "color"));
     }
 
