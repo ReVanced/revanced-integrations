@@ -27,6 +27,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import java.text.Bidi;
+import java.text.DateFormat;
 import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
@@ -44,33 +45,73 @@ public class Utils {
 
     private static String versionName;
 
+    private static String versionReleaseLocaleString;
+
     private Utils() {
     } // utility class
 
-    public static String getVersionName() {
-        if (versionName != null) return versionName;
+    /**
+     * Injection point.
+     */
+    public static String getPatchesReleaseVersion() {
+        return ""; // Value is replaced during patching.
+    }
 
-        PackageInfo packageInfo;
-        try {
-            final var packageName = Objects.requireNonNull(getContext()).getPackageName();
+    /**
+     * Injection point.
+     */
+    private static String getPatchesReleaseTimestamp() {
+        return ""; // Value is replaced during patching.
+    }
 
-            PackageManager packageManager = context.getPackageManager();
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
-                packageInfo = packageManager.getPackageInfo(
-                        packageName,
-                        PackageManager.PackageInfoFlags.of(0)
-                );
-            else
-                packageInfo = packageManager.getPackageInfo(
-                        packageName,
-                        0
-                );
-        } catch (PackageManager.NameNotFoundException e) {
-            Logger.printException(() -> "Failed to get package info", e);
-            return null;
+    /**
+     * @return The 'Timestamp' entry of the patches jar used during patching,
+     *         parsed to "day, month, year" using the device locale.
+     */
+    public static String getPatchesReleaseDate() {
+        if (versionReleaseLocaleString == null) {
+            String timestamp = getPatchesReleaseTimestamp();
+            try {
+                Date date = new Date(Long.parseLong(timestamp));
+                DateFormat formatter = DateFormat.getDateInstance(DateFormat.LONG, Locale.getDefault());
+                versionReleaseLocaleString = formatter.format(date);
+            } catch (Exception ex) {
+                Logger.printInfo(() -> "Could not parse timestamp: " + timestamp, ex);
+                versionReleaseLocaleString = "Unknown (" + timestamp + ")";
+            }
+        }
+        return versionReleaseLocaleString;
+    }
+
+    /**
+     * @return The version name of the app, such as "YouTube".
+     */
+    public static String getAppVersionName() {
+        if (versionName == null) {
+            try {
+                final var packageName = Objects.requireNonNull(getContext()).getPackageName();
+
+                PackageManager packageManager = context.getPackageManager();
+                PackageInfo packageInfo;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    packageInfo = packageManager.getPackageInfo(
+                            packageName,
+                            PackageManager.PackageInfoFlags.of(0)
+                    );
+                } else {
+                    packageInfo = packageManager.getPackageInfo(
+                            packageName,
+                            0
+                    );
+                }
+                versionName = packageInfo.versionName;
+            } catch (Exception ex) {
+                Logger.printException(() -> "Failed to get package info", ex);
+                versionName = "Unknown";
+            }
         }
 
-        return versionName = packageInfo.versionName;
+        return versionName;
     }
 
     /**
@@ -479,6 +520,7 @@ public class Utils {
      * If a preference has no key or no {@link Sort} suffix,
      * then the preferences are left unsorted.
      */
+    @SuppressWarnings("deprecation")
     public static void sortPreferenceGroups(@NonNull PreferenceGroup group) {
         Sort sort = Sort.fromKey(group.getKey());
         SortedMap<String, Preference> preferences = new TreeMap<>();

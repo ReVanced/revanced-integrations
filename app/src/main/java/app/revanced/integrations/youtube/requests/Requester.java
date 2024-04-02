@@ -24,7 +24,7 @@ public class Requester {
         String url = apiUrl + route.getCompiledRoute();
         HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
         connection.setRequestMethod(route.getMethod().name());
-        connection.setRequestProperty("User-Agent", System.getProperty("http.agent") + "; ReVanced/" + Utils.getVersionName());
+        connection.setRequestProperty("User-Agent", System.getProperty("http.agent") + "; ReVanced/" + Utils.getAppVersionName());
 
         return connection;
     }
