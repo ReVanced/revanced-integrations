@@ -336,7 +336,7 @@ public class Utils {
             try {
                 runnable.run();
             } catch (Exception ex) {
-                Logger.printException(() -> runnable.getClass() + ": " + ex.getMessage(), ex);
+                Logger.printException(() -> runnable.getClass().getSimpleName() + ": " + ex.getMessage(), ex);
             }
         };
         new Handler(Looper.getMainLooper()).postDelayed(loggingRunnable, delayMillis);
