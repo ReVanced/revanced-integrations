@@ -45,8 +45,6 @@ public class Utils {
 
     private static String versionName;
 
-    private static String versionReleaseLocaleString;
-
     private Utils() {
     } // utility class
 
@@ -55,32 +53,6 @@ public class Utils {
      */
     public static String getPatchesReleaseVersion() {
         return ""; // Value is replaced during patching.
-    }
-
-    /**
-     * Injection point.
-     */
-    private static String getPatchesReleaseTimestamp() {
-        return ""; // Value is replaced during patching.
-    }
-
-    /**
-     * @return The 'Timestamp' entry of the patches jar used during patching,
-     *         parsed to "day, month, year" using the device locale.
-     */
-    public static String getPatchesReleaseDate() {
-        if (versionReleaseLocaleString == null) {
-            String timestamp = getPatchesReleaseTimestamp();
-            try {
-                Date date = new Date(Long.parseLong(timestamp));
-                DateFormat formatter = DateFormat.getDateInstance(DateFormat.LONG, Locale.getDefault());
-                versionReleaseLocaleString = formatter.format(date);
-            } catch (Exception ex) {
-                Logger.printInfo(() -> "Could not parse timestamp: " + timestamp, ex);
-                versionReleaseLocaleString = "Unknown (" + timestamp + ")";
-            }
-        }
-        return versionReleaseLocaleString;
     }
 
     /**
@@ -486,11 +458,8 @@ public class Utils {
             this.keySuffix = keySuffix;
         }
 
-        /**
-         * Defaults to {@link #UNSORTED} if key is null or has no sort suffix.
-         */
         @NonNull
-        static Sort fromKey(@Nullable String key) {
+        static Sort fromKey(@Nullable String key, @NonNull Sort defaultSort) {
             if (key != null) {
                 for (Sort sort : values()) {
                     if (key.endsWith(sort.keySuffix)) {
@@ -498,7 +467,7 @@ public class Utils {
                     }
                 }
             }
-            return UNSORTED;
+            return defaultSort;
         }
     }
 
@@ -522,18 +491,24 @@ public class Utils {
      */
     @SuppressWarnings("deprecation")
     public static void sortPreferenceGroups(@NonNull PreferenceGroup group) {
-        Sort sort = Sort.fromKey(group.getKey());
+        Sort groupSort = Sort.fromKey(group.getKey(), Sort.UNSORTED);
         SortedMap<String, Preference> preferences = new TreeMap<>();
 
         for (int i = 0, prefCount = group.getPreferenceCount(); i < prefCount; i++) {
             Preference preference = group.getPreference(i);
 
+            final Sort preferenceSort;
             if (preference instanceof PreferenceGroup) {
                 sortPreferenceGroups((PreferenceGroup) preference);
+                preferenceSort = groupSort; // Sort value for groups is for it's content, not itself.
+            } else {
+                // Allow individual preferences to set a key sorting.
+                // Used to force a preference to the top or bottom of a group.
+                preferenceSort = Sort.fromKey(preference.getKey(), groupSort);
             }
 
             final String sortValue;
-            switch (sort) {
+            switch (preferenceSort) {
                 case BY_TITLE:
                     sortValue = removePunctuationConvertToLowercase(preference.getTitle());
                     break;
