@@ -15,7 +15,6 @@ import android.os.Build;
 import android.os.PowerManager;
 import android.provider.Settings;
 
-import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 
 import java.net.MalformedURLException;
@@ -53,10 +52,9 @@ public class GmsCoreSupport {
     private static void showBatteryOptimizationToastOrDialog(Context context,
                                                              String dialogMessageRef,
                                                              String positiveButtonStringRef,
-                                                             DialogInterface.OnClickListener onPositiveClickListener,
-                                                             @Nullable DialogInterface.OnDismissListener onDismissListener) {
+                                                             DialogInterface.OnClickListener onPositiveClickListener) {
         if (!(context instanceof Activity)) {
-            // Context is for the application and cannot show a dialog using it.
+            // Context is for the application and cannot show a dialog or launch an intent using it.
             Utils.showToastLong(str("gms_core_toast_not_whitelisted_message"));
             open(DONT_KILL_MY_APP_LINK);
             return;
@@ -65,16 +63,13 @@ public class GmsCoreSupport {
         // Use a delay to allow the activity to finish initializing.
         // Otherwise, if device is in dark mode the dialog is shown with wrong color scheme.
         Utils.runOnMainThreadDelayed(() -> {
-            var dialog = new AlertDialog.Builder(context)
+            new AlertDialog.Builder(context)
                     .setIconAttribute(android.R.attr.alertDialogIcon)
                     .setTitle(str("gms_core_dialog_title"))
                     .setMessage(str(dialogMessageRef))
                     .setPositiveButton(str(positiveButtonStringRef), onPositiveClickListener)
-                    .setCancelable(false);
-            if (onDismissListener != null) {
-               dialog.setOnDismissListener(onDismissListener);
-            }
-            dialog.show();
+                    .setCancelable(false)
+                    .show();
         }, 100);
     }
 
@@ -105,40 +100,22 @@ public class GmsCoreSupport {
                     showBatteryOptimizationToastOrDialog(context,
                             "gms_core_dialog_not_whitelisted_not_allowed_in_background_message",
                             "gms_core_dialog_open_website_text",
-                            (dialog, id) -> open(DONT_KILL_MY_APP_LINK),
-                            null);
+                            (dialog, id) -> open(DONT_KILL_MY_APP_LINK));
                     return;
                 }
             }
 
-            // Check if GmsCore is whitelisted.
+            // Check if GmsCore is whitelisted from battery optimizations.
             if (batteryOptimizationsTurnedOn(context)) {
                 Logger.printInfo(() -> "GmsCore is not whitelisted from battery optimizations");
                 showBatteryOptimizationToastOrDialog(context,
                         "gms_core_dialog_not_whitelisted_using_battery_optimizations_message",
                         "gms_core_dialog_continue_text",
-                        (dialog, id) -> openGmsDisableBatteryOptimizationsIntent((Activity) context),
-                        dialog -> checkIfUserAllowedTurningOffBatteryOptimizations(context));
+                        (dialog, id) -> openGmsDisableBatteryOptimizationsIntent((Activity) context));
             }
         } catch (Exception ex) {
             Logger.printException(() -> "checkGmsCore failure", ex);
         }
-    }
-
-    private static void checkIfUserAllowedTurningOffBatteryOptimizations(Context context) {
-        // Check if the user actually turned off power optimizations for GmsCore.
-        // This can be done by patching the Activity and overriding the
-        // onActivityResult() method, but that only works for YT
-        // and not YT Music because Music is not hooked to an Activity.
-        // Instead, check back in 20 seconds and show a toast if it's still not enabled.
-        Utils.runOnMainThreadDelayed(() -> {
-            if (batteryOptimizationsTurnedOn(context)) {
-                Logger.printInfo(() -> "Battery optimizations are still turned on");
-                Utils.showToastLong(str("gms_core_toast_user_did_not_whitelist_message"));
-            } else {
-                Logger.printInfo(() -> "Battery optimizations are now off");
-            }
-        }, 20000);
     }
 
     @SuppressLint("BatteryLife") // Permission is part of GmsCore
