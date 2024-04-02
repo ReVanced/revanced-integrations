@@ -1,4 +1,4 @@
-package app.revanced.integrations.youtube.settings.preference;
+package app.revanced.integrations.shared.settings.preference;
 
 import android.content.Context;
 import android.content.Intent;
@@ -6,16 +6,15 @@ import android.net.Uri;
 import android.preference.Preference;
 import android.util.AttributeSet;
 
-import app.revanced.integrations.shared.Logger;
 import app.revanced.integrations.shared.Utils;
 
 /**
- * Allows tapping to open the ReVanced website.
+ * Shows the version of patches applied, and allows tapping to open the ReVanced website.
  */
 @SuppressWarnings({"unused", "deprecation"})
 public class ReVancedAboutPreference extends Preference {
 
-    private void init() {
+    {
         setOnPreferenceClickListener(pref -> {
             Intent i = new Intent(Intent.ACTION_VIEW);
             i.setData(Uri.parse("https://revanced.app"));
@@ -30,18 +29,14 @@ public class ReVancedAboutPreference extends Preference {
 
     public ReVancedAboutPreference(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
-        init();
     }
     public ReVancedAboutPreference(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        init();
     }
     public ReVancedAboutPreference(Context context, AttributeSet attrs) {
         super(context, attrs);
-        init();
     }
     public ReVancedAboutPreference(Context context) {
         super(context);
-        init();
     }
 }
