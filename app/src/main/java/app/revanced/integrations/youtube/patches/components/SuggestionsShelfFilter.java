@@ -4,6 +4,7 @@ import androidx.annotation.Nullable;
 
 import app.revanced.integrations.youtube.settings.Settings;
 import app.revanced.integrations.youtube.shared.NavigationBar;
+import app.revanced.integrations.youtube.shared.PlayerType;
 
 @SuppressWarnings("unused")
 public final class SuggestionsShelfFilter extends Filter {
@@ -19,7 +20,8 @@ public final class SuggestionsShelfFilter extends Filter {
     }
 
     @Override
-    boolean isFiltered(@Nullable String identifier, String path, byte[] protobufBufferArray, StringFilterGroup matchedGroup, FilterContentType contentType, int contentIndex) {
+    boolean isFiltered(@Nullable String identifier, String path, byte[] protobufBufferArray,
+                       StringFilterGroup matchedGroup, FilterContentType contentType, int contentIndex) {
         if (shouldHideSuggestionsShelf() && contentIndex == 0)
             return super.isFiltered(path, identifier, protobufBufferArray, matchedGroup, contentType, contentIndex);
 
@@ -27,7 +29,10 @@ public final class SuggestionsShelfFilter extends Filter {
     }
 
     private static boolean shouldHideSuggestionsShelf() {
-        return Settings.HIDE_SUGGESTIONS_SHELF.get() &&
-                NavigationBar.NavigationButton.HOME.isSelected();
+        return Settings.HIDE_SUGGESTIONS_SHELF.get()
+                && NavigationBar.NavigationButton.HOME.isSelected() // Home tab is selected.
+                && !PlayerType.getCurrent().isMaximizedOrFullscreen() // The player is not opened.
+                && !NavigationBar.isSearchBarActive(); // Search is not active.
+
     }
 }
