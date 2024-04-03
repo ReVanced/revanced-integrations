@@ -1,3 +1,10 @@
+## [1.7.1-dev.2](https://github.com/ReVanced/revanced-integrations/compare/v1.7.1-dev.1...v1.7.1-dev.2) (2024-04-03)
+
+
+### Bug Fixes
+
+* **YouTube - Navigation bar hook:** Handle if search is active but hidden behind a maximized player ([cbccb46](https://github.com/ReVanced/revanced-integrations/commit/cbccb46e639003adbed941f9b88c41b4c9998729))
+
 ## [1.7.1-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v1.7.0...v1.7.1-dev.1) (2024-04-01)
 
 
