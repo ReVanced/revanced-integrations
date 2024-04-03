@@ -22,8 +22,7 @@ public class ReVancedAboutPreference extends Preference {
             return false;
         });
 
-        String summary = getSummary().toString()
-                .replace("${PATCHES_RELEASE_VERSION}", Utils.getPatchesReleaseVersion());
+        String summary = String.format(getSummary().toString(), Utils.getPatchesReleaseVersion());
         setSummary(summary);
     }
 
