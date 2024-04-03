@@ -49,17 +49,10 @@ public class GmsCoreSupport {
         System.exit(0);
     }
 
-    private static void showBatteryOptimizationToastOrDialog(Context context,
-                                                             String dialogMessageRef,
-                                                             String positiveButtonStringRef,
-                                                             DialogInterface.OnClickListener onPositiveClickListener) {
-        if (!(context instanceof Activity)) {
-            // Context is for the application and cannot show a dialog or launch an intent using it.
-            Utils.showToastLong(str("gms_core_toast_not_whitelisted_message"));
-            open(DONT_KILL_MY_APP_LINK);
-            return;
-        }
-
+    private static void showBatteryOptimizationDialog(Activity context,
+                                                      String dialogMessageRef,
+                                                      String positiveButtonStringRef,
+                                                      DialogInterface.OnClickListener onPositiveClickListener) {
         // Use a delay to allow the activity to finish initializing.
         // Otherwise, if device is in dark mode the dialog is shown with wrong color scheme.
         Utils.runOnMainThreadDelayed(() -> {
@@ -77,7 +70,7 @@ public class GmsCoreSupport {
      * Injection point.
      */
     @RequiresApi(api = Build.VERSION_CODES.N)
-    public static void checkGmsCore(Context context) {
+    public static void checkGmsCore(Activity context) {
         try {
             // Verify GmsCore is installed.
             try {
@@ -97,7 +90,7 @@ public class GmsCoreSupport {
                 if (client == null) {
                     Logger.printInfo(() -> "GmsCore is not running in the background");
 
-                    showBatteryOptimizationToastOrDialog(context,
+                    showBatteryOptimizationDialog(context,
                             "gms_core_dialog_not_whitelisted_not_allowed_in_background_message",
                             "gms_core_dialog_open_website_text",
                             (dialog, id) -> open(DONT_KILL_MY_APP_LINK));
@@ -108,10 +101,10 @@ public class GmsCoreSupport {
             // Check if GmsCore is whitelisted from battery optimizations.
             if (batteryOptimizationsTurnedOn(context)) {
                 Logger.printInfo(() -> "GmsCore is not whitelisted from battery optimizations");
-                showBatteryOptimizationToastOrDialog(context,
+                showBatteryOptimizationDialog(context,
                         "gms_core_dialog_not_whitelisted_using_battery_optimizations_message",
                         "gms_core_dialog_continue_text",
-                        (dialog, id) -> openGmsDisableBatteryOptimizationsIntent((Activity) context));
+                        (dialog, id) -> openGmsDisableBatteryOptimizationsIntent(context));
             }
         } catch (Exception ex) {
             Logger.printException(() -> "checkGmsCore failure", ex);
