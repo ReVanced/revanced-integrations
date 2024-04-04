@@ -99,12 +99,12 @@ public class GmsCoreSupport {
             }
 
             // Check if GmsCore is whitelisted from battery optimizations.
-            if (batteryOptimizationsTurnedOn(context)) {
+            if (batteryOptimizationsEnabled(context)) {
                 Logger.printInfo(() -> "GmsCore is not whitelisted from battery optimizations");
                 showBatteryOptimizationDialog(context,
                         "gms_core_dialog_not_whitelisted_using_battery_optimizations_message",
                         "gms_core_dialog_continue_text",
-                        (dialog, id) -> openGmsDisableBatteryOptimizationsIntent(context));
+                        (dialog, id) -> openGmsCoreDisableBatteryOptimizationsIntent(context));
             }
         } catch (Exception ex) {
             Logger.printException(() -> "checkGmsCore failure", ex);
@@ -112,7 +112,7 @@ public class GmsCoreSupport {
     }
 
     @SuppressLint("BatteryLife") // Permission is part of GmsCore
-    private static void openGmsDisableBatteryOptimizationsIntent(Activity activity) {
+    private static void openGmsCoreDisableBatteryOptimizationsIntent(Activity activity) {
         Intent intent = new Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
         intent.setData(Uri.fromParts("package", GMS_CORE_PACKAGE_NAME, null));
         activity.startActivityForResult(intent, 0);
@@ -121,7 +121,7 @@ public class GmsCoreSupport {
     /**
      * @return If GmsCore is not whitelisted from battery optimizations.
      */
-    private static boolean batteryOptimizationsTurnedOn(Context context) {
+    private static boolean batteryOptimizationsEnabled(Context context) {
         var powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
         return !powerManager.isIgnoringBatteryOptimizations(GMS_CORE_PACKAGE_NAME);
     }
