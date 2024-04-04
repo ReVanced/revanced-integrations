@@ -1,3 +1,10 @@
+## [1.7.1-dev.3](https://github.com/ReVanced/revanced-integrations/compare/v1.7.1-dev.2...v1.7.1-dev.3) (2024-04-04)
+
+
+### Bug Fixes
+
+* **YouTube - Player flyout menu:** Add hide Lock screen menu ([#609](https://github.com/ReVanced/revanced-integrations/issues/609)) ([b2fe105](https://github.com/ReVanced/revanced-integrations/commit/b2fe105199d4a5958676cbc8f9c701541e8ff24a))
+
 ## [1.7.1-dev.2](https://github.com/ReVanced/revanced-integrations/compare/v1.7.1-dev.1...v1.7.1-dev.2) (2024-04-03)
 
 
