@@ -1,5 +1,8 @@
 package app.revanced.integrations.youtube.settings.preference;
 
+import static android.text.Html.fromHtml;
+import static app.revanced.integrations.shared.StringRef.str;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -27,9 +30,6 @@ import app.revanced.integrations.youtube.sponsorblock.objects.SegmentCategoryLis
 import app.revanced.integrations.youtube.sponsorblock.objects.UserStats;
 import app.revanced.integrations.youtube.sponsorblock.requests.SBRequester;
 import app.revanced.integrations.youtube.sponsorblock.ui.SponsorBlockViewController;
-
-import static android.text.Html.fromHtml;
-import static app.revanced.integrations.shared.StringRef.str;
 
 @SuppressWarnings("deprecation")
 public class SponsorBlockPreferenceFragment extends PreferenceFragment {

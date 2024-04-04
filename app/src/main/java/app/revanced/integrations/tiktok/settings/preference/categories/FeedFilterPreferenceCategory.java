@@ -2,9 +2,9 @@ package app.revanced.integrations.tiktok.settings.preference.categories;
 
 import android.content.Context;
 import android.preference.PreferenceScreen;
-import app.revanced.integrations.tiktok.settings.preference.RangeValuePreference;
 import app.revanced.integrations.tiktok.settings.Settings;
 import app.revanced.integrations.tiktok.settings.SettingsStatus;
+import app.revanced.integrations.tiktok.settings.preference.RangeValuePreference;
 import app.revanced.integrations.tiktok.settings.preference.TogglePreference;
 
 @SuppressWarnings("deprecation")

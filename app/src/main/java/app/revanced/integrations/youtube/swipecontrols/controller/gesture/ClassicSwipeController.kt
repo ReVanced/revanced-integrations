@@ -15,7 +15,7 @@ import app.revanced.integrations.youtube.swipecontrols.misc.toPoint
  * @param controller reference to the main swipe controller
  */
 class ClassicSwipeController(
-    private val controller: SwipeControlsHostActivity,
+    private val controller: SwipeControlsHostActivity
 ) : BaseGestureController(controller),
     PlayerControlsVisibilityObserver by PlayerControlsVisibilityObserverImpl(controller) {
     /**
@@ -98,7 +98,7 @@ class ClassicSwipeController(
         from: MotionEvent,
         to: MotionEvent,
         distanceX: Double,
-        distanceY: Double,
+        distanceY: Double
     ): Boolean {
         // cancel if not vertical
         if (currentSwipe != SwipeDetector.SwipeDirection.VERTICAL) return false

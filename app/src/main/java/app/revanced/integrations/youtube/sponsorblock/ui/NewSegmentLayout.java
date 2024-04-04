@@ -1,5 +1,8 @@
 package app.revanced.integrations.youtube.sponsorblock.ui;
 
+import static app.revanced.integrations.shared.Utils.getResourceDimensionPixelSize;
+import static app.revanced.integrations.shared.Utils.getResourceIdentifier;
+
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.drawable.RippleDrawable;
@@ -8,14 +11,10 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
-
+import app.revanced.integrations.shared.Logger;
 import app.revanced.integrations.youtube.patches.VideoInformation;
 import app.revanced.integrations.youtube.settings.Settings;
 import app.revanced.integrations.youtube.sponsorblock.SponsorBlockUtils;
-import app.revanced.integrations.shared.Logger;
-
-import static app.revanced.integrations.shared.Utils.getResourceDimensionPixelSize;
-import static app.revanced.integrations.shared.Utils.getResourceIdentifier;
 
 public final class NewSegmentLayout extends FrameLayout {
     private static final ColorStateList rippleColorStateList = new ColorStateList(

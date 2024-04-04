@@ -16,7 +16,7 @@ enum class VideoState {
     /**
      * @see [VideoInformation.isAtEndOfVideo]
      */
-    ENDED,
+    ENDED
 
     ;
 

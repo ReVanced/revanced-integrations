@@ -1,9 +1,8 @@
 package app.revanced.integrations.youtube.patches;
 
 import android.net.Uri;
-
-import app.revanced.integrations.youtube.settings.Settings;
 import app.revanced.integrations.shared.Logger;
+import app.revanced.integrations.youtube.settings.Settings;
 
 @SuppressWarnings("unused")
 public class BypassURLRedirectsPatch {

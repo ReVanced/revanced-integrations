@@ -12,7 +12,6 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import app.revanced.integrations.shared.settings.StringSetting;
 
 @SuppressWarnings("deprecation")

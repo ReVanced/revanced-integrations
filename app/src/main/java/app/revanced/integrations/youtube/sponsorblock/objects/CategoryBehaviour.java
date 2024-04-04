@@ -2,13 +2,12 @@ package app.revanced.integrations.youtube.sponsorblock.objects;
 
 import static app.revanced.integrations.shared.StringRef.sf;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
 import java.util.Objects;
 
-import app.revanced.integrations.shared.Utils;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import app.revanced.integrations.shared.StringRef;
+import app.revanced.integrations.shared.Utils;
 
 public enum CategoryBehaviour {
     SKIP_AUTOMATICALLY("skip", 2, true, sf("revanced_sb_skip_automatically")),

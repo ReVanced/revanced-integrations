@@ -1,7 +1,6 @@
 package app.revanced.integrations.youtube.patches;
 
 import android.view.View;
-
 import app.revanced.integrations.youtube.settings.Settings;
 
 @SuppressWarnings("unused")

@@ -1,13 +1,13 @@
 package app.revanced.integrations.youtube.sponsorblock.objects;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import app.revanced.integrations.youtube.patches.VideoInformation;
-import app.revanced.integrations.shared.StringRef;
+import static app.revanced.integrations.shared.StringRef.sf;
 
 import java.util.Objects;
 
-import static app.revanced.integrations.shared.StringRef.sf;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import app.revanced.integrations.shared.StringRef;
+import app.revanced.integrations.youtube.patches.VideoInformation;
 
 public class SponsorSegment implements Comparable<SponsorSegment> {
     public enum SegmentVote {

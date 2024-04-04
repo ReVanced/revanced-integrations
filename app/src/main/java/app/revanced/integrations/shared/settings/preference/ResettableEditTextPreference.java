@@ -1,5 +1,9 @@
 package app.revanced.integrations.shared.settings.preference;
 
+import static app.revanced.integrations.shared.StringRef.str;
+
+import java.util.Objects;
+
 import android.app.AlertDialog;
 import android.content.Context;
 import android.os.Bundle;
@@ -7,12 +11,8 @@ import android.preference.EditTextPreference;
 import android.util.AttributeSet;
 import android.widget.Button;
 import android.widget.EditText;
-import app.revanced.integrations.shared.settings.Setting;
 import app.revanced.integrations.shared.Logger;
-
-import java.util.Objects;
-
-import static app.revanced.integrations.shared.StringRef.str;
+import app.revanced.integrations.shared.settings.Setting;
 
 @SuppressWarnings("unused")
 public class ResettableEditTextPreference extends EditTextPreference {

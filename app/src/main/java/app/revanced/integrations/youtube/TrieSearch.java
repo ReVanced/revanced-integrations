@@ -1,12 +1,12 @@
 package app.revanced.integrations.youtube;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 /**
  * Searches for a group of different patterns using a trie (prefix tree).

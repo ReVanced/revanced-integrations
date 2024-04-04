@@ -1,10 +1,10 @@
 package app.revanced.integrations.tiktok.feedfilter;
 
-import com.ss.android.ugc.aweme.feed.model.Aweme;
-import com.ss.android.ugc.aweme.feed.model.FeedItemList;
-
 import java.util.Iterator;
 import java.util.List;
+
+import com.ss.android.ugc.aweme.feed.model.Aweme;
+import com.ss.android.ugc.aweme.feed.model.FeedItemList;
 
 public final class FeedItemsFilter {
     private static final List<IFilter> FILTERS = List.of(

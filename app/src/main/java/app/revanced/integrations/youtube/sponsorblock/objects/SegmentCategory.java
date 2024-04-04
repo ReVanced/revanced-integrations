@@ -1,28 +1,22 @@
 package app.revanced.integrations.youtube.sponsorblock.objects;
 
-import static app.revanced.integrations.youtube.settings.Settings.*;
 import static app.revanced.integrations.shared.StringRef.sf;
+import static app.revanced.integrations.youtube.settings.Settings.*;
+
+import java.util.*;
 
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.text.Html;
 import android.text.Spanned;
 import android.text.TextUtils;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-
+import app.revanced.integrations.shared.Logger;
+import app.revanced.integrations.shared.StringRef;
 import app.revanced.integrations.shared.Utils;
 import app.revanced.integrations.shared.settings.StringSetting;
 import app.revanced.integrations.youtube.settings.Settings;
-import app.revanced.integrations.shared.Logger;
-import app.revanced.integrations.shared.StringRef;
 
 public enum SegmentCategory {
     SPONSOR("sponsor", sf("revanced_sb_segments_sponsor"), sf("revanced_sb_segments_sponsor_sum"), sf("revanced_sb_skip_button_sponsor"), sf("revanced_sb_skipped_sponsor"),

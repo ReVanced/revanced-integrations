@@ -1,5 +1,10 @@
 package app.revanced.integrations.tiktok.settings;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+
+import com.bytedance.ies.ugc.aweme.commercialize.compliance.personalization.AdPersonalizationActivity;
+
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,10 +15,6 @@ import android.widget.LinearLayout;
 import app.revanced.integrations.shared.Logger;
 import app.revanced.integrations.shared.Utils;
 import app.revanced.integrations.tiktok.settings.preference.ReVancedPreferenceFragment;
-import com.bytedance.ies.ugc.aweme.commercialize.compliance.personalization.AdPersonalizationActivity;
-
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 
 /**
  * Hooks AdPersonalizationActivity.

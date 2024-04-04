@@ -1,14 +1,14 @@
 package app.revanced.integrations.tudortmund.lockscreen;
 
+import static android.view.WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD;
+import static android.view.WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED;
+
 import android.content.Context;
 import android.hardware.display.DisplayManager;
 import android.os.Build;
 import android.view.Display;
 import android.view.Window;
 import androidx.appcompat.app.AppCompatActivity;
-
-import static android.view.WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD;
-import static android.view.WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED;
 
 public class ShowOnLockscreenPatch {
     /**

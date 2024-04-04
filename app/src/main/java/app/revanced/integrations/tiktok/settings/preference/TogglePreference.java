@@ -2,7 +2,6 @@ package app.revanced.integrations.tiktok.settings.preference;
 
 import android.content.Context;
 import android.preference.SwitchPreference;
-
 import app.revanced.integrations.shared.settings.BooleanSetting;
 
 @SuppressWarnings("deprecation")

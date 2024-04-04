@@ -1,9 +1,9 @@
 package app.revanced.integrations.reddit.patches;
 
-import com.reddit.domain.model.ILink;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import com.reddit.domain.model.ILink;
 
 public final class FilterPromotedLinksPatch {
     /**

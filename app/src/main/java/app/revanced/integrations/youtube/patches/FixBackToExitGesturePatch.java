@@ -1,7 +1,6 @@
 package app.revanced.integrations.youtube.patches;
 
 import android.app.Activity;
-
 import app.revanced.integrations.shared.Logger;
 
 @SuppressWarnings("unused")

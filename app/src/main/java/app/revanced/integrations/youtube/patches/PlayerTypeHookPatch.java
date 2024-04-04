@@ -1,7 +1,6 @@
 package app.revanced.integrations.youtube.patches;
 
 import androidx.annotation.Nullable;
-
 import app.revanced.integrations.youtube.shared.PlayerType;
 import app.revanced.integrations.youtube.shared.VideoState;
 

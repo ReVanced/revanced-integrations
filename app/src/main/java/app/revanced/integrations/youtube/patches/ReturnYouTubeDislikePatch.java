@@ -1,5 +1,12 @@
 package app.revanced.integrations.youtube.patches;
 
+import static app.revanced.integrations.youtube.returnyoutubedislike.ReturnYouTubeDislike.Vote;
+
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
 import android.graphics.Rect;
 import android.graphics.drawable.ShapeDrawable;
 import android.os.Build;
@@ -8,22 +15,14 @@ import android.view.View;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
+import app.revanced.integrations.shared.Logger;
+import app.revanced.integrations.shared.Utils;
 import app.revanced.integrations.youtube.patches.components.ReturnYouTubeDislikeFilterPatch;
 import app.revanced.integrations.youtube.patches.spoof.SpoofAppVersionPatch;
 import app.revanced.integrations.youtube.returnyoutubedislike.ReturnYouTubeDislike;
 import app.revanced.integrations.youtube.returnyoutubedislike.requests.ReturnYouTubeDislikeApi;
 import app.revanced.integrations.youtube.settings.Settings;
 import app.revanced.integrations.youtube.shared.PlayerType;
-import app.revanced.integrations.shared.Logger;
-import app.revanced.integrations.shared.Utils;
-
-import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-
-import static app.revanced.integrations.youtube.returnyoutubedislike.ReturnYouTubeDislike.Vote;
 
 /**
  * Handles all interaction of UI patch components.

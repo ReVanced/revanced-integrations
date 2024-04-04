@@ -1,8 +1,8 @@
 package app.revanced.integrations.youtube.patches.theme;
 
-import app.revanced.integrations.youtube.settings.Settings;
 import app.revanced.integrations.shared.Utils;
 import app.revanced.integrations.youtube.ThemeHelper;
+import app.revanced.integrations.youtube.settings.Settings;
 
 @SuppressWarnings("unused")
 public class ThemePatch {

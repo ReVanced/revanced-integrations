@@ -1,12 +1,12 @@
 package app.revanced.integrations.shared.settings;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import java.util.Objects;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.Objects;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 @SuppressWarnings("unused")
 public class IntegerSetting extends Setting<Integer> {

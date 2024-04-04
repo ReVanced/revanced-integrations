@@ -1,5 +1,14 @@
 package app.revanced.integrations.youtube.settings;
 
+import static app.revanced.integrations.shared.settings.Setting.*;
+import static app.revanced.integrations.youtube.sponsorblock.objects.CategoryBehaviour.*;
+import static java.lang.Boolean.FALSE;
+import static java.lang.Boolean.TRUE;
+
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
 import app.revanced.integrations.shared.Logger;
 import app.revanced.integrations.shared.settings.*;
 import app.revanced.integrations.shared.settings.preference.SharedPrefCategory;
@@ -9,15 +18,6 @@ import app.revanced.integrations.youtube.patches.AlternativeThumbnailsPatch.Thum
 import app.revanced.integrations.youtube.patches.AlternativeThumbnailsPatch.ThumbnailStillTime;
 import app.revanced.integrations.youtube.patches.spoof.SpoofAppVersionPatch;
 import app.revanced.integrations.youtube.sponsorblock.SponsorBlockSettings;
-
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-
-import static app.revanced.integrations.shared.settings.Setting.*;
-import static app.revanced.integrations.youtube.sponsorblock.objects.CategoryBehaviour.*;
-import static java.lang.Boolean.FALSE;
-import static java.lang.Boolean.TRUE;
 
 public class Settings extends BaseSettings {
     // External downloader

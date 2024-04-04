@@ -2,9 +2,7 @@ package app.revanced.integrations.youtube.videoplayer;
 
 import android.view.View;
 import android.view.ViewGroup;
-
 import androidx.annotation.Nullable;
-
 import app.revanced.integrations.shared.Logger;
 import app.revanced.integrations.youtube.patches.DownloadsPatch;
 import app.revanced.integrations.youtube.patches.VideoInformation;

@@ -1,8 +1,8 @@
 package app.revanced.integrations.shared.settings;
 
+import static app.revanced.integrations.shared.settings.Setting.parent;
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
-import static app.revanced.integrations.shared.settings.Setting.parent;
 
 /**
  * Settings shared across multiple apps.

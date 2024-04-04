@@ -1,18 +1,8 @@
 package app.revanced.integrations.youtube.patches.announcements;
 
-import android.app.Activity;
-import android.os.Build;
-import android.text.Html;
-import android.text.method.LinkMovementMethod;
-import android.widget.TextView;
-import androidx.annotation.RequiresApi;
-
-import app.revanced.integrations.shared.Logger;
-import app.revanced.integrations.shared.Utils;
-import app.revanced.integrations.youtube.patches.announcements.requests.AnnouncementsRoutes;
-import app.revanced.integrations.youtube.requests.Requester;
-import app.revanced.integrations.youtube.settings.Settings;
-import org.json.JSONObject;
+import static android.text.Html.FROM_HTML_MODE_COMPACT;
+import static app.revanced.integrations.shared.StringRef.str;
+import static app.revanced.integrations.youtube.patches.announcements.requests.AnnouncementsRoutes.GET_LATEST_ANNOUNCEMENT;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -20,9 +10,19 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.util.Locale;
 
-import static android.text.Html.FROM_HTML_MODE_COMPACT;
-import static app.revanced.integrations.shared.StringRef.str;
-import static app.revanced.integrations.youtube.patches.announcements.requests.AnnouncementsRoutes.GET_LATEST_ANNOUNCEMENT;
+import org.json.JSONObject;
+
+import android.app.Activity;
+import android.os.Build;
+import android.text.Html;
+import android.text.method.LinkMovementMethod;
+import android.widget.TextView;
+import androidx.annotation.RequiresApi;
+import app.revanced.integrations.shared.Logger;
+import app.revanced.integrations.shared.Utils;
+import app.revanced.integrations.youtube.patches.announcements.requests.AnnouncementsRoutes;
+import app.revanced.integrations.youtube.requests.Requester;
+import app.revanced.integrations.youtube.settings.Settings;
 
 @SuppressWarnings("unused")
 public final class AnnouncementsPatch {

@@ -143,7 +143,7 @@ class SwipeControlsHostActivity : Activity() {
                 contentRoot.x.toInt(),
                 contentRoot.y.toInt(),
                 contentRoot.width,
-                contentRoot.height,
+                contentRoot.height
             )
         }
 

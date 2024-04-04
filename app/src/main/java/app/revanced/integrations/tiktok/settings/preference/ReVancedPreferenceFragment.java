@@ -1,5 +1,7 @@
 package app.revanced.integrations.tiktok.settings.preference;
 
+import org.jetbrains.annotations.NotNull;
+
 import android.preference.Preference;
 import android.preference.PreferenceScreen;
 import androidx.annotation.NonNull;
@@ -9,7 +11,6 @@ import app.revanced.integrations.tiktok.settings.preference.categories.Downloads
 import app.revanced.integrations.tiktok.settings.preference.categories.FeedFilterPreferenceCategory;
 import app.revanced.integrations.tiktok.settings.preference.categories.IntegrationsPreferenceCategory;
 import app.revanced.integrations.tiktok.settings.preference.categories.SimSpoofPreferenceCategory;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Preference fragment for ReVanced settings

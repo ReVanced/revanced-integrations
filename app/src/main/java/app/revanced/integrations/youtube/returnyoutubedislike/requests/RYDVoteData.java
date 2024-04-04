@@ -2,10 +2,10 @@ package app.revanced.integrations.youtube.returnyoutubedislike.requests;
 
 import static app.revanced.integrations.youtube.returnyoutubedislike.ReturnYouTubeDislike.Vote;
 
-import androidx.annotation.NonNull;
-
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import androidx.annotation.NonNull;
 
 /**
  * ReturnYouTubeDislike API estimated like/dislike/view counts.

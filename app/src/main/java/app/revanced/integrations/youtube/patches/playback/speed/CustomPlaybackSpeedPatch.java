@@ -2,18 +2,17 @@ package app.revanced.integrations.youtube.patches.playback.speed;
 
 import static app.revanced.integrations.shared.StringRef.str;
 
+import java.util.Arrays;
+
 import android.preference.ListPreference;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
-
-import app.revanced.integrations.youtube.patches.components.PlaybackSpeedMenuFilterPatch;
-import app.revanced.integrations.youtube.settings.Settings;
 import app.revanced.integrations.shared.Logger;
 import app.revanced.integrations.shared.Utils;
-
-import java.util.Arrays;
+import app.revanced.integrations.youtube.patches.components.PlaybackSpeedMenuFilterPatch;
+import app.revanced.integrations.youtube.settings.Settings;
 
 @SuppressWarnings("unused")
 public class CustomPlaybackSpeedPatch {

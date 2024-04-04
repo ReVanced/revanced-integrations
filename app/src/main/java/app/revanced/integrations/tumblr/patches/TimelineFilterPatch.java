@@ -1,10 +1,10 @@
 package app.revanced.integrations.tumblr.patches;
 
-import com.tumblr.rumblr.model.TimelineObject;
-import com.tumblr.rumblr.model.Timelineable;
-
 import java.util.HashSet;
 import java.util.List;
+
+import com.tumblr.rumblr.model.TimelineObject;
+import com.tumblr.rumblr.model.Timelineable;
 
 public final class TimelineFilterPatch {
     private static final HashSet<String> blockedObjectTypes = new HashSet<>();

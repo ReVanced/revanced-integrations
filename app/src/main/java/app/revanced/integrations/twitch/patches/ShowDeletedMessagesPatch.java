@@ -10,9 +10,7 @@ import android.text.SpannedString;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StrikethroughSpan;
 import android.text.style.StyleSpan;
-
 import androidx.annotation.Nullable;
-
 import app.revanced.integrations.twitch.settings.Settings;
 import tv.twitch.android.shared.chat.util.ClickableUsernameSpan;
 

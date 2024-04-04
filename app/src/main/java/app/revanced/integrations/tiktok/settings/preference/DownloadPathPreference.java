@@ -14,7 +14,6 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-
 import app.revanced.integrations.shared.settings.StringSetting;
 
 @SuppressWarnings("deprecation")

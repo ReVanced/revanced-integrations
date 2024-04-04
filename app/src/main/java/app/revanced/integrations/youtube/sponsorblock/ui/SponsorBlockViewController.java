@@ -2,18 +2,16 @@ package app.revanced.integrations.youtube.sponsorblock.ui;
 
 import static app.revanced.integrations.shared.Utils.getResourceIdentifier;
 
+import java.lang.ref.WeakReference;
+import java.util.Objects;
+
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
-import java.lang.ref.WeakReference;
-import java.util.Objects;
-
 import app.revanced.integrations.shared.Logger;
 import app.revanced.integrations.shared.Utils;
 import app.revanced.integrations.youtube.settings.Settings;

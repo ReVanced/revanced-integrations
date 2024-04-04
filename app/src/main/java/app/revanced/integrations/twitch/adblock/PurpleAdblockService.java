@@ -1,15 +1,15 @@
 package app.revanced.integrations.twitch.adblock;
 
-import app.revanced.integrations.shared.Logger;
-import app.revanced.integrations.twitch.api.RetrofitClient;
-import okhttp3.HttpUrl;
-import okhttp3.Request;
+import static app.revanced.integrations.shared.StringRef.str;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import static app.revanced.integrations.shared.StringRef.str;
+import app.revanced.integrations.shared.Logger;
+import app.revanced.integrations.twitch.api.RetrofitClient;
+import okhttp3.HttpUrl;
+import okhttp3.Request;
 
 public class PurpleAdblockService implements IAdblockService {
     private final Map<String, Boolean> tunnels = new HashMap<>() {{

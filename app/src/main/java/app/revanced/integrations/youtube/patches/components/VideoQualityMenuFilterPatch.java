@@ -1,7 +1,6 @@
 package app.revanced.integrations.youtube.patches.components;
 
 import androidx.annotation.Nullable;
-
 import app.revanced.integrations.youtube.patches.playback.quality.RestoreOldVideoQualityMenuPatch;
 import app.revanced.integrations.youtube.settings.Settings;
 

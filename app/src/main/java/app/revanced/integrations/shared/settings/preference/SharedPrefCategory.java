@@ -1,5 +1,7 @@
 package app.revanced.integrations.shared.settings.preference;
 
+import java.util.Objects;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceFragment;
@@ -7,8 +9,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import app.revanced.integrations.shared.Logger;
 import app.revanced.integrations.shared.Utils;
-
-import java.util.Objects;
 
 /**
  * Shared categories, and helper methods.

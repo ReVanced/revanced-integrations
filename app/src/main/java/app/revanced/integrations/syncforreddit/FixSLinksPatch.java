@@ -1,10 +1,10 @@
 package app.revanced.integrations.syncforreddit;
 
-import android.os.StrictMode;
-import app.revanced.integrations.shared.Logger;
-
 import java.net.HttpURLConnection;
 import java.net.URL;
+
+import android.os.StrictMode;
+import app.revanced.integrations.shared.Logger;
 
 public final class FixSLinksPatch {
     public static String resolveSLink(String link) {

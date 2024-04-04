@@ -1,9 +1,8 @@
 package app.revanced.integrations.youtube.sponsorblock.ui;
 
-import static app.revanced.integrations.shared.Utils.getResourceColor;
-import static app.revanced.integrations.shared.Utils.getResourceDimension;
-import static app.revanced.integrations.shared.Utils.getResourceDimensionPixelSize;
-import static app.revanced.integrations.shared.Utils.getResourceIdentifier;
+import static app.revanced.integrations.shared.Utils.*;
+
+import java.util.Objects;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -14,11 +13,7 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
-
-import java.util.Objects;
-
 import app.revanced.integrations.youtube.sponsorblock.SegmentPlaybackController;
 import app.revanced.integrations.youtube.sponsorblock.objects.SponsorSegment;
 

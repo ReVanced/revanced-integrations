@@ -1,5 +1,13 @@
 package app.revanced.integrations.youtube.patches.spoof;
 
+import static app.revanced.integrations.shared.Utils.containsAny;
+import static app.revanced.integrations.youtube.patches.spoof.requests.StoryboardRendererRequester.getStoryboardRenderer;
+
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -9,14 +17,6 @@ import app.revanced.integrations.shared.Utils;
 import app.revanced.integrations.youtube.patches.VideoInformation;
 import app.revanced.integrations.youtube.settings.Settings;
 import app.revanced.integrations.youtube.shared.PlayerType;
-
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
-
-import static app.revanced.integrations.shared.Utils.containsAny;
-import static app.revanced.integrations.youtube.patches.spoof.requests.StoryboardRendererRequester.getStoryboardRenderer;
 
 /** @noinspection unused*/
 @Deprecated

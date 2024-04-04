@@ -1,13 +1,11 @@
 package app.revanced.integrations.youtube.patches.components;
 
 import android.os.Build;
-
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
-
-import app.revanced.integrations.youtube.settings.Settings;
 import app.revanced.integrations.shared.Logger;
 import app.revanced.integrations.youtube.StringTrieSearch;
+import app.revanced.integrations.youtube.settings.Settings;
 
 @SuppressWarnings("unused")
 public final class LayoutComponentsFilter extends Filter {

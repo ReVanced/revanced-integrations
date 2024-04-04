@@ -4,10 +4,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
-
+import app.revanced.integrations.shared.Logger;
 import app.revanced.integrations.youtube.patches.components.VideoQualityMenuFilterPatch;
 import app.revanced.integrations.youtube.settings.Settings;
-import app.revanced.integrations.shared.Logger;
 
 /**
  * This patch contains the logic to show the old video quality menu.

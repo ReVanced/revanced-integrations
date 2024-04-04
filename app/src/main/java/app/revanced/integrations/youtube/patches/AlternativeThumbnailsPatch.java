@@ -1,22 +1,8 @@
 package app.revanced.integrations.youtube.patches;
 
-import android.net.Uri;
-import androidx.annotation.GuardedBy;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import app.revanced.integrations.shared.settings.BaseSettings;
-import app.revanced.integrations.shared.settings.EnumSetting;
-import app.revanced.integrations.shared.settings.Setting;
-import app.revanced.integrations.youtube.settings.Settings;
-import app.revanced.integrations.shared.Logger;
-import app.revanced.integrations.shared.Utils;
-import app.revanced.integrations.youtube.shared.NavigationBar;
-import app.revanced.integrations.youtube.shared.PlayerType;
-
-import org.chromium.net.UrlRequest;
-import org.chromium.net.UrlResponseInfo;
-import org.chromium.net.impl.CronetUrlRequest;
+import static app.revanced.integrations.shared.StringRef.str;
+import static app.revanced.integrations.youtube.settings.Settings.*;
+import static app.revanced.integrations.youtube.shared.NavigationBar.NavigationButton;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -26,13 +12,22 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
-import static app.revanced.integrations.shared.StringRef.str;
-import static app.revanced.integrations.youtube.settings.Settings.ALT_THUMBNAIL_HOME;
-import static app.revanced.integrations.youtube.settings.Settings.ALT_THUMBNAIL_LIBRARY;
-import static app.revanced.integrations.youtube.settings.Settings.ALT_THUMBNAIL_PLAYER;
-import static app.revanced.integrations.youtube.settings.Settings.ALT_THUMBNAIL_SEARCH;
-import static app.revanced.integrations.youtube.settings.Settings.ALT_THUMBNAIL_SUBSCRIPTIONS;
-import static app.revanced.integrations.youtube.shared.NavigationBar.NavigationButton;
+import org.chromium.net.UrlRequest;
+import org.chromium.net.UrlResponseInfo;
+import org.chromium.net.impl.CronetUrlRequest;
+
+import android.net.Uri;
+import androidx.annotation.GuardedBy;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import app.revanced.integrations.shared.Logger;
+import app.revanced.integrations.shared.Utils;
+import app.revanced.integrations.shared.settings.BaseSettings;
+import app.revanced.integrations.shared.settings.EnumSetting;
+import app.revanced.integrations.shared.settings.Setting;
+import app.revanced.integrations.youtube.settings.Settings;
+import app.revanced.integrations.youtube.shared.NavigationBar;
+import app.revanced.integrations.youtube.shared.PlayerType;
 
 /**
  * Alternative YouTube thumbnails.

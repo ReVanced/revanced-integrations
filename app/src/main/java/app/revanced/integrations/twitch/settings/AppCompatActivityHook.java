@@ -1,5 +1,8 @@
 package app.revanced.integrations.twitch.settings;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.content.Intent;
 import android.os.Bundle;
 import androidx.appcompat.app.ActionBar;
@@ -8,9 +11,6 @@ import app.revanced.integrations.shared.Utils;
 import app.revanced.integrations.twitch.settings.preference.ReVancedPreferenceFragment;
 import tv.twitch.android.feature.settings.menu.SettingsMenuGroup;
 import tv.twitch.android.settings.SettingsActivity;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Hooks AppCompatActivity.

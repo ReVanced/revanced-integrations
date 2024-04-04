@@ -3,10 +3,9 @@ package app.revanced.integrations.youtube.patches.theme;
 import static app.revanced.integrations.shared.StringRef.str;
 
 import android.graphics.Color;
-
-import app.revanced.integrations.youtube.settings.Settings;
 import app.revanced.integrations.shared.Logger;
 import app.revanced.integrations.shared.Utils;
+import app.revanced.integrations.youtube.settings.Settings;
 
 @SuppressWarnings("unused")
 public final class SeekbarColorPatch {

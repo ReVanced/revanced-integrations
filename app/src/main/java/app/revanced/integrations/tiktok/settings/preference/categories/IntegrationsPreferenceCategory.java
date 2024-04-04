@@ -2,7 +2,6 @@ package app.revanced.integrations.tiktok.settings.preference.categories;
 
 import android.content.Context;
 import android.preference.PreferenceScreen;
-
 import app.revanced.integrations.shared.settings.BaseSettings;
 import app.revanced.integrations.tiktok.settings.preference.TogglePreference;
 

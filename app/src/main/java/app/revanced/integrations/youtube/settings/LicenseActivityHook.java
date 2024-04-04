@@ -1,5 +1,10 @@
 package app.revanced.integrations.youtube.settings;
 
+import static app.revanced.integrations.shared.Utils.getChildView;
+import static app.revanced.integrations.shared.Utils.getResourceIdentifier;
+
+import java.util.Objects;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.preference.PreferenceFragment;
@@ -11,11 +16,6 @@ import app.revanced.integrations.youtube.ThemeHelper;
 import app.revanced.integrations.youtube.settings.preference.ReVancedPreferenceFragment;
 import app.revanced.integrations.youtube.settings.preference.ReturnYouTubeDislikePreferenceFragment;
 import app.revanced.integrations.youtube.settings.preference.SponsorBlockPreferenceFragment;
-
-import java.util.Objects;
-
-import static app.revanced.integrations.shared.Utils.getChildView;
-import static app.revanced.integrations.shared.Utils.getResourceIdentifier;
 
 /**
  * Hooks LicenseActivity.

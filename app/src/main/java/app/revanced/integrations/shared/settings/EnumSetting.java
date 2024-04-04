@@ -1,13 +1,14 @@
 package app.revanced.integrations.shared.settings;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import app.revanced.integrations.shared.Logger;
+import java.util.Locale;
+import java.util.Objects;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.Locale;
-import java.util.Objects;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import app.revanced.integrations.shared.Logger;
 
 /**
  * If an Enum value is removed or changed, any saved or imported data using the

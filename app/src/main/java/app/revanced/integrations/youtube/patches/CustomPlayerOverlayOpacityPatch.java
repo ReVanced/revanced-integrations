@@ -1,9 +1,8 @@
 package app.revanced.integrations.youtube.patches;
 
 import android.widget.ImageView;
-
-import app.revanced.integrations.youtube.settings.Settings;
 import app.revanced.integrations.shared.Utils;
+import app.revanced.integrations.youtube.settings.Settings;
 
 @SuppressWarnings("unused")
 public class CustomPlayerOverlayOpacityPatch {

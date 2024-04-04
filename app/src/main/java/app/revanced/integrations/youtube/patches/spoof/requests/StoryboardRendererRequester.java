@@ -1,14 +1,7 @@
 package app.revanced.integrations.youtube.patches.spoof.requests;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import app.revanced.integrations.shared.settings.BaseSettings;
-import app.revanced.integrations.youtube.patches.spoof.StoryboardRenderer;
-import app.revanced.integrations.youtube.requests.Requester;
-import app.revanced.integrations.shared.Logger;
-import app.revanced.integrations.shared.Utils;
-import org.json.JSONException;
-import org.json.JSONObject;
+import static app.revanced.integrations.shared.StringRef.str;
+import static app.revanced.integrations.youtube.patches.spoof.requests.PlayerRoutes.*;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -16,8 +9,16 @@ import java.net.SocketTimeoutException;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
-import static app.revanced.integrations.shared.StringRef.str;
-import static app.revanced.integrations.youtube.patches.spoof.requests.PlayerRoutes.*;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import app.revanced.integrations.shared.Logger;
+import app.revanced.integrations.shared.Utils;
+import app.revanced.integrations.shared.settings.BaseSettings;
+import app.revanced.integrations.youtube.patches.spoof.StoryboardRenderer;
+import app.revanced.integrations.youtube.requests.Requester;
 
 @Deprecated
 public class StoryboardRendererRequester {
