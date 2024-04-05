@@ -176,6 +176,15 @@ class SwipeControlsHostActivity : Activity() {
             when (type) {
                 PlayerType.WATCH_WHILE_FULLSCREEN -> screen?.restore()
                 else -> {
+                    screen?.restore()
+                    screen?.save()
+                    screen?.restoreDefaultBrightness()
+                }
+            }
+        } else {
+            when (type) {
+                PlayerType.WATCH_WHILE_FULLSCREEN -> screen?.restore()
+                else -> {
                     screen?.save()
                     screen?.restoreDefaultBrightness()
                 }

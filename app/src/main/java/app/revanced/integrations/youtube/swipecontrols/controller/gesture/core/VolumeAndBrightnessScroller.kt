@@ -2,6 +2,8 @@ package app.revanced.integrations.youtube.swipecontrols.controller.gesture.core
 
 import android.content.Context
 import android.util.TypedValue
+import app.revanced.integrations.youtube.settings.Settings
+import app.revanced.integrations.youtube.swipecontrols.SwipeControlsConfigurationProvider
 import app.revanced.integrations.youtube.swipecontrols.controller.AudioVolumeController
 import app.revanced.integrations.youtube.swipecontrols.controller.ScreenBrightnessController
 import app.revanced.integrations.youtube.swipecontrols.misc.ScrollDistanceHelper
@@ -77,10 +79,22 @@ class VolumeAndBrightnessScrollerImpl(
             ),
         ) { _, _, direction ->
             screenController?.run {
-                if (screenBrightness > 0 || direction > 0) {
-                    screenBrightness += direction
+                if (!Settings.SWIPE_ENABLE_AUTO_BRIGHTNESS.get()){
+                    if (screenBrightness >= 0 || direction > 0) {
+                        restore()
+                        screenBrightness += direction
+                        save()
+                    } else {
+                        restoreDefaultBrightness()
+                    }
                 } else {
-                    restoreDefaultBrightness()
+                    if (screenBrightness > 0 || direction > 0) {
+                        restore()
+                        screenBrightness += direction
+                        save()
+                    } else {
+                        restoreDefaultBrightness()
+                    }
                 }
 
                 overlayController.onBrightnessChanged(screenBrightness)
