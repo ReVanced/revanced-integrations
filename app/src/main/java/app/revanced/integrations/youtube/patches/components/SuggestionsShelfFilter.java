@@ -12,7 +12,7 @@ public final class SuggestionsShelfFilter extends Filter {
     public SuggestionsShelfFilter() {
         addPathCallbacks(
                 new StringFilterGroup(
-                        null, // Setting is based on navigation state.
+                        Settings.HIDE_SUGGESTIONS_SHELF,
                         "horizontal_video_shelf.eml",
                         "horizontal_shelf.eml"
                 )
@@ -22,17 +22,19 @@ public final class SuggestionsShelfFilter extends Filter {
     @Override
     boolean isFiltered(@Nullable String identifier, String path, byte[] protobufBufferArray,
                        StringFilterGroup matchedGroup, FilterContentType contentType, int contentIndex) {
-        if (shouldHideSuggestionsShelf() && contentIndex == 0)
+        if (contentIndex == 0 && shouldHideSuggestionsShelf()) {
             return super.isFiltered(path, identifier, protobufBufferArray, matchedGroup, contentType, contentIndex);
+        }
 
         return false;
     }
 
     private static boolean shouldHideSuggestionsShelf() {
-        return Settings.HIDE_SUGGESTIONS_SHELF.get()
-                && NavigationBar.NavigationButton.HOME.isSelected() // Home tab is selected.
-                && !PlayerType.getCurrent().isMaximizedOrFullscreen() // The player is not opened.
-                && !NavigationBar.isSearchBarActive(); // Search is not active.
-
+        // Only filter if the library tab is not selected.
+        // This check is important as the suggestion shelf layout is used for the library tab playlists.
+        return !NavigationBar.NavigationButton.libraryOrYouTabIsSelected()
+                // But if the player is opened while library is selected,
+                // then still filter any recommendations below the player.
+                || PlayerType.getCurrent().isMaximizedOrFullscreen();
     }
 }
