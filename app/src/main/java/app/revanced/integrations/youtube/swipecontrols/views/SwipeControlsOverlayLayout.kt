@@ -124,18 +124,14 @@ class SwipeControlsOverlayLayout(
     }
 
     override fun onBrightnessChanged(brightness: Double) {
-        Settings.SWIPE_BRIGHTNESS_AUTO_STATE.save(false)
-        if (config.shouldEnableAutoBrightness) {
-            if (brightness > 0) {
-                showFeedbackView("${round(brightness).toInt()}%", manualBrightnessIcon)
-            } else {
-                showFeedbackView(str("revanced_swipe_enable_auto_brightness_overlay_text"), autoBrightnessIcon)
-                Settings.SWIPE_BRIGHTNESS_AUTO_STATE.save(true)
-            }
+        val useAutoBrightness = config.shouldEnableAutoBrightness && brightness == 0.0
+
+        Settings.SWIPE_BRIGHTNESS_AUTO_STATE.save(useAutoBrightness)
+
+        if (useAutoBrightness) {
+            showFeedbackView(str("revanced_swipe_enable_auto_brightness_overlay_text"), autoBrightnessIcon)
         } else {
-            if (brightness >= 0) {
-                showFeedbackView("${round(brightness).toInt()}%", manualBrightnessIcon)
-            }
+            showFeedbackView("${round(brightness).toInt()}%", manualBrightnessIcon)
         }
     }
 
