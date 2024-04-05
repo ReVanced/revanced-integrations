@@ -35,6 +35,8 @@ public final class SuggestionsShelfFilter extends Filter {
         return !NavigationBar.NavigationButton.libraryOrYouTabIsSelected()
                 // But if the player is opened while library is selected,
                 // then still filter any recommendations below the player.
-                || PlayerType.getCurrent().isMaximizedOrFullscreen();
+                || PlayerType.getCurrent().isMaximizedOrFullscreen()
+                // Or if the search is active while library is selected, then also filter.
+                || NavigationBar.isSearchBarActive();
     }
 }
