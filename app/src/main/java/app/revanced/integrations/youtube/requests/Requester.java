@@ -26,7 +26,7 @@ public class Requester {
         connection.setRequestMethod(route.getMethod().name());
         String agentString = System.getProperty("http.agent")
                 + "; ReVanced/" + Utils.getAppVersionName()
-                + "-" + Utils.getPatchesReleaseVersion();
+                + " (" + Utils.getPatchesReleaseVersion() + ")";
         connection.setRequestProperty("User-Agent", agentString);
 
         return connection;
