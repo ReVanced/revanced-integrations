@@ -157,9 +157,9 @@ public class ReVancedAboutPreference extends Preference {
         if (patchesVersion.contains("-dev")) {
             // Replace hyphens with no breaking dashes,
             // so the version number and the English word "pre-release" do not break lines.
-            builder.append("<h3>")
+            builder.append("<h4>")
                     .append(useNonBreakingHyphens(str("revanced_settings_about_links_dev_header")))
-                    .append("</h3>");
+                    .append("</h4>");
             builder.append("<p>")
                     .append(useNonBreakingHyphens(str("revanced_settings_about_links_dev_body1", patchesVersion)))
                     .append("</p>");
@@ -197,7 +197,6 @@ public class ReVancedAboutPreference extends Preference {
             if (fetchedLinks == null && Utils.isNetworkConnected()) {
                 progress = new ProgressDialog(context);
                 progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                progress.setCancelable(false);
                 progress.show();
             } else {
                 progress = null;
