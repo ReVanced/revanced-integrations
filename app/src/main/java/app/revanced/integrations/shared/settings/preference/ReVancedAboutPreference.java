@@ -9,7 +9,6 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.util.AttributeSet;
@@ -20,7 +19,6 @@ import android.webkit.WebViewClient;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -32,6 +30,7 @@ import java.util.List;
 
 import app.revanced.integrations.shared.Logger;
 import app.revanced.integrations.shared.Utils;
+import app.revanced.integrations.youtube.ThemeHelper;
 import app.revanced.integrations.youtube.requests.Requester;
 import app.revanced.integrations.youtube.requests.Route;
 
@@ -39,7 +38,6 @@ import app.revanced.integrations.youtube.requests.Route;
  * Opens a dialog showing the links from {@link #SOCIAL_LINKS_PROVIDER}.
  */
 @SuppressWarnings({"unused", "deprecation"})
-@RequiresApi(api = Build.VERSION_CODES.N)
 public class ReVancedAboutPreference extends Preference {
 
     private static class ReVancedSocialLink {
@@ -138,12 +136,24 @@ public class ReVancedAboutPreference extends Preference {
         return text.replace("-", "&#8209;"); // #8209 = non breaking hyphen.
     }
 
+    private static String getResourceColorHexString(boolean isDarkTheme) {
+        final int color = Utils.getResourceColor(isDarkTheme ? "yt_black1" : "yt_white1");
+        return String.format("#%06X", (0xFFFFFF & color));
+    }
+
     private static String createDialogHtml(ReVancedSocialLink[] socialLinks) {
         final boolean isNetworkConnected = Utils.isNetworkConnected();
 
+        // Use a dark theme if needed.
+        final boolean isDarkTheme = ThemeHelper.isDarkTheme();
+        String background = getResourceColorHexString(isDarkTheme);
+        String foreground = getResourceColorHexString(!isDarkTheme);
+        String lightDarkStyle = "background-color: " + background + "; color: " + foreground + ";";
+
         StringBuilder builder = new StringBuilder();
         builder.append("<html>");
-        builder.append("<body style=\"text-align: center; padding: 10px\">");
+        builder.append("<body style=\"text-align: center; padding: 10px; ")
+                .append(lightDarkStyle).append("\">");
 
         if (isNetworkConnected) {
             builder.append("<img style=\"width: 100px; height: 100px;\" "
