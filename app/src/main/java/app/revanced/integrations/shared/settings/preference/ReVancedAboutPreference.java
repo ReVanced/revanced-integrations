@@ -81,7 +81,7 @@ public class ReVancedAboutPreference extends Preference {
      * Links to use if fetch links api call fails.
      */
     private static final ReVancedSocialLink[] NO_CONNECTION_STATIC_LINKS = {
-            new ReVancedSocialLink(true, "ReVanced.app", "https://ReVanced.app")
+            new ReVancedSocialLink(true, "ReVanced.app", "https://revanced.app")
     };
 
     @Nullable
@@ -162,19 +162,27 @@ public class ReVancedAboutPreference extends Preference {
                     + "src=\"https://revanced.app/favicon.ico\" />");
         }
 
-        // Add a disclaimer if using a dev release.
         String patchesVersion = Utils.getPatchesReleaseVersion();
+
+        // Add the title.
+        builder.append("<h1>")
+                .append("ReVanced")
+                .append("</h1>");
+
+        builder.append("<p>")
+                .append(useNonBreakingHyphens(str("revanced_settings_about_links_body", patchesVersion)))
+                .append("</p>");
+
+        // Add a disclaimer if using a dev release.
         if (patchesVersion.contains("-dev")) {
             // Replace hyphens with no breaking dashes,
             // so the version number and the English word "pre-release" do not break lines.
-            builder.append("<h4>")
+            builder.append("<h3>")
                     .append(useNonBreakingHyphens(str("revanced_settings_about_links_dev_header")))
-                    .append("</h4>");
+                    .append("</h3>");
+
             builder.append("<p>")
-                    .append(useNonBreakingHyphens(str("revanced_settings_about_links_dev_body1", patchesVersion)))
-                    .append("</p>");
-            builder.append("<p>")
-                    .append(str("revanced_settings_about_links_dev_body2"))
+                    .append(str("revanced_settings_about_links_dev_body"))
                     .append("</p>");
         }
 
