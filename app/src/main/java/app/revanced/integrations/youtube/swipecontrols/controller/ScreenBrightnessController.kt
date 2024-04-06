@@ -2,7 +2,7 @@ package app.revanced.integrations.youtube.swipecontrols.controller
 
 import android.app.Activity
 import android.view.WindowManager
-import app.revanced.integrations.youtube.settings.Settings
+import app.revanced.integrations.youtube.swipecontrols.SwipeControlsConfigurationProvider
 import app.revanced.integrations.youtube.swipecontrols.misc.clamp
 
 /**
@@ -12,6 +12,7 @@ import app.revanced.integrations.youtube.swipecontrols.misc.clamp
  */
 class ScreenBrightnessController(
     private val host: Activity,
+    val config: SwipeControlsConfigurationProvider,
 ) {
 
     /**
@@ -37,18 +38,18 @@ class ScreenBrightnessController(
         get() = (rawScreenBrightness == WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_NONE)
 
     /**
-     * save the current screen brightness, to be brought back using [restore]
+     * save the current screen brightness into settings, to be brought back using [restore]
      */
     fun save() {
-        Settings.SWIPE_BRIGHTNESS_VALUE.save(rawScreenBrightness)
+        config.brightnessValue = rawScreenBrightness
     }
 
     /**
-     * restore the screen brightness saved using [save]
+     * restore the screen brightness from settings saved using [save]
      */
     fun restore() {
-        if (!Settings.SWIPE_BRIGHTNESS_AUTO_STATE.get())
-            rawScreenBrightness = Settings.SWIPE_BRIGHTNESS_VALUE.get()
+        if (!config.isEnableAutoBrightness)
+            rawScreenBrightness = config.brightnessValue
     }
 
     /**

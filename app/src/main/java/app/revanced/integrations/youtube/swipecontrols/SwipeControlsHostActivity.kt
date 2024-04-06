@@ -207,7 +207,7 @@ class SwipeControlsHostActivity : Activity() {
      */
     private fun createScreenController() =
         if (config.enableBrightnessControl) {
-            ScreenBrightnessController(this)
+            ScreenBrightnessController(this, config)
         } else {
             null
         }

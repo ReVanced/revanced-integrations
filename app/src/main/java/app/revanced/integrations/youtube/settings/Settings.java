@@ -243,7 +243,7 @@ public class Settings extends BaseSettings {
     public static final LongSetting SWIPE_OVERLAY_TIMEOUT = new LongSetting("revanced_swipe_overlay_timeout", 500L, true,
             parentsAny(SWIPE_BRIGHTNESS, SWIPE_VOLUME));
     public static final BooleanSetting SWIPE_SAVE_AND_RESTORE_BRIGHTNESS = new BooleanSetting("revanced_swipe_save_and_restore_brightness", TRUE, true, parent(SWIPE_BRIGHTNESS));
-    public static final BooleanSetting SWIPE_ENABLE_AUTO_BRIGHTNESS = new BooleanSetting("revanced_swipe_enable_auto_brightness", TRUE, true, parent(SWIPE_BRIGHTNESS));
+    public static final BooleanSetting SWIPE_ENABLE_LOWEST_VALUE_AUTO_BRIGHTNESS = new BooleanSetting("revanced_swipe_enable_lowest_value_auto_brightness", TRUE, true, parent(SWIPE_BRIGHTNESS));
     public static final FloatSetting SWIPE_BRIGHTNESS_VALUE = new FloatSetting("revanced_swipe_brightness_value", 0.5f);
     public static final BooleanSetting SWIPE_BRIGHTNESS_AUTO_STATE = new BooleanSetting("revanced_swipe_brightness_auto_state", TRUE);
     // Debugging
