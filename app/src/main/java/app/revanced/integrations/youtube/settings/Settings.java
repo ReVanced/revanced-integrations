@@ -71,7 +71,7 @@ public class Settings extends BaseSettings {
     public static final BooleanSetting DISABLE_FULLSCREEN_AMBIENT_MODE = new BooleanSetting("revanced_disable_fullscreen_ambient_mode", TRUE, true);
     public static final BooleanSetting DISABLE_RESUMING_SHORTS_PLAYER = new BooleanSetting("revanced_disable_resuming_shorts_player", FALSE);
     public static final BooleanSetting DISABLE_ROLLING_NUMBER_ANIMATIONS = new BooleanSetting("revanced_disable_rolling_number_animations", FALSE);
-    public static final BooleanSetting DISABLE_SUGGESTED_VIDEO_END_SCREEN = new BooleanSetting("revanced_disable_suggested_video_end_screen", FALSE);
+    public static final BooleanSetting DISABLE_SUGGESTED_VIDEO_END_SCREEN = new BooleanSetting("revanced_disable_suggested_video_end_screen", FALSE, true);
     public static final BooleanSetting GRADIENT_LOADING_SCREEN = new BooleanSetting("revanced_gradient_loading_screen", FALSE);
     public static final BooleanSetting HIDE_ALBUM_CARDS = new BooleanSetting("revanced_hide_album_cards", FALSE, true);
     public static final BooleanSetting HIDE_ARTIST_CARDS = new BooleanSetting("revanced_hide_artist_cards", FALSE);
@@ -108,7 +108,8 @@ public class Settings extends BaseSettings {
     public static final BooleanSetting HIDE_KEYWORD_CONTENT_SEARCH = new BooleanSetting("revanced_hide_keyword_content_search", FALSE);
     public static final StringSetting HIDE_KEYWORD_CONTENT_PHRASES = new StringSetting("revanced_hide_keyword_content_phrases", "",
             parentsAny(HIDE_KEYWORD_CONTENT_HOME, HIDE_KEYWORD_CONTENT_SUBSCRIPTIONS, HIDE_KEYWORD_CONTENT_SEARCH));
-    public static final BooleanSetting HIDE_LOAD_MORE_BUTTON = new BooleanSetting("revanced_hide_load_more_button", TRUE, true);
+    @Deprecated public static final BooleanSetting HIDE_LOAD_MORE_BUTTON = new BooleanSetting("revanced_hide_load_more_button", TRUE);
+    public static final BooleanSetting HIDE_SHOW_MORE_BUTTON = new BooleanSetting("revanced_hide_show_more_button", TRUE, true);
     public static final BooleanSetting HIDE_MEDICAL_PANELS = new BooleanSetting("revanced_hide_medical_panels", TRUE);
     public static final BooleanSetting HIDE_MIX_PLAYLISTS = new BooleanSetting("revanced_hide_mix_playlists", TRUE);
     public static final BooleanSetting HIDE_MOVIES_SECTION = new BooleanSetting("revanced_hide_movies_section", TRUE);
@@ -198,6 +199,7 @@ public class Settings extends BaseSettings {
     public static final BooleanSetting HIDE_HELP_MENU = new BooleanSetting("revanced_hide_player_flyout_help", TRUE);
     public static final BooleanSetting HIDE_SPEED_MENU = new BooleanSetting("revanced_hide_player_flyout_speed", FALSE);
     public static final BooleanSetting HIDE_MORE_INFO_MENU = new BooleanSetting("revanced_hide_player_flyout_more_info", TRUE);
+    public static final BooleanSetting HIDE_LOCK_SCREEN_MENU = new BooleanSetting("revanced_hide_player_flyout_lock_screen", FALSE);
     public static final BooleanSetting HIDE_AUDIO_TRACK_MENU = new BooleanSetting("revanced_hide_player_flyout_audio_track", FALSE);
     public static final BooleanSetting HIDE_WATCH_IN_VR_MENU = new BooleanSetting("revanced_hide_player_flyout_watch_in_vr", TRUE);
 
@@ -218,7 +220,7 @@ public class Settings extends BaseSettings {
     public static final BooleanSetting SPOOF_DEVICE_DIMENSIONS = new BooleanSetting("revanced_spoof_device_dimensions", FALSE, true);
     public static final BooleanSetting BYPASS_URL_REDIRECTS = new BooleanSetting("revanced_bypass_url_redirects", TRUE);
     public static final BooleanSetting ANNOUNCEMENTS = new BooleanSetting("revanced_announcements", TRUE);
-   @Deprecated
+    @Deprecated
     public static final StringSetting DEPRECATED_ANNOUNCEMENT_LAST_HASH = new StringSetting("revanced_announcement_last_hash", "");
     public static final IntegerSetting ANNOUNCEMENT_LAST_ID = new IntegerSetting("revanced_announcement_last_id", -1);
     public static final BooleanSetting REMOVE_TRACKING_QUERY_PARAMETER = new BooleanSetting("revanced_remove_tracking_query_parameter", TRUE);
@@ -382,6 +384,8 @@ public class Settings extends BaseSettings {
             HIDE_SHORTS_SUBSCRIPTIONS.save(true);
             HIDE_SHORTS_SEARCH.save(true);
         }
+
+        migrateOldSettingToNew(HIDE_LOAD_MORE_BUTTON, HIDE_SHOW_MORE_BUTTON);
 
         // endregion
     }

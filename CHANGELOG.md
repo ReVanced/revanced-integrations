@@ -1,3 +1,46 @@
+## [1.7.1-dev.4](https://github.com/ReVanced/revanced-integrations/compare/v1.7.1-dev.3...v1.7.1-dev.4) (2024-04-04)
+
+
+### Bug Fixes
+
+* **YouTube - Hide load more button:** Include patch with `Hide layout components`, and hide button only in search feed  ([#600](https://github.com/ReVanced/revanced-integrations/issues/600)) ([c420891](https://github.com/ReVanced/revanced-integrations/commit/c420891e3ef134f30af79cf2f30da3fa2fe5a455))
+
+## [1.7.1-dev.3](https://github.com/ReVanced/revanced-integrations/compare/v1.7.1-dev.2...v1.7.1-dev.3) (2024-04-04)
+
+
+### Bug Fixes
+
+* **YouTube - Player flyout menu:** Add hide Lock screen menu ([#609](https://github.com/ReVanced/revanced-integrations/issues/609)) ([b2fe105](https://github.com/ReVanced/revanced-integrations/commit/b2fe105199d4a5958676cbc8f9c701541e8ff24a))
+
+## [1.7.1-dev.2](https://github.com/ReVanced/revanced-integrations/compare/v1.7.1-dev.1...v1.7.1-dev.2) (2024-04-03)
+
+
+### Bug Fixes
+
+* **YouTube - Navigation bar hook:** Handle if search is active but hidden behind a maximized player ([cbccb46](https://github.com/ReVanced/revanced-integrations/commit/cbccb46e639003adbed941f9b88c41b4c9998729))
+
+## [1.7.1-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v1.7.0...v1.7.1-dev.1) (2024-04-01)
+
+
+### Bug Fixes
+
+* **YouTube - Disable suggested video end screen:** Require app restart ([38ae5aa](https://github.com/ReVanced/revanced-integrations/commit/38ae5aac845745824218a08053db519a3325d7a9))
+
+# [1.7.0](https://github.com/ReVanced/revanced-integrations/compare/v1.6.0...v1.7.0) (2024-03-30)
+
+
+### Features
+
+* **YouTube - Alternative thumbnails:** Selectively enable for home / subscription / search ([#593](https://github.com/ReVanced/revanced-integrations/issues/593)) ([4c81e96](https://github.com/ReVanced/revanced-integrations/commit/4c81e96a74cfc49923238c4a294b59f36b5e6c36))
+* **YouTube - GmsCore:** Require ignoring battery optimizations ([#599](https://github.com/ReVanced/revanced-integrations/issues/599)) ([fd2a9d0](https://github.com/ReVanced/revanced-integrations/commit/fd2a9d0287599aaafa817987fd0815e4f0ae72b9))
+
+# [1.7.0-dev.2](https://github.com/ReVanced/revanced-integrations/compare/v1.7.0-dev.1...v1.7.0-dev.2) (2024-03-30)
+
+
+### Features
+
+* **YouTube - GmsCore:** Require ignoring battery optimizations ([#599](https://github.com/ReVanced/revanced-integrations/issues/599)) ([fd2a9d0](https://github.com/ReVanced/revanced-integrations/commit/fd2a9d0287599aaafa817987fd0815e4f0ae72b9))
+
 # [1.7.0-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v1.6.0...v1.7.0-dev.1) (2024-03-29)
 
 
