@@ -1,3 +1,15 @@
+# [1.8.0-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v1.7.1-dev.4...v1.8.0-dev.1) (2024-04-06)
+
+
+### Bug Fixes
+
+* **YouTube - GmsCore support:** Prompt to disable battery optimizations, if not done already ([#601](https://github.com/ReVanced/revanced-integrations/issues/601)) ([c5c9de5](https://github.com/ReVanced/revanced-integrations/commit/c5c9de500d8f1268799e55c31c446bfe8336f79a))
+
+
+### Features
+
+* **YouTube - Hide layout components:** Add option to hide horizontal shelves ([#598](https://github.com/ReVanced/revanced-integrations/issues/598)) ([fedace0](https://github.com/ReVanced/revanced-integrations/commit/fedace02fd5c443ef37dcf77253438b041f4c3f9))
+
 ## [1.7.1-dev.4](https://github.com/ReVanced/revanced-integrations/compare/v1.7.1-dev.3...v1.7.1-dev.4) (2024-04-04)
 
 
