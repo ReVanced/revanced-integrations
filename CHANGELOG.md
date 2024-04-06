@@ -1,3 +1,10 @@
+## [1.7.1-dev.4](https://github.com/ReVanced/revanced-integrations/compare/v1.7.1-dev.3...v1.7.1-dev.4) (2024-04-04)
+
+
+### Bug Fixes
+
+* **YouTube - Hide load more button:** Include patch with `Hide layout components`, and hide button only in search feed  ([#600](https://github.com/ReVanced/revanced-integrations/issues/600)) ([c420891](https://github.com/ReVanced/revanced-integrations/commit/c420891e3ef134f30af79cf2f30da3fa2fe5a455))
+
 ## [1.7.1-dev.3](https://github.com/ReVanced/revanced-integrations/compare/v1.7.1-dev.2...v1.7.1-dev.3) (2024-04-04)
 
 
