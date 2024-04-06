@@ -20,6 +20,7 @@ import android.webkit.WebViewClient;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import app.revanced.integrations.youtube.ThemeHelper;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -154,6 +155,16 @@ public class ReVancedAboutPreference extends Preference {
         builder.append("<html>");
         builder.append("<body style=\"text-align: center; padding: 10px; ")
                 .append(lightDarkStyle).append("\">");
+
+        // Add a dark theme if enabled.
+        final boolean isDarkTheme = ThemeHelper.isDarkTheme();
+        if (isDarkTheme) {
+            builder.append("<style>")
+                    .append("body { background-color: #121212; color: #f5f5f5; }")
+                    .append("h1 { color: #f5f5f5; }")
+                    .append("a { color: #2196F3; }")
+                    .append("</style>");
+        }
 
         if (isNetworkConnected) {
             builder.append("<img style=\"width: 100px; height: 100px;\" "
