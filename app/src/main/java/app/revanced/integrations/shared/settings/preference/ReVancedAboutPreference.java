@@ -275,6 +275,7 @@ class WebViewDialog extends Dialog {
             } catch (Exception ex) {
                 Logger.printException(() -> "Open link failure", ex);
             }
+            dismiss();
             return true;
         }
     }
