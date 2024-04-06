@@ -7,12 +7,12 @@ import app.revanced.integrations.youtube.shared.NavigationBar;
 import app.revanced.integrations.youtube.shared.PlayerType;
 
 @SuppressWarnings("unused")
-public final class SuggestionsShelfFilter extends Filter {
+public final class SuggestionsShelvesFilter extends Filter {
 
-    public SuggestionsShelfFilter() {
+    public SuggestionsShelvesFilter() {
         addPathCallbacks(
                 new StringFilterGroup(
-                        Settings.HIDE_SUGGESTIONS_SHELF,
+                        Settings.HIDE_SUGGESTIONS_SHELVES,
                         "horizontal_video_shelf.eml",
                         "horizontal_shelf.eml"
                 )
@@ -22,14 +22,14 @@ public final class SuggestionsShelfFilter extends Filter {
     @Override
     boolean isFiltered(@Nullable String identifier, String path, byte[] protobufBufferArray,
                        StringFilterGroup matchedGroup, FilterContentType contentType, int contentIndex) {
-        if (contentIndex == 0 && shouldHideSuggestionsShelf()) {
+        if (contentIndex == 0 && shouldHideShelves()) {
             return super.isFiltered(path, identifier, protobufBufferArray, matchedGroup, contentType, contentIndex);
         }
 
         return false;
     }
 
-    private static boolean shouldHideSuggestionsShelf() {
+    private static boolean shouldHideShelves() {
         // Only filter if the library tab is not selected.
         // This check is important as the suggestion shelf layout is used for the library tab playlists.
         return !NavigationBar.NavigationButton.libraryOrYouTabIsSelected()
