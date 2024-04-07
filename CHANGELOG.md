@@ -1,3 +1,10 @@
+# [1.8.0-dev.2](https://github.com/ReVanced/revanced-integrations/compare/v1.8.0-dev.1...v1.8.0-dev.2) (2024-04-07)
+
+
+### Bug Fixes
+
+* **YouTube - Hide layout components:** Do not hide playlist shelf in library ([c5d38a7](https://github.com/ReVanced/revanced-integrations/commit/c5d38a7e0791ebb8fe59397fff959cc94e0a7aed))
+
 # [1.8.0-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v1.7.1-dev.4...v1.8.0-dev.1) (2024-04-06)
 
 
