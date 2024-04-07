@@ -8,6 +8,7 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.Preference;
@@ -30,7 +31,6 @@ import java.util.List;
 
 import app.revanced.integrations.shared.Logger;
 import app.revanced.integrations.shared.Utils;
-import app.revanced.integrations.youtube.ThemeHelper;
 import app.revanced.integrations.youtube.requests.Requester;
 import app.revanced.integrations.youtube.requests.Route;
 
@@ -136,25 +136,37 @@ public class ReVancedAboutPreference extends Preference {
         return text.replace("-", "&#8209;"); // #8209 = non breaking hyphen.
     }
 
-    private static String getResourceColorHexString(boolean isDarkTheme) {
-        final int color = Utils.getResourceColor(isDarkTheme ? "yt_black1" : "yt_white1");
+    private static String getResourceColorHexString(int color) {
         return String.format("#%06X", (0xFFFFFF & color));
     }
 
-    private static String createDialogHtml(ReVancedSocialLink[] socialLinks) {
+    /**
+     * Subclasses can override this and provide a themed color and/or light/dark mode support.
+     */
+    public int getForegroundColor() {
+        return Color.WHITE;
+    }
+
+    /**
+     * Subclasses can override this and provide a themed color and/or light/dark mode support.
+     */
+    public int getBackgroundColor() {
+        return Color.BLACK;
+    }
+
+    private String createDialogHtml(ReVancedSocialLink[] socialLinks) {
         final boolean isNetworkConnected = Utils.isNetworkConnected();
 
         StringBuilder builder = new StringBuilder();
         builder.append("<html>");
         builder.append("<body style=\"text-align: center; padding: 10px;\">");
 
+        String backgroundColorHex = getResourceColorHexString(getBackgroundColor());
+        String foregroundColorHex = getResourceColorHexString(getForegroundColor());
         // Apply light/dark mode colors.
-        final boolean isDarkTheme = ThemeHelper.isDarkTheme();
-        String background = getResourceColorHexString(isDarkTheme);
-        String foreground = getResourceColorHexString(!isDarkTheme);
         builder.append("<style>")
-                .append("body { background-color: ").append(background).append("; color: ").append(foreground).append(" }")
-                .append("a { color: ").append(foreground).append("; }")
+                .append("body { background-color: ").append(backgroundColorHex).append("; color: ").append(foregroundColorHex).append(" }")
+                .append("a { color: ").append(foregroundColorHex).append("; }")
                 .append("</style>");
 
         if (isNetworkConnected) {
