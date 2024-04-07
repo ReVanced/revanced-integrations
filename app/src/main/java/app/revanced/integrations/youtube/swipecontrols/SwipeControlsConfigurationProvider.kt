@@ -113,16 +113,16 @@ class SwipeControlsConfigurationProvider(
     /**
      * variable that stores the brightness gesture value
      */
-    var brightnessValue: Float
+    var screenBrightnessValue: Float
         get() = Settings.SWIPE_BRIGHTNESS_VALUE.get()
         set(value) = Settings.SWIPE_BRIGHTNESS_VALUE.save(value)
 
     /**
      * variable that stores the auto-brightness state, which used in restore brightness function
-     * it needed for that the brightness is not saved if auto-brightness is enabled
+     * it needed for that the brightness is not restored if auto-brightness is enabled
      */
-    var isEnableAutoBrightness: Boolean
-        get() = Settings.SWIPE_BRIGHTNESS_AUTO_STATE.get()
-        set(value) = Settings.SWIPE_BRIGHTNESS_AUTO_STATE.save(value)
+    var isEnabledAutoBrightness: Boolean
+        get() = Settings.SWIPE_AUTO_BRIGHTNESS_STATE.get()
+        set(value) = Settings.SWIPE_AUTO_BRIGHTNESS_STATE.save(value)
 //endregion
 }

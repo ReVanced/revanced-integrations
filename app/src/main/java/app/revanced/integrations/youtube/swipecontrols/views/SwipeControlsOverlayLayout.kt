@@ -123,13 +123,13 @@ class SwipeControlsOverlayLayout(
     }
 
     override fun onBrightnessChanged(brightness: Double) {
-        config.isEnableAutoBrightness = false
+        config.isEnabledAutoBrightness = false
         if (config.shouldEnableLowestValueAutoBrightness) {
             if (brightness > 0) {
                 showFeedbackView("${round(brightness).toInt()}%", manualBrightnessIcon)
             } else {
                 showFeedbackView(str("revanced_swipe_enable_lowest_value_auto_brightness_overlay_text"), autoBrightnessIcon)
-                config.isEnableAutoBrightness = true
+                config.isEnabledAutoBrightness = true
             }
         } else {
             if (brightness >= 0) {
