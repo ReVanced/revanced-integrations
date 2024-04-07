@@ -36,100 +36,10 @@ import app.revanced.integrations.youtube.requests.Requester;
 import app.revanced.integrations.youtube.requests.Route;
 
 /**
- * Opens a dialog showing the links from {@link #SOCIAL_LINKS_PROVIDER}.
+ * Opens a dialog showing the links from {@link SocialLinksRoutes}.
  */
 @SuppressWarnings({"unused", "deprecation"})
 public class ReVancedAboutPreference extends Preference {
-
-    private static class ReVancedSocialLink {
-        final boolean preferred;
-        final String name;
-        final String url;
-        final String favIconUrl;
-
-        ReVancedSocialLink(JSONObject json) throws JSONException {
-            this(json.getBoolean("preferred"),
-                    json.getString("name"),
-                    json.getString("url")
-            );
-        }
-
-        ReVancedSocialLink(boolean preferred, String name, String url) {
-            this.name = name;
-            this.url = url;
-            this.preferred = preferred;
-            // Parse the domain name and append /favicon.ico
-            final int httpEndIndex = url.indexOf("//");
-            final int domainStartIndex = httpEndIndex > 0 ? httpEndIndex + 2 : 0;
-            final int pathStartIndex = url.indexOf("/", domainStartIndex);
-            final int domainEndIndex = pathStartIndex > 0 ? pathStartIndex : url.length();
-            favIconUrl = url.substring(0, domainEndIndex) + "/favicon.ico";
-        }
-
-        @NonNull
-        @Override
-        public String toString() {
-            return "ReVancedSocialLink{" +
-                    "preferred=" + preferred +
-                    ", name='" + name + '\'' +
-                    ", url='" + url + '\'' +
-                    ", favIconUrl='" + favIconUrl + '\'' +
-                    '}';
-        }
-    }
-
-    /**
-     * Links to use if fetch links api call fails.
-     */
-    private static final ReVancedSocialLink[] NO_CONNECTION_STATIC_LINKS = {
-            new ReVancedSocialLink(true, "ReVanced.app", "https://revanced.app")
-    };
-
-    @Nullable
-    private static volatile ReVancedSocialLink[] fetchedLinks;
-
-    private static final String SOCIAL_LINKS_PROVIDER = "https://api.revanced.app/v2/socials";
-    private static final Route.CompiledRoute GET_SOCIAL = new Route(GET, "?source=appSettings").compile();
-
-    private static ReVancedSocialLink[] fetchSocialLinks() {
-        try {
-            if (fetchedLinks != null) return fetchedLinks;
-
-            // Check if there is internet connection
-            if (!Utils.isNetworkConnected()) return NO_CONNECTION_STATIC_LINKS;
-
-            HttpURLConnection connection = Requester.getConnectionFromCompiledRoute(SOCIAL_LINKS_PROVIDER, GET_SOCIAL);
-            Logger.printDebug(() -> "Fetching social links from: " + connection.getURL());
-
-            // Do not show the announcement if the request failed.
-            final int responseCode = connection.getResponseCode();
-            if (responseCode != 200) {
-                Logger.printDebug(() -> "Failed to get social links.  Response code: " + responseCode);
-                return NO_CONNECTION_STATIC_LINKS;
-            }
-
-            String jsonString = Requester.parseInputStreamAndClose(connection.getInputStream(), false);
-            JSONArray socials = new JSONObject(jsonString).getJSONArray("socials");
-
-            List<ReVancedSocialLink> links = new ArrayList<>();
-
-            for (int i = 0, length = socials.length(); i < length; i++) {
-                ReVancedSocialLink link = new ReVancedSocialLink(socials.getJSONObject(i));
-                links.add(link);
-            }
-
-            Logger.printDebug(() -> "links: " + links);
-
-            return fetchedLinks = links.toArray(new ReVancedSocialLink[0]);
-
-        } catch (JSONException ex) {
-            Logger.printException(() -> "Could not parse about information", ex);
-        } catch (Exception ex) {
-            Logger.printException(() -> "Failed to get about information", ex);
-        }
-
-        return NO_CONNECTION_STATIC_LINKS;
-    }
 
     private static String useNonBreakingHyphens(String text) {
         // Replace any dashes with non breaking dashes, so the English text 'pre-release'
@@ -196,7 +106,7 @@ public class ReVancedAboutPreference extends Preference {
                 .append("</p>");
 
         // Add a disclaimer if using a dev release.
-        if (patchesVersion.contains("-dev")) {
+        if (patchesVersion.contains("dev")) {
             builder.append("<h3>")
                     // English text 'Pre-release' can break lines.
                     .append(useNonBreakingHyphens(str("revanced_settings_about_links_dev_header")))
@@ -230,7 +140,7 @@ public class ReVancedAboutPreference extends Preference {
     {
         setOnPreferenceClickListener(pref -> {
             // Show a progress spinner if the social links are not fetched yet.
-            if (fetchedLinks == null && Utils.isNetworkConnected()) {
+            if (!SocialLinksRoutes.hasFetchedLinks() && Utils.isNetworkConnected()) {
                 ProgressDialog progress = new ProgressDialog(getContext());
                 progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                 progress.show();
@@ -245,7 +155,7 @@ public class ReVancedAboutPreference extends Preference {
     }
 
     private void fetchLinksAndShowDialog(@Nullable ProgressDialog progress) {
-        ReVancedSocialLink[] socialLinks = fetchSocialLinks();
+        ReVancedSocialLink[] socialLinks = SocialLinksRoutes.fetchSocialLinks();
         String htmlDialog = createDialogHtml(socialLinks);
 
         Utils.runOnMainThreadNowOrLater(() -> {
@@ -316,5 +226,99 @@ class WebViewDialog extends Dialog {
             Utils.runOnMainThreadDelayed(WebViewDialog.this::dismiss, 500);
             return true;
         }
+    }
+}
+
+class ReVancedSocialLink {
+    final boolean preferred;
+    final String name;
+    final String url;
+    final String favIconUrl;
+
+    ReVancedSocialLink(JSONObject json) throws JSONException {
+        this(json.getBoolean("preferred"),
+                json.getString("name"),
+                json.getString("url")
+        );
+    }
+
+    ReVancedSocialLink(boolean preferred, String name, String url) {
+        this.name = name;
+        this.url = url;
+        this.preferred = preferred;
+        // Parse the domain name and append /favicon.ico
+        final int httpEndIndex = url.indexOf("//");
+        final int domainStartIndex = httpEndIndex > 0 ? httpEndIndex + 2 : 0;
+        final int pathStartIndex = url.indexOf("/", domainStartIndex);
+        final int domainEndIndex = pathStartIndex > 0 ? pathStartIndex : url.length();
+        favIconUrl = url.substring(0, domainEndIndex) + "/favicon.ico";
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return "ReVancedSocialLink{" +
+                "preferred=" + preferred +
+                ", name='" + name + '\'' +
+                ", url='" + url + '\'' +
+                ", favIconUrl='" + favIconUrl + '\'' +
+                '}';
+    }
+}
+
+class SocialLinksRoutes {
+    /**
+     * Links to use if fetch links api call fails.
+     */
+    private static final ReVancedSocialLink[] NO_CONNECTION_STATIC_LINKS = {
+            new ReVancedSocialLink(true, "ReVanced.app", "https://revanced.app")
+    };
+
+    private static final String SOCIAL_LINKS_PROVIDER = "https://api.revanced.app/v2/socials";
+    private static final Route.CompiledRoute GET_SOCIAL = new Route(GET, "?source=appSettings").compile();
+
+    @Nullable
+    private static volatile ReVancedSocialLink[] fetchedLinks;
+
+    static boolean hasFetchedLinks() {
+        return fetchedLinks != null;
+    }
+
+    static ReVancedSocialLink[] fetchSocialLinks() {
+        try {
+            if (hasFetchedLinks()) return fetchedLinks;
+
+            // Check if there is internet connection
+            if (!Utils.isNetworkConnected()) return NO_CONNECTION_STATIC_LINKS;
+
+            HttpURLConnection connection = Requester.getConnectionFromCompiledRoute(SOCIAL_LINKS_PROVIDER, GET_SOCIAL);
+            Logger.printDebug(() -> "Fetching social links from: " + connection.getURL());
+
+            // Do not show an exception toast if the server is down
+            final int responseCode = connection.getResponseCode();
+            if (responseCode != 200) {
+                Logger.printDebug(() -> "Failed to get social links.  Response code: " + responseCode);
+                return NO_CONNECTION_STATIC_LINKS;
+            }
+
+            String jsonString = Requester.parseInputStreamAndClose(connection.getInputStream(), false);
+            JSONArray socials = new JSONObject(jsonString).getJSONArray("socials");
+
+            List<ReVancedSocialLink> links = new ArrayList<>();
+            for (int i = 0, length = socials.length(); i < length; i++) {
+                ReVancedSocialLink link = new ReVancedSocialLink(socials.getJSONObject(i));
+                links.add(link);
+            }
+            Logger.printDebug(() -> "links: " + links);
+
+            return fetchedLinks = links.toArray(new ReVancedSocialLink[0]);
+
+        } catch (JSONException ex) {
+            Logger.printException(() -> "Could not parse about information", ex);
+        } catch (Exception ex) {
+            Logger.printException(() -> "Failed to get about information", ex);
+        }
+
+        return NO_CONNECTION_STATIC_LINKS;
     }
 }
