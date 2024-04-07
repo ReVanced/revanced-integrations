@@ -35,6 +35,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import app.revanced.integrations.shared.settings.BooleanSetting;
+import app.revanced.integrations.shared.settings.preference.ReVancedAboutPreference;
 import kotlin.text.Regex;
 
 public class Utils {
@@ -530,8 +531,9 @@ public class Utils {
         for (Preference pref : preferences.values()) {
             int order = index++;
 
-            // If the preference is a PreferenceScreen or is an intent preference, move to the top.
-            if (pref instanceof PreferenceScreen || pref.getIntent() != null) {
+            // Move any screens, intents, and the one off About preference to the top.
+            if (pref instanceof PreferenceScreen || pref instanceof ReVancedAboutPreference
+                    || pref.getIntent() != null) {
                 // Arbitrary high number.
                 order -= 1000;
             }

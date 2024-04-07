@@ -172,10 +172,9 @@ public class ReVancedAboutPreference extends Preference {
         String backgroundColorHex = getResourceColorHexString(isDarkMode ? getDarkColor() : getLightColor());
         String foregroundColorHex = getResourceColorHexString(isDarkMode ? getLightColor() : getDarkColor());
         // Apply light/dark mode colors.
-        builder.append("<style>")
-                .append("body { background-color: ").append(backgroundColorHex).append("; color: ").append(foregroundColorHex).append(" }")
-                .append("a { color: ").append(foregroundColorHex).append("; }")
-                .append("</style>");
+        builder.append(String.format(
+                "<style> body { background-color: %s; color: %s; } a { color: %s; } </style>",
+                backgroundColorHex, foregroundColorHex, foregroundColorHex));
 
         if (isNetworkConnected) {
             builder.append("<img style=\"width: 100px; height: 100px;\" "
