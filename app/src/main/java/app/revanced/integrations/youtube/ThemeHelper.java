@@ -79,24 +79,4 @@ public class ThemeHelper {
         }
         return Utils.getResourceColor(colorString);
     }
-
-    /**
-     * @return The current foreground color, based on the light/dark theme status.
-     *         If the Theme patch was not include, this returns a flat white color.
-     */
-    public static int getCurrentForegroundColor() {
-        return isDarkTheme()
-                ? getLightThemeColor()
-                : getDarkThemeColor();
-    }
-
-    /**
-     * @return The current background color, based on the light/dark theme status.
-     *         If the Theme patch was not include, this returns a flat black color.
-     */
-    public static int getCurrentBackgroundColor() {
-        return isDarkTheme()
-                ? getDarkThemeColor()
-                : getLightThemeColor();
-    }
 }

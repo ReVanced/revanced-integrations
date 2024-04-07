@@ -9,12 +9,12 @@ import app.revanced.integrations.youtube.ThemeHelper;
 @SuppressWarnings("unused")
 public class ReVancedYouTubeAboutPreference extends ReVancedAboutPreference {
 
-    public int getForegroundColor() {
-        return ThemeHelper.getCurrentForegroundColor();
+    public int getLightColor() {
+        return ThemeHelper.getLightThemeColor();
     }
 
-    public int getBackgroundColor() {
-        return ThemeHelper.getCurrentBackgroundColor();
+    public int getDarkColor() {
+        return ThemeHelper.getDarkThemeColor();
     }
 
     public ReVancedYouTubeAboutPreference(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {

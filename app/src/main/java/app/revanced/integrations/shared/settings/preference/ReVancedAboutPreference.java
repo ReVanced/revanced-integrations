@@ -8,6 +8,7 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -140,17 +141,23 @@ public class ReVancedAboutPreference extends Preference {
         return String.format("#%06X", (0xFFFFFF & color));
     }
 
+    protected boolean isDarkModeEnabled() {
+        Configuration config = getContext().getResources().getConfiguration();
+        final int currentNightMode = config.uiMode & Configuration.UI_MODE_NIGHT_MASK;
+        return currentNightMode == Configuration.UI_MODE_NIGHT_YES;
+    }
+
     /**
-     * Subclasses can override this and provide a themed color and/or light/dark mode support.
+     * Subclasses can override this and provide a themed color.
      */
-    public int getForegroundColor() {
+    protected int getLightColor() {
         return Color.WHITE;
     }
 
     /**
-     * Subclasses can override this and provide a themed color and/or light/dark mode support.
+     * Subclasses can override this and provide a themed color.
      */
-    public int getBackgroundColor() {
+    protected int getDarkColor() {
         return Color.BLACK;
     }
 
@@ -161,8 +168,9 @@ public class ReVancedAboutPreference extends Preference {
         builder.append("<html>");
         builder.append("<body style=\"text-align: center; padding: 10px;\">");
 
-        String backgroundColorHex = getResourceColorHexString(getBackgroundColor());
-        String foregroundColorHex = getResourceColorHexString(getForegroundColor());
+        final boolean isDarkMode = isDarkModeEnabled();
+        String backgroundColorHex = getResourceColorHexString(isDarkMode ? getDarkColor() : getLightColor());
+        String foregroundColorHex = getResourceColorHexString(isDarkMode ? getLightColor() : getDarkColor());
         // Apply light/dark mode colors.
         builder.append("<style>")
                 .append("body { background-color: ").append(backgroundColorHex).append("; color: ").append(foregroundColorHex).append(" }")
