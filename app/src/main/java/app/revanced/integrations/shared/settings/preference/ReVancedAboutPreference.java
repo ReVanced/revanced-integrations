@@ -20,7 +20,6 @@ import android.webkit.WebViewClient;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import app.revanced.integrations.youtube.ThemeHelper;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -145,26 +144,18 @@ public class ReVancedAboutPreference extends Preference {
     private static String createDialogHtml(ReVancedSocialLink[] socialLinks) {
         final boolean isNetworkConnected = Utils.isNetworkConnected();
 
-        // Use a dark theme if needed.
+        StringBuilder builder = new StringBuilder();
+        builder.append("<html>");
+        builder.append("<body style=\"text-align: center; padding: 10px;\">");
+
+        // Apply light/dark mode colors.
         final boolean isDarkTheme = ThemeHelper.isDarkTheme();
         String background = getResourceColorHexString(isDarkTheme);
         String foreground = getResourceColorHexString(!isDarkTheme);
-        String lightDarkStyle = "background-color: " + background + "; color: " + foreground + ";";
-
-        StringBuilder builder = new StringBuilder();
-        builder.append("<html>");
-        builder.append("<body style=\"text-align: center; padding: 10px; ")
-                .append(lightDarkStyle).append("\">");
-
-        // Add a dark theme if enabled.
-        final boolean isDarkTheme = ThemeHelper.isDarkTheme();
-        if (isDarkTheme) {
-            builder.append("<style>")
-                    .append("body { background-color: #121212; color: #f5f5f5; }")
-                    .append("h1 { color: #f5f5f5; }")
-                    .append("a { color: #2196F3; }")
-                    .append("</style>");
-        }
+        builder.append("<style>")
+                .append("body { background-color: ").append(background).append("; color: ").append(foreground).append(" }")
+                .append("a { color: ").append(foreground).append("; }")
+                .append("</style>");
 
         if (isNetworkConnected) {
             builder.append("<img style=\"width: 100px; height: 100px;\" "
@@ -181,14 +172,14 @@ public class ReVancedAboutPreference extends Preference {
                 .append("</h1>");
 
         builder.append("<p>")
+                // Replace hyphens with no breaking dashes so the version number does not break lines.
                 .append(useNonBreakingHyphens(str("revanced_settings_about_links_body", patchesVersion)))
                 .append("</p>");
 
         // Add a disclaimer if using a dev release.
         if (patchesVersion.contains("-dev")) {
-            // Replace hyphens with no breaking dashes,
-            // so the version number and the English word "pre-release" do not break lines.
             builder.append("<h3>")
+                    // English text 'Pre-release' can break lines.
                     .append(useNonBreakingHyphens(str("revanced_settings_about_links_dev_header")))
                     .append("</h3>");
 
