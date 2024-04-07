@@ -229,32 +229,30 @@ public class ReVancedAboutPreference extends Preference {
 
     {
         setOnPreferenceClickListener(pref -> {
-            Context context = getContext();
-
             // Show a progress spinner if the social links are not fetched yet.
-            final ProgressDialog progress;
             if (fetchedLinks == null && Utils.isNetworkConnected()) {
-                progress = new ProgressDialog(context);
+                ProgressDialog progress = new ProgressDialog(getContext());
                 progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                 progress.show();
+                Utils.runOnBackgroundThread(() -> fetchLinksAndShowDialog(progress));
             } else {
-                progress = null;
+                // No network call required and can run now.
+                fetchLinksAndShowDialog(null);
             }
 
-            Utils.runOnBackgroundThread(() -> {
-                ReVancedSocialLink[] socialLinks = fetchSocialLinks();
-                String htmlDialog = createDialogHtml(socialLinks);
-
-                Utils.runOnMainThread(() -> {
-                    if (progress != null) {
-                        progress.dismiss();
-                    }
-
-                    new WebViewDialog(context, htmlDialog).show();
-                });
-            });
-
             return false;
+        });
+    }
+
+    private void fetchLinksAndShowDialog(@Nullable ProgressDialog progress) {
+        ReVancedSocialLink[] socialLinks = fetchSocialLinks();
+        String htmlDialog = createDialogHtml(socialLinks);
+
+        Utils.runOnMainThreadNowOrLater(() -> {
+            if (progress != null) {
+                progress.dismiss();
+            }
+            new WebViewDialog(getContext(), htmlDialog).show();
         });
     }
 
@@ -296,7 +294,6 @@ class WebViewDialog extends Dialog {
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT
         ));
-        // JS used to hide any broken images.  No remote JS is ever loaded.
         webView.getSettings().setJavaScriptEnabled(true);
         webView.setWebViewClient(new OpenLinksExternallyWebClient());
         webView.loadDataWithBaseURL(null, htmlContent, "text/html", "utf-8", null);
@@ -313,7 +310,10 @@ class WebViewDialog extends Dialog {
             } catch (Exception ex) {
                 Logger.printException(() -> "Open link failure", ex);
             }
-            dismiss();
+            // Dismiss the about dialog using a delay,
+            // otherwise without a delay the UI looks hectic with the dialog dismissing
+            // to show the settings while simultaneously a web browser is opening.
+            Utils.runOnMainThreadDelayed(WebViewDialog.this::dismiss, 500);
             return true;
         }
     }
