@@ -47,8 +47,8 @@ public class ReVancedAboutPreference extends Preference {
         return text.replace("-", "&#8209;"); // #8209 = non breaking hyphen.
     }
 
-    private static String getResourceColorHexString(int color) {
-        return String.format("#%06X", (0xFFFFFF & color));
+    private static String getColorHexString(int color) {
+        return String.format("#%06X", (0x00FFFFFF & color));
     }
 
     protected boolean isDarkModeEnabled() {
@@ -79,8 +79,8 @@ public class ReVancedAboutPreference extends Preference {
         builder.append("<body style=\"text-align: center; padding: 10px;\">");
 
         final boolean isDarkMode = isDarkModeEnabled();
-        String backgroundColorHex = getResourceColorHexString(isDarkMode ? getDarkColor() : getLightColor());
-        String foregroundColorHex = getResourceColorHexString(isDarkMode ? getLightColor() : getDarkColor());
+        String backgroundColorHex = getColorHexString(isDarkMode ? getDarkColor() : getLightColor());
+        String foregroundColorHex = getColorHexString(isDarkMode ? getLightColor() : getDarkColor());
         // Apply light/dark mode colors.
         builder.append(String.format(
                 "<style> body { background-color: %s; color: %s; } a { color: %s; } </style>",
@@ -101,7 +101,7 @@ public class ReVancedAboutPreference extends Preference {
                 .append("</h1>");
 
         builder.append("<p>")
-                // Replace hyphens with no breaking dashes so the version number does not break lines.
+                // Replace hyphens with non breaking dashes so the version number does not break lines.
                 .append(useNonBreakingHyphens(str("revanced_settings_about_links_body", patchesVersion)))
                 .append("</p>");
 
@@ -128,7 +128,7 @@ public class ReVancedAboutPreference extends Preference {
                 builder.append(String.format("<img src=\"%s\" style=\"vertical-align: middle; width: 24px; height: 24px;\" "
                         + "onerror=\"this.style.display='none';\" />", social.favIconUrl));
             }
-            builder.append(String.format("<a href=\"%s\" style=\"margin-left: 5px;\">%s</a>", social.url, social.name));
+            builder.append(String.format("<a href=\"%s\" style=\"margin-left: 7px;\">%s</a>", social.url, social.name));
             builder.append("</div>");
         }
         builder.append("</div>");
@@ -292,6 +292,8 @@ class SocialLinksRoutes {
             if (!Utils.isNetworkConnected()) return NO_CONNECTION_STATIC_LINKS;
 
             HttpURLConnection connection = Requester.getConnectionFromCompiledRoute(SOCIAL_LINKS_PROVIDER, GET_SOCIAL);
+            connection.setConnectTimeout(5000);
+            connection.setReadTimeout(5000);
             Logger.printDebug(() -> "Fetching social links from: " + connection.getURL());
 
             // Do not show an exception toast if the server is down
