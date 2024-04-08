@@ -34,17 +34,14 @@ public class Requester {
 
     /**
      * Parse the {@link HttpURLConnection}, and closes the underlying InputStream.
-     *
-     * @param stripNewLineCharacters if newline (\n) characters should be stripped from the InputStream
      */
-    private static String parseInputStreamAndClose(InputStream inputStream, boolean stripNewLineCharacters) throws IOException {
+    private static String parseInputStreamAndClose(InputStream inputStream) throws IOException {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
             StringBuilder jsonBuilder = new StringBuilder();
             String line;
             while ((line = reader.readLine()) != null) {
                 jsonBuilder.append(line);
-                if (!stripNewLineCharacters)
-                    jsonBuilder.append("\n");
+                jsonBuilder.append("\n");
             }
             return jsonBuilder.toString();
         }
@@ -56,7 +53,7 @@ public class Requester {
      * in the near future, then instead use {@link #parseStringAndDisconnect(HttpURLConnection)}.
      */
     public static String parseString(HttpURLConnection connection) throws IOException {
-        return parseInputStreamAndClose(connection.getInputStream(), true);
+        return parseInputStreamAndClose(connection.getInputStream());
     }
 
     /**
@@ -81,7 +78,7 @@ public class Requester {
         if (errorStream == null) {
             return "";
         }
-        return parseInputStreamAndClose(errorStream, false);
+        return parseInputStreamAndClose(errorStream);
     }
 
     /**
