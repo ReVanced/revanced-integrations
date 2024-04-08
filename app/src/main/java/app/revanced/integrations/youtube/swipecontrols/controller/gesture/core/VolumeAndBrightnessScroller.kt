@@ -77,8 +77,8 @@ class VolumeAndBrightnessScrollerImpl(
             ),
         ) { _, _, direction ->
             screenController?.run {
-                if (!config.shouldEnableLowestValueAutoBrightness){
-                    if (screenBrightness >= 0 || direction > 0) {
+                if (config.shouldEnableLowestValueAutoBrightness){
+                    if (screenBrightness > 0 || direction > 0) {
                         restore()
                         screenBrightness += direction
                         save()
@@ -86,7 +86,7 @@ class VolumeAndBrightnessScrollerImpl(
                         restoreDefaultBrightness()
                     }
                 } else {
-                    if (screenBrightness > 0 || direction > 0) {
+                    if (screenBrightness >= 0 || direction > 0) {
                         restore()
                         screenBrightness += direction
                         save()
