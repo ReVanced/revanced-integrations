@@ -33,21 +33,23 @@ public class Requester {
     }
 
     /**
-     * Parse the {@link HttpURLConnection}, and closes the underlying InputStream.
+     * Parse the {@link HttpURLConnection} response as a String.
+     * This does not close the url connection. If further requests to this host are unlikely
+     * in the future, then instead use {@link #parseStringAndDisconnect(HttpURLConnection)}.
      */
-    public static String parseJson(HttpURLConnection connection) throws IOException {
+    public static String parseString(HttpURLConnection connection) throws IOException {
         return parseInputStreamAndClose(connection.getInputStream(), true);
     }
 
     /**
-     * Parse the {@link HttpURLConnection}, close the underlying InputStream, and disconnect.
+     * Parse the {@link HttpURLConnection} response as a String and disconnect.
      *
      * <b>Should only be used if other requests to the server are unlikely in the near future</b>
      *
-     * @see #parseJson(HttpURLConnection)
+     * @see #parseString(HttpURLConnection)
      */
-    public static String parseJsonAndDisconnect(HttpURLConnection connection) throws IOException {
-        String result = parseJson(connection);
+    public static String parseStringAndDisconnect(HttpURLConnection connection) throws IOException {
+        String result = parseString(connection);
         connection.disconnect();
         return result;
     }
@@ -57,7 +59,7 @@ public class Requester {
      *
      * @param stripNewLineCharacters if newline (\n) characters should be stripped from the InputStream
      */
-    public static String parseInputStreamAndClose(InputStream inputStream, boolean stripNewLineCharacters) throws IOException {
+    private static String parseInputStreamAndClose(InputStream inputStream, boolean stripNewLineCharacters) throws IOException {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
             StringBuilder jsonBuilder = new StringBuilder();
             String line;
@@ -73,7 +75,7 @@ public class Requester {
     /**
      * Parse the {@link HttpURLConnection}, and closes the underlying InputStream.
      */
-    public static String parseErrorJson(HttpURLConnection connection) throws IOException {
+    public static String parseErrorString(HttpURLConnection connection) throws IOException {
         return parseInputStreamAndClose(connection.getErrorStream(), false);
     }
 
@@ -82,19 +84,21 @@ public class Requester {
      *
      * <b>Should only be used if other requests to the server are unlikely in the near future</b>
      *
-     * @see #parseErrorJson(HttpURLConnection)
+     * @see #parseErrorString(HttpURLConnection)
      */
     public static String parseErrorJsonAndDisconnect(HttpURLConnection connection) throws IOException {
-        String result = parseErrorJson(connection);
+        String result = parseErrorString(connection);
         connection.disconnect();
         return result;
     }
 
     /**
-     * Parse the {@link HttpURLConnection}, and closes the underlying InputStream.
+     * Parse the {@link HttpURLConnection} response into a JSONObject.
+     * This does not close the url connection. If further requests to this host are unlikely
+     * in the future, then instead use {@link #parseJSONObjectAndDisconnect(HttpURLConnection)}.
      */
     public static JSONObject parseJSONObject(HttpURLConnection connection) throws JSONException, IOException {
-        return new JSONObject(parseJson(connection));
+        return new JSONObject(parseString(connection));
     }
 
     /**
@@ -112,9 +116,11 @@ public class Requester {
 
     /**
      * Parse the {@link HttpURLConnection}, and closes the underlying InputStream.
+     * This does not close the url connection. If further requests to this host are unlikely
+     * in the future, then instead use {@link #parseJSONArrayAndDisconnect(HttpURLConnection)}.
      */
     public static JSONArray parseJSONArray(HttpURLConnection connection) throws JSONException, IOException  {
-        return new JSONArray(parseJson(connection));
+        return new JSONArray(parseString(connection));
     }
 
     /**

@@ -27,6 +27,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.HttpURLConnection;
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -315,6 +316,8 @@ class SocialLinksRoutes {
 
             return fetchedLinks = links.toArray(new ReVancedSocialLink[0]);
 
+        } catch (SocketTimeoutException ex) {
+            Logger.printInfo(() -> "Could not fetch social links", ex); // No toast.
         } catch (JSONException ex) {
             Logger.printException(() -> "Could not parse about information", ex);
         } catch (Exception ex) {

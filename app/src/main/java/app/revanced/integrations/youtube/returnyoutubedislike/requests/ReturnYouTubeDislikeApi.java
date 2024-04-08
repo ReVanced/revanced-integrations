@@ -379,7 +379,7 @@ public class ReturnYouTubeDislikeApi {
             }
             String result = null;
             if (responseCode == HTTP_STATUS_CODE_SUCCESS) {
-                result = Requester.parseJson(connection);
+                result = Requester.parseString(connection);
                 if (result.equalsIgnoreCase("true")) {
                     Logger.printDebug(() -> "Registration confirmation successful");
                     return userId;
@@ -503,7 +503,7 @@ public class ReturnYouTubeDislikeApi {
             }
             String result = null;
             if (responseCode == HTTP_STATUS_CODE_SUCCESS) {
-                result = Requester.parseJson(connection);
+                result = Requester.parseString(connection);
                 if (result.equalsIgnoreCase("true")) {
                     Logger.printDebug(() -> "Vote confirm successful for video: " + videoId);
                     return true;
