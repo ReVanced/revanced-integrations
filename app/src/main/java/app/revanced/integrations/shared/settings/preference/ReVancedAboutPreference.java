@@ -304,8 +304,8 @@ class SocialLinksRoutes {
                 return NO_CONNECTION_STATIC_LINKS;
             }
 
-            String jsonString = Requester.parseInputStreamAndClose(connection.getInputStream(), false);
-            JSONArray socials = new JSONObject(jsonString).getJSONArray("socials");
+            JSONObject json = Requester.parseJSONObjectAndDisconnect(connection);
+            JSONArray socials = json.getJSONArray("socials");
 
             List<ReVancedSocialLink> links = new ArrayList<>();
             for (int i = 0, length = socials.length(); i < length; i++) {
