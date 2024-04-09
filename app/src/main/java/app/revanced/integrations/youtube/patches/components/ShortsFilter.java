@@ -1,6 +1,7 @@
 package app.revanced.integrations.youtube.patches.components;
 
 import static app.revanced.integrations.shared.Utils.hideViewUnderCondition;
+import static app.revanced.integrations.youtube.shared.NavigationBar.NavigationButton;
 
 import android.view.View;
 
@@ -224,16 +225,20 @@ public final class ShortsFilter extends Filter {
             // For now, consider the under video results the same as the home feed.
             return Settings.HIDE_SHORTS_HOME.get();
         }
+
         // Must check second, as search can be from any tab.
         if (NavigationBar.isSearchBarActive()) {
             return Settings.HIDE_SHORTS_SEARCH.get();
         }
-        if (NavigationBar.NavigationButton.HOME.isSelected()) {
+
+        NavigationButton navButtonSelected = NavigationButton.getSelectedNavigationButton();
+        if (navButtonSelected == NavigationButton.HOME) {
             return Settings.HIDE_SHORTS_HOME.get();
         }
-        if (NavigationBar.NavigationButton.SUBSCRIPTIONS.isSelected()) {
+        if (navButtonSelected == NavigationButton.SUBSCRIPTIONS) {
             return Settings.HIDE_SHORTS_SUBSCRIPTIONS.get();
         }
+        // User must be in the library tab.  Don't hide the history or any playlists here.
         return false;
     }
 

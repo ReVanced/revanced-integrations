@@ -167,14 +167,17 @@ public final class AlternativeThumbnailsPatch {
         if (PlayerType.getCurrent().isMaximizedOrFullscreen()) {
             return ALT_THUMBNAIL_PLAYER;
         }
+
         // Must check second, as search can be from any tab.
         if (NavigationBar.isSearchBarActive()) {
             return ALT_THUMBNAIL_SEARCH;
         }
-        if (NavigationButton.HOME.isSelected()) {
+
+        NavigationButton navButtonSelected = NavigationButton.getSelectedNavigationButton();
+        if (navButtonSelected == NavigationButton.HOME) {
             return ALT_THUMBNAIL_HOME;
         }
-        if (NavigationButton.SUBSCRIPTIONS.isSelected() || NavigationButton.NOTIFICATIONS.isSelected()) {
+        if (navButtonSelected == NavigationButton.SUBSCRIPTIONS || navButtonSelected == NavigationButton.NOTIFICATIONS) {
             return ALT_THUMBNAIL_SUBSCRIPTIONS;
         }
         // A library tab variant is active.

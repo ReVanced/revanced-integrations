@@ -112,37 +112,25 @@ final class KeywordContentFilter extends Filter {
 
     private volatile ByteTrieSearch bufferSearch;
 
-    private static void logNavigationState(String state) {
-        // Enable locally to debug filtering. Default off to reduce log spam.
-        final boolean LOG_NAVIGATION_STATE = false;
-        // noinspection ConstantValue
-        if (LOG_NAVIGATION_STATE) {
-            Logger.printDebug(() -> "Navigation state: " + state);
-        }
-    }
-
     private static boolean hideKeywordSettingIsActive() {
         // Must check player type first, as search bar can be active behind the player.
         if (PlayerType.getCurrent().isMaximizedOrFullscreen()) {
             // For now, consider the under video results the same as the home feed.
-            logNavigationState("Player active");
             return Settings.HIDE_KEYWORD_CONTENT_HOME.get();
         }
         // Must check second, as search can be from any tab.
         if (NavigationBar.isSearchBarActive()) {
-            logNavigationState("Search");
             return Settings.HIDE_KEYWORD_CONTENT_SEARCH.get();
         }
-        if (NavigationButton.HOME.isSelected()) {
-            logNavigationState("Home tab");
+
+        NavigationButton navButtonSelected = NavigationButton.getSelectedNavigationButton();
+        if (navButtonSelected == NavigationButton.HOME) {
             return Settings.HIDE_KEYWORD_CONTENT_HOME.get();
         }
-        if (NavigationButton.SUBSCRIPTIONS.isSelected()) {
-            logNavigationState("Subscription tab");
+        if (navButtonSelected == NavigationButton.SUBSCRIPTIONS) {
             return Settings.HIDE_SUBSCRIPTIONS_BUTTON.get();
         }
         // User is in the Library or Notifications tab.
-        logNavigationState("Ignored tab");
         return false;
     }
 
