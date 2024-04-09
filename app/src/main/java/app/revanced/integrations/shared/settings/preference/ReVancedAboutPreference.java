@@ -14,7 +14,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.util.AttributeSet;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -89,7 +88,7 @@ public class ReVancedAboutPreference extends Preference {
 
         if (isNetworkConnected) {
             builder.append("<img style=\"width: 100px; height: 100px;\" "
-                    // Hide any images that don't load.
+                    // Hide the image if it does not load.
                     + "onerror=\"this.style.display='none';\" "
                     + "src=\"https://revanced.app/favicon.ico\" />");
         }
@@ -118,18 +117,14 @@ public class ReVancedAboutPreference extends Preference {
                     .append("</p>");
         }
 
-        builder.append("<h3>")
+        builder.append("<h2 style=\"margin-top: 30px;\">")
                 .append(str("revanced_settings_about_links_header"))
-                .append("</h3>");
+                .append("</h2>");
 
-        builder.append("<div style=\"display: inline-block;\">");
+        builder.append("<div>");
         for (ReVancedSocialLink social : socialLinks) {
-            builder.append("<div style=\"margin-bottom: 20px; text-align: left;\">");
-            if (isNetworkConnected) {
-                builder.append(String.format("<img src=\"%s\" style=\"vertical-align: middle; width: 24px; height: 24px;\" "
-                        + "onerror=\"this.style.display='none';\" />", social.favIconUrl));
-            }
-            builder.append(String.format("<a href=\"%s\" style=\"margin-left: 7px;\">%s</a>", social.url, social.name));
+            builder.append("<div style=\"margin-bottom: 20px;\">");
+            builder.append(String.format("<a href=\"%s\">%s</a>", social.url, social.name));
             builder.append("</div>");
         }
         builder.append("</div>");
@@ -193,7 +188,7 @@ class WebViewDialog extends Dialog {
         this.htmlContent = htmlContent;
     }
 
-    // JS required to hide any broken images.  No remote javascript is ever loaded.
+    // JS required to hide any broken images. No remote javascript is ever loaded.
     @SuppressLint("SetJavaScriptEnabled")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -201,10 +196,6 @@ class WebViewDialog extends Dialog {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
 
         WebView webView = new WebView(getContext());
-        webView.setLayoutParams(new ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT
-        ));
         webView.getSettings().setJavaScriptEnabled(true);
         webView.setWebViewClient(new OpenLinksExternallyWebClient());
         webView.loadDataWithBaseURL(null, htmlContent, "text/html", "utf-8", null);
@@ -234,7 +225,6 @@ class ReVancedSocialLink {
     final boolean preferred;
     final String name;
     final String url;
-    final String favIconUrl;
 
     ReVancedSocialLink(JSONObject json) throws JSONException {
         this(json.getBoolean("preferred"),
@@ -244,15 +234,9 @@ class ReVancedSocialLink {
     }
 
     ReVancedSocialLink(boolean preferred, String name, String url) {
+        this.preferred = preferred;
         this.name = name;
         this.url = url;
-        this.preferred = preferred;
-        // Parse the domain name and append /favicon.ico
-        final int httpEndIndex = url.indexOf("//");
-        final int domainStartIndex = httpEndIndex > 0 ? httpEndIndex + 2 : 0;
-        final int pathStartIndex = url.indexOf("/", domainStartIndex);
-        final int domainEndIndex = pathStartIndex > 0 ? pathStartIndex : url.length();
-        favIconUrl = url.substring(0, domainEndIndex) + "/favicon.ico";
     }
 
     @NonNull
@@ -262,7 +246,6 @@ class ReVancedSocialLink {
                 "preferred=" + preferred +
                 ", name='" + name + '\'' +
                 ", url='" + url + '\'' +
-                ", favIconUrl='" + favIconUrl + '\'' +
                 '}';
     }
 }
