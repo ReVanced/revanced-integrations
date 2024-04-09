@@ -231,12 +231,22 @@ public final class ShortsFilter extends Filter {
             return Settings.HIDE_SHORTS_SEARCH.get();
         }
 
-        NavigationButton navButtonSelected = NavigationButton.getSelectedNavigationButton();
-        if (navButtonSelected == NavigationButton.HOME) {
-            return Settings.HIDE_SHORTS_HOME.get();
+        // Avoid checking navigation button status if all other settings are off.
+        final boolean hideHome = Settings.HIDE_SHORTS_HOME.get();
+        final boolean hideSubscriptions = Settings.HIDE_SHORTS_SUBSCRIPTIONS.get();
+        if (!hideHome && !hideSubscriptions) {
+            return false;
         }
-        if (navButtonSelected == NavigationButton.SUBSCRIPTIONS) {
-            return Settings.HIDE_SHORTS_SUBSCRIPTIONS.get();
+
+        NavigationButton selectedNavButton = NavigationButton.getSelectedNavigationButton();
+        if (selectedNavButton == null) {
+            return hideHome; // Unknown tab, treat the same as home.
+        }
+        if (selectedNavButton == NavigationButton.HOME) {
+            return hideHome;
+        }
+        if (selectedNavButton == NavigationButton.SUBSCRIPTIONS) {
+            return hideSubscriptions;
         }
         // User must be in the library tab.  Don't hide the history or any playlists here.
         return false;

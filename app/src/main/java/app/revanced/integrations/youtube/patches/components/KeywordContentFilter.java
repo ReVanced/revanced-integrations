@@ -123,12 +123,22 @@ final class KeywordContentFilter extends Filter {
             return Settings.HIDE_KEYWORD_CONTENT_SEARCH.get();
         }
 
-        NavigationButton navButtonSelected = NavigationButton.getSelectedNavigationButton();
-        if (navButtonSelected == NavigationButton.HOME) {
-            return Settings.HIDE_KEYWORD_CONTENT_HOME.get();
+        // Avoid checking navigation button status if all other settings are off.
+        final boolean hideHome = Settings.HIDE_KEYWORD_CONTENT_HOME.get();
+        final boolean hideSubscriptions = Settings.HIDE_SUBSCRIPTIONS_BUTTON.get();
+        if (!hideHome && !hideSubscriptions) {
+            return false;
         }
-        if (navButtonSelected == NavigationButton.SUBSCRIPTIONS) {
-            return Settings.HIDE_SUBSCRIPTIONS_BUTTON.get();
+
+        NavigationButton selectedNavButton = NavigationButton.getSelectedNavigationButton();
+        if (selectedNavButton == null) {
+            return hideHome; // Unknown tab, treat the same as home.
+        }
+        if (selectedNavButton == NavigationButton.HOME) {
+            return hideHome;
+        }
+        if (selectedNavButton == NavigationButton.SUBSCRIPTIONS) {
+            return hideSubscriptions;
         }
         // User is in the Library or Notifications tab.
         return false;

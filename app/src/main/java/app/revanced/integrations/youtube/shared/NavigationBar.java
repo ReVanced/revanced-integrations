@@ -19,54 +19,11 @@ import app.revanced.integrations.youtube.settings.Settings;
 @SuppressWarnings("unused")
 public final class NavigationBar {
 
+    //
+    // Search bar
+    //
+
     private static volatile WeakReference<View> searchBarResultsRef = new WeakReference<>(null);
-
-    /**
-     * When using the back button and the navigation button changes, the button is updated
-     * a few milliseconds after litho starts creating the view.  To fix this, any thread
-     * calling for the current navigation button waits until this latch is released.
-     *
-     * The latch is also initial set, because on app startup litho can start before the navigation bar is initialized.
-     */
-    @Nullable
-    private static volatile CountDownLatch navButtonLatch;
-
-    static {
-        createNavButtonLatch();
-    }
-
-    private static void createNavButtonLatch() {
-        navButtonLatch = new CountDownLatch(1);
-    }
-
-    private static void releaseNavButtonLatch() {
-        CountDownLatch latch = navButtonLatch;
-        if (latch != null) {
-            latch.countDown();
-        }
-        navButtonLatch = null;
-    }
-
-    private static boolean waitForLatchIfNeed() {
-        CountDownLatch latch = navButtonLatch;
-        if (latch == null) {
-            return true;
-        }
-
-        try {
-            Logger.printDebug(() -> "Waiting for navbar button latch");
-            if (latch.await(1000, TimeUnit.MILLISECONDS)) {
-                Logger.printDebug(() -> "Waiting complete");
-                return true;
-            }
-            Logger.printDebug(() -> "Get navigation button wait timed out");
-            navButtonLatch = null;
-        } catch (InterruptedException ex) {
-            Logger.printException(() -> "Wait interrupted", ex); // Will never happen.
-        }
-
-        return false;
-    }
 
     /**
      * Injection point.
@@ -83,6 +40,86 @@ public final class NavigationBar {
     public static boolean isSearchBarActive() {
         View searchbarResults = searchBarResultsRef.get();
         return searchbarResults != null && searchbarResults.getParent() != null;
+    }
+
+    //
+    // Navigation bar buttons
+    //
+
+    /**
+     * How long to wait for the set nav button latch to be released.  Maximum wait time must
+     * be as small as possible while still allowing enough time for the nav bar to update.
+     *
+     * YT calls it's back button handlers out of order, and litho starts
+     * filtering the previous screen before the navigation bar is updated.
+     *
+     * Fixing this situation and not needlessly wait requires somehow detecting if a back button
+     * key-press will cause a tab change. Typically after pressing the back button, the time
+     * between the first litho event and the when the nav button is updated is about 10-20ms.
+     *
+     * Using 50-100ms here should be enough time and not noticeable, since YT typically takes
+     * 100-200ms (or more) just to update the view anyways.
+     *
+     * This issue can also be avoided on a patch by patch basis, by avoiding calls to
+     * {@link NavigationButton#getSelectedNavigationButton()} unless absolutely necessary.
+     */
+    private static final long LATCH_AWAIT_TIMEOUT_MILLISECONDS = 50;
+
+    /**
+     * Used as a workaround to fix the issue of YT calling back button handlers out of order.
+     * Used to hold calls to {@link NavigationButton#getSelectedNavigationButton()}
+     * until the current navigation button can be determined.
+     */
+    @Nullable
+    private static volatile CountDownLatch navButtonLatch;
+
+    static {
+        // On app startup litho can start before the navigation bar is initialized.
+        // Force it to wait until the nav bar is updated.
+        createNavButtonLatch();
+    }
+
+    private static void createNavButtonLatch() {
+        navButtonLatch = new CountDownLatch(1);
+    }
+
+    private static void releaseNavButtonLatch() {
+        CountDownLatch latch = navButtonLatch;
+        if (latch != null) {
+            navButtonLatch = null;
+            latch.countDown();
+        }
+    }
+
+    private static void waitForNavButtonLatchIfNeed() {
+        CountDownLatch latch = navButtonLatch;
+        if (latch == null) {
+            return;
+        }
+
+        if (Utils.isCurrentlyOnMainThread()) {
+            // The latch is released from the main thread, and waiting from the main thread will always timeout.
+            // This situation has only been observed when navigating out of a submenu and not changing tabs.
+            // and for those cases the nav bar did not change anyways so it's safe to return.
+            Logger.printDebug(() -> "Cannot block main thread waiting for nav button. Using last known navbar button status.");
+            return;
+        }
+
+        try {
+            Logger.printDebug(() -> "Waiting for navbar button latch");
+            if (latch.await(LATCH_AWAIT_TIMEOUT_MILLISECONDS, TimeUnit.MILLISECONDS)) {
+                Logger.printDebug(() -> "Latch waiting complete");
+                return;
+            }
+
+            // Timeout occurred, and a normal event when pressing the physical back button
+            // does not change navigation tabs.
+            releaseNavButtonLatch(); // Prevent other threads from waiting for no reason.
+            Logger.printDebug(() -> "Latch wait timed out");
+
+        } catch (InterruptedException ex) {
+            Logger.printException(() -> "Wait interrupted", ex); // Will never happen.
+        }
     }
 
     /**
@@ -108,9 +145,9 @@ public final class NavigationBar {
             String lastEnumName = lastYTNavigationEnumName;
 
             for (NavigationButton button : NavigationButton.values()) {
-                if (button.ytEnumName.equals(lastEnumName)) {;
+                if (button.ytEnumName.equals(lastEnumName)) {
                     Logger.printDebug(() -> "navigationTabLoaded: " + lastEnumName);
-                    button.imageViewRef = new WeakReference<>(navigationButtonGroup);
+                    button.buttonLayoutRef = new WeakReference<>(navigationButtonGroup);
                     navigationTabCreatedCallback(button, navigationButtonGroup);
                     return;
                 }
@@ -149,17 +186,15 @@ public final class NavigationBar {
     public static void navigationTabSelected(View navButtonImageView, boolean isSelected) {
         try {
             for (NavigationButton button : NavigationButton.values()) {
-                View buttonView = button.imageViewRef.get();
+                View buttonView = button.buttonLayoutRef.get();
+
                 if (buttonView == navButtonImageView) {
                     if (isSelected) {
-                        if (NavigationButton.selectedNavigationButton != button) {
-                            Logger.printDebug(() -> "Changed to navigation button: " + button);
-                            NavigationButton.selectedNavigationButton = button;
-                        }
-
+                        NavigationButton.selectedNavigationButton = button;
                         // Wake up any threads waiting to return the currently selected nav button.
                         releaseNavButtonLatch();
 
+                        Logger.printDebug(() -> "Changed to navigation button: " + button);
                     } else if (NavigationButton.selectedNavigationButton == button) {
                         NavigationButton.selectedNavigationButton = null;
                         Logger.printDebug(() -> "Navigated away from button: " + button);
@@ -241,23 +276,24 @@ public final class NavigationBar {
          *
          * All code calling this method should handle a null return value.
          *
+         * <b>Due to issues with how YT processes hardware back button events,
+         * this patch uses workarounds that can cause this method to take up to 50ms.</b>
+         *
          * @return The active navigation tab.
          *         If the user is in the upload video UI, this returns tab currently selected
          *         on screen (whatever tab the user was on before tapping the upload nav button).
          */
         @Nullable
         public static NavigationButton getSelectedNavigationButton() {
-            if (waitForLatchIfNeed()) {
-                return selectedNavigationButton;
-            }
-            return null; // Latch wait timed out, and it's unclear which tab is selected.
+            waitForNavButtonLatchIfNeed();
+            return selectedNavigationButton;
         }
 
         /**
          * YouTube enum name for this tab.
          */
         private final String ytEnumName;
-        private volatile WeakReference<View> imageViewRef = new WeakReference<>(null);
+        private volatile WeakReference<View> buttonLayoutRef = new WeakReference<>(null);
 
         NavigationButton(String ytEnumName) {
             this.ytEnumName = ytEnumName;
