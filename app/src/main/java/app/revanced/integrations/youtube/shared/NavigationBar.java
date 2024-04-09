@@ -8,8 +8,8 @@ import android.view.View;
 import androidx.annotation.Nullable;
 
 import java.lang.ref.WeakReference;
-import java.util.IdentityHashMap;
 import java.util.Map;
+import java.util.WeakHashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -81,7 +81,7 @@ public final class NavigationBar {
      * Map of nav button layout views to Enum type.
      * No synchronization is needed, and this is always accessed from the main thread.
      */
-    private static final Map<View, NavigationButton> viewToButtonMap = new IdentityHashMap<>();
+    private static final Map<View, NavigationButton> viewToButtonMap = new WeakHashMap<>();
 
     static {
         // On app startup litho can start before the navigation bar is initialized.
@@ -101,7 +101,7 @@ public final class NavigationBar {
         }
     }
 
-    private static void waitForNavButtonLatchIfNeed() {
+    private static void waitForNavButtonLatchIfNeeded() {
         CountDownLatch latch = navButtonLatch;
         if (latch == null) {
             return;
@@ -118,6 +118,7 @@ public final class NavigationBar {
         try {
             Logger.printDebug(() -> "Latch wait started");
             if (latch.await(LATCH_AWAIT_TIMEOUT_MILLISECONDS, TimeUnit.MILLISECONDS)) {
+                // Back button changed the navigation tab.
                 Logger.printDebug(() -> "Latch wait complete");
                 return;
             }
@@ -296,7 +297,7 @@ public final class NavigationBar {
          */
         @Nullable
         public static NavigationButton getSelectedNavigationButton() {
-            waitForNavButtonLatchIfNeed();
+            waitForNavButtonLatchIfNeeded();
             return selectedNavigationButton;
         }
 

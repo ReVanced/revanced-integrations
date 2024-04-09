@@ -369,7 +369,7 @@ public final class LayoutComponentsFilter extends Filter {
 
     private static boolean hideShelves() {
         // If the player is opened while library is selected,
-        // then still filter any recommendations below the player.
+        // then filter any recommendations below the player.
         if (PlayerType.getCurrent().isMaximizedOrFullscreen()
                 // Or if the search is active while library is selected, then also filter.
                 || NavigationBar.isSearchBarActive()) {
