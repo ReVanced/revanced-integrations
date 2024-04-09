@@ -4,8 +4,6 @@ import static app.revanced.integrations.youtube.shared.NavigationBar.NavigationB
 
 import android.app.Activity;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
 
 import androidx.annotation.Nullable;
 
@@ -31,7 +29,44 @@ public final class NavigationBar {
      * The latch is also initial set, because on app startup litho can start before the navigation bar is initialized.
      */
     @Nullable
-    private static volatile CountDownLatch navButtonInitializationLatch = new CountDownLatch(1);
+    private static volatile CountDownLatch navButtonLatch;
+
+    static {
+        createNavButtonLatch();
+    }
+
+    private static void createNavButtonLatch() {
+        navButtonLatch = new CountDownLatch(1);
+    }
+
+    private static void releaseNavButtonLatch() {
+        CountDownLatch latch = navButtonLatch;
+        if (latch != null) {
+            latch.countDown();
+        }
+        navButtonLatch = null;
+    }
+
+    private static boolean waitForLatchIfNeed() {
+        CountDownLatch latch = navButtonLatch;
+        if (latch == null) {
+            return true;
+        }
+
+        try {
+            Logger.printDebug(() -> "Waiting for navbar button latch");
+            if (latch.await(1000, TimeUnit.MILLISECONDS)) {
+                Logger.printDebug(() -> "Waiting complete");
+                return true;
+            }
+            Logger.printDebug(() -> "Get navigation button wait timed out");
+            navButtonLatch = null;
+        } catch (InterruptedException ex) {
+            Logger.printException(() -> "Wait interrupted", ex); // Will never happen.
+        }
+
+        return false;
+    }
 
     /**
      * Injection point.
@@ -123,11 +158,8 @@ public final class NavigationBar {
                         }
 
                         // Wake up any threads waiting to return the currently selected nav button.
-                        CountDownLatch latch = navButtonInitializationLatch;
-                        if (latch != null) {
-                            latch.countDown();
-                            navButtonInitializationLatch = null;
-                        }
+                        releaseNavButtonLatch();
+
                     } else if (NavigationButton.selectedNavigationButton == button) {
                         NavigationButton.selectedNavigationButton = null;
                         Logger.printDebug(() -> "Navigated away from button: " + button);
@@ -151,7 +183,7 @@ public final class NavigationBar {
      */
     public static void onBackPressed(Activity activity) {
         Logger.printDebug(() -> "Back button pressed");
-        navButtonInitializationLatch = new CountDownLatch(1);
+        createNavButtonLatch();
     }
 
     /** @noinspection EmptyMethod*/
@@ -215,32 +247,10 @@ public final class NavigationBar {
          */
         @Nullable
         public static NavigationButton getSelectedNavigationButton() {
-            CountDownLatch latch = navButtonInitializationLatch;
-            if (latch != null) {
-                Logger.printDebug(() -> "Waiting for navbar button initialization to complete");
-                try {
-                    // Timeout should be 2x the average observable time between a back button event
-                    // and when the navigation buttons are updated.
-                    if (!latch.await(250, TimeUnit.MILLISECONDS)) {
-                        // If the user navigates into a menu (such as the watch history) and then uses the
-                        // back button to exit, This will wait for a navigation button change that will not happen.
-                        // Treat this timeout as as normal event.
-                        //
-                        // Changing this to never wait for these situations would require
-                        // knowing if a back button event will change the navigation tab or not.
-                        // This may be difficult to do, and for now the simple answer is to
-                        // stall litho rendering for 250 ms.
-                        Logger.printDebug(() -> "get navigation button wait timed out");
-                        navButtonInitializationLatch = null;
-                        return null;
-                    }
-                } catch (InterruptedException ex) {
-                    Logger.printException(() -> "Wait interrupted", ex); // Will never happen.
-                }
-                Logger.printDebug(() -> "Waiting complete");
+            if (waitForLatchIfNeed()) {
+                return selectedNavigationButton;
             }
-
-            return selectedNavigationButton;
+            return null; // Latch wait timed out, and it's unclear which tab is selected.
         }
 
         /**
