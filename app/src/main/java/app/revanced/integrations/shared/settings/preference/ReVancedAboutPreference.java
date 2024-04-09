@@ -127,7 +127,7 @@ public class ReVancedAboutPreference extends Preference {
             builder.append("<div style=\"margin-bottom: 20px; text-align: left;\">");
             if (isNetworkConnected) {
                 builder.append(String.format("<img src=\"%s\" style=\"vertical-align: middle; width: 24px; height: 24px;\" "
-                        + "onerror=\"this.style.display='none';\" />", social.favIconUrl));
+                        + "onerror=\"this.style.display='none';\" />", (isDarkMode ? social.iconDark : social.iconLight)));
             }
             builder.append(String.format("<a href=\"%s\" style=\"margin-left: 7px;\">%s</a>", social.url, social.name));
             builder.append("</div>");
@@ -234,25 +234,24 @@ class ReVancedSocialLink {
     final boolean preferred;
     final String name;
     final String url;
-    final String favIconUrl;
+    final String iconLight;
+    final String iconDark;
 
     ReVancedSocialLink(JSONObject json) throws JSONException {
         this(json.getBoolean("preferred"),
                 json.getString("name"),
-                json.getString("url")
+                json.getString("url"),
+                json.getString("icon_light"),
+                json.getString("icon_dark")
         );
     }
 
-    ReVancedSocialLink(boolean preferred, String name, String url) {
+    ReVancedSocialLink(boolean preferred, String name, String url, String iconLight, String iconDark) {
         this.name = name;
         this.url = url;
         this.preferred = preferred;
-        // Parse the domain name and append /favicon.ico
-        final int httpEndIndex = url.indexOf("//");
-        final int domainStartIndex = httpEndIndex > 0 ? httpEndIndex + 2 : 0;
-        final int pathStartIndex = url.indexOf("/", domainStartIndex);
-        final int domainEndIndex = pathStartIndex > 0 ? pathStartIndex : url.length();
-        favIconUrl = url.substring(0, domainEndIndex) + "/favicon.ico";
+        this.iconLight = iconLight;
+        this.iconDark = iconDark;
     }
 
     @NonNull
@@ -262,7 +261,8 @@ class ReVancedSocialLink {
                 "preferred=" + preferred +
                 ", name='" + name + '\'' +
                 ", url='" + url + '\'' +
-                ", favIconUrl='" + favIconUrl + '\'' +
+                ", iconLight='" + iconLight + '\'' +
+                ", iconDark='" + iconDark + '\'' +
                 '}';
     }
 }
@@ -272,7 +272,8 @@ class SocialLinksRoutes {
      * Links to use if fetch links api call fails.
      */
     private static final ReVancedSocialLink[] NO_CONNECTION_STATIC_LINKS = {
-            new ReVancedSocialLink(true, "ReVanced.app", "https://revanced.app")
+            new ReVancedSocialLink(true, "ReVanced.app", "https://revanced.app",
+                    "https://revanced.app/favicon.ico", "https://revanced.app/favicon.ico")
     };
 
     private static final String SOCIAL_LINKS_PROVIDER = "https://api.revanced.app/v2/socials";
@@ -305,6 +306,61 @@ class SocialLinksRoutes {
             }
 
             JSONObject json = Requester.parseJSONObjectAndDisconnect(connection);
+
+            json = new JSONObject("{\n" +
+                    "  \"socials\": [\n" +
+                    "    {\n" +
+                    "      \"name\": \"Website\",\n" +
+                    "      \"url\": \"https://revanced.app\",\n" +
+                    "      \"icon_light\": \"https://revanced.app/favicon.ico\",\n" +
+                    "      \"icon_dark\": \"https://revanced.app/favicon.ico\",\n" +
+                    "      \"preferred\": true\n" +
+                    "    },\n" +
+                    "    {\n" +
+                    "      \"name\": \"Discord\",\n" +
+                    "      \"url\": \"https://discord.gg/revanced\",\n" +
+                    "      \"icon_light\": \"https://assets-global.website-files.com/6257adef93867e50d84d30e2/6266bc493fb42d4e27bb8393_847541504914fd33810e70a0ea73177e.ico\",\n" +
+                    "      \"icon_dark\": \"https://assets-global.website-files.com/6257adef93867e50d84d30e2/6266bc493fb42d4e27bb8393_847541504914fd33810e70a0ea73177e.ico\",\n" +
+                    "      \"preferred\": true\n" +
+                    "    },\n" +
+                    "    {\n" +
+                    "      \"name\": \"Reddit\",\n" +
+                    "      \"url\": \"https://www.reddit.com/r/revancedapp\",\n" +
+                    "      \"icon_light\": \"https://www.redditstatic.com/shreddit/assets/favicon/192x192.png\",\n" +
+                    "      \"icon_dark\": \"https://www.redditstatic.com/shreddit/assets/favicon/192x192.png\",\n" +
+                    "      \"preferred\": false\n" +
+                    "    },\n" +
+                    "    {\n" +
+                    "      \"name\": \"Telegram\",\n" +
+                    "      \"url\": \"https://t.me/app_revanced\",\n" +
+                    "      \"icon_light\": \"https://web.telegram.org/k/assets/img/android-chrome-192x192.png\",\n" +
+                    "      \"icon_dark\": \"https://web.telegram.org/k/assets/img/android-chrome-192x192.png\",\n" +
+                    "      \"preferred\": false\n" +
+                    "    },\n" +
+                    "    {\n" +
+                    "      \"name\": \"Twitter\",\n" +
+                    "      \"url\": \"https://twitter.com/revancedapp\",\n" +
+                    "      \"icon_light\": \"https://abs.twimg.com/responsive-web/client-web/icon-default-large.9ab12c3a.png\",\n" +
+                    "      \"icon_dark\": \"https://abs.twimg.com/responsive-web/client-web/icon-default-large.9ab12c3a.png\",\n" +
+                    "      \"preferred\": false\n" +
+                    "    },\n" +
+                    "    {\n" +
+                    "      \"name\": \"GitHub\",\n" +
+                    "      \"url\": \"https://github.com/revanced\",\n" +
+                    "      \"icon_light\": \"https://github.githubassets.com/favicons/favicon.svg\",\n" +
+                    "      \"icon_dark\": \"https://github.githubassets.com/favicons/favicon-dark.svg\",\n" +
+                    "      \"preferred\": false\n" +
+                    "    },\n" +
+                    "    {\n" +
+                    "      \"name\": \"YouTube\",\n" +
+                    "      \"url\": \"https://youtube.com/@ReVanced\",\n" +
+                    "      \"icon_light\": \"https://www.gstatic.com/youtube/img/branding/favicon/favicon_192x192.png\",\n" +
+                    "      \"icon_dark\": \"https://www.gstatic.com/youtube/img/branding/favicon/favicon_192x192.png\",\n" +
+                    "      \"preferred\": false\n" +
+                    "    }\n" +
+                    "  ]\n" +
+                    "}");
+
             JSONArray socials = json.getJSONArray("socials");
 
             List<ReVancedSocialLink> links = new ArrayList<>();
