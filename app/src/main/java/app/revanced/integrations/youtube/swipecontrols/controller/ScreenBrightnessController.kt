@@ -41,15 +41,19 @@ class ScreenBrightnessController(
      * save the current screen brightness into settings, to be brought back using [restore]
      */
     fun save() {
-        config.savedScreenBrightnessValue = rawScreenBrightness
+        if (config.savedScreenBrightnessValue == -1f) {
+            config.savedScreenBrightnessValue = rawScreenBrightness
+        }
     }
 
     /**
      * restore the screen brightness from settings saved using [save]
      */
     fun restore() {
-        if (!config.isEnabledAutoBrightness) // do not restore brightness when auto-brightness is enabled
+        if (config.savedScreenBrightnessValue != -1f) {
             rawScreenBrightness = config.savedScreenBrightnessValue
+            config.savedScreenBrightnessValue = -1f // Reset the saved brightness value
+        }
     }
 
     /**
