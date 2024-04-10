@@ -1,3 +1,10 @@
+# [1.8.0-dev.4](https://github.com/ReVanced/revanced-integrations/compare/v1.8.0-dev.3...v1.8.0-dev.4) (2024-04-10)
+
+
+### Bug Fixes
+
+* **YouTube - Hide Shorts components:** Correctly hide Shorts if navigation tab is changed using device back button ([#611](https://github.com/ReVanced/revanced-integrations/issues/611)) ([ffc3437](https://github.com/ReVanced/revanced-integrations/commit/ffc3437843c24af255d2a0dda9930d2843cac4b6))
+
 # [1.8.0-dev.3](https://github.com/ReVanced/revanced-integrations/compare/v1.8.0-dev.2...v1.8.0-dev.3) (2024-04-09)
 
 
