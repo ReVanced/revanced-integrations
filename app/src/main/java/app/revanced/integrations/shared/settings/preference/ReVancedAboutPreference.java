@@ -258,8 +258,8 @@ class SocialLinksRoutes {
             new ReVancedSocialLink(true, "ReVanced.app", "https://revanced.app")
     };
 
-    private static final String SOCIAL_LINKS_PROVIDER = "https://api.revanced.app/v2/socials";
-    private static final Route.CompiledRoute GET_SOCIAL = new Route(GET, "?source=appSettings").compile();
+    private static final String SOCIAL_LINKS_PROVIDER = "https://api.revanced.app/v2";
+    private static final Route.CompiledRoute GET_SOCIAL = new Route(GET, "/socials").compile();
 
     @Nullable
     private static volatile ReVancedSocialLink[] fetchedLinks;
@@ -272,7 +272,7 @@ class SocialLinksRoutes {
         try {
             if (hasFetchedLinks()) return fetchedLinks;
 
-            // Check if there is internet connection
+            // Check if there is no internet connection.
             if (!Utils.isNetworkConnected()) return NO_CONNECTION_STATIC_LINKS;
 
             HttpURLConnection connection = Requester.getConnectionFromCompiledRoute(SOCIAL_LINKS_PROVIDER, GET_SOCIAL);
