@@ -1,3 +1,10 @@
+# [1.8.0-dev.3](https://github.com/ReVanced/revanced-integrations/compare/v1.8.0-dev.2...v1.8.0-dev.3) (2024-04-09)
+
+
+### Bug Fixes
+
+* **YouTube - Settings:** Do not show a toast if migrating old unknown settings ([f2e15a2](https://github.com/ReVanced/revanced-integrations/commit/f2e15a2e1ff59ae7780cfbd366e5165f4e2b191d))
+
 # [1.8.0-dev.2](https://github.com/ReVanced/revanced-integrations/compare/v1.8.0-dev.1...v1.8.0-dev.2) (2024-04-07)
 
 
