@@ -1,3 +1,10 @@
+# [1.8.0-dev.5](https://github.com/ReVanced/revanced-integrations/compare/v1.8.0-dev.4...v1.8.0-dev.5) (2024-04-10)
+
+
+### Bug Fixes
+
+* **YouTube - Return YouTube Dislike:** Do not clip compact text when not using English ([eeaeb49](https://github.com/ReVanced/revanced-integrations/commit/eeaeb49f2a562d2690dae184153c303a5b1c4368))
+
 # [1.8.0-dev.4](https://github.com/ReVanced/revanced-integrations/compare/v1.8.0-dev.3...v1.8.0-dev.4) (2024-04-10)
 
 
