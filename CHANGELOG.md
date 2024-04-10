@@ -1,3 +1,43 @@
+# [1.8.0-dev.5](https://github.com/ReVanced/revanced-integrations/compare/v1.8.0-dev.4...v1.8.0-dev.5) (2024-04-10)
+
+
+### Bug Fixes
+
+* **YouTube - Return YouTube Dislike:** Do not clip compact text when not using English ([eeaeb49](https://github.com/ReVanced/revanced-integrations/commit/eeaeb49f2a562d2690dae184153c303a5b1c4368))
+
+# [1.8.0-dev.4](https://github.com/ReVanced/revanced-integrations/compare/v1.8.0-dev.3...v1.8.0-dev.4) (2024-04-10)
+
+
+### Bug Fixes
+
+* **YouTube - Hide Shorts components:** Correctly hide Shorts if navigation tab is changed using device back button ([#611](https://github.com/ReVanced/revanced-integrations/issues/611)) ([ffc3437](https://github.com/ReVanced/revanced-integrations/commit/ffc3437843c24af255d2a0dda9930d2843cac4b6))
+
+# [1.8.0-dev.3](https://github.com/ReVanced/revanced-integrations/compare/v1.8.0-dev.2...v1.8.0-dev.3) (2024-04-09)
+
+
+### Bug Fixes
+
+* **YouTube - Settings:** Do not show a toast if migrating old unknown settings ([f2e15a2](https://github.com/ReVanced/revanced-integrations/commit/f2e15a2e1ff59ae7780cfbd366e5165f4e2b191d))
+
+# [1.8.0-dev.2](https://github.com/ReVanced/revanced-integrations/compare/v1.8.0-dev.1...v1.8.0-dev.2) (2024-04-07)
+
+
+### Bug Fixes
+
+* **YouTube - Hide layout components:** Do not hide playlist shelf in library ([c5d38a7](https://github.com/ReVanced/revanced-integrations/commit/c5d38a7e0791ebb8fe59397fff959cc94e0a7aed))
+
+# [1.8.0-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v1.7.1-dev.4...v1.8.0-dev.1) (2024-04-06)
+
+
+### Bug Fixes
+
+* **YouTube - GmsCore support:** Prompt to disable battery optimizations, if not done already ([#601](https://github.com/ReVanced/revanced-integrations/issues/601)) ([c5c9de5](https://github.com/ReVanced/revanced-integrations/commit/c5c9de500d8f1268799e55c31c446bfe8336f79a))
+
+
+### Features
+
+* **YouTube - Hide layout components:** Add option to hide horizontal shelves ([#598](https://github.com/ReVanced/revanced-integrations/issues/598)) ([fedace0](https://github.com/ReVanced/revanced-integrations/commit/fedace02fd5c443ef37dcf77253438b041f4c3f9))
+
 ## [1.7.1-dev.4](https://github.com/ReVanced/revanced-integrations/compare/v1.7.1-dev.3...v1.7.1-dev.4) (2024-04-04)
 
 
