@@ -1,3 +1,10 @@
+# [1.8.0-dev.7](https://github.com/ReVanced/revanced-integrations/compare/v1.8.0-dev.6...v1.8.0-dev.7) (2024-04-12)
+
+
+### Features
+
+* **YouTube - Hide Shorts components:** Hide `Shop`, `Location` and `Save sound to playlist` buttons ([#614](https://github.com/ReVanced/revanced-integrations/issues/614)) ([acfa3c9](https://github.com/ReVanced/revanced-integrations/commit/acfa3c98868b6d84572ee682ad806a0282ac6dad))
+
 # [1.8.0-dev.6](https://github.com/ReVanced/revanced-integrations/compare/v1.8.0-dev.5...v1.8.0-dev.6) (2024-04-12)
 
 
