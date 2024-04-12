@@ -33,8 +33,8 @@ public final class ShortsFilter extends Filter {
     private final StringFilterGroup joinButton;
     private final StringFilterGroup shelfHeader;
 
-    private final StringFilterGroup suggestedActionPath;
-    private final ByteArrayFilterGroupList suggestedActions =  new ByteArrayFilterGroupList();
+    private final StringFilterGroup suggestedAction;
+    private final ByteArrayFilterGroupList suggestedActionsGroupList =  new ByteArrayFilterGroupList();
 
     private final StringFilterGroup actionBar;
     private final ByteArrayFilterGroupList videoActionButtonGroupList = new ByteArrayFilterGroupList();
@@ -59,14 +59,7 @@ public final class ShortsFilter extends Filter {
                 "shelf_header.eml"
         );
 
-        // Home / subscription feed components.
-
-        var thanksButton = new StringFilterGroup( // Edit: Does this item show up anymore?
-                Settings.HIDE_SHORTS_THANKS_BUTTON,
-                "suggested_action"
-        );
-
-        addIdentifierCallbacks(shorts, shelfHeader, thanksButton);
+        addIdentifierCallbacks(shorts, shelfHeader);
 
         //
         // Path components.
@@ -130,14 +123,14 @@ public final class ShortsFilter extends Filter {
                 "shorts_action_bar"
         );
 
-        suggestedActionPath = new StringFilterGroup(
+        suggestedAction = new StringFilterGroup(
                 null,
                 "suggested_action.eml"
         );
 
         addPathCallbacks(
                 shortsCompactFeedVideoPath,
-                joinButton, subscribeButton, subscribeButtonPaused, suggestedActionPath,
+                joinButton, subscribeButton, subscribeButtonPaused, suggestedAction,
                 channelBar, fullVideoLinkLabel, videoTitle, reelSoundMetadata,
                 soundButton, infoPanel, actionBar
         );
@@ -181,10 +174,14 @@ public final class ShortsFilter extends Filter {
         //
         // Suggested actions.
         //
-        suggestedActions.addAll(
+        suggestedActionsGroupList.addAll(
                 new ByteArrayFilterGroup(
                         Settings.HIDE_SHORTS_SHOP_BUTTON,
                         "yt_outline_bag_"
+                ),
+                new ByteArrayFilterGroup(
+                        Settings.HIDE_SHORTS_TAGGED_PRODUCTS,
+                        "PAproduct_listZ"
                 ),
                 new ByteArrayFilterGroup(
                         Settings.HIDE_SHORTS_LOCATION_BUTTON,
@@ -221,30 +218,36 @@ public final class ShortsFilter extends Filter {
 
             if (matchedGroup == subscribeButton || matchedGroup == joinButton) {
                 // Filter only when reelChannelBar is visible to avoid false positives.
-                if (path.startsWith(REEL_CHANNEL_BAR_PATH)) return super.isFiltered(
-                        identifier, path, protobufBufferArray, matchedGroup, contentType, contentIndex
-                );
+                if (path.startsWith(REEL_CHANNEL_BAR_PATH)) {
+                    return super.isFiltered(
+                            identifier, path, protobufBufferArray, matchedGroup, contentType, contentIndex
+                    );
+                }
                 return false;
             }
 
             // Video action buttons (like, dislike, comment, share, remix) have the same path.
             if (matchedGroup == actionBar) {
-                if (videoActionButtonGroupList.check(protobufBufferArray).isFiltered()) return super.isFiltered(
-                        identifier, path, protobufBufferArray, matchedGroup, contentType, contentIndex
-                );
+                if (videoActionButtonGroupList.check(protobufBufferArray).isFiltered()) {
+                    return super.isFiltered(
+                            identifier, path, protobufBufferArray, matchedGroup, contentType, contentIndex
+                    );
+                }
                 return false;
             }
 
-            if (matchedGroup == suggestedActionPath) {
-                if (contentIndex == 0 && suggestedActions.check(protobufBufferArray).isFiltered()) return super.isFiltered(
-                        identifier, path, protobufBufferArray, matchedGroup, contentType, contentIndex
-                );
+            if (matchedGroup == suggestedAction) {
+                if (contentIndex == 0 && suggestedActionsGroupList.check(protobufBufferArray).isFiltered()) {
+                    return super.isFiltered(
+                            identifier, path, protobufBufferArray, matchedGroup, contentType, contentIndex
+                    );
+                }
                 // else, return false;
             }
 
             return false;
         } else {
-            // Feed/search path components.
+            // Feed/search identifier components.
             if (matchedGroup == shelfHeader) {
                 // Because the header is used in watch history and possibly other places, check for the index,
                 // which is 0 when the shelf header is used for Shorts.
