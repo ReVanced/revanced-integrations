@@ -139,13 +139,17 @@ public final class ShortsFilter extends Filter {
         // Action buttons
         //
         videoActionButtonGroupList.addAll(
+                // This also appears as the path item 'shorts_like_button.eml'
                 new ByteArrayFilterGroup(
                         Settings.HIDE_SHORTS_LIKE_BUTTON,
-                        "shorts_like_button"
+                        "reel_like_button",
+                        "reel_like_toggled_button"
                 ),
+                // This also appears as the path item 'shorts_dislike_button.eml'
                 new ByteArrayFilterGroup(
                         Settings.HIDE_SHORTS_DISLIKE_BUTTON,
-                        "shorts_dislike_button"
+                        "reel_dislike_button",
+                        "reel_dislike_toggled_button"
                 ),
                 new ByteArrayFilterGroup(
                         Settings.HIDE_SHORTS_COMMENTS_BUTTON,
