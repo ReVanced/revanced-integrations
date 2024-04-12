@@ -197,6 +197,10 @@ public final class NavigationBar {
      */
     public static void navigationTabSelected(View navButtonImageView, boolean isSelected) {
         try {
+            if (!isSelected) {
+                return;
+            }
+
             NavigationButton button = viewToButtonMap.get(navButtonImageView);
 
             if (button == null) { // An unknown tab was selected.
@@ -209,18 +213,11 @@ public final class NavigationBar {
                 return;
             }
 
-            if (isSelected) {
-                NavigationButton.selectedNavigationButton = button;
-                Logger.printDebug(() -> "Changed to navigation button: " + button);
+            NavigationButton.selectedNavigationButton = button;
+            Logger.printDebug(() -> "Changed to navigation button: " + button);
 
-                // Release any threads waiting for the selected nav button.
-                releaseNavButtonLatch();
-            } else if (NavigationButton.selectedNavigationButton == button) {
-                Logger.printDebug(() -> "Navigated away from button: " + button);
-                // Do not clear the selected navigation button, otherwise it's possible
-                // a background litho thread can check between the clearing of the selected button
-                // and setting the new button.  Instead it should use the last selected nav button.
-            }
+            // Release any threads waiting for the selected nav button.
+            releaseNavButtonLatch();
         } catch (Exception ex) {
             Logger.printException(() -> "navigationTabSelected failure", ex);
         }
