@@ -138,37 +138,27 @@ public final class ShortsFilter extends Filter {
         //
         // Action buttons
         //
-        var shortsLikeButton = new ByteArrayFilterGroup(
-                Settings.HIDE_SHORTS_LIKE_BUTTON,
-                "shorts_like_button"
-        );
-
-        var shortsDislikeButton = new ByteArrayFilterGroup(
-                Settings.HIDE_SHORTS_DISLIKE_BUTTON,
-                "shorts_dislike_button"
-        );
-
-        var shortsCommentButton = new ByteArrayFilterGroup(
-                Settings.HIDE_SHORTS_COMMENTS_BUTTON,
-                "reel_comment_button"
-        );
-
-        var shortsShareButton = new ByteArrayFilterGroup(
-                Settings.HIDE_SHORTS_SHARE_BUTTON,
-                "reel_share_button"
-        );
-
-        var shortsRemixButton = new ByteArrayFilterGroup(
-                Settings.HIDE_SHORTS_REMIX_BUTTON,
-                "reel_remix_button"
-        );
-
         videoActionButtonGroupList.addAll(
-                shortsLikeButton,
-                shortsDislikeButton,
-                shortsCommentButton,
-                shortsShareButton,
-                shortsRemixButton
+                new ByteArrayFilterGroup(
+                        Settings.HIDE_SHORTS_LIKE_BUTTON,
+                        "shorts_like_button"
+                ),
+                new ByteArrayFilterGroup(
+                        Settings.HIDE_SHORTS_DISLIKE_BUTTON,
+                        "shorts_dislike_button"
+                ),
+                new ByteArrayFilterGroup(
+                        Settings.HIDE_SHORTS_COMMENTS_BUTTON,
+                        "reel_comment_button"
+                ),
+                new ByteArrayFilterGroup(
+                        Settings.HIDE_SHORTS_SHARE_BUTTON,
+                        "reel_share_button"
+                ),
+                new ByteArrayFilterGroup(
+                        Settings.HIDE_SHORTS_REMIX_BUTTON,
+                        "reel_remix_button"
+                )
         );
 
         //
