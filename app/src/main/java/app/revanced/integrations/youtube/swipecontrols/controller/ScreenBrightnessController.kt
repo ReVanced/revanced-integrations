@@ -47,13 +47,8 @@ class ScreenBrightnessController(
      * restore the screen brightness from settings saved using [save]
      */
     fun restore() {
-        if (config.savedScreenBrightnessValue != -1f) {
-            rawScreenBrightness = config.savedScreenBrightnessValue
-            config.savedScreenBrightnessValue = -1f
-        } else {
-            // here need to override -1f, because in some cases the brightness is not restored after force closing app
-            config.savedScreenBrightnessValue = -1f
-        }
+        rawScreenBrightness = config.savedScreenBrightnessValue
+        config.savedScreenBrightnessValue = -1f
     }
 
     /**
