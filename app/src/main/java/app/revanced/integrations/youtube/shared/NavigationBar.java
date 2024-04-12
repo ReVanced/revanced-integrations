@@ -216,8 +216,10 @@ public final class NavigationBar {
                 // Release any threads waiting for the selected nav button.
                 releaseNavButtonLatch();
             } else if (NavigationButton.selectedNavigationButton == button) {
-                NavigationButton.selectedNavigationButton = null;
                 Logger.printDebug(() -> "Navigated away from button: " + button);
+                // Do not clear the selected navigation button, otherwise it's possible
+                // a background litho thread can check between the clearing of the selected button
+                // and setting the new button.  Instead it should use the last selected nav button.
             }
         } catch (Exception ex) {
             Logger.printException(() -> "navigationTabSelected failure", ex);
