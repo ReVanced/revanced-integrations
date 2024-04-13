@@ -22,14 +22,7 @@ public final class ShortsFilter extends Filter {
     private final StringFilterGroup shortsCompactFeedVideoPath;
     private final ByteArrayFilterGroup shortsCompactFeedVideoBuffer;
 
-    private final StringFilterGroup channelBar;
-    private final StringFilterGroup fullVideoLinkLabel;
-    private final StringFilterGroup videoTitle;
-    private final StringFilterGroup reelSoundMetadata;
     private final StringFilterGroup subscribeButton;
-    private final StringFilterGroup subscribeButtonPaused;
-    private final StringFilterGroup soundButton;
-    private final StringFilterGroup infoPanel;
     private final StringFilterGroup joinButton;
     private final StringFilterGroup shelfHeader;
 
@@ -44,7 +37,7 @@ public final class ShortsFilter extends Filter {
         // Identifier components.
         //
 
-        var shorts = new StringFilterGroup(
+        var shortsIdentifiers = new StringFilterGroup(
                 null, // Setting is based on navigation state.
                 "shorts_shelf",
                 "inline_shorts",
@@ -52,6 +45,7 @@ public final class ShortsFilter extends Filter {
                 "shorts_video_cell",
                 "shorts_pivot_item"
         );
+
         // Feed Shorts shelf header.
         // Use a different filter group for this pattern, as it requires an additional check after matching.
         shelfHeader = new StringFilterGroup(
@@ -59,7 +53,7 @@ public final class ShortsFilter extends Filter {
                 "shelf_header.eml"
         );
 
-        addIdentifierCallbacks(shorts, shelfHeader);
+        addIdentifierCallbacks(shortsIdentifiers, shelfHeader);
 
         //
         // Path components.
@@ -73,6 +67,41 @@ public final class ShortsFilter extends Filter {
         shortsCompactFeedVideoBuffer = new ByteArrayFilterGroup(null, "/frame0.jpg");
 
         // Shorts player components.
+        StringFilterGroup subscribeButtonPaused = new StringFilterGroup(
+                Settings.HIDE_SHORTS_SUBSCRIBE_BUTTON_PAUSED,
+                "shorts_paused_state"
+        );
+
+        StringFilterGroup channelBar = new StringFilterGroup(
+                Settings.HIDE_SHORTS_CHANNEL_BAR,
+                REEL_CHANNEL_BAR_PATH
+        );
+
+        StringFilterGroup fullVideoLinkLabel = new StringFilterGroup(
+                Settings.HIDE_SHORTS_FULL_VIDEO_LINK_LABEL,
+                "reel_multi_format_link"
+        );
+
+        StringFilterGroup videoTitle = new StringFilterGroup(
+                Settings.HIDE_SHORTS_VIDEO_TITLE,
+                "shorts_video_title_item"
+        );
+
+        StringFilterGroup reelSoundMetadata = new StringFilterGroup(
+                Settings.HIDE_SHORTS_SOUND_METADATA_LABEL,
+                "reel_sound_metadata"
+        );
+
+        StringFilterGroup soundButton = new StringFilterGroup(
+                Settings.HIDE_SHORTS_SOUND_BUTTON,
+                "reel_pivot_button"
+        );
+
+        StringFilterGroup infoPanel = new StringFilterGroup(
+                Settings.HIDE_SHORTS_INFO_PANEL,
+                "shorts_info_panel_overview"
+        );
+
         joinButton = new StringFilterGroup(
                 Settings.HIDE_SHORTS_JOIN_BUTTON,
                 "sponsor_button"
@@ -81,41 +110,6 @@ public final class ShortsFilter extends Filter {
         subscribeButton = new StringFilterGroup(
                 Settings.HIDE_SHORTS_SUBSCRIBE_BUTTON,
                 "subscribe_button"
-        );
-
-        subscribeButtonPaused = new StringFilterGroup(
-                Settings.HIDE_SHORTS_SUBSCRIBE_BUTTON_PAUSED,
-                "shorts_paused_state"
-        );
-
-        channelBar = new StringFilterGroup(
-                Settings.HIDE_SHORTS_CHANNEL_BAR,
-                REEL_CHANNEL_BAR_PATH
-        );
-
-        fullVideoLinkLabel = new StringFilterGroup(
-                Settings.HIDE_SHORTS_FULL_VIDEO_LINK_LABEL,
-                "reel_multi_format_link"
-        );
-
-        videoTitle = new StringFilterGroup(
-                Settings.HIDE_SHORTS_VIDEO_TITLE,
-                "shorts_video_title_item"
-        );
-
-        reelSoundMetadata = new StringFilterGroup(
-                Settings.HIDE_SHORTS_SOUND_METADATA_LABEL,
-                "reel_sound_metadata"
-        );
-
-        soundButton = new StringFilterGroup(
-                Settings.HIDE_SHORTS_SOUND_BUTTON,
-                "reel_pivot_button"
-        );
-
-        infoPanel = new StringFilterGroup(
-                Settings.HIDE_SHORTS_INFO_PANEL,
-                "shorts_info_panel_overview"
         );
 
         actionBar = new StringFilterGroup(
@@ -129,10 +123,9 @@ public final class ShortsFilter extends Filter {
         );
 
         addPathCallbacks(
-                shortsCompactFeedVideoPath,
-                joinButton, subscribeButton, subscribeButtonPaused, suggestedAction,
-                channelBar, fullVideoLinkLabel, videoTitle, reelSoundMetadata,
-                soundButton, infoPanel, actionBar
+                shortsCompactFeedVideoPath, suggestedAction, actionBar, joinButton, subscribeButton,
+                subscribeButtonPaused, channelBar, fullVideoLinkLabel, videoTitle, reelSoundMetadata,
+                soundButton, infoPanel
         );
 
         //
@@ -198,30 +191,20 @@ public final class ShortsFilter extends Filter {
     boolean isFiltered(@Nullable String identifier, String path, byte[] protobufBufferArray,
                        StringFilterGroup matchedGroup, FilterContentType contentType, int contentIndex) {
         if (contentType == FilterContentType.PATH) {
-            // Always filter if matched.
-            if (matchedGroup == soundButton ||
-                    matchedGroup == infoPanel ||
-                    matchedGroup == channelBar ||
-                    matchedGroup == fullVideoLinkLabel ||
-                    matchedGroup == videoTitle ||
-                    matchedGroup == reelSoundMetadata ||
-                    matchedGroup == subscribeButtonPaused
-            ) return super.isFiltered(identifier, path, protobufBufferArray, matchedGroup, contentType, contentIndex);
-
-            if (matchedGroup == shortsCompactFeedVideoPath) {
-                if (shouldHideShortsFeedItems() && contentIndex == 0
-                        && shortsCompactFeedVideoBuffer.check(protobufBufferArray).isFiltered()) {
-                    return super.isFiltered(identifier, path, protobufBufferArray, matchedGroup, contentType, contentIndex);
-                }
-                return false;
-            }
-
             if (matchedGroup == subscribeButton || matchedGroup == joinButton) {
                 // Filter only when reelChannelBar is visible to avoid false positives.
                 if (path.startsWith(REEL_CHANNEL_BAR_PATH)) {
                     return super.isFiltered(
                             identifier, path, protobufBufferArray, matchedGroup, contentType, contentIndex
                     );
+                }
+                return false;
+            }
+
+            if (matchedGroup == shortsCompactFeedVideoPath) {
+                if (shouldHideShortsFeedItems() && contentIndex == 0
+                        && shortsCompactFeedVideoBuffer.check(protobufBufferArray).isFiltered()) {
+                    return super.isFiltered(identifier, path, protobufBufferArray, matchedGroup, contentType, contentIndex);
                 }
                 return false;
             }
@@ -242,10 +225,9 @@ public final class ShortsFilter extends Filter {
                             identifier, path, protobufBufferArray, matchedGroup, contentType, contentIndex
                     );
                 }
-                // else, return false;
+                return false;
             }
 
-            return false;
         } else {
             // Feed/search identifier components.
             if (matchedGroup == shelfHeader) {
