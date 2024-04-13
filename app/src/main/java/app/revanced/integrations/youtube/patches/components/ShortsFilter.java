@@ -175,6 +175,8 @@ public final class ShortsFilter extends Filter {
                 ),
                 new ByteArrayFilterGroup(
                         Settings.HIDE_SHORTS_TAGGED_PRODUCTS,
+                        // Product buttons show pictures of the products, and does not have any unique icons to identify.
+                        // Instead use a unique identifier found in the buffer.
                         "PAproduct_listZ"
                 ),
                 new ByteArrayFilterGroup(
@@ -184,6 +186,10 @@ public final class ShortsFilter extends Filter {
                 new ByteArrayFilterGroup(
                         Settings.HIDE_SHORTS_SAVE_SOUND_BUTTON,
                         "yt_outline_list_add_"
+                ),
+                new ByteArrayFilterGroup(
+                        Settings.HIDE_SHORTS_SEARCH_SUGGESTIONS,
+                        "yt_outline_search_"
                 )
         );
     }
