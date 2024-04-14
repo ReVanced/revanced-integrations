@@ -173,7 +173,7 @@ public final class ShortsFilter extends Filter {
                         "PAproduct_listZ"
                 ),
                 new ByteArrayFilterGroup(
-                        Settings.HIDE_SHORTS_LOCATION_BUTTON,
+                        Settings.HIDE_SHORTS_LOCATION_LABEL,
                         "yt_outline_location_point_"
                 ),
                 new ByteArrayFilterGroup(
