@@ -117,6 +117,7 @@ public class Settings extends BaseSettings {
     public static final BooleanSetting HIDE_NOTIFY_ME_BUTTON = new BooleanSetting("revanced_hide_notify_me_button", TRUE);
     public static final BooleanSetting HIDE_PLAYER_BUTTONS = new BooleanSetting("revanced_hide_player_buttons", FALSE);
     public static final BooleanSetting HIDE_PREVIEW_COMMENT = new BooleanSetting("revanced_hide_preview_comment", FALSE, true);
+    public static final BooleanSetting HIDE_PLAYABLES = new BooleanSetting("revanced_hide_playables", TRUE);
     public static final BooleanSetting HIDE_QUICK_ACTIONS = new BooleanSetting("revanced_hide_quick_actions", FALSE);
     public static final BooleanSetting HIDE_RELATED_VIDEOS = new BooleanSetting("revanced_hide_related_videos", FALSE);
     public static final BooleanSetting HIDE_SEARCH_RESULT_SHELF_HEADER = new BooleanSetting("revanced_hide_search_result_shelf_header", FALSE);
@@ -158,11 +159,12 @@ public class Settings extends BaseSettings {
     public static final BooleanSetting HIDE_SHORTS_SEARCH = new BooleanSetting("revanced_hide_shorts_search", FALSE);
     public static final BooleanSetting HIDE_SHORTS_JOIN_BUTTON = new BooleanSetting("revanced_hide_shorts_join_button", TRUE);
     public static final BooleanSetting HIDE_SHORTS_SUBSCRIBE_BUTTON = new BooleanSetting("revanced_hide_shorts_subscribe_button", TRUE);
-    public static final BooleanSetting HIDE_SHORTS_SUBSCRIBE_BUTTON_PAUSED = new BooleanSetting("revanced_hide_shorts_subscribe_button_paused", FALSE);
-    public static final BooleanSetting HIDE_SHORTS_THANKS_BUTTON = new BooleanSetting("revanced_hide_shorts_thanks_button", TRUE);
+    public static final BooleanSetting HIDE_SHORTS_PAUSED_OVERLAY_BUTTONS = new BooleanSetting("revanced_hide_shorts_paused_overlay_buttons", FALSE);
     public static final BooleanSetting HIDE_SHORTS_SHOP_BUTTON = new BooleanSetting("revanced_hide_shorts_shop_button", TRUE);
-    public static final BooleanSetting HIDE_SHORTS_LOCATION_BUTTON = new BooleanSetting("revanced_hide_shorts_location_button", FALSE);
+    public static final BooleanSetting HIDE_SHORTS_TAGGED_PRODUCTS = new BooleanSetting("revanced_hide_shorts_tagged_products", TRUE);
+    public static final BooleanSetting HIDE_SHORTS_LOCATION_LABEL = new BooleanSetting("revanced_hide_shorts_location_label", FALSE);
     public static final BooleanSetting HIDE_SHORTS_SAVE_SOUND_BUTTON = new BooleanSetting("revanced_hide_shorts_save_sound_button", FALSE);
+    public static final BooleanSetting HIDE_SHORTS_SEARCH_SUGGESTIONS = new BooleanSetting("revanced_hide_shorts_search_suggestions", FALSE);
     public static final BooleanSetting HIDE_SHORTS_LIKE_BUTTON = new BooleanSetting("revanced_hide_shorts_like_button", FALSE);
     public static final BooleanSetting HIDE_SHORTS_DISLIKE_BUTTON = new BooleanSetting("revanced_hide_shorts_dislike_button", FALSE);
     public static final BooleanSetting HIDE_SHORTS_COMMENTS_BUTTON = new BooleanSetting("revanced_hide_shorts_comments_button", FALSE);
