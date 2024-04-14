@@ -1,3 +1,10 @@
+# [1.8.0-dev.8](https://github.com/ReVanced/revanced-integrations/compare/v1.8.0-dev.7...v1.8.0-dev.8) (2024-04-14)
+
+
+### Features
+
+* **YouTube - Hide layout components:** Hide playables ([d6cd550](https://github.com/ReVanced/revanced-integrations/commit/d6cd550880596de5cd2eb4a0d1325a73326d4af9))
+
 # [1.8.0-dev.7](https://github.com/ReVanced/revanced-integrations/compare/v1.8.0-dev.6...v1.8.0-dev.7) (2024-04-12)
 
 
