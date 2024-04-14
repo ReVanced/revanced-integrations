@@ -1,3 +1,10 @@
+# [1.8.0-dev.10](https://github.com/ReVanced/revanced-integrations/compare/v1.8.0-dev.9...v1.8.0-dev.10) (2024-04-14)
+
+
+### Features
+
+* **YouTube - Hide Shorts components:** Hide tagged products, hide search suggestions ([#615](https://github.com/ReVanced/revanced-integrations/issues/615)) ([0586fb7](https://github.com/ReVanced/revanced-integrations/commit/0586fb70e347c25742e03102441cfb37315b5937))
+
 # [1.8.0-dev.9](https://github.com/ReVanced/revanced-integrations/compare/v1.8.0-dev.8...v1.8.0-dev.9) (2024-04-14)
 
 
