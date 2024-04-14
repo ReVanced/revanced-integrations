@@ -67,8 +67,8 @@ public final class ShortsFilter extends Filter {
         shortsCompactFeedVideoBuffer = new ByteArrayFilterGroup(null, "/frame0.jpg");
 
         // Shorts player components.
-        StringFilterGroup subscribeButtonPaused = new StringFilterGroup(
-                Settings.HIDE_SHORTS_SUBSCRIBE_BUTTON_PAUSED,
+        StringFilterGroup pausedOverlayButtons = new StringFilterGroup(
+                Settings.HIDE_SHORTS_PAUSED_OVERLAY_BUTTONS,
                 "shorts_paused_state"
         );
 
@@ -124,7 +124,7 @@ public final class ShortsFilter extends Filter {
 
         addPathCallbacks(
                 shortsCompactFeedVideoPath, suggestedAction, actionBar, joinButton, subscribeButton,
-                subscribeButtonPaused, channelBar, fullVideoLinkLabel, videoTitle, reelSoundMetadata,
+                pausedOverlayButtons, channelBar, fullVideoLinkLabel, videoTitle, reelSoundMetadata,
                 soundButton, infoPanel
         );
 
