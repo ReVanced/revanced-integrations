@@ -1,3 +1,10 @@
+# [1.8.0-dev.9](https://github.com/ReVanced/revanced-integrations/compare/v1.8.0-dev.8...v1.8.0-dev.9) (2024-04-14)
+
+
+### Bug Fixes
+
+* Use correct hide playables setting key ([a2b1543](https://github.com/ReVanced/revanced-integrations/commit/a2b15433cffec082394a50d14f7eef625a6351c1))
+
 # [1.8.0-dev.8](https://github.com/ReVanced/revanced-integrations/compare/v1.8.0-dev.7...v1.8.0-dev.8) (2024-04-14)
 
 
