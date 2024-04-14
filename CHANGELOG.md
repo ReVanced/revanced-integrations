@@ -1,3 +1,10 @@
+# [1.8.0-dev.11](https://github.com/ReVanced/revanced-integrations/compare/v1.8.0-dev.10...v1.8.0-dev.11) (2024-04-14)
+
+
+### Bug Fixes
+
+* **YouTube - Return YouTube Dislike:** Do not show error toast if API success response contains new lines ([#612](https://github.com/ReVanced/revanced-integrations/issues/612)) ([9108205](https://github.com/ReVanced/revanced-integrations/commit/9108205445c533550db454731d4f9460a3241a03))
+
 # [1.8.0-dev.10](https://github.com/ReVanced/revanced-integrations/compare/v1.8.0-dev.9...v1.8.0-dev.10) (2024-04-14)
 
 
