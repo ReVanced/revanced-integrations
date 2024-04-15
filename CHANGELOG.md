@@ -1,3 +1,10 @@
+# [1.8.0-dev.12](https://github.com/ReVanced/revanced-integrations/compare/v1.8.0-dev.11...v1.8.0-dev.12) (2024-04-15)
+
+
+### Bug Fixes
+
+* **YouTube - Hide ads:** rename `Hide paid content` to `Hide paid promotion label` ([#616](https://github.com/ReVanced/revanced-integrations/issues/616)) ([13dc172](https://github.com/ReVanced/revanced-integrations/commit/13dc17288d13d024a3fbe318ee0fb23a0d46af85))
+
 # [1.8.0-dev.11](https://github.com/ReVanced/revanced-integrations/compare/v1.8.0-dev.10...v1.8.0-dev.11) (2024-04-14)
 
 
