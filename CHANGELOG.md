@@ -1,3 +1,45 @@
+# [1.8.0-dev.13](https://github.com/ReVanced/revanced-integrations/compare/v1.8.0-dev.12...v1.8.0-dev.13) (2024-04-16)
+
+
+### Bug Fixes
+
+* **YouTube - Hide Shorts components:** Hide suggested actions in incognito mode ([bba421d](https://github.com/ReVanced/revanced-integrations/commit/bba421ddb63597bf918ecccacfd4a33493016b9f))
+
+# [1.8.0-dev.12](https://github.com/ReVanced/revanced-integrations/compare/v1.8.0-dev.11...v1.8.0-dev.12) (2024-04-15)
+
+
+### Bug Fixes
+
+* **YouTube - Hide ads:** rename `Hide paid content` to `Hide paid promotion label` ([#616](https://github.com/ReVanced/revanced-integrations/issues/616)) ([13dc172](https://github.com/ReVanced/revanced-integrations/commit/13dc17288d13d024a3fbe318ee0fb23a0d46af85))
+
+# [1.8.0-dev.11](https://github.com/ReVanced/revanced-integrations/compare/v1.8.0-dev.10...v1.8.0-dev.11) (2024-04-14)
+
+
+### Bug Fixes
+
+* **YouTube - Return YouTube Dislike:** Do not show error toast if API success response contains new lines ([#612](https://github.com/ReVanced/revanced-integrations/issues/612)) ([9108205](https://github.com/ReVanced/revanced-integrations/commit/9108205445c533550db454731d4f9460a3241a03))
+
+# [1.8.0-dev.10](https://github.com/ReVanced/revanced-integrations/compare/v1.8.0-dev.9...v1.8.0-dev.10) (2024-04-14)
+
+
+### Features
+
+* **YouTube - Hide Shorts components:** Hide tagged products, hide search suggestions ([#615](https://github.com/ReVanced/revanced-integrations/issues/615)) ([0586fb7](https://github.com/ReVanced/revanced-integrations/commit/0586fb70e347c25742e03102441cfb37315b5937))
+
+# [1.8.0-dev.9](https://github.com/ReVanced/revanced-integrations/compare/v1.8.0-dev.8...v1.8.0-dev.9) (2024-04-14)
+
+
+### Bug Fixes
+
+* Use correct hide playables setting key ([a2b1543](https://github.com/ReVanced/revanced-integrations/commit/a2b15433cffec082394a50d14f7eef625a6351c1))
+
+# [1.8.0-dev.8](https://github.com/ReVanced/revanced-integrations/compare/v1.8.0-dev.7...v1.8.0-dev.8) (2024-04-14)
+
+
+### Features
+
+* **YouTube - Hide layout components:** Hide playables ([d6cd550](https://github.com/ReVanced/revanced-integrations/commit/d6cd550880596de5cd2eb4a0d1325a73326d4af9))
+
 # [1.8.0-dev.7](https://github.com/ReVanced/revanced-integrations/compare/v1.8.0-dev.6...v1.8.0-dev.7) (2024-04-12)
 
 
