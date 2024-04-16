@@ -1,3 +1,10 @@
+# [1.8.0-dev.13](https://github.com/ReVanced/revanced-integrations/compare/v1.8.0-dev.12...v1.8.0-dev.13) (2024-04-16)
+
+
+### Bug Fixes
+
+* **YouTube - Hide Shorts components:** Hide suggested actions in incognito mode ([bba421d](https://github.com/ReVanced/revanced-integrations/commit/bba421ddb63597bf918ecccacfd4a33493016b9f))
+
 # [1.8.0-dev.12](https://github.com/ReVanced/revanced-integrations/compare/v1.8.0-dev.11...v1.8.0-dev.12) (2024-04-15)
 
 
