@@ -15,6 +15,8 @@ class ScreenBrightnessController(
     val config: SwipeControlsConfigurationProvider,
 ) {
 
+    constructor(context: Activity) : this(context, SwipeControlsConfigurationProvider(context))
+
     /**
      * the current screen brightness in percent, ranging from 0.0 to 100.0
      */
