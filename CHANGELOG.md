@@ -1,3 +1,10 @@
+# [1.8.0-dev.14](https://github.com/ReVanced/revanced-integrations/compare/v1.8.0-dev.13...v1.8.0-dev.14) (2024-04-17)
+
+
+### Bug Fixes
+
+* **YouTube - Hide Shorts components:** Hide subscribe button in channel bar ([9938bbf](https://github.com/ReVanced/revanced-integrations/commit/9938bbf0de9592db015ae0cfea83e855e12f0c7e))
+
 # [1.8.0-dev.13](https://github.com/ReVanced/revanced-integrations/compare/v1.8.0-dev.12...v1.8.0-dev.13) (2024-04-16)
 
 
