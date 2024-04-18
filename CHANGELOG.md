@@ -1,3 +1,10 @@
+# [1.8.0-dev.16](https://github.com/ReVanced/revanced-integrations/compare/v1.8.0-dev.15...v1.8.0-dev.16) (2024-04-18)
+
+
+### Bug Fixes
+
+* **YouTube - Hide layout components:** Hide horizontal tile shelves ([ba30869](https://github.com/ReVanced/revanced-integrations/commit/ba308690cf83067d3ddd54622eebcbd14bc15ac8))
+
 # [1.8.0-dev.15](https://github.com/ReVanced/revanced-integrations/compare/v1.8.0-dev.14...v1.8.0-dev.15) (2024-04-17)
 
 
