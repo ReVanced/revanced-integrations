@@ -1,3 +1,10 @@
+# [1.8.0-dev.15](https://github.com/ReVanced/revanced-integrations/compare/v1.8.0-dev.14...v1.8.0-dev.15) (2024-04-17)
+
+
+### Features
+
+* **YouTube:** Add 'About' preference to settings menu ([#608](https://github.com/ReVanced/revanced-integrations/issues/608)) ([b8f260e](https://github.com/ReVanced/revanced-integrations/commit/b8f260ebd3e7c2dc50a57cd060b76f2e0fc4a89c))
+
 # [1.8.0-dev.14](https://github.com/ReVanced/revanced-integrations/compare/v1.8.0-dev.13...v1.8.0-dev.14) (2024-04-17)
 
 
