@@ -1,3 +1,10 @@
+# [1.8.0-dev.19](https://github.com/ReVanced/revanced-integrations/compare/v1.8.0-dev.18...v1.8.0-dev.19) (2024-04-18)
+
+
+### Bug Fixes
+
+* **YouTube - Hide keyword content:** Correctly hide content in the subscription tab ([c3bfa77](https://github.com/ReVanced/revanced-integrations/commit/c3bfa77d62b15dedfed8f697583f2f0805f0c2c1))
+
 # [1.8.0-dev.18](https://github.com/ReVanced/revanced-integrations/compare/v1.8.0-dev.17...v1.8.0-dev.18) (2024-04-18)
 
 
