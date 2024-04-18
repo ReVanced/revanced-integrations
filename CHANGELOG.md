@@ -1,3 +1,10 @@
+# [1.8.0-dev.17](https://github.com/ReVanced/revanced-integrations/compare/v1.8.0-dev.16...v1.8.0-dev.17) (2024-04-18)
+
+
+### Bug Fixes
+
+* **YouTube - Hide Shorts components:** Hide paid promotion label ([3ce100c](https://github.com/ReVanced/revanced-integrations/commit/3ce100ced57d7099c2209d9a955484f1e7d418e0))
+
 # [1.8.0-dev.16](https://github.com/ReVanced/revanced-integrations/compare/v1.8.0-dev.15...v1.8.0-dev.16) (2024-04-18)
 
 
