@@ -1,3 +1,24 @@
+# [1.8.0-dev.19](https://github.com/ReVanced/revanced-integrations/compare/v1.8.0-dev.18...v1.8.0-dev.19) (2024-04-18)
+
+
+### Bug Fixes
+
+* **YouTube - Hide keyword content:** Correctly hide content in the subscription tab ([c3bfa77](https://github.com/ReVanced/revanced-integrations/commit/c3bfa77d62b15dedfed8f697583f2f0805f0c2c1))
+
+# [1.8.0-dev.18](https://github.com/ReVanced/revanced-integrations/compare/v1.8.0-dev.17...v1.8.0-dev.18) (2024-04-18)
+
+
+### Bug Fixes
+
+* **YouTube - Spoof device dimensions:** Warn about potential performance issues ([#617](https://github.com/ReVanced/revanced-integrations/issues/617)) ([786ac9d](https://github.com/ReVanced/revanced-integrations/commit/786ac9d2b71886964454fcb748e656d1beed1964))
+
+# [1.8.0-dev.17](https://github.com/ReVanced/revanced-integrations/compare/v1.8.0-dev.16...v1.8.0-dev.17) (2024-04-18)
+
+
+### Bug Fixes
+
+* **YouTube - Hide Shorts components:** Hide paid promotion label ([3ce100c](https://github.com/ReVanced/revanced-integrations/commit/3ce100ced57d7099c2209d9a955484f1e7d418e0))
+
 # [1.8.0-dev.16](https://github.com/ReVanced/revanced-integrations/compare/v1.8.0-dev.15...v1.8.0-dev.16) (2024-04-18)
 
 
