@@ -77,7 +77,7 @@ class VolumeAndBrightnessScrollerImpl(
             ),
         ) { _, _, direction ->
             screenController?.run {
-                val shouldAdjustBrightness = if (config.shouldEnableLowestValueAutoBrightness) {
+                val shouldAdjustBrightness = if (host.config.shouldLowestValueEnableAutoBrightness) {
                     screenBrightness > 0 || direction > 0
                 } else {
                     screenBrightness >= 0 || direction >= 0

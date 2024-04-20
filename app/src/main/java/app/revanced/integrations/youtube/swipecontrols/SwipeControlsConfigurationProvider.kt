@@ -105,10 +105,10 @@ class SwipeControlsConfigurationProvider(
         get() = Settings.SWIPE_SAVE_AND_RESTORE_BRIGHTNESS.get()
 
     /**
-     * should the auto-brightness be enabled at the lowest value of the brightness gesture
+     * should auto-brightness be enabled at the lowest value of the brightness gesture
      */
-    val shouldEnableLowestValueAutoBrightness: Boolean
-        get() = Settings.SWIPE_ENABLE_LOWEST_VALUE_AUTO_BRIGHTNESS.get()
+    val shouldLowestValueEnableAutoBrightness: Boolean
+        get() = Settings.SWIPE_LOWEST_VALUE_ENABLE_AUTO_BRIGHTNESS.get()
 
     /**
      * variable that stores the brightness gesture value in the settings

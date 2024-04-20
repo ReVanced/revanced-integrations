@@ -1,18 +1,16 @@
 package app.revanced.integrations.youtube.swipecontrols.controller
 
-import android.app.Activity
 import android.view.WindowManager
-import app.revanced.integrations.youtube.swipecontrols.SwipeControlsConfigurationProvider
+import app.revanced.integrations.youtube.swipecontrols.SwipeControlsHostActivity
 import app.revanced.integrations.youtube.swipecontrols.misc.clamp
 
 /**
  * controller to adjust the screen brightness level
  *
- * @param host the host activity of which the brightness is adjusted
+ * @param host the host activity of which the brightness is adjusted, the main controller instance
  */
 class ScreenBrightnessController(
-    private val host: Activity,
-    val config: SwipeControlsConfigurationProvider = SwipeControlsConfigurationProvider(host),
+    val host: SwipeControlsHostActivity,
 ) {
 
     /**
@@ -46,7 +44,7 @@ class ScreenBrightnessController(
     fun save() {
         if (isBrightnessRestored) {
             // Saves the current screen brightness value into settings
-            config.savedScreenBrightnessValue = rawScreenBrightness
+            host.config.savedScreenBrightnessValue = rawScreenBrightness
             // Reset the flag
             isBrightnessRestored = false
         }
@@ -57,7 +55,7 @@ class ScreenBrightnessController(
      */
     fun restore() {
         // Restores the screen brightness value from the saved settings
-        rawScreenBrightness = config.savedScreenBrightnessValue
+        rawScreenBrightness = host.config.savedScreenBrightnessValue
         // Mark that brightness has been restored
         isBrightnessRestored = true
     }
