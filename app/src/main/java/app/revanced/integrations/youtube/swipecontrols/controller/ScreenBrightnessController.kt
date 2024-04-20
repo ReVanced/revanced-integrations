@@ -12,10 +12,8 @@ import app.revanced.integrations.youtube.swipecontrols.misc.clamp
  */
 class ScreenBrightnessController(
     private val host: Activity,
-    val config: SwipeControlsConfigurationProvider,
+    val config: SwipeControlsConfigurationProvider = SwipeControlsConfigurationProvider(host),
 ) {
-
-    constructor(context: Activity) : this(context, SwipeControlsConfigurationProvider(context))
 
     /**
      * the current screen brightness in percent, ranging from 0.0 to 100.0
@@ -27,24 +25,30 @@ class ScreenBrightnessController(
         }
 
     /**
-     * restore the screen brightness to the default device brightness
-     */
-    fun restoreDefaultBrightness() {
-        rawScreenBrightness = WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_NONE
-    }
-
-    /**
      * is the screen brightness set to device- default?
      */
     val isDefaultBrightness
         get() = (rawScreenBrightness == WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_NONE)
 
     /**
+     * restore the screen brightness to the default device brightness
+     */
+    fun restoreDefaultBrightness() {
+        rawScreenBrightness = WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_NONE
+    }
+
+    // Flag that indicates whether the brightness has been restored
+    private var isBrightnessRestored = false
+
+    /**
      * save the current screen brightness into settings, to be brought back using [restore]
      */
     fun save() {
-        if (config.savedScreenBrightnessValue == -1f) {
+        if (isBrightnessRestored) {
+            // Saves the current screen brightness value into settings
             config.savedScreenBrightnessValue = rawScreenBrightness
+            // Reset the flag
+            isBrightnessRestored = false
         }
     }
 
@@ -52,8 +56,10 @@ class ScreenBrightnessController(
      * restore the screen brightness from settings saved using [save]
      */
     fun restore() {
+        // Restores the screen brightness value from the saved settings
         rawScreenBrightness = config.savedScreenBrightnessValue
-        config.savedScreenBrightnessValue = -1f
+        // Mark that brightness has been restored
+        isBrightnessRestored = true
     }
 
     /**

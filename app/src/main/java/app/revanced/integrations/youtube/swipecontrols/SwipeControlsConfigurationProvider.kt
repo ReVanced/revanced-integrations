@@ -111,7 +111,7 @@ class SwipeControlsConfigurationProvider(
         get() = Settings.SWIPE_ENABLE_LOWEST_VALUE_AUTO_BRIGHTNESS.get()
 
     /**
-     * variable that stores the brightness gesture value
+     * variable that stores the brightness gesture value in the settings
      */
     var savedScreenBrightnessValue: Float
         get() = Settings.SWIPE_BRIGHTNESS_VALUE.get()
