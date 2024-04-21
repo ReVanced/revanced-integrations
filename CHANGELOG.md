@@ -1,3 +1,10 @@
+# [1.8.0-dev.20](https://github.com/ReVanced/revanced-integrations/compare/v1.8.0-dev.19...v1.8.0-dev.20) (2024-04-21)
+
+
+### Features
+
+* **YouTube - Swipe controls:** Save and restore brightness and add auto-brightness toggle ([#610](https://github.com/ReVanced/revanced-integrations/issues/610)) ([1c8e2b2](https://github.com/ReVanced/revanced-integrations/commit/1c8e2b29410048a352cb6aad3dd02773459f91a0))
+
 # [1.8.0-dev.19](https://github.com/ReVanced/revanced-integrations/compare/v1.8.0-dev.18...v1.8.0-dev.19) (2024-04-18)
 
 
