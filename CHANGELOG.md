@@ -1,3 +1,176 @@
+# [1.8.0-dev.20](https://github.com/ReVanced/revanced-integrations/compare/v1.8.0-dev.19...v1.8.0-dev.20) (2024-04-21)
+
+
+### Features
+
+* **YouTube - Swipe controls:** Save and restore brightness and add auto-brightness toggle ([#610](https://github.com/ReVanced/revanced-integrations/issues/610)) ([1c8e2b2](https://github.com/ReVanced/revanced-integrations/commit/1c8e2b29410048a352cb6aad3dd02773459f91a0))
+
+# [1.8.0-dev.19](https://github.com/ReVanced/revanced-integrations/compare/v1.8.0-dev.18...v1.8.0-dev.19) (2024-04-18)
+
+
+### Bug Fixes
+
+* **YouTube - Hide keyword content:** Correctly hide content in the subscription tab ([c3bfa77](https://github.com/ReVanced/revanced-integrations/commit/c3bfa77d62b15dedfed8f697583f2f0805f0c2c1))
+
+# [1.8.0-dev.18](https://github.com/ReVanced/revanced-integrations/compare/v1.8.0-dev.17...v1.8.0-dev.18) (2024-04-18)
+
+
+### Bug Fixes
+
+* **YouTube - Spoof device dimensions:** Warn about potential performance issues ([#617](https://github.com/ReVanced/revanced-integrations/issues/617)) ([786ac9d](https://github.com/ReVanced/revanced-integrations/commit/786ac9d2b71886964454fcb748e656d1beed1964))
+
+# [1.8.0-dev.17](https://github.com/ReVanced/revanced-integrations/compare/v1.8.0-dev.16...v1.8.0-dev.17) (2024-04-18)
+
+
+### Bug Fixes
+
+* **YouTube - Hide Shorts components:** Hide paid promotion label ([3ce100c](https://github.com/ReVanced/revanced-integrations/commit/3ce100ced57d7099c2209d9a955484f1e7d418e0))
+
+# [1.8.0-dev.16](https://github.com/ReVanced/revanced-integrations/compare/v1.8.0-dev.15...v1.8.0-dev.16) (2024-04-18)
+
+
+### Bug Fixes
+
+* **YouTube - Hide layout components:** Hide horizontal tile shelves ([ba30869](https://github.com/ReVanced/revanced-integrations/commit/ba308690cf83067d3ddd54622eebcbd14bc15ac8))
+
+# [1.8.0-dev.15](https://github.com/ReVanced/revanced-integrations/compare/v1.8.0-dev.14...v1.8.0-dev.15) (2024-04-17)
+
+
+### Features
+
+* **YouTube:** Add 'About' preference to settings menu ([#608](https://github.com/ReVanced/revanced-integrations/issues/608)) ([b8f260e](https://github.com/ReVanced/revanced-integrations/commit/b8f260ebd3e7c2dc50a57cd060b76f2e0fc4a89c))
+
+# [1.8.0-dev.14](https://github.com/ReVanced/revanced-integrations/compare/v1.8.0-dev.13...v1.8.0-dev.14) (2024-04-17)
+
+
+### Bug Fixes
+
+* **YouTube - Hide Shorts components:** Hide subscribe button in channel bar ([9938bbf](https://github.com/ReVanced/revanced-integrations/commit/9938bbf0de9592db015ae0cfea83e855e12f0c7e))
+
+# [1.8.0-dev.13](https://github.com/ReVanced/revanced-integrations/compare/v1.8.0-dev.12...v1.8.0-dev.13) (2024-04-16)
+
+
+### Bug Fixes
+
+* **YouTube - Hide Shorts components:** Hide suggested actions in incognito mode ([bba421d](https://github.com/ReVanced/revanced-integrations/commit/bba421ddb63597bf918ecccacfd4a33493016b9f))
+
+# [1.8.0-dev.12](https://github.com/ReVanced/revanced-integrations/compare/v1.8.0-dev.11...v1.8.0-dev.12) (2024-04-15)
+
+
+### Bug Fixes
+
+* **YouTube - Hide ads:** rename `Hide paid content` to `Hide paid promotion label` ([#616](https://github.com/ReVanced/revanced-integrations/issues/616)) ([13dc172](https://github.com/ReVanced/revanced-integrations/commit/13dc17288d13d024a3fbe318ee0fb23a0d46af85))
+
+# [1.8.0-dev.11](https://github.com/ReVanced/revanced-integrations/compare/v1.8.0-dev.10...v1.8.0-dev.11) (2024-04-14)
+
+
+### Bug Fixes
+
+* **YouTube - Return YouTube Dislike:** Do not show error toast if API success response contains new lines ([#612](https://github.com/ReVanced/revanced-integrations/issues/612)) ([9108205](https://github.com/ReVanced/revanced-integrations/commit/9108205445c533550db454731d4f9460a3241a03))
+
+# [1.8.0-dev.10](https://github.com/ReVanced/revanced-integrations/compare/v1.8.0-dev.9...v1.8.0-dev.10) (2024-04-14)
+
+
+### Features
+
+* **YouTube - Hide Shorts components:** Hide tagged products, hide search suggestions ([#615](https://github.com/ReVanced/revanced-integrations/issues/615)) ([0586fb7](https://github.com/ReVanced/revanced-integrations/commit/0586fb70e347c25742e03102441cfb37315b5937))
+
+# [1.8.0-dev.9](https://github.com/ReVanced/revanced-integrations/compare/v1.8.0-dev.8...v1.8.0-dev.9) (2024-04-14)
+
+
+### Bug Fixes
+
+* Use correct hide playables setting key ([a2b1543](https://github.com/ReVanced/revanced-integrations/commit/a2b15433cffec082394a50d14f7eef625a6351c1))
+
+# [1.8.0-dev.8](https://github.com/ReVanced/revanced-integrations/compare/v1.8.0-dev.7...v1.8.0-dev.8) (2024-04-14)
+
+
+### Features
+
+* **YouTube - Hide layout components:** Hide playables ([d6cd550](https://github.com/ReVanced/revanced-integrations/commit/d6cd550880596de5cd2eb4a0d1325a73326d4af9))
+
+# [1.8.0-dev.7](https://github.com/ReVanced/revanced-integrations/compare/v1.8.0-dev.6...v1.8.0-dev.7) (2024-04-12)
+
+
+### Features
+
+* **YouTube - Hide Shorts components:** Hide `Shop`, `Location` and `Save sound to playlist` buttons ([#614](https://github.com/ReVanced/revanced-integrations/issues/614)) ([acfa3c9](https://github.com/ReVanced/revanced-integrations/commit/acfa3c98868b6d84572ee682ad806a0282ac6dad))
+
+# [1.8.0-dev.6](https://github.com/ReVanced/revanced-integrations/compare/v1.8.0-dev.5...v1.8.0-dev.6) (2024-04-12)
+
+
+### Bug Fixes
+
+* **YouTube - Hide Shorts components:** Do not show Shorts suggestions in video player, if all hide Shorts options are enabled ([#613](https://github.com/ReVanced/revanced-integrations/issues/613)) ([c132670](https://github.com/ReVanced/revanced-integrations/commit/c132670400e6bdf17c46b8d04d579fb49c3d2749))
+
+# [1.8.0-dev.5](https://github.com/ReVanced/revanced-integrations/compare/v1.8.0-dev.4...v1.8.0-dev.5) (2024-04-10)
+
+
+### Bug Fixes
+
+* **YouTube - Return YouTube Dislike:** Do not clip compact text when not using English ([eeaeb49](https://github.com/ReVanced/revanced-integrations/commit/eeaeb49f2a562d2690dae184153c303a5b1c4368))
+
+# [1.8.0-dev.4](https://github.com/ReVanced/revanced-integrations/compare/v1.8.0-dev.3...v1.8.0-dev.4) (2024-04-10)
+
+
+### Bug Fixes
+
+* **YouTube - Hide Shorts components:** Correctly hide Shorts if navigation tab is changed using device back button ([#611](https://github.com/ReVanced/revanced-integrations/issues/611)) ([ffc3437](https://github.com/ReVanced/revanced-integrations/commit/ffc3437843c24af255d2a0dda9930d2843cac4b6))
+
+# [1.8.0-dev.3](https://github.com/ReVanced/revanced-integrations/compare/v1.8.0-dev.2...v1.8.0-dev.3) (2024-04-09)
+
+
+### Bug Fixes
+
+* **YouTube - Settings:** Do not show a toast if migrating old unknown settings ([f2e15a2](https://github.com/ReVanced/revanced-integrations/commit/f2e15a2e1ff59ae7780cfbd366e5165f4e2b191d))
+
+# [1.8.0-dev.2](https://github.com/ReVanced/revanced-integrations/compare/v1.8.0-dev.1...v1.8.0-dev.2) (2024-04-07)
+
+
+### Bug Fixes
+
+* **YouTube - Hide layout components:** Do not hide playlist shelf in library ([c5d38a7](https://github.com/ReVanced/revanced-integrations/commit/c5d38a7e0791ebb8fe59397fff959cc94e0a7aed))
+
+# [1.8.0-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v1.7.1-dev.4...v1.8.0-dev.1) (2024-04-06)
+
+
+### Bug Fixes
+
+* **YouTube - GmsCore support:** Prompt to disable battery optimizations, if not done already ([#601](https://github.com/ReVanced/revanced-integrations/issues/601)) ([c5c9de5](https://github.com/ReVanced/revanced-integrations/commit/c5c9de500d8f1268799e55c31c446bfe8336f79a))
+
+
+### Features
+
+* **YouTube - Hide layout components:** Add option to hide horizontal shelves ([#598](https://github.com/ReVanced/revanced-integrations/issues/598)) ([fedace0](https://github.com/ReVanced/revanced-integrations/commit/fedace02fd5c443ef37dcf77253438b041f4c3f9))
+
+## [1.7.1-dev.4](https://github.com/ReVanced/revanced-integrations/compare/v1.7.1-dev.3...v1.7.1-dev.4) (2024-04-04)
+
+
+### Bug Fixes
+
+* **YouTube - Hide load more button:** Include patch with `Hide layout components`, and hide button only in search feed  ([#600](https://github.com/ReVanced/revanced-integrations/issues/600)) ([c420891](https://github.com/ReVanced/revanced-integrations/commit/c420891e3ef134f30af79cf2f30da3fa2fe5a455))
+
+## [1.7.1-dev.3](https://github.com/ReVanced/revanced-integrations/compare/v1.7.1-dev.2...v1.7.1-dev.3) (2024-04-04)
+
+
+### Bug Fixes
+
+* **YouTube - Player flyout menu:** Add hide Lock screen menu ([#609](https://github.com/ReVanced/revanced-integrations/issues/609)) ([b2fe105](https://github.com/ReVanced/revanced-integrations/commit/b2fe105199d4a5958676cbc8f9c701541e8ff24a))
+
+## [1.7.1-dev.2](https://github.com/ReVanced/revanced-integrations/compare/v1.7.1-dev.1...v1.7.1-dev.2) (2024-04-03)
+
+
+### Bug Fixes
+
+* **YouTube - Navigation bar hook:** Handle if search is active but hidden behind a maximized player ([cbccb46](https://github.com/ReVanced/revanced-integrations/commit/cbccb46e639003adbed941f9b88c41b4c9998729))
+
+## [1.7.1-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v1.7.0...v1.7.1-dev.1) (2024-04-01)
+
+
+### Bug Fixes
+
+* **YouTube - Disable suggested video end screen:** Require app restart ([38ae5aa](https://github.com/ReVanced/revanced-integrations/commit/38ae5aac845745824218a08053db519a3325d7a9))
+
 # [1.7.0](https://github.com/ReVanced/revanced-integrations/compare/v1.6.0...v1.7.0) (2024-03-30)
 
 
