@@ -1,3 +1,15 @@
+# [1.9.0-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v1.8.0...v1.9.0-dev.1) (2024-04-21)
+
+
+### Bug Fixes
+
+* **YouTube - Hide video action buttons:** Remove obsolete `hide Shop button` ([#618](https://github.com/ReVanced/revanced-integrations/issues/618)) ([a78c3ff](https://github.com/ReVanced/revanced-integrations/commit/a78c3ff09e81b1d1e0fe863135ad19e699b702c8))
+
+
+### Features
+
+* **YouTube - Hide Shorts components:** Hide like / dislike button in video ads ([#619](https://github.com/ReVanced/revanced-integrations/issues/619)) ([b2b6b8c](https://github.com/ReVanced/revanced-integrations/commit/b2b6b8c3d7d3c706552ffe70f3ed0314fe5284b6))
+
 # [1.8.0](https://github.com/ReVanced/revanced-integrations/compare/v1.7.0...v1.8.0) (2024-04-21)
 
 
