@@ -1,3 +1,10 @@
+# [1.9.0-dev.3](https://github.com/ReVanced/revanced-integrations/compare/v1.9.0-dev.2...v1.9.0-dev.3) (2024-04-23)
+
+
+### Features
+
+* **YouTube - Hide ads:** Add option to hide the 'Visit store' button on channel pages ([#622](https://github.com/ReVanced/revanced-integrations/issues/622)) ([9de566c](https://github.com/ReVanced/revanced-integrations/commit/9de566ca02398ab9c628565091ed02316c5e1ed0))
+
 # [1.9.0-dev.2](https://github.com/ReVanced/revanced-integrations/compare/v1.9.0-dev.1...v1.9.0-dev.2) (2024-04-23)
 
 
