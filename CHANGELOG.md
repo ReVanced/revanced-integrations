@@ -1,3 +1,10 @@
+# [1.9.0-dev.2](https://github.com/ReVanced/revanced-integrations/compare/v1.9.0-dev.1...v1.9.0-dev.2) (2024-04-23)
+
+
+### Features
+
+* **YouTube - Comments:** Add option to hide timestamp and emoji buttons ([#621](https://github.com/ReVanced/revanced-integrations/issues/621)) ([6e9e122](https://github.com/ReVanced/revanced-integrations/commit/6e9e12235a69a1f3759180abd48e65b151b62e9a))
+
 # [1.9.0-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v1.8.0...v1.9.0-dev.1) (2024-04-21)
 
 
