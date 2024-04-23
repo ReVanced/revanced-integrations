@@ -155,8 +155,11 @@ public final class AdsFilter extends Filter {
             return false; // Do not actually filter the fullscreen ad otherwise it will leave a dimmed screen.
         }
 
-        if (matchedGroup == channelProfile && visitStoreButton.check(protobufBufferArray).isFiltered()) {
-            return super.isFiltered(identifier, path, protobufBufferArray, matchedGroup, contentType, contentIndex);
+        if (matchedGroup == channelProfile) {
+            if (visitStoreButton.check(protobufBufferArray).isFiltered()) {
+                return super.isFiltered(identifier, path, protobufBufferArray, matchedGroup, contentType, contentIndex);
+            }
+            return false;
         }
 
         // Check for the index because of likelihood of false positives.
