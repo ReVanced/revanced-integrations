@@ -191,7 +191,6 @@ public class Settings extends BaseSettings {
 
     // Shorts
     public static final BooleanSetting DISABLE_RESUMING_SHORTS_PLAYER = new BooleanSetting("revanced_disable_resuming_shorts_player", FALSE);
-    @Deprecated public static final BooleanSetting DEPRECATED_HIDE_SHORTS = new BooleanSetting("revanced_hide_shorts", FALSE);
     public static final BooleanSetting HIDE_SHORTS_HOME = new BooleanSetting("revanced_hide_shorts_home", FALSE);
     public static final BooleanSetting HIDE_SHORTS_SUBSCRIPTIONS = new BooleanSetting("revanced_hide_shorts_subscriptions", FALSE);
     public static final BooleanSetting HIDE_SHORTS_SEARCH = new BooleanSetting("revanced_hide_shorts_search", FALSE);
@@ -395,15 +394,6 @@ public class Settings extends BaseSettings {
 
         // Remove any previously saved announcement consumer (a random generated string).
         Setting.preferences.removeKey("revanced_announcement_consumer");
-
-        // Shorts
-        if (DEPRECATED_HIDE_SHORTS.get()) {
-            Logger.printInfo(() -> "Migrating hide Shorts setting");
-            DEPRECATED_HIDE_SHORTS.resetToDefault();
-            HIDE_SHORTS_HOME.save(true);
-            HIDE_SHORTS_SUBSCRIPTIONS.save(true);
-            HIDE_SHORTS_SEARCH.save(true);
-        }
 
         migrateOldSettingToNew(HIDE_LOAD_MORE_BUTTON, HIDE_SHOW_MORE_BUTTON);
 
