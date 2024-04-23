@@ -1,3 +1,10 @@
+# [1.9.0-dev.4](https://github.com/ReVanced/revanced-integrations/compare/v1.9.0-dev.3...v1.9.0-dev.4) (2024-04-23)
+
+
+### Bug Fixes
+
+* **YouTube - Settings:** Use same background color for about screen if Theme patch is not included ([4164ed3](https://github.com/ReVanced/revanced-integrations/commit/4164ed3486330add8ff158f5b6765fa26587154d))
+
 # [1.9.0-dev.3](https://github.com/ReVanced/revanced-integrations/compare/v1.9.0-dev.2...v1.9.0-dev.3) (2024-04-23)
 
 
