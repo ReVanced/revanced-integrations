@@ -48,6 +48,8 @@ final class CommentsFilter extends Filter {
     boolean isFiltered(@Nullable String identifier, String path, byte[] protobufBufferArray,
                        StringFilterGroup matchedGroup, FilterContentType contentType, int contentIndex) {
         if (matchedGroup == commentComposer) {
+            // To completely hide the emoji buttons (and leave no empty space), the timestamp button is
+            // also hidden because the buffer is exactly the same and there's no way selectively hide.
             if (contentIndex == 0
                     && path.endsWith(TIMESTAMP_OR_EMOJI_BUTTONS_ENDS_WITH_PATH)
                     && emojiPickerBufferGroup.check(protobufBufferArray).isFiltered()) {
