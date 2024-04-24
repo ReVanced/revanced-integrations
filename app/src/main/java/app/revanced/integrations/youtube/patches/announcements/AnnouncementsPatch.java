@@ -85,22 +85,6 @@ public final class AnnouncementsPatch {
                     message = jsonString;
                 }
 
-                // TODO: Remove this migration code after a few months.
-                if (!Settings.DEPRECATED_ANNOUNCEMENT_LAST_HASH.isSetToDefault()){
-                    final byte[] hashBytes = MessageDigest
-                            .getInstance("SHA-256")
-                            .digest(jsonString.getBytes(StandardCharsets.UTF_8));
-
-                    final var hash = java.util.Base64.getEncoder().encodeToString(hashBytes);
-
-                    // Migrate to saving the id instead of the hash.
-                    if (hash.equals(Settings.DEPRECATED_ANNOUNCEMENT_LAST_HASH.get())) {
-                        Settings.ANNOUNCEMENT_LAST_ID.save(id);
-                    }
-
-                    Settings.DEPRECATED_ANNOUNCEMENT_LAST_HASH.resetToDefault();
-                }
-
                 // Do not show the announcement, if the last announcement id is the same as the current one.
                 if (Settings.ANNOUNCEMENT_LAST_ID.get() == id) return;
 
