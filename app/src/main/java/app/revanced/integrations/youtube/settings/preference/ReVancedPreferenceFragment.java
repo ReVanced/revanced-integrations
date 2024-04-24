@@ -19,6 +19,7 @@ import app.revanced.integrations.youtube.settings.Settings;
 public class ReVancedPreferenceFragment extends AbstractPreferenceFragment {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
+    @SuppressWarnings("unused")
     @Override
     protected void initialize() {
         super.initialize();

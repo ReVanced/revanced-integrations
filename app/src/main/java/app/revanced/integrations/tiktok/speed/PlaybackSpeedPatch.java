@@ -2,7 +2,9 @@ package app.revanced.integrations.tiktok.speed;
 
 import app.revanced.integrations.tiktok.settings.Settings;
 
+@SuppressWarnings("unused")
 public class PlaybackSpeedPatch {
+
     public static void rememberPlaybackSpeed(float newSpeed) {
         Settings.REMEMBERED_SPEED.save(newSpeed);
     }

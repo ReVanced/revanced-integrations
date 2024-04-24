@@ -14,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Preference fragment for ReVanced settings
  */
-@SuppressWarnings("deprecation")
+@SuppressWarnings({"deprecation", "unused"})
 public class ReVancedPreferenceFragment extends AbstractPreferenceFragment {
 
     @Override
@@ -33,6 +33,7 @@ public class ReVancedPreferenceFragment extends AbstractPreferenceFragment {
     }
 
     @Override
+    @SuppressWarnings("unused")
     protected void initialize() {
         final var context = getContext();
 

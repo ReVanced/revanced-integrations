@@ -4,7 +4,7 @@ import android.content.Context;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceScreen;
 
-@SuppressWarnings("deprecation")
+@SuppressWarnings({"deprecation", "unused"})
 public abstract class ConditionalPreferenceCategory extends PreferenceCategory {
     public ConditionalPreferenceCategory(Context context, PreferenceScreen screen) {
         super(context);

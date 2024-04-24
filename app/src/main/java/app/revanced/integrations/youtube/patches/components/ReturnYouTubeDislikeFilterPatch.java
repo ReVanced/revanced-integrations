@@ -26,6 +26,7 @@ import app.revanced.integrations.youtube.TrieSearch;
  *
  * Once a way to asynchronously update litho text is found, this strategy will no longer be needed.
  */
+@SuppressWarnings("unused")
 public final class ReturnYouTubeDislikeFilterPatch extends Filter {
 
     /**
