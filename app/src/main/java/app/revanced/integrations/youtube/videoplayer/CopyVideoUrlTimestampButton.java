@@ -9,6 +9,7 @@ import app.revanced.integrations.youtube.patches.CopyVideoUrlPatch;
 import app.revanced.integrations.youtube.settings.Settings;
 import app.revanced.integrations.shared.Logger;
 
+/** @noinspection unused*/
 public class CopyVideoUrlTimestampButton extends BottomControlButton {
     @Nullable
     private static CopyVideoUrlTimestampButton instance;

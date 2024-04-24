@@ -18,7 +18,7 @@ public class BypassURLRedirectsPatch {
     public static Uri parseRedirectUri(String uri) {
         final var parsed = Uri.parse(uri);
 
-        if (Settings.BYPASS_URL_REDIRECTS.get() && parsed.getPath().equals(YOUTUBE_REDIRECT_PATH)) {
+        if (Settings.BYPASS_URL_REDIRECTS.get() && YOUTUBE_REDIRECT_PATH.equals(parsed.getPath())) {
             var query = Uri.parse(Uri.decode(parsed.getQueryParameter("q")));
 
             Logger.printDebug(() -> "Bypassing YouTube redirect URI: " + query);

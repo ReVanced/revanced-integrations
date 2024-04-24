@@ -14,6 +14,7 @@ import app.revanced.integrations.shared.Logger;
 import app.revanced.integrations.shared.Utils;
 import app.revanced.integrations.youtube.videoplayer.BottomControlButton;
 
+/** @noinspection unused*/
 public class CreateSegmentButtonController {
     private static WeakReference<ImageView> buttonReference = new WeakReference<>(null);
     private static boolean isShowing;

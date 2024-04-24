@@ -6,7 +6,7 @@ import android.preference.PreferenceScreen;
 import app.revanced.integrations.shared.settings.BaseSettings;
 import app.revanced.integrations.tiktok.settings.preference.TogglePreference;
 
-@SuppressWarnings("deprecation")
+@SuppressWarnings({"deprecation", "unused"})
 public class IntegrationsPreferenceCategory extends ConditionalPreferenceCategory {
     public IntegrationsPreferenceCategory(Context context, PreferenceScreen screen) {
         super(context, screen);
