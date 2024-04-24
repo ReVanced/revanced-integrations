@@ -52,6 +52,7 @@ public class Utils {
      * Injection point.
      *
      * @return The manifest 'Version' entry of the patches.jar used during patching.
+     * @noinspection SameReturnValue
      */
     public static String getPatchesReleaseVersion() {
         return ""; // Value is replaced during patching.

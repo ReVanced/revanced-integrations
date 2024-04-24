@@ -7,7 +7,7 @@ import app.revanced.integrations.tiktok.settings.Settings;
 import app.revanced.integrations.tiktok.settings.SettingsStatus;
 import app.revanced.integrations.tiktok.settings.preference.TogglePreference;
 
-@SuppressWarnings("deprecation")
+@SuppressWarnings({"deprecation", "unused"})
 public class FeedFilterPreferenceCategory extends ConditionalPreferenceCategory {
     public FeedFilterPreferenceCategory(Context context, PreferenceScreen screen) {
         super(context, screen);

@@ -3,6 +3,7 @@ package app.revanced.integrations.tiktok.feedfilter;
 import app.revanced.integrations.tiktok.settings.Settings;
 import com.ss.android.ugc.aweme.feed.model.Aweme;
 
+@SuppressWarnings("unused")
 public class ImageVideoFilter implements IFilter {
     @Override
     public boolean getEnabled() {

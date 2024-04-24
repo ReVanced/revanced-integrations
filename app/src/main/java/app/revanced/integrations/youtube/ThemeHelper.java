@@ -38,6 +38,7 @@ public class ThemeHelper {
 
     /**
      * Injection point.
+     * @noinspection SameReturnValue
      */
     private static String darkThemeResourceName() {
         // Value is changed by Theme patch, if included.
@@ -57,6 +58,7 @@ public class ThemeHelper {
 
     /**
      * Injection point.
+     * @noinspection SameReturnValue
      */
     private static String lightThemeResourceName() {
         // Value is changed by Theme patch, if included.

@@ -6,7 +6,12 @@ import app.revanced.integrations.shared.Logger;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+@SuppressWarnings("unused")
 public final class FixSLinksPatch {
+
+    /**
+     * Injection point.
+     */
     public static String resolveSLink(String link) {
         if (link.matches(".*reddit\\.com/r/[^/]+/s/[^/]+")) {
             Logger.printInfo(() -> "Resolving " + link);
