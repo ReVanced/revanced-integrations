@@ -1,3 +1,10 @@
+# [1.9.0-dev.5](https://github.com/ReVanced/revanced-integrations/compare/v1.9.0-dev.4...v1.9.0-dev.5) (2024-04-28)
+
+
+### Bug Fixes
+
+* **YouTube - Hide Shorts components:** Hide Shorts in search result horizontal shelves ([#625](https://github.com/ReVanced/revanced-integrations/issues/625)) ([656ca17](https://github.com/ReVanced/revanced-integrations/commit/656ca17ffc67cae7012436e5cddd7112b73fc450))
+
 # [1.9.0-dev.4](https://github.com/ReVanced/revanced-integrations/compare/v1.9.0-dev.3...v1.9.0-dev.4) (2024-04-23)
 
 
