@@ -1,3 +1,10 @@
+# [1.9.0-dev.6](https://github.com/ReVanced/revanced-integrations/compare/v1.9.0-dev.5...v1.9.0-dev.6) (2024-04-29)
+
+
+### Bug Fixes
+
+* **YouTube - Hide keyword content:** Filter Shorts found in horizontal shelves ([75fa579](https://github.com/ReVanced/revanced-integrations/commit/75fa5797f70123f68d4676201503cf35dcef46dc))
+
 # [1.9.0-dev.5](https://github.com/ReVanced/revanced-integrations/compare/v1.9.0-dev.4...v1.9.0-dev.5) (2024-04-28)
 
 
