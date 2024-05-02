@@ -1,3 +1,10 @@
+# [1.9.0-dev.7](https://github.com/ReVanced/revanced-integrations/compare/v1.9.0-dev.6...v1.9.0-dev.7) (2024-05-02)
+
+
+### Bug Fixes
+
+* Use Java instead of Kotlin Regex to improve reliability ([#628](https://github.com/ReVanced/revanced-integrations/issues/628)) ([44c3cc4](https://github.com/ReVanced/revanced-integrations/commit/44c3cc46367520f780537716236e0bed3b9537e6))
+
 # [1.9.0-dev.6](https://github.com/ReVanced/revanced-integrations/compare/v1.9.0-dev.5...v1.9.0-dev.6) (2024-04-29)
 
 
