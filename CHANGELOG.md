@@ -1,3 +1,10 @@
+# [1.9.0-dev.8](https://github.com/ReVanced/revanced-integrations/compare/v1.9.0-dev.7...v1.9.0-dev.8) (2024-05-06)
+
+
+### Bug Fixes
+
+* **YouTube - Player flyout menu:** Remove obsolete `Hide report menu` ([9e9d969](https://github.com/ReVanced/revanced-integrations/commit/9e9d96910c27568013f2a0744687eb8fba685175))
+
 # [1.9.0-dev.7](https://github.com/ReVanced/revanced-integrations/compare/v1.9.0-dev.6...v1.9.0-dev.7) (2024-05-02)
 
 
