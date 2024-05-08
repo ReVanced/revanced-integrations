@@ -1,3 +1,10 @@
+# [1.9.0-dev.9](https://github.com/ReVanced/revanced-integrations/compare/v1.9.0-dev.8...v1.9.0-dev.9) (2024-05-08)
+
+
+### Bug Fixes
+
+* **YouTube - SponsorBlock:** Show correct segment times if video is over 24 hours in length ([#630](https://github.com/ReVanced/revanced-integrations/issues/630)) ([81251f9](https://github.com/ReVanced/revanced-integrations/commit/81251f9a34ef9f252ce69b01b40e29480a5add9f))
+
 # [1.9.0-dev.8](https://github.com/ReVanced/revanced-integrations/compare/v1.9.0-dev.7...v1.9.0-dev.8) (2024-05-06)
 
 
