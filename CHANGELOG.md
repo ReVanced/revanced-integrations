@@ -1,3 +1,10 @@
+# [1.9.0-dev.10](https://github.com/ReVanced/revanced-integrations/compare/v1.9.0-dev.9...v1.9.0-dev.10) (2024-05-11)
+
+
+### Bug Fixes
+
+* **YouTube - Restore old video quality menu:** Show advanced quality menu in Shorts quality flyout ([#632](https://github.com/ReVanced/revanced-integrations/issues/632)) ([77c9825](https://github.com/ReVanced/revanced-integrations/commit/77c9825b824f95ff6e2c2d5776f4c1d231e6fd0c))
+
 # [1.9.0-dev.9](https://github.com/ReVanced/revanced-integrations/compare/v1.9.0-dev.8...v1.9.0-dev.9) (2024-05-08)
 
 
