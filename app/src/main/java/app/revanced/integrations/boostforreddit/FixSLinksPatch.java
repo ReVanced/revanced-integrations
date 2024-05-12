@@ -3,20 +3,13 @@ package app.revanced.integrations.boostforreddit;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.os.StrictMode;
-import android.util.Log;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import app.revanced.integrations.shared.Logger;
 import app.revanced.integrations.shared.fixes.slink.IFixSLinksPatch;
 
 import java.io.File;
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.SocketTimeoutException;
-import java.net.URL;
 
 public final class FixSLinksPatch implements IFixSLinksPatch {
     private static IFixSLinksPatch INSTANCE;
