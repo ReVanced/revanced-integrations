@@ -1,7 +1,10 @@
 package app.revanced.integrations.shared.fixes.slink;
 
+import static app.revanced.integrations.shared.Utils.showToastShort;
+
 import android.content.Context;
 import android.os.StrictMode;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -37,14 +40,20 @@ public interface IFixSLinksPatch {
                 // For some reason using requireNotNull or similar ends up in java.lang.ExceptionInInitializerError,
                 // despite exception being caught down below?
                 if (location == null) {
+                    Toast.makeText(context, "Can't open /s/ link - reddit didn't return valid response. Are you logged in?",
+                            Toast.LENGTH_SHORT).show();
                     Logger.printInfo(() -> "Location is null - returning link.");
                     return link;
                 }
                 return location;
             } catch (SocketTimeoutException e) {
                 Logger.printInfo(() -> "Reddit request timeout. Censored network?");
+                Toast.makeText(context, "Can't open /s/ link - reddit request timed out.",
+                        Toast.LENGTH_SHORT).show();
             } catch (Exception e) {
                 Logger.printException(() -> "Failed to resolve " + link, e);
+                Toast.makeText(context, "Can't open /s/ link - unknown error occurred.",
+                        Toast.LENGTH_SHORT).show();
             }
         }
 
@@ -71,5 +80,7 @@ public interface IFixSLinksPatch {
     @Nullable
     default String getUserAccessToken(Context context) {
         return null;
-    };
+    }
+
+    ;
 }
