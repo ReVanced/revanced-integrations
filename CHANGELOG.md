@@ -1,3 +1,10 @@
+# [1.9.0-dev.11](https://github.com/ReVanced/revanced-integrations/compare/v1.9.0-dev.10...v1.9.0-dev.11) (2024-05-15)
+
+
+### Bug Fixes
+
+* **YouTube - Hide video action buttons:** Updated path filter ([b74e544](https://github.com/ReVanced/revanced-integrations/commit/b74e54481ad4040d7742bb4f9a6a20351bb9ef71))
+
 # [1.9.0-dev.10](https://github.com/ReVanced/revanced-integrations/compare/v1.9.0-dev.9...v1.9.0-dev.10) (2024-05-11)
 
 
