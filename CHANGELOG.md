@@ -1,3 +1,11 @@
+# [1.9.0-dev.12](https://github.com/ReVanced/revanced-integrations/compare/v1.9.0-dev.11...v1.9.0-dev.12) (2024-05-15)
+
+
+### Bug Fixes
+
+* **YouTube - Hide Shorts components:** Hide old layout like/dislike buttons without leaving empty space ([9782338](https://github.com/ReVanced/revanced-integrations/commit/978233843d2dcf9a8a0ddf9c9517d25c973e8689))
+* **YouTube - Restore old video quality menu:** Do not make click sounds when opening Shorts quality menu ([578a27d](https://github.com/ReVanced/revanced-integrations/commit/578a27dea546f572c3fd270d001fd6024f59dd1a))
+
 # [1.9.0-dev.11](https://github.com/ReVanced/revanced-integrations/compare/v1.9.0-dev.10...v1.9.0-dev.11) (2024-05-15)
 
 
