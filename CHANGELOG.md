@@ -1,3 +1,10 @@
+# [1.9.0-dev.13](https://github.com/ReVanced/revanced-integrations/compare/v1.9.0-dev.12...v1.9.0-dev.13) (2024-05-16)
+
+
+### Features
+
+* **YouTube - Hide Shorts components:** Hide 'Buy super thanks' button ([#633](https://github.com/ReVanced/revanced-integrations/issues/633)) ([303754c](https://github.com/ReVanced/revanced-integrations/commit/303754c46f6d3471405d67b7911065fc3a87f721))
+
 # [1.9.0-dev.12](https://github.com/ReVanced/revanced-integrations/compare/v1.9.0-dev.11...v1.9.0-dev.12) (2024-05-15)
 
 
