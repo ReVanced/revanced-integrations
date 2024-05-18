@@ -42,7 +42,10 @@ public final class NavigationButtonsPatch {
         }
     }
 
-    public static void hideNavigationLabels(TextView navigationLabelsView) {
-        hideViewUnderCondition(Settings.HIDE_NAVIGATION_LABELS, navigationLabelsView);
+    /**
+     * Injection point.
+     */
+    public static void hideNavigationButtonLabels(TextView navigationLabelsView) {
+        hideViewUnderCondition(Settings.HIDE_NAVIGATION_BUTTON_LABELS, navigationLabelsView);
     }
 }
