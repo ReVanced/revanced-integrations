@@ -1,3 +1,10 @@
+# [1.9.0-dev.14](https://github.com/ReVanced/revanced-integrations/compare/v1.9.0-dev.13...v1.9.0-dev.14) (2024-05-18)
+
+
+### Features
+
+* **YouTube - Navigation buttons:** Add option to hide navigation button labels ([#635](https://github.com/ReVanced/revanced-integrations/issues/635)) ([6bd0ac2](https://github.com/ReVanced/revanced-integrations/commit/6bd0ac20dcfc76bfd044fb9f2f03ce98d6efc535))
+
 # [1.9.0-dev.13](https://github.com/ReVanced/revanced-integrations/compare/v1.9.0-dev.12...v1.9.0-dev.13) (2024-05-16)
 
 
