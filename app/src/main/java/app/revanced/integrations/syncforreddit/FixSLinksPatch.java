@@ -1,50 +1,26 @@
 package app.revanced.integrations.syncforreddit;
 
 import android.content.Context;
-import android.content.Intent;
 
 import com.laurencedawson.reddit_sync.ui.activities.WebViewActivity;
 
 import app.revanced.integrations.shared.fixes.slink.BaseFixSLinksPatch;
-import app.revanced.integrations.shared.fixes.slink.ResolveResult;
 
+/** @noinspection unused*/
 public class FixSLinksPatch extends BaseFixSLinksPatch {
-    private static BaseFixSLinksPatch INSTANCE;
-
     private FixSLinksPatch() {
-    }
-
-    @Override
-    public void openInAppBrowser(Context context, String link) {
-        Intent intent = new Intent(context, WebViewActivity.class);
-        intent.putExtra("url", link);
-        context.startActivity(intent);
-    }
-
-    public static BaseFixSLinksPatch getInstance() {
-        if (INSTANCE == null) INSTANCE = new FixSLinksPatch();
-        return INSTANCE;
+        this.webViewActivity = WebViewActivity.class;
     }
 
     public static boolean resolveSLink(Context context, String link) {
-        BaseFixSLinksPatch instance = getInstance();
-        ResolveResult res = instance.performResolution(context, link);
-        boolean ret = false;
-        switch (res) {
-            case ACCESS_TOKEN_START: {
-                instance.pendingUrl = link;
-                ret = true;
-                break;
-            }
-            case DO_NOTHING:
-                ret = true;
-                break;
-            default:
-                break;
-        }
-        return ret;
+        return getInstance().resolve(context, link);
     }
-    public static void getAccessToken(String access_token) {
+
+    public static void setAppAccessToken(String access_token) {
         getInstance().setAccessToken(access_token);
+    }
+    public static BaseFixSLinksPatch getInstance() {
+        if (INSTANCE == null) INSTANCE = new FixSLinksPatch();
+        return INSTANCE;
     }
 }

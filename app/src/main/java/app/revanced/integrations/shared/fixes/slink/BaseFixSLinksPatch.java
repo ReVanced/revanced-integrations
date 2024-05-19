@@ -1,6 +1,7 @@
 package app.revanced.integrations.shared.fixes.slink;
 
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -19,8 +20,28 @@ import app.revanced.integrations.shared.Utils;
 import static app.revanced.integrations.shared.Utils.getContext;
 
 public abstract class BaseFixSLinksPatch {
+    protected Class<? extends Activity> webViewActivity = null;
     String accessToken = null;
     public String pendingUrl = null;
+    protected static BaseFixSLinksPatch INSTANCE;
+
+    public boolean resolve(Context context, String link) {
+        ResolveResult res = performResolution(context, link);
+        boolean ret = false;
+        switch (res) {
+            case ACCESS_TOKEN_START: {
+                pendingUrl = link;
+                ret = true;
+                break;
+            }
+            case DO_NOTHING:
+                ret = true;
+                break;
+            default:
+                break;
+        }
+        return ret;
+    }
 
     public ResolveResult performResolution(Context context, String link) {
         if (link.matches(".*reddit\\.com/r/[^/]+/s/[^/]+")) {
@@ -29,48 +50,45 @@ public abstract class BaseFixSLinksPatch {
                 openInAppBrowser(context, link);
                 return ResolveResult.DO_NOTHING;
             }
-            String accessToken = getUserAccessToken(context);
+            String accessToken = getUserAccessToken();
             if (accessToken == null) {
-                // this is terrible!
-                // but we need to get access_token to properly auth request, especially if user is
-                // using VPN or similar
+                // This is not optimal.
+                // However, we need to get access_token to properly auth request, especially if user
+                // has banned IP - e.g. VPN.
                 Intent startIntent = context.getPackageManager().getLaunchIntentForPackage(context.getPackageName());
                 context.startActivity(startIntent);
                 return ResolveResult.ACCESS_TOKEN_START;
             }
             String bypassLink = link + "#bypass";
-            Utils.runOnBackgroundThread(new Runnable() {
-                @Override
-                public void run() {
-                    String finalLocation = bypassLink;
-                    try {
-                        // Disable strict mode in order to allow network access on the main thread.
-                        // This is not ideal, but it's the easiest solution for now.
-                        HttpURLConnection connection = getHttpURLConnection(link, accessToken);
-                        connection.connect();
-                        String location = connection.getHeaderField("location");
-                        connection.disconnect();
+            Utils.runOnBackgroundThread(() -> {
+                String finalLocation = bypassLink;
+                try {
+                    // Disable strict mode in order to allow network access on the main thread.
+                    // This is not ideal, but it's the easiest solution for now.
+                    HttpURLConnection connection = getHttpURLConnection(link, accessToken);
+                    connection.connect();
+                    String location = connection.getHeaderField("location");
+                    connection.disconnect();
 
-                        // For some reason using requireNotNull or similar ends up in java.lang.ExceptionInInitializerError,
-                        // despite exception being caught down below?
-                        if (location == null) {
-                            Logger.printInfo(() -> "Location is null - returning link.");
-                            finalLocation = bypassLink;
-                        }
-                        finalLocation = location;
-                        Logger.printInfo(() -> "Resolved " + link + " -> " + location);
-                    } catch (SocketTimeoutException e) {
-                        Logger.printException(() -> "Timeout when trying to resolve " + link, e);
+                    // For some reason using requireNotNull or similar ends up in java.lang.ExceptionInInitializerError,
+                    // despite exception being caught down below?
+                    if (location == null) {
+                        Logger.printInfo(() -> "Location is null - returning link.");
                         finalLocation = bypassLink;
-                    } catch (Exception e) {
-                        Logger.printException(() -> "Failed to resolve " + link, e);
-                        finalLocation = bypassLink;
-                    } finally {
-                        Intent startIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(finalLocation));
-                        startIntent.setPackage(context.getPackageName());
-                        startIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        context.startActivity(startIntent);
                     }
+                    finalLocation = location;
+                    Logger.printInfo(() -> "Resolved " + link + " -> " + location);
+                } catch (SocketTimeoutException e) {
+                    Logger.printException(() -> "Timeout when trying to resolve " + link, e);
+                    finalLocation = bypassLink;
+                } catch (Exception e) {
+                    Logger.printException(() -> "Failed to resolve " + link, e);
+                    finalLocation = bypassLink;
+                } finally {
+                    Intent startIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(finalLocation));
+                    startIntent.setPackage(context.getPackageName());
+                    startIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    context.startActivity(startIntent);
                 }
             });
             return ResolveResult.DO_NOTHING;
@@ -79,7 +97,11 @@ public abstract class BaseFixSLinksPatch {
         return ResolveResult.CONTINUE;
     }
 
-    protected abstract void openInAppBrowser(Context context, String link);
+    public void openInAppBrowser(Context context, String link) {
+        Intent intent = new Intent(context, webViewActivity);
+        intent.putExtra("url", link);
+        context.startActivity(intent);
+    }
 
     @NonNull
     private HttpURLConnection getHttpURLConnection(String link, String accessToken) throws IOException {
@@ -100,7 +122,7 @@ public abstract class BaseFixSLinksPatch {
     }
 
     @Nullable
-    public String getUserAccessToken(Context context) {
+    public String getUserAccessToken() {
         return accessToken;
     }
 
@@ -113,4 +135,6 @@ public abstract class BaseFixSLinksPatch {
             Logger.printInfo(() -> "Opening pending URL");
             performResolution(getContext(), resolveTarget);
         }
-    }}
+    }
+
+}

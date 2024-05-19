@@ -1,4 +1,6 @@
 package com.laurencedawson.reddit_sync.ui.activities;
 
-public class WebViewActivity {
+import android.app.Activity;
+
+public class WebViewActivity extends Activity {
 }
