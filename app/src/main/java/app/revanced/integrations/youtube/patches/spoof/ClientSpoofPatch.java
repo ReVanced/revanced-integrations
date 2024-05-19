@@ -8,8 +8,11 @@ import app.revanced.integrations.youtube.settings.Settings;
 @SuppressWarnings("unused")
 public class ClientSpoofPatch {
     private static final boolean CLIENT_SPOOF_ENABLED = Settings.SPOOF_CLIENT.get();
-    private static final String LOCALHOST_URL = "https://127.0.0.1";
-    private static final Uri LOCALHOST_URI = Uri.parse(LOCALHOST_URL);
+    /**
+     * Any unreachable ip address.  Used to intentionally fail requests.
+     */
+    private static final String UNREACHABLE_HOST_URL = "https://127.0.0.0";
+    private static final Uri UNREACHABLE_HOST_URI = Uri.parse(UNREACHABLE_HOST_URL);
 
     /**
      * Injection point.
@@ -23,7 +26,7 @@ public class ClientSpoofPatch {
             if (CLIENT_SPOOF_ENABLED) {
                 String path = playerRequestUri.getPath();
                 if (path != null && path.contains("get_watch")) {
-                    return LOCALHOST_URI;
+                    return UNREACHABLE_HOST_URI;
                 }
             }
         } catch (Exception ex) {
@@ -38,7 +41,7 @@ public class ClientSpoofPatch {
      */
     public static String blockInitPlaybackRequest(String originalUrl) {
         if (CLIENT_SPOOF_ENABLED) {
-            return LOCALHOST_URL;
+            return UNREACHABLE_HOST_URL;
         }
 
         return originalUrl;
