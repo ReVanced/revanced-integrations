@@ -1,8 +1,6 @@
 package app.revanced.integrations.shared.fixes.slink;
 
 
-import android.content.ClipData;
-import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -18,8 +16,13 @@ import java.net.URL;
 import app.revanced.integrations.shared.Logger;
 import app.revanced.integrations.shared.Utils;
 
-public interface IFixSLinksPatch {
-    default ResolveResult performResolution(Context context, String link) {
+import static app.revanced.integrations.shared.Utils.getContext;
+
+public abstract class BaseFixSLinksPatch {
+    String accessToken = null;
+    public String pendingUrl = null;
+
+    public ResolveResult performResolution(Context context, String link) {
         if (link.matches(".*reddit\\.com/r/[^/]+/s/[^/]+")) {
             Logger.printInfo(() -> "Resolving " + link);
             if (link.endsWith("#bypass")) {
@@ -76,7 +79,7 @@ public interface IFixSLinksPatch {
         return ResolveResult.CONTINUE;
     }
 
-    void openInAppBrowser(Context context, String link);
+    protected abstract void openInAppBrowser(Context context, String link);
 
     @NonNull
     private HttpURLConnection getHttpURLConnection(String link, String accessToken) throws IOException {
@@ -97,11 +100,17 @@ public interface IFixSLinksPatch {
     }
 
     @Nullable
-    default String getUserAccessToken(Context context) {
-        return null;
+    public String getUserAccessToken(Context context) {
+        return accessToken;
     }
 
-    default void setAccessToken(String accessToken) {
-
-    }
-}
+    public void setAccessToken(String access_token) {
+        Logger.printInfo(() -> "Got access token!");
+        accessToken = access_token;
+        if (pendingUrl != null) {
+            String resolveTarget = pendingUrl;
+            pendingUrl = null;
+            Logger.printInfo(() -> "Opening pending URL");
+            performResolution(getContext(), resolveTarget);
+        }
+    }}

@@ -5,21 +5,29 @@ import android.content.Intent;
 
 import com.laurencedawson.reddit_sync.ui.activities.WebViewActivity;
 
-import app.revanced.integrations.shared.fixes.slink.JRAWFixSLinksPatch;
+import app.revanced.integrations.shared.fixes.slink.BaseFixSLinksPatch;
 import app.revanced.integrations.shared.fixes.slink.ResolveResult;
 
-public class FixSLinksPatch extends JRAWFixSLinksPatch {
-    private static JRAWFixSLinksPatch INSTANCE;
+public class FixSLinksPatch extends BaseFixSLinksPatch {
+    private static BaseFixSLinksPatch INSTANCE;
+
     private FixSLinksPatch() {
     }
 
-    public static JRAWFixSLinksPatch getInstance() {
+    @Override
+    public void openInAppBrowser(Context context, String link) {
+        Intent intent = new Intent(context, WebViewActivity.class);
+        intent.putExtra("url", link);
+        context.startActivity(intent);
+    }
+
+    public static BaseFixSLinksPatch getInstance() {
         if (INSTANCE == null) INSTANCE = new FixSLinksPatch();
         return INSTANCE;
     }
 
     public static boolean resolveSLink(Context context, String link) {
-        JRAWFixSLinksPatch instance = getInstance();
+        BaseFixSLinksPatch instance = getInstance();
         ResolveResult res = instance.performResolution(context, link);
         boolean ret = false;
         switch (res) {
@@ -36,19 +44,7 @@ public class FixSLinksPatch extends JRAWFixSLinksPatch {
         }
         return ret;
     }
-    public static void JrawHookGetAccessToken(String access_token) {
+    public static void getAccessToken(String access_token) {
         getInstance().setAccessToken(access_token);
-    }
-
-    @Override
-    public ResolveResult performResolution(Context context, String link) {
-        return super.performResolution(context, link);
-    }
-
-    @Override
-    public void openInAppBrowser(Context context, String link) {
-        Intent intent = new Intent(context, WebViewActivity.class);
-        intent.putExtra("url", link);
-        context.startActivity(intent);
     }
 }
