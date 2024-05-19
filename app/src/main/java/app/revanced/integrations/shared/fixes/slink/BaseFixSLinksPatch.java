@@ -63,8 +63,6 @@ public abstract class BaseFixSLinksPatch {
             Utils.runOnBackgroundThread(() -> {
                 String finalLocation = bypassLink;
                 try {
-                    // Disable strict mode in order to allow network access on the main thread.
-                    // This is not ideal, but it's the easiest solution for now.
                     HttpURLConnection connection = getHttpURLConnection(link, accessToken);
                     connection.connect();
                     String location = connection.getHeaderField("location");
