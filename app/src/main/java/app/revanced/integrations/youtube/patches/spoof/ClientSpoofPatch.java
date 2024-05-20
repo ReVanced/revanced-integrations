@@ -22,8 +22,6 @@ public class ClientSpoofPatch {
     private static final boolean CLIENT_SPOOF_USE_IOS = Settings.CLIENT_SPOOF_USE_IOS.get();
     private static final boolean CLIENT_SPOOF_STORYBOARD = CLIENT_SPOOF_ENABLED && !CLIENT_SPOOF_USE_IOS;
 
-    private static final ClientType CLIENT_TYPE = CLIENT_SPOOF_USE_IOS ? ClientType.IOS : ClientType.ANDROID_TESTSUITE;
-
     /**
      * Any unreachable ip address.  Used to intentionally fail requests.
      */
@@ -41,8 +39,6 @@ public class ClientSpoofPatch {
 
     @Nullable
     private static volatile Future<StoryboardRenderer> rendererFuture;
-
-    private static volatile boolean isPlayingShorts;
 
     /**
      * Injection point.
@@ -100,12 +96,34 @@ public class ClientSpoofPatch {
         return originalUrlString;
     }
 
+    private static ClientType clientTypeToSpoof() {
+        if (CLIENT_SPOOF_USE_IOS) {
+            return ClientType.IOS;
+        }
+
+        // Video is private or otherwise not available.  Use iOS client instead.
+        StoryboardRenderer renderer = getRenderer(false);
+        if (renderer == null) {
+            Logger.printDebug(() -> "Using iOS client for paid or otherwise restricted video");
+            return ClientType.IOS;
+        }
+
+        // Test client does not support live streams.
+        // Use the storyboard renderer information to fallback to iOS if a live stream is opened.
+        if (renderer.isLiveStream) {
+            Logger.printDebug(() -> "Using iOS client for livestream: " + renderer.videoId);
+            return ClientType.IOS;
+        }
+
+        return ClientType.ANDROID_TESTSUITE;
+    }
+
     /**
      * Injection point.
      */
     public static int getClientTypeId(int originalClientTypeId) {
         if (CLIENT_SPOOF_ENABLED) {
-            return CLIENT_TYPE.id;
+            return clientTypeToSpoof().id;
         }
 
         return originalClientTypeId;
@@ -116,7 +134,7 @@ public class ClientSpoofPatch {
      */
     public static String getClientVersion(String originalClientVersion) {
         if (CLIENT_SPOOF_ENABLED) {
-            return CLIENT_TYPE.version;
+            return clientTypeToSpoof().version;
         }
 
         return originalClientVersion;
@@ -140,12 +158,9 @@ public class ClientSpoofPatch {
         if (CLIENT_SPOOF_STORYBOARD) {
             try {
                 // VideoInformation is not a dependent patch, and only this single helper method is used.
-                final boolean isShort = VideoInformation.playerParametersAreShort(parameters);
-                isPlayingShorts = isShort;
-
                 // Hook can be called when scrolling thru the feed and a Shorts shelf is present.
-                // Ignore these.
-                if (isShort && !isShortAndOpeningOrPlaying) {
+                // Ignore these videos.
+                if (!isShortAndOpeningOrPlaying && VideoInformation.playerParametersAreShort(parameters)) {
                     Logger.printDebug(() -> "Ignoring Short: " + videoId);
                     return parameters;
                 }
@@ -194,12 +209,33 @@ public class ClientSpoofPatch {
      */
     @Nullable
     public static String getStoryboardRendererSpec(String originalStoryboardRendererSpec) {
+        return getStoryboardRendererSpec(originalStoryboardRendererSpec, false);
+    }
+
+    /**
+     * Injection point.
+     * Uses additional check to handle live streams.
+     * Called from background threads and from the main thread.
+     */
+    @Nullable
+    public static String getStoryboardDecoderRendererSpec(String originalStoryboardRendererSpec) {
+        return getStoryboardRendererSpec(originalStoryboardRendererSpec, true);
+    }
+
+    /**
+     * Injection point.
+     * Called from background threads and from the main thread.
+     */
+    @Nullable
+    private static String getStoryboardRendererSpec(String originalStoryboardRendererSpec, boolean returnNullIfLiveStream) {
         if (CLIENT_SPOOF_STORYBOARD) {
             StoryboardRenderer renderer = getRenderer(false);
             if (renderer != null) {
-                String spec = renderer.getSpec();
-                if (spec != null) {
-                    return spec;
+                if (returnNullIfLiveStream && renderer.isLiveStream) {
+                    return null;
+                }
+                if (renderer.spec != null) {
+                    return renderer.spec;
                 }
             }
         }
@@ -214,8 +250,9 @@ public class ClientSpoofPatch {
         if (CLIENT_SPOOF_STORYBOARD) {
             StoryboardRenderer renderer = getRenderer(false);
             if (renderer != null) {
-                Integer recommendedLevel = renderer.getRecommendedLevel();
-                if (recommendedLevel != null) return recommendedLevel;
+                if (renderer.recommendedLevel != null) {
+                    return renderer.recommendedLevel;
+                }
             }
         }
 
@@ -229,13 +266,11 @@ public class ClientSpoofPatch {
         if (CLIENT_SPOOF_STORYBOARD) {
             StoryboardRenderer renderer = getRenderer(false);
             if (renderer == null) {
-                // Spoof storyboard renderer is turned off,
-                // video is paid, or the storyboard fetch timed out.
-                // Show empty thumbnails so the seek time and chapters still show up.
+                // Video is paid, or the storyboard fetch timed out.
                 return true;
             }
 
-            return renderer.getSpec() != null;
+            return renderer.spec != null;
         }
 
         return false;

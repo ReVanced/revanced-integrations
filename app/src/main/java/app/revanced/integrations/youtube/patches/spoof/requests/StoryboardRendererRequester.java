@@ -27,7 +27,7 @@ public class StoryboardRendererRequester {
      * Does not include paid videos where the renderer fetch fails.
      */
     private static final StoryboardRenderer emptyStoryboard
-            = new StoryboardRenderer(null, false, null);
+            = new StoryboardRenderer("", null, false, null);
 
     private StoryboardRendererRequester() {
     }
@@ -97,17 +97,18 @@ public class StoryboardRendererRequester {
      * @return StoryboardRenderer or null if playabilityStatus is not OK.
      */
     @Nullable
-    private static StoryboardRenderer getStoryboardRendererUsingBody(@NonNull String innerTubeBody,
+    private static StoryboardRenderer getStoryboardRendererUsingBody(String videoId,
+                                                                     @NonNull String innerTubeBody,
                                                                      boolean showToastOnIOException) {
         final JSONObject playerResponse = fetchPlayerResponse(innerTubeBody, showToastOnIOException);
         if (playerResponse != null && isPlayabilityStatusOk(playerResponse))
-            return getStoryboardRendererUsingResponse(playerResponse);
+            return getStoryboardRendererUsingResponse(videoId, playerResponse);
 
         return null;
     }
 
     @Nullable
-    private static StoryboardRenderer getStoryboardRendererUsingResponse(@NonNull JSONObject playerResponse) {
+    private static StoryboardRenderer getStoryboardRendererUsingResponse(@NonNull String videoId, @NonNull JSONObject playerResponse) {
         try {
             Logger.printDebug(() -> "Parsing response: " + playerResponse);
             if (!playerResponse.has("storyboards")) {
@@ -122,6 +123,7 @@ public class StoryboardRendererRequester {
 
             final var rendererElement = storyboards.getJSONObject(storyboardsRendererTag);
             StoryboardRenderer renderer = new StoryboardRenderer(
+                    videoId,
                     rendererElement.getString("spec"),
                     isLiveStream,
                     rendererElement.has("recommendedLevel")
@@ -143,11 +145,11 @@ public class StoryboardRendererRequester {
     public static StoryboardRenderer getStoryboardRenderer(@NonNull String videoId) {
         Objects.requireNonNull(videoId);
 
-        var renderer = getStoryboardRendererUsingBody(
+        var renderer = getStoryboardRendererUsingBody(videoId,
                 String.format(ANDROID_INNER_TUBE_BODY, videoId), false);
         if (renderer == null) {
             Logger.printDebug(() -> videoId + " not available using Android client");
-            renderer = getStoryboardRendererUsingBody(
+            renderer = getStoryboardRendererUsingBody(videoId,
                     String.format(TV_EMBED_INNER_TUBE_BODY, videoId, videoId), true);
             if (renderer == null) {
                 Logger.printDebug(() -> videoId + " not available using TV embedded client");
