@@ -96,7 +96,7 @@ public class ClientSpoofPatch {
         return originalUrlString;
     }
 
-    private static ClientType clientTypeToSpoof() {
+    private static ClientType getClientTypeToSpoof() {
         if (CLIENT_SPOOF_USE_IOS) {
             return ClientType.IOS;
         }
@@ -123,7 +123,7 @@ public class ClientSpoofPatch {
      */
     public static int getClientTypeId(int originalClientTypeId) {
         if (CLIENT_SPOOF_ENABLED) {
-            return clientTypeToSpoof().id;
+            return getClientTypeToSpoof().id;
         }
 
         return originalClientTypeId;
@@ -134,7 +134,7 @@ public class ClientSpoofPatch {
      */
     public static String getClientVersion(String originalClientVersion) {
         if (CLIENT_SPOOF_ENABLED) {
-            return clientTypeToSpoof().version;
+            return getClientTypeToSpoof().version;
         }
 
         return originalClientVersion;
@@ -209,32 +209,11 @@ public class ClientSpoofPatch {
      */
     @Nullable
     public static String getStoryboardRendererSpec(String originalStoryboardRendererSpec) {
-        return getStoryboardRendererSpec(originalStoryboardRendererSpec, false);
-    }
-
-    /**
-     * Injection point.
-     * Uses additional check to handle live streams.
-     * Called from background threads and from the main thread.
-     */
-    @Nullable
-    public static String getStoryboardDecoderRendererSpec(String originalStoryboardRendererSpec) {
-        return getStoryboardRendererSpec(originalStoryboardRendererSpec, true);
-    }
-
-    /**
-     * Injection point.
-     * Called from background threads and from the main thread.
-     */
-    @Nullable
-    private static String getStoryboardRendererSpec(String originalStoryboardRendererSpec, boolean returnNullIfLiveStream) {
         if (CLIENT_SPOOF_STORYBOARD) {
             StoryboardRenderer renderer = getRenderer(false);
+
             if (renderer != null) {
-                if (returnNullIfLiveStream && renderer.isLiveStream) {
-                    return null;
-                }
-                if (renderer.spec != null) {
+                if (!renderer.isLiveStream && renderer.spec != null) {
                     return renderer.spec;
                 }
             }
@@ -249,31 +228,15 @@ public class ClientSpoofPatch {
     public static int getRecommendedLevel(int originalLevel) {
         if (CLIENT_SPOOF_STORYBOARD) {
             StoryboardRenderer renderer = getRenderer(false);
+
             if (renderer != null) {
-                if (renderer.recommendedLevel != null) {
+                if (!renderer.isLiveStream && renderer.recommendedLevel != null) {
                     return renderer.recommendedLevel;
                 }
             }
         }
 
         return originalLevel;
-    }
-
-    /**
-     * Injection point.  Forces seekbar to be shown for paid videos.
-     */
-    public static boolean getSeekbarThumbnailOverrideValue() {
-        if (CLIENT_SPOOF_STORYBOARD) {
-            StoryboardRenderer renderer = getRenderer(false);
-            if (renderer == null) {
-                // Video is paid, or the storyboard fetch timed out.
-                return true;
-            }
-
-            return renderer.spec != null;
-        }
-
-        return false;
     }
 
     enum ClientType {
