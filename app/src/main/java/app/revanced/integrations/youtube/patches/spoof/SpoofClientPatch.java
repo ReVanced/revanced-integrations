@@ -20,10 +20,10 @@ import app.revanced.integrations.youtube.patches.VideoInformation;
 import app.revanced.integrations.youtube.settings.Settings;
 
 @SuppressWarnings("unused")
-public class ClientSpoofPatch {
-    private static final boolean CLIENT_SPOOF_ENABLED = Settings.CLIENT_SPOOF.get();
-    private static final boolean CLIENT_SPOOF_USE_IOS = Settings.CLIENT_SPOOF_USE_IOS.get();
-    private static final boolean CLIENT_SPOOF_STORYBOARD = CLIENT_SPOOF_ENABLED && !CLIENT_SPOOF_USE_IOS;
+public class SpoofClientPatch {
+    private static final boolean SPOOF_CLIENT_ENABLED = Settings.SPOOF_CLIENT.get();
+    private static final boolean SPOOF_CLIENT_USE_IOS = Settings.SPOOF_CLIENT_USE_IOS.get();
+    private static final boolean SPOOF_CLIENT_STORYBOARD = SPOOF_CLIENT_ENABLED && !SPOOF_CLIENT_USE_IOS;
 
     /**
      * Any unreachable ip address.  Used to intentionally fail requests.
@@ -52,7 +52,7 @@ public class ClientSpoofPatch {
      * @return Localhost URI if the request is a /get_watch request, otherwise the original URI.
      */
     public static Uri blockGetWatchRequest(Uri playerRequestUri) {
-        if (CLIENT_SPOOF_ENABLED) {
+        if (SPOOF_CLIENT_ENABLED) {
             try {
                 String path = playerRequestUri.getPath();
 
@@ -75,7 +75,7 @@ public class ClientSpoofPatch {
      * For iOS, an unreachable host URL can be used, but for Android Testsuite, this is not possible.
      */
     public static String blockInitPlaybackRequest(String originalUrlString) {
-        if (CLIENT_SPOOF_ENABLED) {
+        if (SPOOF_CLIENT_ENABLED) {
             try {
                 var originalUri = Uri.parse(originalUrlString);
                 String path = originalUri.getPath();
@@ -102,7 +102,7 @@ public class ClientSpoofPatch {
     }
 
     private static ClientType getSpoofClientType() {
-        if (CLIENT_SPOOF_USE_IOS) {
+        if (SPOOF_CLIENT_USE_IOS) {
             return ClientType.IOS;
         }
 
@@ -129,7 +129,7 @@ public class ClientSpoofPatch {
      * Injection point.
      */
     public static int getClientTypeId(int originalClientTypeId) {
-        if (CLIENT_SPOOF_ENABLED) {
+        if (SPOOF_CLIENT_ENABLED) {
             return getSpoofClientType().id;
         }
 
@@ -140,7 +140,7 @@ public class ClientSpoofPatch {
      * Injection point.
      */
     public static String getClientVersion(String originalClientVersion) {
-        if (CLIENT_SPOOF_ENABLED) {
+        if (SPOOF_CLIENT_ENABLED) {
             return getSpoofClientType().version;
         }
 
@@ -151,7 +151,7 @@ public class ClientSpoofPatch {
      * Injection point.
      */
     public static boolean isClientSpoofingEnabled() {
-        return CLIENT_SPOOF_ENABLED;
+        return SPOOF_CLIENT_ENABLED;
     }
 
     //
@@ -162,7 +162,7 @@ public class ClientSpoofPatch {
      * Injection point.
      */
     public static String setPlayerResponseVideoId(String parameters, String videoId, boolean isShortAndOpeningOrPlaying) {
-        if (CLIENT_SPOOF_STORYBOARD) {
+        if (SPOOF_CLIENT_STORYBOARD) {
             try {
                 // VideoInformation is not a dependent patch, and only this single helper method is used.
                 // Hook can be called when scrolling thru the feed and a Shorts shelf is present.
@@ -219,7 +219,7 @@ public class ClientSpoofPatch {
      */
     @Nullable
     public static String getStoryboardRendererSpec(String originalStoryboardRendererSpec) {
-        if (CLIENT_SPOOF_STORYBOARD) {
+        if (SPOOF_CLIENT_STORYBOARD) {
             StoryboardRenderer renderer = getRenderer(false);
 
             if (renderer != null) {
@@ -236,7 +236,7 @@ public class ClientSpoofPatch {
      * Injection point.
      */
     public static int getRecommendedLevel(int originalLevel) {
-        if (CLIENT_SPOOF_STORYBOARD) {
+        if (SPOOF_CLIENT_STORYBOARD) {
             StoryboardRenderer renderer = getRenderer(false);
 
             if (renderer != null) {
