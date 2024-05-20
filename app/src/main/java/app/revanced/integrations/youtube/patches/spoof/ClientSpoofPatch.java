@@ -73,21 +73,22 @@ public class ClientSpoofPatch {
      * Blocks /initplayback requests.
      * For iOS, an unreachable host URL can be used, but for Android Testsuite, this is not possible.
      */
-    public static String blockInitPlaybackRequest(String originalUrl) {
-        if (isClientSpoofingEnabled()) {
-            String replacementUri = CLIENT_SPOOF_USE_IOS ? UNREACHABLE_HOST_URI_STRING :
+    public static String blockInitPlaybackRequest(String originalUrlString) {
+        var originalUri = Uri.parse(originalUrlString);
+        if (isClientSpoofingEnabled() & originalUri.getPath().contains("initplayback")) {
+            String replacementUriString = CLIENT_SPOOF_USE_IOS ? UNREACHABLE_HOST_URI_STRING :
                     // TODO: Ideally, a local proxy could be setup and block
                     //  the request the same way as Burp Suite is capable of
                     //  because that way the request is never sent to YouTube unnecessarily.
                     //  Just using localhost does unfortunately not work.
-                    Uri.parse(originalUrl).buildUpon().clearQuery().build().toString();
+                    originalUri.buildUpon().clearQuery().build().toString();
 
-            Logger.printDebug(() -> "Blocking " + originalUrl + " by returning " + UNREACHABLE_HOST_URI_STRING);
+            Logger.printDebug(() -> "Blocking " + originalUrlString + " by returning " + replacementUriString);
 
-            return replacementUri;
+            return replacementUriString;
         }
 
-        return originalUrl;
+        return originalUrlString;
     }
 
     /**
