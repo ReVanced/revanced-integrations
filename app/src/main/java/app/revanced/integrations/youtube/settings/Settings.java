@@ -237,7 +237,7 @@ public class Settings extends BaseSettings {
     public static final BooleanSetting BYPASS_URL_REDIRECTS = new BooleanSetting("revanced_bypass_url_redirects", TRUE);
     public static final BooleanSetting ANNOUNCEMENTS = new BooleanSetting("revanced_announcements", TRUE);
     public static final BooleanSetting CLIENT_SPOOF = new BooleanSetting("revanced_client_spoof", TRUE, true, "revanced_client_spoof_user_dialog_message");
-    public static final BooleanSetting CLIENT_SPOOF_USE_IOS = new BooleanSetting("revanced_client_spoof_use_ios", FALSE, true, "revanced_client_spoof_user_dialog_message", parent(CLIENT_SPOOF));
+    public static final BooleanSetting CLIENT_SPOOF_USE_IOS = new BooleanSetting("revanced_client_spoof_use_ios", FALSE, true, "revanced_client_spoof_use_ios_user_dialog_message", parent(CLIENT_SPOOF));
     @Deprecated
     public static final StringSetting DEPRECATED_ANNOUNCEMENT_LAST_HASH = new StringSetting("revanced_announcement_last_hash", "");
     public static final IntegerSetting ANNOUNCEMENT_LAST_ID = new IntegerSetting("revanced_announcement_last_id", -1);

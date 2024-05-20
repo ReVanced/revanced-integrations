@@ -29,8 +29,8 @@ public class ClientSpoofPatch {
     /**
      * Any unreachable ip address.  Used to intentionally fail requests.
      */
-    private static final String UNREACHABLE_HOST_URL = "https://127.0.0.0";
-    private static final Uri UNREACHABLE_HOST_URI = Uri.parse(UNREACHABLE_HOST_URL);
+    private static final String UNREACHABLE_HOST_URI_STRING = "https://127.0.0.0";
+    private static final Uri UNREACHABLE_HOST_URI = Uri.parse(UNREACHABLE_HOST_URI_STRING);
 
     /**
      * Parameters used when playing clips.
@@ -56,15 +56,13 @@ public class ClientSpoofPatch {
      * @return Localhost URI if the request is a /get_watch request, otherwise the original URI.
      */
     public static Uri blockGetWatchRequest(Uri playerRequestUri) {
-        try {
-            if (isClientSpoofingEnabled()) {
-                String path = playerRequestUri.getPath();
-                if (path != null && path.contains("get_watch")) {
-                    return UNREACHABLE_HOST_URI;
-                }
+        if (isClientSpoofingEnabled()) {
+            String path = playerRequestUri.getPath();
+            if (path != null && path.contains("get_watch")) {
+                Logger.printDebug(() -> "Blocking " + playerRequestUri + " by returning " + UNREACHABLE_HOST_URI_STRING);
+
+                return UNREACHABLE_HOST_URI;
             }
-        } catch (Exception ex) {
-            Logger.printException(() -> "blockGetWatchRequest failure", ex);
         }
 
         return playerRequestUri;
@@ -77,14 +75,16 @@ public class ClientSpoofPatch {
      */
     public static String blockInitPlaybackRequest(String originalUrl) {
         if (isClientSpoofingEnabled()) {
-            if (CLIENT_SPOOF_USE_IOS) {
-                return UNREACHABLE_HOST_URL;
-            } else {
-                // TODO: Ideally, a local proxy could be setup and block the request the same way as Burp Suite is capable of
-                //  because that way the request is never sent to YouTube unnecessarily.
-                //  Just using localhost does unfortunately not work.
-                return Uri.parse(originalUrl).buildUpon().clearQuery().build().toString();
-            }
+            String replacementUri = CLIENT_SPOOF_USE_IOS ? UNREACHABLE_HOST_URI_STRING :
+                    // TODO: Ideally, a local proxy could be setup and block
+                    //  the request the same way as Burp Suite is capable of
+                    //  because that way the request is never sent to YouTube unnecessarily.
+                    //  Just using localhost does unfortunately not work.
+                    Uri.parse(originalUrl).buildUpon().clearQuery().build().toString();
+
+            Logger.printDebug(() -> "Blocking " + originalUrl + " by returning " + UNREACHABLE_HOST_URI_STRING);
+
+            return replacementUri;
         }
 
         return originalUrl;
@@ -184,9 +184,7 @@ public class ClientSpoofPatch {
         }
     }
 
-    private static String getStoryboardRendererSpec(
-            String originalStoryboardRendererSpec, boolean returnNullIfLiveStream
-    ) {
+    private static String getStoryboardRendererSpec(String originalStoryboardRendererSpec, boolean returnNullIfLiveStream) {
         if (CLIENT_SPOOF_SPOOF_STORYBOARD) {
             StoryboardRenderer renderer = getRenderer(false);
             if (renderer != null) {
@@ -276,8 +274,7 @@ public class ClientSpoofPatch {
     }
 
     enum ClientType {
-        ANDROID_TESTSUITE(30, "1.9"),
-        IOS(5, Utils.getAppVersionName());
+        ANDROID_TESTSUITE(30, "1.9"), IOS(5, Utils.getAppVersionName());
 
         final int id;
         final String version;
