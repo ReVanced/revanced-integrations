@@ -18,9 +18,11 @@ import java.util.concurrent.TimeoutException;
 
 import static app.revanced.integrations.youtube.patches.spoof.requests.StoryboardRendererRequester.getStoryboardRenderer;
 
+@SuppressWarnings("unused")
 public class ClientSpoofPatch {
     private static final boolean CLIENT_SPOOF_ENABLED = Settings.CLIENT_SPOOF.get();
     private static final boolean CLIENT_SPOOF_USE_IOS = Settings.CLIENT_SPOOF_USE_IOS.get();
+    private static final boolean CLIENT_SPOOF_SPOOF_STORYBOARD = CLIENT_SPOOF_ENABLED && !CLIENT_SPOOF_USE_IOS;
 
     private static final ClientType CLIENT_TYPE = CLIENT_SPOOF_USE_IOS ? ClientType.IOS : ClientType.ANDROID_TESTSUITE;
 
@@ -124,12 +126,9 @@ public class ClientSpoofPatch {
      *
      * @param parameters Original protobuf parameter value.
      */
-    public static String hookParameter(String parameters, boolean isShortAndOpeningOrPlaying) {
-        try {
-            if (parameters == null || !CLIENT_SPOOF_ENABLED || CLIENT_SPOOF_USE_IOS) {
-                return parameters;
-            }
-
+    public static String hookParameter(@Nullable String parameters, boolean isShortAndOpeningOrPlaying) {
+        if (parameters != null && CLIENT_SPOOF_SPOOF_STORYBOARD) {
+            // TODO: Is this check necessary?
             // Clip's player parameters contain a lot of information (e.g. video start and end time or whether it loops)
             // For this reason, the player parameters of a clip are usually very long (150~300 characters).
             // Clips are 60 seconds or less in length, so no spoofing.
@@ -137,18 +136,22 @@ public class ClientSpoofPatch {
                 return parameters;
             }
 
-            isPlayingShorts = VideoInformation.playerParametersAreShort(parameters);
+            try {
+                isPlayingShorts = VideoInformation.playerParametersAreShort(parameters);
 
-            fetchStoryboardRenderer();
-        } catch (Exception ex) {
-            Logger.printException(() -> "spoofParameter failure", ex);
+                fetchStoryboardRenderer();
+            } catch (Exception ex) {
+                Logger.printException(() -> "spoofParameter failure", ex);
+
+            }
         }
+
         return parameters;
     }
 
     @Nullable
     private static StoryboardRenderer getRenderer(boolean waitForCompletion) {
-        Future<StoryboardRenderer> future = rendererFuture;
+        var future = rendererFuture;
         if (future != null) {
             try {
                 if (waitForCompletion || future.isDone()) {
@@ -165,25 +168,26 @@ public class ClientSpoofPatch {
     }
 
     private static void fetchStoryboardRenderer() {
-        if (!Settings.CLIENT_SPOOF_SPOOF_STORYBOARD_RENDERER.get()) {
+        if (CLIENT_SPOOF_SPOOF_STORYBOARD) {
+            String videoId = VideoInformation.getPlayerResponseVideoId();
+            if (!videoId.equals(lastPlayerResponseVideoId)) {
+                rendererFuture = Utils.submitOnBackgroundThread(() -> getStoryboardRenderer(videoId));
+                lastPlayerResponseVideoId = videoId;
+            }
+            // Block until the renderer fetch completes.
+            // This is desired because if this returns without finishing the fetch
+            // then video will start playback but the storyboard is not ready yet.
+            getRenderer(true);
+        } else {
             lastPlayerResponseVideoId = null;
             rendererFuture = null;
-            return;
         }
-        String videoId = VideoInformation.getPlayerResponseVideoId();
-        if (!videoId.equals(lastPlayerResponseVideoId)) {
-            rendererFuture = Utils.submitOnBackgroundThread(() -> getStoryboardRenderer(videoId));
-            lastPlayerResponseVideoId = videoId;
-        }
-        // Block until the renderer fetch completes.
-        // This is desired because if this returns without finishing the fetch
-        // then video will start playback but the storyboard is not ready yet.
-        getRenderer(true);
     }
 
-    private static String getStoryboardRendererSpec(String originalStoryboardRendererSpec,
-                                                    boolean returnNullIfLiveStream) {
-        if (CLIENT_SPOOF_ENABLED && !CLIENT_SPOOF_USE_IOS) {
+    private static String getStoryboardRendererSpec(
+            String originalStoryboardRendererSpec, boolean returnNullIfLiveStream
+    ) {
+        if (CLIENT_SPOOF_SPOOF_STORYBOARD) {
             StoryboardRenderer renderer = getRenderer(false);
             if (renderer != null) {
                 if (returnNullIfLiveStream && renderer.isLiveStream()) {
@@ -222,7 +226,7 @@ public class ClientSpoofPatch {
      * Injection point.
      */
     public static int getRecommendedLevel(int originalLevel) {
-        if (CLIENT_SPOOF_ENABLED && !CLIENT_SPOOF_USE_IOS) {
+        if (CLIENT_SPOOF_SPOOF_STORYBOARD) {
             StoryboardRenderer renderer = getRenderer(false);
             if (renderer != null) {
                 Integer recommendedLevel = renderer.getRecommendedLevel();
@@ -238,17 +242,19 @@ public class ClientSpoofPatch {
      * if {@link Settings#CLIENT_SPOOF_USE_IOS} is not enabled.
      */
     public static boolean getSeekbarThumbnailOverrideValue() {
-        if (!CLIENT_SPOOF_ENABLED || CLIENT_SPOOF_USE_IOS) {
-            return false;
+        if (CLIENT_SPOOF_SPOOF_STORYBOARD) {
+            StoryboardRenderer renderer = getRenderer(false);
+            if (renderer == null) {
+                // Spoof storyboard renderer is turned off,
+                // video is paid, or the storyboard fetch timed out.
+                // Show empty thumbnails so the seek time and chapters still show up.
+                return true;
+            }
+
+            return renderer.getSpec() != null;
         }
-        StoryboardRenderer renderer = getRenderer(false);
-        if (renderer == null) {
-            // Spoof storyboard renderer is turned off,
-            // video is paid, or the storyboard fetch timed out.
-            // Show empty thumbnails so the seek time and chapters still show up.
-            return true;
-        }
-        return renderer.getSpec() != null;
+
+        return false;
     }
 
     /**
@@ -257,18 +263,15 @@ public class ClientSpoofPatch {
      * @param view seekbar thumbnail view.  Includes both shorts and regular videos.
      */
     public static void seekbarImageViewCreated(ImageView view) {
-        try {
-            if (!CLIENT_SPOOF_ENABLED || CLIENT_SPOOF_USE_IOS || Settings.CLIENT_SPOOF_SPOOF_STORYBOARD_RENDERER.get()) {
-                return;
+        if (CLIENT_SPOOF_SPOOF_STORYBOARD && !isPlayingShorts) {
+            try {
+                view.setVisibility(View.GONE);
+                // Also hide the border around the thumbnail (otherwise a 1 pixel wide bordered frame is visible).
+                ViewGroup parentLayout = (ViewGroup) view.getParent();
+                parentLayout.setPadding(0, 0, 0, 0);
+            } catch (Exception ex) {
+                Logger.printException(() -> "seekbarImageViewCreated failure", ex);
             }
-            if (isPlayingShorts) return;
-
-            view.setVisibility(View.GONE);
-            // Also hide the border around the thumbnail (otherwise a 1 pixel wide bordered frame is visible).
-            ViewGroup parentLayout = (ViewGroup) view.getParent();
-            parentLayout.setPadding(0, 0, 0, 0);
-        } catch (Exception ex) {
-            Logger.printException(() -> "seekbarImageViewCreated failure", ex);
         }
     }
 
