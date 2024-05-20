@@ -225,7 +225,7 @@ public class SpoofSignaturePatch {
     public static void seekbarImageViewCreated(ImageView view) {
         try {
             if (!Settings.SPOOF_SIGNATURE.get()
-                    || Settings.SPOOF_STORYBOARD_RENDERER.get()) {
+                    || Settings.CLIENT_SPOOF_SPOOF_STORYBOARD_RENDERER.get()) {
                 return;
             }
             if (isPlayingShorts) return;
