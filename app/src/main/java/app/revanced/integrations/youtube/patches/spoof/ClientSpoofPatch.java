@@ -1,28 +1,26 @@
 package app.revanced.integrations.youtube.patches.spoof;
 
+import static app.revanced.integrations.youtube.patches.spoof.requests.StoryboardRendererRequester.getStoryboardRenderer;
+
 import android.net.Uri;
 
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
 import androidx.annotation.Nullable;
-import app.revanced.integrations.shared.Logger;
-import app.revanced.integrations.shared.Utils;
-import app.revanced.integrations.youtube.patches.VideoInformation;
-import app.revanced.integrations.youtube.settings.Settings;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import static app.revanced.integrations.youtube.patches.spoof.requests.StoryboardRendererRequester.getStoryboardRenderer;
+import app.revanced.integrations.shared.Logger;
+import app.revanced.integrations.shared.Utils;
+import app.revanced.integrations.youtube.patches.VideoInformation;
+import app.revanced.integrations.youtube.settings.Settings;
 
 @SuppressWarnings("unused")
 public class ClientSpoofPatch {
     private static final boolean CLIENT_SPOOF_ENABLED = Settings.CLIENT_SPOOF.get();
     private static final boolean CLIENT_SPOOF_USE_IOS = Settings.CLIENT_SPOOF_USE_IOS.get();
-    private static final boolean CLIENT_SPOOF_SPOOF_STORYBOARD = CLIENT_SPOOF_ENABLED && !CLIENT_SPOOF_USE_IOS;
+    private static final boolean CLIENT_SPOOF_STORYBOARD = CLIENT_SPOOF_ENABLED && !CLIENT_SPOOF_USE_IOS;
 
     private static final ClientType CLIENT_TYPE = CLIENT_SPOOF_USE_IOS ? ClientType.IOS : ClientType.ANDROID_TESTSUITE;
 
@@ -33,15 +31,13 @@ public class ClientSpoofPatch {
     private static final Uri UNREACHABLE_HOST_URI = Uri.parse(UNREACHABLE_HOST_URI_STRING);
 
     /**
-     * Parameters used when playing clips.
-     */
-    private static final String CLIPS_PARAMETERS = "kAIB";
-
-    /**
      * Last video id loaded. Used to prevent reloading the same spec multiple times.
      */
     @Nullable
     private static volatile String lastPlayerResponseVideoId;
+
+    // TODO: use a storyboard renderer cache, specifically for Shorts as swiping back to
+    //  a previous Short causes additional fetches to occur.
 
     @Nullable
     private static volatile Future<StoryboardRenderer> rendererFuture;
@@ -56,12 +52,17 @@ public class ClientSpoofPatch {
      * @return Localhost URI if the request is a /get_watch request, otherwise the original URI.
      */
     public static Uri blockGetWatchRequest(Uri playerRequestUri) {
-        if (isClientSpoofingEnabled()) {
-            String path = playerRequestUri.getPath();
-            if (path != null && path.contains("get_watch")) {
-                Logger.printDebug(() -> "Blocking " + playerRequestUri + " by returning " + UNREACHABLE_HOST_URI_STRING);
+        if (CLIENT_SPOOF_ENABLED) {
+            try {
+                String path = playerRequestUri.getPath();
 
-                return UNREACHABLE_HOST_URI;
+                if (path != null && path.contains("get_watch")) {
+                    Logger.printDebug(() -> "Blocking: " + playerRequestUri + " by returning: " + UNREACHABLE_HOST_URI_STRING);
+
+                    return UNREACHABLE_HOST_URI;
+                }
+            } catch (Exception ex) {
+                Logger.printException(() -> "blockGetWatchRequest failure", ex);
             }
         }
 
@@ -74,18 +75,26 @@ public class ClientSpoofPatch {
      * For iOS, an unreachable host URL can be used, but for Android Testsuite, this is not possible.
      */
     public static String blockInitPlaybackRequest(String originalUrlString) {
-        var originalUri = Uri.parse(originalUrlString);
-        if (isClientSpoofingEnabled() & originalUri.getPath().contains("initplayback")) {
-            String replacementUriString = CLIENT_SPOOF_USE_IOS ? UNREACHABLE_HOST_URI_STRING :
-                    // TODO: Ideally, a local proxy could be setup and block
-                    //  the request the same way as Burp Suite is capable of
-                    //  because that way the request is never sent to YouTube unnecessarily.
-                    //  Just using localhost does unfortunately not work.
-                    originalUri.buildUpon().clearQuery().build().toString();
+        if (CLIENT_SPOOF_ENABLED) {
+            try {
+                var originalUri = Uri.parse(originalUrlString);
+                String path = originalUri.getPath();
 
-            Logger.printDebug(() -> "Blocking " + originalUrlString + " by returning " + replacementUriString);
+                if (path != null && path.contains("initplayback")) {
+                    String replacementUriString = CLIENT_SPOOF_USE_IOS ? UNREACHABLE_HOST_URI_STRING :
+                            // TODO: Ideally, a local proxy could be setup and block
+                            //  the request the same way as Burp Suite is capable of
+                            //  because that way the request is never sent to YouTube unnecessarily.
+                            //  Just using localhost unfortunately does not work.
+                            originalUri.buildUpon().clearQuery().build().toString();
 
-            return replacementUriString;
+                    Logger.printDebug(() -> "Blocking: " + originalUrlString + " by returning: " + replacementUriString);
+
+                    return replacementUriString;
+                }
+            } catch (Exception ex) {
+                Logger.printException(() -> "blockInitPlaybackRequest failure", ex);
+            }
         }
 
         return originalUrlString;
@@ -95,7 +104,7 @@ public class ClientSpoofPatch {
      * Injection point.
      */
     public static int getClientTypeId(int originalClientTypeId) {
-        if (isClientSpoofingEnabled()) {
+        if (CLIENT_SPOOF_ENABLED) {
             return CLIENT_TYPE.id;
         }
 
@@ -106,7 +115,7 @@ public class ClientSpoofPatch {
      * Injection point.
      */
     public static String getClientVersion(String originalClientVersion) {
-        if (isClientSpoofingEnabled()) {
+        if (CLIENT_SPOOF_ENABLED) {
             return CLIENT_TYPE.version;
         }
 
@@ -120,34 +129,45 @@ public class ClientSpoofPatch {
         return CLIENT_SPOOF_ENABLED;
     }
 
+    //
+    // Storyboard.
+    //
+
     /**
      * Injection point.
-     * <p>
-     * Called off the main thread, and called multiple times for each video.
-     *
-     * @param parameters Original protobuf parameter value.
      */
-    public static String hookParameter(@Nullable String parameters, boolean isShortAndOpeningOrPlaying) {
-        if (parameters != null && CLIENT_SPOOF_SPOOF_STORYBOARD) {
-            // TODO: Is this check necessary?
-            // Clip's player parameters contain a lot of information (e.g. video start and end time or whether it loops)
-            // For this reason, the player parameters of a clip are usually very long (150~300 characters).
-            // Clips are 60 seconds or less in length, so no spoofing.
-            if (parameters.startsWith(CLIPS_PARAMETERS)) {
-                return parameters;
-            }
-
+    public static String setPlayerResponseVideoId(String parameters, String videoId, boolean isShortAndOpeningOrPlaying) {
+        if (CLIENT_SPOOF_STORYBOARD) {
             try {
-                isPlayingShorts = VideoInformation.playerParametersAreShort(parameters);
+                // VideoInformation is not a dependent patch, and only this single helper method is used.
+                final boolean isShort = VideoInformation.playerParametersAreShort(parameters);
+                isPlayingShorts = isShort;
 
-                fetchStoryboardRenderer();
+                // Hook can be called when scrolling thru the feed and a Shorts shelf is present.
+                // Ignore these.
+                if (isShort && !isShortAndOpeningOrPlaying) {
+                    Logger.printDebug(() -> "Ignoring Short: " + videoId);
+                    return parameters;
+                }
+
+                fetchStoryboardRenderer(videoId);
             } catch (Exception ex) {
-                Logger.printException(() -> "spoofParameter failure", ex);
-
+                Logger.printException(() -> "setPlayerResponseVideoId failure", ex);
             }
         }
 
-        return parameters;
+        return parameters; // Return the original value since we are observing and not modifying.
+    }
+
+    private static void fetchStoryboardRenderer(String videoId) {
+        if (!videoId.equals(lastPlayerResponseVideoId)) {
+            rendererFuture = Utils.submitOnBackgroundThread(() -> getStoryboardRenderer(videoId));
+            lastPlayerResponseVideoId = videoId;
+        }
+        // Block until the renderer fetch completes.
+        // This is desired because if this returns without finishing the fetch
+        // then video will start playback but the storyboard is not ready yet.
+        getRenderer(true);
     }
 
     @Nullable
@@ -168,30 +188,15 @@ public class ClientSpoofPatch {
         return null;
     }
 
-    private static void fetchStoryboardRenderer() {
-        if (CLIENT_SPOOF_SPOOF_STORYBOARD) {
-            String videoId = VideoInformation.getPlayerResponseVideoId();
-            if (!videoId.equals(lastPlayerResponseVideoId)) {
-                rendererFuture = Utils.submitOnBackgroundThread(() -> getStoryboardRenderer(videoId));
-                lastPlayerResponseVideoId = videoId;
-            }
-            // Block until the renderer fetch completes.
-            // This is desired because if this returns without finishing the fetch
-            // then video will start playback but the storyboard is not ready yet.
-            getRenderer(true);
-        } else {
-            lastPlayerResponseVideoId = null;
-            rendererFuture = null;
-        }
-    }
-
-    private static String getStoryboardRendererSpec(String originalStoryboardRendererSpec, boolean returnNullIfLiveStream) {
-        if (CLIENT_SPOOF_SPOOF_STORYBOARD) {
+    /**
+     * Injection point.
+     * Called from background threads and from the main thread.
+     */
+    @Nullable
+    public static String getStoryboardRendererSpec(String originalStoryboardRendererSpec) {
+        if (CLIENT_SPOOF_STORYBOARD) {
             StoryboardRenderer renderer = getRenderer(false);
             if (renderer != null) {
-                if (returnNullIfLiveStream && renderer.isLiveStream()) {
-                    return null;
-                }
                 String spec = renderer.getSpec();
                 if (spec != null) {
                     return spec;
@@ -204,28 +209,9 @@ public class ClientSpoofPatch {
 
     /**
      * Injection point.
-     * Called from background threads and from the main thread.
-     */
-    @Nullable
-    public static String getStoryboardRendererSpec(String originalStoryboardRendererSpec) {
-        return getStoryboardRendererSpec(originalStoryboardRendererSpec, false);
-    }
-
-    /**
-     * Injection point.
-     * Uses additional check to handle live streams.
-     * Called from background threads and from the main thread.
-     */
-    @Nullable
-    public static String getStoryboardDecoderRendererSpec(String originalStoryboardRendererSpec) {
-        return getStoryboardRendererSpec(originalStoryboardRendererSpec, true);
-    }
-
-    /**
-     * Injection point.
      */
     public static int getRecommendedLevel(int originalLevel) {
-        if (CLIENT_SPOOF_SPOOF_STORYBOARD) {
+        if (CLIENT_SPOOF_STORYBOARD) {
             StoryboardRenderer renderer = getRenderer(false);
             if (renderer != null) {
                 Integer recommendedLevel = renderer.getRecommendedLevel();
@@ -237,11 +223,10 @@ public class ClientSpoofPatch {
     }
 
     /**
-     * Injection point.  Forces seekbar to be shown for paid videos or
-     * if {@link Settings#CLIENT_SPOOF_USE_IOS} is not enabled.
+     * Injection point.  Forces seekbar to be shown for paid videos.
      */
     public static boolean getSeekbarThumbnailOverrideValue() {
-        if (CLIENT_SPOOF_SPOOF_STORYBOARD) {
+        if (CLIENT_SPOOF_STORYBOARD) {
             StoryboardRenderer renderer = getRenderer(false);
             if (renderer == null) {
                 // Spoof storyboard renderer is turned off,
@@ -256,26 +241,9 @@ public class ClientSpoofPatch {
         return false;
     }
 
-    /**
-     * Injection point.
-     *
-     * @param view seekbar thumbnail view.  Includes both shorts and regular videos.
-     */
-    public static void seekbarImageViewCreated(ImageView view) {
-        if (CLIENT_SPOOF_SPOOF_STORYBOARD && !isPlayingShorts) {
-            try {
-                view.setVisibility(View.GONE);
-                // Also hide the border around the thumbnail (otherwise a 1 pixel wide bordered frame is visible).
-                ViewGroup parentLayout = (ViewGroup) view.getParent();
-                parentLayout.setPadding(0, 0, 0, 0);
-            } catch (Exception ex) {
-                Logger.printException(() -> "seekbarImageViewCreated failure", ex);
-            }
-        }
-    }
-
     enum ClientType {
-        ANDROID_TESTSUITE(30, "1.9"), IOS(5, Utils.getAppVersionName());
+        ANDROID_TESTSUITE(30, "1.9"),
+        IOS(5, Utils.getAppVersionName());
 
         final int id;
         final String version;

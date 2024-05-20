@@ -26,7 +26,7 @@ final class PlayerRoutes {
     /**
      * TCP connection and HTTP read timeout
      */
-    private static final int CONNECTION_TIMEOUT_MILLISECONDS = 4 * 1000; // 4 Seconds.
+    private static final int CONNECTION_TIMEOUT_MILLISECONDS = 10 * 1000; // 10 Seconds.
 
     static {
         JSONObject innerTubeBody = new JSONObject();

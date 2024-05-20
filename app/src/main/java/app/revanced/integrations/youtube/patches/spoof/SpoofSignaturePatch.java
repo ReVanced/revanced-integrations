@@ -85,7 +85,7 @@ public class SpoofSignaturePatch {
      *
      * @param parameters Original protobuf parameter value.
      */
-    public static String spoofParameter(String parameters, boolean isShortAndOpeningOrPlaying) {
+    public static String spoofParameter(String parameters, String videoId, boolean isShortAndOpeningOrPlaying) {
         try {
             Logger.printDebug(() -> "Original protobuf parameter value: " + parameters);
 

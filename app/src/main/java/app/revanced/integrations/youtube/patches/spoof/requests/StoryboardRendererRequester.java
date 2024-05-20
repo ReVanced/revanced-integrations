@@ -68,9 +68,9 @@ public class StoryboardRendererRequester {
                     null, showToastOnIOException || BaseSettings.DEBUG_TOAST_ON_ERROR.get());
             connection.disconnect();
         } catch (SocketTimeoutException ex) {
-            handleConnectionError(str("revanced_spoof_storyboard_timeout"), ex, showToastOnIOException);
+            handleConnectionError(str("revanced_client_spoof_storyboard_timeout"), ex, showToastOnIOException);
         } catch (IOException ex) {
-            handleConnectionError(str("revanced_spoof_storyboard_io_exception", ex.getMessage()),
+            handleConnectionError(str("revanced_client_spoof_storyboard_io_exception", ex.getMessage()),
                     ex, showToastOnIOException);
         } catch (Exception ex) {
             Logger.printException(() -> "Spoof storyboard fetch failed", ex); // Should never happen.
