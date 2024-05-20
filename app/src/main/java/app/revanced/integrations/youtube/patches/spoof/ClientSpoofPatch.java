@@ -106,18 +106,18 @@ public class ClientSpoofPatch {
             return ClientType.IOS;
         }
 
-        // Video is private or otherwise not available.
-        // Test client still works for video playback, but seekbar thumbnails are not available.
-        // Use iOS client instead.
         StoryboardRenderer renderer = getRenderer(false);
         if (renderer == null) {
+            // Video is private or otherwise not available.
+            // Test client still works for video playback, but seekbar thumbnails are not available.
+            // Use iOS client instead.
             Logger.printDebug(() -> "Using iOS client for paid or otherwise restricted video");
             return ClientType.IOS;
         }
 
-        // Test client does not support live streams.
-        // Use the storyboard renderer information to fallback to iOS if a live stream is opened.
         if (renderer.isLiveStream) {
+            // Test client does not support live streams.
+            // Use the storyboard renderer information to fallback to iOS if a live stream is opened.
             Logger.printDebug(() -> "Using iOS client for livestream: " + renderer.videoId);
             return ClientType.IOS;
         }

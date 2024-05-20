@@ -21,14 +21,6 @@ import static app.revanced.integrations.youtube.patches.spoof.requests.PlayerRou
 
 public class StoryboardRendererRequester {
 
-    /**
-     * For videos that have no storyboard.
-     * Usually for low resolution videos as old as YouTube itself.
-     * Does not include paid videos where the renderer fetch fails.
-     */
-    private static final StoryboardRenderer emptyStoryboard
-            = new StoryboardRenderer("", null, false, null);
-
     private StoryboardRendererRequester() {
     }
 
@@ -113,7 +105,7 @@ public class StoryboardRendererRequester {
             Logger.printDebug(() -> "Parsing response: " + playerResponse);
             if (!playerResponse.has("storyboards")) {
                 Logger.printDebug(() -> "Using empty storyboard");
-                return emptyStoryboard;
+                return new StoryboardRenderer(videoId, null, false, null);
             }
             final JSONObject storyboards = playerResponse.getJSONObject("storyboards");
             final boolean isLiveStream = storyboards.has("playerLiveStoryboardSpecRenderer");
