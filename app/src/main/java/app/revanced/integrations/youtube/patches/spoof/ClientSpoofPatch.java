@@ -6,6 +6,9 @@ import android.net.Uri;
 
 import androidx.annotation.Nullable;
 
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -28,17 +31,18 @@ public class ClientSpoofPatch {
     private static final String UNREACHABLE_HOST_URI_STRING = "https://127.0.0.0";
     private static final Uri UNREACHABLE_HOST_URI = Uri.parse(UNREACHABLE_HOST_URI_STRING);
 
-    /**
-     * Last video id loaded. Used to prevent reloading the same spec multiple times.
-     */
     @Nullable
-    private static volatile String lastPlayerResponseVideoId;
+    private static volatile Future<StoryboardRenderer> lastStoryboardFetched;
 
-    // TODO: use a storyboard renderer cache, specifically for Shorts as swiping back to
-    //  a previous Short causes additional fetches to occur.
+    private static final Map<String, Future<StoryboardRenderer>> storyboardCache =
+            Collections.synchronizedMap(new LinkedHashMap<>(100) {
+                private static final int CACHE_LIMIT = 1000;
 
-    @Nullable
-    private static volatile Future<StoryboardRenderer> rendererFuture;
+                @Override
+                protected boolean removeEldestEntry(Entry eldest) {
+                    return size() > CACHE_LIMIT; // Evict the oldest entry if over the cache limit.
+                }
+            });
 
     /**
      * Injection point.
@@ -165,7 +169,21 @@ public class ClientSpoofPatch {
                     return parameters;
                 }
 
-                fetchStoryboardRenderer(videoId);
+                Future<StoryboardRenderer> storyboard = storyboardCache.get(videoId);
+                if (storyboard == null) {
+                    storyboard = Utils.submitOnBackgroundThread(() -> getStoryboardRenderer(videoId));
+                    storyboardCache.put(videoId, storyboard);
+                    lastStoryboardFetched = storyboard;
+
+                    // Block until the renderer fetch completes.
+                    // This is desired because if this returns without finishing the fetch
+                    // then video will start playback but the storyboard is not ready yet.
+                    getRenderer(true);
+                } else {
+                    lastStoryboardFetched = storyboard;
+                    // Don't need to block on the fetch since it was already loaded.
+                }
+
             } catch (Exception ex) {
                 Logger.printException(() -> "setPlayerResponseVideoId failure", ex);
             }
@@ -174,20 +192,9 @@ public class ClientSpoofPatch {
         return parameters; // Return the original value since we are observing and not modifying.
     }
 
-    private static void fetchStoryboardRenderer(String videoId) {
-        if (!videoId.equals(lastPlayerResponseVideoId)) {
-            rendererFuture = Utils.submitOnBackgroundThread(() -> getStoryboardRenderer(videoId));
-            lastPlayerResponseVideoId = videoId;
-        }
-        // Block until the renderer fetch completes.
-        // This is desired because if this returns without finishing the fetch
-        // then video will start playback but the storyboard is not ready yet.
-        getRenderer(true);
-    }
-
     @Nullable
     private static StoryboardRenderer getRenderer(boolean waitForCompletion) {
-        var future = rendererFuture;
+        var future = lastStoryboardFetched;
         if (future != null) {
             try {
                 if (waitForCompletion || future.isDone()) {
