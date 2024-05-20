@@ -36,7 +36,7 @@ public class ClientSpoofPatch {
 
     private static final Map<String, Future<StoryboardRenderer>> storyboardCache =
             Collections.synchronizedMap(new LinkedHashMap<>(100) {
-                private static final int CACHE_LIMIT = 1000;
+                private static final int CACHE_LIMIT = 100;
 
                 @Override
                 protected boolean removeEldestEntry(Entry eldest) {
@@ -81,12 +81,13 @@ public class ClientSpoofPatch {
                 String path = originalUri.getPath();
 
                 if (path != null && path.contains("initplayback")) {
-                    String replacementUriString = CLIENT_SPOOF_USE_IOS ? UNREACHABLE_HOST_URI_STRING :
+                    String replacementUriString = (getSpoofClientType() == ClientType.IOS)
+                            ? UNREACHABLE_HOST_URI_STRING
                             // TODO: Ideally, a local proxy could be setup and block
                             //  the request the same way as Burp Suite is capable of
                             //  because that way the request is never sent to YouTube unnecessarily.
                             //  Just using localhost unfortunately does not work.
-                            originalUri.buildUpon().clearQuery().build().toString();
+                            : originalUri.buildUpon().clearQuery().build().toString();
 
                     Logger.printDebug(() -> "Blocking: " + originalUrlString + " by returning: " + replacementUriString);
 
@@ -100,12 +101,14 @@ public class ClientSpoofPatch {
         return originalUrlString;
     }
 
-    private static ClientType getClientTypeToSpoof() {
+    private static ClientType getSpoofClientType() {
         if (CLIENT_SPOOF_USE_IOS) {
             return ClientType.IOS;
         }
 
-        // Video is private or otherwise not available.  Use iOS client instead.
+        // Video is private or otherwise not available.
+        // Test client still works for video playback, but seekbar thumbnails are not available.
+        // Use iOS client instead.
         StoryboardRenderer renderer = getRenderer(false);
         if (renderer == null) {
             Logger.printDebug(() -> "Using iOS client for paid or otherwise restricted video");
@@ -127,7 +130,7 @@ public class ClientSpoofPatch {
      */
     public static int getClientTypeId(int originalClientTypeId) {
         if (CLIENT_SPOOF_ENABLED) {
-            return getClientTypeToSpoof().id;
+            return getSpoofClientType().id;
         }
 
         return originalClientTypeId;
@@ -138,7 +141,7 @@ public class ClientSpoofPatch {
      */
     public static String getClientVersion(String originalClientVersion) {
         if (CLIENT_SPOOF_ENABLED) {
-            return getClientTypeToSpoof().version;
+            return getSpoofClientType().version;
         }
 
         return originalClientVersion;
@@ -181,7 +184,7 @@ public class ClientSpoofPatch {
                     getRenderer(true);
                 } else {
                     lastStoryboardFetched = storyboard;
-                    // Don't need to block on the fetch since it was already loaded.
+                    // No need to block on the fetch since it previously loaded.
                 }
 
             } catch (Exception ex) {
@@ -246,7 +249,7 @@ public class ClientSpoofPatch {
         return originalLevel;
     }
 
-    enum ClientType {
+    private enum ClientType {
         ANDROID_TESTSUITE(30, "1.9"),
         IOS(5, Utils.getAppVersionName());
 
