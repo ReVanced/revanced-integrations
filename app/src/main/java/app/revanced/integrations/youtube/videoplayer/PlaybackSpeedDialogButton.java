@@ -9,15 +9,15 @@ import app.revanced.integrations.youtube.patches.playback.speed.CustomPlaybackSp
 import app.revanced.integrations.youtube.settings.Settings;
 import app.revanced.integrations.shared.Logger;
 
-public class CustomSpeedDialogButton extends BottomControlButton {
+public class PlaybackSpeedDialogButton extends BottomControlButton {
     @Nullable
-    private static CustomSpeedDialogButton instance;
+    private static PlaybackSpeedDialogButton instance;
 
-    public CustomSpeedDialogButton(ViewGroup viewGroup) {
+    public PlaybackSpeedDialogButton(ViewGroup viewGroup) {
         super(
                 viewGroup,
-                "revanced_custom_playback_speed_dialog_button",
-                Settings.CUSTOM_SPEED_DIALOG_BUTTON,
+                "revanced_playback_speed_dialog_button",
+                Settings.PLAYBACK_SPEED_DIALOG_BUTTON,
                 view -> CustomPlaybackSpeedPatch.showOldPlaybackSpeedMenu(),
                 null
         );
@@ -28,7 +28,7 @@ public class CustomSpeedDialogButton extends BottomControlButton {
      */
     public static void initializeButton(View view) {
         try {
-            instance = new CustomSpeedDialogButton((ViewGroup) view);
+            instance = new PlaybackSpeedDialogButton((ViewGroup) view);
         } catch (Exception ex) {
             Logger.printException(() -> "initializeButton failure", ex);
         }
