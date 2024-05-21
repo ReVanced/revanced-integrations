@@ -1,3 +1,10 @@
+# [1.9.0-dev.15](https://github.com/ReVanced/revanced-integrations/compare/v1.9.0-dev.14...v1.9.0-dev.15) (2024-05-21)
+
+
+### Bug Fixes
+
+* **YouTube - Client spoof:** Spoof client to fix playback ([#637](https://github.com/ReVanced/revanced-integrations/issues/637)) ([4c1f82a](https://github.com/ReVanced/revanced-integrations/commit/4c1f82aa228239b041c7d3657f1117abd7516991))
+
 # [1.9.0-dev.14](https://github.com/ReVanced/revanced-integrations/compare/v1.9.0-dev.13...v1.9.0-dev.14) (2024-05-18)
 
 
