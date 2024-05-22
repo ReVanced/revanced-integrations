@@ -4,6 +4,7 @@ import static app.revanced.integrations.youtube.patches.spoof.requests.Storyboar
 
 import android.net.Uri;
 
+import android.os.Build;
 import androidx.annotation.Nullable;
 
 import java.util.Collections;
@@ -150,6 +151,17 @@ public class SpoofClientPatch {
     /**
      * Injection point.
      */
+    public static String getClientModel(String originalClientModel) {
+        if (SPOOF_CLIENT_ENABLED) {
+            return getSpoofClientType().model;
+        }
+
+        return originalClientModel;
+    }
+
+    /**
+     * Injection point.
+     */
     public static boolean isClientSpoofingEnabled() {
         return SPOOF_CLIENT_ENABLED;
     }
@@ -250,14 +262,16 @@ public class SpoofClientPatch {
     }
 
     private enum ClientType {
-        ANDROID_TESTSUITE(30, "1.9"),
-        IOS(5, Utils.getAppVersionName());
+        ANDROID_TESTSUITE(30, Build.MODEL, "1.9"),
+        IOS(5, "iPhone15,4", Utils.getAppVersionName());
 
         final int id;
+        final String model;
         final String version;
 
-        ClientType(int id, String version) {
+        ClientType(int id, String model, String version) {
             this.id = id;
+            this.model = model;
             this.version = version;
         }
     }
