@@ -263,7 +263,10 @@ public class SpoofClientPatch {
 
     private enum ClientType {
         ANDROID_TESTSUITE(30, Build.MODEL, "1.9"),
-        IOS(5, "iPhone16,2", Utils.getAppVersionName()); // iPhone 15 Pro Max
+        // 16,2 = iPhone 15 Pro Max.
+        // Version number should be a valid iOS release.
+        // https://www.ipa4fun.com/history/185230
+        IOS(5, "iPhone16,2", "19.10.7");
 
         final int id;
         final String model;
