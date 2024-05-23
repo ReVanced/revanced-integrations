@@ -263,7 +263,7 @@ public class SpoofClientPatch {
 
     private enum ClientType {
         ANDROID_TESTSUITE(30, Build.MODEL, "1.9"),
-        IOS(5, "iPhone15,4", Utils.getAppVersionName());
+        IOS(5, "iPhone16,2", Utils.getAppVersionName()); // iPhone 15 Pro Max
 
         final int id;
         final String model;
