@@ -23,8 +23,8 @@ import app.revanced.integrations.youtube.settings.Settings;
 @SuppressWarnings("unused")
 public class SpoofClientPatch {
     private static final boolean SPOOF_CLIENT_ENABLED = Settings.SPOOF_CLIENT.get();
-    private static final boolean SPOOF_CLIENT_USE_IOS = Settings.SPOOF_CLIENT_USE_IOS.get();
-    private static final boolean SPOOF_CLIENT_STORYBOARD = SPOOF_CLIENT_ENABLED && !SPOOF_CLIENT_USE_IOS;
+    private static final boolean SPOOF_CLIENT_USE_TEST_SUITE = Settings.SPOOF_CLIENT_USE_TESTSUITE.get();
+    private static final boolean SPOOF_CLIENT_STORYBOARD = SPOOF_CLIENT_ENABLED && SPOOF_CLIENT_USE_TEST_SUITE;
 
     /**
      * Any unreachable ip address.  Used to intentionally fail requests.
@@ -47,10 +47,10 @@ public class SpoofClientPatch {
 
     /**
      * Injection point.
-     * Blocks /get_watch requests by returning a localhost URI.
+     * Blocks /get_watch requests by returning an unreachable URI.
      *
      * @param playerRequestUri The URI of the player request.
-     * @return Localhost URI if the request is a /get_watch request, otherwise the original URI.
+     * @return An unreachable URI if the request is a /get_watch request, otherwise the original URI.
      */
     public static Uri blockGetWatchRequest(Uri playerRequestUri) {
         if (SPOOF_CLIENT_ENABLED) {
@@ -103,7 +103,7 @@ public class SpoofClientPatch {
     }
 
     private static ClientType getSpoofClientType() {
-        if (SPOOF_CLIENT_USE_IOS) {
+        if (!SPOOF_CLIENT_USE_TEST_SUITE) {
             return ClientType.IOS;
         }
 
