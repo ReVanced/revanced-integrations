@@ -1,3 +1,10 @@
+## [1.9.1](https://github.com/ReVanced/revanced-integrations/compare/v1.9.0...v1.9.1) (2024-05-24)
+
+
+### Bug Fixes
+
+* **YouTube - Client spoof:** Spoof iOS client model to fix various side effects ([#638](https://github.com/ReVanced/revanced-integrations/issues/638)) ([fcff9a2](https://github.com/ReVanced/revanced-integrations/commit/fcff9a2049ff4953600559ffc767f553c8f7fea6))
+
 ## [1.9.1-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v1.9.0...v1.9.1-dev.1) (2024-05-23)
 
 
