@@ -109,8 +109,8 @@ public class SpoofClientPatch {
     }
 
     private enum ClientType {
-        // https://dumps.tadiphone.dev/dumps/oculus/eureka/-/blob/eureka-user-12-SQ3A.220605.009.A1-49698210077900510-release-keys/vendor/build.prop
-        ANDROID_VR(28, "Quest 3", "1.37"),
+        // https://dumps.tadiphone.dev/dumps/oculus/monterey/-/blob/vr_monterey-user-7.1.1-NGI77B-256550.6810.0-release-keys/system/system/build.prop?ref_type=heads
+        ANDROID_VR(28, "Quest", "1.37"),
         // 16,2 = iPhone 15 Pro Max.
         // Version number should be a valid iOS release.
         // https://www.ipa4fun.com/history/185230
