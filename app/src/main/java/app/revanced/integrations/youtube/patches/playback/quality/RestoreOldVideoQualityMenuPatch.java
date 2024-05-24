@@ -31,6 +31,12 @@ public final class RestoreOldVideoQualityMenuPatch {
                 if (!VideoQualityMenuFilterPatch.isVideoQualityMenuVisible || recyclerView.getChildCount() == 0) {
                     return;
                 }
+                VideoQualityMenuFilterPatch.isVideoQualityMenuVisible = false;
+
+                ViewParent quickQualityViewParent = Utils.getParentView(recyclerView, 3);
+                if (!(quickQualityViewParent instanceof ViewGroup)) {
+                    return;
+                }
 
                 View firstChild = recyclerView.getChildAt(0);
                 if (!(firstChild instanceof ViewGroup)) {
@@ -38,7 +44,7 @@ public final class RestoreOldVideoQualityMenuPatch {
                 }
 
                 ViewGroup advancedQualityParentView = (ViewGroup) firstChild;
-                if (advancedQualityParentView.getChildCount() != 4) {
+                if (advancedQualityParentView.getChildCount() < 4) {
                     return;
                 }
 
@@ -47,12 +53,6 @@ public final class RestoreOldVideoQualityMenuPatch {
                     return;
                 }
 
-                ViewParent quickQualityViewParent = Utils.getParentView(recyclerView, 3);
-                if (!(quickQualityViewParent instanceof ViewGroup)) {
-                    return;
-                }
-
-                VideoQualityMenuFilterPatch.isVideoQualityMenuVisible = false;
                 ((ViewGroup) quickQualityViewParent).setVisibility(View.GONE);
 
                 // Click the "Advanced" quality menu to show the "old" quality menu.
