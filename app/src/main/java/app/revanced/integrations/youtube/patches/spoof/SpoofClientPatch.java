@@ -30,7 +30,7 @@ public class SpoofClientPatch {
                 String path = playerRequestUri.getPath();
 
                 if (path != null && path.contains("get_watch")) {
-                    Logger.printDebug(() -> "Blocking: " + playerRequestUri + " by returning unreachable uri");
+                    Logger.printDebug(() -> "Blocking: " + playerRequestUri + " by returning: " + UNREACHABLE_HOST_URI_STRING);
 
                     return UNREACHABLE_HOST_URI;
                 }
@@ -54,9 +54,11 @@ public class SpoofClientPatch {
                 String path = originalUri.getPath();
 
                 if (path != null && path.contains("initplayback")) {
-                    Logger.printDebug(() -> "Blocking: " + originalUrlString + " by returning unreachable url");
+                    String replacementUriString = originalUri.buildUpon().clearQuery().build().toString();
 
-                    return UNREACHABLE_HOST_URI_STRING;
+                    Logger.printDebug(() -> "Blocking: " + originalUrlString + " by returning: " + replacementUriString);
+
+                    return replacementUriString;
                 }
             } catch (Exception ex) {
                 Logger.printException(() -> "blockInitPlaybackRequest failure", ex);
@@ -108,7 +110,7 @@ public class SpoofClientPatch {
 
     private enum ClientType {
         // https://dumps.tadiphone.dev/dumps/oculus/eureka/-/blob/eureka-user-12-SQ3A.220605.009.A1-49698210077900510-release-keys/vendor/build.prop
-        ANDROID_VR(28, "Quest 3", "1.56.21"),
+        ANDROID_VR(28, "Quest 3", "1.37"),
         // 16,2 = iPhone 15 Pro Max.
         // Version number should be a valid iOS release.
         // https://www.ipa4fun.com/history/185230
