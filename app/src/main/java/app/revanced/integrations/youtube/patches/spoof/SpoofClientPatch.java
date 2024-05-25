@@ -8,8 +8,7 @@ import app.revanced.integrations.youtube.settings.Settings;
 @SuppressWarnings("unused")
 public class SpoofClientPatch {
     private static final boolean SPOOF_CLIENT_ENABLED = Settings.SPOOF_CLIENT.get();
-    private static final boolean SPOOF_CLIENT_USE_IOS = Settings.SPOOF_CLIENT_USE_IOS.get();
-    private static final ClientType SPOOF_CLIENT_TYPE = SPOOF_CLIENT_USE_IOS ? ClientType.IOS : ClientType.ANDROID_VR;
+    private static final ClientType SPOOF_CLIENT_TYPE = Settings.SPOOF_CLIENT_USE_IOS.get() ? ClientType.IOS : ClientType.ANDROID_VR;
 
     /**
      * Any unreachable ip address.  Used to intentionally fail requests.
@@ -44,8 +43,8 @@ public class SpoofClientPatch {
 
     /**
      * Injection point.
+     *
      * Blocks /initplayback requests.
-     * For iOS, an unreachable host URL can be used, but for Android Testsuite, this is not possible.
      */
     public static String blockInitPlaybackRequest(String originalUrlString) {
         if (SPOOF_CLIENT_ENABLED) {
@@ -54,11 +53,9 @@ public class SpoofClientPatch {
                 String path = originalUri.getPath();
 
                 if (path != null && path.contains("initplayback")) {
-                    String replacementUriString = originalUri.buildUpon().clearQuery().build().toString();
+                    Logger.printDebug(() -> "Blocking: " + originalUrlString + " by returning unreachable url");
 
-                    Logger.printDebug(() -> "Blocking: " + originalUrlString + " by returning: " + replacementUriString);
-
-                    return replacementUriString;
+                    return UNREACHABLE_HOST_URI_STRING;
                 }
             } catch (Exception ex) {
                 Logger.printException(() -> "blockInitPlaybackRequest failure", ex);
