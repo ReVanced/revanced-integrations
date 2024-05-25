@@ -135,4 +135,37 @@ public abstract class BaseFixSLinksPatch {
         }
     }
 
+    // Implementing the /s/ links class guide.
+    //
+    // Set webviewActivity as your app webview acitivity. This will be used for fallback if /s/
+    // link resolution fails.
+    //
+    // You need the following:
+    //    private FixSLinksPatch() {
+    //        this.webViewActivity = WebViewActivity.class;
+    //    }
+    //
+    // Your app would need to call this function before doing any of its own resolution
+    // Your app would also check the value of return result.
+    // If its true, app should *stop* all of its resolution and just sit there. 
+    //
+    //    public static boolean resolveSLink(Context context, String link) {
+    //        return getInstance().resolve(context, link);
+    //    }
+    //
+    // Your app should call this at least once. Without this, /s/ link resolution would just do
+    // nothing. This function should be inserted at moment when app sets its own access_token
+    // You can look for following strings in app: bearer, access_token, Authorization.
+    //
+    //    public static void setAppAccessToken(String access_token) {
+    //        getInstance().setAccessToken(access_token);
+    //    }
+    //
+    // This is required for both setAppAccessToken and resolveSLink.
+    //
+    //    public static BaseFixSLinksPatch getInstance() {
+    //        if (INSTANCE == null) INSTANCE = new FixSLinksPatch();
+    //        return INSTANCE;
+    //    }
+
 }
