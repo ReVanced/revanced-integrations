@@ -1,3 +1,10 @@
+## [1.9.2-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v1.9.1...v1.9.2-dev.1) (2024-05-25)
+
+
+### Bug Fixes
+
+* **YouTube - Spoof client:** Improve Android spoofing ([#641](https://github.com/ReVanced/revanced-integrations/issues/641)) ([baf967e](https://github.com/ReVanced/revanced-integrations/commit/baf967e12ae64f617c59a5d51af3a3982a140d5d))
+
 ## [1.9.1](https://github.com/ReVanced/revanced-integrations/compare/v1.9.0...v1.9.1) (2024-05-24)
 
 
