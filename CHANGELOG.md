@@ -1,3 +1,10 @@
+## [1.9.2-dev.2](https://github.com/ReVanced/revanced-integrations/compare/v1.9.2-dev.1...v1.9.2-dev.2) (2024-05-27)
+
+
+### Bug Fixes
+
+* **YouTube - Restore old video quality menu:** Do not show error toast if using an old version of YT ([#640](https://github.com/ReVanced/revanced-integrations/issues/640)) ([2227b45](https://github.com/ReVanced/revanced-integrations/commit/2227b45020ce5813db9f59e549840e7c785f5569))
+
 ## [1.9.2-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v1.9.1...v1.9.2-dev.1) (2024-05-25)
 
 
