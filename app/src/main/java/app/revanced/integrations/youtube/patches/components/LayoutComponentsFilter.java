@@ -353,24 +353,31 @@ public final class LayoutComponentsFilter extends Filter {
      * Called from a different place then the other filters.
      */
     public static boolean filterMixPlaylists(final Object conversionContext, @Nullable final byte[] bytes) {
-        if (bytes == null) {
-            Logger.printDebug(() -> "bytes is null");
-            return false;
+        try {
+            if (bytes == null) {
+                Logger.printDebug(() -> "bytes is null");
+                return false;
+            }
+
+            // Prevent playlist items being hidden, if a mix playlist is present in it.
+            if (mixPlaylistsExceptions.matches(conversionContext.toString())) {
+                return false;
+            }
+
+            // Prevent hiding the description of some videos accidentally.
+            if (mixPlaylistsExceptions2.check(bytes).isFiltered()) {
+                return false;
+            }
+
+            if (mixPlaylists.check(bytes).isFiltered()) {
+                Logger.printDebug(() -> "Filtered mix playlist");
+                return true;
+            }
+        } catch (Exception ex) {
+            Logger.printException(() -> "filterMixPlaylists failure", ex);
         }
 
-        // Prevent playlist items being hidden, if a mix playlist is present in it.
-        if (mixPlaylistsExceptions.matches(conversionContext.toString()))
-            return false;
-
-        if (!mixPlaylists.check(bytes).isFiltered())
-            return false;
-
-        // Prevent hiding the description of some videos accidentally.
-        if (mixPlaylistsExceptions2.check(bytes).isFiltered())
-            return false;
-
-        Logger.printDebug(() -> "Filtered mix playlist");
-        return true;
+        return false;
     }
 
     /**
