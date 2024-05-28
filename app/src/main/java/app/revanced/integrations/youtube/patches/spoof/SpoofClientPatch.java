@@ -112,14 +112,14 @@ public class SpoofClientPatch {
         // https://dumps.tadiphone.dev/dumps/oculus/monterey/-/blob/vr_monterey-user-7.1.1-NGI77B-256550.6810.0-release-keys/system/system/build.prop
         // version 1.37 is not the latest, but it works with livestream audio only playback.
         ANDROID_VR(28, "Quest", "1.37"),
-        // 15,3 = iPhone 14 Pro Max.
+        // 11,4 = iPhone XS Max.
         // 16,2 = iPhone 15 Pro Max.
         // Since the 15 supports AV1 hardware decoding, only spoof that device if this
         // Android device also has hardware decoding.
         //
         // Version number should be a valid iOS release.
         // https://www.ipa4fun.com/history/185230
-        IOS(5, deviceHasAV1HardwareDecoding() ? "iPhone16,2" : "iPhone15,3", "19.10.7");
+        IOS(5, deviceHasAV1HardwareDecoding() ? "iPhone16,2" : "iPhone11,4", "19.10.7");
 
         /**
          * YouTube
