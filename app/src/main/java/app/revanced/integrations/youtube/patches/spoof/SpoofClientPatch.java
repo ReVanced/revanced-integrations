@@ -1,6 +1,7 @@
 package app.revanced.integrations.youtube.patches.spoof;
 
 import android.net.Uri;
+import android.os.Build;
 
 import app.revanced.integrations.shared.Logger;
 import app.revanced.integrations.youtube.settings.Settings;
@@ -106,7 +107,7 @@ public class SpoofClientPatch {
     }
 
     private enum ClientType {
-        // https://dumps.tadiphone.dev/dumps/oculus/monterey/-/blob/vr_monterey-user-7.1.1-NGI77B-256550.6810.0-release-keys/system/system/build.prop?ref_type=heads
+        // https://dumps.tadiphone.dev/dumps/oculus/monterey/-/blob/vr_monterey-user-7.1.1-NGI77B-256550.6810.0-release-keys/system/system/build.prop
         // version 1.37 is not the latest, but it works with livestream audio only playback.
         ANDROID_VR(28, "Quest", "1.37"),
         // 15,3 = iPhone 14 Pro Max.  Should not use iPhone 15 Pro or
@@ -118,8 +119,20 @@ public class SpoofClientPatch {
         // https://www.ipa4fun.com/history/185230
         IOS(5, "iPhone15,3", "19.10.7");
 
+        /**
+         * YouTube
+         * <a href="https://github.com/zerodytrash/YouTube-Internal-Clients?tab=readme-ov-file#clients">client type</a>
+         */
         final int id;
+
+        /**
+         * Device model, equivalent to {@link Build#MODEL} (System property: ro.product.model)
+         */
         final String model;
+
+        /**
+         * App version.
+         */
         final String version;
 
         ClientType(int id, String model, String version) {
