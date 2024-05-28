@@ -1,5 +1,7 @@
 package app.revanced.integrations.youtube.patches.spoof;
 
+import android.media.MediaCodecInfo;
+import android.media.MediaCodecList;
 import android.net.Uri;
 import android.os.Build;
 
@@ -110,14 +112,14 @@ public class SpoofClientPatch {
         // https://dumps.tadiphone.dev/dumps/oculus/monterey/-/blob/vr_monterey-user-7.1.1-NGI77B-256550.6810.0-release-keys/system/system/build.prop
         // version 1.37 is not the latest, but it works with livestream audio only playback.
         ANDROID_VR(28, "Quest", "1.37"),
-        // 15,3 = iPhone 14 Pro Max.  Should not use iPhone 15 Pro or
-        // any other Apple device with AV1 hardware acceleration,
-        // as that might give a higher chance of AV1 video streams
-        // (Most Android devices use software AV1 decoding).
+        // 15,3 = iPhone 14 Pro Max.
+        // 16,2 = iPhone 15 Pro Max.
+        // Since the 15 supports AV1 hardware decoding, only spoof that device if this
+        // Android device also has hardware decoding.
         //
         // Version number should be a valid iOS release.
         // https://www.ipa4fun.com/history/185230
-        IOS(5, "iPhone15,3", "19.10.7");
+        IOS(5, deviceHasAV1HardwareDecoding() ? "iPhone16,2" : "iPhone15,3", "19.10.7");
 
         /**
          * YouTube
@@ -140,5 +142,29 @@ public class SpoofClientPatch {
             this.model = model;
             this.version = version;
         }
+    }
+
+    private static boolean deviceHasAV1HardwareDecoding() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            MediaCodecList codecList = new MediaCodecList(MediaCodecList.ALL_CODECS);
+
+            for (MediaCodecInfo codecInfo : codecList.getCodecInfos()) {
+                if (codecInfo.isHardwareAccelerated() && !codecInfo.isEncoder()) {
+                    String[] supportedTypes = codecInfo.getSupportedTypes();
+                    for (String type : supportedTypes) {
+                        if (type.equalsIgnoreCase("video/av01")) {
+                            MediaCodecInfo.CodecCapabilities capabilities = codecInfo.getCapabilitiesForType(type);
+                            if (capabilities != null) {
+                                Logger.printDebug(() -> "Device supports AV1 hardware decoding.");
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        Logger.printDebug(() -> "Device does not support AV1 hardware decoding.");
+        return false;
     }
 }
