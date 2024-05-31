@@ -1,3 +1,10 @@
+# [1.10.0-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v1.9.2...v1.10.0-dev.1) (2024-05-31)
+
+
+### Features
+
+* **YouTube - Hide layout components:** Disable like / subscribe button glow animation ([#646](https://github.com/ReVanced/revanced-integrations/issues/646)) ([777ffb1](https://github.com/ReVanced/revanced-integrations/commit/777ffb13605dcedd58f22ccbedf62a12201e85cf))
+
 ## [1.9.2](https://github.com/ReVanced/revanced-integrations/compare/v1.9.1...v1.9.2) (2024-05-31)
 
 
