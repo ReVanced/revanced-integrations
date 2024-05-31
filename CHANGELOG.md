@@ -1,3 +1,24 @@
+## [1.9.2-dev.3](https://github.com/ReVanced/revanced-integrations/compare/v1.9.2-dev.2...v1.9.2-dev.3) (2024-05-28)
+
+
+### Bug Fixes
+
+* **YouTube - Spoof client:** Disable AV1 if not supported by spoofing an older iOS device ([#644](https://github.com/ReVanced/revanced-integrations/issues/644)) ([e28edba](https://github.com/ReVanced/revanced-integrations/commit/e28edbadbf4097911979d88b964c89743f32e0b7))
+
+## [1.9.2-dev.2](https://github.com/ReVanced/revanced-integrations/compare/v1.9.2-dev.1...v1.9.2-dev.2) (2024-05-27)
+
+
+### Bug Fixes
+
+* **YouTube - Restore old video quality menu:** Do not show error toast if using an old version of YT ([#640](https://github.com/ReVanced/revanced-integrations/issues/640)) ([2227b45](https://github.com/ReVanced/revanced-integrations/commit/2227b45020ce5813db9f59e549840e7c785f5569))
+
+## [1.9.2-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v1.9.1...v1.9.2-dev.1) (2024-05-25)
+
+
+### Bug Fixes
+
+* **YouTube - Spoof client:** Improve Android spoofing ([#641](https://github.com/ReVanced/revanced-integrations/issues/641)) ([baf967e](https://github.com/ReVanced/revanced-integrations/commit/baf967e12ae64f617c59a5d51af3a3982a140d5d))
+
 ## [1.9.1](https://github.com/ReVanced/revanced-integrations/compare/v1.9.0...v1.9.1) (2024-05-24)
 
 
