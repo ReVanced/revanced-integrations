@@ -12,11 +12,11 @@ public class FixSLinksPatch extends BaseFixSLinksPatch {
         webViewActivity = WebViewActivity.class;
     }
 
-    public static boolean resolveSLink(Context context, String link) {
-        return getInstance().resolve(context, link);
+    public static boolean patchResolveSLink(Context context, String link) {
+        return getInstance().resolveSLink(context, link);
     }
 
-    public static void staticSetAccessToken(String accessToken) {
+    public static void patchSetAccessToken(String accessToken) {
         getInstance().setAccessToken(accessToken);
     }
 

@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.SocketTimeoutException;
 import java.net.URL;
+import java.util.Objects;
 
 import static app.revanced.integrations.shared.Utils.getContext;
 
@@ -31,7 +32,7 @@ import static app.revanced.integrations.shared.Utils.getContext;
 // Your app would also check the value of return result.
 // If its true, app should *stop* all of its resolution and just sit there.
 //
-//    public static boolean resolveSLink(Context context, String link) {
+//    public static boolean patchResolveSLink(Context context, String link) {
 //        return getInstance().resolve(context, link);
 //    }
 //
@@ -39,57 +40,77 @@ import static app.revanced.integrations.shared.Utils.getContext;
 // nothing. This function should be inserted at moment when app sets its own access_token
 // You can look for following strings in app: bearer, access_token, Authorization.
 //
-//    public static void staticSetAccessToken(String access_token) {
+//    public static void patchSetAccessToken(String access_token) {
 //        getInstance().setAccessToken(access_token);
 //    }
 //
-// This is required for both staticSetAccessToken and resolveSLink.
+// This is required for both patchSetAccessToken and patchResolveSLink.
 //
 //    public static BaseFixSLinksPatch getInstance() {
 //        if (INSTANCE == null) INSTANCE = new FixSLinksPatch();
 //        return INSTANCE;
 //    }
 public abstract class BaseFixSLinksPatch {
+    /**
+     * The activity that will be used to open the link in a webview if the /s/ link resolution fails.
+     */
     protected Class<? extends Activity> webViewActivity = null;
+
+    /**
+     * The access token that will be used to resolve the /s/ link.
+     */
     protected String accessToken = null;
+
+    /**
+     * TODO: Document
+     */
     protected String pendingUrl = null;
+
+    /**
+     * Singleton instance for patches.
+     */
     protected static BaseFixSLinksPatch INSTANCE;
 
-    public boolean resolve(Context context, String link) {
-        ResolveResult res = performResolution(context, link);
-        boolean ret = false;
-        switch (res) {
+    public boolean resolveSLink(Context context, String link) {
+        switch (resolveLink(context, link)) {
             case ACCESS_TOKEN_START: {
                 pendingUrl = link;
-                ret = true;
-                break;
+                return true;
             }
             case DO_NOTHING:
-                ret = true;
-                break;
+                return true;
             default:
-                break;
+                return false;
         }
-        return ret;
     }
 
-    private ResolveResult performResolution(Context context, String link) {
+    private ResolveResult resolveLink(Context context, String link) {
         if (link.matches(".*reddit\\.com/r/[^/]+/s/[^/]+")) {
-            Logger.printInfo(() -> "Resolving " + link);
+            // A link ends with #bypass if it failed to resolve below.
+            // resolveLink is called with the same link again but this time with #bypass
+            // so that the link is opened in the app browser instead of trying to resolve it again.
             if (link.endsWith("#bypass")) {
                 openInAppBrowser(context, link);
+
                 return ResolveResult.DO_NOTHING;
             }
+
+            Logger.printInfo(() -> "Resolving " + link);
+
             if (accessToken == null) {
                 // This is not optimal.
-                // However, we need to get access_token to properly auth request, especially if user
-                // has banned IP - e.g. VPN.
+                // However, an accessToken is necessary to make an authenticated request to Reddit.
+                // in case Reddit has banned the IP - e.g. VPN.
                 Intent startIntent = context.getPackageManager().getLaunchIntentForPackage(context.getPackageName());
                 context.startActivity(startIntent);
+
                 return ResolveResult.ACCESS_TOKEN_START;
             }
-            String bypassLink = link + "#bypass";
+
+
             Utils.runOnBackgroundThread(() -> {
+                String bypassLink = link + "#bypass";
+
                 String finalLocation = bypassLink;
                 try {
                     HttpURLConnection connection = getHttpURLConnection(link, accessToken);
@@ -97,14 +118,11 @@ public abstract class BaseFixSLinksPatch {
                     String location = connection.getHeaderField("location");
                     connection.disconnect();
 
-                    // For some reason using requireNotNull or similar ends up in java.lang.ExceptionInInitializerError,
-                    // despite exception being caught down below?
-                    if (location == null) {
-                        Logger.printInfo(() -> "Location is null - returning link.");
-                        finalLocation = bypassLink;
-                    }
+                    // TODO: Check if this ends in java.lang.ExceptionInInitializerError.
+                    Objects.requireNonNull(location, "Location is null");
+
                     finalLocation = location;
-                    Logger.printInfo(() -> "Resolved " + link + " -> " + location);
+                    Logger.printInfo(() -> "Resolved " + link + " to " + location);
                 } catch (SocketTimeoutException e) {
                     Logger.printException(() -> "Timeout when trying to resolve " + link, e);
                     finalLocation = bypassLink;
@@ -118,13 +136,28 @@ public abstract class BaseFixSLinksPatch {
                     context.startActivity(startIntent);
                 }
             });
+
             return ResolveResult.DO_NOTHING;
         }
 
         return ResolveResult.CONTINUE;
     }
 
-    public void openInAppBrowser(Context context, String link) {
+    public void setAccessToken(String accessToken) {
+        Logger.printInfo(() -> "Setting access token");
+        this.accessToken = accessToken;
+
+        // In case a link was trying to be resolved before access token was set.
+        // The link is resolved now, after the access token is set.
+        if (pendingUrl != null) {
+            String link = pendingUrl;
+            pendingUrl = null;
+            Logger.printInfo(() -> "Opening pending URL");
+            resolveLink(getContext(), link);
+        }
+    }
+
+    private void openInAppBrowser(Context context, String link) {
         Intent intent = new Intent(context, webViewActivity);
         intent.putExtra("url", link);
         context.startActivity(intent);
@@ -146,16 +179,5 @@ public abstract class BaseFixSLinksPatch {
         connection.setConnectTimeout(2000);
         connection.setReadTimeout(2000);
         return connection;
-    }
-
-    public void setAccessToken(String accessToken) {
-        Logger.printInfo(() -> "Setting access token");
-        this.accessToken = accessToken;
-        if (pendingUrl != null) {
-            String resolveTarget = pendingUrl;
-            pendingUrl = null;
-            Logger.printInfo(() -> "Opening pending URL");
-            performResolution(getContext(), resolveTarget);
-        }
     }
 }
