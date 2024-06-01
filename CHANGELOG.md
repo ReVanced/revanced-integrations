@@ -1,3 +1,10 @@
+# [1.10.0-dev.2](https://github.com/ReVanced/revanced-integrations/compare/v1.10.0-dev.1...v1.10.0-dev.2) (2024-06-01)
+
+
+### Bug Fixes
+
+* **YouTube - Spoof client:** Allow swipe gestures to enter/exit fullscreen when spoofing with `Android VR` client ([#645](https://github.com/ReVanced/revanced-integrations/issues/645)) ([b826865](https://github.com/ReVanced/revanced-integrations/commit/b826865ef40a55dc79e6e146e3c35bfe7d792886))
+
 # [1.10.0-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v1.9.2...v1.10.0-dev.1) (2024-05-31)
 
 
