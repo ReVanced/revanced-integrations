@@ -1,19 +1,16 @@
 package app.revanced.integrations.youtube.patches.components;
 
 import static app.revanced.integrations.shared.Utils.hideViewUnderCondition;
+import static app.revanced.integrations.shared.Utils.removeViewFromParentUnderConditions;
 import static app.revanced.integrations.youtube.shared.NavigationBar.NavigationButton;
 
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
 import com.google.android.libraries.youtube.rendering.ui.pivotbar.PivotBar;
 
-import app.revanced.integrations.shared.Logger;
 import app.revanced.integrations.shared.Utils;
-import app.revanced.integrations.shared.settings.BooleanSetting;
 import app.revanced.integrations.youtube.settings.Settings;
 import app.revanced.integrations.youtube.shared.NavigationBar;
 import app.revanced.integrations.youtube.shared.PlayerType;
@@ -69,8 +66,12 @@ public final class ShortsFilter extends Filter {
         // Path components.
         //
 
-        // Shorts that appear in the feed/search when the device is using tablet layout.
-        shortsCompactFeedVideoPath = new StringFilterGroup(null, "compact_video.eml");
+        shortsCompactFeedVideoPath = new StringFilterGroup(null,
+                // Shorts that appear in the feed/search when the device is using tablet layout.
+                "compact_video.eml",
+                // Search results that appear in a horizontal shelf.
+                "video_card.eml");
+
         // Filter out items that use the 'frame0' thumbnail.
         // This is a valid thumbnail for both regular videos and Shorts,
         // but it appears these thumbnails are used only for Shorts.
@@ -198,6 +199,10 @@ public final class ShortsFilter extends Filter {
                 new ByteArrayFilterGroup(
                         Settings.HIDE_SHORTS_SEARCH_SUGGESTIONS,
                         "yt_outline_search_"
+                ),
+                new ByteArrayFilterGroup(
+                        Settings.HIDE_SHORTS_SUPER_THANKS_BUTTON,
+                        "yt_outline_dollar_sign_heart_"
                 )
         );
     }
@@ -217,8 +222,7 @@ public final class ShortsFilter extends Filter {
             }
 
             if (matchedGroup == shortsCompactFeedVideoPath) {
-                if (shouldHideShortsFeedItems() && contentIndex == 0
-                        && shortsCompactFeedVideoBuffer.check(protobufBufferArray).isFiltered()) {
+                if (shouldHideShortsFeedItems() && shortsCompactFeedVideoBuffer.check(protobufBufferArray).isFiltered()) {
                     return super.isFiltered(identifier, path, protobufBufferArray, matchedGroup, contentType, contentIndex);
                 }
                 return false;
@@ -314,29 +318,19 @@ public final class ShortsFilter extends Filter {
 
     // region Hide the buttons in older versions of YouTube. New versions use Litho.
 
-    private static void hideTextViewUnderCondition(BooleanSetting setting, View view) {
-        try {
-            if (setting.get()) {
-                TextView textView = (TextView) view;
-                ViewGroup.LayoutParams params = textView.getLayoutParams();
-                params.width = 0;
-                params.height = 0;
-                textView.setLayoutParams(params);
-            }
-        } catch (Exception ex) {
-            Logger.printException(() -> "hideTextViewUnderCondition failure", ex);
-        }
-    }
-
     public static void hideLikeButton(final View likeButtonView) {
-        // Cannot simply set the visibility to gone for like/dislike,
+        // Cannot set the visibility to gone for like/dislike,
         // as some other unknown YT code also sets the visibility after this hook.
-        // Instead set the layout to a zero size.
-        hideTextViewUnderCondition(Settings.HIDE_SHORTS_LIKE_BUTTON, likeButtonView);
+        //
+        // Setting the view to 0dp works, but that leaves a blank space where
+        // the button was (only relevant for dislikes button).
+        //
+        // Instead remove the view from the parent.
+        removeViewFromParentUnderConditions(Settings.HIDE_SHORTS_LIKE_BUTTON, likeButtonView);
     }
 
     public static void hideDislikeButton(final View dislikeButtonView) {
-        hideTextViewUnderCondition(Settings.HIDE_SHORTS_DISLIKE_BUTTON, dislikeButtonView);
+        removeViewFromParentUnderConditions(Settings.HIDE_SHORTS_DISLIKE_BUTTON, dislikeButtonView);
     }
 
     public static void hideShortsCommentsButton(final View commentsButtonView) {

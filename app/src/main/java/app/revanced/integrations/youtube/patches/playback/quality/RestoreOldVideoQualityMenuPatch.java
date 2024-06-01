@@ -3,11 +3,13 @@ package app.revanced.integrations.youtube.patches.playback.quality;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.widget.ListView;
 
+import app.revanced.integrations.shared.Logger;
+import app.revanced.integrations.shared.Utils;
 import app.revanced.integrations.youtube.patches.components.VideoQualityMenuFilterPatch;
 import app.revanced.integrations.youtube.settings.Settings;
-import app.revanced.integrations.shared.Logger;
 
 /**
  * This patch contains the logic to show the old video quality menu.
@@ -26,25 +28,56 @@ public final class RestoreOldVideoQualityMenuPatch {
         recyclerView.getViewTreeObserver().addOnDrawListener(() -> {
             try {
                 // Check if the current view is the quality menu.
-                if (VideoQualityMenuFilterPatch.isVideoQualityMenuVisible) {
-                    VideoQualityMenuFilterPatch.isVideoQualityMenuVisible = false;
-
-                    ((ViewGroup) recyclerView.getParent().getParent().getParent()).setVisibility(View.GONE);
-                    View advancedQualityView = ((ViewGroup) recyclerView.getChildAt(0)).getChildAt(3);
-                    if (advancedQualityView != null) {
-                        // Click the "Advanced" quality menu to show the "old" quality menu.
-                        advancedQualityView.setSoundEffectsEnabled(false);
-                        advancedQualityView.performClick();
-                    }
+                if (!VideoQualityMenuFilterPatch.isVideoQualityMenuVisible || recyclerView.getChildCount() == 0) {
+                    return;
                 }
+                VideoQualityMenuFilterPatch.isVideoQualityMenuVisible = false;
+
+                ViewParent quickQualityViewParent = Utils.getParentView(recyclerView, 3);
+                if (!(quickQualityViewParent instanceof ViewGroup)) {
+                    return;
+                }
+
+                View firstChild = recyclerView.getChildAt(0);
+                if (!(firstChild instanceof ViewGroup)) {
+                    return;
+                }
+
+                ViewGroup advancedQualityParentView = (ViewGroup) firstChild;
+                if (advancedQualityParentView.getChildCount() < 4) {
+                    return;
+                }
+
+                View advancedQualityView = advancedQualityParentView.getChildAt(3);
+                if (advancedQualityView == null) {
+                    return;
+                }
+
+                ((ViewGroup) quickQualityViewParent).setVisibility(View.GONE);
+
+                // Click the "Advanced" quality menu to show the "old" quality menu.
+                advancedQualityView.setSoundEffectsEnabled(false);
+                advancedQualityView.performClick();
             } catch (Exception ex) {
                 Logger.printException(() -> "onFlyoutMenuCreate failure", ex);
             }
         });
     }
 
+
     /**
-     * Injection point.  Only used if spoofing to an old app version.
+     * Injection point.
+     *
+     * Used to force the creation of the advanced menu item for the Shorts quality flyout.
+     */
+    public static boolean forceAdvancedVideoQualityMenuCreation(boolean original) {
+        return Settings.RESTORE_OLD_VIDEO_QUALITY_MENU.get() || original;
+    }
+
+    /**
+     * Injection point.
+     *
+     * Used if spoofing to an old app version, and also used for the Shorts video quality flyout.
      */
     public static void showOldVideoQualityMenu(final ListView listView) {
         if (!Settings.RESTORE_OLD_VIDEO_QUALITY_MENU.get()) return;
@@ -52,17 +85,21 @@ public final class RestoreOldVideoQualityMenuPatch {
         listView.setOnHierarchyChangeListener(new ViewGroup.OnHierarchyChangeListener() {
             @Override
             public void onChildViewAdded(View parent, View child) {
-                Logger.printDebug(() -> "Added listener to old type of quality menu");
+                try {
+                    parent.setVisibility(View.GONE);
 
-                parent.setVisibility(View.GONE);
+                    final var indexOfAdvancedQualityMenuItem = 4;
+                    if (listView.indexOfChild(child) != indexOfAdvancedQualityMenuItem) return;
 
-                final var indexOfAdvancedQualityMenuItem = 4;
-                if (listView.indexOfChild(child) != indexOfAdvancedQualityMenuItem) return;
+                    Logger.printDebug(() -> "Found advanced menu item in old type of quality menu");
 
-                Logger.printDebug(() -> "Found advanced menu item in old type of quality menu");
+                    listView.setSoundEffectsEnabled(false);
+                    final var qualityItemMenuPosition = 4;
+                    listView.performItemClick(null, qualityItemMenuPosition, 0);
 
-                final var qualityItemMenuPosition = 4;
-                listView.performItemClick(null, qualityItemMenuPosition, 0);
+                } catch (Exception ex) {
+                    Logger.printException(() -> "showOldVideoQualityMenu failure", ex);
+                }
             }
 
             @Override
