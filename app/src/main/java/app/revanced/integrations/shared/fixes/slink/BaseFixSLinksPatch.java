@@ -5,24 +5,54 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import app.revanced.integrations.shared.Logger;
+import app.revanced.integrations.shared.Utils;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.SocketTimeoutException;
 import java.net.URL;
 
-import app.revanced.integrations.shared.Logger;
-import app.revanced.integrations.shared.Utils;
-
 import static app.revanced.integrations.shared.Utils.getContext;
 
+
+// This is a base class for to implement /s/ link resolution for 3rd party Reddit apps.
+//
+// Set webviewActivity as your app webview acitivity. This will be used for fallback if /s/
+// link resolution fails.
+//
+// You need the following:
+//    private FixSLinksPatch() {
+//        this.webViewActivity = WebViewActivity.class;
+//    }
+//
+// Your app would need to call this function before doing any of its own resolution
+// Your app would also check the value of return result.
+// If its true, app should *stop* all of its resolution and just sit there.
+//
+//    public static boolean resolveSLink(Context context, String link) {
+//        return getInstance().resolve(context, link);
+//    }
+//
+// Your app should call this at least once. Without this, /s/ link resolution would just do
+// nothing. This function should be inserted at moment when app sets its own access_token
+// You can look for following strings in app: bearer, access_token, Authorization.
+//
+//    public static void staticSetAccessToken(String access_token) {
+//        getInstance().setAccessToken(access_token);
+//    }
+//
+// This is required for both staticSetAccessToken and resolveSLink.
+//
+//    public static BaseFixSLinksPatch getInstance() {
+//        if (INSTANCE == null) INSTANCE = new FixSLinksPatch();
+//        return INSTANCE;
+//    }
 public abstract class BaseFixSLinksPatch {
     protected Class<? extends Activity> webViewActivity = null;
-    String accessToken = null;
-    public String pendingUrl = null;
+    protected String accessToken = null;
+    protected String pendingUrl = null;
     protected static BaseFixSLinksPatch INSTANCE;
 
     public boolean resolve(Context context, String link) {
@@ -43,14 +73,13 @@ public abstract class BaseFixSLinksPatch {
         return ret;
     }
 
-    public ResolveResult performResolution(Context context, String link) {
+    private ResolveResult performResolution(Context context, String link) {
         if (link.matches(".*reddit\\.com/r/[^/]+/s/[^/]+")) {
             Logger.printInfo(() -> "Resolving " + link);
             if (link.endsWith("#bypass")) {
                 openInAppBrowser(context, link);
                 return ResolveResult.DO_NOTHING;
             }
-            String accessToken = getUserAccessToken();
             if (accessToken == null) {
                 // This is not optimal.
                 // However, we need to get access_token to properly auth request, especially if user
@@ -119,14 +148,9 @@ public abstract class BaseFixSLinksPatch {
         return connection;
     }
 
-    @Nullable
-    public String getUserAccessToken() {
-        return accessToken;
-    }
-
-    public void setAccessToken(String access_token) {
-        Logger.printInfo(() -> "Got access token!");
-        accessToken = access_token;
+    public void setAccessToken(String accessToken) {
+        Logger.printInfo(() -> "Setting access token");
+        this.accessToken = accessToken;
         if (pendingUrl != null) {
             String resolveTarget = pendingUrl;
             pendingUrl = null;
@@ -134,38 +158,4 @@ public abstract class BaseFixSLinksPatch {
             performResolution(getContext(), resolveTarget);
         }
     }
-
-    // Implementing the /s/ links class guide.
-    //
-    // Set webviewActivity as your app webview acitivity. This will be used for fallback if /s/
-    // link resolution fails.
-    //
-    // You need the following:
-    //    private FixSLinksPatch() {
-    //        this.webViewActivity = WebViewActivity.class;
-    //    }
-    //
-    // Your app would need to call this function before doing any of its own resolution
-    // Your app would also check the value of return result.
-    // If its true, app should *stop* all of its resolution and just sit there. 
-    //
-    //    public static boolean resolveSLink(Context context, String link) {
-    //        return getInstance().resolve(context, link);
-    //    }
-    //
-    // Your app should call this at least once. Without this, /s/ link resolution would just do
-    // nothing. This function should be inserted at moment when app sets its own access_token
-    // You can look for following strings in app: bearer, access_token, Authorization.
-    //
-    //    public static void setAppAccessToken(String access_token) {
-    //        getInstance().setAccessToken(access_token);
-    //    }
-    //
-    // This is required for both setAppAccessToken and resolveSLink.
-    //
-    //    public static BaseFixSLinksPatch getInstance() {
-    //        if (INSTANCE == null) INSTANCE = new FixSLinksPatch();
-    //        return INSTANCE;
-    //    }
-
 }
