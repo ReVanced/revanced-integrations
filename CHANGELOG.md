@@ -1,3 +1,10 @@
+# [1.10.0-dev.5](https://github.com/ReVanced/revanced-integrations/compare/v1.10.0-dev.4...v1.10.0-dev.5) (2024-06-02)
+
+
+### Features
+
+* **YouTube - Playback speed:** Add option to show speed dialog button in video player ([#636](https://github.com/ReVanced/revanced-integrations/issues/636)) ([59220d6](https://github.com/ReVanced/revanced-integrations/commit/59220d6e25380d5fe6cc8c75456c04d980a83f34))
+
 # [1.10.0-dev.4](https://github.com/ReVanced/revanced-integrations/compare/v1.10.0-dev.3...v1.10.0-dev.4) (2024-06-02)
 
 
