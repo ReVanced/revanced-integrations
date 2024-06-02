@@ -1,3 +1,38 @@
+# [1.10.0-dev.5](https://github.com/ReVanced/revanced-integrations/compare/v1.10.0-dev.4...v1.10.0-dev.5) (2024-06-02)
+
+
+### Features
+
+* **YouTube - Playback speed:** Add option to show speed dialog button in video player ([#636](https://github.com/ReVanced/revanced-integrations/issues/636)) ([59220d6](https://github.com/ReVanced/revanced-integrations/commit/59220d6e25380d5fe6cc8c75456c04d980a83f34))
+
+# [1.10.0-dev.4](https://github.com/ReVanced/revanced-integrations/compare/v1.10.0-dev.3...v1.10.0-dev.4) (2024-06-02)
+
+
+### Bug Fixes
+
+* **YouTube - Spoof client:** Restore playback speed menu when spoofing to an iOS client ([2b2a70e](https://github.com/ReVanced/revanced-integrations/commit/2b2a70e6ea02ab3d140d500860d1c70c359fe8ef))
+
+# [1.10.0-dev.3](https://github.com/ReVanced/revanced-integrations/compare/v1.10.0-dev.2...v1.10.0-dev.3) (2024-06-01)
+
+
+### Features
+
+* **YouTube:** Support version `19.12`, `19.13`, `19.14`, `19.15` and `19.16` ([#643](https://github.com/ReVanced/revanced-integrations/issues/643)) ([4dce73a](https://github.com/ReVanced/revanced-integrations/commit/4dce73a6fbfeeffb8c2b1759b9c5a5eacb1e3d4b))
+
+# [1.10.0-dev.2](https://github.com/ReVanced/revanced-integrations/compare/v1.10.0-dev.1...v1.10.0-dev.2) (2024-06-01)
+
+
+### Bug Fixes
+
+* **YouTube - Spoof client:** Allow swipe gestures to enter/exit fullscreen when spoofing with `Android VR` client ([#645](https://github.com/ReVanced/revanced-integrations/issues/645)) ([b826865](https://github.com/ReVanced/revanced-integrations/commit/b826865ef40a55dc79e6e146e3c35bfe7d792886))
+
+# [1.10.0-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v1.9.2...v1.10.0-dev.1) (2024-05-31)
+
+
+### Features
+
+* **YouTube - Hide layout components:** Disable like / subscribe button glow animation ([#646](https://github.com/ReVanced/revanced-integrations/issues/646)) ([777ffb1](https://github.com/ReVanced/revanced-integrations/commit/777ffb13605dcedd58f22ccbedf62a12201e85cf))
+
 ## [1.9.2](https://github.com/ReVanced/revanced-integrations/compare/v1.9.1...v1.9.2) (2024-05-31)
 
 
