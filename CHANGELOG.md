@@ -1,3 +1,10 @@
+# [1.10.0-dev.4](https://github.com/ReVanced/revanced-integrations/compare/v1.10.0-dev.3...v1.10.0-dev.4) (2024-06-02)
+
+
+### Bug Fixes
+
+* **YouTube - Spoof client:** Restore playback speed menu when spoofing to an iOS client ([2b2a70e](https://github.com/ReVanced/revanced-integrations/commit/2b2a70e6ea02ab3d140d500860d1c70c359fe8ef))
+
 # [1.10.0-dev.3](https://github.com/ReVanced/revanced-integrations/compare/v1.10.0-dev.2...v1.10.0-dev.3) (2024-06-01)
 
 
