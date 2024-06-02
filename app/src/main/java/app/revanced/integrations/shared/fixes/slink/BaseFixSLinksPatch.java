@@ -71,8 +71,8 @@ public abstract class BaseFixSLinksPatch {
      */
     protected static BaseFixSLinksPatch INSTANCE;
 
-    public boolean resolveSLink(Context context, String link) {
-        switch (resolveLink(context, link)) {
+    public boolean resolveSLink(String link) {
+        switch (resolveLink(link)) {
             case ACCESS_TOKEN_START: {
                 pendingUrl = link;
                 return true;
@@ -84,7 +84,8 @@ public abstract class BaseFixSLinksPatch {
         }
     }
 
-    private ResolveResult resolveLink(Context context, String link) {
+    private ResolveResult resolveLink(String link) {
+        Context context = getContext();
         if (link.matches(".*reddit\\.com/r/[^/]+/s/[^/]+")) {
             // A link ends with #bypass if it failed to resolve below.
             // resolveLink is called with the same link again but this time with #bypass
@@ -153,7 +154,7 @@ public abstract class BaseFixSLinksPatch {
             String link = pendingUrl;
             pendingUrl = null;
             Logger.printInfo(() -> "Opening pending URL");
-            resolveLink(getContext(), link);
+            resolveLink(link);
         }
     }
 

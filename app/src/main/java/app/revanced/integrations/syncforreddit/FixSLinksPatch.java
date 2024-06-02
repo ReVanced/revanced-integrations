@@ -12,8 +12,8 @@ public class FixSLinksPatch extends BaseFixSLinksPatch {
         webViewActivity = WebViewActivity.class;
     }
 
-    public static boolean patchResolveSLink(Context context, String link) {
-        return getInstance().resolveSLink(context, link);
+    public static boolean patchResolveSLink(String link) {
+        return getInstance().resolveSLink(link);
     }
 
     public static void patchSetAccessToken(String accessToken) {
