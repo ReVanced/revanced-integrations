@@ -59,7 +59,7 @@ public class Utils {
     }
 
     /**
-     * @return The version name of the app, such as "YouTube".
+     * @return The version name of the app, such as 19.11.43
      */
     public static String getAppVersionName() {
         if (versionName == null) {
@@ -246,6 +246,25 @@ public class Utils {
                 if (match != null) return match;
             }
         }
+        return null;
+    }
+
+    @Nullable
+    public static ViewParent getParentView(@NonNull View view, int nthParent) {
+        ViewParent parent = view.getParent();
+
+        int currentDepth = 0;
+        while (++currentDepth < nthParent && parent != null) {
+            parent = parent.getParent();
+        }
+
+        if (currentDepth == nthParent) {
+            return parent;
+        }
+
+        final int currentDepthLog = currentDepth;
+        Logger.printDebug(() -> "Could not find parent view of depth: " + nthParent
+                + " and instead found at: " + currentDepthLog + " view: " + view);
         return null;
     }
 
