@@ -14,6 +14,7 @@ public final class TabletLayoutPatch {
     private static final boolean TABLET_MINI_PLAYER_ENABLED = Settings.TABLET_MINI_PLAYER.get();
     private static final boolean TABLET_MINI_PLAYER_MODERN_ENABLED = Settings.TABLET_MINI_PLAYER_MODERN.get();
     private static final boolean TABLET_MINI_PLAYER_MODERN_HIDE_EXPAND_CLOSE_ENABLED = Settings.TABLET_MINI_PLAYER_MODERN_HIDE_EXPAND_CLOSE.get();
+    private static final boolean TABLET_MINI_PLAYER_MODERN_HIDE_REWIND_FORWARD_ENABLED = Settings.TABLET_MINI_PLAYER_MODERN_HIDE_REWIND_FORWARD.get();
     private static final int TABLET_MINI_PLAYER_MODERN_OPACITY_LEVEL;
 
     static {
@@ -72,9 +73,14 @@ public final class TabletLayoutPatch {
     /**
      * Injection point.
      */
-    public static void hideModernMiniPlayerButtonView(ImageView view) {
-        if (TABLET_MINI_PLAYER_MODERN_ENABLED) {
-            Utils.removeViewFromParentUnderCondition(TABLET_MINI_PLAYER_MODERN_HIDE_EXPAND_CLOSE_ENABLED, view);
-        }
+    public static void hideModernMiniPlayerExpandClose(ImageView view) {
+        Utils.removeViewFromParentUnderCondition(TABLET_MINI_PLAYER_MODERN_HIDE_EXPAND_CLOSE_ENABLED, view);
+    }
+
+    /**
+     * Injection point.
+     */
+    public static void hideModernMiniPlayerRewindForward(ImageView view) {
+        Utils.removeViewFromParentUnderCondition(TABLET_MINI_PLAYER_MODERN_HIDE_REWIND_FORWARD_ENABLED, view);
     }
 }

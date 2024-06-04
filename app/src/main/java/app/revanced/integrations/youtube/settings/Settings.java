@@ -180,6 +180,7 @@ public class Settings extends BaseSettings {
     public static final BooleanSetting TABLET_MINI_PLAYER = new BooleanSetting("revanced_tablet_mini_player", FALSE, true);
     public static final BooleanSetting TABLET_MINI_PLAYER_MODERN = new BooleanSetting("revanced_tablet_mini_player_modern", FALSE, true, parent(TABLET_MINI_PLAYER));
     public static final BooleanSetting TABLET_MINI_PLAYER_MODERN_HIDE_EXPAND_CLOSE = new BooleanSetting("revanced_tablet_mini_player_modern_hide_expand_close", FALSE, true, parentsAll(TABLET_MINI_PLAYER, TABLET_MINI_PLAYER_MODERN));
+    public static final BooleanSetting TABLET_MINI_PLAYER_MODERN_HIDE_REWIND_FORWARD = new BooleanSetting("revanced_tablet_mini_player_modern_hide_rewind_forward", FALSE, true, parentsAll(TABLET_MINI_PLAYER, TABLET_MINI_PLAYER_MODERN));
     public static final IntegerSetting TABLET_MINI_PLAYER_OPACITY = new IntegerSetting("revanced_tablet_mini_player_opacity", 100, true, parentsAll(TABLET_MINI_PLAYER, TABLET_MINI_PLAYER_MODERN));
 
     public static final BooleanSetting WIDE_SEARCHBAR = new BooleanSetting("revanced_wide_searchbar", FALSE, true);
