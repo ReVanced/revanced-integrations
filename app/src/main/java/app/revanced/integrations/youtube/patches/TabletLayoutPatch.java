@@ -6,11 +6,19 @@ import app.revanced.integrations.shared.Utils;
 import app.revanced.integrations.youtube.settings.Settings;
 
 @SuppressWarnings("unused")
-public class TabletMiniPlayerOverridePatch {
+public final class TabletLayoutPatch {
 
+    private static final Boolean TABLET_LAYOUT_ENABLED = Settings.TABLET_LAYOUT.get();
     private static final Boolean TABLET_MINI_PLAYER_ENABLED = Settings.TABLET_MINI_PLAYER.get();
     private static final Boolean TABLET_MINI_PLAYER_MODERN_ENABLED = Settings.TABLET_MINI_PLAYER_MODERN.get();
     private static final Boolean TABLET_MINI_PLAYER_MODERN_HIDE_EXPAND_CLOSE_ENABLED = Settings.TABLET_MINI_PLAYER_MODERN_HIDE_EXPAND_CLOSE.get();
+
+    /**
+     * Injection point.
+     */
+    public static boolean getTabletLayoutEnabled() {
+        return TABLET_LAYOUT_ENABLED;
+    }
 
     /**
      * Injection point.
@@ -45,5 +53,4 @@ public class TabletMiniPlayerOverridePatch {
             Utils.removeViewFromParentUnderCondition(TABLET_MINI_PLAYER_MODERN_HIDE_EXPAND_CLOSE_ENABLED, view);
         }
     }
-
 }
