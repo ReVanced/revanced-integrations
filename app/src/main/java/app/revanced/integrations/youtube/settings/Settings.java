@@ -19,6 +19,7 @@ import app.revanced.integrations.youtube.patches.AlternativeThumbnailsPatch.Thum
 import app.revanced.integrations.youtube.patches.spoof.SpoofAppVersionPatch;
 import app.revanced.integrations.youtube.sponsorblock.SponsorBlockSettings;
 
+@SuppressWarnings("deprecation")
 public class Settings extends BaseSettings {
     // Video
     public static final BooleanSetting RESTORE_OLD_VIDEO_QUALITY_MENU = new BooleanSetting("revanced_restore_old_video_quality_menu", TRUE);

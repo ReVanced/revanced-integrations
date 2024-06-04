@@ -11,10 +11,18 @@ import app.revanced.integrations.youtube.settings.Settings;
 public final class TabletLayoutPatch {
 
     private static final boolean TABLET_LAYOUT_ENABLED = Settings.TABLET_LAYOUT.get();
+
     private static final boolean TABLET_MINI_PLAYER_ENABLED = Settings.TABLET_MINI_PLAYER.get();
-    private static final boolean TABLET_MINI_PLAYER_MODERN_ENABLED = Settings.TABLET_MINI_PLAYER_MODERN.get();
-    private static final boolean TABLET_MINI_PLAYER_MODERN_HIDE_EXPAND_CLOSE_ENABLED = Settings.TABLET_MINI_PLAYER_MODERN_HIDE_EXPAND_CLOSE.get();
-    private static final boolean TABLET_MINI_PLAYER_MODERN_HIDE_REWIND_FORWARD_ENABLED = Settings.TABLET_MINI_PLAYER_MODERN_HIDE_REWIND_FORWARD.get();
+
+    private static final boolean TABLET_MINI_PLAYER_MODERN_ENABLED
+            = TABLET_MINI_PLAYER_ENABLED && Settings.TABLET_MINI_PLAYER_MODERN.get();
+
+    private static final boolean TABLET_MINI_PLAYER_MODERN_HIDE_EXPAND_CLOSE_ENABLED
+            = TABLET_MINI_PLAYER_MODERN_ENABLED && Settings.TABLET_MINI_PLAYER_MODERN_HIDE_EXPAND_CLOSE.get();
+
+    private static final boolean TABLET_MINI_PLAYER_MODERN_HIDE_REWIND_FORWARD_ENABLED
+            = TABLET_MINI_PLAYER_MODERN_ENABLED && Settings.TABLET_MINI_PLAYER_MODERN_HIDE_REWIND_FORWARD.get();
+
     private static final int TABLET_MINI_PLAYER_MODERN_OPACITY_LEVEL;
 
     static {
@@ -54,11 +62,9 @@ public final class TabletLayoutPatch {
      * Injection point.
      */
     public static int getModernTabletMiniPlayerOverrideInt(int original) {
-        if (TABLET_MINI_PLAYER_MODERN_ENABLED) {
-            return 1;
-        }
-
-        return original;
+        return TABLET_MINI_PLAYER_MODERN_ENABLED
+                ? 1
+                : original;
     }
 
     /**
