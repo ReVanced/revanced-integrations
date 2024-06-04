@@ -89,6 +89,7 @@ public class Utils {
         return versionName;
     }
 
+
     /**
      * Hide a view by setting its layout height and width to 1dp.
      *
@@ -96,11 +97,21 @@ public class Utils {
      * @param view      The view to hide.
      */
     public static void hideViewBy0dpUnderCondition(BooleanSetting condition, View view) {
-        if (!condition.get()) return;
+        hideViewBy0dpUnderCondition(condition.get(), view);
+    }
 
-        Logger.printDebug(() -> "Hiding view with setting: " + condition);
+    /**
+     * Hide a view by setting its layout height and width to 1dp.
+     *
+     * @param condition The setting to check for hiding the view.
+     * @param view      The view to hide.
+     */
+    public static void hideViewBy0dpUnderCondition(boolean condition, View view) {
+        if (condition) {
+            Logger.printDebug(() -> "Hiding view with setting: " + condition);
 
-        hideViewByLayoutParams(view);
+            hideViewByLayoutParams(view);
+        }
     }
 
     /**
@@ -110,15 +121,29 @@ public class Utils {
      * @param view      The view to hide.
      */
     public static void hideViewUnderCondition(BooleanSetting condition, View view) {
-        if (!condition.get()) return;
-
-        Logger.printDebug(() -> "Hiding view with setting: " + condition);
-
-        view.setVisibility(View.GONE);
+        hideViewUnderCondition(condition.get(), view);
     }
 
-    public static void removeViewFromParentUnderConditions(BooleanSetting setting, View view) {
-        if (setting.get()) {
+    /**
+     * Hide a view by setting its visibility to GONE.
+     *
+     * @param condition The setting to check for hiding the view.
+     * @param view      The view to hide.
+     */
+    public static void hideViewUnderCondition(boolean condition, View view) {
+        if (condition) {
+            Logger.printDebug(() -> "Hiding view with setting: " + condition);
+
+            view.setVisibility(View.GONE);
+        }
+    }
+
+    public static void removeViewFromParentUnderCondition(BooleanSetting setting, View view) {
+        removeViewFromParentUnderCondition(setting.get(), view);
+    }
+
+    public static void removeViewFromParentUnderCondition(boolean setting, View view) {
+        if (setting) {
             ViewParent parent = view.getParent();
             if (parent instanceof ViewGroup) {
                 ((ViewGroup) parent).removeView(view);

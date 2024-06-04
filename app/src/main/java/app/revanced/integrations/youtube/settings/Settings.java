@@ -1,5 +1,14 @@
 package app.revanced.integrations.youtube.settings;
 
+import static java.lang.Boolean.FALSE;
+import static java.lang.Boolean.TRUE;
+import static app.revanced.integrations.shared.settings.Setting.*;
+import static app.revanced.integrations.youtube.sponsorblock.objects.CategoryBehaviour.*;
+
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
 import app.revanced.integrations.shared.Logger;
 import app.revanced.integrations.shared.settings.*;
 import app.revanced.integrations.shared.settings.preference.SharedPrefCategory;
@@ -9,15 +18,6 @@ import app.revanced.integrations.youtube.patches.AlternativeThumbnailsPatch.Thum
 import app.revanced.integrations.youtube.patches.AlternativeThumbnailsPatch.ThumbnailStillTime;
 import app.revanced.integrations.youtube.patches.spoof.SpoofAppVersionPatch;
 import app.revanced.integrations.youtube.sponsorblock.SponsorBlockSettings;
-
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-
-import static app.revanced.integrations.shared.settings.Setting.*;
-import static app.revanced.integrations.youtube.sponsorblock.objects.CategoryBehaviour.*;
-import static java.lang.Boolean.FALSE;
-import static java.lang.Boolean.TRUE;
 
 public class Settings extends BaseSettings {
     // Video
@@ -175,7 +175,10 @@ public class Settings extends BaseSettings {
     public static final BooleanSetting SPOOF_APP_VERSION = new BooleanSetting("revanced_spoof_app_version", FALSE, true, "revanced_spoof_app_version_user_dialog_message");
     public static final StringSetting SPOOF_APP_VERSION_TARGET = new StringSetting("revanced_spoof_app_version_target", "17.33.42", true, parent(SPOOF_APP_VERSION));
     public static final BooleanSetting TABLET_LAYOUT = new BooleanSetting("revanced_tablet_layout", FALSE, true, "revanced_tablet_layout_user_dialog_message");
-    public static final BooleanSetting USE_TABLET_MINIPLAYER = new BooleanSetting("revanced_tablet_miniplayer", FALSE, true);
+    @Deprecated public static final BooleanSetting DEPRECATED_TABLET_MINIPLAYER = new BooleanSetting("revanced_tablet_miniplayer", FALSE, true);
+    public static final BooleanSetting TABLET_MINI_PLAYER = new BooleanSetting("revanced_tablet_mini_player", FALSE, true);
+    public static final BooleanSetting TABLET_MINI_PLAYER_MODERN = new BooleanSetting("revanced_tablet_mini_player_modern", FALSE, true, parent(TABLET_MINI_PLAYER));
+    public static final BooleanSetting TABLET_MINI_PLAYER_MODERN_HIDE_EXPAND_CLOSE = new BooleanSetting("revanced_tablet_mini_player_modern_hide_expand_close", FALSE, true, parentsAll(TABLET_MINI_PLAYER, TABLET_MINI_PLAYER_MODERN));
     public static final BooleanSetting WIDE_SEARCHBAR = new BooleanSetting("revanced_wide_searchbar", FALSE, true);
     public static final BooleanSetting REMOVE_VIEWER_DISCRETION_DIALOG = new BooleanSetting("revanced_remove_viewer_discretion_dialog", FALSE,
             "revanced_remove_viewer_discretion_dialog_user_dialog_message");
@@ -402,6 +405,8 @@ public class Settings extends BaseSettings {
         Setting.preferences.removeKey("revanced_announcement_consumer");
 
         migrateOldSettingToNew(HIDE_LOAD_MORE_BUTTON, HIDE_SHOW_MORE_BUTTON);
+
+        migrateOldSettingToNew(DEPRECATED_TABLET_MINIPLAYER, TABLET_MINI_PLAYER);
 
         // endregion
     }
