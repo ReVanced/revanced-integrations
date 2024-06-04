@@ -174,11 +174,14 @@ public class Settings extends BaseSettings {
     public static final StringSetting START_PAGE = new StringSetting("revanced_start_page", "");
     public static final BooleanSetting SPOOF_APP_VERSION = new BooleanSetting("revanced_spoof_app_version", FALSE, true, "revanced_spoof_app_version_user_dialog_message");
     public static final StringSetting SPOOF_APP_VERSION_TARGET = new StringSetting("revanced_spoof_app_version_target", "17.33.42", true, parent(SPOOF_APP_VERSION));
-    public static final BooleanSetting TABLET_LAYOUT = new BooleanSetting("revanced_tablet_layout", FALSE, true, "revanced_tablet_layout_user_dialog_message");
+
     @Deprecated public static final BooleanSetting DEPRECATED_TABLET_MINIPLAYER = new BooleanSetting("revanced_tablet_miniplayer", FALSE, true);
+    public static final BooleanSetting TABLET_LAYOUT = new BooleanSetting("revanced_tablet_layout", FALSE, true, "revanced_tablet_layout_user_dialog_message");
     public static final BooleanSetting TABLET_MINI_PLAYER = new BooleanSetting("revanced_tablet_mini_player", FALSE, true);
     public static final BooleanSetting TABLET_MINI_PLAYER_MODERN = new BooleanSetting("revanced_tablet_mini_player_modern", FALSE, true, parent(TABLET_MINI_PLAYER));
     public static final BooleanSetting TABLET_MINI_PLAYER_MODERN_HIDE_EXPAND_CLOSE = new BooleanSetting("revanced_tablet_mini_player_modern_hide_expand_close", FALSE, true, parentsAll(TABLET_MINI_PLAYER, TABLET_MINI_PLAYER_MODERN));
+    public static final IntegerSetting TABLET_MINI_PLAYER_OPACITY = new IntegerSetting("revanced_tablet_mini_player_opacity", 100, true, parentsAll(TABLET_MINI_PLAYER, TABLET_MINI_PLAYER_MODERN));
+
     public static final BooleanSetting WIDE_SEARCHBAR = new BooleanSetting("revanced_wide_searchbar", FALSE, true);
     public static final BooleanSetting REMOVE_VIEWER_DISCRETION_DIALOG = new BooleanSetting("revanced_remove_viewer_discretion_dialog", FALSE,
             "revanced_remove_viewer_discretion_dialog_user_dialog_message");
