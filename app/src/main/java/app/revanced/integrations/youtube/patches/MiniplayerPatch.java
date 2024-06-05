@@ -22,12 +22,12 @@ public final class MiniplayerPatch {
      * Mini player type. Null fields indicates to use the original un-patched value.
      */
     public enum MiniplayerType {
-        /** Unmodified type, and same as unpatched */
+        /** Unmodified type, and same as un-patched. */
         ORIGINAL(false, null),
         PHONE(false, null),
         PHONE_MODERN(false, 3),
         TABLET(true, null),
-        TABLET_MODERN(true, 1),
+        TABLET_MODERN(false, 1),
         /**
          * Modern design with layout of old tablet miniplayer.
          * Has some bugs with vertical videos and empty sub texts,
@@ -36,9 +36,13 @@ public final class MiniplayerPatch {
          * If anyone wants to try it anyways, then manually edit the imported data and
          * change the type to this enum name.
          */
-        TABLET_MODERN_2(true, 2);
+        TABLET_MODERN_2(false, 2);
 
+        /**
+         * Legacy tablet hook value.
+         */
         final boolean isTablet;
+
         @Nullable
         final Integer modernIntValue;
 
