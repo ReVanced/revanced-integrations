@@ -23,11 +23,11 @@ public final class MiniplayerPatch {
      */
     public enum MiniplayerType {
         /** Unmodified type, and same as un-patched. */
-        ORIGINAL(false, null),
+        ORIGINAL(null, null),
         PHONE(false, null),
-        PHONE_MODERN(false, 3),
+        PHONE_MODERN(null, 3),
         TABLET(true, null),
-        TABLET_MODERN(false, 1),
+        TABLET_MODERN(null, 1),
         /**
          * Modern design with layout of old tablet miniplayer.
          * Has some bugs with vertical videos and empty sub texts,
@@ -41,12 +41,13 @@ public final class MiniplayerPatch {
         /**
          * Legacy tablet hook value.
          */
-        final boolean isTablet;
+        @Nullable
+        final Boolean isTablet;
 
         @Nullable
         final Integer modernIntValue;
 
-        MiniplayerType(boolean isTablet, @Nullable Integer modernIntValue) {
+        MiniplayerType(@Nullable Boolean isTablet, @Nullable Integer modernIntValue) {
             this.isTablet = isTablet;
             this.modernIntValue = modernIntValue;
         }
@@ -100,11 +101,10 @@ public final class MiniplayerPatch {
      * Injection point.
      */
     public static boolean getTabletOverride(boolean original) {
-        if (CURRENT_TYPE == ORIGINAL) {
-            return original;
-        }
-
-        return CURRENT_TYPE.isTablet;
+        Boolean isTablet = CURRENT_TYPE.isTablet;
+        return isTablet == null
+                ? original
+                : isTablet;
     }
 
     /**
