@@ -3,7 +3,7 @@ package app.revanced.integrations.youtube.settings;
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
 import static app.revanced.integrations.shared.settings.Setting.*;
-import static app.revanced.integrations.youtube.patches.MiniPlayerPatch.*;
+import static app.revanced.integrations.youtube.patches.MiniplayerPatch.*;
 import static app.revanced.integrations.youtube.sponsorblock.objects.CategoryBehaviour.*;
 
 import java.util.Arrays;
@@ -17,7 +17,6 @@ import app.revanced.integrations.youtube.patches.AlternativeThumbnailsPatch.DeAr
 import app.revanced.integrations.youtube.patches.AlternativeThumbnailsPatch.StillImagesAvailability;
 import app.revanced.integrations.youtube.patches.AlternativeThumbnailsPatch.ThumbnailOption;
 import app.revanced.integrations.youtube.patches.AlternativeThumbnailsPatch.ThumbnailStillTime;
-import app.revanced.integrations.youtube.patches.MiniPlayerPatch;
 import app.revanced.integrations.youtube.patches.spoof.SpoofAppVersionPatch;
 import app.revanced.integrations.youtube.sponsorblock.SponsorBlockSettings;
 
@@ -132,12 +131,12 @@ public class Settings extends BaseSettings {
     public static final BooleanSetting COPY_VIDEO_URL_TIMESTAMP = new BooleanSetting("revanced_copy_video_url_timestamp", TRUE);
     public static final BooleanSetting PLAYBACK_SPEED_DIALOG_BUTTON = new BooleanSetting("revanced_playback_speed_dialog_button", FALSE);
 
-    // Mini player
-    public static final EnumSetting<MiniPlayerType> TABLET_MINI_PLAYER_TYPE = new EnumSetting<>("revanced_mini_player_type", MiniPlayerPatch.MiniPlayerType.ORIGINAL, true);
-    public static final BooleanSetting TABLET_MINI_PLAYER_MODERN_HIDE_EXPAND_CLOSE = new BooleanSetting("revanced_mini_player_modern_hide_expand_close", FALSE, true, new MiniPlayerModernAvailability());
-    public static final BooleanSetting TABLET_MINI_PLAYER_MODERN_HIDE_SUB_TEXT = new BooleanSetting("revanced_mini_player_modern_hide_sub_text", FALSE, true, new MiniPlayerModernAvailability());
-    public static final BooleanSetting TABLET_MINI_PLAYER_MODERN_HIDE_REWIND_FORWARD = new BooleanSetting("revanced_mini_player_modern_hide_rewind_forward", FALSE, true, new MiniPlayerTabletModernAvailability());
-    public static final IntegerSetting TABLET_MINI_PLAYER_OPACITY = new IntegerSetting("revanced_mini_player_modern_opacity", 100, true, new MiniPlayerTabletModernAvailability());
+    // Miniplayer
+    public static final EnumSetting<MiniplayerType> TABLET_MINIPLAYER_TYPE = new EnumSetting<>("revanced_miniplayer_type", MiniplayerType.ORIGINAL, true);
+    public static final BooleanSetting TABLET_MINIPLAYER_HIDE_EXPAND_CLOSE = new BooleanSetting("revanced_miniplayer_hide_expand_close", FALSE, true, new MiniplayerModernAvailability());
+    public static final BooleanSetting TABLET_MINIPLAYER_HIDE_SUB_TEXT = new BooleanSetting("revanced_miniplayer_hide_sub_text", FALSE, true, new MiniplayerModernAvailability());
+    public static final BooleanSetting TABLET_MINIPLAYER_HIDE_REWIND_FORWARD = new BooleanSetting("revanced_miniplayer_hide_rewind_forward", FALSE, true, new MiniplayerTabletModernAvailability());
+    public static final IntegerSetting TABLET_MINIPLAYER_OPACITY = new IntegerSetting("revanced_miniplayer_opacity", 100, true, new MiniplayerTabletModernAvailability());
 
     // External downloader
     public static final BooleanSetting EXTERNAL_DOWNLOADER = new BooleanSetting("revanced_external_downloader", FALSE);
