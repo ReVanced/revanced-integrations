@@ -1,6 +1,7 @@
 package app.revanced.integrations.youtube.patches;
 
 import static app.revanced.integrations.shared.StringRef.str;
+import static app.revanced.integrations.youtube.patches.MiniPlayerPatch.MiniPlayerType.PHONE_MODERN;
 import static app.revanced.integrations.youtube.patches.MiniPlayerPatch.MiniPlayerType.TABLET_MODERN;
 
 import android.widget.ImageView;
@@ -45,6 +46,14 @@ public final class MiniPlayerPatch {
         }
     }
 
+    public static final class ModernMiniPlayerAvailability implements Setting.Availability {
+        @Override
+        public boolean isAvailable() {
+            var type = Settings.TABLET_MINI_PLAYER_TYPE.get();
+            return type == PHONE_MODERN || type == TABLET_MODERN;
+        }
+    }
+
     public static final class TabletModernMiniPlayerAvailability implements Setting.Availability {
         @Override
         public boolean isAvailable() {
@@ -53,16 +62,15 @@ public final class MiniPlayerPatch {
     }
 
     private static final MiniPlayerType CURRENT_TYPE = Settings.TABLET_MINI_PLAYER_TYPE.get();
+    private static final boolean TABLET_MODERN_SELECTED = (CURRENT_TYPE == TABLET_MODERN);
 
-    private static final boolean TABLET_MINI_PLAYER_MODERN_ENABLED = (CURRENT_TYPE == TABLET_MODERN);
+    private static final boolean HIDE_EXPAND_CLOSE_BUTTONS_ENABLED =
+            CURRENT_TYPE.modernIntValue != null && Settings.TABLET_MINI_PLAYER_MODERN_HIDE_EXPAND_CLOSE.get();
 
-    private static final boolean TABLET_MINI_PLAYER_MODERN_HIDE_EXPAND_CLOSE_ENABLED =
-            TABLET_MINI_PLAYER_MODERN_ENABLED && Settings.TABLET_MINI_PLAYER_MODERN_HIDE_EXPAND_CLOSE.get();
+    private static final boolean HIDE_REWIND_FORWARD_ENABLED =
+            TABLET_MODERN_SELECTED && Settings.TABLET_MINI_PLAYER_MODERN_HIDE_REWIND_FORWARD.get();
 
-    private static final boolean TABLET_MINI_PLAYER_MODERN_HIDE_REWIND_FORWARD_ENABLED =
-            TABLET_MINI_PLAYER_MODERN_ENABLED && Settings.TABLET_MINI_PLAYER_MODERN_HIDE_REWIND_FORWARD.get();
-
-    private static final int TABLET_MINI_PLAYER_MODERN_OPACITY_LEVEL;
+    private static final int TABLET_MODERN_OPACITY_LEVEL;
 
     static {
         int opacity = Settings.TABLET_MINI_PLAYER_OPACITY.get();
@@ -73,7 +81,7 @@ public final class MiniPlayerPatch {
             opacity = Settings.TABLET_MINI_PLAYER_OPACITY.defaultValue;
         }
 
-        TABLET_MINI_PLAYER_MODERN_OPACITY_LEVEL = (opacity * 255) / 100;
+        TABLET_MODERN_OPACITY_LEVEL = (opacity * 255) / 100;
     }
 
     /**
@@ -107,8 +115,8 @@ public final class MiniPlayerPatch {
      * Injection point.
      */
     public static void adjustModernMiniPlayerOpacity(ImageView view) {
-        if (TABLET_MINI_PLAYER_MODERN_ENABLED) {
-            view.setImageAlpha(TABLET_MINI_PLAYER_MODERN_OPACITY_LEVEL);
+        if (TABLET_MODERN_SELECTED) {
+            view.setImageAlpha(TABLET_MODERN_OPACITY_LEVEL);
         }
     }
 
@@ -116,13 +124,13 @@ public final class MiniPlayerPatch {
      * Injection point.
      */
     public static void hideModernMiniPlayerExpandClose(ImageView view) {
-        Utils.removeViewFromParentUnderCondition(TABLET_MINI_PLAYER_MODERN_HIDE_EXPAND_CLOSE_ENABLED, view);
+        Utils.removeViewFromParentUnderCondition(HIDE_EXPAND_CLOSE_BUTTONS_ENABLED, view);
     }
 
     /**
      * Injection point.
      */
     public static void hideModernMiniPlayerRewindForward(ImageView view) {
-        Utils.removeViewFromParentUnderCondition(TABLET_MINI_PLAYER_MODERN_HIDE_REWIND_FORWARD_ENABLED, view);
+        Utils.removeViewFromParentUnderCondition(HIDE_REWIND_FORWARD_ENABLED, view);
     }
 }

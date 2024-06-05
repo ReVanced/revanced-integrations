@@ -3,8 +3,7 @@ package app.revanced.integrations.youtube.settings;
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
 import static app.revanced.integrations.shared.settings.Setting.*;
-import static app.revanced.integrations.youtube.patches.MiniPlayerPatch.MiniPlayerType;
-import static app.revanced.integrations.youtube.patches.MiniPlayerPatch.TabletModernMiniPlayerAvailability;
+import static app.revanced.integrations.youtube.patches.MiniPlayerPatch.*;
 import static app.revanced.integrations.youtube.sponsorblock.objects.CategoryBehaviour.*;
 
 import java.util.Arrays;
@@ -135,7 +134,7 @@ public class Settings extends BaseSettings {
 
     // Mini player
     public static final EnumSetting<MiniPlayerType> TABLET_MINI_PLAYER_TYPE = new EnumSetting<>("revanced_mini_player_type", MiniPlayerPatch.MiniPlayerType.ORIGINAL, true);
-    public static final BooleanSetting TABLET_MINI_PLAYER_MODERN_HIDE_EXPAND_CLOSE = new BooleanSetting("revanced_mini_player_tablet_modern_hide_expand_close", FALSE, true, new TabletModernMiniPlayerAvailability());
+    public static final BooleanSetting TABLET_MINI_PLAYER_MODERN_HIDE_EXPAND_CLOSE = new BooleanSetting("revanced_mini_player_tablet_modern_hide_expand_close", FALSE, true, new ModernMiniPlayerAvailability());
     public static final BooleanSetting TABLET_MINI_PLAYER_MODERN_HIDE_REWIND_FORWARD = new BooleanSetting("revanced_mini_player_tablet_modern_hide_rewind_forward", FALSE, true, new TabletModernMiniPlayerAvailability());
     public static final IntegerSetting TABLET_MINI_PLAYER_OPACITY = new IntegerSetting("revanced_mini_player_tablet_modern_opacity", 100, true, new TabletModernMiniPlayerAvailability());
 
