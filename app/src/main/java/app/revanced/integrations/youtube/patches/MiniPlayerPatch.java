@@ -1,10 +1,12 @@
 package app.revanced.integrations.youtube.patches;
 
 import static app.revanced.integrations.shared.StringRef.str;
-import static app.revanced.integrations.youtube.patches.MiniPlayerPatch.MiniPlayerType.PHONE_MODERN;
 import static app.revanced.integrations.youtube.patches.MiniPlayerPatch.MiniPlayerType.TABLET_MODERN;
 
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
@@ -27,10 +29,10 @@ public final class MiniPlayerPatch {
         TABLET_MODERN(true, 1),
         /**
          * Modern design with layout of old tablet mini player.
-         * Has some bugs, and not substantially different from the old tablet mini player
-         * so it's not currently exposed.
+         * Has some bugs with vertical videos and empty sub texts,
+         * and not substantially different from the old tablet mini player so it's not currently exposed.
          *
-         * If anyone wants to try it anyways, they can manually edit the imported data and
+         * If anyone wants to try it anyways, then manually edit the imported data and
          * change the type to this enum name.
          */
         TABLET_MODERN_2(true, 2);
@@ -44,17 +46,20 @@ public final class MiniPlayerPatch {
             this.isTablet = isTablet;
             this.modernIntValue = modernIntValue;
         }
-    }
 
-    public static final class ModernMiniPlayerAvailability implements Setting.Availability {
-        @Override
-        public boolean isAvailable() {
-            var type = Settings.TABLET_MINI_PLAYER_TYPE.get();
-            return type == PHONE_MODERN || type == TABLET_MODERN;
+        public boolean isModern() {
+            return modernIntValue != null;
         }
     }
 
-    public static final class TabletModernMiniPlayerAvailability implements Setting.Availability {
+    public static final class MiniPlayerModernAvailability implements Setting.Availability {
+        @Override
+        public boolean isAvailable() {
+            return Settings.TABLET_MINI_PLAYER_TYPE.get().modernIntValue != null;
+        }
+    }
+
+    public static final class MiniPlayerTabletModernAvailability implements Setting.Availability {
         @Override
         public boolean isAvailable() {
             return Settings.TABLET_MINI_PLAYER_TYPE.get() == TABLET_MODERN;
@@ -65,7 +70,10 @@ public final class MiniPlayerPatch {
     private static final boolean TABLET_MODERN_SELECTED = (CURRENT_TYPE == TABLET_MODERN);
 
     private static final boolean HIDE_EXPAND_CLOSE_BUTTONS_ENABLED =
-            CURRENT_TYPE.modernIntValue != null && Settings.TABLET_MINI_PLAYER_MODERN_HIDE_EXPAND_CLOSE.get();
+            CURRENT_TYPE.isModern() && Settings.TABLET_MINI_PLAYER_MODERN_HIDE_EXPAND_CLOSE.get();
+
+    private static final boolean HIDE_SUBTEXTS_ENABLED =
+            CURRENT_TYPE.isModern() && Settings.TABLET_MINI_PLAYER_MODERN_HIDE_SUB_TEXT.get();
 
     private static final boolean HIDE_REWIND_FORWARD_ENABLED =
             TABLET_MODERN_SELECTED && Settings.TABLET_MINI_PLAYER_MODERN_HIDE_REWIND_FORWARD.get();
@@ -98,7 +106,7 @@ public final class MiniPlayerPatch {
      * Injection point.
      */
     public static boolean getModernMiniPlayerOverrideBoolean(boolean original) {
-        return CURRENT_TYPE.modernIntValue != null || original;
+        return CURRENT_TYPE.isModern() || original;
     }
 
     /**
@@ -132,5 +140,14 @@ public final class MiniPlayerPatch {
      */
     public static void hideModernMiniPlayerRewindForward(ImageView view) {
         Utils.removeViewFromParentUnderCondition(HIDE_REWIND_FORWARD_ENABLED, view);
+    }
+
+    /**
+     * Injection point.
+     */
+    public static void hideModernMiniPlayerView(View view) {
+        // Different subviews are passed in, but only TextView and layouts are of interest here.
+        final boolean hideView = HIDE_SUBTEXTS_ENABLED && (view instanceof TextView || view instanceof LinearLayout);
+        Utils.removeViewFromParentUnderCondition(hideView, view);
     }
 }
