@@ -36,24 +36,27 @@ public final class MiniplayerPatch {
          * If anyone wants to try it anyways, then manually edit the imported data and
          * change the type to this enum name.
          */
-        TABLET_MODERN_2(false, 2);
+        TABLET_MODERN_2(null, 2);
 
         /**
          * Legacy tablet hook value.
          */
         @Nullable
-        final Boolean isTablet;
+        final Boolean legacyTabletOverride;
 
+        /**
+         * Modern player type used by YT.
+         */
         @Nullable
-        final Integer modernIntValue;
+        final Integer modernPlayerType;
 
-        MiniplayerType(@Nullable Boolean isTablet, @Nullable Integer modernIntValue) {
-            this.isTablet = isTablet;
-            this.modernIntValue = modernIntValue;
+        MiniplayerType(@Nullable Boolean legacyTabletOverride, @Nullable Integer modernPlayerType) {
+            this.legacyTabletOverride = legacyTabletOverride;
+            this.modernPlayerType = modernPlayerType;
         }
 
         public boolean isModern() {
-            return modernIntValue != null;
+            return modernPlayerType != null;
         }
     }
 
@@ -100,8 +103,8 @@ public final class MiniplayerPatch {
     /**
      * Injection point.
      */
-    public static boolean getTabletOverride(boolean original) {
-        Boolean isTablet = CURRENT_TYPE.isTablet;
+    public static boolean getLegacyTabletOverride(boolean original) {
+        Boolean isTablet = CURRENT_TYPE.legacyTabletOverride;
         return isTablet == null
                 ? original
                 : isTablet;
@@ -111,18 +114,16 @@ public final class MiniplayerPatch {
      * Injection point.
      */
     public static boolean getModernOverride(boolean original) {
-        if (CURRENT_TYPE == ORIGINAL) {
-            return original;
-        }
-
-        return CURRENT_TYPE.modernIntValue != null;
+        return CURRENT_TYPE == ORIGINAL
+                ? original
+                : CURRENT_TYPE.isModern();
     }
 
     /**
      * Injection point.
      */
     public static int getModernOverrideType(int original) {
-        Integer modernValue = CURRENT_TYPE.modernIntValue;
+        Integer modernValue = CURRENT_TYPE.modernPlayerType;
         return modernValue == null
                 ? original
                 : modernValue;
