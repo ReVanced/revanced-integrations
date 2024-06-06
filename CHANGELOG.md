@@ -1,3 +1,10 @@
+## [1.10.1-dev.2](https://github.com/ReVanced/revanced-integrations/compare/v1.10.1-dev.1...v1.10.1-dev.2) (2024-06-06)
+
+
+### Bug Fixes
+
+* **YouTube - Return YouTube Dislike:** Do not replace view count with dislikes ([5f79196](https://github.com/ReVanced/revanced-integrations/commit/5f7919669250e95fc47c1a2705b352b53aa226f6))
+
 ## [1.10.1-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v1.10.0...v1.10.1-dev.1) (2024-06-06)
 
 
