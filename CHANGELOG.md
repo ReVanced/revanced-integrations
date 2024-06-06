@@ -1,3 +1,10 @@
+## [1.10.1-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v1.10.0...v1.10.1-dev.1) (2024-06-06)
+
+
+### Bug Fixes
+
+* **YouTube - Spoof client:** Correctly play some live streams when using Android VR ([f74fb17](https://github.com/ReVanced/revanced-integrations/commit/f74fb17a127b1ed8094db23a04e228d8abd05440))
+
 # [1.10.0](https://github.com/ReVanced/revanced-integrations/compare/v1.9.2...v1.10.0) (2024-06-02)
 
 
