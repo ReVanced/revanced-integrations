@@ -1,3 +1,10 @@
+# [1.11.0-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v1.10.1-dev.3...v1.11.0-dev.1) (2024-06-07)
+
+
+### Features
+
+* **YouTube - Miniplayer:** Rename `Tablet mini player` and allow selecting the style of the in-app miniplayer ([#649](https://github.com/ReVanced/revanced-integrations/issues/649)) ([f483af6](https://github.com/ReVanced/revanced-integrations/commit/f483af6d3a2c1003cd566b4bf36fa4a257d1d6d3))
+
 ## [1.10.1-dev.3](https://github.com/ReVanced/revanced-integrations/compare/v1.10.1-dev.2...v1.10.1-dev.3) (2024-06-07)
 
 
