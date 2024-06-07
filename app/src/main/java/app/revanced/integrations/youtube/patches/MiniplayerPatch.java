@@ -1,16 +1,17 @@
 package app.revanced.integrations.youtube.patches;
 
 import static app.revanced.integrations.shared.StringRef.str;
-import static app.revanced.integrations.youtube.patches.MiniplayerPatch.MiniplayerType.ORIGINAL;
-import static app.revanced.integrations.youtube.patches.MiniplayerPatch.MiniplayerType.TABLET_MODERN;
+import static app.revanced.integrations.youtube.patches.MiniplayerPatch.MiniplayerType.*;
 
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
+import app.revanced.integrations.shared.Logger;
 import app.revanced.integrations.shared.Utils;
 import app.revanced.integrations.shared.settings.Setting;
 import app.revanced.integrations.youtube.settings.Settings;
@@ -73,6 +74,13 @@ public final class MiniplayerPatch {
             return Settings.TABLET_MINIPLAYER_TYPE.get() == TABLET_MODERN;
         }
     }
+
+    /**
+     * Modern subtitle overlay for {@link MiniplayerType#TABLET_MODERN_2}.
+     * Resource is not present in older targets, and this field will be zero.
+     */
+    private static final int MODERN_OVERLAY_SUBTITLE_TEXT
+            = Utils.getResourceIdentifier("modern_miniplayer_subtitle_text", "id");
 
     private static final MiniplayerType CURRENT_TYPE = Settings.TABLET_MINIPLAYER_TYPE.get();
     private static final boolean TABLET_MODERN_SELECTED = (CURRENT_TYPE == TABLET_MODERN);
@@ -142,14 +150,14 @@ public final class MiniplayerPatch {
      * Injection point.
      */
     public static void hideMiniplayerExpandClose(ImageView view) {
-        Utils.removeViewFromParentUnderCondition(HIDE_EXPAND_CLOSE_BUTTONS_ENABLED, view);
+        Utils.hideViewByRemovingFromParentUnderCondition(HIDE_EXPAND_CLOSE_BUTTONS_ENABLED, view);
     }
 
     /**
      * Injection point.
      */
     public static void hideMiniplayerRewindForward(ImageView view) {
-        Utils.removeViewFromParentUnderCondition(HIDE_REWIND_FORWARD_ENABLED, view);
+        Utils.hideViewByRemovingFromParentUnderCondition(HIDE_REWIND_FORWARD_ENABLED, view);
     }
 
     /**
@@ -158,6 +166,25 @@ public final class MiniplayerPatch {
     public static void hideMiniplayerSubTexts(View view) {
         // Different subviews are passed in, but only TextView and layouts are of interest here.
         final boolean hideView = HIDE_SUBTEXTS_ENABLED && (view instanceof TextView || view instanceof LinearLayout);
-        Utils.removeViewFromParentUnderCondition(hideView, view);
+        Utils.hideViewByRemovingFromParentUnderCondition(hideView, view);
+    }
+
+    /**
+     * Injection point.
+     */
+    public static void playerOverlayGroupCreated(View group) {
+        // Modern 2 has an half broken subtitle that is always present.
+        // Always hide it to make the miniplayer mostly usable.
+        if (CURRENT_TYPE == TABLET_MODERN_2 && MODERN_OVERLAY_SUBTITLE_TEXT != 0) {
+            if (group instanceof ViewGroup) {
+                View subtitleText = Utils.getChildView((ViewGroup) group, true,
+                        view -> view.getId() == MODERN_OVERLAY_SUBTITLE_TEXT);
+
+                if (subtitleText != null) {
+                    Utils.hideViewUnderCondition(true, subtitleText);
+                    Logger.printDebug(() -> "Modern overlay subtitle view set to hidden");
+                }
+            }
+        }
     }
 }
