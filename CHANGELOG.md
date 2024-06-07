@@ -1,3 +1,10 @@
+## [1.10.1-dev.3](https://github.com/ReVanced/revanced-integrations/compare/v1.10.1-dev.2...v1.10.1-dev.3) (2024-06-07)
+
+
+### Bug Fixes
+
+* **YouTube - Spoof client:** Correctly play as background audio only with Android VR ([9adbc66](https://github.com/ReVanced/revanced-integrations/commit/9adbc66197e8342d3321dc77d151c648be65595b))
+
 ## [1.10.1-dev.2](https://github.com/ReVanced/revanced-integrations/compare/v1.10.1-dev.1...v1.10.1-dev.2) (2024-06-06)
 
 
