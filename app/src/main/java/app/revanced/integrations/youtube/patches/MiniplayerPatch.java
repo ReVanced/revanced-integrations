@@ -59,26 +59,26 @@ public final class MiniplayerPatch {
     private static final int MODERN_OVERLAY_SUBTITLE_TEXT
             = Utils.getResourceIdentifier("modern_miniplayer_subtitle_text", "id");
 
-    private static final MiniplayerType CURRENT_TYPE = Settings.TABLET_MINIPLAYER_TYPE.get();
+    private static final MiniplayerType CURRENT_TYPE = Settings.MINIPLAYER_TYPE.get();
 
-    private static final boolean HIDE_EXPAND_CLOSE_BUTTONS_ENABLED =
-            (CURRENT_TYPE == MODERN_1 || CURRENT_TYPE == MODERN_3) && Settings.TABLET_MINIPLAYER_HIDE_EXPAND_CLOSE.get();
+    private static final boolean HIDE_EXPAND_CLOSE_ENABLED =
+            (CURRENT_TYPE == MODERN_1 || CURRENT_TYPE == MODERN_3) && Settings.MINIPLAYER_HIDE_EXPAND_CLOSE.get();
 
-    private static final boolean HIDE_SUBTEXTS_ENABLED =
-            (CURRENT_TYPE == MODERN_1 || CURRENT_TYPE == MODERN_3) && Settings.TABLET_MINIPLAYER_HIDE_SUB_TEXT.get();
+    private static final boolean HIDE_SUBTEXT_ENABLED =
+            (CURRENT_TYPE == MODERN_1 || CURRENT_TYPE == MODERN_3) && Settings.MINIPLAYER_HIDE_SUBTEXT.get();
 
     private static final boolean HIDE_REWIND_FORWARD_ENABLED =
-            CURRENT_TYPE == MODERN_1 && Settings.TABLET_MINIPLAYER_HIDE_REWIND_FORWARD.get();
+            CURRENT_TYPE == MODERN_1 && Settings.MINIPLAYER_HIDE_REWIND_FORWARD.get();
 
     private static final int OPACITY_LEVEL;
 
     static {
-        int opacity = Settings.TABLET_MINIPLAYER_OPACITY.get();
+        int opacity = Settings.MINIPLAYER_OPACITY.get();
 
         if (opacity < 0 || opacity > 100) {
             Utils.showToastLong(str("revanced_miniplayer_opacity_invalid_toast"));
-            Settings.TABLET_MINIPLAYER_OPACITY.resetToDefault();
-            opacity = Settings.TABLET_MINIPLAYER_OPACITY.defaultValue;
+            Settings.MINIPLAYER_OPACITY.resetToDefault();
+            opacity = Settings.MINIPLAYER_OPACITY.defaultValue;
         }
 
         OPACITY_LEVEL = (opacity * 255) / 100;
@@ -126,7 +126,7 @@ public final class MiniplayerPatch {
      * Injection point.
      */
     public static void hideMiniplayerExpandClose(ImageView view) {
-        Utils.hideViewByRemovingFromParentUnderCondition(HIDE_EXPAND_CLOSE_BUTTONS_ENABLED, view);
+        Utils.hideViewByRemovingFromParentUnderCondition(HIDE_EXPAND_CLOSE_ENABLED, view);
     }
 
     /**
@@ -141,7 +141,7 @@ public final class MiniplayerPatch {
      */
     public static void hideMiniplayerSubTexts(View view) {
         // Different subviews are passed in, but only TextView and layouts are of interest here.
-        final boolean hideView = HIDE_SUBTEXTS_ENABLED && (view instanceof TextView || view instanceof LinearLayout);
+        final boolean hideView = HIDE_SUBTEXT_ENABLED && (view instanceof TextView || view instanceof LinearLayout);
         Utils.hideViewByRemovingFromParentUnderCondition(hideView, view);
     }
 

@@ -104,10 +104,11 @@ public class EnumSetting<T extends Enum<?>> extends Setting<T> {
     /**
      * Availability based on if this setting is currently set to any of the provided types.
      */
-    public Setting.Availability availability(@NonNull Enum<?>... types) {
+    @SafeVarargs
+    public final Setting.Availability availability(@NonNull T... types) {
         return () -> {
-            Enum<?> currentEnumType = get();
-            for (Enum<?> enumType : types) {
+            T currentEnumType = get();
+            for (T enumType : types) {
                 if (currentEnumType == enumType) return true;
             }
             return false;

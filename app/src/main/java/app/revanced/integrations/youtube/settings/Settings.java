@@ -134,11 +134,11 @@ public class Settings extends BaseSettings {
     public static final BooleanSetting PLAYBACK_SPEED_DIALOG_BUTTON = new BooleanSetting("revanced_playback_speed_dialog_button", FALSE);
 
     // Miniplayer
-    public static final EnumSetting<MiniplayerType> TABLET_MINIPLAYER_TYPE = new EnumSetting<>("revanced_miniplayer_type", MiniplayerType.ORIGINAL, true);
-    public static final BooleanSetting TABLET_MINIPLAYER_HIDE_EXPAND_CLOSE = new BooleanSetting("revanced_miniplayer_hide_expand_close", FALSE, true, TABLET_MINIPLAYER_TYPE.availability(MODERN_1, MODERN_3));
-    public static final BooleanSetting TABLET_MINIPLAYER_HIDE_SUB_TEXT = new BooleanSetting("revanced_miniplayer_hide_sub_text", FALSE, true, TABLET_MINIPLAYER_TYPE.availability(MODERN_1, MODERN_3));
-    public static final BooleanSetting TABLET_MINIPLAYER_HIDE_REWIND_FORWARD = new BooleanSetting("revanced_miniplayer_hide_rewind_forward", FALSE, true, TABLET_MINIPLAYER_TYPE.availability(MODERN_1));
-    public static final IntegerSetting TABLET_MINIPLAYER_OPACITY = new IntegerSetting("revanced_miniplayer_opacity", 100, true, TABLET_MINIPLAYER_TYPE.availability(MODERN_1));
+    public static final EnumSetting<MiniplayerType> MINIPLAYER_TYPE = new EnumSetting<>("revanced_miniplayer_type", MiniplayerType.ORIGINAL, true);
+    public static final BooleanSetting MINIPLAYER_HIDE_EXPAND_CLOSE = new BooleanSetting("revanced_miniplayer_hide_expand_close", FALSE, true, MINIPLAYER_TYPE.availability(MODERN_1, MODERN_3));
+    public static final BooleanSetting MINIPLAYER_HIDE_SUBTEXT = new BooleanSetting("revanced_miniplayer_hide_subtext", FALSE, true, MINIPLAYER_TYPE.availability(MODERN_1, MODERN_3));
+    public static final BooleanSetting MINIPLAYER_HIDE_REWIND_FORWARD = new BooleanSetting("revanced_miniplayer_hide_rewind_forward", FALSE, true, MINIPLAYER_TYPE.availability(MODERN_1));
+    public static final IntegerSetting MINIPLAYER_OPACITY = new IntegerSetting("revanced_miniplayer_opacity", 100, true, MINIPLAYER_TYPE.availability(MODERN_1));
 
     // External downloader
     public static final BooleanSetting EXTERNAL_DOWNLOADER = new BooleanSetting("revanced_external_downloader", FALSE);
