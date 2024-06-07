@@ -18,56 +18,75 @@ import java.util.Objects;
 import static app.revanced.integrations.shared.Utils.getContext;
 
 
-// This is a base class for to implement /s/ link resolution for 3rd party Reddit apps.
-//
-// Set webviewActivity as your app webview acitivity. This will be used for fallback if /s/
-// link resolution fails.
-//
-// You need the following:
-//    private FixSLinksPatch() {
-//        this.webViewActivity = WebViewActivity.class;
-//    }
-//
-// Your app would need to call this function before doing any of its own resolution
-// Your app would also check the value of return result.
-// If its true, app should *stop* all of its resolution and just sit there.
-//
-//    public static boolean patchResolveSLink(Context context, String link) {
-//        return getInstance().resolve(context, link);
-//    }
-//
-// Your app should call this at least once. Without this, /s/ link resolution would just do
-// nothing. This function should be inserted at moment when app sets its own access_token
-// You can look for following strings in app: bearer, access_token, Authorization.
-//
-//    public static void patchSetAccessToken(String access_token) {
-//        getInstance().setAccessToken(access_token);
-//    }
-//
-// This is required for both patchSetAccessToken and patchResolveSLink.
-//
-//    public static BaseFixSLinksPatch getInstance() {
-//        if (INSTANCE == null) INSTANCE = new FixSLinksPatch();
-//        return INSTANCE;
-//    }
+/**
+ * Base class to implement /s/ link resolution in 3rd party Reddit apps.
+ * <br>
+ * <br>
+ * Usage:
+ * <br>
+ * <br>
+ * An implementation of this class must have two static methods that are called by the app:
+ * <ul>
+ *     <li>public static boolean patchResolveSLink(String link)</li>
+ *     <li>public static void patchSetAccessToken(String accessToken)</li>
+ * </ul>
+ * The static methods must call the instance methods of the base class.
+ * <br>
+ * The singleton pattern can be used to access the instance of the class:
+ * <pre>
+ * {@code
+ * private FixSLinksPatch() {
+ *     INSTANCE = this;
+ * }
+ * }
+ * </pre>
+ * Set the app's web view activity class as a fallback to open /s/ links if the resolution fails:
+ * <pre>
+ * {@code
+ * private FixSLinksPatch() {
+ *     webViewActivityClass = WebViewActivity.class;
+ * }
+ * }
+ * </pre>
+ * Hook the app's navigation handler to call this method before doing any of its own resolution:
+ * <pre>
+ * {@code
+ * public static boolean patchResolveSLink(Context context, String link) {
+ *     return INSTANCE.resolveSLink(context, link);
+ * }
+ * }
+ * </pre>
+ * If this method returns true, the app should early return and not do any of its own resolution.
+ * <br>
+ * <br>
+ * Hook the app's access token so that this class can use it to resolve /s/ links:
+ * <pre>
+ * {@code
+ * public static void patchSetAccessToken(String accessToken) {
+ *     INSTANCE.setAccessToken(access_token);
+ * }
+ * }
+ * </pre>
+ */
 public abstract class BaseFixSLinksPatch {
     /**
-     * The activity that will be used to open the link in a webview if the /s/ link resolution fails.
+     * The class of the activity used to open links in a web view if resolving them fails.
      */
-    protected Class<? extends Activity> webViewActivity = null;
+    protected Class<? extends Activity> webViewActivityClass;
 
     /**
-     * The access token that will be used to resolve the /s/ link.
+     * The access token used to resolve the /s/ link.
      */
-    protected String accessToken = null;
+    protected String accessToken;
 
     /**
-     * TODO: Document
+     * The URL that was trying to be resolved before the access token was set.
+     * If this is not null, the URL will be resolved right after the access token is set.
      */
-    protected String pendingUrl = null;
+    protected String pendingUrl;
 
     /**
-     * Singleton instance for patches.
+     * The singleton instance of the class.
      */
     protected static BaseFixSLinksPatch INSTANCE;
 
@@ -96,7 +115,7 @@ public abstract class BaseFixSLinksPatch {
                 return ResolveResult.DO_NOTHING;
             }
 
-            Logger.printInfo(() -> "Resolving " + link);
+            Logger.printDebug(() -> "Resolving " + link);
 
             if (accessToken == null) {
                 // This is not optimal.
@@ -119,11 +138,10 @@ public abstract class BaseFixSLinksPatch {
                     String location = connection.getHeaderField("location");
                     connection.disconnect();
 
-                    // TODO: Check if this ends in java.lang.ExceptionInInitializerError.
                     Objects.requireNonNull(location, "Location is null");
 
                     finalLocation = location;
-                    Logger.printInfo(() -> "Resolved " + link + " to " + location);
+                    Logger.printDebug(() -> "Resolved " + link + " to " + location);
                 } catch (SocketTimeoutException e) {
                     Logger.printException(() -> "Timeout when trying to resolve " + link, e);
                     finalLocation = bypassLink;
@@ -145,21 +163,24 @@ public abstract class BaseFixSLinksPatch {
     }
 
     public void setAccessToken(String accessToken) {
-        Logger.printInfo(() -> "Setting access token");
-        this.accessToken = accessToken;
+        Logger.printDebug(() -> "Setting access token");
+
+        accessToken = accessToken;
 
         // In case a link was trying to be resolved before access token was set.
         // The link is resolved now, after the access token is set.
         if (pendingUrl != null) {
             String link = pendingUrl;
             pendingUrl = null;
-            Logger.printInfo(() -> "Opening pending URL");
+
+            Logger.printDebug(() -> "Opening pending URL");
+
             resolveLink(link);
         }
     }
 
     private void openInAppBrowser(Context context, String link) {
-        Intent intent = new Intent(context, webViewActivity);
+        Intent intent = new Intent(context, webViewActivityClass);
         intent.putExtra("url", link);
         context.startActivity(intent);
     }
@@ -167,18 +188,21 @@ public abstract class BaseFixSLinksPatch {
     @NonNull
     private HttpURLConnection getHttpURLConnection(String link, String accessToken) throws IOException {
         URL url = new URL(link);
+
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        if (accessToken != null) {
-            Logger.printInfo(() -> "Using access token for /s/ handling");
-            connection.setRequestProperty("Authorization", "Bearer " + accessToken);
-        } else {
-            Logger.printInfo(() -> "Cant use saved access token for /s/ handling - its null");
-        }
         connection.setInstanceFollowRedirects(false);
         connection.setRequestMethod("HEAD");
-        // In case network has censors and blocks request to reddit we won't desire to become ANR
         connection.setConnectTimeout(2000);
         connection.setReadTimeout(2000);
+
+        if (accessToken != null) {
+            Logger.printDebug(() -> "Setting access token to make /s/ request");
+
+            connection.setRequestProperty("Authorization", "Bearer " + accessToken);
+        } else {
+            Logger.printDebug(() -> "Not setting access token to make /s/ request, because it is null");
+        }
+
         return connection;
     }
 }
