@@ -87,7 +87,7 @@ public final class MiniplayerPatch {
     /**
      * Injection point.
      */
-    public static boolean getLegacyTabletOverride(boolean original) {
+    public static boolean getLegacyTabletMiniplayerOverride(boolean original) {
         Boolean isTablet = CURRENT_TYPE.legacyTabletOverride;
         return isTablet == null
                 ? original
@@ -97,7 +97,7 @@ public final class MiniplayerPatch {
     /**
      * Injection point.
      */
-    public static boolean getModernOverride(boolean original) {
+    public static boolean getModernMiniplayerOverride(boolean original) {
         return CURRENT_TYPE == ORIGINAL
                 ? original
                 : CURRENT_TYPE.isModern();
@@ -106,7 +106,7 @@ public final class MiniplayerPatch {
     /**
      * Injection point.
      */
-    public static int getModernOverrideType(int original) {
+    public static int getModernMiniplayerOverrideType(int original) {
         Integer modernValue = CURRENT_TYPE.modernPlayerType;
         return modernValue == null
                 ? original
