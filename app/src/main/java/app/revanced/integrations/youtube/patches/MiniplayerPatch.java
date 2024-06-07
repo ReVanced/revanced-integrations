@@ -13,7 +13,6 @@ import androidx.annotation.Nullable;
 
 import app.revanced.integrations.shared.Logger;
 import app.revanced.integrations.shared.Utils;
-import app.revanced.integrations.shared.settings.Setting;
 import app.revanced.integrations.youtube.settings.Settings;
 
 @SuppressWarnings("unused")
@@ -26,18 +25,10 @@ public final class MiniplayerPatch {
         /** Unmodified type, and same as un-patched. */
         ORIGINAL(null, null),
         PHONE(false, null),
-        PHONE_MODERN(null, 3),
         TABLET(true, null),
-        TABLET_MODERN(null, 1),
-        /**
-         * Modern design with layout of old tablet miniplayer.
-         * Has some bugs with vertical videos and empty sub texts,
-         * and not substantially different from the old tablet mini player so it's currently not selectable.
-         *
-         * If anyone wants to try it anyways, then manually edit the imported data and
-         * change the type to this enum name.
-         */
-        TABLET_MODERN_2(null, 2);
+        MODERN_1(null, 1),
+        MODERN_2(null, 2),
+        MODERN_3(null, 3);
 
         /**
          * Legacy tablet hook value.
@@ -61,38 +52,23 @@ public final class MiniplayerPatch {
         }
     }
 
-    public static final class MiniplayerModernAvailability implements Setting.Availability {
-        @Override
-        public boolean isAvailable() {
-            return Settings.TABLET_MINIPLAYER_TYPE.get().isModern();
-        }
-    }
-
-    public static final class MiniplayerTabletModernAvailability implements Setting.Availability {
-        @Override
-        public boolean isAvailable() {
-            return Settings.TABLET_MINIPLAYER_TYPE.get() == TABLET_MODERN;
-        }
-    }
-
     /**
-     * Modern subtitle overlay for {@link MiniplayerType#TABLET_MODERN_2}.
+     * Modern subtitle overlay for {@link MiniplayerType#MODERN_2}.
      * Resource is not present in older targets, and this field will be zero.
      */
     private static final int MODERN_OVERLAY_SUBTITLE_TEXT
             = Utils.getResourceIdentifier("modern_miniplayer_subtitle_text", "id");
 
     private static final MiniplayerType CURRENT_TYPE = Settings.TABLET_MINIPLAYER_TYPE.get();
-    private static final boolean TABLET_MODERN_SELECTED = (CURRENT_TYPE == TABLET_MODERN);
 
     private static final boolean HIDE_EXPAND_CLOSE_BUTTONS_ENABLED =
-            CURRENT_TYPE.isModern() && Settings.TABLET_MINIPLAYER_HIDE_EXPAND_CLOSE.get();
+            (CURRENT_TYPE == MODERN_1 || CURRENT_TYPE == MODERN_3) && Settings.TABLET_MINIPLAYER_HIDE_EXPAND_CLOSE.get();
 
     private static final boolean HIDE_SUBTEXTS_ENABLED =
-            CURRENT_TYPE.isModern() && Settings.TABLET_MINIPLAYER_HIDE_SUB_TEXT.get();
+            (CURRENT_TYPE == MODERN_1 || CURRENT_TYPE == MODERN_3) && Settings.TABLET_MINIPLAYER_HIDE_SUB_TEXT.get();
 
     private static final boolean HIDE_REWIND_FORWARD_ENABLED =
-            TABLET_MODERN_SELECTED && Settings.TABLET_MINIPLAYER_HIDE_REWIND_FORWARD.get();
+            CURRENT_TYPE == MODERN_1 && Settings.TABLET_MINIPLAYER_HIDE_REWIND_FORWARD.get();
 
     private static final int OPACITY_LEVEL;
 
@@ -141,7 +117,7 @@ public final class MiniplayerPatch {
      * Injection point.
      */
     public static void adjustMiniplayerOpacity(ImageView view) {
-        if (TABLET_MODERN_SELECTED) {
+        if (CURRENT_TYPE == MODERN_1) {
             view.setImageAlpha(OPACITY_LEVEL);
         }
     }
@@ -175,13 +151,13 @@ public final class MiniplayerPatch {
     public static void playerOverlayGroupCreated(View group) {
         // Modern 2 has an half broken subtitle that is always present.
         // Always hide it to make the miniplayer mostly usable.
-        if (CURRENT_TYPE == TABLET_MODERN_2 && MODERN_OVERLAY_SUBTITLE_TEXT != 0) {
+        if (CURRENT_TYPE == MODERN_2 && MODERN_OVERLAY_SUBTITLE_TEXT != 0) {
             if (group instanceof ViewGroup) {
                 View subtitleText = Utils.getChildView((ViewGroup) group, true,
                         view -> view.getId() == MODERN_OVERLAY_SUBTITLE_TEXT);
 
                 if (subtitleText != null) {
-                    Utils.hideViewUnderCondition(true, subtitleText);
+                    subtitleText.setVisibility(View.GONE);
                     Logger.printDebug(() -> "Modern overlay subtitle view set to hidden");
                 }
             }

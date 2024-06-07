@@ -3,7 +3,9 @@ package app.revanced.integrations.youtube.settings;
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
 import static app.revanced.integrations.shared.settings.Setting.*;
-import static app.revanced.integrations.youtube.patches.MiniplayerPatch.*;
+import static app.revanced.integrations.youtube.patches.MiniplayerPatch.MiniplayerType;
+import static app.revanced.integrations.youtube.patches.MiniplayerPatch.MiniplayerType.MODERN_1;
+import static app.revanced.integrations.youtube.patches.MiniplayerPatch.MiniplayerType.MODERN_3;
 import static app.revanced.integrations.youtube.sponsorblock.objects.CategoryBehaviour.*;
 
 import java.util.Arrays;
@@ -133,10 +135,10 @@ public class Settings extends BaseSettings {
 
     // Miniplayer
     public static final EnumSetting<MiniplayerType> TABLET_MINIPLAYER_TYPE = new EnumSetting<>("revanced_miniplayer_type", MiniplayerType.ORIGINAL, true);
-    public static final BooleanSetting TABLET_MINIPLAYER_HIDE_EXPAND_CLOSE = new BooleanSetting("revanced_miniplayer_hide_expand_close", FALSE, true, new MiniplayerModernAvailability());
-    public static final BooleanSetting TABLET_MINIPLAYER_HIDE_SUB_TEXT = new BooleanSetting("revanced_miniplayer_hide_sub_text", FALSE, true, new MiniplayerModernAvailability());
-    public static final BooleanSetting TABLET_MINIPLAYER_HIDE_REWIND_FORWARD = new BooleanSetting("revanced_miniplayer_hide_rewind_forward", FALSE, true, new MiniplayerTabletModernAvailability());
-    public static final IntegerSetting TABLET_MINIPLAYER_OPACITY = new IntegerSetting("revanced_miniplayer_opacity", 100, true, new MiniplayerTabletModernAvailability());
+    public static final BooleanSetting TABLET_MINIPLAYER_HIDE_EXPAND_CLOSE = new BooleanSetting("revanced_miniplayer_hide_expand_close", FALSE, true, TABLET_MINIPLAYER_TYPE.availability(MODERN_1, MODERN_3));
+    public static final BooleanSetting TABLET_MINIPLAYER_HIDE_SUB_TEXT = new BooleanSetting("revanced_miniplayer_hide_sub_text", FALSE, true, TABLET_MINIPLAYER_TYPE.availability(MODERN_1, MODERN_3));
+    public static final BooleanSetting TABLET_MINIPLAYER_HIDE_REWIND_FORWARD = new BooleanSetting("revanced_miniplayer_hide_rewind_forward", FALSE, true, TABLET_MINIPLAYER_TYPE.availability(MODERN_1));
+    public static final IntegerSetting TABLET_MINIPLAYER_OPACITY = new IntegerSetting("revanced_miniplayer_opacity", 100, true, TABLET_MINIPLAYER_TYPE.availability(MODERN_1));
 
     // External downloader
     public static final BooleanSetting EXTERNAL_DOWNLOADER = new BooleanSetting("revanced_external_downloader", FALSE);
