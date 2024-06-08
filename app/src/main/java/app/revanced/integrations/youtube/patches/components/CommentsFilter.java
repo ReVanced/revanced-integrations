@@ -14,16 +14,16 @@ final class CommentsFilter extends Filter {
     private final ByteArrayFilterGroup emojiPickerBufferGroup;
     
     public CommentsFilter() {
-        var comments = new StringFilterGroup(
-                Settings.HIDE_COMMENTS_SECTION,
-                "video_metadata_carousel",
-                "_comments"
-        );
-
         var commentsByMembers = new StringFilterGroup(
                 Settings.HIDE_COMMENTS_BY_MEMBERS_HEADER,
                 "sponsorships_comments_header.eml",
                 "sponsorships_comments_footer.eml"
+        );
+
+        var comments = new StringFilterGroup(
+                Settings.HIDE_COMMENTS_SECTION,
+                "video_metadata_carousel",
+                "_comments"
         );
 
         var previewComment = new StringFilterGroup(
