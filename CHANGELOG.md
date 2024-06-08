@@ -1,3 +1,10 @@
+# [1.11.0-dev.3](https://github.com/ReVanced/revanced-integrations/compare/v1.11.0-dev.2...v1.11.0-dev.3) (2024-06-08)
+
+
+### Features
+
+* **Boost For Reddit:** Add `Fix /s/ links` patch ([#631](https://github.com/ReVanced/revanced-integrations/issues/631)) ([0c9ad35](https://github.com/ReVanced/revanced-integrations/commit/0c9ad35fc9024efe33c97b51714225c5d5226f59))
+
 # [1.11.0-dev.2](https://github.com/ReVanced/revanced-integrations/compare/v1.11.0-dev.1...v1.11.0-dev.2) (2024-06-08)
 
 
