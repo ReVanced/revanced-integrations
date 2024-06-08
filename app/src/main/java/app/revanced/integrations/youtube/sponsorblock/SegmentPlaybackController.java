@@ -182,6 +182,7 @@ public class SegmentPlaybackController {
      * Injection point.
      * Initializes SponsorBlock when the video player starts playing a new video.
      */
+    @SuppressWarnings("unused")
     public static void initialize(Object ignoredPlayerController) {
         try {
             Utils.verifyOnMainThread();

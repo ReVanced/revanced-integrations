@@ -29,9 +29,7 @@ public class VotingButtonController {
             ImageView imageView = Objects.requireNonNull(youtubeControlsLayout.findViewById(
                     getResourceIdentifier("revanced_sb_voting_button", "id")));
             imageView.setVisibility(View.GONE);
-            imageView.setOnClickListener(v -> {
-                SponsorBlockUtils.onVotingClicked(v.getContext());
-            });
+            imageView.setOnClickListener(v -> SponsorBlockUtils.onVotingClicked(v.getContext()));
 
             buttonReference = new WeakReference<>(imageView);
         } catch (Exception ex) {
