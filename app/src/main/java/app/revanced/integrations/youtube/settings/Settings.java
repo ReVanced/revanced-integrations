@@ -137,7 +137,7 @@ public class Settings extends BaseSettings {
 
     // Comments
     public static final BooleanSetting HIDE_COMMENTS_SECTION = new BooleanSetting("revanced_hide_comments_section", FALSE);
-    public static final BooleanSetting HIDE_PREVIEW_COMMENT = new BooleanSetting("revanced_comments_hide_preview_comment", FALSE);
+    public static final BooleanSetting HIDE_PREVIEW_COMMENT = new BooleanSetting("revanced_hide_comments_preview_comment", FALSE);
     public static final BooleanSetting HIDE_THANKS_BUTTON = new BooleanSetting("revanced_hide_comments_thanks_button", TRUE);
     public static final BooleanSetting HIDE_TIMESTAMP_AND_EMOJI_BUTTONS = new BooleanSetting("revanced_hide_comments_timestamp_and_emoji_buttons", TRUE);
 
