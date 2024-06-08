@@ -20,6 +20,12 @@ final class CommentsFilter extends Filter {
                 "_comments"
         );
 
+        var commentsByMembers = new StringFilterGroup(
+                Settings.HIDE_COMMENTS_BY_MEMBERS_HEADER,
+                "sponsorships_comments_header.eml",
+                "sponsorships_comments_footer.eml"
+        );
+
         var previewComment = new StringFilterGroup(
                 Settings.HIDE_PREVIEW_COMMENT,
                 "|carousel_item",
@@ -27,7 +33,7 @@ final class CommentsFilter extends Filter {
                 "comments_entry_point_simplebox"
         );
 
-        var thanksButton = new ByteArrayFilterGroup(
+        var thanksButton = new StringFilterGroup(
                 Settings.HIDE_THANKS_BUTTON,
                 "super_thanks_button.eml"
         );
@@ -44,6 +50,7 @@ final class CommentsFilter extends Filter {
 
         addPathCallbacks(
                 comments,
+                commentsByMembers,
                 previewComment,
                 thanksButton,
                 commentComposer
