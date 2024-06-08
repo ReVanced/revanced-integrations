@@ -27,7 +27,7 @@ final class CommentsFilter extends Filter {
                 "comments_entry_point_simplebox"
         );
 
-        var thanksButton = new ByteArrayFilterGroup(
+        var thanksButton = new StringFilterGroup(
                 Settings.HIDE_THANKS_BUTTON,
                 "super_thanks_button.eml"
         );
