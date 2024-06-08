@@ -30,7 +30,7 @@ final class CommentsFilter extends Filter {
         var thanksButton = new ByteArrayFilterGroup(
                 Settings.HIDE_THANKS_BUTTON,
                 "super_thanks_button.eml"
-        )
+        );
 
         commentComposer = new StringFilterGroup(
                 Settings.HIDE_TIMESTAMP_AND_EMOJI_BUTTONS,
