@@ -1,3 +1,10 @@
+# [1.11.0-dev.2](https://github.com/ReVanced/revanced-integrations/compare/v1.11.0-dev.1...v1.11.0-dev.2) (2024-06-08)
+
+
+### Bug Fixes
+
+* **YouTube:** Rename `Minimized playback` to `Remove background playback restrictions` ([#651](https://github.com/ReVanced/revanced-integrations/issues/651)) ([84c50c0](https://github.com/ReVanced/revanced-integrations/commit/84c50c080c2a8c096b7709164cbaec5466a8492c))
+
 # [1.11.0-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v1.10.1-dev.3...v1.11.0-dev.1) (2024-06-07)
 
 
