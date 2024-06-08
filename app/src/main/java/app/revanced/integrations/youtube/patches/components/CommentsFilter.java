@@ -27,8 +27,13 @@ final class CommentsFilter extends Filter {
                 "comments_entry_point_simplebox"
         );
 
+        var thanksButton = new ByteArrayFilterGroup(
+                Settings.HIDE_THANKS_BUTTON,
+                "super_thanks_button.eml"
+        )
+
         commentComposer = new StringFilterGroup(
-                Settings.HIDE_COMMENT_TIMESTAMP_AND_EMOJI_BUTTONS,
+                Settings.HIDE_TIMESTAMP_AND_EMOJI_BUTTONS,
                 "comment_composer.eml"
         );
 
@@ -40,6 +45,7 @@ final class CommentsFilter extends Filter {
         addPathCallbacks(
                 comments,
                 previewComment,
+                thanksButton,
                 commentComposer
         );
     }
