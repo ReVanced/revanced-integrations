@@ -35,8 +35,9 @@ import static app.revanced.integrations.shared.Utils.getContext;
  * The singleton pattern can be used to access the instance of the class:
  * <pre>
  * {@code
- * private FixSLinksPatch() {
- *     INSTANCE = this;
+ * public static BaseFixSLinksPatch getInstance() {
+ *     if (INSTANCE == null) INSTANCE = new FixSLinksPatch();
+ *     return INSTANCE;
  * }
  * }
  * </pre>
@@ -165,7 +166,7 @@ public abstract class BaseFixSLinksPatch {
     public void setAccessToken(String accessToken) {
         Logger.printDebug(() -> "Setting access token");
 
-        accessToken = accessToken;
+        this.accessToken = accessToken;
 
         // In case a link was trying to be resolved before access token was set.
         // The link is resolved now, after the access token is set.
