@@ -27,19 +27,19 @@ final class CommentsFilter extends Filter {
         );
 
         var previewComment = new StringFilterGroup(
-                Settings.HIDE_PREVIEW_COMMENT,
+                Settings.HIDE_COMMENTS_PREVIEW_COMMENT,
                 "|carousel_item",
                 "comments_entry_point_teaser",
                 "comments_entry_point_simplebox"
         );
 
         var thanksButton = new StringFilterGroup(
-                Settings.HIDE_THANKS_BUTTON,
+                Settings.HIDE_COMMENTS_THANKS_BUTTON,
                 "super_thanks_button.eml"
         );
 
         commentComposer = new StringFilterGroup(
-                Settings.HIDE_TIMESTAMP_AND_EMOJI_BUTTONS,
+                Settings.HIDE_COMMENTS_TIMESTAMP_AND_EMOJI_BUTTONS,
                 "comment_composer.eml"
         );
 
