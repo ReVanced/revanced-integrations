@@ -49,8 +49,8 @@ final class CommentsFilter extends Filter {
         );
 
         addPathCallbacks(
-                comments,
                 commentsByMembers,
+                comments,
                 previewComment,
                 thanksButton,
                 commentComposer
