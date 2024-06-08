@@ -35,9 +35,8 @@ import static app.revanced.integrations.shared.Utils.getContext;
  * The singleton pattern can be used to access the instance of the class:
  * <pre>
  * {@code
- * public static BaseFixSLinksPatch getInstance() {
- *     if (INSTANCE == null) INSTANCE = new FixSLinksPatch();
- *     return INSTANCE;
+ * {
+ *     INSTANCE = new FixSLinksPatch();
  * }
  * }
  * </pre>

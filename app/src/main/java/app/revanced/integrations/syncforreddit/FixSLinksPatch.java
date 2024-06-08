@@ -6,19 +6,19 @@ import app.revanced.integrations.shared.fixes.slink.BaseFixSLinksPatch;
 
 /** @noinspection unused*/
 public class FixSLinksPatch extends BaseFixSLinksPatch {
+    static {
+        INSTANCE = new FixSLinksPatch();
+    }
+
     private FixSLinksPatch() {
         webViewActivityClass = WebViewActivity.class;
     }
 
     public static boolean patchResolveSLink(String link) {
-        return getInstance().resolveSLink(link);
+        return INSTANCE.resolveSLink(link);
     }
 
     public static void patchSetAccessToken(String accessToken) {
-        getInstance().setAccessToken(accessToken);
-    }
-    public static BaseFixSLinksPatch getInstance() {
-        if (INSTANCE == null) INSTANCE = new FixSLinksPatch();
-        return INSTANCE;
+        INSTANCE.setAccessToken(accessToken);
     }
 }
