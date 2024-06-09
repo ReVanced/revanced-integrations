@@ -1,3 +1,10 @@
+# [1.11.0-dev.5](https://github.com/ReVanced/revanced-integrations/compare/v1.11.0-dev.4...v1.11.0-dev.5) (2024-06-09)
+
+
+### Features
+
+* **YouTube - Comments:** Add `Hide Thanks button` and `Hide 'Comments by members' header` options ([#653](https://github.com/ReVanced/revanced-integrations/issues/653)) ([240e805](https://github.com/ReVanced/revanced-integrations/commit/240e805489e3603df026a7a3cf78b939461f5f9e))
+
 # [1.11.0-dev.4](https://github.com/ReVanced/revanced-integrations/compare/v1.11.0-dev.3...v1.11.0-dev.4) (2024-06-09)
 
 
