@@ -74,7 +74,7 @@ public final class VideoInformation {
             mdxSeekMethod.setAccessible(true);
 
         } catch (Exception ex) {
-            Logger.printException(() -> "Failed to initialize", ex);
+            Logger.printException(() -> "Failed to initialize MDX", ex);
         }
     }
 
@@ -198,20 +198,29 @@ public final class VideoInformation {
 
             Logger.printDebug(() -> "Seeking to " + adjustedSeekTime);
 
-            // Try calling the seekTo method of the MDX player director first (called when casting to a big screen device).
+            try {
+                //noinspection DataFlowIssue
+                if ((Boolean) seekMethod.invoke(playerControllerRef.get(), adjustedSeekTime)) {
+                    return true;
+                }
+            } catch (Exception ex) {
+                Logger.printInfo(() -> "seekTo method call failed", ex);
+            }
+
+            // Try calling the seekTo method of the MDX player director (called when casting) if the player controller one failed.
             // The difference has to be at least 1000ms to avoid infinite skip loops (the seekTo Lounge API command only supports seconds).
-            if (adjustedSeekTime - videoTime >= 1000) {
+            if (Math.abs(adjustedSeekTime - videoTime) >= 1000) {
                 try {
-                    mdxSeekMethod.invoke(mdxPlayerDirectorRef.get(), adjustedSeekTime);
+                    //noinspection DataFlowIssue
+                    return (Boolean) mdxSeekMethod.invoke(mdxPlayerDirectorRef.get(), adjustedSeekTime);
                 } catch (Exception ex) {
-                    Logger.printInfo(() -> "Failed to seek (MDX)", ex);
+                    Logger.printInfo(() -> "seekTo (MDX) method call failed", ex);
+                    return false;
                 }
             } else {
                 Logger.printDebug(() -> "Skipping seekTo for MDX because of a small relative value (" + (seekTime - videoTime) + "ms).");
+                return false;
             }
-
-            //noinspection DataFlowIssue
-            return (Boolean) seekMethod.invoke(playerControllerRef.get(), adjustedSeekTime);
 
         } catch (Exception ex) {
             Logger.printException(() -> "Failed to seek", ex);
