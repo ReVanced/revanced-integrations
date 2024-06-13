@@ -208,8 +208,8 @@ public final class VideoInformation {
             }
 
             // Try calling the seekTo method of the MDX player director (called when casting) if the player controller one failed.
-            // The difference has to be at least 1000ms to avoid infinite skip loops (the seekTo Lounge API command only supports seconds).
-            if (Math.abs(adjustedSeekTime - videoTime) >= 1000) {
+            // The difference has to be a different second mark in order to avoid infinite skip loops (as the Lounge API only supports seconds).
+            if (Math.abs(adjustedSeekTime/1000 - videoTime/1000) >= 1) {
                 try {
                     //noinspection DataFlowIssue
                     return (Boolean) mdxSeekMethod.invoke(mdxPlayerDirectorRef.get(), adjustedSeekTime);
