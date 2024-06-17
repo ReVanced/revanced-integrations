@@ -1,3 +1,10 @@
+# [1.11.0-dev.6](https://github.com/ReVanced/revanced-integrations/compare/v1.11.0-dev.5...v1.11.0-dev.6) (2024-06-17)
+
+
+### Features
+
+* **YouTube - Comments:** Add `Hide 'Create a Short' button` option ([#656](https://github.com/ReVanced/revanced-integrations/issues/656)) ([064d8e9](https://github.com/ReVanced/revanced-integrations/commit/064d8e99a96167282f63725d33502f251632dcdb))
+
 # [1.11.0-dev.5](https://github.com/ReVanced/revanced-integrations/compare/v1.11.0-dev.4...v1.11.0-dev.5) (2024-06-09)
 
 
