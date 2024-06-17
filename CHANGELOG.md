@@ -1,3 +1,10 @@
+# [1.11.0-dev.7](https://github.com/ReVanced/revanced-integrations/compare/v1.11.0-dev.6...v1.11.0-dev.7) (2024-06-17)
+
+
+### Bug Fixes
+
+* **YouTube - Hide description components:** Replace `Hide game section` and `Hide music section` with `Hide attributes section` ([#654](https://github.com/ReVanced/revanced-integrations/issues/654)) ([f82dfce](https://github.com/ReVanced/revanced-integrations/commit/f82dfce887bbeccbfdb8e8f8d3d84db6ce28539a))
+
 # [1.11.0-dev.6](https://github.com/ReVanced/revanced-integrations/compare/v1.11.0-dev.5...v1.11.0-dev.6) (2024-06-17)
 
 
