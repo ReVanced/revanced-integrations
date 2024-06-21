@@ -69,11 +69,16 @@ final class KeywordContentFilter extends Filter {
             "OMX.Intel.sw_vd.vp9",
             "OMX.sprd.av1.decoder",
             "OMX.MTK.VIDEO.DECODER.SW.VP9",
+            "OMX.google.vp9.decoder",
+            "OMX.google.av1.decoder",
             "c2.android.av1.decoder",
+            "c2.android.av1-dav1d.decoder",
+            "c2.android.vp9.decoder",
             "c2.mtk.sw.vp9.decoder",
             // User analytics.
             "https://ad.doubleclick.net/ddm/activity/",
             "DEVICE_ADVERTISER_ID_FOR_CONVERSION_TRACKING",
+            "tag_for_child_directed_treatment", // Found in overflow menu such as 'Watch later'.
             // Litho components frequently found in the buffer that belong to the path filter items.
             "metadata.eml",
             "thumbnail.eml",
