@@ -1,7 +1,6 @@
 package app.revanced.integrations.youtube.patches.components;
 
 import static app.revanced.integrations.shared.StringRef.str;
-import static app.revanced.integrations.youtube.ByteTrieSearch.convertStringsToBytes;
 import static app.revanced.integrations.youtube.shared.NavigationBar.NavigationButton;
 
 import android.os.Build;
@@ -10,13 +9,16 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
 
 import app.revanced.integrations.shared.Logger;
 import app.revanced.integrations.shared.Utils;
 import app.revanced.integrations.youtube.ByteTrieSearch;
+import app.revanced.integrations.youtube.TrieSearch;
 import app.revanced.integrations.youtube.settings.Settings;
 import app.revanced.integrations.youtube.shared.NavigationBar;
 import app.revanced.integrations.youtube.shared.PlayerType;
@@ -105,6 +107,34 @@ final class KeywordContentFilter extends Filter {
     );
 
     /**
+     * Threshold for {@link #filteredVideosPercentage} that indicates all
+     * or nearly all videos have been filtered.  This should be close to 100%,
+     * to reduce false positives if somehow a search result gives 50 videos that all have a keyword.
+     */
+    private static final float ALL_VIDEOS_FILTERED_THRESHOLD = 0.95f;
+
+    private static final float ALL_VIDEOS_FILTERED_SAMPLE_SIZE = 50;
+
+    private static final long ALL_VIDEOS_FILTERED_TIMEOUT_MILLISECONDS = 60 * 1000; // 60 seconds
+
+    /**
+     * Rolling average of how many videos were filtered by a keyword.
+     * Used to detect if a keyword passes the initial check against {@link #STRINGS_IN_EVERY_BUFFER}
+     * but a keyword is still hiding all videos.
+     *
+     * This check can still fail if some extra UI elements pass the keywords,
+     * such as the video chapter preview or any other elements.
+     * But this will catch incorrect filters that will always hide everything.
+     */
+    private volatile float filteredVideosPercentage;
+
+    /**
+     * If filtering is temporarily turned off, the time to resume filtering.
+     * Field is zero if no timeout is in effect.
+     */
+    private volatile long timeToResumeFiltering;
+
+    /**
      * The last value of {@link Settings#HIDE_KEYWORD_CONTENT_PHRASES}
      * parsed and loaded into {@link #bufferSearch}.
      * Allows changing the keywords without restarting the app.
@@ -113,7 +143,17 @@ final class KeywordContentFilter extends Filter {
 
     private volatile ByteTrieSearch bufferSearch;
 
-    private static boolean hideKeywordSettingIsActive() {
+    private boolean hideKeywordSettingIsActive() {
+        if (timeToResumeFiltering != 0) {
+            if (System.currentTimeMillis() < timeToResumeFiltering) {
+                return false;
+            }
+
+            timeToResumeFiltering = 0;
+            filteredVideosPercentage = 0;
+            Logger.printDebug(() -> "Resuming keyword filtering");
+        }
+
         // Must check player type first, as search bar can be active behind the player.
         if (PlayerType.getCurrent().isMaximizedOrFullscreen()) {
             // For now, consider the under video results the same as the home feed.
@@ -247,17 +287,50 @@ final class KeywordContentFilter extends Filter {
                 keywords.addAll(Arrays.asList(phraseVariations));
             }
 
-            search.addPatterns(convertStringsToBytes(keywords.toArray(new String[0])));
+            for (String keyword : keywords) {
+                TrieSearch.TriePatternMatchedCallback<byte[]> callback =
+                        (textSearched, matchedStartIndex, matchedLength, callbackParameter) -> {
+                            // noinspection unchecked
+                            MutableReference<String> reference = (MutableReference<String>) callbackParameter;
+                            reference.value = keyword;
+                            return true;
+                        };
+                byte[] stringBytes = keyword.getBytes(StandardCharsets.UTF_8);
+                search.addPattern(stringBytes, callback);
+            }
+
             Logger.printDebug(() -> "Search using: (" + search.getEstimatedMemorySize() + " KB) keywords: " + keywords);
         }
 
         bufferSearch = search;
+        timeToResumeFiltering = 0;
+        filteredVideosPercentage = 0;
         lastKeywordPhrasesParsed = rawKeywords; // Must set last.
     }
 
     public KeywordContentFilter() {
         // Keywords are parsed on first call to isFiltered()
         addPathCallbacks(startsWithFilter, containsFilter);
+    }
+
+    private void updateStats(boolean videoWasHidden, @Nullable String keyword) {
+        float updatedAverage = filteredVideosPercentage
+                * ((ALL_VIDEOS_FILTERED_SAMPLE_SIZE - 1) / ALL_VIDEOS_FILTERED_SAMPLE_SIZE);
+        if (videoWasHidden) {
+            updatedAverage += 1 / ALL_VIDEOS_FILTERED_SAMPLE_SIZE;
+        }
+
+        if (updatedAverage <= ALL_VIDEOS_FILTERED_THRESHOLD) {
+            filteredVideosPercentage = updatedAverage;
+            return;
+        }
+
+        // A keyword is hiding everything.
+        // Inform the user, and temporarily turn off filtering.
+        timeToResumeFiltering = System.currentTimeMillis() + ALL_VIDEOS_FILTERED_TIMEOUT_MILLISECONDS;
+
+        Logger.printDebug(() -> "Temporarily turning off filtering due to excessively broad filter: " + keyword);
+        Utils.showToastLong(str("revanced_hide_keyword_toast_invalid_broad", keyword));
     }
 
     @Override
@@ -267,8 +340,6 @@ final class KeywordContentFilter extends Filter {
             return false;
         }
 
-        if (!hideKeywordSettingIsActive()) return false;
-
         // Field is intentionally compared using reference equality.
         //noinspection StringEquality
         if (Settings.HIDE_KEYWORD_CONTENT_PHRASES.get() != lastKeywordPhrasesParsed) {
@@ -276,11 +347,22 @@ final class KeywordContentFilter extends Filter {
             parseKeywords();
         }
 
-        if (!bufferSearch.matches(protobufBufferArray)) {
+        if (!hideKeywordSettingIsActive()) return false;
+
+        MutableReference<String> matchRef = new MutableReference<>();
+        if (!bufferSearch.matches(protobufBufferArray, matchRef)) {
+            updateStats(false, null);
             return false;
         }
 
+        updateStats(true, matchRef.value);
         return super.isFiltered(identifier, path, protobufBufferArray, matchedGroup, contentType, contentIndex);
     }
+}
 
+/**
+ * Simple non-atomic wrapper since {@link AtomicReference#setPlain(Object)} is not available for Android 8.0.
+ */
+final class MutableReference<T> {
+    T value;
 }
