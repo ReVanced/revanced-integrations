@@ -113,8 +113,8 @@ final class KeywordContentFilter extends Filter {
     );
 
     /**
-     * Threshold for {@link #filteredVideosPercentage} that indicates all
-     * or nearly all videos have been filtered.
+     * Threshold for {@link #filteredVideosPercentage}
+     * that indicates all or nearly all videos have been filtered.
      * This should be close to 100% to reduce false positives.
      */
     private static final float ALL_VIDEOS_FILTERED_THRESHOLD = 0.95f;
@@ -251,11 +251,13 @@ final class KeywordContentFilter extends Filter {
             }
 
             for (String keyword : keywords) {
+                // Use a callback to get the keyword that matched.
+                // TrieSearch could have this built in, but that's slightly more complicated since
+                // the strings are stored as a byte array and embedded in the search tree.
                 TrieSearch.TriePatternMatchedCallback<byte[]> callback =
                         (textSearched, matchedStartIndex, matchedLength, callbackParameter) -> {
                             // noinspection unchecked
-                            MutableReference<String> reference = (MutableReference<String>) callbackParameter;
-                            reference.value = keyword;
+                            ((MutableReference<String>) callbackParameter).value = keyword;
                             return true;
                         };
                 byte[] stringBytes = keyword.getBytes(StandardCharsets.UTF_8);
@@ -356,18 +358,18 @@ final class KeywordContentFilter extends Filter {
         if (!hideKeywordSettingIsActive()) return false;
 
         MutableReference<String> matchRef = new MutableReference<>();
-        if (!bufferSearch.matches(protobufBufferArray, matchRef)) {
-            updateStats(false, null);
-            return false;
+        if (bufferSearch.matches(protobufBufferArray, matchRef)) {
+            updateStats(true, matchRef.value);
+            return super.isFiltered(identifier, path, protobufBufferArray, matchedGroup, contentType, contentIndex);
         }
 
-        updateStats(true, matchRef.value);
-        return super.isFiltered(identifier, path, protobufBufferArray, matchedGroup, contentType, contentIndex);
+        updateStats(false, null);
+        return false;
     }
 }
 
 /**
- * Simple non-atomic wrapper since {@link AtomicReference#setPlain(Object)} is not available for Android 8.0.
+ * Simple non-atomic wrapper since {@link AtomicReference#setPlain(Object)} is not available with Android 8.0.
  */
 final class MutableReference<T> {
     T value;
