@@ -67,10 +67,10 @@ final class KeywordContentFilter extends Filter {
             // Video decoders.
             "OMX.ffmpeg.vp9.decoder",
             "OMX.Intel.sw_vd.vp9",
-            "OMX.sprd.av1.decoder",
             "OMX.MTK.VIDEO.DECODER.SW.VP9",
             "OMX.google.vp9.decoder",
             "OMX.google.av1.decoder",
+            "OMX.sprd.av1.decoder",
             "c2.android.av1.decoder",
             "c2.android.av1-dav1d.decoder",
             "c2.android.vp9.decoder",
@@ -104,6 +104,7 @@ final class KeywordContentFilter extends Filter {
     /**
      * Substrings that are never at the start of the path.
      */
+    @SuppressWarnings("FieldCanBeLocal")
     private final StringFilterGroup containsFilter = new StringFilterGroup(
             null,
             "modern_type_shelf_header_content.eml",
@@ -113,8 +114,8 @@ final class KeywordContentFilter extends Filter {
 
     /**
      * Threshold for {@link #filteredVideosPercentage} that indicates all
-     * or nearly all videos have been filtered.  This should be close to 100%,
-     * to reduce false positives if somehow a search result gives 50 videos that all have a keyword.
+     * or nearly all videos have been filtered.
+     * This should be close to 100% to reduce false positives.
      */
     private static final float ALL_VIDEOS_FILTERED_THRESHOLD = 0.95f;
 
@@ -129,7 +130,7 @@ final class KeywordContentFilter extends Filter {
      *
      * This check can still fail if some extra UI elements pass the keywords,
      * such as the video chapter preview or any other elements.
-     * But this will catch incorrect filters that will always hide everything.
+     * But this will catch filters that will always hide everything (such as a video playback url parameter).
      */
     private volatile float filteredVideosPercentage;
 
@@ -147,49 +148,6 @@ final class KeywordContentFilter extends Filter {
     private volatile String lastKeywordPhrasesParsed;
 
     private volatile ByteTrieSearch bufferSearch;
-
-    private boolean hideKeywordSettingIsActive() {
-        if (timeToResumeFiltering != 0) {
-            if (System.currentTimeMillis() < timeToResumeFiltering) {
-                return false;
-            }
-
-            timeToResumeFiltering = 0;
-            filteredVideosPercentage = 0;
-            Logger.printDebug(() -> "Resuming keyword filtering");
-        }
-
-        // Must check player type first, as search bar can be active behind the player.
-        if (PlayerType.getCurrent().isMaximizedOrFullscreen()) {
-            // For now, consider the under video results the same as the home feed.
-            return Settings.HIDE_KEYWORD_CONTENT_HOME.get();
-        }
-
-        // Must check second, as search can be from any tab.
-        if (NavigationBar.isSearchBarActive()) {
-            return Settings.HIDE_KEYWORD_CONTENT_SEARCH.get();
-        }
-
-        // Avoid checking navigation button status if all other settings are off.
-        final boolean hideHome = Settings.HIDE_KEYWORD_CONTENT_HOME.get();
-        final boolean hideSubscriptions = Settings.HIDE_KEYWORD_CONTENT_SUBSCRIPTIONS.get();
-        if (!hideHome && !hideSubscriptions) {
-            return false;
-        }
-
-        NavigationButton selectedNavButton = NavigationButton.getSelectedNavigationButton();
-        if (selectedNavButton == null) {
-            return hideHome; // Unknown tab, treat the same as home.
-        }
-        if (selectedNavButton == NavigationButton.HOME) {
-            return hideHome;
-        }
-        if (selectedNavButton == NavigationButton.SUBSCRIPTIONS) {
-            return hideSubscriptions;
-        }
-        // User is in the Library or Notifications tab.
-        return false;
-    }
 
     /**
      * Change first letter of the first word to use title case.
@@ -316,6 +274,49 @@ final class KeywordContentFilter extends Filter {
     public KeywordContentFilter() {
         // Keywords are parsed on first call to isFiltered()
         addPathCallbacks(startsWithFilter, containsFilter);
+    }
+
+    private boolean hideKeywordSettingIsActive() {
+        if (timeToResumeFiltering != 0) {
+            if (System.currentTimeMillis() < timeToResumeFiltering) {
+                return false;
+            }
+
+            timeToResumeFiltering = 0;
+            filteredVideosPercentage = 0;
+            Logger.printDebug(() -> "Resuming keyword filtering");
+        }
+
+        // Must check player type first, as search bar can be active behind the player.
+        if (PlayerType.getCurrent().isMaximizedOrFullscreen()) {
+            // For now, consider the under video results the same as the home feed.
+            return Settings.HIDE_KEYWORD_CONTENT_HOME.get();
+        }
+
+        // Must check second, as search can be from any tab.
+        if (NavigationBar.isSearchBarActive()) {
+            return Settings.HIDE_KEYWORD_CONTENT_SEARCH.get();
+        }
+
+        // Avoid checking navigation button status if all other settings are off.
+        final boolean hideHome = Settings.HIDE_KEYWORD_CONTENT_HOME.get();
+        final boolean hideSubscriptions = Settings.HIDE_KEYWORD_CONTENT_SUBSCRIPTIONS.get();
+        if (!hideHome && !hideSubscriptions) {
+            return false;
+        }
+
+        NavigationButton selectedNavButton = NavigationButton.getSelectedNavigationButton();
+        if (selectedNavButton == null) {
+            return hideHome; // Unknown tab, treat the same as home.
+        }
+        if (selectedNavButton == NavigationButton.HOME) {
+            return hideHome;
+        }
+        if (selectedNavButton == NavigationButton.SUBSCRIPTIONS) {
+            return hideSubscriptions;
+        }
+        // User is in the Library or Notifications tab.
+        return false;
     }
 
     private void updateStats(boolean videoWasHidden, @Nullable String keyword) {
