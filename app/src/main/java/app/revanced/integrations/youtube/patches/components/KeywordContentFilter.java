@@ -130,7 +130,11 @@ final class KeywordContentFilter extends Filter {
      *
      * This check can still fail if some extra UI elements pass the keywords,
      * such as the video chapter preview or any other elements.
-     * But this will catch filters that will always hide everything (such as a video playback url parameter).
+     *
+     * To test this, add a filter that appears in all videos (such as 'ovd='),
+     * and open the subscription feed. In practice this does not always identify problems
+     * in the home feed and search, because the home feed has a finite amount of content and
+     * search results have a lot of extra video junk that is not hidden and interferes with the detection.
      */
     private volatile float filteredVideosPercentage;
 
