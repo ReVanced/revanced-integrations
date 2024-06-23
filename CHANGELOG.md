@@ -1,3 +1,10 @@
+## [1.11.1-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v1.11.0...v1.11.1-dev.1) (2024-06-23)
+
+
+### Bug Fixes
+
+* **YouTube - Hide layout components:** Detect if a keyword filter hides all videos ([#657](https://github.com/ReVanced/revanced-integrations/issues/657)) ([3a3ceec](https://github.com/ReVanced/revanced-integrations/commit/3a3ceec4b596354dcccbf3516ef1634bd8819b90))
+
 # [1.11.0](https://github.com/ReVanced/revanced-integrations/compare/v1.10.0...v1.11.0) (2024-06-23)
 
 
