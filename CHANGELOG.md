@@ -1,3 +1,23 @@
+# [1.11.0](https://github.com/ReVanced/revanced-integrations/compare/v1.10.0...v1.11.0) (2024-06-23)
+
+
+### Bug Fixes
+
+* **YouTube - Client spoof:** Correctly play more livestreams using Android VR ([#652](https://github.com/ReVanced/revanced-integrations/issues/652)) ([58f8172](https://github.com/ReVanced/revanced-integrations/commit/58f8172b2d30fecd31d541f7470abf61b7e303c7))
+* **YouTube - Hide description components:** Replace `Hide game section` and `Hide music section` with `Hide attributes section` ([#654](https://github.com/ReVanced/revanced-integrations/issues/654)) ([f82dfce](https://github.com/ReVanced/revanced-integrations/commit/f82dfce887bbeccbfdb8e8f8d3d84db6ce28539a))
+* **YouTube - Return YouTube Dislike:** Do not replace view count with dislikes ([5f79196](https://github.com/ReVanced/revanced-integrations/commit/5f7919669250e95fc47c1a2705b352b53aa226f6))
+* **YouTube - Spoof client:** Correctly play as background audio only with Android VR ([9adbc66](https://github.com/ReVanced/revanced-integrations/commit/9adbc66197e8342d3321dc77d151c648be65595b))
+* **YouTube - Spoof client:** Correctly play some live streams when using Android VR ([f74fb17](https://github.com/ReVanced/revanced-integrations/commit/f74fb17a127b1ed8094db23a04e228d8abd05440))
+* **YouTube:** Rename `Minimized playback` to `Remove background playback restrictions` ([#651](https://github.com/ReVanced/revanced-integrations/issues/651)) ([84c50c0](https://github.com/ReVanced/revanced-integrations/commit/84c50c080c2a8c096b7709164cbaec5466a8492c))
+
+
+### Features
+
+* **Boost For Reddit:** Add `Fix /s/ links` patch ([#631](https://github.com/ReVanced/revanced-integrations/issues/631)) ([0c9ad35](https://github.com/ReVanced/revanced-integrations/commit/0c9ad35fc9024efe33c97b51714225c5d5226f59))
+* **YouTube - Comments:** Add `Hide 'Create a Short' button` option ([#656](https://github.com/ReVanced/revanced-integrations/issues/656)) ([064d8e9](https://github.com/ReVanced/revanced-integrations/commit/064d8e99a96167282f63725d33502f251632dcdb))
+* **YouTube - Comments:** Add `Hide Thanks button` and `Hide 'Comments by members' header` options ([#653](https://github.com/ReVanced/revanced-integrations/issues/653)) ([240e805](https://github.com/ReVanced/revanced-integrations/commit/240e805489e3603df026a7a3cf78b939461f5f9e))
+* **YouTube - Miniplayer:** Rename `Tablet mini player` and allow selecting the style of the in-app miniplayer ([#649](https://github.com/ReVanced/revanced-integrations/issues/649)) ([f483af6](https://github.com/ReVanced/revanced-integrations/commit/f483af6d3a2c1003cd566b4bf36fa4a257d1d6d3))
+
 # [1.11.0-dev.7](https://github.com/ReVanced/revanced-integrations/compare/v1.11.0-dev.6...v1.11.0-dev.7) (2024-06-17)
 
 
