@@ -1,3 +1,10 @@
+## [1.11.1-dev.2](https://github.com/ReVanced/revanced-integrations/compare/v1.11.1-dev.1...v1.11.1-dev.2) (2024-06-30)
+
+
+### Bug Fixes
+
+* **YouTube - Hide layout components:** Hide new kind of community post ([#659](https://github.com/ReVanced/revanced-integrations/issues/659)) ([c237e3c](https://github.com/ReVanced/revanced-integrations/commit/c237e3c02c971fb1801663cb662096d319c04928))
+
 ## [1.11.1-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v1.11.0...v1.11.1-dev.1) (2024-06-23)
 
 
