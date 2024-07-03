@@ -208,16 +208,15 @@ public final class VideoInformation {
 
             // Try calling the seekTo method of the MDX player director (called when casting) if the player controller one failed.
             // The difference has to be a different second mark in order to avoid infinite skip loops (as the Lounge API only supports seconds).
-            if (Math.abs(adjustedSeekTime/1000 - videoTime/1000) >= 1) {
-                try {
-                    //noinspection DataFlowIssue
-                    return (Boolean) mdxSeekMethod.invoke(mdxPlayerDirectorRef.get(), adjustedSeekTime);
-                } catch (Exception ex) {
-                    Logger.printInfo(() -> "seekTo (MDX) method call failed", ex);
-                    return false;
-                }
-            } else {
-                Logger.printDebug(() -> "Skipping seekTo for MDX because of a small relative value (" + (seekTime - videoTime) + "ms).");
+            if ((adjustedSeekTime / 1000) == (videoTime / 1000)) {
+                Logger.printDebug(() -> String.format("Skipping seekTo for MDX because of a small relative value (%d ms).", adjustedSeekTime - videoTime));
+                return false;
+            }
+            try {
+                //noinspection DataFlowIssue
+                return (Boolean) mdxSeekMethod.invoke(mdxPlayerDirectorRef.get(), adjustedSeekTime);
+            } catch (Exception ex) {
+                Logger.printInfo(() -> "seekTo (MDX) method call failed", ex);
                 return false;
             }
 
