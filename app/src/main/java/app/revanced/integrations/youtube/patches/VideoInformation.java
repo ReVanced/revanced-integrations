@@ -201,15 +201,17 @@ public final class VideoInformation {
                 //noinspection DataFlowIssue
                 if ((Boolean) seekMethod.invoke(playerControllerRef.get(), adjustedSeekTime)) {
                     return true;
-                }
+                } // Else the video is loading or changing videos, or video is casting to a different device.
             } catch (Exception ex) {
                 Logger.printInfo(() -> "seekTo method call failed", ex);
             }
 
-            // Try calling the seekTo method of the MDX player director (called when casting) if the player controller one failed.
-            // The difference has to be a different second mark in order to avoid infinite skip loops (as the Lounge API only supports seconds).
+            // Try calling the seekTo method of the MDX player director (called when casting).
+            // The difference has to be a different second mark in order to avoid infinite skip loops
+            // as the Lounge API only supports seconds.
             if ((adjustedSeekTime / 1000) == (videoTime / 1000)) {
-                Logger.printDebug(() -> String.format("Skipping seekTo for MDX because of a small relative value (%d ms).", adjustedSeekTime - videoTime));
+                Logger.printDebug(() -> "Skipping seekTo for MDX because seek time is too small ("
+                        + (adjustedSeekTime - videoTime) + "ms)");
                 return false;
             }
             try {
