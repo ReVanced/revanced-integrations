@@ -72,7 +72,6 @@ public final class VideoInformation {
 
             mdxSeekMethod = mdxPlayerDirector.getClass().getMethod(SEEK_METHOD_NAME, Long.TYPE);
             mdxSeekMethod.setAccessible(true);
-
         } catch (Exception ex) {
             Logger.printException(() -> "Failed to initialize MDX", ex);
         }
