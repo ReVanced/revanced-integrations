@@ -1,3 +1,11 @@
+## [1.11.1-dev.3](https://github.com/ReVanced/revanced-integrations/compare/v1.11.1-dev.2...v1.11.1-dev.3) (2024-07-05)
+
+
+### Bug Fixes
+
+* **YouTube - Hide ads:** Hide new types of home feed button ads ([#662](https://github.com/ReVanced/revanced-integrations/issues/662)) ([ff2637c](https://github.com/ReVanced/revanced-integrations/commit/ff2637cb4c9c396f626cd7ee912953b22525baef))
+* **YouTube - Settings:** Move some settings to different menus, adjust default setting values ([#661](https://github.com/ReVanced/revanced-integrations/issues/661)) ([77533cf](https://github.com/ReVanced/revanced-integrations/commit/77533cf3d68b9c748e1d4f3a85cd0544afc7ce48))
+
 ## [1.11.1-dev.2](https://github.com/ReVanced/revanced-integrations/compare/v1.11.1-dev.1...v1.11.1-dev.2) (2024-06-30)
 
 
