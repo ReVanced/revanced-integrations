@@ -1,3 +1,10 @@
+## [1.11.1-dev.4](https://github.com/ReVanced/revanced-integrations/compare/v1.11.1-dev.3...v1.11.1-dev.4) (2024-07-10)
+
+
+### Bug Fixes
+
+* **YouTube - SponsorBlock:** Skip segments when casting ([#655](https://github.com/ReVanced/revanced-integrations/issues/655)) ([5ce16ee](https://github.com/ReVanced/revanced-integrations/commit/5ce16eedc6e27560b97ab982408ac697146105e9))
+
 ## [1.11.1-dev.3](https://github.com/ReVanced/revanced-integrations/compare/v1.11.1-dev.2...v1.11.1-dev.3) (2024-07-05)
 
 
