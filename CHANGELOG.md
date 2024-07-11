@@ -1,3 +1,14 @@
+## [1.11.1](https://github.com/ReVanced/revanced-integrations/compare/v1.11.0...v1.11.1) (2024-07-11)
+
+
+### Bug Fixes
+
+* **YouTube - Hide ads:** Hide new types of home feed button ads ([#662](https://github.com/ReVanced/revanced-integrations/issues/662)) ([ff2637c](https://github.com/ReVanced/revanced-integrations/commit/ff2637cb4c9c396f626cd7ee912953b22525baef))
+* **YouTube - Hide layout components:** Detect if a keyword filter hides all videos ([#657](https://github.com/ReVanced/revanced-integrations/issues/657)) ([3a3ceec](https://github.com/ReVanced/revanced-integrations/commit/3a3ceec4b596354dcccbf3516ef1634bd8819b90))
+* **YouTube - Hide layout components:** Hide new kind of community post ([#659](https://github.com/ReVanced/revanced-integrations/issues/659)) ([c237e3c](https://github.com/ReVanced/revanced-integrations/commit/c237e3c02c971fb1801663cb662096d319c04928))
+* **YouTube - Settings:** Move some settings to different menus, adjust default setting values ([#661](https://github.com/ReVanced/revanced-integrations/issues/661)) ([77533cf](https://github.com/ReVanced/revanced-integrations/commit/77533cf3d68b9c748e1d4f3a85cd0544afc7ce48))
+* **YouTube - SponsorBlock:** Skip segments when casting ([#655](https://github.com/ReVanced/revanced-integrations/issues/655)) ([5ce16ee](https://github.com/ReVanced/revanced-integrations/commit/5ce16eedc6e27560b97ab982408ac697146105e9))
+
 ## [1.11.1-dev.4](https://github.com/ReVanced/revanced-integrations/compare/v1.11.1-dev.3...v1.11.1-dev.4) (2024-07-10)
 
 
