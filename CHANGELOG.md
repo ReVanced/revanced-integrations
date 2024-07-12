@@ -1,3 +1,12 @@
+## [1.11.2-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v1.11.1...v1.11.2-dev.1) (2024-07-12)
+
+
+### Bug Fixes
+
+* adjust blacklist ([d8d2a85](https://github.com/ReVanced/revanced-integrations/commit/d8d2a852d3879060bd95cc43d66c7cf195e82b43))
+* **YouTube - Hide keyword content:** Do not hide flyout menu ([cda1f31](https://github.com/ReVanced/revanced-integrations/commit/cda1f3160c12d239df1183799ead39526cbac20f))
+* **YouTube - Hide keyword content:** Do not hide flyout menu ([#664](https://github.com/ReVanced/revanced-integrations/issues/664)) ([120188d](https://github.com/ReVanced/revanced-integrations/commit/120188d6431b5500d6fde9cec136c752f8ee0ea4))
+
 ## [1.11.1](https://github.com/ReVanced/revanced-integrations/compare/v1.11.0...v1.11.1) (2024-07-11)
 
 
