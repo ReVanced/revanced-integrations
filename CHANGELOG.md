@@ -1,3 +1,10 @@
+## [1.11.2-dev.2](https://github.com/ReVanced/revanced-integrations/compare/v1.11.2-dev.1...v1.11.2-dev.2) (2024-07-13)
+
+
+### Bug Fixes
+
+* **YouTube - Alternative thumbnails:** Always use primary thumbnail domain for still captures ([#666](https://github.com/ReVanced/revanced-integrations/issues/666)) ([7cdaf8d](https://github.com/ReVanced/revanced-integrations/commit/7cdaf8df146fdc0da8254a27d9c125f1e3d34765))
+
 ## [1.11.2-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v1.11.1...v1.11.2-dev.1) (2024-07-12)
 
 
