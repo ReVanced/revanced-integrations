@@ -1,3 +1,10 @@
+# [1.12.0-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v1.11.2-dev.3...v1.12.0-dev.1) (2024-07-14)
+
+
+### Features
+
+* **YouTube:** Add `Bypass image region restrictions` patch ([#667](https://github.com/ReVanced/revanced-integrations/issues/667)) ([396ba77](https://github.com/ReVanced/revanced-integrations/commit/396ba77c207b438651ba6b83fb4b31e623544c00))
+
 ## [1.11.2-dev.3](https://github.com/ReVanced/revanced-integrations/compare/v1.11.2-dev.2...v1.11.2-dev.3) (2024-07-14)
 
 ## [1.11.2-dev.2](https://github.com/ReVanced/revanced-integrations/compare/v1.11.2-dev.1...v1.11.2-dev.2) (2024-07-14)
