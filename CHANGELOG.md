@@ -1,3 +1,11 @@
+## [1.11.2-dev.2](https://github.com/ReVanced/revanced-integrations/compare/v1.11.2-dev.1...v1.11.2-dev.2) (2024-07-14)
+
+
+### Bug Fixes
+
+* **YouTube - Alternative thumbnails:** Always use primary thumbnail domain for still captures ([#666](https://github.com/ReVanced/revanced-integrations/issues/666)) ([7cdaf8d](https://github.com/ReVanced/revanced-integrations/commit/7cdaf8df146fdc0da8254a27d9c125f1e3d34765))
+* **YouTube - Hide layout components:** Hide new type of horizontal shelf ([1fa59a6](https://github.com/ReVanced/revanced-integrations/commit/1fa59a62a17c63916808647331fa682d3de6aafb))
+
 ## [1.11.2-dev.2](https://github.com/ReVanced/revanced-integrations/compare/v1.11.2-dev.1...v1.11.2-dev.2) (2024-07-13)
 
 
