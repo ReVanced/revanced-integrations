@@ -1,3 +1,5 @@
+## [1.11.2-dev.3](https://github.com/ReVanced/revanced-integrations/compare/v1.11.2-dev.2...v1.11.2-dev.3) (2024-07-14)
+
 ## [1.11.2-dev.2](https://github.com/ReVanced/revanced-integrations/compare/v1.11.2-dev.1...v1.11.2-dev.2) (2024-07-14)
 
 
