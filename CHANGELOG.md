@@ -1,3 +1,10 @@
+# [1.12.0-dev.2](https://github.com/ReVanced/revanced-integrations/compare/v1.12.0-dev.1...v1.12.0-dev.2) (2024-07-15)
+
+
+### Bug Fixes
+
+* **YouTube - Disable auto captions:** Do not break Shorts captions menu ([0345a00](https://github.com/ReVanced/revanced-integrations/commit/0345a00d6095797e275bb31f92ccda2e861f44c4))
+
 # [1.12.0-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v1.11.2-dev.3...v1.12.0-dev.1) (2024-07-14)
 
 
