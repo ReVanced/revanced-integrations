@@ -103,6 +103,33 @@ public class SpoofClientPatch {
     /**
      * Injection point.
      */
+    public static String getOsVersion(String originalOsVersion) {
+        if (SPOOF_CLIENT_ENABLED) {
+            return SPOOF_CLIENT_TYPE.osversion;
+        }
+
+        return originalOsVersion;
+    }
+
+    /**
+     * Injection point.
+     */
+    public static String getPlayerRequestUserAgent(String originalUrlString) {
+        if (SPOOF_CLIENT_ENABLED) {
+            var originalUri = Uri.parse(originalUrlString);
+            String path = originalUri.getPath();
+
+            if (path != null && path.contains("player")) {
+                return SPOOF_CLIENT_TYPE.useragent;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Injection point.
+     */
     public static boolean enablePlayerGesture(boolean original) {
         return SPOOF_CLIENT_ENABLED || original;
     }
@@ -129,7 +156,7 @@ public class SpoofClientPatch {
 
     private enum ClientType {
         // https://dumps.tadiphone.dev/dumps/oculus/eureka
-        ANDROID_VR(28, "Quest 3", "1.56.21"),
+        ANDROID_VR(28, "Quest 3", "1.56.21", Build.VERSION.RELEASE, null),
         // 11,4 = iPhone XS Max.
         // 16,2 = iPhone 15 Pro Max.
         // Since the 15 supports AV1 hardware decoding, only spoof that device if this
@@ -137,7 +164,7 @@ public class SpoofClientPatch {
         //
         // Version number should be a valid iOS release.
         // https://www.ipa4fun.com/history/185230
-        IOS(5, deviceHasAV1HardwareDecoding() ? "iPhone16,2" : "iPhone11,4", "19.10.7");
+        IOS(5, deviceHasAV1HardwareDecoding() ? "iPhone16,2" : "iPhone11,4", "19.10.7", "17.5.1.21F90", "com.google.ios.youtube/19.10.7 (iPhone; U; CPU iOS 17_5_1 like Mac OS X)");
 
         /**
          * YouTube
@@ -155,10 +182,22 @@ public class SpoofClientPatch {
          */
         final String version;
 
-        ClientType(int id, String model, String version) {
+        /**
+         * Device OS version.
+         */
+        final String osversion;
+
+        /**
+         * Player user-agent.
+         */
+        final String useragent;
+
+        ClientType(int id, String model, String version, String osversion, String useragent) {
             this.id = id;
             this.model = model;
             this.version = version;
+            this.osversion = osversion;
+            this.useragent = useragent;
         }
     }
 
