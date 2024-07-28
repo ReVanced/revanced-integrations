@@ -1,3 +1,10 @@
+# [1.12.0-dev.3](https://github.com/ReVanced/revanced-integrations/compare/v1.12.0-dev.2...v1.12.0-dev.3) (2024-07-26)
+
+
+### Bug Fixes
+
+* **YouTube - SponsorBlock:** Correctly show minute timestamp when creating a new segment ([e71955d](https://github.com/ReVanced/revanced-integrations/commit/e71955d5bbe58c1c634e82262d0e67dc65eca078))
+
 # [1.12.0-dev.2](https://github.com/ReVanced/revanced-integrations/compare/v1.12.0-dev.1...v1.12.0-dev.2) (2024-07-15)
 
 
