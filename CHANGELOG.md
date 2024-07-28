@@ -1,3 +1,10 @@
+# [1.12.0-dev.5](https://github.com/ReVanced/revanced-integrations/compare/v1.12.0-dev.4...v1.12.0-dev.5) (2024-07-28)
+
+
+### Bug Fixes
+
+* **YouTube - Client Spoof:** Restore missing high qualities by spoofing the iOS client user agent  ([#668](https://github.com/ReVanced/revanced-integrations/issues/668)) ([fbf629f](https://github.com/ReVanced/revanced-integrations/commit/fbf629fd6278440e70b0f1fb07e4cb7c412f0949))
+
 # [1.12.0-dev.4](https://github.com/ReVanced/revanced-integrations/compare/v1.12.0-dev.3...v1.12.0-dev.4) (2024-07-28)
 
 
