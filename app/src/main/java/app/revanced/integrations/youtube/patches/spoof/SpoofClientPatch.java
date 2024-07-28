@@ -6,11 +6,13 @@ import android.net.Uri;
 import android.os.Build;
 import app.revanced.integrations.shared.Logger;
 import app.revanced.integrations.youtube.settings.Settings;
+import org.chromium.net.ExperimentalUrlRequest;
 
 @SuppressWarnings("unused")
 public class SpoofClientPatch {
     private static final boolean SPOOF_CLIENT_ENABLED = Settings.SPOOF_CLIENT.get();
     private static final ClientType SPOOF_CLIENT_TYPE = Settings.SPOOF_CLIENT_USE_IOS.get() ? ClientType.IOS : ClientType.ANDROID_VR;
+    private static final boolean SPOOFING_TO_IOS = SPOOF_CLIENT_ENABLED && SPOOF_CLIENT_TYPE == ClientType.IOS;
 
     /**
      * Any unreachable ip address.  Used to intentionally fail requests.
@@ -45,7 +47,7 @@ public class SpoofClientPatch {
 
     /**
      * Injection point.
-     *
+     * <p>
      * Blocks /initplayback requests.
      */
     public static String blockInitPlaybackRequest(String originalUrlString) {
@@ -71,60 +73,29 @@ public class SpoofClientPatch {
      * Injection point.
      */
     public static int getClientTypeId(int originalClientTypeId) {
-        if (SPOOF_CLIENT_ENABLED) {
-            return SPOOF_CLIENT_TYPE.id;
-        }
-
-        return originalClientTypeId;
+        return SPOOF_CLIENT_ENABLED ? SPOOF_CLIENT_TYPE.id : originalClientTypeId;
     }
 
     /**
      * Injection point.
      */
     public static String getClientVersion(String originalClientVersion) {
-        if (SPOOF_CLIENT_ENABLED) {
-            return SPOOF_CLIENT_TYPE.version;
-        }
-
-        return originalClientVersion;
+        return SPOOF_CLIENT_ENABLED ? SPOOF_CLIENT_TYPE.version : originalClientVersion;
     }
 
     /**
      * Injection point.
      */
     public static String getClientModel(String originalClientModel) {
-        if (SPOOF_CLIENT_ENABLED) {
-            return SPOOF_CLIENT_TYPE.model;
-        }
-
-        return originalClientModel;
+        return SPOOF_CLIENT_ENABLED ? SPOOF_CLIENT_TYPE.model : originalClientModel;
     }
 
     /**
      * Injection point.
+     * Fix video qualities missing, if spoofing to iOS by using the correct client OS version.
      */
     public static String getOsVersion(String originalOsVersion) {
-        if (SPOOF_CLIENT_ENABLED) {
-            return SPOOF_CLIENT_TYPE.osversion;
-        }
-
-        return originalOsVersion;
-    }
-
-    /**
-     * Injection point.
-     */
-    public static String getPlayerRequestUserAgent(String originalUrlString) {
-        if (SPOOF_CLIENT_ENABLED) {
-            var originalUri = Uri.parse(originalUrlString);
-            String path = originalUri.getPath();
-
-            if (path != null && path.contains("player")) {
-                return SPOOF_CLIENT_TYPE.useragent;
-            }
-        }
-
-        return null;
+        return SPOOFING_TO_IOS ? ClientType.IOS.osVersion : originalOsVersion;
     }
 
     /**
@@ -147,16 +118,33 @@ public class SpoofClientPatch {
      * Return true to force create the playback speed menu.
      */
     public static boolean forceCreatePlaybackSpeedMenu(boolean original) {
-        if (SPOOF_CLIENT_ENABLED && SPOOF_CLIENT_TYPE == ClientType.IOS) {
-            return true;
+        return SPOOFING_TO_IOS || original;
+    }
+
+
+    /**
+     * Injection point.
+     * Fix video qualities missing, if spoofing to iOS by using the correct iOS user-agent.
+     */
+    public static ExperimentalUrlRequest overrideUserAgent(ExperimentalUrlRequest.Builder builder, String url) {
+        if (SPOOFING_TO_IOS) {
+            String path = Uri.parse(url).getPath();
+            if (path != null && path.contains("player")) {
+                return builder.addHeader("User-Agent", ClientType.IOS.userAgent).build();
+            }
         }
 
-        return original;
+        return builder.build();
     }
 
     private enum ClientType {
         // https://dumps.tadiphone.dev/dumps/oculus/eureka
-        ANDROID_VR(28, "Quest 3", "1.56.21", "12",  "com.google.android.apps.youtube.vr.oculus/1.56.21 (Linux; U; Android 12; GB) gzip"),
+        ANDROID_VR(28,
+                "Quest 3",
+                "1.56.21",
+                "12",
+                "com.google.android.apps.youtube.vr.oculus/1.56.21 (Linux; U; Android 12; GB) gzip"
+        ),
         // 11,4 = iPhone XS Max.
         // 16,2 = iPhone 15 Pro Max.
         // Since the 15 supports AV1 hardware decoding, only spoof that device if this
@@ -164,7 +152,12 @@ public class SpoofClientPatch {
         //
         // Version number should be a valid iOS release.
         // https://www.ipa4fun.com/history/185230
-        IOS(5, deviceHasAV1HardwareDecoding() ? "iPhone16,2" : "iPhone11,4", "19.10.7", "17.5.1.21F90", "com.google.ios.youtube/19.10.7 (iPhone; U; CPU iOS 17_5_1 like Mac OS X)");
+        IOS(5,
+                deviceHasAV1HardwareDecoding() ? "iPhone16,2" : "iPhone11,4",
+                "19.10.7",
+                "17.5.1.21F90",
+                "com.google.ios.youtube/19.10.7 (iPhone; U; CPU iOS 17_5_1 like Mac OS X)"
+        );
 
         /**
          * YouTube
@@ -185,19 +178,19 @@ public class SpoofClientPatch {
         /**
          * Device OS version.
          */
-        final String osversion;
+        final String osVersion;
 
         /**
          * Player user-agent.
          */
-        final String useragent;
+        final String userAgent;
 
-        ClientType(int id, String model, String version, String osversion, String useragent) {
+        ClientType(int id, String model, String version, String osVersion, String userAgent) {
             this.id = id;
             this.model = model;
             this.version = version;
-            this.osversion = osversion;
-            this.useragent = useragent;
+            this.osVersion = osVersion;
+            this.userAgent = userAgent;
         }
     }
 
