@@ -1,3 +1,10 @@
+# [1.12.0-dev.6](https://github.com/ReVanced/revanced-integrations/compare/v1.12.0-dev.5...v1.12.0-dev.6) (2024-07-28)
+
+
+### Bug Fixes
+
+* **YouTube - Keyword filter:** Filter videos from new subscription layout ([2f2eeea](https://github.com/ReVanced/revanced-integrations/commit/2f2eeea5a722b6b7053eb2825d16fa37938b4e9e))
+
 # [1.12.0-dev.5](https://github.com/ReVanced/revanced-integrations/compare/v1.12.0-dev.4...v1.12.0-dev.5) (2024-07-28)
 
 
