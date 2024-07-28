@@ -1,3 +1,10 @@
+# [1.12.0-dev.4](https://github.com/ReVanced/revanced-integrations/compare/v1.12.0-dev.3...v1.12.0-dev.4) (2024-07-28)
+
+
+### Bug Fixes
+
+* **YouTube - Spoof client:** Fix tracking history on brand accounts ([#669](https://github.com/ReVanced/revanced-integrations/issues/669)) ([4ac698f](https://github.com/ReVanced/revanced-integrations/commit/4ac698fd4bd493d3830009853454a8f6566362b5))
+
 # [1.12.0-dev.3](https://github.com/ReVanced/revanced-integrations/compare/v1.12.0-dev.2...v1.12.0-dev.3) (2024-07-26)
 
 
