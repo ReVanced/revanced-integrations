@@ -1,6 +1,8 @@
 package app.revanced.integrations.youtube.patches.components;
 
 import androidx.annotation.Nullable;
+import app.revanced.integrations.shared.patches.components.ByteArrayFilterGroup;
+import app.revanced.integrations.shared.patches.components.ByteArrayFilterGroupList;
 import app.revanced.integrations.youtube.settings.Settings;
 import app.revanced.integrations.youtube.StringTrieSearch;
 
@@ -9,9 +11,9 @@ final class DescriptionComponentsFilter extends Filter {
 
     private final StringTrieSearch exceptions = new StringTrieSearch();
 
+    private final ByteArrayFilterGroupList macroMarkersCarouselGroupList = new ByteArrayFilterGroupList();
+
     private final StringFilterGroup macroMarkersCarousel;
-    private final ByteArrayFilterGroup chaptersSectionBufferGroup;
-    private final ByteArrayFilterGroup keyConceptsSectionBufferGroup;
 
     public DescriptionComponentsFilter() {
         exceptions.addPatterns(
@@ -49,14 +51,15 @@ final class DescriptionComponentsFilter extends Filter {
                 "macro_markers_carousel.eml"
         );
 
-        chaptersSectionBufferGroup = new ByteArrayFilterGroup(
-                Settings.HIDE_CHAPTERS_SECTION,
-                "chapters_horizontal_shelf"
-        );
-
-        keyConceptsSectionBufferGroup = new ByteArrayFilterGroup(
-                Settings.HIDE_KEY_CONCEPTS_SECTION,
-                "learning_concept_macro_markers_carousel_shelf"
+        macroMarkersCarouselGroupList.addAll(
+                new ByteArrayFilterGroup(
+                        Settings.HIDE_CHAPTERS_SECTION,
+                        "chapters_horizontal_shelf"
+                ),
+                new ByteArrayFilterGroup(
+                        Settings.HIDE_KEY_CONCEPTS_SECTION,
+                        "learning_concept_macro_markers_carousel_shelf"
+                )
         );
 
         addPathCallbacks(
@@ -75,11 +78,7 @@ final class DescriptionComponentsFilter extends Filter {
 
         if (matchedGroup == macroMarkersCarousel) {
             if (contentIndex == 0
-                    && chaptersSectionBufferGroup.check(protobufBufferArray).isFiltered()
-                    && keyConceptsSectionBufferGroup.check(protobufBufferArray).isFiltered()) {
-                return super.isFiltered(identifier, path, protobufBufferArray, matchedGroup, contentType, contentIndex);
-            }
-
+                    !macroMarkersCarouselGroupList.check(protobufBufferArray).isFiltered()) {
             return false;
         }
 
