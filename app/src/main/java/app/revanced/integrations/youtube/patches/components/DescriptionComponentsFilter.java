@@ -72,6 +72,7 @@ final class DescriptionComponentsFilter extends Filter {
     boolean isFiltered(@Nullable String identifier, String path, byte[] protobufBufferArray,
                        StringFilterGroup matchedGroup, FilterContentType contentType, int contentIndex) {
         if (exceptions.matches(path)) return false;
+
         if (matchedGroup == macroMarkersCarousel) {
             if (contentIndex == 0
                     && chaptersSectionBufferGroup.check(protobufBufferArray).isFiltered()
