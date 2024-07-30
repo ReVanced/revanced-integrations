@@ -59,7 +59,6 @@ final class DescriptionComponentsFilter extends Filter {
                 "learning_concept_macro_markers_carousel_shelf"
         );
 
-
         addPathCallbacks(
                 attributesSection,
                 infoCardsSection,
@@ -68,7 +67,6 @@ final class DescriptionComponentsFilter extends Filter {
                 macroMarkersCarousel
         );
     }
-
 
     @Override
     boolean isFiltered(@Nullable String identifier, String path, byte[] protobufBufferArray,
