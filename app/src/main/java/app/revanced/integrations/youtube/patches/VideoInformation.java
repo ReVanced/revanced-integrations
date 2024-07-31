@@ -183,9 +183,7 @@ public final class VideoInformation {
             final long videoLength = getVideoLength();
 
             // Prevent issues such as play/ pause button or autoplay not working.
-            final long adjustedSeekTime;
-
-            adjustedSeekTime = Math.min(seekTime, videoLength - 250);
+            final long adjustedSeekTime = Math.min(seekTime, videoLength - 250);
             if (videoTime <= seekTime && videoTime >= adjustedSeekTime) {
                 // Both the current video time and the seekTo are in the last 250ms of the video.
                 // Ignore this seek call, otherwise if a video ends with multiple closely timed segments
@@ -195,44 +193,33 @@ public final class VideoInformation {
                 return false;
             }
 
-            Logger.printDebug(() -> "Seeking to " + adjustedSeekTime);
+            Logger.printDebug(() -> "Seeking to: " + adjustedSeekTime);
 
             // Try regular playback controller first, and it will not succeed if casting.
-            try {
-                PlaybackController controller = playerControllerRef.get();
-
-                if (controller == null) {
-                    Logger.printDebug(() -> "Cannot seek as player controller is null");
-                } else {
-                    if (controller.seekTo(adjustedSeekTime)) return true;
-                    // Else the video is loading or changing videos, or video is casting to a different device.
-                }
-            } catch (Exception ex) {
-                Logger.printInfo(() -> "seekTo method call failed", ex);
+            PlaybackController controller = playerControllerRef.get();
+            if (controller == null) {
+                Logger.printDebug(() -> "Cannot seek as player controller is null");
+            } else {
+                if (controller.seekTo(adjustedSeekTime)) return true;
+                // Else the video is loading or changing videos, or video is casting to a different device.
             }
 
             // Try calling the seekTo method of the MDX player director (called when casting).
             // The difference has to be a different second mark in order to avoid infinite skip loops
             // as the Lounge API only supports seconds.
-            if ((adjustedSeekTime / 1000) == (videoTime / 1000)) {
-                Logger.printDebug(() -> "Skipping seekTo for MDX because seek time is too small ("
-                        + (adjustedSeekTime - videoTime) + "ms)");
+            if (adjustedSeekTime / 1000 == videoTime / 1000) {
+                Logger.printDebug(() -> "Skipping seekTo for MDX because seek time is too small "
+                        + "(" + (adjustedSeekTime - videoTime) + "ms)");
                 return false;
             }
 
-            try {
-                PlaybackController controller = mdxPlayerDirectorRef.get();
-                if (controller == null) {
-                    Logger.printDebug(() -> "Cannot seek as MXD player controller is null");
-                    return false;
-                }
-
-                return controller.seekTo(adjustedSeekTime);
-            } catch (Exception ex) {
-                Logger.printInfo(() -> "seekTo (MDX) method call failed", ex);
+            controller = mdxPlayerDirectorRef.get();
+            if (controller == null) {
+                Logger.printDebug(() -> "Cannot seek as MXD player controller is null");
                 return false;
             }
 
+            return controller.seekTo(adjustedSeekTime);
         } catch (Exception ex) {
             Logger.printException(() -> "Failed to seek", ex);
             return false;
@@ -248,19 +235,14 @@ public final class VideoInformation {
     public static boolean seekToRelative(long seekTime) {
         Utils.verifyOnMainThread();
         try {
-            Logger.printDebug(() -> "Seeking relative to " + seekTime);
+            Logger.printDebug(() -> "Seeking relative to: " + seekTime);
 
             // Try regular playback controller first, and it will not succeed if casting.
-            try {
-                PlaybackController controller = playerControllerRef.get();
-
-                if (controller == null) {
-                    Logger.printDebug(() -> "Cannot seek relative as player controller is null");
-                } else {
-                    if (controller.seekToRelative(seekTime)) return true;
-                }
-            } catch (Exception ex) {
-                Logger.printInfo(() -> "seekToRelative method call failed", ex);
+            PlaybackController controller = playerControllerRef.get();
+            if (controller == null) {
+                Logger.printDebug(() -> "Cannot seek relative as player controller is null");
+            } else {
+                if (controller.seekToRelative(seekTime)) return true;
             }
 
             // Adjust the fine adjustment function so it's at least 1 second before/after.
@@ -272,19 +254,13 @@ public final class VideoInformation {
                 adjustedSeekTime = Math.max(seekTime, 1000);
             }
 
-            try {
-                PlaybackController controller = mdxPlayerDirectorRef.get();
-                if (controller == null) {
-                    Logger.printDebug(() -> "Cannot seek relative as MXD player controller is null");
-                    return false;
-                }
-
-                return controller.seekToRelative(adjustedSeekTime);
-            } catch (Exception ex) {
-                Logger.printInfo(() -> "seekToRelative (MDX) method call failed", ex);
+            controller = mdxPlayerDirectorRef.get();
+            if (controller == null) {
+                Logger.printDebug(() -> "Cannot seek relative as MXD player controller is null");
                 return false;
             }
 
+            return controller.seekToRelative(adjustedSeekTime);
         } catch (Exception ex) {
             Logger.printException(() -> "Failed to seek relative", ex);
             return false;
