@@ -1,3 +1,71 @@
+# [1.12.0-dev.6](https://github.com/ReVanced/revanced-integrations/compare/v1.12.0-dev.5...v1.12.0-dev.6) (2024-07-28)
+
+
+### Bug Fixes
+
+* **YouTube - Keyword filter:** Filter videos from new subscription layout ([2f2eeea](https://github.com/ReVanced/revanced-integrations/commit/2f2eeea5a722b6b7053eb2825d16fa37938b4e9e))
+
+# [1.12.0-dev.5](https://github.com/ReVanced/revanced-integrations/compare/v1.12.0-dev.4...v1.12.0-dev.5) (2024-07-28)
+
+
+### Bug Fixes
+
+* **YouTube - Client Spoof:** Restore missing high qualities by spoofing the iOS client user agent  ([#668](https://github.com/ReVanced/revanced-integrations/issues/668)) ([fbf629f](https://github.com/ReVanced/revanced-integrations/commit/fbf629fd6278440e70b0f1fb07e4cb7c412f0949))
+
+# [1.12.0-dev.4](https://github.com/ReVanced/revanced-integrations/compare/v1.12.0-dev.3...v1.12.0-dev.4) (2024-07-28)
+
+
+### Bug Fixes
+
+* **YouTube - Spoof client:** Fix tracking history on brand accounts ([#669](https://github.com/ReVanced/revanced-integrations/issues/669)) ([4ac698f](https://github.com/ReVanced/revanced-integrations/commit/4ac698fd4bd493d3830009853454a8f6566362b5))
+
+# [1.12.0-dev.3](https://github.com/ReVanced/revanced-integrations/compare/v1.12.0-dev.2...v1.12.0-dev.3) (2024-07-26)
+
+
+### Bug Fixes
+
+* **YouTube - SponsorBlock:** Correctly show minute timestamp when creating a new segment ([e71955d](https://github.com/ReVanced/revanced-integrations/commit/e71955d5bbe58c1c634e82262d0e67dc65eca078))
+
+# [1.12.0-dev.2](https://github.com/ReVanced/revanced-integrations/compare/v1.12.0-dev.1...v1.12.0-dev.2) (2024-07-15)
+
+
+### Bug Fixes
+
+* **YouTube - Disable auto captions:** Do not break Shorts captions menu ([0345a00](https://github.com/ReVanced/revanced-integrations/commit/0345a00d6095797e275bb31f92ccda2e861f44c4))
+
+# [1.12.0-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v1.11.2-dev.3...v1.12.0-dev.1) (2024-07-14)
+
+
+### Features
+
+* **YouTube:** Add `Bypass image region restrictions` patch ([#667](https://github.com/ReVanced/revanced-integrations/issues/667)) ([396ba77](https://github.com/ReVanced/revanced-integrations/commit/396ba77c207b438651ba6b83fb4b31e623544c00))
+
+## [1.11.2-dev.3](https://github.com/ReVanced/revanced-integrations/compare/v1.11.2-dev.2...v1.11.2-dev.3) (2024-07-14)
+
+## [1.11.2-dev.2](https://github.com/ReVanced/revanced-integrations/compare/v1.11.2-dev.1...v1.11.2-dev.2) (2024-07-14)
+
+
+### Bug Fixes
+
+* **YouTube - Alternative thumbnails:** Always use primary thumbnail domain for still captures ([#666](https://github.com/ReVanced/revanced-integrations/issues/666)) ([7cdaf8d](https://github.com/ReVanced/revanced-integrations/commit/7cdaf8df146fdc0da8254a27d9c125f1e3d34765))
+* **YouTube - Hide layout components:** Hide new type of horizontal shelf ([1fa59a6](https://github.com/ReVanced/revanced-integrations/commit/1fa59a62a17c63916808647331fa682d3de6aafb))
+
+## [1.11.2-dev.2](https://github.com/ReVanced/revanced-integrations/compare/v1.11.2-dev.1...v1.11.2-dev.2) (2024-07-13)
+
+
+### Bug Fixes
+
+* **YouTube - Alternative thumbnails:** Always use primary thumbnail domain for still captures ([#666](https://github.com/ReVanced/revanced-integrations/issues/666)) ([7cdaf8d](https://github.com/ReVanced/revanced-integrations/commit/7cdaf8df146fdc0da8254a27d9c125f1e3d34765))
+
+## [1.11.2-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v1.11.1...v1.11.2-dev.1) (2024-07-12)
+
+
+### Bug Fixes
+
+* adjust blacklist ([d8d2a85](https://github.com/ReVanced/revanced-integrations/commit/d8d2a852d3879060bd95cc43d66c7cf195e82b43))
+* **YouTube - Hide keyword content:** Do not hide flyout menu ([cda1f31](https://github.com/ReVanced/revanced-integrations/commit/cda1f3160c12d239df1183799ead39526cbac20f))
+* **YouTube - Hide keyword content:** Do not hide flyout menu ([#664](https://github.com/ReVanced/revanced-integrations/issues/664)) ([120188d](https://github.com/ReVanced/revanced-integrations/commit/120188d6431b5500d6fde9cec136c752f8ee0ea4))
+
 ## [1.11.1](https://github.com/ReVanced/revanced-integrations/compare/v1.11.0...v1.11.1) (2024-07-11)
 
 
