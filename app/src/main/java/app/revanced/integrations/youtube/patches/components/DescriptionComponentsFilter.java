@@ -77,8 +77,10 @@ final class DescriptionComponentsFilter extends Filter {
         if (exceptions.matches(path)) return false;
 
         if (matchedGroup == macroMarkersCarousel) {
-            if (contentIndex == 0
-                    !macroMarkersCarouselGroupList.check(protobufBufferArray).isFiltered()) {
+            if (contentIndex == 0)
+                return false;
+        }
+                  if (!macroMarkersCarouselGroupList.check(protobufBufferArray).isFiltered()) {
             return false;
         }
 
