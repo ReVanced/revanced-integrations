@@ -177,46 +177,25 @@ public final class VideoInformation {
      * @return true if the seek was successful.
      */
     public static boolean seekTo(final long seekTime) {
-        return seekTo(seekTime, false);
-    }
-
-
-    /**
-     * Seeks a relative amount.  Should always be used over {@link #seekTo(long)}
-     * when the desired seek time is an offset of the current time.
-     *
-     * @noinspection UnusedReturnValue
-     */
-    public static boolean seekToRelative(long millisecondsRelative) {
-        return seekTo(millisecondsRelative, true);
-    }
-
-    private static boolean seekTo(final long seekTime, boolean isRelativeSeek) {
         Utils.verifyOnMainThread();
         try {
             final long videoTime = getVideoTime();
             final long videoLength = getVideoLength();
 
             // Prevent issues such as play/ pause button or autoplay not working.
-            long adjustedSeekTime;
+            final long adjustedSeekTime;
 
-            if (isRelativeSeek) {
-                adjustedSeekTime = seekTime;
-                Logger.printDebug(() -> "Seeking relative to " + seekTime);
-            } else {
-                adjustedSeekTime = Math.min(seekTime, videoLength - 250);
-                if (videoTime <= seekTime && videoTime >= adjustedSeekTime) {
-                    // Both the current video time and the seekTo are in the last 250ms of the video.
-                    // Ignore this seek call, otherwise if a video ends with multiple closely timed segments
-                    // then seeking here can create an infinite loop of skip attempts.
-                    Logger.printDebug(() -> "Ignoring seekTo call as video playback is almost finished. "
-                            + " videoTime: " + videoTime + " videoLength: " + videoLength + " seekTo: " + seekTime);
-                    return false;
-                }
-
-                final long finalAdjustedSeekTime = adjustedSeekTime;
-                Logger.printDebug(() -> "Seeking to " + finalAdjustedSeekTime);
+            adjustedSeekTime = Math.min(seekTime, videoLength - 250);
+            if (videoTime <= seekTime && videoTime >= adjustedSeekTime) {
+                // Both the current video time and the seekTo are in the last 250ms of the video.
+                // Ignore this seek call, otherwise if a video ends with multiple closely timed segments
+                // then seeking here can create an infinite loop of skip attempts.
+                Logger.printDebug(() -> "Ignoring seekTo call as video playback is almost finished. "
+                        + " videoTime: " + videoTime + " videoLength: " + videoLength + " seekTo: " + seekTime);
+                return false;
             }
+
+            Logger.printDebug(() -> "Seeking to " + adjustedSeekTime);
 
             // Try regular playback controller first, and it will not succeed if casting.
             try {
@@ -224,8 +203,6 @@ public final class VideoInformation {
 
                 if (controller == null) {
                     Logger.printDebug(() -> "Cannot seek as player controller is null");
-                } else if (isRelativeSeek) {
-                    if (controller.seekToRelative(adjustedSeekTime)) return true;
                 } else {
                     if (controller.seekTo(adjustedSeekTime)) return true;
                     // Else the video is loading or changing videos, or video is casting to a different device.
@@ -237,32 +214,20 @@ public final class VideoInformation {
             // Try calling the seekTo method of the MDX player director (called when casting).
             // The difference has to be a different second mark in order to avoid infinite skip loops
             // as the Lounge API only supports seconds.
-            if (isRelativeSeek) {
-                // Adjust the fine adjustment function so it's at least 1 second before/after.
-                // Otherwise the fine adjustment will do nothing when casting.
-                if (adjustedSeekTime < 0) {
-                    adjustedSeekTime = Math.min(adjustedSeekTime, -1000);
-                } else {
-                    adjustedSeekTime = Math.max(adjustedSeekTime, 1000);
-                }
-            } else if ((adjustedSeekTime / 1000) == (videoTime / 1000)) {
-                final long finalAdjustedSeekTime = adjustedSeekTime;
+            if ((adjustedSeekTime / 1000) == (videoTime / 1000)) {
                 Logger.printDebug(() -> "Skipping seekTo for MDX because seek time is too small ("
-                        + (finalAdjustedSeekTime - videoTime) + "ms)");
+                        + (adjustedSeekTime - videoTime) + "ms)");
                 return false;
             }
 
             try {
                 PlaybackController controller = mdxPlayerDirectorRef.get();
-
                 if (controller == null) {
                     Logger.printDebug(() -> "Cannot seek as MXD player controller is null");
                     return false;
-                } else if (isRelativeSeek) {
-                    return controller.seekToRelative(adjustedSeekTime);
-                } else {
-                    return controller.seekTo(adjustedSeekTime);
                 }
+
+                return controller.seekTo(adjustedSeekTime);
             } catch (Exception ex) {
                 Logger.printInfo(() -> "seekTo (MDX) method call failed", ex);
                 return false;
@@ -270,6 +235,58 @@ public final class VideoInformation {
 
         } catch (Exception ex) {
             Logger.printException(() -> "Failed to seek", ex);
+            return false;
+        }
+    }
+
+    /**
+     * Seeks a relative amount.  Should always be used over {@link #seekTo(long)}
+     * when the desired seek time is an offset of the current time.
+     *
+     * @noinspection UnusedReturnValue
+     */
+    public static boolean seekToRelative(long seekTime) {
+        Utils.verifyOnMainThread();
+        try {
+            Logger.printDebug(() -> "Seeking relative to " + seekTime);
+
+            // Try regular playback controller first, and it will not succeed if casting.
+            try {
+                PlaybackController controller = playerControllerRef.get();
+
+                if (controller == null) {
+                    Logger.printDebug(() -> "Cannot seek relative as player controller is null");
+                } else {
+                    if (controller.seekToRelative(seekTime)) return true;
+                }
+            } catch (Exception ex) {
+                Logger.printInfo(() -> "seekToRelative method call failed", ex);
+            }
+
+            // Adjust the fine adjustment function so it's at least 1 second before/after.
+            // Otherwise the fine adjustment will do nothing when casting.
+            final long adjustedSeekTime;
+            if (seekTime < 0) {
+                adjustedSeekTime = Math.min(seekTime, -1000);
+            } else {
+                adjustedSeekTime = Math.max(seekTime, 1000);
+            }
+
+            try {
+                PlaybackController controller = mdxPlayerDirectorRef.get();
+                if (controller == null) {
+                    Logger.printDebug(() -> "Cannot seek relative as MXD player controller is null");
+                    return false;
+                }
+
+                return controller.seekToRelative(adjustedSeekTime);
+            } catch (Exception ex) {
+                Logger.printInfo(() -> "seekToRelative (MDX) method call failed", ex);
+                return false;
+            }
+
+        } catch (Exception ex) {
+            Logger.printException(() -> "Failed to seek relative", ex);
             return false;
         }
     }
