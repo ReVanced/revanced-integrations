@@ -1,10 +1,9 @@
 package app.revanced.integrations.youtube.patches.components;
 
 import androidx.annotation.Nullable;
-import app.revanced.integrations.shared.patches.components.ByteArrayFilterGroup;
-import app.revanced.integrations.shared.patches.components.ByteArrayFilterGroupList;
-import app.revanced.integrations.youtube.settings.Settings;
+
 import app.revanced.integrations.youtube.StringTrieSearch;
+import app.revanced.integrations.youtube.settings.Settings;
 
 @SuppressWarnings("unused")
 final class DescriptionComponentsFilter extends Filter {
@@ -77,10 +76,10 @@ final class DescriptionComponentsFilter extends Filter {
         if (exceptions.matches(path)) return false;
 
         if (matchedGroup == macroMarkersCarousel) {
-            if (contentIndex != 0) {
-                return false;
-        }
-            if (!macroMarkersCarouselGroupList.check(protobufBufferArray).isFiltered()) {
+            if (contentIndex == 0 && macroMarkersCarouselGroupList.check(protobufBufferArray).isFiltered()) {
+                return super.isFiltered(path, identifier, protobufBufferArray, matchedGroup, contentType, contentIndex);
+            }
+
             return false;
         }
 
