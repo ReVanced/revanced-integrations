@@ -80,7 +80,7 @@ final class DescriptionComponentsFilter extends Filter {
             if (contentIndex == 0)
                 return false;
         }
-                  if (!macroMarkersCarouselGroupList.check(protobufBufferArray).isFiltered()) {
+            if (!macroMarkersCarouselGroupList.check(protobufBufferArray).isFiltered()) {
             return false;
         }
 
