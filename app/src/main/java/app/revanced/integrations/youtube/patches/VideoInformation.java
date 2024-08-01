@@ -201,6 +201,7 @@ public final class VideoInformation {
                 Logger.printDebug(() -> "Cannot seekTo because player controller is null");
             } else {
                 if (controller.seekTo(adjustedSeekTime)) return true;
+                Logger.printDebug(() -> "seekTo did not succeeded. Trying MXD.");
                 // Else the video is loading or changing videos, or video is casting to a different device.
             }
 
@@ -243,6 +244,7 @@ public final class VideoInformation {
                 Logger.printDebug(() -> "Cannot seek relative as player controller is null");
             } else {
                 if (controller.seekToRelative(seekTime)) return true;
+                Logger.printDebug(() -> "seekToRelative did not succeeded. Trying MXD.");
             }
 
             // Adjust the fine adjustment function so it's at least 1 second before/after.
