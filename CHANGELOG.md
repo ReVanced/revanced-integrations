@@ -1,3 +1,10 @@
+# [1.12.0-dev.7](https://github.com/ReVanced/revanced-integrations/compare/v1.12.0-dev.6...v1.12.0-dev.7) (2024-08-01)
+
+
+### Features
+
+* **YouTube - Description components:** Add  `Hide 'Key concepts' section` option ([#670](https://github.com/ReVanced/revanced-integrations/issues/670)) ([86b25ea](https://github.com/ReVanced/revanced-integrations/commit/86b25ea468a132bd01e3fb1e2972cc903dd46d0c))
+
 # [1.12.0-dev.6](https://github.com/ReVanced/revanced-integrations/compare/v1.12.0-dev.5...v1.12.0-dev.6) (2024-07-28)
 
 
