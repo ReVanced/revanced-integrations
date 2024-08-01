@@ -28,8 +28,8 @@ public final class VideoInformation {
      */
     private static final String SHORTS_PLAYER_PARAMETERS = "8AEB";
 
-    private static WeakReference<PlaybackController> playerControllerRef;
-    private static WeakReference<PlaybackController> mdxPlayerDirectorRef;
+    private static WeakReference<PlaybackController> playerControllerRef = new WeakReference<>(null);
+    private static WeakReference<PlaybackController> mdxPlayerDirectorRef = new WeakReference<>(null);
 
     @NonNull
     private static String videoId = "";
@@ -198,7 +198,7 @@ public final class VideoInformation {
             // Try regular playback controller first, and it will not succeed if casting.
             PlaybackController controller = playerControllerRef.get();
             if (controller == null) {
-                Logger.printDebug(() -> "Cannot seek as player controller is null");
+                Logger.printDebug(() -> "Cannot seekTo because player controller is null");
             } else {
                 if (controller.seekTo(adjustedSeekTime)) return true;
                 // Else the video is loading or changing videos, or video is casting to a different device.
@@ -215,7 +215,7 @@ public final class VideoInformation {
 
             controller = mdxPlayerDirectorRef.get();
             if (controller == null) {
-                Logger.printDebug(() -> "Cannot seek as MXD player controller is null");
+                Logger.printDebug(() -> "Cannot seekTo MXD because player controller is null");
                 return false;
             }
 
