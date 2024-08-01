@@ -15,7 +15,6 @@ import java.util.Objects;
  */
 public final class VideoInformation {
 
-    @SuppressWarnings("unused")
     public interface PlaybackController {
         // Methods are added to YT classes during patching.
         boolean seekTo(long videoTime);
