@@ -1,3 +1,10 @@
+# [1.12.0-dev.8](https://github.com/ReVanced/revanced-integrations/compare/v1.12.0-dev.7...v1.12.0-dev.8) (2024-08-02)
+
+
+### Bug Fixes
+
+* **YouTube - SponsorBlock:** Improve create segment manual seek accuracy ([#671](https://github.com/ReVanced/revanced-integrations/issues/671)) ([34c02ae](https://github.com/ReVanced/revanced-integrations/commit/34c02aeb2a75bd95492e55958a446c9f99efdbb3))
+
 # [1.12.0-dev.7](https://github.com/ReVanced/revanced-integrations/compare/v1.12.0-dev.6...v1.12.0-dev.7) (2024-08-01)
 
 
