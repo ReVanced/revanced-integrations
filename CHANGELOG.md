@@ -1,3 +1,10 @@
+# [1.12.0-dev.9](https://github.com/ReVanced/revanced-integrations/compare/v1.12.0-dev.8...v1.12.0-dev.9) (2024-08-04)
+
+
+### Bug Fixes
+
+* **YouTube - Spoof client:** Restore livestream audio only playback with iOS spoofing ([#673](https://github.com/ReVanced/revanced-integrations/issues/673)) ([5bf5fbd](https://github.com/ReVanced/revanced-integrations/commit/5bf5fbd1a79389895991f6b672d87373e96b698c))
+
 # [1.12.0-dev.8](https://github.com/ReVanced/revanced-integrations/compare/v1.12.0-dev.7...v1.12.0-dev.8) (2024-08-02)
 
 
