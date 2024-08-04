@@ -5,6 +5,7 @@ import android.media.MediaCodecList;
 import android.net.Uri;
 import android.os.Build;
 import app.revanced.integrations.shared.Logger;
+import app.revanced.integrations.youtube.patches.BackgroundPlaybackPatch;
 import app.revanced.integrations.youtube.settings.Settings;
 import org.chromium.net.ExperimentalUrlRequest;
 
@@ -134,7 +135,7 @@ public class SpoofClientPatch {
      * Return true to force audio only background play.
      */
     public static boolean enableLivestreamAudioOnlyPlayback() {
-        return SPOOFING_TO_IOS;
+        return SPOOFING_TO_IOS && BackgroundPlaybackPatch.playbackIsNotShort();
     }
 
     /**
