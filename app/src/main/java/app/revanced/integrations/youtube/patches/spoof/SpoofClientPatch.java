@@ -128,6 +128,14 @@ public class SpoofClientPatch {
         return SPOOFING_TO_IOS || original;
     }
 
+    /**
+     * Injection point.
+     * When spoofing the client to iOS, background audio only playback of livestreams fails.
+     * Return true to force audio only background play.
+     */
+    public static boolean enableLivestreamAudioOnlyPlayback() {
+        return SPOOFING_TO_IOS;
+    }
 
     /**
      * Injection point.
