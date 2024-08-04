@@ -153,19 +153,6 @@ public class SpoofClientPatch {
         return builder.build();
     }
 
-    /**
-     * Injection point.
-     * When spoofing the client to iOS, history is not working on brand accounts.
-     * Replace the tracking URL authority to {@link SpoofClientPatch#WWW_TRACKING_URL_AUTHORITY} to fix this.
-     */
-    public static Uri overrideTrackingUrl(Uri trackingUrl) {
-        if (SPOOF_CLIENT_ENABLED && SPOOF_CLIENT_TYPE == ClientType.IOS) {
-            return trackingUrl.buildUpon().authority(WWW_TRACKING_URL_AUTHORITY).build();
-        }
-
-        return trackingUrl;
-    }
-
     private enum ClientType {
         // https://dumps.tadiphone.dev/dumps/oculus/eureka
         ANDROID_VR(28,
