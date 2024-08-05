@@ -1,3 +1,10 @@
+# [1.12.0-dev.10](https://github.com/ReVanced/revanced-integrations/compare/v1.12.0-dev.9...v1.12.0-dev.10) (2024-08-05)
+
+
+### Bug Fixes
+
+* **YouTube - Return YouTube Dislike:** Fix dislikes not appearing due to new component name ([#674](https://github.com/ReVanced/revanced-integrations/issues/674)) ([509e151](https://github.com/ReVanced/revanced-integrations/commit/509e1516f817bd736c3b2cc75bb5b48ab7de404a))
+
 # [1.12.0-dev.9](https://github.com/ReVanced/revanced-integrations/compare/v1.12.0-dev.8...v1.12.0-dev.9) (2024-08-04)
 
 
