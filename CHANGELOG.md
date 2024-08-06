@@ -1,3 +1,28 @@
+# [1.12.0](https://github.com/ReVanced/revanced-integrations/compare/v1.11.1...v1.12.0) (2024-08-06)
+
+
+### Bug Fixes
+
+* adjust blacklist ([d8d2a85](https://github.com/ReVanced/revanced-integrations/commit/d8d2a852d3879060bd95cc43d66c7cf195e82b43))
+* **YouTube - Alternative thumbnails:** Always use primary thumbnail domain for still captures ([#666](https://github.com/ReVanced/revanced-integrations/issues/666)) ([7cdaf8d](https://github.com/ReVanced/revanced-integrations/commit/7cdaf8df146fdc0da8254a27d9c125f1e3d34765))
+* **YouTube - Client Spoof:** Restore missing high qualities by spoofing the iOS client user agent  ([#668](https://github.com/ReVanced/revanced-integrations/issues/668)) ([fbf629f](https://github.com/ReVanced/revanced-integrations/commit/fbf629fd6278440e70b0f1fb07e4cb7c412f0949))
+* **YouTube - Disable auto captions:** Do not break Shorts captions menu ([0345a00](https://github.com/ReVanced/revanced-integrations/commit/0345a00d6095797e275bb31f92ccda2e861f44c4))
+* **YouTube - Hide keyword content:** Do not hide flyout menu ([cda1f31](https://github.com/ReVanced/revanced-integrations/commit/cda1f3160c12d239df1183799ead39526cbac20f))
+* **YouTube - Hide keyword content:** Do not hide flyout menu ([#664](https://github.com/ReVanced/revanced-integrations/issues/664)) ([120188d](https://github.com/ReVanced/revanced-integrations/commit/120188d6431b5500d6fde9cec136c752f8ee0ea4))
+* **YouTube - Hide layout components:** Hide new type of horizontal shelf ([1fa59a6](https://github.com/ReVanced/revanced-integrations/commit/1fa59a62a17c63916808647331fa682d3de6aafb))
+* **YouTube - Keyword filter:** Filter videos from new subscription layout ([2f2eeea](https://github.com/ReVanced/revanced-integrations/commit/2f2eeea5a722b6b7053eb2825d16fa37938b4e9e))
+* **YouTube - Return YouTube Dislike:** Fix dislikes not appearing due to new component name ([#674](https://github.com/ReVanced/revanced-integrations/issues/674)) ([509e151](https://github.com/ReVanced/revanced-integrations/commit/509e1516f817bd736c3b2cc75bb5b48ab7de404a))
+* **YouTube - SponsorBlock:** Correctly show minute timestamp when creating a new segment ([e71955d](https://github.com/ReVanced/revanced-integrations/commit/e71955d5bbe58c1c634e82262d0e67dc65eca078))
+* **YouTube - SponsorBlock:** Improve create segment manual seek accuracy ([#671](https://github.com/ReVanced/revanced-integrations/issues/671)) ([34c02ae](https://github.com/ReVanced/revanced-integrations/commit/34c02aeb2a75bd95492e55958a446c9f99efdbb3))
+* **YouTube - Spoof client:** Fix tracking history on brand accounts ([#669](https://github.com/ReVanced/revanced-integrations/issues/669)) ([4ac698f](https://github.com/ReVanced/revanced-integrations/commit/4ac698fd4bd493d3830009853454a8f6566362b5))
+* **YouTube - Spoof client:** Restore livestream audio only playback with iOS spoofing ([#673](https://github.com/ReVanced/revanced-integrations/issues/673)) ([5bf5fbd](https://github.com/ReVanced/revanced-integrations/commit/5bf5fbd1a79389895991f6b672d87373e96b698c))
+
+
+### Features
+
+* **YouTube - Description components:** Add  `Hide 'Key concepts' section` option ([#670](https://github.com/ReVanced/revanced-integrations/issues/670)) ([86b25ea](https://github.com/ReVanced/revanced-integrations/commit/86b25ea468a132bd01e3fb1e2972cc903dd46d0c))
+* **YouTube:** Add `Bypass image region restrictions` patch ([#667](https://github.com/ReVanced/revanced-integrations/issues/667)) ([396ba77](https://github.com/ReVanced/revanced-integrations/commit/396ba77c207b438651ba6b83fb4b31e623544c00))
+
 # [1.12.0-dev.10](https://github.com/ReVanced/revanced-integrations/compare/v1.12.0-dev.9...v1.12.0-dev.10) (2024-08-05)
 
 
