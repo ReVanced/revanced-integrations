@@ -23,7 +23,7 @@ public class DnsResolverVerificationPatch {
      * Checks if s.youtube.com is blacklisted and playback history will fail to work.
      */
     public static void checkDnsResolver(Activity context) {
-        if (!Utils.isNetworkConnected()) return;
+        if (!Utils.isNetworkConnected() || Settings.IGNORE_DNS_BLOCKER.get()) return;
 
         Utils.runOnBackgroundThread(() -> {
             try {
@@ -44,7 +44,7 @@ public class DnsResolverVerificationPatch {
                         .setPositiveButton(android.R.string.ok, (dialog, which) -> {
                             dialog.dismiss();
                         }).setNegativeButton(str("revanced_dns_resolver_verification_dialog_ignore"), (dialog, which) -> {
-                            Settings.IGNORE_NON_RESOLVING_DNS.save(true);
+                            Settings.IGNORE_DNS_BLOCKER.save(true);
                             dialog.dismiss();
                         })
                         .setCancelable(false)
