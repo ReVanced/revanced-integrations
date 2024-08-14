@@ -15,7 +15,7 @@ import app.revanced.integrations.youtube.settings.Settings;
 @SuppressWarnings("unused")
 public class DnsResolverVerificationPatch {
 
-    private static final String YOUTUBE_PLAYBACK_HISTORY_API_ADDRESS = "s.youtube.com";
+    private static final String HISTORY_TRACKING_ENDPOINT = "s.youtube.com";
 
     private static final String SINKHOLE_IPV4 = "0.0.0.0";
     private static final String SINKHOLE_IPV6 = "::";
@@ -50,7 +50,7 @@ public class DnsResolverVerificationPatch {
 
         Utils.runOnBackgroundThread(() -> {
             try {
-                if (domainResolvesToValidIP(YOUTUBE_PLAYBACK_HISTORY_API_ADDRESS)) {
+                if (domainResolvesToValidIP(HISTORY_TRACKING_ENDPOINT)) {
                     return;
                 }
 
