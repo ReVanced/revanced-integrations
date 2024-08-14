@@ -13,7 +13,7 @@ import app.revanced.integrations.shared.Utils;
 import app.revanced.integrations.youtube.settings.Settings;
 
 @SuppressWarnings("unused")
-public class DnsResolverVerificationPatch {
+public class CheckWatchHistoryDomainNameResolutionPatch {
 
     private static final String HISTORY_TRACKING_ENDPOINT = "s.youtube.com";
 
@@ -46,7 +46,7 @@ public class DnsResolverVerificationPatch {
      * Checks if s.youtube.com is blacklisted and playback history will fail to work.
      */
     public static void checkDnsResolver(Activity context) {
-        if (!Utils.isNetworkConnected() || !Settings.VERIFY_DNS_RESOLVER.get()) return;
+        if (!Utils.isNetworkConnected() || !Settings.CHECK_WATCH_HISTORY_DNS_RESOLVER.get()) return;
 
         Utils.runOnBackgroundThread(() -> {
             try {
@@ -62,7 +62,7 @@ public class DnsResolverVerificationPatch {
                             .setPositiveButton(android.R.string.ok, (dialog, which) -> {
                                 dialog.dismiss();
                             }).setNegativeButton(str("revanced_dns_resolver_verification_dialog_ignore"), (dialog, which) -> {
-                                Settings.VERIFY_DNS_RESOLVER.save(false);
+                                Settings.CHECK_WATCH_HISTORY_DNS_RESOLVER.save(false);
                                 dialog.dismiss();
                             })
                             .setCancelable(false)
