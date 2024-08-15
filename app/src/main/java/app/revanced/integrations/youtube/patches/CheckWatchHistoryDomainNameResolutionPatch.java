@@ -46,7 +46,7 @@ public class CheckWatchHistoryDomainNameResolutionPatch {
      * Checks if s.youtube.com is blacklisted and playback history will fail to work.
      */
     public static void checkDnsResolver(Activity context) {
-        if (!Utils.isNetworkConnected() || !Settings.CHECK_WATCH_HISTORY_DNS_RESOLVER.get()) return;
+        if (!Utils.isNetworkConnected() || !Settings.CHECK_WATCH_HISTORY_DOMAIN_NAME.get()) return;
 
         Utils.runOnBackgroundThread(() -> {
             try {
@@ -56,13 +56,13 @@ public class CheckWatchHistoryDomainNameResolutionPatch {
 
                 Utils.runOnMainThread(() -> {
                     var alertDialog = new android.app.AlertDialog.Builder(context)
-                            .setTitle(str("revanced_dns_resolver_verification_dialog_title"))
-                            .setMessage(Html.fromHtml(str("revanced_dns_resolver_verification_dialog_message")))
+                            .setTitle(str("revanced_check_watch_history_domain_name_dialog_title"))
+                            .setMessage(Html.fromHtml(str("revanced_check_watch_history_domain_name_dialog_message")))
                             .setIconAttribute(android.R.attr.alertDialogIcon)
                             .setPositiveButton(android.R.string.ok, (dialog, which) -> {
                                 dialog.dismiss();
-                            }).setNegativeButton(str("revanced_dns_resolver_verification_dialog_ignore"), (dialog, which) -> {
-                                Settings.CHECK_WATCH_HISTORY_DNS_RESOLVER.save(false);
+                            }).setNegativeButton(str("revanced_check_watch_history_domain_name_dialog_ignore"), (dialog, which) -> {
+                                Settings.CHECK_WATCH_HISTORY_DOMAIN_NAME.save(false);
                                 dialog.dismiss();
                             })
                             .setCancelable(false)
