@@ -1,3 +1,10 @@
+# [1.13.0](https://github.com/ReVanced/revanced-integrations/compare/v1.12.0...v1.13.0) (2024-08-15)
+
+
+### Features
+
+* **YouTube:** Add `Check watch history domain name resolution` patch ([#675](https://github.com/ReVanced/revanced-integrations/issues/675)) ([57d6834](https://github.com/ReVanced/revanced-integrations/commit/57d6834a2ce1893d8eea16346cc854beef065a33))
+
 # [1.13.0-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v1.12.0...v1.13.0-dev.1) (2024-08-15)
 
 
