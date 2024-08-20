@@ -1,3 +1,10 @@
+## [1.13.1-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v1.13.0...v1.13.1-dev.1) (2024-08-20)
+
+
+### Bug Fixes
+
+* **YouTube - SponsorBlock:** Handle if the user enters an invalid number into any SB settings ([01f084d](https://github.com/ReVanced/revanced-integrations/commit/01f084d87af6a2b1bc0581b1adbb6dfdfff75d82))
+
 # [1.13.0](https://github.com/ReVanced/revanced-integrations/compare/v1.12.0...v1.13.0) (2024-08-15)
 
 
