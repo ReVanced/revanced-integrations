@@ -11,6 +11,10 @@ import org.chromium.net.ExperimentalUrlRequest;
 
 @SuppressWarnings("unused")
 public class SpoofClientPatch {
+    // Must be declared first otherwise wrong values are used for client type below.
+    private static final boolean DEVICE_HAS_HARDWARE_DECODING_AV1 = deviceHasAV1HardwareDecoding();
+    private static final boolean DEVICE_HAS_HARDWARE_DECODING_VP9 = deviceHasVP9HardwareDecoding();
+
     private static final boolean SPOOF_CLIENT_ENABLED = Settings.SPOOF_CLIENT.get();
     private static final ClientType SPOOF_CLIENT_TYPE = Settings.SPOOF_CLIENT_USE_IOS.get() ? ClientType.IOS : ClientType.ANDROID_VR;
     private static final boolean SPOOFING_TO_IOS = SPOOF_CLIENT_ENABLED && SPOOF_CLIENT_TYPE == ClientType.IOS;
@@ -154,18 +158,22 @@ public class SpoofClientPatch {
                 "12",
                 "com.google.android.apps.youtube.vr.oculus/1.56.21 (Linux; U; Android 12; GB) gzip"
         ),
-        // 11,4 = iPhone XS Max.
-        // 16,2 = iPhone 15 Pro Max.
-        // Since the 15 supports AV1 hardware decoding, only spoof that device if this
-        // Android device also has hardware decoding.
-        //
-        // Version number should be a valid iOS release.
-        // https://www.ipa4fun.com/history/185230
         IOS(5,
-                deviceHasAV1HardwareDecoding() ? "iPhone16,2" : "iPhone11,4",
+                // Since the 15 supports AV1 hardware decoding, only spoof that device if this
+                // Android device also has hardware decoding.
+                DEVICE_HAS_HARDWARE_DECODING_AV1
+                        ? "iPhone16,2"  // 15 Pro Max
+                        : "iPhone11,4", // XS Max
+                // Version number should be a valid iOS release.
+                // https://www.ipa4fun.com/history/185230
                 "19.10.7",
-                "17.5.1.21F90",
-                "com.google.ios.youtube/19.10.7 (iPhone; U; CPU iOS 17_5_1 like Mac OS X)"
+                // iOS 14+ forces VP9, so only spoof it if the device supports hardware decoding.
+                DEVICE_HAS_HARDWARE_DECODING_VP9
+                        ? "17.5.1.21F90"
+                        : "13.7.17H35",
+                DEVICE_HAS_HARDWARE_DECODING_VP9
+                        ? "com.google.ios.youtube/19.10.7 (iPhone; U; CPU iOS 17_5_1 like Mac OS X)"
+                        : "com.google.ios.youtube/19.10.7 (iPhone; U; CPU iOS 13_7 like Mac OS X)"
         );
 
         /**
@@ -203,20 +211,38 @@ public class SpoofClientPatch {
         }
     }
 
+    private static boolean deviceHasVP9HardwareDecoding() {
+        MediaCodecList codecList = new MediaCodecList(MediaCodecList.ALL_CODECS);
+
+        for (MediaCodecInfo codecInfo : codecList.getCodecInfos()) {
+            final boolean isHardwareAccelerated = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
+                    ? codecInfo.isHardwareAccelerated()
+                    : !codecInfo.getName().startsWith("OMX.google"); // Software decoder.
+            if (isHardwareAccelerated && !codecInfo.isEncoder()) {
+                for (String type : codecInfo.getSupportedTypes()) {
+                    if (type.equalsIgnoreCase("video/x-vnd.on2.vp9")) {
+                        Logger.printDebug(() -> "Device supports VP9 hardware decoding.");
+                        return true;
+                    }
+                }
+            }
+        }
+
+        Logger.printDebug(() -> "Device does not support VP9 hardware decoding.");
+        return false;
+    }
+
     private static boolean deviceHasAV1HardwareDecoding() {
+        // It appears all devices with hardware AV1 are also Android 10 or newer.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             MediaCodecList codecList = new MediaCodecList(MediaCodecList.ALL_CODECS);
 
             for (MediaCodecInfo codecInfo : codecList.getCodecInfos()) {
                 if (codecInfo.isHardwareAccelerated() && !codecInfo.isEncoder()) {
-                    String[] supportedTypes = codecInfo.getSupportedTypes();
-                    for (String type : supportedTypes) {
+                    for (String type : codecInfo.getSupportedTypes()) {
                         if (type.equalsIgnoreCase("video/av01")) {
-                            MediaCodecInfo.CodecCapabilities capabilities = codecInfo.getCapabilitiesForType(type);
-                            if (capabilities != null) {
-                                Logger.printDebug(() -> "Device supports AV1 hardware decoding.");
-                                return true;
-                            }
+                            Logger.printDebug(() -> "Device supports AV1 hardware decoding.");
+                            return true;
                         }
                     }
                 }
