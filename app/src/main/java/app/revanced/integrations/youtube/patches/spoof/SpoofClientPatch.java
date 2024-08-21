@@ -142,10 +142,10 @@ public class SpoofClientPatch {
      * Fix video qualities missing, if spoofing to iOS by using the correct iOS user-agent.
      */
     public static ExperimentalUrlRequest overrideUserAgent(ExperimentalUrlRequest.Builder builder, String url) {
-        if (SPOOF_IOS) {
+        if (SPOOF_CLIENT_ENABLED) {
             String path = Uri.parse(url).getPath();
             if (path != null && path.contains("player")) {
-                return builder.addHeader("User-Agent", ClientType.IOS.userAgent).build();
+                return builder.addHeader("User-Agent", SPOOF_CLIENT_TYPE.userAgent).build();
             }
         }
 
