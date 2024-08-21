@@ -270,7 +270,7 @@ public class SpoofClientPatch {
         }
     }
 
-    public static final class ForceiOSAVC1Availability implements Setting.Availability {
+    public static final class ForceiOSAVCAvailability implements Setting.Availability {
         @Override
         public boolean isAvailable() {
             return Settings.SPOOF_CLIENT.get() && Settings.SPOOF_CLIENT_TYPE.get() == ClientType.IOS;
