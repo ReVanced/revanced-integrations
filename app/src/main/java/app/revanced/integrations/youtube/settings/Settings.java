@@ -255,6 +255,7 @@ public class Settings extends BaseSettings {
     public static final BooleanSetting ANNOUNCEMENTS = new BooleanSetting("revanced_announcements", TRUE);
     public static final BooleanSetting SPOOF_CLIENT = new BooleanSetting("revanced_spoof_client", TRUE, true, "revanced_spoof_client_user_dialog_message");
     public static final BooleanSetting SPOOF_CLIENT_USE_IOS = new BooleanSetting("revanced_spoof_client_use_ios", TRUE, true, parent(SPOOF_CLIENT));
+    public static final BooleanSetting SPOOF_CLIENT_IOS_FORCE_AVC1 = new BooleanSetting("revanced_spoof_client_ios_force_avc1", FALSE, true, parent(SPOOF_CLIENT_USE_IOS));
     @Deprecated
     public static final StringSetting DEPRECATED_ANNOUNCEMENT_LAST_HASH = new StringSetting("revanced_announcement_last_hash", "");
     public static final IntegerSetting ANNOUNCEMENT_LAST_ID = new IntegerSetting("revanced_announcement_last_id", -1);

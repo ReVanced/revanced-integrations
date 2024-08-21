@@ -16,10 +16,11 @@ public class SpoofClientPatch {
     // Must be declared first otherwise wrong values are used for client type below.
     private static final boolean DEVICE_HAS_HARDWARE_DECODING_AV1 = deviceHasAV1HardwareDecoding();
     private static final boolean DEVICE_HAS_HARDWARE_DECODING_VP9 = deviceHasVP9HardwareDecoding();
+    private static final boolean SPOOF_IOS_FORCE_AVC1 = Settings.SPOOF_CLIENT_IOS_FORCE_AVC1.get();
 
     private static final boolean SPOOF_CLIENT_ENABLED = Settings.SPOOF_CLIENT.get();
     private static final ClientType SPOOF_CLIENT_TYPE = Settings.SPOOF_CLIENT_USE_IOS.get() ? ClientType.IOS : ClientType.ANDROID_VR;
-    private static final boolean SPOOFING_TO_IOS = SPOOF_CLIENT_ENABLED && SPOOF_CLIENT_TYPE == ClientType.IOS;
+    private static final boolean SPOOF_IOS = SPOOF_CLIENT_ENABLED && SPOOF_CLIENT_TYPE == ClientType.IOS;
 
     /**
      * Any unreachable ip address.  Used to intentionally fail requests.
@@ -125,7 +126,7 @@ public class SpoofClientPatch {
      * Return true to force create the playback speed menu.
      */
     public static boolean forceCreatePlaybackSpeedMenu(boolean original) {
-        return SPOOFING_TO_IOS || original;
+        return SPOOF_IOS || original;
     }
 
     /**
@@ -134,7 +135,7 @@ public class SpoofClientPatch {
      * Return true to force enable audio background play.
      */
     public static boolean overrideBackgroundAudioPlayback() {
-        return SPOOFING_TO_IOS && BackgroundPlaybackPatch.playbackIsNotShort();
+        return SPOOF_IOS && BackgroundPlaybackPatch.playbackIsNotShort();
     }
 
     /**
@@ -142,7 +143,7 @@ public class SpoofClientPatch {
      * Fix video qualities missing, if spoofing to iOS by using the correct iOS user-agent.
      */
     public static ExperimentalUrlRequest overrideUserAgent(ExperimentalUrlRequest.Builder builder, String url) {
-        if (SPOOFING_TO_IOS) {
+        if (SPOOF_IOS) {
             String path = Uri.parse(url).getPath();
             if (path != null && path.contains("player")) {
                 return builder.addHeader("User-Agent", ClientType.IOS.userAgent).build();
@@ -209,10 +210,10 @@ public class SpoofClientPatch {
                         ? "iPhone16,2"  // 15 Pro Max
                         : "iPhone11,4", // XS Max
                 // iOS 14+ forces VP9.
-                DEVICE_HAS_HARDWARE_DECODING_VP9
+                (DEVICE_HAS_HARDWARE_DECODING_VP9 && !SPOOF_IOS_FORCE_AVC1)
                         ? "17.5.1.21F90"
                         : "13.7.17H35",
-                DEVICE_HAS_HARDWARE_DECODING_VP9
+                (DEVICE_HAS_HARDWARE_DECODING_VP9 && !SPOOF_IOS_FORCE_AVC1)
                         ? "com.google.ios.youtube/19.10.7 (iPhone; U; CPU iOS 17_5_1 like Mac OS X)"
                         : "com.google.ios.youtube/19.10.7 (iPhone; U; CPU iOS 13_7 like Mac OS X)",
                 // Version number should be a valid iOS release.
