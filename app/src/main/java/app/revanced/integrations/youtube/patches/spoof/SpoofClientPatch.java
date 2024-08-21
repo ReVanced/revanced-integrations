@@ -201,7 +201,7 @@ public class SpoofClientPatch {
         }
 
         static boolean allowVP9() {
-            return DeviceHardwareSupport.DEVICE_HAS_HARDWARE_DECODING_VP9 && !Settings.SPOOF_CLIENT_IOS_FORCE_AVC1.get();
+            return DeviceHardwareSupport.DEVICE_HAS_HARDWARE_DECODING_VP9 && !Settings.SPOOF_CLIENT_IOS_FORCE_AVC.get();
         }
 
         static boolean allowAV1() {

@@ -256,7 +256,7 @@ public class Settings extends BaseSettings {
     public static final BooleanSetting BYPASS_URL_REDIRECTS = new BooleanSetting("revanced_bypass_url_redirects", TRUE);
     public static final BooleanSetting ANNOUNCEMENTS = new BooleanSetting("revanced_announcements", TRUE);
     public static final BooleanSetting SPOOF_CLIENT = new BooleanSetting("revanced_spoof_client", TRUE, true, "revanced_spoof_client_user_dialog_message");
-    public static final BooleanSetting SPOOF_CLIENT_IOS_FORCE_AVC1 = new BooleanSetting("revanced_spoof_client_ios_force_avc1", FALSE, true, new SpoofClientPatch.ForceiOSAVC1Availability());
+    public static final BooleanSetting SPOOF_CLIENT_IOS_FORCE_AVC = new BooleanSetting("revanced_spoof_client_ios_force_avc", FALSE, true, new SpoofClientPatch.ForceiOSAVC1Availability());
     public static final EnumSetting<ClientType> SPOOF_CLIENT_TYPE = new EnumSetting<>("revanced_spoof_client_type", ClientType.IOS, true, parent(SPOOF_CLIENT));
     @Deprecated
     public static final StringSetting DEPRECATED_ANNOUNCEMENT_LAST_HASH = new StringSetting("revanced_announcement_last_hash", "");
