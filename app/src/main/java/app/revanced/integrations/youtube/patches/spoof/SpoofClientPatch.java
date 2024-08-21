@@ -8,18 +8,14 @@ import android.os.Build;
 import org.chromium.net.ExperimentalUrlRequest;
 
 import app.revanced.integrations.shared.Logger;
+import app.revanced.integrations.shared.settings.Setting;
 import app.revanced.integrations.youtube.patches.BackgroundPlaybackPatch;
 import app.revanced.integrations.youtube.settings.Settings;
 
 @SuppressWarnings("unused")
 public class SpoofClientPatch {
-    // Must be declared first otherwise wrong values are used for client type below.
-    private static final boolean DEVICE_HAS_HARDWARE_DECODING_AV1 = deviceHasAV1HardwareDecoding();
-    private static final boolean DEVICE_HAS_HARDWARE_DECODING_VP9 = deviceHasVP9HardwareDecoding();
-    private static final boolean SPOOF_IOS_FORCE_AVC1 = Settings.SPOOF_CLIENT_IOS_FORCE_AVC1.get();
-
     private static final boolean SPOOF_CLIENT_ENABLED = Settings.SPOOF_CLIENT.get();
-    private static final ClientType SPOOF_CLIENT_TYPE = Settings.SPOOF_CLIENT_USE_IOS.get() ? ClientType.IOS : ClientType.ANDROID_VR;
+    private static final ClientType SPOOF_CLIENT_TYPE = Settings.SPOOF_CLIENT_TYPE.get();
     private static final boolean SPOOF_IOS = SPOOF_CLIENT_ENABLED && SPOOF_CLIENT_TYPE == ClientType.IOS;
 
     /**
@@ -153,72 +149,30 @@ public class SpoofClientPatch {
         return builder.build();
     }
 
-    private static boolean deviceHasVP9HardwareDecoding() {
-        MediaCodecList codecList = new MediaCodecList(MediaCodecList.ALL_CODECS);
-
-        for (MediaCodecInfo codecInfo : codecList.getCodecInfos()) {
-            final boolean isHardwareAccelerated = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
-                    ? codecInfo.isHardwareAccelerated()
-                    : !codecInfo.getName().startsWith("OMX.google"); // Software decoder.
-            if (isHardwareAccelerated && !codecInfo.isEncoder()) {
-                for (String type : codecInfo.getSupportedTypes()) {
-                    if (type.equalsIgnoreCase("video/x-vnd.on2.vp9")) {
-                        Logger.printDebug(() -> "Device supports VP9 hardware decoding.");
-                        return true;
-                    }
-                }
-            }
-        }
-
-        Logger.printDebug(() -> "Device does not support VP9 hardware decoding.");
-        return false;
-    }
-
-    private static boolean deviceHasAV1HardwareDecoding() {
-        // It appears all devices with hardware AV1 are also Android 10 or newer.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            MediaCodecList codecList = new MediaCodecList(MediaCodecList.ALL_CODECS);
-
-            for (MediaCodecInfo codecInfo : codecList.getCodecInfos()) {
-                if (codecInfo.isHardwareAccelerated() && !codecInfo.isEncoder()) {
-                    for (String type : codecInfo.getSupportedTypes()) {
-                        if (type.equalsIgnoreCase("video/av01")) {
-                            Logger.printDebug(() -> "Device supports AV1 hardware decoding.");
-                            return true;
-                        }
-                    }
-                }
-            }
-        }
-
-        Logger.printDebug(() -> "Device does not support AV1 hardware decoding.");
-        return false;
-    }
-
-    private enum ClientType {
+    public enum ClientType {
         // https://dumps.tadiphone.dev/dumps/oculus/eureka
-        ANDROID_VR(28,
-                "Quest 3",
-                "12",
-                "com.google.android.apps.youtube.vr.oculus/1.56.21 (Linux; U; Android 12; GB) gzip",
-                "1.56.21"
-        ),
         IOS(5,
                 // iPhone 15 supports AV1 hardware decoding.
                 // Only use if this Android device also has hardware decoding.
-                DEVICE_HAS_HARDWARE_DECODING_AV1
+                allowAV1()
                         ? "iPhone16,2"  // 15 Pro Max
                         : "iPhone11,4", // XS Max
                 // iOS 14+ forces VP9.
-                (DEVICE_HAS_HARDWARE_DECODING_VP9 && !SPOOF_IOS_FORCE_AVC1)
+                allowVP9()
                         ? "17.5.1.21F90"
                         : "13.7.17H35",
-                (DEVICE_HAS_HARDWARE_DECODING_VP9 && !SPOOF_IOS_FORCE_AVC1)
+                allowVP9()
                         ? "com.google.ios.youtube/19.10.7 (iPhone; U; CPU iOS 17_5_1 like Mac OS X)"
                         : "com.google.ios.youtube/19.10.7 (iPhone; U; CPU iOS 13_7 like Mac OS X)",
                 // Version number should be a valid iOS release.
                 // https://www.ipa4fun.com/history/185230
                 "19.10.7"
+        ),
+        ANDROID_VR(28,
+                "Quest 3",
+                "12",
+                "com.google.android.apps.youtube.vr.oculus/1.56.21 (Linux; U; Android 12; GB) gzip",
+                "1.56.21"
         );
 
         /**
@@ -253,6 +207,67 @@ public class SpoofClientPatch {
             this.osVersion = osVersion;
             this.userAgent = userAgent;
             this.appVersion = appVersion;
+        }
+
+        private static boolean deviceHasVP9HardwareDecoding() {
+            MediaCodecList codecList = new MediaCodecList(MediaCodecList.ALL_CODECS);
+
+            for (MediaCodecInfo codecInfo : codecList.getCodecInfos()) {
+                final boolean isHardwareAccelerated = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
+                        ? codecInfo.isHardwareAccelerated()
+                        : !codecInfo.getName().startsWith("OMX.google"); // Software decoder.
+                if (isHardwareAccelerated && !codecInfo.isEncoder()) {
+                    for (String type : codecInfo.getSupportedTypes()) {
+                        if (type.equalsIgnoreCase("video/x-vnd.on2.vp9")) {
+                            Logger.printDebug(() -> "Device supports VP9 hardware decoding.");
+                            return true;
+                        }
+                    }
+                }
+            }
+
+            Logger.printDebug(() -> "Device does not support VP9 hardware decoding.");
+            return false;
+        }
+
+        private static boolean deviceHasAV1HardwareDecoding() {
+            // It appears all devices with hardware AV1 are also Android 10 or newer.
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                MediaCodecList codecList = new MediaCodecList(MediaCodecList.ALL_CODECS);
+
+                for (MediaCodecInfo codecInfo : codecList.getCodecInfos()) {
+                    if (codecInfo.isHardwareAccelerated() && !codecInfo.isEncoder()) {
+                        for (String type : codecInfo.getSupportedTypes()) {
+                            if (type.equalsIgnoreCase("video/av01")) {
+                                Logger.printDebug(() -> "Device supports AV1 hardware decoding.");
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+
+            Logger.printDebug(() -> "Device does not support AV1 hardware decoding.");
+            return false;
+        }
+
+        // Must declare here and use methods to reference these fields,
+        // otherwise class loading fails due to cyclic references.
+        private static final boolean DEVICE_HAS_HARDWARE_DECODING_VP9 = deviceHasVP9HardwareDecoding();
+        private static boolean allowVP9() {
+            return DEVICE_HAS_HARDWARE_DECODING_AV1 && !Settings.SPOOF_CLIENT_IOS_FORCE_AVC1.get();
+        }
+
+        private static final boolean DEVICE_HAS_HARDWARE_DECODING_AV1 = deviceHasAV1HardwareDecoding();
+        private static boolean allowAV1() {
+            return DEVICE_HAS_HARDWARE_DECODING_AV1;
+        }
+
+        public static final class ForceiOSAVC1Availability implements Setting.Availability {
+            @Override
+            public boolean isAvailable() {
+                return Settings.SPOOF_CLIENT.get() && Settings.SPOOF_CLIENT_TYPE.get() == ClientType.IOS;
+            }
         }
     }
 }
