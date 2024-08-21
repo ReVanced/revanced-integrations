@@ -102,7 +102,7 @@ public class SpoofClientPatch {
      * Fix video qualities missing, if spoofing to iOS by using the correct client OS version.
      */
     public static String getOsVersion(String originalOsVersion) {
-        return SPOOFING_TO_IOS ? ClientType.IOS.osVersion : originalOsVersion;
+        return SPOOF_CLIENT_ENABLED ? SPOOF_CLIENT_TYPE.osVersion : originalOsVersion;
     }
 
     /**
