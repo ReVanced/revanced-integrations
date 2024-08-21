@@ -152,6 +152,48 @@ public class SpoofClientPatch {
         return builder.build();
     }
 
+    private static boolean deviceHasVP9HardwareDecoding() {
+        MediaCodecList codecList = new MediaCodecList(MediaCodecList.ALL_CODECS);
+
+        for (MediaCodecInfo codecInfo : codecList.getCodecInfos()) {
+            final boolean isHardwareAccelerated = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
+                    ? codecInfo.isHardwareAccelerated()
+                    : !codecInfo.getName().startsWith("OMX.google"); // Software decoder.
+            if (isHardwareAccelerated && !codecInfo.isEncoder()) {
+                for (String type : codecInfo.getSupportedTypes()) {
+                    if (type.equalsIgnoreCase("video/x-vnd.on2.vp9")) {
+                        Logger.printDebug(() -> "Device supports VP9 hardware decoding.");
+                        return true;
+                    }
+                }
+            }
+        }
+
+        Logger.printDebug(() -> "Device does not support VP9 hardware decoding.");
+        return false;
+    }
+
+    private static boolean deviceHasAV1HardwareDecoding() {
+        // It appears all devices with hardware AV1 are also Android 10 or newer.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            MediaCodecList codecList = new MediaCodecList(MediaCodecList.ALL_CODECS);
+
+            for (MediaCodecInfo codecInfo : codecList.getCodecInfos()) {
+                if (codecInfo.isHardwareAccelerated() && !codecInfo.isEncoder()) {
+                    for (String type : codecInfo.getSupportedTypes()) {
+                        if (type.equalsIgnoreCase("video/av01")) {
+                            Logger.printDebug(() -> "Device supports AV1 hardware decoding.");
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+
+        Logger.printDebug(() -> "Device does not support AV1 hardware decoding.");
+        return false;
+    }
+
     private enum ClientType {
         // https://dumps.tadiphone.dev/dumps/oculus/eureka
         ANDROID_VR(28,
@@ -161,12 +203,12 @@ public class SpoofClientPatch {
                 "1.56.21"
         ),
         IOS(5,
-                // Since the 15 supports AV1 hardware decoding, only spoof that device if this
-                // Android device also has hardware decoding.
+                // iPhone 15 supports AV1 hardware decoding.
+                // Only use if this Android device also has hardware decoding.
                 DEVICE_HAS_HARDWARE_DECODING_AV1
                         ? "iPhone16,2"  // 15 Pro Max
                         : "iPhone11,4", // XS Max
-                // iOS 14+ forces VP9, so only spoof it if the device supports hardware decoding.
+                // iOS 14+ forces VP9.
                 DEVICE_HAS_HARDWARE_DECODING_VP9
                         ? "17.5.1.21F90"
                         : "13.7.17H35",
@@ -211,47 +253,5 @@ public class SpoofClientPatch {
             this.userAgent = userAgent;
             this.appVersion = appVersion;
         }
-    }
-
-    private static boolean deviceHasVP9HardwareDecoding() {
-        MediaCodecList codecList = new MediaCodecList(MediaCodecList.ALL_CODECS);
-
-        for (MediaCodecInfo codecInfo : codecList.getCodecInfos()) {
-            final boolean isHardwareAccelerated = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
-                    ? codecInfo.isHardwareAccelerated()
-                    : !codecInfo.getName().startsWith("OMX.google"); // Software decoder.
-            if (isHardwareAccelerated && !codecInfo.isEncoder()) {
-                for (String type : codecInfo.getSupportedTypes()) {
-                    if (type.equalsIgnoreCase("video/x-vnd.on2.vp9")) {
-                        Logger.printDebug(() -> "Device supports VP9 hardware decoding.");
-                        return true;
-                    }
-                }
-            }
-        }
-
-        Logger.printDebug(() -> "Device does not support VP9 hardware decoding.");
-        return false;
-    }
-
-    private static boolean deviceHasAV1HardwareDecoding() {
-        // It appears all devices with hardware AV1 are also Android 10 or newer.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            MediaCodecList codecList = new MediaCodecList(MediaCodecList.ALL_CODECS);
-
-            for (MediaCodecInfo codecInfo : codecList.getCodecInfos()) {
-                if (codecInfo.isHardwareAccelerated() && !codecInfo.isEncoder()) {
-                    for (String type : codecInfo.getSupportedTypes()) {
-                        if (type.equalsIgnoreCase("video/av01")) {
-                            Logger.printDebug(() -> "Device supports AV1 hardware decoding.");
-                            return true;
-                        }
-                    }
-                }
-            }
-        }
-
-        Logger.printDebug(() -> "Device does not support AV1 hardware decoding.");
-        return false;
     }
 }
