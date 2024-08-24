@@ -177,7 +177,7 @@ public class SpoofClientPatch {
             String path = uri.getPath();
             if (path != null && path.contains("player") && !path.contains("heartbeat")) {
             	if (SPOOF_CLIENT_ENABLED) {
-                    return builder.addHeader("User-Agent", ClientType.IOS.userAgent).build();
+                    return builder.addHeader("User-Agent", SPOOF_CLIENT_TYPE.userAgent).build();
                 }
                 if (SPOOF_STREAM_ENABLED) {
                     fetchStreamingData(uri.getQueryParameter("id"), headers);
