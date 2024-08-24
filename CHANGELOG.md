@@ -1,3 +1,24 @@
+# [1.14.0-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v1.13.1-dev.2...v1.14.0-dev.1) (2024-08-22)
+
+
+### Features
+
+* **YouTube - Spoof client:** Allow forcing AVC codec with iOS ([#679](https://github.com/ReVanced/revanced-integrations/issues/679)) ([2c471f3](https://github.com/ReVanced/revanced-integrations/commit/2c471f39c229af940b7c0890a228bdf01bdc8c39))
+
+## [1.13.1-dev.2](https://github.com/ReVanced/revanced-integrations/compare/v1.13.1-dev.1...v1.13.1-dev.2) (2024-08-20)
+
+
+### Bug Fixes
+
+* **YouTube - Hide layout components:** Hide new kind of community post ([#678](https://github.com/ReVanced/revanced-integrations/issues/678)) ([6be257a](https://github.com/ReVanced/revanced-integrations/commit/6be257a7a66aaa67c187d71530d6773c06a41993))
+
+## [1.13.1-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v1.13.0...v1.13.1-dev.1) (2024-08-20)
+
+
+### Bug Fixes
+
+* **YouTube - SponsorBlock:** Handle if the user enters an invalid number into any SB settings ([01f084d](https://github.com/ReVanced/revanced-integrations/commit/01f084d87af6a2b1bc0581b1adbb6dfdfff75d82))
+
 # [1.13.0](https://github.com/ReVanced/revanced-integrations/compare/v1.12.0...v1.13.0) (2024-08-15)
 
 
