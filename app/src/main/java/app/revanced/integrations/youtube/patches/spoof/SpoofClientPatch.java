@@ -1,12 +1,20 @@
 package app.revanced.integrations.youtube.patches.spoof;
 
+import androidx.annotation.Nullable;
+import android.annotation.SuppressLint;
 import android.media.MediaCodecInfo;
 import android.media.MediaCodecList;
 import android.net.Uri;
 import android.os.Build;
 import app.revanced.integrations.shared.Logger;
 import app.revanced.integrations.youtube.patches.BackgroundPlaybackPatch;
+import app.revanced.integrations.youtube.patches.spoof.requests.StreamingDataRequester;
 import app.revanced.integrations.youtube.settings.Settings;
+import java.nio.ByteBuffer;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutionException;
 import org.chromium.net.ExperimentalUrlRequest;
 
 @SuppressWarnings("unused")
@@ -14,12 +22,26 @@ public class SpoofClientPatch {
     private static final boolean SPOOF_CLIENT_ENABLED = Settings.SPOOF_CLIENT.get();
     private static final ClientType SPOOF_CLIENT_TYPE = Settings.SPOOF_CLIENT_USE_IOS.get() ? ClientType.IOS : ClientType.ANDROID_VR;
     private static final boolean SPOOFING_TO_IOS = SPOOF_CLIENT_ENABLED && SPOOF_CLIENT_TYPE == ClientType.IOS;
+    private static final boolean SPOOF_STREAM_ENABLED = Settings.SPOOF_STREAM.get();
 
     /**
      * Any unreachable ip address.  Used to intentionally fail requests.
      */
     private static final String UNREACHABLE_HOST_URI_STRING = "https://127.0.0.0";
     private static final Uri UNREACHABLE_HOST_URI = Uri.parse(UNREACHABLE_HOST_URI_STRING);
+
+    /**
+     * Streaming data store.
+     */
+     @Nullable
+     private static CompletableFuture<ByteBuffer> streamingDataFuture;
+     private static final ConcurrentHashMap<String, ByteBuffer> streamingDataCache = new ConcurrentHashMap<>();
+
+    /**
+     * Last video id prefetched. Field is to prevent prefetching the same video id multiple times in a row.
+     */
+    @Nullable
+    private static volatile String lastPrefetchedVideoId;
 
     /**
      * Injection point.
@@ -29,7 +51,7 @@ public class SpoofClientPatch {
      * @return An unreachable URI if the request is a /get_watch request, otherwise the original URI.
      */
     public static Uri blockGetWatchRequest(Uri playerRequestUri) {
-        if (SPOOF_CLIENT_ENABLED) {
+        if (SPOOF_CLIENT_ENABLED || SPOOF_STREAM_ENABLED) {
             try {
                 String path = playerRequestUri.getPath();
 
@@ -52,7 +74,7 @@ public class SpoofClientPatch {
      * Blocks /initplayback requests.
      */
     public static String blockInitPlaybackRequest(String originalUrlString) {
-        if (SPOOF_CLIENT_ENABLED) {
+        if (SPOOF_CLIENT_ENABLED || SPOOF_STREAM_ENABLED) {
             try {
                 var originalUri = Uri.parse(originalUrlString);
                 String path = originalUri.getPath();
@@ -115,6 +137,13 @@ public class SpoofClientPatch {
 
     /**
      * Injection point.
+     */
+    public static boolean isSpoofStreamEnabled() {
+        return SPOOF_STREAM_ENABLED;
+    }
+
+    /**
+     * Injection point.
      * When spoofing the client to iOS, the playback speed menu is missing from the player response.
      * Return true to force create the playback speed menu.
      */
@@ -135,15 +164,70 @@ public class SpoofClientPatch {
      * Injection point.
      * Fix video qualities missing, if spoofing to iOS by using the correct iOS user-agent.
      */
-    public static ExperimentalUrlRequest overrideUserAgent(ExperimentalUrlRequest.Builder builder, String url) {
-        if (SPOOFING_TO_IOS) {
-            String path = Uri.parse(url).getPath();
-            if (path != null && path.contains("player")) {
-                return builder.addHeader("User-Agent", ClientType.IOS.userAgent).build();
+    public static ExperimentalUrlRequest overrideUserAgent(ExperimentalUrlRequest.Builder builder, String url, Map headers) {
+        if (SPOOFING_TO_IOS || SPOOF_STREAM_ENABLED) {
+            Uri uri = Uri.parse(url);
+            String path = uri.getPath();
+            if (path != null && path.contains("player") && !path.contains("heartbeat")) {
+            	if (SPOOFING_TO_IOS) {
+                    return builder.addHeader("User-Agent", ClientType.IOS.userAgent).build();
+                }
+                if (SPOOF_STREAM_ENABLED) {
+                    fetchStreamingData(uri.getQueryParameter("id"), headers);
+                    return builder.build();
+                }
             }
         }
 
         return builder.build();
+    }
+
+    /**
+     * Injection point.
+     * Fix playback by replace the streaming data.
+     */
+    @SuppressLint("NewApi")
+    public static ByteBuffer getStreamingData(String videoId) {
+        if (!SPOOF_STREAM_ENABLED) return null;
+
+        if (streamingDataCache.containsKey(videoId)) {
+            return streamingDataCache.get(videoId);
+        }
+
+        if (streamingDataFuture != null) {
+            try {
+                ByteBuffer byteBuffer = streamingDataFuture.get();
+                if (byteBuffer != null) {
+                    streamingDataCache.put(videoId, byteBuffer);
+                    return byteBuffer;
+                }
+            } catch (InterruptedException ex) {
+                Thread.currentThread().interrupt();
+                Logger.printException(() -> "getStreamingData interrupted.", ex);
+            } catch (ExecutionException ex) {
+                Logger.printException(() -> "getStreamingData failure.", ex);
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Injection point.
+     */
+    public static void fetchStreamingData(String videoId, Map headers) {
+        if (SPOOF_STREAM_ENABLED) {
+            if (videoId.equals(lastPrefetchedVideoId)) {
+                return;
+            }
+
+            if (!streamingDataCache.containsKey(videoId)) {
+                String authHeader = (String) headers.get("Authorization");
+                CompletableFuture<ByteBuffer> future = StreamingDataRequester.fetch(videoId, authHeader);
+                streamingDataFuture = future;
+            }
+            lastPrefetchedVideoId = videoId;
+        }
     }
 
     private enum ClientType {

@@ -11,7 +11,8 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 
 final class PlayerRoutes {
-    private static final String YT_API_URL = "https://www.youtube.com/youtubei/v1/";
+    private static final String YT_API_URL = "https://youtubei.googleapis.com/youtubei/v1/";
+
     static final Route.CompiledRoute GET_STORYBOARD_SPEC_RENDERER = new Route(
             Route.Method.POST,
             "player" +
@@ -20,7 +21,17 @@ final class PlayerRoutes {
                     "playabilityStatus.status"
     ).compile();
 
+    static final Route.CompiledRoute GET_STREAMING_DATA = new Route(
+            Route.Method.POST,
+            "player" +
+                    "?fields=streamingData" +
+                    "&alt=proto"
+    ).compile();
+    
     static final String ANDROID_INNER_TUBE_BODY;
+    static final String VR_INNER_TUBE_BODY;
+    static final String UNPLUGGED_INNER_TUBE_BODY;
+    static final String TESTSUITE_INNER_TUBE_BODY;
     static final String TV_EMBED_INNER_TUBE_BODY;
 
     /**
@@ -48,6 +59,78 @@ final class PlayerRoutes {
         }
 
         ANDROID_INNER_TUBE_BODY = innerTubeBody.toString();
+
+        JSONObject vrInnerTubeBody = new JSONObject();
+
+        try {
+            JSONObject context = new JSONObject();
+
+            JSONObject client = new JSONObject();
+            client.put("clientName", "ANDROID_VR");
+            client.put("clientVersion", "1.58.14");
+            client.put("deviceModel", "Quest 3");
+            client.put("osVersion", "12");
+            client.put("androidSdkVersion", 34);
+
+            context.put("client", client);
+
+            vrInnerTubeBody.put("contentCheckOk", true);
+            vrInnerTubeBody.put("racyCheckOk", true);
+            vrInnerTubeBody.put("context", context);
+            vrInnerTubeBody.put("videoId", "%s");
+        } catch (JSONException e) {
+            Logger.printException(() -> "Failed to create vrInnerTubeBody", e);
+        }
+
+        VR_INNER_TUBE_BODY = vrInnerTubeBody.toString();
+
+        JSONObject unpluggedInnerTubeBody = new JSONObject();
+
+        try {
+            JSONObject context = new JSONObject();
+
+            JSONObject client = new JSONObject();
+            client.put("clientName", "ANDROID_UNPLUGGED");
+            client.put("clientVersion", "8.33.0");
+            client.put("deviceModel", "ADT-3");
+            client.put("osVersion", "14");
+            client.put("androidSdkVersion", 34);
+
+            context.put("client", client);
+
+            unpluggedInnerTubeBody.put("contentCheckOk", true);
+            unpluggedInnerTubeBody.put("racyCheckOk", true);
+            unpluggedInnerTubeBody.put("context", context);
+            unpluggedInnerTubeBody.put("videoId", "%s");
+        } catch (JSONException e) {
+            Logger.printException(() -> "Failed to create unpluggedInnerTubeBody", e);
+        }
+
+        UNPLUGGED_INNER_TUBE_BODY = unpluggedInnerTubeBody.toString();
+
+        JSONObject suiteInnerTubeBody = new JSONObject();
+
+        try {
+            JSONObject context = new JSONObject();
+
+            JSONObject client = new JSONObject();
+            client.put("clientName", "ANDROID_TESTSUITE");
+            client.put("clientVersion", "1.9");
+            client.put("deviceModel", "Pixel 8 Pro");
+            client.put("osVersion", "14");
+            client.put("androidSdkVersion", 34);
+
+            context.put("client", client);
+
+            suiteInnerTubeBody.put("contentCheckOk", true);
+            suiteInnerTubeBody.put("racyCheckOk", true);
+            suiteInnerTubeBody.put("context", context);
+            suiteInnerTubeBody.put("videoId", "%s");
+        } catch (JSONException e) {
+            Logger.printException(() -> "Failed to create suiteInnerTubeBody", e);
+        }
+
+        TESTSUITE_INNER_TUBE_BODY = suiteInnerTubeBody.toString();
 
         JSONObject tvEmbedInnerTubeBody = new JSONObject();
 
