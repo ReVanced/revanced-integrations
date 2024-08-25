@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import app.revanced.integrations.shared.settings.BaseSettings;
 import app.revanced.integrations.youtube.patches.spoof.StoryboardRenderer;
+import app.revanced.integrations.youtube.patches.spoof.SpoofClientPatch.ClientType;
 import app.revanced.integrations.youtube.requests.Requester;
 import app.revanced.integrations.shared.Logger;
 import app.revanced.integrations.shared.Utils;
@@ -15,6 +16,7 @@ import java.net.HttpURLConnection;
 import java.net.SocketTimeoutException;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
+import java.util.List;
 
 import static app.revanced.integrations.shared.StringRef.str;
 import static app.revanced.integrations.youtube.patches.spoof.requests.PlayerRoutes.*;
@@ -39,7 +41,7 @@ public class StoryboardRendererRequester {
     }
 
     @Nullable
-    private static JSONObject fetchPlayerResponse(@NonNull String requestBody, boolean showToastOnIOException) {
+    private static JSONObject fetchPlayerResponse(@NonNull String requestBody, ClientType clientType, boolean showToastOnIOException) {
         final long startTime = System.currentTimeMillis();
         try {
             Utils.verifyOffMainThread();
@@ -47,7 +49,8 @@ public class StoryboardRendererRequester {
 
             final byte[] innerTubeBody = requestBody.getBytes(StandardCharsets.UTF_8);
 
-            HttpURLConnection connection = PlayerRoutes.getPlayerResponseConnectionFromRoute(GET_STORYBOARD_SPEC_RENDERER);
+            HttpURLConnection connection = PlayerRoutes.getPlayerResponseConnectionFromRoute(GET_STORYBOARD_SPEC_RENDERER, clientType);
+            connection.setRequestProperty("User-Agent", ClientType.ANDROID.userAgent);
             connection.getOutputStream().write(innerTubeBody, 0, innerTubeBody.length);
 
             final int responseCode = connection.getResponseCode();
@@ -90,9 +93,10 @@ public class StoryboardRendererRequester {
      */
     @Nullable
     private static StoryboardRenderer getStoryboardRendererUsingBody(String videoId,
-                                                                     @NonNull String innerTubeBody,
+                                                                     ClientType clientType,
                                                                      boolean showToastOnIOException) {
-        final JSONObject playerResponse = fetchPlayerResponse(innerTubeBody, showToastOnIOException);
+        String innerTubeBody = String.format(PlayerRoutes.createInnertubeBody(clientType), videoId);
+        final JSONObject playerResponse = fetchPlayerResponse(innerTubeBody, clientType, showToastOnIOException);
         if (playerResponse != null && isPlayabilityStatusOk(playerResponse))
             return getStoryboardRendererUsingResponse(videoId, playerResponse);
 
@@ -137,15 +141,20 @@ public class StoryboardRendererRequester {
     public static StoryboardRenderer getStoryboardRenderer(@NonNull String videoId) {
         Objects.requireNonNull(videoId);
 
-        var renderer = getStoryboardRendererUsingBody(videoId,
-                String.format(ANDROID_INNER_TUBE_BODY, videoId), false);
+        StoryboardRenderer renderer = null;
+
+        List<ClientType> clientTypeList = List.of(
+                ClientType.ANDROID,
+                ClientType.ANDROID_VR
+        );
+
+        for (ClientType clientType : clientTypeList) {
+            renderer = getStoryboardRendererUsingBody(videoId, clientType, false);
+            if (renderer != null)  break;
+        }
+
         if (renderer == null) {
-            Logger.printDebug(() -> videoId + " not available using Android client");
-            renderer = getStoryboardRendererUsingBody(videoId,
-                    String.format(TV_EMBED_INNER_TUBE_BODY, videoId, videoId), true);
-            if (renderer == null) {
-                Logger.printDebug(() -> videoId + " not available using TV embedded client");
-            }
+            Logger.printDebug(() -> videoId + " not available");
         }
 
         return renderer;

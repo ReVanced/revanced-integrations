@@ -19,6 +19,7 @@ import java.util.concurrent.ExecutionException;
 import org.chromium.net.ExperimentalUrlRequest;
 
 import app.revanced.integrations.shared.Logger;
+import app.revanced.integrations.shared.Utils;
 import app.revanced.integrations.shared.settings.Setting;
 import app.revanced.integrations.youtube.patches.BackgroundPlaybackPatch;
 import app.revanced.integrations.youtube.patches.spoof.requests.StreamingDataRequester;
@@ -40,9 +41,9 @@ public class SpoofClientPatch {
     /**
      * Streaming data store.
      */
-     @Nullable
-     private static CompletableFuture<ByteBuffer> streamingDataFuture;
-     private static final ConcurrentHashMap<String, ByteBuffer> streamingDataCache = new ConcurrentHashMap<>();
+    @Nullable
+    private static CompletableFuture<ByteBuffer> streamingDataFuture;
+    private static final ConcurrentHashMap<String, ByteBuffer> streamingDataCache = new ConcurrentHashMap<>();
 
     /**
      * Last video id prefetched. Field is to prevent prefetching the same video id multiple times in a row.
@@ -171,7 +172,7 @@ public class SpoofClientPatch {
      * Injection point.
      * Fix video qualities missing, if spoofing to iOS by using the correct iOS user-agent.
      */
-    public static ExperimentalUrlRequest overrideUserAgent(ExperimentalUrlRequest.Builder builder, String url, Map headers) {
+    public static ExperimentalUrlRequest overrideUserAgent(ExperimentalUrlRequest.Builder builder, String url, Map playerHeaders) {
         if (SPOOF_CLIENT_ENABLED || SPOOF_STREAM_ENABLED) {
             Uri uri = Uri.parse(url);
             String path = uri.getPath();
@@ -180,7 +181,7 @@ public class SpoofClientPatch {
                     return builder.addHeader("User-Agent", SPOOF_CLIENT_TYPE.userAgent).build();
                 }
                 if (SPOOF_STREAM_ENABLED) {
-                    fetchStreamingData(uri.getQueryParameter("id"), headers);
+                    fetchStreamingData(uri.getQueryParameter("id"), playerHeaders);
                     return builder.build();
                 }
             }
@@ -222,19 +223,33 @@ public class SpoofClientPatch {
     /**
      * Injection point.
      */
-    public static void fetchStreamingData(String videoId, Map headers) {
+    public static void fetchStreamingData(String videoId, Map playerHeaders) {
         if (SPOOF_STREAM_ENABLED) {
             if (videoId.equals(lastPrefetchedVideoId)) {
                 return;
             }
 
             if (!streamingDataCache.containsKey(videoId)) {
-                String authHeader = (String) headers.get("Authorization");
-                CompletableFuture<ByteBuffer> future = StreamingDataRequester.fetch(videoId, authHeader);
+                CompletableFuture<ByteBuffer> future = StreamingDataRequester.fetch(videoId, playerHeaders);
                 streamingDataFuture = future;
             }
             lastPrefetchedVideoId = videoId;
         }
+    }
+
+    /**
+     * Injection point.
+     */
+    public static byte[] removeVideoPlaybackPostBody(Uri uri, int method, byte[] postData) {
+        if (!SPOOF_STREAM_ENABLED) return postData;
+
+        String path = uri.getPath();
+        boolean iosClient = ClientType.IOS.name().equals(uri.getQueryParameter("c"));
+        if (path != null && path.contains("videoplayback") && method == 2 && iosClient) {
+            return null;
+        }
+
+        return postData;
     }
 
     // Must check for device features in a separate class and cannot place this code inside
@@ -318,33 +333,40 @@ public class SpoofClientPatch {
                 "12",
                 "com.google.android.apps.youtube.vr.oculus/1.56.21 (Linux; U; Android 12; GB) gzip",
                 "1.56.21"
+        ),
+        ANDROID(3,
+                Build.MODEL,
+                Build.VERSION.RELEASE,
+                String.format("com.google.android.youtube/%s (Linux; U; Android %s; GB) gzip",
+                        Utils.getAppVersionName(), Build.VERSION.RELEASE),
+                Utils.getAppVersionName()
         );
 
         /**
          * YouTube
          * <a href="https://github.com/zerodytrash/YouTube-Internal-Clients?tab=readme-ov-file#clients">client type</a>
          */
-        final int id;
+        public final int id;
 
         /**
          * Device model, equivalent to {@link Build#MODEL} (System property: ro.product.model)
          */
-        final String model;
+        public final String model;
 
         /**
          * Device OS version.
          */
-        final String osVersion;
+        public final String osVersion;
 
         /**
          * Player user-agent.
          */
-        final String userAgent;
+        public final String userAgent;
 
         /**
          * App version.
          */
-        final String appVersion;
+        public final String appVersion;
 
         ClientType(int id, String model, String osVersion, String userAgent, String appVersion) {
             this.id = id;

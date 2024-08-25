@@ -7,6 +7,7 @@ import android.annotation.SuppressLint;
 import app.revanced.integrations.shared.settings.BaseSettings;
 import app.revanced.integrations.shared.Logger;
 import app.revanced.integrations.shared.Utils;
+import app.revanced.integrations.youtube.patches.spoof.SpoofClientPatch.ClientType;
 
 import java.io.ByteArrayOutputStream;
 import java.io.BufferedInputStream;
@@ -17,6 +18,7 @@ import java.net.HttpURLConnection;
 import java.net.SocketTimeoutException;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
+import java.util.Map;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
@@ -35,19 +37,20 @@ public class StreamingDataRequester {
     }
 
     @Nullable
-    private static HttpURLConnection send(String requestBody, String authHeader) {
+    private static HttpURLConnection send(ClientType clientType, String videoId, Map playerHeaders) {
         final long startTime = System.currentTimeMillis();
         try {
-            HttpURLConnection connection = PlayerRoutes.getPlayerResponseConnectionFromRoute(GET_STREAMING_DATA);
+            HttpURLConnection connection = PlayerRoutes.getPlayerResponseConnectionFromRoute(GET_STREAMING_DATA, clientType);
 
-            // Required for age restricted videos.
-            if (authHeader != null) {
-                connection.setRequestProperty("authorization", authHeader);
-            }
+            final String authHeader = (String) playerHeaders.get("Authorization");
+            final String visitorId = (String) playerHeaders.get("X-Goog-Visitor-Id");
+            connection.setRequestProperty("Authorization", authHeader);
+            connection.setRequestProperty("X-Goog-Visitor-Id", visitorId);
 
-            final byte[] innerTubeBody = requestBody.getBytes(StandardCharsets.UTF_8);
-            connection.setFixedLengthStreamingMode(innerTubeBody.length);
-            connection.getOutputStream().write(innerTubeBody);
+            final String innerTubeBody = String.format(PlayerRoutes.createInnertubeBody(clientType), videoId);
+            final byte[] requestBody = innerTubeBody.getBytes(StandardCharsets.UTF_8);
+            connection.setFixedLengthStreamingMode(requestBody.length);
+            connection.getOutputStream().write(requestBody);
 
             final int responseCode = connection.getResponseCode();
             if (responseCode == 200) return connection;
@@ -68,21 +71,20 @@ public class StreamingDataRequester {
     }
 
     @SuppressLint("NewApi")
-    public static CompletableFuture<ByteBuffer> fetch(@NonNull String videoId, String authHeader) {
+    public static CompletableFuture<ByteBuffer> fetch(@NonNull String videoId, Map playerHeaders) {
         Objects.requireNonNull(videoId);
 
         return CompletableFuture.supplyAsync(() -> {
             ByteBuffer finalBuffer = null;
 
-            // Retry with different client if empty streaming data is received.
-            List<String> innerTubeBodies = List.of(
-                VR_INNER_TUBE_BODY,
-                UNPLUGGED_INNER_TUBE_BODY,
-                TESTSUITE_INNER_TUBE_BODY
+            // Retry with different client if empty response body is received.
+            List<ClientType> clientTypeList = List.of(
+                    ClientType.IOS,
+                    ClientType.ANDROID_VR
             );
 
-            for (String body : innerTubeBodies) {
-                HttpURLConnection connection = send(String.format(body, videoId), authHeader);
+            for (ClientType clientType : clientTypeList) {
+                HttpURLConnection connection = send(clientType, videoId, playerHeaders);
                 if (connection != null) {
                     try {
                         // gzip encoding doesn't response with content length (-1),
