@@ -19,7 +19,7 @@ import static app.revanced.integrations.shared.Utils.containsAny;
 import static app.revanced.integrations.youtube.patches.spoof.requests.StoryboardRendererRequester.getStoryboardRenderer;
 
 /** @noinspection unused*/
-@Deprecated
+@Deprecated // Patch is obsolete and no longer works.
 public class SpoofSignaturePatch {
     /**
      * Parameter (also used by

@@ -68,16 +68,16 @@ public enum ClientType {
     public final String userAgent;
 
     /**
-     * App version.
-     */
-    public final String appVersion;
-
-    /**
      * Android SDK version, equivalent to {@link Build.VERSION#SDK} (System property: ro.build.version.sdk)
      * Field is null if not applicable.
      */
     @Nullable
     public final String androidSdkVersion;
+
+    /**
+     * App version.
+     */
+    public final String appVersion;
 
     ClientType(int id, String model, String osVersion, String userAgent, @Nullable String androidSdkVersion, String appVersion) {
         this.id = id;

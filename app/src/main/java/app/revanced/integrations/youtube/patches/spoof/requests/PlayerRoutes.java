@@ -1,18 +1,20 @@
 package app.revanced.integrations.youtube.patches.spoof.requests;
 
-import app.revanced.integrations.youtube.patches.spoof.ClientType;
-import app.revanced.integrations.youtube.requests.Requester;
-import app.revanced.integrations.youtube.requests.Route;
-import app.revanced.integrations.shared.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
 
+import app.revanced.integrations.shared.Logger;
+import app.revanced.integrations.youtube.patches.spoof.ClientType;
+import app.revanced.integrations.youtube.requests.Requester;
+import app.revanced.integrations.youtube.requests.Route;
+
 final class PlayerRoutes {
     private static final String YT_API_URL = "https://youtubei.googleapis.com/youtubei/v1/";
 
+    @Deprecated
     static final Route.CompiledRoute GET_STORYBOARD_SPEC_RENDERER = new Route(
             Route.Method.POST,
             "player" +

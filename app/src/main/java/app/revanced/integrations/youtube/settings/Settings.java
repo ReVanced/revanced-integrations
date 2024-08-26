@@ -6,7 +6,6 @@ import static app.revanced.integrations.shared.settings.Setting.*;
 import static app.revanced.integrations.youtube.patches.MiniplayerPatch.MiniplayerType;
 import static app.revanced.integrations.youtube.patches.MiniplayerPatch.MiniplayerType.MODERN_1;
 import static app.revanced.integrations.youtube.patches.MiniplayerPatch.MiniplayerType.MODERN_3;
-import static app.revanced.integrations.youtube.patches.spoof.SpoofClientPatch.SpoofClientStrategy;
 import static app.revanced.integrations.youtube.sponsorblock.objects.CategoryBehaviour.*;
 
 import java.util.Arrays;
@@ -21,7 +20,6 @@ import app.revanced.integrations.youtube.patches.AlternativeThumbnailsPatch.Stil
 import app.revanced.integrations.youtube.patches.AlternativeThumbnailsPatch.ThumbnailOption;
 import app.revanced.integrations.youtube.patches.AlternativeThumbnailsPatch.ThumbnailStillTime;
 import app.revanced.integrations.youtube.patches.spoof.SpoofAppVersionPatch;
-import app.revanced.integrations.youtube.patches.spoof.SpoofClientPatch;
 import app.revanced.integrations.youtube.sponsorblock.SponsorBlockSettings;
 
 @SuppressWarnings("deprecation")
@@ -257,8 +255,7 @@ public class Settings extends BaseSettings {
     public static final BooleanSetting ANNOUNCEMENTS = new BooleanSetting("revanced_announcements", TRUE);
     public static final BooleanSetting SPOOF_CLIENT = new BooleanSetting("revanced_spoof_client", TRUE, true,"revanced_spoof_client_user_dialog_message");
     public static final BooleanSetting SPOOF_CLIENT_FORCE_AVC = new BooleanSetting("revanced_spoof_client_force_avc", FALSE, true,
-            "revanced_spoof_client_force_avc_user_dialog_message", new SpoofClientPatch.ForceAVCAvailability());
-    public static final EnumSetting<SpoofClientStrategy> SPOOF_CLIENT_STRATEGY = new EnumSetting<>("revanced_spoof_client_strategy", SpoofClientStrategy.REPLACE_STREAMS, true, parent(SPOOF_CLIENT));
+            "revanced_spoof_client_force_avc_user_dialog_message", parent(SPOOF_CLIENT));
     @Deprecated
     public static final StringSetting DEPRECATED_ANNOUNCEMENT_LAST_HASH = new StringSetting("revanced_announcement_last_hash", "");
     public static final IntegerSetting ANNOUNCEMENT_LAST_ID = new IntegerSetting("revanced_announcement_last_id", -1);
