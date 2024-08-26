@@ -132,7 +132,7 @@ public class SpoofClientPatch {
      * Injection point.
      */
     public static boolean enablePlayerGesture(boolean original) {
-        return SPOOF_STRATEGY.enablePlayerGesture || original;
+        return SPOOF_CLIENT && SPOOF_STRATEGY.enablePlayerGesture || original;
     }
 
     /**
@@ -141,7 +141,7 @@ public class SpoofClientPatch {
      * Return true to force create the playback speed menu.
      */
     public static boolean forceCreatePlaybackSpeedMenu(boolean original) {
-        return SPOOF_STRATEGY.forceCreatePlaybackSpeedMenu || original;
+        return SPOOF_CLIENT && SPOOF_STRATEGY.forceCreatePlaybackSpeedMenu || original;
     }
 
     /**
@@ -150,7 +150,8 @@ public class SpoofClientPatch {
      * Return true to force enable audio background play.
      */
     public static boolean overrideBackgroundAudioPlayback() {
-        return SPOOF_STRATEGY.overrideBackgroundAudioPlayback && BackgroundPlaybackPatch.playbackIsNotShort();
+        return SPOOF_CLIENT && SPOOF_STRATEGY.overrideBackgroundAudioPlayback
+                && BackgroundPlaybackPatch.playbackIsNotShort();
     }
 
     /**
