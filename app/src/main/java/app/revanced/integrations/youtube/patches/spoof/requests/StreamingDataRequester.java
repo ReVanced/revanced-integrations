@@ -93,7 +93,7 @@ public class StreamingDataRequester {
                                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
                                 byte[] buffer = new byte[8192];
                                 int bytesRead;
-                                while ((bytesRead = inputStream.read(buffer)) != -1) {
+                                while ((bytesRead = inputStream.read(buffer)) >= 0) {
                                     baos.write(buffer, 0, bytesRead);
                                 }
                                 return ByteBuffer.wrap(baos.toByteArray());

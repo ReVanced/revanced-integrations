@@ -189,8 +189,8 @@ public class SpoofClientPatch {
 
                 var future = currentVideoStream;
                 if (future != null) {
-                    final long maxTimeToWait = 4000;
-                    var stream = future.get(maxTimeToWait, TimeUnit.MILLISECONDS);
+                    final long maxSecondsToWait = 20;
+                    var stream = future.get(maxSecondsToWait, TimeUnit.SECONDS);
                     if (stream != null) {
                         Logger.printDebug(() -> "Overriding video stream");
                         return stream;

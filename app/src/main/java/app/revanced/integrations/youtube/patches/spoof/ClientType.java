@@ -5,6 +5,8 @@ import static app.revanced.integrations.youtube.patches.spoof.DeviceHardwareSupp
 
 import android.os.Build;
 
+import androidx.annotation.Nullable;
+
 import app.revanced.integrations.shared.Utils;
 
 public enum ClientType {
@@ -22,6 +24,7 @@ public enum ClientType {
             allowVP9()
                     ? "com.google.ios.youtube/19.10.7 (iPhone; U; CPU iOS 17_5_1 like Mac OS X)"
                     : "com.google.ios.youtube/19.10.7 (iPhone; U; CPU iOS 13_7 like Mac OS X)",
+            null,
             // Version number should be a valid iOS release.
             // https://www.ipa4fun.com/history/185230
             "19.10.7"
@@ -30,7 +33,8 @@ public enum ClientType {
             "Quest 3",
             "12",
             "com.google.android.apps.youtube.vr.oculus/1.56.21 (Linux; U; Android 12; GB) gzip",
-            "1.56.21"
+            "1.56.21",
+            "34"
     ),
     @Deprecated() // Android spoofing in this context no longer works.
     ANDROID(3,
@@ -38,6 +42,7 @@ public enum ClientType {
             Build.VERSION.RELEASE,
             String.format("com.google.android.youtube/%s (Linux; U; Android %s; GB) gzip",
                     Utils.getAppVersionName(), Build.VERSION.RELEASE),
+            Build.VERSION.SDK,
             Utils.getAppVersionName()
     );
 
@@ -67,11 +72,19 @@ public enum ClientType {
      */
     public final String appVersion;
 
-    ClientType(int id, String model, String osVersion, String userAgent, String appVersion) {
+    /**
+     * Android SDK version, equivalent to {@link Build.VERSION#SDK} (System property: ro.build.version.sdk)
+     * Field is null if not applicable.
+     */
+    @Nullable
+    public final String androidSdkVersion;
+
+    ClientType(int id, String model, String osVersion, String userAgent, String androidSdkVersion, String appVersion) {
         this.id = id;
         this.model = model;
         this.osVersion = osVersion;
         this.userAgent = userAgent;
+        this.androidSdkVersion = androidSdkVersion;
         this.appVersion = appVersion;
     }
 }

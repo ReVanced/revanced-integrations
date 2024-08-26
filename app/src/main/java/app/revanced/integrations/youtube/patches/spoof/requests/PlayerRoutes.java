@@ -47,8 +47,8 @@ final class PlayerRoutes {
             client.put("clientVersion", clientType.appVersion);
             client.put("deviceModel", clientType.model);
             client.put("osVersion", clientType.osVersion);
-            if (clientType != ClientType.IOS) {
-                client.put("androidSdkVersion", 34);
+            if (clientType.androidSdkVersion != null) {
+                client.put("androidSdkVersion", clientType.androidSdkVersion);
             }
 
             context.put("client", client);
