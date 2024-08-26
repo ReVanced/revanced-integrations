@@ -7,8 +7,6 @@ import android.os.Build;
 
 import androidx.annotation.Nullable;
 
-import app.revanced.integrations.shared.Utils;
-
 public enum ClientType {
     // https://dumps.tadiphone.dev/dumps/oculus/eureka
     IOS(5,
@@ -35,15 +33,6 @@ public enum ClientType {
             "com.google.android.apps.youtube.vr.oculus/1.56.21 (Linux; U; Android 12; GB) gzip",
             "32", // Android 12 SDK is version 31, but Quest 3 build.props uses version 32.
             "1.56.21"
-    ),
-    @Deprecated() // Android spoofing in this context no longer works.
-    ANDROID(3,
-            Build.MODEL,
-            Build.VERSION.RELEASE,
-            String.format("com.google.android.youtube/%s (Linux; U; Android %s; GB) gzip",
-                    Utils.getAppVersionName(), Build.VERSION.RELEASE),
-            Build.VERSION.SDK,
-            Utils.getAppVersionName()
     );
 
     /**

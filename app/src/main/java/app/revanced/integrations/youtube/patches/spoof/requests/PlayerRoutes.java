@@ -14,15 +14,6 @@ import app.revanced.integrations.youtube.requests.Route;
 final class PlayerRoutes {
     private static final String YT_API_URL = "https://youtubei.googleapis.com/youtubei/v1/";
 
-    @Deprecated
-    static final Route.CompiledRoute GET_STORYBOARD_SPEC_RENDERER = new Route(
-            Route.Method.POST,
-            "player" +
-                    "?fields=storyboards.playerStoryboardSpecRenderer," +
-                    "storyboards.playerLiveStoryboardSpecRenderer," +
-                    "playabilityStatus.status"
-    ).compile();
-
     static final Route.CompiledRoute GET_STREAMING_DATA = new Route(
             Route.Method.POST,
             "player" +
