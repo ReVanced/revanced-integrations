@@ -13,8 +13,7 @@ import java.net.HttpURLConnection;
 import java.net.SocketTimeoutException;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.Future;
 
 import app.revanced.integrations.shared.Logger;
@@ -82,8 +81,14 @@ public class StreamingDataRequester {
                     ClientType.ANDROID_VR
             };
 
-            int i = 0;
             final boolean debugEnabled = BaseSettings.DEBUG.get();
+            if (debugEnabled) {
+                // To  ensure the different clients are used while debugging,
+                // use a random client order.
+                Collections.shuffle(Arrays.asList(clientTypesToUse));
+            }
+
+            int i = 0;
             for (ClientType clientType : clientTypesToUse) {
                 // Show an error if the last client ype fails, or if the debug is enabled then show for all attempts.
                 final boolean showErrorToast = (++i == clientTypesToUse.length) || debugEnabled;
