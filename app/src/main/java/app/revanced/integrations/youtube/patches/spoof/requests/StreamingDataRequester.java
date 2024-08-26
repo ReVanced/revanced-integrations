@@ -97,9 +97,7 @@ public class StreamingDataRequester {
                                         baos.write(buffer, 0, bytesRead);
                                     }
 
-                                    byte[] array = baos.toByteArray();
-                                    Logger.printDebug(() -> "stream response: " + new String(array, StandardCharsets.UTF_8)); // FIXME debug
-                                    return ByteBuffer.wrap(array);
+                                    return ByteBuffer.wrap(baos.toByteArray());
                                 }
                             }
                         }
