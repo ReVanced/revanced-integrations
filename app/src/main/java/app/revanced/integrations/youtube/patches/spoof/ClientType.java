@@ -33,8 +33,8 @@ public enum ClientType {
             "Quest 3",
             "12",
             "com.google.android.apps.youtube.vr.oculus/1.56.21 (Linux; U; Android 12; GB) gzip",
-            "1.56.21",
-            "34"
+            "32", // Android 12 SDK is version 31, but Quest 3 build.props uses version 32.
+            "1.56.21"
     ),
     @Deprecated() // Android spoofing in this context no longer works.
     ANDROID(3,
