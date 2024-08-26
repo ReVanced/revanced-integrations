@@ -79,7 +79,7 @@ public enum ClientType {
     @Nullable
     public final String androidSdkVersion;
 
-    ClientType(int id, String model, String osVersion, String userAgent, String androidSdkVersion, String appVersion) {
+    ClientType(int id, String model, String osVersion, String userAgent, @Nullable String androidSdkVersion, String appVersion) {
         this.id = id;
         this.model = model;
         this.osVersion = osVersion;

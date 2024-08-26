@@ -90,7 +90,7 @@ public class StreamingDataRequester {
 
             int i = 0;
             for (ClientType clientType : clientTypesToUse) {
-                // Show an error if the last client ype fails, or if the debug is enabled then show for all attempts.
+                // Show an error if the last client type fails, or if the debug is enabled then show for all attempts.
                 final boolean showErrorToast = (++i == clientTypesToUse.length) || debugEnabled;
 
                 HttpURLConnection connection = send(clientType, videoId, playerHeaders, showErrorToast);
