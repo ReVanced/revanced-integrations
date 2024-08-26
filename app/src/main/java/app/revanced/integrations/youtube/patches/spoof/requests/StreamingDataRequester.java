@@ -33,12 +33,11 @@ public class StreamingDataRequester {
     }
 
     @Nullable
-    private static HttpURLConnection send(ClientType clientType, String videoId, Map<String, String> playerHeaders) {
+    private static HttpURLConnection send(ClientType clientType, String videoId,
+                                          Map<String, String> playerHeaders,
+                                          boolean showErrorToasts) {
         final long startTime = System.currentTimeMillis();
         String clientTypeName = clientType.name();
-        // Only show toast for each attempt if debug mode is enabled,
-        // as the calling code shows a toast if all stream calls fail.
-        final boolean showErrorToasts = BaseSettings.DEBUG.get();
         Logger.printDebug(() -> "Fetching video streams using client: " + clientType.name());
 
         try {
@@ -57,7 +56,8 @@ public class StreamingDataRequester {
             final int responseCode = connection.getResponseCode();
             if (responseCode == 200) return connection;
 
-            handleConnectionError(clientTypeName + " not available with response code: " + responseCode,
+            handleConnectionError(clientTypeName + " not available with response code: "
+                            + responseCode + " message: " + connection.getResponseMessage(),
                     null, showErrorToasts);
         } catch (SocketTimeoutException ex) {
             handleConnectionError("Connection timeout", ex, showErrorToasts);
@@ -82,8 +82,13 @@ public class StreamingDataRequester {
                     ClientType.ANDROID_VR
             };
 
+            int i = 0;
+            final boolean debugEnabled = BaseSettings.DEBUG.get();
             for (ClientType clientType : clientTypesToUse) {
-                HttpURLConnection connection = send(clientType, videoId, playerHeaders);
+                // Show an error if the last client ype fails, or if the debug is enabled then show for all attempts.
+                final boolean showErrorToast = (++i == clientTypesToUse.length ) || debugEnabled;
+
+                HttpURLConnection connection = send(clientType, videoId, playerHeaders, showErrorToast);
                 if (connection != null) {
                     try {
                         // gzip encoding doesn't response with content length (-1),
@@ -107,7 +112,7 @@ public class StreamingDataRequester {
                 }
             }
 
-            handleConnectionError("Could not fetch any client streams", null, BaseSettings.DEBUG.get());
+            handleConnectionError("Could not fetch any client streams", null, debugEnabled);
             return null;
         });
     }
