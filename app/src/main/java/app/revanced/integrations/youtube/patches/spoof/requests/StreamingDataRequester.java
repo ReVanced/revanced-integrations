@@ -20,7 +20,7 @@ import java.util.concurrent.Future;
 import app.revanced.integrations.shared.Logger;
 import app.revanced.integrations.shared.Utils;
 import app.revanced.integrations.shared.settings.BaseSettings;
-import app.revanced.integrations.youtube.patches.spoof.SpoofClientPatch.ClientType;
+import app.revanced.integrations.youtube.patches.spoof.ClientType;
 
 public class StreamingDataRequester {
 

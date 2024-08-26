@@ -6,7 +6,7 @@ import static app.revanced.integrations.shared.settings.Setting.*;
 import static app.revanced.integrations.youtube.patches.MiniplayerPatch.MiniplayerType;
 import static app.revanced.integrations.youtube.patches.MiniplayerPatch.MiniplayerType.MODERN_1;
 import static app.revanced.integrations.youtube.patches.MiniplayerPatch.MiniplayerType.MODERN_3;
-import static app.revanced.integrations.youtube.patches.spoof.SpoofClientPatch.ClientType;
+import static app.revanced.integrations.youtube.patches.spoof.SpoofClientPatch.SpoofClientStrategy;
 import static app.revanced.integrations.youtube.sponsorblock.objects.CategoryBehaviour.*;
 
 import java.util.Arrays;
@@ -256,9 +256,9 @@ public class Settings extends BaseSettings {
     public static final BooleanSetting BYPASS_URL_REDIRECTS = new BooleanSetting("revanced_bypass_url_redirects", TRUE);
     public static final BooleanSetting ANNOUNCEMENTS = new BooleanSetting("revanced_announcements", TRUE);
     public static final BooleanSetting SPOOF_CLIENT = new BooleanSetting("revanced_spoof_client", TRUE, true,"revanced_spoof_client_user_dialog_message");
-    public static final BooleanSetting SPOOF_CLIENT_IOS_FORCE_AVC = new BooleanSetting("revanced_spoof_client_ios_force_avc", FALSE, true,
-            "revanced_spoof_client_ios_force_avc_user_dialog_message", new SpoofClientPatch.ForceiOSAVCAvailability());
-    public static final EnumSetting<ClientType> SPOOF_CLIENT_TYPE = new EnumSetting<>("revanced_spoof_client_type", ClientType.IOS, true, parent(SPOOF_CLIENT));
+    public static final BooleanSetting SPOOF_CLIENT_FORCE_AVC = new BooleanSetting("revanced_spoof_client_force_avc", FALSE, true,
+            "revanced_spoof_client_force_avc_user_dialog_message", new SpoofClientPatch.ForceAVCAvailability());
+    public static final EnumSetting<SpoofClientStrategy> SPOOF_CLIENT_STRATEGY = new EnumSetting<>("revanced_spoof_client_strategy", SpoofClientStrategy.REPLACE_STREAMS, true, parent(SPOOF_CLIENT));
     public static final BooleanSetting SPOOF_STREAM = new BooleanSetting("revanced_spoof_stream", FALSE, true);
     @Deprecated
     public static final StringSetting DEPRECATED_ANNOUNCEMENT_LAST_HASH = new StringSetting("revanced_announcement_last_hash", "");

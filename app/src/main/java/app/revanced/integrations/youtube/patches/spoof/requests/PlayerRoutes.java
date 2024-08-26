@@ -1,6 +1,6 @@
 package app.revanced.integrations.youtube.patches.spoof.requests;
 
-import app.revanced.integrations.youtube.patches.spoof.SpoofClientPatch.ClientType;
+import app.revanced.integrations.youtube.patches.spoof.ClientType;
 import app.revanced.integrations.youtube.requests.Requester;
 import app.revanced.integrations.youtube.requests.Route;
 import app.revanced.integrations.shared.Logger;
