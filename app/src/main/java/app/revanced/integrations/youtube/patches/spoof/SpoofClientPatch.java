@@ -223,11 +223,11 @@ public class SpoofClientPatch {
     public static byte[] removeVideoPlaybackPostBody(Uri uri, int method, byte[] postData) {
         if (SPOOF_STREAM) {
             try {
-                final int FIXME_RENAME_THIS_TO_DESCRIBE_THIS_MAGIC_NUMBER = 2; // FIXME
-                if (method == FIXME_RENAME_THIS_TO_DESCRIBE_THIS_MAGIC_NUMBER) {
+                final int methodPost = 2;
+                if (method == methodPost) {
                     String path = uri.getPath();
-                    String FIXME_RENAME_THIS_TO_DESCRIBE_THIS_MAGIC_STRING = "c"; // FIXME
-                    final boolean iosClient = ClientType.IOS.name().equals(uri.getQueryParameter(FIXME_RENAME_THIS_TO_DESCRIBE_THIS_MAGIC_STRING));
+                    String clientName = "c";
+                    final boolean iosClient = ClientType.IOS.name().equals(uri.getQueryParameter(clientName));
                     if (iosClient && path != null && path.contains("videoplayback")) {
                         return null;
                     }
