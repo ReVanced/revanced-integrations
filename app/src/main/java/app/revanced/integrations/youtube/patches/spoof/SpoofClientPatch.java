@@ -3,20 +3,21 @@ package app.revanced.integrations.youtube.patches.spoof;
 import static app.revanced.integrations.youtube.patches.spoof.SpoofClientPatch.DeviceHardwareSupport.allowAV1;
 import static app.revanced.integrations.youtube.patches.spoof.SpoofClientPatch.DeviceHardwareSupport.allowVP9;
 
-import androidx.annotation.Nullable;
-import android.annotation.SuppressLint;
 import android.media.MediaCodecInfo;
 import android.media.MediaCodecList;
 import android.net.Uri;
 import android.os.Build;
 
-import java.nio.ByteBuffer;
-import java.util.Map;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutionException;
+import androidx.annotation.Nullable;
 
 import org.chromium.net.ExperimentalUrlRequest;
+
+import java.nio.ByteBuffer;
+import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import app.revanced.integrations.shared.Logger;
 import app.revanced.integrations.shared.Utils;
@@ -27,10 +28,11 @@ import app.revanced.integrations.youtube.settings.Settings;
 
 @SuppressWarnings("unused")
 public class SpoofClientPatch {
-    private static final boolean SPOOF_CLIENT_ENABLED = Settings.SPOOF_CLIENT.get();
+    private static final boolean SPOOF_CLIENT = Settings.SPOOF_CLIENT.get();
     private static final ClientType SPOOF_CLIENT_TYPE = Settings.SPOOF_CLIENT_TYPE.get();
-    private static final boolean SPOOF_IOS = SPOOF_CLIENT_ENABLED && SPOOF_CLIENT_TYPE == ClientType.IOS;
-    private static final boolean SPOOF_STREAM_ENABLED = Settings.SPOOF_STREAM.get();
+    private static final boolean SPOOF_IOS = SPOOF_CLIENT && SPOOF_CLIENT_TYPE == ClientType.IOS;
+
+    private static final boolean SPOOF_STREAM = Settings.SPOOF_STREAM.get();
 
     /**
      * Any unreachable ip address.  Used to intentionally fail requests.
@@ -38,18 +40,7 @@ public class SpoofClientPatch {
     private static final String UNREACHABLE_HOST_URI_STRING = "https://127.0.0.0";
     private static final Uri UNREACHABLE_HOST_URI = Uri.parse(UNREACHABLE_HOST_URI_STRING);
 
-    /**
-     * Streaming data store.
-     */
-    @Nullable
-    private static CompletableFuture<ByteBuffer> streamingDataFuture;
-    private static final ConcurrentHashMap<String, ByteBuffer> streamingDataCache = new ConcurrentHashMap<>();
-
-    /**
-     * Last video id prefetched. Field is to prevent prefetching the same video id multiple times in a row.
-     */
-    @Nullable
-    private static volatile String lastPrefetchedVideoId;
+    private static volatile Future<ByteBuffer> currentVideoStream;
 
     /**
      * Injection point.
@@ -59,7 +50,7 @@ public class SpoofClientPatch {
      * @return An unreachable URI if the request is a /get_watch request, otherwise the original URI.
      */
     public static Uri blockGetWatchRequest(Uri playerRequestUri) {
-        if (SPOOF_CLIENT_ENABLED || SPOOF_STREAM_ENABLED) {
+        if (SPOOF_CLIENT || SPOOF_STREAM) {
             try {
                 String path = playerRequestUri.getPath();
 
@@ -82,7 +73,7 @@ public class SpoofClientPatch {
      * Blocks /initplayback requests.
      */
     public static String blockInitPlaybackRequest(String originalUrlString) {
-        if (SPOOF_CLIENT_ENABLED || SPOOF_STREAM_ENABLED) {
+        if (SPOOF_CLIENT || SPOOF_STREAM) {
             try {
                 var originalUri = Uri.parse(originalUrlString);
                 String path = originalUri.getPath();
@@ -104,21 +95,21 @@ public class SpoofClientPatch {
      * Injection point.
      */
     public static int getClientTypeId(int originalClientTypeId) {
-        return SPOOF_CLIENT_ENABLED ? SPOOF_CLIENT_TYPE.id : originalClientTypeId;
+        return SPOOF_CLIENT ? SPOOF_CLIENT_TYPE.id : originalClientTypeId;
     }
 
     /**
      * Injection point.
      */
     public static String getClientVersion(String originalClientVersion) {
-        return SPOOF_CLIENT_ENABLED ? SPOOF_CLIENT_TYPE.appVersion : originalClientVersion;
+        return SPOOF_CLIENT ? SPOOF_CLIENT_TYPE.appVersion : originalClientVersion;
     }
 
     /**
      * Injection point.
      */
     public static String getClientModel(String originalClientModel) {
-        return SPOOF_CLIENT_ENABLED ? SPOOF_CLIENT_TYPE.model : originalClientModel;
+        return SPOOF_CLIENT ? SPOOF_CLIENT_TYPE.model : originalClientModel;
     }
 
     /**
@@ -126,28 +117,28 @@ public class SpoofClientPatch {
      * Fix video qualities missing, if spoofing to iOS by using the correct client OS version.
      */
     public static String getOsVersion(String originalOsVersion) {
-        return SPOOF_CLIENT_ENABLED ? SPOOF_CLIENT_TYPE.osVersion : originalOsVersion;
+        return SPOOF_CLIENT ? SPOOF_CLIENT_TYPE.osVersion : originalOsVersion;
     }
 
     /**
      * Injection point.
      */
     public static boolean enablePlayerGesture(boolean original) {
-        return SPOOF_CLIENT_ENABLED || original;
+        return SPOOF_CLIENT || original;
     }
 
     /**
      * Injection point.
      */
     public static boolean isClientSpoofingEnabled() {
-        return SPOOF_CLIENT_ENABLED;
+        return SPOOF_CLIENT;
     }
 
     /**
      * Injection point.
      */
     public static boolean isSpoofStreamEnabled() {
-        return SPOOF_STREAM_ENABLED;
+        return SPOOF_STREAM;
     }
 
     /**
@@ -170,19 +161,19 @@ public class SpoofClientPatch {
 
     /**
      * Injection point.
-     * Fix video qualities missing, if spoofing to iOS by using the correct iOS user-agent.
      */
-    public static ExperimentalUrlRequest overrideUserAgent(ExperimentalUrlRequest.Builder builder, String url, Map playerHeaders) {
-        if (SPOOF_CLIENT_ENABLED || SPOOF_STREAM_ENABLED) {
+    public static ExperimentalUrlRequest overrideUserAgent(ExperimentalUrlRequest.Builder builder,
+                                                           String url, Map<String, String> playerHeaders) {
+        if (SPOOF_CLIENT || SPOOF_STREAM) {
             Uri uri = Uri.parse(url);
             String path = uri.getPath();
             if (path != null && path.contains("player") && !path.contains("heartbeat")) {
-            	if (SPOOF_CLIENT_ENABLED) {
-                    return builder.addHeader("User-Agent", SPOOF_CLIENT_TYPE.userAgent).build();
-                }
-                if (SPOOF_STREAM_ENABLED) {
-                    fetchStreamingData(uri.getQueryParameter("id"), playerHeaders);
-                    return builder.build();
+            	if (SPOOF_CLIENT) {
+                    Logger.printDebug(() -> "Overriding user agent for /player call");
+                    builder.addHeader("User-Agent", SPOOF_CLIENT_TYPE.userAgent);
+                } else {
+                    String videoId = uri.getQueryParameter("id");
+                    currentVideoStream = StreamingDataRequester.fetch(videoId, playerHeaders);
                 }
             }
         }
@@ -193,27 +184,32 @@ public class SpoofClientPatch {
     /**
      * Injection point.
      * Fix playback by replace the streaming data.
+     * Called after {@link #overrideUserAgent(ExperimentalUrlRequest.Builder, String, Map)}.
      */
-    @SuppressLint("NewApi")
+    @Nullable
     public static ByteBuffer getStreamingData(String videoId) {
-        if (!SPOOF_STREAM_ENABLED) return null;
-
-        if (streamingDataCache.containsKey(videoId)) {
-            return streamingDataCache.get(videoId);
-        }
-
-        if (streamingDataFuture != null) {
+        if (SPOOF_STREAM) {
             try {
-                ByteBuffer byteBuffer = streamingDataFuture.get();
-                if (byteBuffer != null) {
-                    streamingDataCache.put(videoId, byteBuffer);
-                    return byteBuffer;
+                Utils.verifyOffMainThread();
+
+                var future = currentVideoStream;
+                if (future != null) {
+                    final long maxTimeToWait = 4000;
+                    var stream = future.get(maxTimeToWait, TimeUnit.MILLISECONDS);
+                    if (stream != null) {
+                        Logger.printDebug(() -> "Overriding video stream");
+                        return stream;
+                    }
+
+                    Logger.printDebug(() -> "Not overriding streaming data (video stream is null)");
                 }
+            } catch (TimeoutException ex) {
+                Logger.printInfo(() -> "getStreamingData timed out", ex);
             } catch (InterruptedException ex) {
-                Thread.currentThread().interrupt();
-                Logger.printException(() -> "getStreamingData interrupted.", ex);
+                Logger.printException(() -> "getStreamingData interrupted", ex);
+                Thread.currentThread().interrupt(); // Restore interrupt status flag.
             } catch (ExecutionException ex) {
-                Logger.printException(() -> "getStreamingData failure.", ex);
+                Logger.printException(() -> "getStreamingData failure", ex);
             }
         }
 
@@ -222,31 +218,23 @@ public class SpoofClientPatch {
 
     /**
      * Injection point.
-     */
-    public static void fetchStreamingData(String videoId, Map playerHeaders) {
-        if (SPOOF_STREAM_ENABLED) {
-            if (videoId.equals(lastPrefetchedVideoId)) {
-                return;
-            }
-
-            if (!streamingDataCache.containsKey(videoId)) {
-                CompletableFuture<ByteBuffer> future = StreamingDataRequester.fetch(videoId, playerHeaders);
-                streamingDataFuture = future;
-            }
-            lastPrefetchedVideoId = videoId;
-        }
-    }
-
-    /**
-     * Injection point.
+     * Called after {@link #getStreamingData(String)}.
      */
     public static byte[] removeVideoPlaybackPostBody(Uri uri, int method, byte[] postData) {
-        if (!SPOOF_STREAM_ENABLED) return postData;
-
-        String path = uri.getPath();
-        boolean iosClient = ClientType.IOS.name().equals(uri.getQueryParameter("c"));
-        if (path != null && path.contains("videoplayback") && method == 2 && iosClient) {
-            return null;
+        if (SPOOF_STREAM) {
+            try {
+                final int FIXME_RENAME_THIS_TO_DESCRIBE_THIS_MAGIC_NUMBER = 2; // FIXME
+                if (method == FIXME_RENAME_THIS_TO_DESCRIBE_THIS_MAGIC_NUMBER) {
+                    String path = uri.getPath();
+                    String FIXME_RENAME_THIS_TO_DESCRIBE_THIS_MAGIC_STRING = "c"; // FIXME
+                    final boolean iosClient = ClientType.IOS.name().equals(uri.getQueryParameter(FIXME_RENAME_THIS_TO_DESCRIBE_THIS_MAGIC_STRING));
+                    if (iosClient && path != null && path.contains("videoplayback")) {
+                        return null;
+                    }
+                }
+            }  catch (Exception ex) {
+                Logger.printException(() -> "removeVideoPlaybackPostBody failure", ex);
+            }
         }
 
         return postData;
@@ -380,7 +368,8 @@ public class SpoofClientPatch {
     public static final class ForceiOSAVCAvailability implements Setting.Availability {
         @Override
         public boolean isAvailable() {
-            return Settings.SPOOF_CLIENT.get() && Settings.SPOOF_CLIENT_TYPE.get() == ClientType.IOS;
+            return (Settings.SPOOF_CLIENT.get() && Settings.SPOOF_CLIENT_TYPE.get() == ClientType.IOS)
+                    || Settings.SPOOF_STREAM.get();
         }
     }
 }

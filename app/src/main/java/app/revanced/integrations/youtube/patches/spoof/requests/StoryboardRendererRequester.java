@@ -21,6 +21,7 @@ import java.util.List;
 import static app.revanced.integrations.shared.StringRef.str;
 import static app.revanced.integrations.youtube.patches.spoof.requests.PlayerRoutes.*;
 
+@Deprecated
 public class StoryboardRendererRequester {
 
     private StoryboardRendererRequester() {
@@ -88,7 +89,6 @@ public class StoryboardRendererRequester {
 
     /**
      * Fetches the storyboardRenderer from the innerTubeBody.
-     * @param innerTubeBody The innerTubeBody to use to fetch the storyboardRenderer.
      * @return StoryboardRenderer or null if playabilityStatus is not OK.
      */
     @Nullable
