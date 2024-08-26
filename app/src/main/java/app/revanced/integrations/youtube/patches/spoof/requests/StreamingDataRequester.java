@@ -90,13 +90,17 @@ public class StreamingDataRequester {
                         // but empty response body does.
                         if (connection.getContentLength() != 0) {
                             try (InputStream inputStream = new BufferedInputStream(connection.getInputStream())) {
-                                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                                byte[] buffer = new byte[8192];
-                                int bytesRead;
-                                while ((bytesRead = inputStream.read(buffer)) >= 0) {
-                                    baos.write(buffer, 0, bytesRead);
+                                try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+                                    byte[] buffer = new byte[8192];
+                                    int bytesRead;
+                                    while ((bytesRead = inputStream.read(buffer)) >= 0) {
+                                        baos.write(buffer, 0, bytesRead);
+                                    }
+
+                                    byte[] array = baos.toByteArray();
+                                    Logger.printDebug(() -> "stream response: " + new String(array, StandardCharsets.UTF_8)); // FIXME debug
+                                    return ByteBuffer.wrap(array);
                                 }
-                                return ByteBuffer.wrap(baos.toByteArray());
                             }
                         }
                     } catch (IOException ex) {
@@ -105,7 +109,7 @@ public class StreamingDataRequester {
                 }
             }
 
-            handleConnectionError("Fetch client spoof streams failed", null, true);
+            handleConnectionError("Could not fetch any client streams", null, BaseSettings.DEBUG.get());
             return null;
         });
     }
