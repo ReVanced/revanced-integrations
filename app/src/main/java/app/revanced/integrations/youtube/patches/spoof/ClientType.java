@@ -31,7 +31,7 @@ public enum ClientType {
             "Quest 3",
             "12",
             "com.google.android.apps.youtube.vr.oculus/1.56.21 (Linux; U; Android 12; GB) gzip",
-            "32", // Android 12 SDK is version 31, but Quest 3 build.props uses version 32.
+            "32", // Android 12.1
             "1.56.21"
     );
 
