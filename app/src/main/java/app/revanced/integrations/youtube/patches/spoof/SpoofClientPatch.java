@@ -8,6 +8,7 @@ import org.chromium.net.ExperimentalUrlRequest;
 
 import java.nio.ByteBuffer;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -89,14 +90,18 @@ public class SpoofClientPatch {
     /**
      * Injection point.
      */
-    public static ExperimentalUrlRequest overrideUserAgent(ExperimentalUrlRequest.Builder builder,
-                                                           String url, Map<String, String> playerHeaders) {
+    public static ExperimentalUrlRequest buildRequest(ExperimentalUrlRequest.Builder builder,
+                                                      String url, Map<String, String> playerHeaders) {
         if (SPOOF_CLIENT) {
-            Uri uri = Uri.parse(url);
-            String path = uri.getPath();
-            if (path != null && path.contains("player") && !path.contains("heartbeat")) {
-                String videoId = uri.getQueryParameter("id");
-                currentVideoStream = StreamingDataRequester.fetch(videoId, playerHeaders);
+            try {
+                Uri uri = Uri.parse(url);
+                String path = uri.getPath();
+                if (path != null && path.contains("player") && !path.contains("heartbeat")) {
+                    String videoId = Objects.requireNonNull(uri.getQueryParameter("id"));
+                    currentVideoStream = StreamingDataRequester.fetch(videoId, playerHeaders);
+                }
+            } catch (Exception ex) {
+                Logger.printException(() -> "buildRequest failure", ex);
             }
         }
 
@@ -106,7 +111,7 @@ public class SpoofClientPatch {
     /**
      * Injection point.
      * Fix playback by replace the streaming data.
-     * Called after {@link #overrideUserAgent(ExperimentalUrlRequest.Builder, String, Map)}.
+     * Called after {@link #buildRequest(ExperimentalUrlRequest.Builder, String, Map)}.
      */
     @Nullable
     public static ByteBuffer getStreamingData(String videoId) {
