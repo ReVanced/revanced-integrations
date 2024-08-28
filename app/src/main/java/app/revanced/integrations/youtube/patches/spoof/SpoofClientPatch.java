@@ -4,7 +4,7 @@ import android.net.Uri;
 
 import androidx.annotation.Nullable;
 
-import org.chromium.net.ExperimentalUrlRequest;
+import org.chromium.net.UrlRequest;
 
 import java.nio.ByteBuffer;
 import java.util.Map;
@@ -90,8 +90,8 @@ public class SpoofClientPatch {
     /**
      * Injection point.
      */
-    public static ExperimentalUrlRequest buildRequest(ExperimentalUrlRequest.Builder builder,
-                                                      String url, Map<String, String> playerHeaders) {
+    public static UrlRequest buildRequest(UrlRequest.Builder builder, String url,
+                                          Map<String, String> playerHeaders) {
         if (SPOOF_CLIENT) {
             try {
                 Uri uri = Uri.parse(url);
@@ -111,7 +111,7 @@ public class SpoofClientPatch {
     /**
      * Injection point.
      * Fix playback by replace the streaming data.
-     * Called after {@link #buildRequest(ExperimentalUrlRequest.Builder, String, Map)}.
+     * Called after {@link #buildRequest(UrlRequest.Builder, String, Map)}.
      */
     @Nullable
     public static ByteBuffer getStreamingData(String videoId) {
@@ -147,6 +147,7 @@ public class SpoofClientPatch {
      * Injection point.
      * Called after {@link #getStreamingData(String)}.
      */
+    @Nullable
     public static byte[] removeVideoPlaybackPostBody(Uri uri, int method, byte[] postData) {
         if (SPOOF_CLIENT) {
             try {
