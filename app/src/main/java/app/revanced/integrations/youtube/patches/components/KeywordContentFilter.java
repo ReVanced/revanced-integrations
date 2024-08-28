@@ -339,8 +339,8 @@ final class KeywordContentFilter extends Filter {
             Set<String> keywords = new LinkedHashSet<>(10 * split.length);
 
             for (String phrase : split) {
-                // Remove any trailing white space the user may have accidentally included.
-                phrase = phrase.stripTrailing();
+                // Remove any white space padding the user may have accidentally included.
+                phrase = phrase.stripLeading().stripTrailing();
                 if (phrase.isBlank()) continue;
 
                 // Add common casing that might appear.
