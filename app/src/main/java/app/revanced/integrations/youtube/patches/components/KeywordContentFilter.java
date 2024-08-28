@@ -47,11 +47,6 @@ import app.revanced.integrations.youtube.shared.PlayerType;
 final class KeywordContentFilter extends Filter {
 
     /**
-     * Minimum keyword/phrase length to prevent excessively broad content filtering.
-     */
-    private static final int MINIMUM_KEYWORD_LENGTH = 3;
-
-    /**
      * Strings found in the buffer for every videos.
      * Full strings should be specified, as they are compared using {@link String#contains(CharSequence)}.
      *
@@ -223,12 +218,110 @@ final class KeywordContentFilter extends Filter {
      * @return If the phrase will will hide all videos. Not an exhaustive check.
      */
     private static boolean phrasesWillHideAllVideos(@NonNull String[] phrases) {
-        for (String commonString : STRINGS_IN_EVERY_BUFFER) {
-            if (Utils.containsAny(commonString, phrases)) {
-                return true;
+        for (String phrase : phrases) {
+            for (String commonString : STRINGS_IN_EVERY_BUFFER) {
+                byte[] commonStringBytes = commonString.getBytes(StandardCharsets.UTF_8);
+                int matchIndex = 0;
+                while (true) {
+                    matchIndex = commonString.indexOf(phrase, matchIndex);
+                    if (matchIndex < 0) break;
+
+                    if (keywordMatchIsWholeWord(commonStringBytes, matchIndex, phrase.length())) {
+                        return true;
+                    }
+
+                    matchIndex++;
+                }
             }
         }
+
         return false;
+    }
+
+    /**
+     * @return If the start and end indexes are not surrounded by other letters.
+     *         If the indexes are surrounded by numbers/symbols/punctuation it is considered a whole word.
+     */
+    private static boolean keywordMatchIsWholeWord(byte[] text, int keywordStartIndex, int keywordLength) {
+        final Integer codePointBefore = getUtf8CodePointBefore(text, keywordStartIndex);
+        if (codePointBefore != null && Character.isLetter(codePointBefore)) {
+            return false;
+        }
+
+        final Integer codePointAfter = getUtf8CodePointAt(text, keywordStartIndex + keywordLength);
+        //noinspection RedundantIfStatement
+        if (codePointAfter != null && Character.isLetter(codePointAfter)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * @return The UTF8 character point immediately before the index,
+     *         or null if the bytes before the index is not a valid UTF8 character.
+     */
+    @Nullable
+    private static Integer getUtf8CodePointBefore(byte[] data, int index) {
+        if (index == 0) return null;
+
+        final int UTF8_MAX_BYTE_COUNT = 4;
+        int startIndex = index - 1;
+        int characterByteCount = 1;
+        do {
+            final int characterByteLength = getUTF8CharacterLengthFromStartByte(data[startIndex]);
+            if (characterByteLength > 0) {
+                return decodeUtf8ToCodePoint(data, startIndex, characterByteLength);
+            }
+        } while (--startIndex >= 0 && ++characterByteCount < UTF8_MAX_BYTE_COUNT);
+
+        return null;
+    }
+
+    /**
+     * @return The UTF8 character point at the index,
+     *         or null if the index holds no valid UTF8 character.
+     */
+    @Nullable
+    private static Integer getUtf8CodePointAt(byte[] data, int startIndex) {
+        if (startIndex >= data.length) {
+            return null;
+        }
+
+        final int characterByteLength = getUTF8CharacterLengthFromStartByte(data[startIndex]);
+        if (characterByteLength <= 0 || startIndex + characterByteLength > data.length) {
+            return null;
+        }
+
+        return decodeUtf8ToCodePoint(data, startIndex, characterByteLength);
+    }
+
+    private static int getUTF8CharacterLengthFromStartByte(byte startByte) {
+        if ((startByte & 0x80) == 0) return 1;    // 0xxxxxxx (ASCII)
+        if ((startByte & 0xE0) == 0xC0) return 2; // 110xxxxx
+        if ((startByte & 0xF0) == 0xE0) return 3; // 1110xxxx
+        if ((startByte & 0xF8) == 0xF0) return 4; // 11110xxx
+        return -1; // Not a UTF8 character.
+    }
+
+    public static int decodeUtf8ToCodePoint(byte[] data, int startIndex, int length) {
+        switch (length) {
+            case 1:
+                return data[startIndex];
+            case 2:
+                return ((data[startIndex] & 0x1F) << 6) |
+                        (data[startIndex + 1] & 0x3F);
+            case 3:
+                return ((data[startIndex] & 0x0F) << 12) |
+                        ((data[startIndex + 1] & 0x3F) << 6) |
+                        (data[startIndex + 2] & 0x3F);
+            case 4:
+                return ((data[startIndex] & 0x07) << 18) |
+                        ((data[startIndex + 1] & 0x3F) << 12) |
+                        ((data[startIndex + 2] & 0x3F) << 6) |
+                        (data[startIndex + 3] & 0x3F);
+        }
+        throw new IllegalArgumentException("length is: " + length);
     }
 
     private synchronized void parseKeywords() { // Must be synchronized since Litho is multi-threaded.
@@ -249,12 +342,6 @@ final class KeywordContentFilter extends Filter {
                 // Remove any trailing white space the user may have accidentally included.
                 phrase = phrase.stripTrailing();
                 if (phrase.isBlank()) continue;
-
-                if (phrase.length() < MINIMUM_KEYWORD_LENGTH) {
-                    // Do not reset the setting. Keep the invalid keywords so the user can fix the mistake.
-                    Utils.showToastLong(str("revanced_hide_keyword_toast_invalid_length", phrase, MINIMUM_KEYWORD_LENGTH));
-                    continue;
-                }
 
                 // Add common casing that might appear.
                 //
@@ -282,14 +369,18 @@ final class KeywordContentFilter extends Filter {
             }
 
             for (String keyword : keywords) {
-                // Use a callback to get the keyword that matched.
-                // TrieSearch could have this built in, but that's slightly more complicated since
-                // the strings are stored as a byte array and embedded in the search tree.
+                // Verify the keyword is a whole word and not a substring,
+                // so a keyword like "ai" is matched but "fair" is not.
                 TrieSearch.TriePatternMatchedCallback<byte[]> callback =
-                        (textSearched, matchedStartIndex, matchedLength, callbackParameter) -> {
-                            // noinspection unchecked
-                            ((MutableReference<String>) callbackParameter).value = keyword;
-                            return true;
+                        (textSearched, startIndex, matchLength, callbackParameter) -> {
+                            if (keywordMatchIsWholeWord(textSearched, startIndex, matchLength)) {
+                                Logger.printDebug(() -> "Matched keyword: '" + keyword + "'");
+                                // noinspection unchecked
+                                ((MutableReference<String>) callbackParameter).value = keyword;
+                                return true;
+                            }
+
+                            return false;
                         };
                 byte[] stringBytes = keyword.getBytes(StandardCharsets.UTF_8);
                 search.addPattern(stringBytes, callback);
