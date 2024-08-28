@@ -145,6 +145,8 @@ final class KeywordContentFilter extends Filter {
 
     private static final long ALL_VIDEOS_FILTERED_BACKOFF_MILLISECONDS = 60 * 1000; // 60 seconds
 
+    private static final int UTF8_MAX_BYTE_COUNT = 4;
+
     /**
      * Rolling average of how many videos were filtered by a keyword.
      * Used to detect if a keyword passes the initial check against {@link #STRINGS_IN_EVERY_BUFFER}
@@ -263,17 +265,12 @@ final class KeywordContentFilter extends Filter {
      */
     @Nullable
     private static Integer getUtf8CodePointBefore(byte[] data, int index) {
-        if (index == 0) return null;
-
-        final int UTF8_MAX_BYTE_COUNT = 4;
-        int startIndex = index - 1;
-        int characterByteCount = 1;
-        do {
-            final int characterByteLength = getUTF8CharacterLengthFromStartByte(data[startIndex]);
-            if (characterByteLength > 0) {
-                return decodeUtf8ToCodePoint(data, startIndex, characterByteLength);
+        int characterByteCount = 0;
+        while (--index >= 0 && ++characterByteCount <= UTF8_MAX_BYTE_COUNT) {
+            if (isValidUTF8(data, index, characterByteCount)) {
+                return decodeUTF8ToCodePoint(data, index, characterByteCount);
             }
-        } while (--startIndex >= 0 && ++characterByteCount < UTF8_MAX_BYTE_COUNT);
+        }
 
         return null;
     }
@@ -283,29 +280,41 @@ final class KeywordContentFilter extends Filter {
      *         or null if the index holds no valid UTF8 character.
      */
     @Nullable
-    private static Integer getUtf8CodePointAt(byte[] data, int startIndex) {
-        if (startIndex >= data.length) {
-            return null;
+    private static Integer getUtf8CodePointAt(byte[] data, int index) {
+        int characterByteCount = 0;
+        final int dataLength = data.length;
+        while (index + characterByteCount < dataLength && ++characterByteCount <= UTF8_MAX_BYTE_COUNT) {
+            if (isValidUTF8(data, index, characterByteCount)) {
+                return decodeUTF8ToCodePoint(data, index, characterByteCount);
+            }
         }
 
-        final int characterByteLength = getUTF8CharacterLengthFromStartByte(data[startIndex]);
-        if (characterByteLength <= 0 || startIndex + characterByteLength > data.length) {
-            return null;
+        return null;
+    }
+
+    public static boolean isValidUTF8(byte[] data, int startIndex, int numberOfBytes) {
+        switch (numberOfBytes) {
+            case 1: // 0xxxxxxx (ASCII)
+                return (data[startIndex] & 0x80) == 0;
+            case 2: // 110xxxxx, 10xxxxxx
+                return (data[startIndex] & 0xE0) == 0xC0
+                        && (data[startIndex + 1] & 0xC0) == 0x80;
+            case 3: // 1110xxxx, 10xxxxxx, 10xxxxxx
+                return (data[startIndex] & 0xF0) == 0xE0
+                        && (data[startIndex + 1] & 0xC0) == 0x80
+                        && (data[startIndex + 2] & 0xC0) == 0x80;
+            case 4: // 11110xxx, 10xxxxxx, 10xxxxxx, 10xxxxxx
+                return (data[startIndex] & 0xF8) == 0xF0
+                        && (data[startIndex + 1] & 0xC0) == 0x80
+                        && (data[startIndex + 2] & 0xC0) == 0x80
+                        && (data[startIndex + 3] & 0xC0) == 0x80;
         }
 
-        return decodeUtf8ToCodePoint(data, startIndex, characterByteLength);
+        throw new IllegalArgumentException("numberOfBytes: " + numberOfBytes);
     }
 
-    private static int getUTF8CharacterLengthFromStartByte(byte startByte) {
-        if ((startByte & 0x80) == 0) return 1;    // 0xxxxxxx (ASCII)
-        if ((startByte & 0xE0) == 0xC0) return 2; // 110xxxxx
-        if ((startByte & 0xF0) == 0xE0) return 3; // 1110xxxx
-        if ((startByte & 0xF8) == 0xF0) return 4; // 11110xxx
-        return -1; // Not a UTF8 character.
-    }
-
-    public static int decodeUtf8ToCodePoint(byte[] data, int startIndex, int length) {
-        switch (length) {
+    public static int decodeUTF8ToCodePoint(byte[] data, int startIndex, int numberOfBytes) {
+        switch (numberOfBytes) {
             case 1:
                 return data[startIndex];
             case 2:
@@ -321,7 +330,7 @@ final class KeywordContentFilter extends Filter {
                         ((data[startIndex + 2] & 0x3F) << 6) |
                         (data[startIndex + 3] & 0x3F);
         }
-        throw new IllegalArgumentException("length is: " + length);
+        throw new IllegalArgumentException("numberOfBytes: " + numberOfBytes);
     }
 
     private synchronized void parseKeywords() { // Must be synchronized since Litho is multi-threaded.
