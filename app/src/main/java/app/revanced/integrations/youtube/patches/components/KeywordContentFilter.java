@@ -41,6 +41,11 @@ import app.revanced.integrations.youtube.shared.PlayerType;
  *   (ie: "mr beast" automatically filters "Mr Beast" and "MR BEAST").
  * - Keywords present in the layout or video data cannot be used as filters, otherwise all videos
  *   will always be hidden.  This patch checks for some words of these words.
+ * - Keywords are matched against whole words, and not as substrings.
+ *   So 'ai' will hide 'Model #ai123 release!' and 'Is AI self aware?',
+ *   but not hide 'DMCA guide to fair use'. This behavior is desired and intentional
+ *   to prevent false hiding, but it also may require adding plural versions of some words.
+ *   (use keywords of 'fox' and 'foxes').
  */
 @SuppressWarnings("unused")
 @RequiresApi(api = Build.VERSION_CODES.N)
@@ -102,7 +107,8 @@ final class KeywordContentFilter extends Filter {
             "search_video_with_context.eml",
             "video_with_context.eml", // Subscription tab videos.
             "related_video_with_context.eml",
-            "video_lockup_with_attachment.eml", // A/B test for subscribed video.
+            // A/B test for subscribed video, and sometimes when tablet layout is enabled.
+            "video_lockup_with_attachment.eml",
             "compact_video.eml",
             "inline_shorts",
             "shorts_video_cell",
@@ -131,7 +137,8 @@ final class KeywordContentFilter extends Filter {
             "metadata.eml",
             "thumbnail.eml",
             "avatar.eml",
-            "overflow_button.eml"
+            "overflow_button.eml",
+            "metadata.eml"
     );
 
     /**
@@ -213,6 +220,7 @@ final class KeywordContentFilter extends Filter {
                 capitalizeNext = false;
             }
         }
+
         return new String(codePoints, 0, codePoints.length);
     }
 
@@ -267,8 +275,8 @@ final class KeywordContentFilter extends Filter {
     private static Integer getUtf8CodePointBefore(byte[] data, int index) {
         int characterByteCount = 0;
         while (--index >= 0 && ++characterByteCount <= UTF8_MAX_BYTE_COUNT) {
-            if (isValidUTF8(data, index, characterByteCount)) {
-                return decodeUTF8ToCodePoint(data, index, characterByteCount);
+            if (isValidUtf8(data, index, characterByteCount)) {
+                return decodeUtf8ToCodePoint(data, index, characterByteCount);
             }
         }
 
@@ -284,15 +292,15 @@ final class KeywordContentFilter extends Filter {
         int characterByteCount = 0;
         final int dataLength = data.length;
         while (index + characterByteCount < dataLength && ++characterByteCount <= UTF8_MAX_BYTE_COUNT) {
-            if (isValidUTF8(data, index, characterByteCount)) {
-                return decodeUTF8ToCodePoint(data, index, characterByteCount);
+            if (isValidUtf8(data, index, characterByteCount)) {
+                return decodeUtf8ToCodePoint(data, index, characterByteCount);
             }
         }
 
         return null;
     }
 
-    public static boolean isValidUTF8(byte[] data, int startIndex, int numberOfBytes) {
+    public static boolean isValidUtf8(byte[] data, int startIndex, int numberOfBytes) {
         switch (numberOfBytes) {
             case 1: // 0xxxxxxx (ASCII)
                 return (data[startIndex] & 0x80) == 0;
@@ -313,7 +321,7 @@ final class KeywordContentFilter extends Filter {
         throw new IllegalArgumentException("numberOfBytes: " + numberOfBytes);
     }
 
-    public static int decodeUTF8ToCodePoint(byte[] data, int startIndex, int numberOfBytes) {
+    public static int decodeUtf8ToCodePoint(byte[] data, int startIndex, int numberOfBytes) {
         switch (numberOfBytes) {
             case 1:
                 return data[startIndex];
@@ -378,10 +386,10 @@ final class KeywordContentFilter extends Filter {
             }
 
             for (String keyword : keywords) {
-                // Verify the keyword is a whole word and not a substring,
-                // so a keyword like "ai" is matched but "fair" is not.
                 TrieSearch.TriePatternMatchedCallback<byte[]> callback =
                         (textSearched, startIndex, matchLength, callbackParameter) -> {
+                            // Verify the keyword is a whole word and not a substring,
+                            // so a keyword like "ai" is matched but "fair" is not.
                             if (keywordMatchIsWholeWord(textSearched, startIndex, matchLength)) {
                                 Logger.printDebug(() -> "Matched keyword: '" + keyword + "'");
                                 // noinspection unchecked
