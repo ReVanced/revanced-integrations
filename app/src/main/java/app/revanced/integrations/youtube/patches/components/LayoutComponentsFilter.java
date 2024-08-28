@@ -198,7 +198,7 @@ public final class LayoutComponentsFilter extends Filter {
 
         searchResultShelfHeader = new StringFilterGroup(
                 Settings.HIDE_SEARCH_RESULT_SHELF_HEADER,
-                "shelf_header.eml"
+                "compact_channel.eml"
         );
 
         notifyMe = new StringFilterGroup(
