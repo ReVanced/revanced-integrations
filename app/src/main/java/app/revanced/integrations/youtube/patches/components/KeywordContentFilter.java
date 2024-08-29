@@ -52,8 +52,7 @@ import app.revanced.integrations.youtube.shared.PlayerType;
 final class KeywordContentFilter extends Filter {
 
     /**
-     * Strings found in the buffer for every videos.
-     * Full strings should be specified, as they are compared using {@link String#contains(CharSequence)}.
+     * Strings found in the buffer for every videos.  Full strings should be specified.
      *
      * This list does not include every common buffer string, and this can be added/changed as needed.
      * Words must be entered with the exact casing as found in the buffer.
@@ -88,7 +87,7 @@ final class KeywordContentFilter extends Filter {
             "search_vwc_description_transition_key",
             "g-high-recZ",
             // Text and litho components found in the buffer that belong to path filters.
-            "metadata.eml",
+            "expandable_metadata.eml",
             "thumbnail.eml",
             "avatar.eml",
             "overflow_button.eml",
@@ -137,9 +136,14 @@ final class KeywordContentFilter extends Filter {
             "metadata.eml",
             "thumbnail.eml",
             "avatar.eml",
-            "overflow_button.eml",
-            "metadata.eml"
+            "overflow_button.eml"
     );
+
+    /**
+     * Minimum keyword/phrase length to prevent excessively broad content filtering.
+     * Only applies when {@link Settings#HIDE_KEYWORD_CONTENT_SEARCH} is not enabled.
+     */
+    private static final int MINIMUM_KEYWORD_LENGTH = 3;
 
     /**
      * Threshold for {@link #filteredVideosPercentage}
@@ -181,6 +185,8 @@ final class KeywordContentFilter extends Filter {
      * Allows changing the keywords without restarting the app.
      */
     private volatile String lastKeywordPhrasesParsed;
+
+    private volatile boolean matchWholeWords;
 
     private volatile ByteTrieSearch bufferSearch;
 
@@ -227,20 +233,24 @@ final class KeywordContentFilter extends Filter {
     /**
      * @return If the phrase will will hide all videos. Not an exhaustive check.
      */
-    private static boolean phrasesWillHideAllVideos(@NonNull String[] phrases) {
+    private static boolean phrasesWillHideAllVideos(@NonNull String[] phrases, boolean matchWholeWords) {
         for (String phrase : phrases) {
             for (String commonString : STRINGS_IN_EVERY_BUFFER) {
-                byte[] commonStringBytes = commonString.getBytes(StandardCharsets.UTF_8);
-                int matchIndex = 0;
-                while (true) {
-                    matchIndex = commonString.indexOf(phrase, matchIndex);
-                    if (matchIndex < 0) break;
+                if (matchWholeWords) {
+                    byte[] commonStringBytes = commonString.getBytes(StandardCharsets.UTF_8);
+                    int matchIndex = 0;
+                    while (true) {
+                        matchIndex = commonString.indexOf(phrase, matchIndex);
+                        if (matchIndex < 0) break;
 
-                    if (keywordMatchIsWholeWord(commonStringBytes, matchIndex, phrase.length())) {
-                        return true;
+                        if (keywordMatchIsWholeWord(commonStringBytes, matchIndex, phrase.length())) {
+                            return true;
+                        }
+
+                        matchIndex++;
                     }
-
-                    matchIndex++;
+                } else if (Utils.containsAny(commonString, phrases)) {
+                    return true;
                 }
             }
         }
@@ -342,9 +352,11 @@ final class KeywordContentFilter extends Filter {
     }
 
     private synchronized void parseKeywords() { // Must be synchronized since Litho is multi-threaded.
+        final boolean matchWholeWordsEnabled = Settings.HIDE_KEYWORD_CONTENT_WHOLE_WORDS.get();
         String rawKeywords = Settings.HIDE_KEYWORD_CONTENT_PHRASES.get();
+
         //noinspection StringEquality
-        if (rawKeywords == lastKeywordPhrasesParsed) {
+        if (rawKeywords == lastKeywordPhrasesParsed && matchWholeWordsEnabled == matchWholeWords) {
             Logger.printDebug(() -> "Using previously initialized search");
             return; // Another thread won the race, and search is already initialized.
         }
@@ -356,9 +368,18 @@ final class KeywordContentFilter extends Filter {
             Set<String> keywords = new LinkedHashSet<>(10 * split.length);
 
             for (String phrase : split) {
-                // Remove any white space padding the user may have accidentally included.
-                phrase = phrase.stripLeading().stripTrailing();
+                // Remove any trailing spaces the user may have accidentally included.
+                phrase = phrase.stripTrailing();
                 if (phrase.isBlank()) continue;
+
+                if (matchWholeWordsEnabled) {
+                    // Can strip off any leading spaces since it's whole word matching.
+                    phrase = phrase.stripTrailing();
+                } else if (phrase.length() < MINIMUM_KEYWORD_LENGTH) {
+                    // Do not reset the setting. Keep the invalid keywords so the user can fix the mistake.
+                    Utils.showToastLong(str("revanced_hide_keyword_toast_invalid_length", phrase, MINIMUM_KEYWORD_LENGTH));
+                    continue;
+                }
 
                 // Add common casing that might appear.
                 //
@@ -377,7 +398,7 @@ final class KeywordContentFilter extends Filter {
                         capitalizeAllFirstLetters(phrase),
                         phrase.toUpperCase()
                 };
-                if (phrasesWillHideAllVideos(phraseVariations)) {
+                if (phrasesWillHideAllVideos(phraseVariations, matchWholeWordsEnabled)) {
                     Utils.showToastLong(str("revanced_hide_keyword_toast_invalid_common", phrase));
                     continue;
                 }
@@ -390,14 +411,14 @@ final class KeywordContentFilter extends Filter {
                         (textSearched, startIndex, matchLength, callbackParameter) -> {
                             // Verify the keyword is a whole word and not a substring,
                             // so a keyword like "ai" is matched but "fair" is not.
-                            if (keywordMatchIsWholeWord(textSearched, startIndex, matchLength)) {
-                                Logger.printDebug(() -> "Matched keyword: '" + keyword + "'");
-                                // noinspection unchecked
-                                ((MutableReference<String>) callbackParameter).value = keyword;
-                                return true;
+                            if (matchWholeWordsEnabled && !keywordMatchIsWholeWord(textSearched, startIndex, matchLength)) {
+                                return false;
                             }
 
-                            return false;
+                            Logger.printDebug(() -> "Matched keyword: '" + keyword + "'");
+                            // noinspection unchecked
+                            ((MutableReference<String>) callbackParameter).value = keyword;
+                            return true;
                         };
                 byte[] stringBytes = keyword.getBytes(StandardCharsets.UTF_8);
                 search.addPattern(stringBytes, callback);
@@ -409,6 +430,7 @@ final class KeywordContentFilter extends Filter {
         bufferSearch = search;
         timeToResumeFiltering = 0;
         filteredVideosPercentage = 0;
+        matchWholeWords = matchWholeWordsEnabled;
         lastKeywordPhrasesParsed = rawKeywords; // Must set last.
     }
 
@@ -489,8 +511,9 @@ final class KeywordContentFilter extends Filter {
 
         // Field is intentionally compared using reference equality.
         //noinspection StringEquality
-        if (Settings.HIDE_KEYWORD_CONTENT_PHRASES.get() != lastKeywordPhrasesParsed) {
-            // User changed the keywords.
+        if (Settings.HIDE_KEYWORD_CONTENT_PHRASES.get() != lastKeywordPhrasesParsed
+                || Settings.HIDE_KEYWORD_CONTENT_WHOLE_WORDS.get() != matchWholeWords) {
+            // User changed the keywords or whole word setting.
             parseKeywords();
         }
 
