@@ -25,7 +25,7 @@ import app.revanced.integrations.youtube.shared.PlayerType;
 
 /**
  * <pre>
- * Allows hiding home feed and search results based on keywords and/or channel names.
+ * Allows hiding home feed and search results based on video title keywords and/or channel names.
  *
  * Limitations:
  * - Searching for a keyword phrase will give no search results.
@@ -40,11 +40,7 @@ import app.revanced.integrations.youtube.shared.PlayerType;
  *   (ie: "mr beast" automatically filters "Mr Beast" and "MR BEAST").
  * - Keywords present in the layout or video data cannot be used as filters, otherwise all videos
  *   will always be hidden.  This patch checks for some words of these words.
- * - Keywords are matched against whole words, and not as substrings.
- *   So 'ai' will hide 'Model #ai123 release!' and 'Is AI self aware?',
- *   but not hide 'DMCA guide to fair use'. This behavior is desired and intentional
- *   to prevent false hiding, but it also may require adding plural versions of some words.
- *   (use keywords of 'fox' and 'foxes').
+ * - When using whole word syntax, some keywords may need additional pluralized variations.
  */
 @SuppressWarnings("unused")
 @RequiresApi(api = Build.VERSION_CODES.N)
