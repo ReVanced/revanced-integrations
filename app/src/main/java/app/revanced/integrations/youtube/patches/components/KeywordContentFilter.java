@@ -10,9 +10,8 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
 import app.revanced.integrations.shared.Logger;
@@ -141,7 +140,7 @@ final class KeywordContentFilter extends Filter {
 
     /**
      * Minimum keyword/phrase length to prevent excessively broad content filtering.
-     * Only applies when {@link Settings#HIDE_KEYWORD_CONTENT_SEARCH} is not enabled.
+     * Only applies when not using whole word syntax.
      */
     private static final int MINIMUM_KEYWORD_LENGTH = 3;
 
@@ -185,8 +184,6 @@ final class KeywordContentFilter extends Filter {
      * Allows changing the keywords without restarting the app.
      */
     private volatile String lastKeywordPhrasesParsed;
-
-    private volatile boolean matchWholeWords;
 
     private volatile ByteTrieSearch bufferSearch;
 
@@ -351,12 +348,19 @@ final class KeywordContentFilter extends Filter {
         throw new IllegalArgumentException("numberOfBytes: " + numberOfBytes);
     }
 
+    private static boolean phraseUsesWholeWordSyntax(String phrase) {
+        return phrase.startsWith("\"") && phrase.endsWith("\"");
+    }
+
+    private static String stripWholeWordSyntax(String phrase) {
+        return phrase.substring(1, phrase.length() - 1);
+    }
+
     private synchronized void parseKeywords() { // Must be synchronized since Litho is multi-threaded.
-        final boolean matchWholeWordsEnabled = Settings.HIDE_KEYWORD_CONTENT_WHOLE_WORDS.get();
         String rawKeywords = Settings.HIDE_KEYWORD_CONTENT_PHRASES.get();
 
         //noinspection StringEquality
-        if (rawKeywords == lastKeywordPhrasesParsed && matchWholeWordsEnabled == matchWholeWords) {
+        if (rawKeywords == lastKeywordPhrasesParsed) {
             Logger.printDebug(() -> "Using previously initialized search");
             return; // Another thread won the race, and search is already initialized.
         }
@@ -365,23 +369,30 @@ final class KeywordContentFilter extends Filter {
         String[] split = rawKeywords.split("\n");
         if (split.length != 0) {
             // Linked Set so log statement are more organized and easier to read.
-            Set<String> keywords = new LinkedHashSet<>(10 * split.length);
+            // Map is: Phrase -> isWholeWord
+            Map<String, Boolean> keywords = new LinkedHashMap<>(10 * split.length);
 
             for (String phrase : split) {
                 // Remove any trailing spaces the user may have accidentally included.
                 phrase = phrase.stripTrailing();
                 if (phrase.isBlank()) continue;
 
-                if (matchWholeWordsEnabled) {
-                    // Can strip off any leading spaces since it's whole word matching.
-                    phrase = phrase.stripTrailing();
+                final boolean wholeWordMatching;
+                if (phraseUsesWholeWordSyntax(phrase)) {
+                    if (phrase.length() == 2) {
+                        continue; // Empty "" phrase
+                    }
+                    phrase = stripWholeWordSyntax(phrase);
+                    wholeWordMatching = true;
                 } else if (phrase.length() < MINIMUM_KEYWORD_LENGTH) {
                     // Do not reset the setting. Keep the invalid keywords so the user can fix the mistake.
                     Utils.showToastLong(str("revanced_hide_keyword_toast_invalid_length", phrase, MINIMUM_KEYWORD_LENGTH));
                     continue;
+                } else {
+                    wholeWordMatching = false;
                 }
 
-                // Add common casing that might appear.
+                // Common casing that might appear.
                 //
                 // This could be simplified by adding case insensitive search to the prefix search,
                 // which is very simple to add to StringTreSearch for Unicode and ByteTrieSearch for ASCII.
@@ -390,7 +401,7 @@ final class KeywordContentFilter extends Filter {
                 // UTF-8 characters can be different byte lengths, which does
                 // not allow comparing two different byte arrays using simple plain array indexes.
                 //
-                // Instead add all common case variations of the words.
+                // Instead use all common case variations of the words.
                 String[] phraseVariations = {
                         phrase,
                         phrase.toLowerCase(),
@@ -398,24 +409,45 @@ final class KeywordContentFilter extends Filter {
                         capitalizeAllFirstLetters(phrase),
                         phrase.toUpperCase()
                 };
-                if (phrasesWillHideAllVideos(phraseVariations, matchWholeWordsEnabled)) {
-                    Utils.showToastLong(str("revanced_hide_keyword_toast_invalid_common", phrase));
+
+                if (phrasesWillHideAllVideos(phraseVariations, wholeWordMatching)) {
+                    String toastMessage;
+                    // If whole word matching is off, but would pass with on, then show a different toast.
+                    if (!wholeWordMatching && !phrasesWillHideAllVideos(phraseVariations, true)) {
+                        toastMessage = "revanced_hide_keyword_toast_invalid_common_whole_word_required";
+                    } else {
+                        toastMessage = "revanced_hide_keyword_toast_invalid_common";
+                    }
+
+                    Utils.showToastLong(str(toastMessage, phrase));
                     continue;
                 }
 
-                keywords.addAll(Arrays.asList(phraseVariations));
+                for (String variation : phraseVariations) {
+                    // Check if the same phrase is declared both with and without quotes.
+                    Boolean existing = keywords.get(variation);
+                    if (existing != null && existing != wholeWordMatching) {
+                        Utils.showToastLong(str("revanced_hide_keyword_toast_invalid_conflicting", phrase));
+                        break;
+                    }
+
+                    keywords.put(variation, wholeWordMatching);
+                }
             }
 
-            for (String keyword : keywords) {
+            for (Map.Entry<String, Boolean> entry : keywords.entrySet()) {
+                String keyword = entry.getKey();
+                //noinspection ExtractMethodRecommender
+                final boolean isWholeWord = entry.getValue();
+
                 TrieSearch.TriePatternMatchedCallback<byte[]> callback =
                         (textSearched, startIndex, matchLength, callbackParameter) -> {
-                            // Verify the keyword is a whole word and not a substring,
-                            // so a keyword like "ai" is matched but "fair" is not.
-                            if (matchWholeWordsEnabled && !keywordMatchIsWholeWord(textSearched, startIndex, matchLength)) {
+                            if (isWholeWord && !keywordMatchIsWholeWord(textSearched, startIndex, matchLength)) {
                                 return false;
                             }
 
-                            Logger.printDebug(() -> "Matched keyword: '" + keyword + "'");
+                            Logger.printDebug(() -> (isWholeWord ? "Matched whole keyword: '"
+                                    : "Matched keyword: '") + keyword + "'");
                             // noinspection unchecked
                             ((MutableReference<String>) callbackParameter).value = keyword;
                             return true;
@@ -424,13 +456,12 @@ final class KeywordContentFilter extends Filter {
                 search.addPattern(stringBytes, callback);
             }
 
-            Logger.printDebug(() -> "Search using: (" + search.getEstimatedMemorySize() + " KB) keywords: " + keywords);
+            Logger.printDebug(() -> "Search using: (" + search.getEstimatedMemorySize() + " KB) keywords: " + keywords.keySet());
         }
 
         bufferSearch = search;
         timeToResumeFiltering = 0;
         filteredVideosPercentage = 0;
-        matchWholeWords = matchWholeWordsEnabled;
         lastKeywordPhrasesParsed = rawKeywords; // Must set last.
     }
 
@@ -511,8 +542,7 @@ final class KeywordContentFilter extends Filter {
 
         // Field is intentionally compared using reference equality.
         //noinspection StringEquality
-        if (Settings.HIDE_KEYWORD_CONTENT_PHRASES.get() != lastKeywordPhrasesParsed
-                || Settings.HIDE_KEYWORD_CONTENT_WHOLE_WORDS.get() != matchWholeWords) {
+        if (Settings.HIDE_KEYWORD_CONTENT_PHRASES.get() != lastKeywordPhrasesParsed) {
             // User changed the keywords or whole word setting.
             parseKeywords();
         }
