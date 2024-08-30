@@ -250,7 +250,7 @@ final class KeywordContentFilter extends Filter {
     }
 
     /**
-     * @return If the phrase will will hide all videos. Not an exhaustive check.
+     * @return If the phrase will hide all videos. Not an exhaustive check.
      */
     private static boolean phrasesWillHideAllVideos(@NonNull String[] phrases, boolean matchWholeWords) {
         for (String phrase : phrases) {
