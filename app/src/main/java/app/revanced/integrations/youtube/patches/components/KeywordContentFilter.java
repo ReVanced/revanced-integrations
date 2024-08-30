@@ -2,6 +2,7 @@ package app.revanced.integrations.youtube.patches.components;
 
 import static app.revanced.integrations.shared.StringRef.str;
 import static app.revanced.integrations.youtube.shared.NavigationBar.NavigationButton;
+import static java.lang.Character.UnicodeBlock.*;
 
 import android.os.Build;
 
@@ -224,6 +225,31 @@ final class KeywordContentFilter extends Filter {
     }
 
     /**
+     * @return If the string contains any characters from languages that do not use spaces between words.
+     */
+    private static boolean isLanguageWithNoSpaces(String text) {
+        for (int i = 0, length = text.length(); i < length;) {
+            final int codePoint = text.codePointAt(i);
+
+            Character.UnicodeBlock block = Character.UnicodeBlock.of(codePoint);
+            if (block == CJK_UNIFIED_IDEOGRAPHS // Chinese and Kanji
+                    || block == HIRAGANA // Japanese Hiragana
+                    || block == KATAKANA // Japanese Katakana
+                    || block == THAI
+                    || block == LAO
+                    || block == MYANMAR
+                    || block == KHMER
+                    || block == TIBETAN) {
+                return true;
+            }
+
+            i += Character.charCount(codePoint);
+        }
+
+        return false;
+    }
+
+    /**
      * @return If the phrase will will hide all videos. Not an exhaustive check.
      */
     private static boolean phrasesWillHideAllVideos(@NonNull String[] phrases, boolean matchWholeWords) {
@@ -380,7 +406,10 @@ final class KeywordContentFilter extends Filter {
                     }
                     phrase = stripWholeWordSyntax(phrase);
                     wholeWordMatching = true;
-                } else if (phrase.length() < MINIMUM_KEYWORD_LENGTH) {
+                } else if (phrase.length() < MINIMUM_KEYWORD_LENGTH && !isLanguageWithNoSpaces(phrase)) {
+                    // Allow phrases of 1 and 2 characters if using a
+                    // language that does not use spaces between words.
+
                     // Do not reset the setting. Keep the invalid keywords so the user can fix the mistake.
                     Utils.showToastLong(str("revanced_hide_keyword_toast_invalid_length", phrase, MINIMUM_KEYWORD_LENGTH));
                     continue;
