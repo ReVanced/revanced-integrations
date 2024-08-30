@@ -451,12 +451,12 @@ final class KeywordContentFilter extends Filter {
                 for (String variation : phraseVariations) {
                     // Check if the same phrase is declared both with and without quotes.
                     Boolean existing = keywords.get(variation);
-                    if (existing != null && existing != wholeWordMatching) {
+                    if (existing == null) {
+                        keywords.put(variation, wholeWordMatching);
+                    } else if (existing != wholeWordMatching) {
                         Utils.showToastLong(str("revanced_hide_keyword_toast_invalid_conflicting", phrase));
                         break;
                     }
-
-                    keywords.put(variation, wholeWordMatching);
                 }
             }
 
