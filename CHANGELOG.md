@@ -1,3 +1,10 @@
+# [1.14.0-dev.2](https://github.com/ReVanced/revanced-integrations/compare/v1.14.0-dev.1...v1.14.0-dev.2) (2024-08-30)
+
+
+### Features
+
+* **YouTube - Keyword filter:** Add syntax to match whole keywords and not substrings ([#681](https://github.com/ReVanced/revanced-integrations/issues/681)) ([5314dd9](https://github.com/ReVanced/revanced-integrations/commit/5314dd90d16dc8565331c4cddce114956d85a173))
+
 # [1.14.0-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v1.13.1-dev.2...v1.14.0-dev.1) (2024-08-22)
 
 
