@@ -234,7 +234,7 @@ public class ReturnYouTubeDislike {
             // example video: https://www.youtube.com/watch?v=UnrU5vxCHxw
             // RYD data: https://returnyoutubedislikeapi.com/votes?videoId=UnrU5vxCHxw
             //
-            Logger.printDebug(() -> "Replacing hidden likes count with estimated likes: " + voteData.getLikeCount());
+            Logger.printDebug(() -> "Replacing hidden likes count with estimated likes");
             oldLikesString = formatDislikeCount(voteData.getLikeCount());
         }
 
@@ -242,9 +242,7 @@ public class ReturnYouTubeDislike {
         final boolean compactLayout = Settings.RYD_COMPACT_LAYOUT.get();
 
         if (!compactLayout) {
-            String leftSeparatorString = Utils.isRightToLeftTextLayout()
-                    ? "\u200F"  // u200F = right to left character
-                    : "\u200E"; // u200E = left to right character
+            String leftSeparatorString = getTextDirectionString();
             final Spannable leftSeparatorSpan;
             if (isRollingNumber) {
                  leftSeparatorSpan = new SpannableString(leftSeparatorString);
@@ -288,6 +286,12 @@ public class ReturnYouTubeDislike {
         return new SpannableString(builder);
     }
 
+    private static @NonNull String getTextDirectionString() {
+        return Utils.isRightToLeftTextLayout()
+                ? "\u200F"  // u200F = right to left character
+                : "\u200E"; // u200E = left to right character
+    }
+
     /**
      * @return If the text is likely for a previously created likes/dislikes segmented span.
      */
@@ -328,6 +332,10 @@ public class ReturnYouTubeDislike {
             }
         }
         return true;
+    }
+
+    private static SpannableString newSpannableWithLikes(@NonNull Spanned sourceStyling, @NonNull RYDVoteData voteData) {
+        return newSpanUsingStylingOfAnotherSpan(sourceStyling, formatDislikeCount(voteData.getLikeCount()));
     }
 
     private static SpannableString newSpannableWithDislikes(@NonNull Spanned sourceStyling, @NonNull RYDVoteData voteData) {
@@ -492,7 +500,17 @@ public class ReturnYouTubeDislike {
     public synchronized Spanned getDislikesSpanForRegularVideo(@NonNull Spanned original,
                                                                boolean isSegmentedButton,
                                                                boolean isRollingNumber) {
-        return waitForFetchAndUpdateReplacementSpan(original, isSegmentedButton, isRollingNumber,false);
+        return waitForFetchAndUpdateReplacementSpan(original, isSegmentedButton,
+                isRollingNumber, false, false);
+    }
+
+    /**
+     * Called when a Shorts like Spannable is created.
+     */
+    @NonNull
+    public synchronized Spanned getLikeSpanForShort(@NonNull Spanned original) {
+        return waitForFetchAndUpdateReplacementSpan(original, false,
+                false, true, true);
     }
 
     /**
@@ -500,14 +518,16 @@ public class ReturnYouTubeDislike {
      */
     @NonNull
     public synchronized Spanned getDislikeSpanForShort(@NonNull Spanned original) {
-        return waitForFetchAndUpdateReplacementSpan(original, false, false, true);
+        return waitForFetchAndUpdateReplacementSpan(original, false,
+                false, true, false);
     }
 
     @NonNull
     private Spanned waitForFetchAndUpdateReplacementSpan(@NonNull Spanned original,
                                                          boolean isSegmentedButton,
                                                          boolean isRollingNumber,
-                                                         boolean spanIsForShort) {
+                                                         boolean spanIsForShort,
+                                                         boolean spanIsForShortsLikes) {
         try {
             RYDVoteData votingData = getFetchData(MAX_MILLISECONDS_TO_BLOCK_UI_WAITING_FOR_FETCH);
             if (votingData == null) {
@@ -534,6 +554,12 @@ public class ReturnYouTubeDislike {
                     return original;
                 }
 
+                if (spanIsForShortsLikes) {
+                    // Scrolling Shorts does not cause the Spans to be reloaded,
+                    // so there is no need to cache the likes for this situations.
+                    return newSpannableWithLikes(original, votingData);
+                }
+
                 if (originalDislikeSpan != null && replacementLikeDislikeSpan != null) {
                     if (spansHaveEqualTextAndColor(original, replacementLikeDislikeSpan)) {
                         Logger.printDebug(() -> "Ignoring previously created dislikes span of data: " + videoId);
@@ -544,6 +570,8 @@ public class ReturnYouTubeDislike {
                         return replacementLikeDislikeSpan;
                     }
                 }
+
+                // Edit: This block of code may no longer be needed.
                 if (isSegmentedButton && isPreviouslyCreatedSegmentedSpan(original.toString())) {
                     // need to recreate using original, as original has prior outdated dislike values
                     if (originalDislikeSpan == null) {

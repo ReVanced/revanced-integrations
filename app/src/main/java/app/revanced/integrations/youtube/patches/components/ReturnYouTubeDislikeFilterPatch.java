@@ -71,14 +71,15 @@ public final class ReturnYouTubeDislikeFilterPatch extends Filter {
         // Likes always seems to load before the dislikes, but if this
         // ever changes then both likes and dislikes need callbacks.
         addPathCallbacks(
-                new StringFilterGroup(null, "|shorts_dislike_button.eml")
+                new StringFilterGroup(null, "|shorts_like_button.eml")
         );
-        // After the dislikes icon name is some binary data and then the video id for that specific short.
+
+        // After the likes icon name is some binary data and then the video id for that specific short.
         videoIdFilterGroup.addAll(
-                // Video was previously disliked before video was opened.
-                new ByteArrayFilterGroup(null, "ic_right_dislike_on_shadowed"),
-                // Video was not already disliked.
-                new ByteArrayFilterGroup(null, "ic_right_dislike_off_shadowed")
+                // Video was previously liked before video was opened.
+                new ByteArrayFilterGroup(null, "ic_right_like_on_shadowed"),
+                // Video was not already liked.
+                new ByteArrayFilterGroup(null, "ic_right_like_off_shadowed")
         );
     }
 
