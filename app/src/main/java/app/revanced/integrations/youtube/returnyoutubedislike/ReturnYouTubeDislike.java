@@ -229,17 +229,16 @@ public class ReturnYouTubeDislike {
         // and the like count appears as a device language specific string that says 'Like'.
         // Check if the string contains any numbers.
         if (!stringContainsNumber(oldLikesString)) {
-            // Likes are hidden.
-            // RYD does not provide usable data for these types of videos,
-            // and the API returns bogus data (zero likes and zero dislikes)
-            // discussion about this: https://github.com/Anarios/return-youtube-dislike/discussions/530
+            // Likes are hidden by video creator
+            //
+            // RYD does not directly provide like data, but can use an estimated likes
+            // using the same scale factor RYD applied to the raw dislikes.
             //
             // example video: https://www.youtube.com/watch?v=UnrU5vxCHxw
             // RYD data: https://returnyoutubedislikeapi.com/votes?videoId=UnrU5vxCHxw
             //
-            // Change the "Likes" string to show that likes and dislikes are hidden.
-            String hiddenMessageString = str("revanced_ryd_video_likes_hidden_by_video_owner");
-            return newSpanUsingStylingOfAnotherSpan(oldSpannable, hiddenMessageString);
+            Logger.printDebug(() -> "Replacing hidden likes count with estimated likes: " + voteData.getLikeCount());
+            oldLikesString = formatDislikeCount(voteData.getLikeCount());
         }
 
         SpannableStringBuilder builder = new SpannableStringBuilder();

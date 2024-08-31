@@ -81,7 +81,9 @@ public final class RYDVoteData {
 
     /**
      * Public like count of the video, as reported by YT when RYD last updated it's data.
-     * Value will always be zero if the video is hidden by the YT creator.
+     *
+     * If the likes were hidden by the video creator, then this returns an
+     * estimated likes using the same extrapolation as the dislikes.
      */
     public long getLikeCount() {
         return likeCount;
@@ -139,7 +141,16 @@ public final class RYDVoteData {
         final boolean hasRawData = localRawLikeCount != null && localRawDislikeCount != null;
         final boolean videoHasNoPublicLikes = fetchedLikeCount == 0;
 
-        likeCount = fetchedLikeCount + likesToAdd;
+        if (videoHasNoPublicLikes && hasRawData && localRawDislikeCount > 0) {
+            // YT creator has hidden the likes count.
+            // For this situation RYD returns 0 likes and does not estimate the total likes,
+            // but we can do the estimate using the same data used to estimate the dislikes,
+            // by using the same scale factor that was applied to the raw dislikes.
+            final float estimatedRawScaleFactor = (float) fetchedDislikeCount / localRawDislikeCount;
+            likeCount = (long) (estimatedRawScaleFactor * localRawLikeCount) + likesToAdd;
+        } else {
+            likeCount = fetchedLikeCount + likesToAdd;
+        }
         // RYD now always returns an estimated dislike count, even if the likes are hidden.
         dislikeCount = fetchedDislikeCount + dislikesToAdd;
 
