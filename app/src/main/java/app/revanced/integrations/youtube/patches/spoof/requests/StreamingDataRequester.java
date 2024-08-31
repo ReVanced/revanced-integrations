@@ -37,7 +37,7 @@ public class StreamingDataRequester {
                                           boolean showErrorToasts) {
         final long startTime = System.currentTimeMillis();
         String clientTypeName = clientType.name();
-        Logger.printDebug(() -> "Fetching video streams using client: " + clientType.name());
+        Logger.printDebug(() -> "Fetching video streams for: " + videoId + " using client: " + clientType.name());
 
         try {
             HttpURLConnection connection = PlayerRoutes.getPlayerResponseConnectionFromRoute(GET_STREAMING_DATA, clientType);
@@ -65,7 +65,7 @@ public class StreamingDataRequester {
         } catch (Exception ex) {
             Logger.printException(() -> "send failed", ex);
         } finally {
-            Logger.printDebug(() -> clientTypeName + " took: " + (System.currentTimeMillis() - startTime) + "ms");
+            Logger.printDebug(() -> "video: " + videoId + " took: " + (System.currentTimeMillis() - startTime) + "ms");
         }
 
         return null;

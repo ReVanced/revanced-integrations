@@ -9,8 +9,6 @@ import java.nio.ByteBuffer;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -18,6 +16,7 @@ import java.util.concurrent.TimeoutException;
 
 import app.revanced.integrations.shared.Logger;
 import app.revanced.integrations.shared.Utils;
+import app.revanced.integrations.youtube.patches.VideoInformation;
 import app.revanced.integrations.youtube.patches.spoof.requests.StreamingDataRequester;
 import app.revanced.integrations.youtube.settings.Settings;
 
@@ -81,9 +80,17 @@ public class SpoofClientPatch {
     /**
      * Injection point.
      */
-    public static void fetchStreamingData(@NonNull String videoId, boolean unused) {
+    public static void fetchStreamingData(@NonNull String videoId, boolean isShortAndOpeningOrPlaying) {
         if (SPOOF_CLIENT) {
             try {
+                final boolean videoIdIsShort = VideoInformation.lastPlayerResponseIsShort();
+                // Shorts shelf in home and subscription feed causes player response hook to be called,
+                // and the 'is opening/playing' parameter will be false.
+                // This hook will be called again when the Short is actually opened.
+                if (videoIdIsShort && !isShortAndOpeningOrPlaying) {
+                    return;
+                }
+
                 if (streamingDataCache.containsKey(videoId)) return;
 
                 Future<ByteBuffer> streamingData = StreamingDataRequester.fetch(videoId, fetchHeaders);
