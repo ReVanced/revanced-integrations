@@ -197,7 +197,7 @@ public class ReturnYouTubeDislikeApi {
         return httpResponseCode == HTTP_STATUS_CODE_RATE_LIMIT;
     }
 
-    @SuppressWarnings("NonAtomicOperationOnVolatileField") // Don't care, fields are estimates.
+    @SuppressWarnings("NonAtomicOperationOnVolatileField") // Don't care, fields are only estimates.
     private static void updateRateLimitAndStats(long timeNetworkCallStarted, boolean connectionError, boolean rateLimitHit) {
         if (connectionError && rateLimitHit) {
             throw new IllegalArgumentException();

@@ -242,15 +242,14 @@ public class ReturnYouTubeDislikePatch {
                 return original; // No need to check for Shorts in the context.
             }
 
-            // Check the original string first, since it's almost always shorter than the context.
-            if (!Utils.containsNumber(original)
-                    && conversionContextString.contains("|shorts_like_button.eml")) {
-                Logger.printDebug(() -> "Replacing hidden likes count");
-                return getShortsSpan(original, false);
-            }
-
             if (conversionContextString.contains("|shorts_dislike_button.eml")) {
                 return getShortsSpan(original, true);
+            }
+
+            if (conversionContextString.contains("|shorts_like_button.eml")
+                    && !Utils.containsNumber(original)) {
+                Logger.printDebug(() -> "Replacing hidden likes count");
+                return getShortsSpan(original, false);
             }
         } catch (Exception ex) {
             Logger.printException(() -> "onLithoTextLoaded failure", ex);
