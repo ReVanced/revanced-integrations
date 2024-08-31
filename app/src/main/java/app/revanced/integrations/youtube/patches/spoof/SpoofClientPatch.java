@@ -90,7 +90,6 @@ public class SpoofClientPatch {
 	        Future<ByteBuffer> streamingData = StreamingDataRequester.fetch(videoId, fetchHeaders);
     	    streamingDataCache.put(videoId, streamingData);
 	        lastFetchedVideoId = videoId;
-        	Logger.printDebug(() -> "Prefetch: " + videoId);
 	    }
 	}
 
