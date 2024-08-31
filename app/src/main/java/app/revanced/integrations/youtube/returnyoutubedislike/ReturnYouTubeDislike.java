@@ -380,26 +380,31 @@ public class ReturnYouTubeDislike {
     }
 
     private static String formatDislikePercentage(float dislikePercentage) {
-        synchronized (ReturnYouTubeDislike.class) { // number formatter is not thread safe, must synchronize
-            if (dislikePercentageFormatter == null) {
-                Locale locale = Objects.requireNonNull(Utils.getContext()).getResources().getConfiguration().locale;
-                dislikePercentageFormatter = NumberFormat.getPercentInstance(locale);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            synchronized (ReturnYouTubeDislike.class) { // number formatter is not thread safe, must synchronize
+                if (dislikePercentageFormatter == null) {
+                    Locale locale = Objects.requireNonNull(Utils.getContext()).getResources().getConfiguration().locale;
+                    dislikePercentageFormatter = NumberFormat.getPercentInstance(locale);
 
-                // Want to set the digit strings, and the simplest way is to cast to the implementation NumberFormat returns.
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P
-                        && dislikePercentageFormatter instanceof DecimalFormat) {
-                    DecimalFormatSymbols symbols = DecimalFormatSymbols.getInstance(locale);
-                    symbols.setDigitStrings(DecimalFormatSymbols.getInstance(Locale.ENGLISH).getDigitStrings());
-                    ((DecimalFormat) dislikePercentageFormatter).setDecimalFormatSymbols(symbols);
+                    // Want to set the digit strings, and the simplest way is to cast to the implementation NumberFormat returns.
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P
+                            && dislikePercentageFormatter instanceof DecimalFormat) {
+                        DecimalFormatSymbols symbols = DecimalFormatSymbols.getInstance(locale);
+                        symbols.setDigitStrings(DecimalFormatSymbols.getInstance(Locale.ENGLISH).getDigitStrings());
+                        ((DecimalFormat) dislikePercentageFormatter).setDecimalFormatSymbols(symbols);
+                    }
                 }
+                if (dislikePercentage >= 0.01) { // at least 1%
+                    dislikePercentageFormatter.setMaximumFractionDigits(0); // show only whole percentage points
+                } else {
+                    dislikePercentageFormatter.setMaximumFractionDigits(1); // show up to 1 digit precision
+                }
+                return dislikePercentageFormatter.format(dislikePercentage);
             }
-            if (dislikePercentage >= 0.01) { // at least 1%
-                dislikePercentageFormatter.setMaximumFractionDigits(0); // show only whole percentage points
-            } else {
-                dislikePercentageFormatter.setMaximumFractionDigits(1); // show up to 1 digit precision
-            }
-            return dislikePercentageFormatter.format(dislikePercentage);
         }
+
+        // Will never be reached, as the oldest supported YouTube app requires Android N or greater.
+        return String.valueOf((int) (dislikePercentage * 100));
     }
 
     @NonNull
