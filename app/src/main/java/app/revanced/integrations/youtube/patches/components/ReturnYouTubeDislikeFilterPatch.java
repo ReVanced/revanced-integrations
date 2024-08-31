@@ -52,7 +52,7 @@ public final class ReturnYouTubeDislikeFilterPatch extends Filter {
     @SuppressWarnings("unused")
     public static void newPlayerResponseVideoId(String videoId, boolean isShortAndOpeningOrPlaying) {
         try {
-            if (!isShortAndOpeningOrPlaying || !Settings.RYD_SHORTS.get()) {
+            if (!isShortAndOpeningOrPlaying || !Settings.RYD_ENABLED.get() || !Settings.RYD_SHORTS.get()) {
                 return;
             }
             synchronized (lastVideoIds) {
@@ -68,8 +68,10 @@ public final class ReturnYouTubeDislikeFilterPatch extends Filter {
     private final ByteArrayFilterGroupList videoIdFilterGroup = new ByteArrayFilterGroupList();
 
     public ReturnYouTubeDislikeFilterPatch() {
+        // Likes always seems to load before the dislikes, but if this
+        // ever changes then both likes and dislikes need callbacks.
         addPathCallbacks(
-                new StringFilterGroup(Settings.RYD_SHORTS, "|shorts_dislike_button.eml|")
+                new StringFilterGroup(null, "|shorts_dislike_button.eml")
         );
         // After the dislikes icon name is some binary data and then the video id for that specific short.
         videoIdFilterGroup.addAll(
@@ -83,6 +85,10 @@ public final class ReturnYouTubeDislikeFilterPatch extends Filter {
     @Override
     boolean isFiltered(@Nullable String identifier, String path, byte[] protobufBufferArray,
                        StringFilterGroup matchedGroup, FilterContentType contentType, int contentIndex) {
+        if (!Settings.RYD_ENABLED.get() || !Settings.RYD_SHORTS.get()) {
+            return false;
+        }
+
         FilterGroup.FilterGroupResult result = videoIdFilterGroup.check(protobufBufferArray);
         if (result.isFiltered()) {
             String matchedVideoId = findVideoId(protobufBufferArray);
