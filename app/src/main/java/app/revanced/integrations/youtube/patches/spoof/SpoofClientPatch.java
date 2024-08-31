@@ -6,18 +6,12 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import java.nio.ByteBuffer;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 import app.revanced.integrations.shared.Logger;
 import app.revanced.integrations.shared.Utils;
 import app.revanced.integrations.youtube.patches.VideoInformation;
-import app.revanced.integrations.youtube.patches.spoof.requests.StreamingDataRequester;
+import app.revanced.integrations.youtube.patches.spoof.requests.StreamingDataRequest;
 import app.revanced.integrations.youtube.settings.Settings;
 
 @SuppressWarnings("unused")
@@ -31,7 +25,6 @@ public class SpoofClientPatch {
 
     private static volatile Map<String, String> fetchHeaders;
 
-    private static final Map<String, Future<ByteBuffer>> streamingDataCache = Collections.synchronizedMap(new HashMap<>());
 
     /**
      * Injection point.
@@ -69,10 +62,14 @@ public class SpoofClientPatch {
      */
     public static void setFetchHeaders(String url, Map<String, String> headers) {
         if (SPOOF_CLIENT) {
-            Uri uri = Uri.parse(url);
-            String path = uri.getPath();
-            if (path != null && path.contains("browse")) {
-                fetchHeaders = headers;
+            try {
+                Uri uri = Uri.parse(url);
+                String path = uri.getPath();
+                if (path != null && path.contains("browse")) {
+                    fetchHeaders = headers;
+                }
+            } catch (Exception ex) {
+                Logger.printException(() -> "setFetchHeaders failure", ex);
             }
         }
     }
@@ -91,10 +88,7 @@ public class SpoofClientPatch {
                     return;
                 }
 
-                if (streamingDataCache.containsKey(videoId)) return;
-
-                Future<ByteBuffer> streamingData = StreamingDataRequester.fetch(videoId, fetchHeaders);
-                streamingDataCache.put(videoId, streamingData);
+                StreamingDataRequest.fetchRequestIfNeeded(videoId, fetchHeaders);
             } catch (Exception ex) {
                 Logger.printException(() -> "fetchStreamingData failure", ex);
             }
@@ -112,23 +106,17 @@ public class SpoofClientPatch {
             try {
                 Utils.verifyOffMainThread();
 
-                var future = streamingDataCache.get(videoId);
-                if (future != null) {
-                    final long maxSecondsToWait = 20;
-                    var stream = future.get(maxSecondsToWait, TimeUnit.SECONDS);
+                StreamingDataRequest request = StreamingDataRequest.getRequestForVideoId(videoId);
+                if (request != null) {
+                    var stream = request.getStream();
                     if (stream != null) {
                         Logger.printDebug(() -> "Overriding video stream");
                         return stream;
                     }
-
-                    Logger.printDebug(() -> "Not overriding streaming data (video stream is null)");
                 }
-            } catch (TimeoutException ex) {
-                Logger.printInfo(() -> "getStreamingData timed out", ex);
-            } catch (InterruptedException ex) {
-                Logger.printException(() -> "getStreamingData interrupted", ex);
-                Thread.currentThread().interrupt(); // Restore interrupt status flag.
-            } catch (ExecutionException ex) {
+
+                Logger.printDebug(() -> "Not overriding streaming data (video stream is null)");
+            } catch (Exception ex) {
                 Logger.printException(() -> "getStreamingData failure", ex);
             }
         }
