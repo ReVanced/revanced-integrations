@@ -33,10 +33,13 @@ public class DeviceHardwareSupport {
         
         DEVICE_HAS_HARDWARE_DECODING_VP9 = vp9found;
         DEVICE_HAS_HARDWARE_DECODING_AV1 = av1found;
-    }
 
-        Logger.printDebug(() -> "Device does not support AV1 hardware decoding.");
-        return false;
+        Logger.printDebug(() -> DEVICE_HAS_HARDWARE_DECODING_AV1
+                ? "Device supports AV1 hardware decoding.\n"
+                : "Device does not support AV1 hardware decoding.\n"
+                + (DEVICE_HAS_HARDWARE_DECODING_VP9
+                ? "Device supports VP9 hardware decoding."
+                : "Device does not support VP9 hardware decoding."));
     }
 
     public static boolean allowVP9() {
