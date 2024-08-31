@@ -9,7 +9,6 @@ import java.nio.ByteBuffer;
 import java.util.Map;
 
 import app.revanced.integrations.shared.Logger;
-import app.revanced.integrations.shared.Utils;
 import app.revanced.integrations.youtube.patches.VideoInformation;
 import app.revanced.integrations.youtube.patches.spoof.requests.StreamingDataRequest;
 import app.revanced.integrations.youtube.settings.Settings;
@@ -24,7 +23,6 @@ public class SpoofClientPatch {
     private static final String UNREACHABLE_HOST_URI_STRING = "https://127.0.0.0";
 
     private static volatile Map<String, String> fetchHeaders;
-
 
     /**
      * Injection point.
@@ -104,18 +102,16 @@ public class SpoofClientPatch {
     public static ByteBuffer getStreamingData(String videoId) {
         if (SPOOF_CLIENT) {
             try {
-                Utils.verifyOffMainThread();
-
                 StreamingDataRequest request = StreamingDataRequest.getRequestForVideoId(videoId);
                 if (request != null) {
                     var stream = request.getStream();
                     if (stream != null) {
-                        Logger.printDebug(() -> "Overriding video stream");
+                        Logger.printDebug(() -> "Overriding video stream: " + videoId);
                         return stream;
                     }
                 }
 
-                Logger.printDebug(() -> "Not overriding streaming data (video stream is null)");
+                Logger.printDebug(() -> "Not overriding streaming data (video stream is null): " + videoId);
             } catch (Exception ex) {
                 Logger.printException(() -> "getStreamingData failure", ex);
             }
