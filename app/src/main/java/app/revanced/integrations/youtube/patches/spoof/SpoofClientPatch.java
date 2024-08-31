@@ -6,6 +6,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import java.nio.ByteBuffer;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
@@ -30,9 +32,7 @@ public class SpoofClientPatch {
 
     private static volatile Map<String, String> fetchHeaders;
 
-    private static volatile String lastFetchedVideoId;
-
-    private static final ConcurrentHashMap<String, Future<ByteBuffer>> streamingDataCache = new ConcurrentHashMap<>();
+    private static final Map<String, Future<ByteBuffer>> streamingDataCache = Collections.synchronizedMap(new HashMap<>());
 
     /**
      * Injection point.
@@ -83,20 +83,21 @@ public class SpoofClientPatch {
      */
     public static void fetchStreamingData(@NonNull String videoId, boolean unused) {
         if (SPOOF_CLIENT) {
-            if (videoId.equals(lastFetchedVideoId)) return;
+            try {
+                if (streamingDataCache.containsKey(videoId)) return;
 
-            if (streamingDataCache.containsKey(videoId)) return;
-
-	        Future<ByteBuffer> streamingData = StreamingDataRequester.fetch(videoId, fetchHeaders);
-    	    streamingDataCache.put(videoId, streamingData);
-	        lastFetchedVideoId = videoId;
+                Future<ByteBuffer> streamingData = StreamingDataRequester.fetch(videoId, fetchHeaders);
+                streamingDataCache.put(videoId, streamingData);
+            } catch (Exception ex) {
+                Logger.printException(() -> "fetchStreamingData failure", ex);
+            }
 	    }
 	}
 
     /**
      * Injection point.
      * Fix playback by replace the streaming data.
-     * Called after {@link #buildRequest(UrlRequest.Builder, String, Map)}.
+     * Called after {@link #setFetchHeaders(String, Map)} .
      */
     @Nullable
     public static ByteBuffer getStreamingData(String videoId) {
