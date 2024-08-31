@@ -2,13 +2,13 @@ package app.revanced.integrations.youtube.patches.spoof;
 
 import android.net.Uri;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
-import org.chromium.net.UrlRequest;
 
 import java.nio.ByteBuffer;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -27,34 +27,12 @@ public class SpoofClientPatch {
      * Any unreachable ip address.  Used to intentionally fail requests.
      */
     private static final String UNREACHABLE_HOST_URI_STRING = "https://127.0.0.0";
-    private static final Uri UNREACHABLE_HOST_URI = Uri.parse(UNREACHABLE_HOST_URI_STRING);
 
-    private static volatile Future<ByteBuffer> currentVideoStream;
+    private static volatile Map<String, String> fetchHeaders;
 
-    /**
-     * Injection point.
-     * Blocks /get_watch requests by returning an unreachable URI.
-     *
-     * @param playerRequestUri The URI of the player request.
-     * @return An unreachable URI if the request is a /get_watch request, otherwise the original URI.
-     */
-    public static Uri blockGetWatchRequest(Uri playerRequestUri) {
-        if (SPOOF_CLIENT) {
-            try {
-                String path = playerRequestUri.getPath();
+    private static volatile String lastFetchedVideoId;
 
-                if (path != null && path.contains("get_watch")) {
-                    Logger.printDebug(() -> "Blocking 'get_watch' by returning unreachable uri");
-
-                    return UNREACHABLE_HOST_URI;
-                }
-            } catch (Exception ex) {
-                Logger.printException(() -> "blockGetWatchRequest failure", ex);
-            }
-        }
-
-        return playerRequestUri;
-    }
+    private static final ConcurrentHashMap<String, Future<ByteBuffer>> streamingDataCache = new ConcurrentHashMap<>();
 
     /**
      * Injection point.
@@ -90,23 +68,31 @@ public class SpoofClientPatch {
     /**
      * Injection point.
      */
-    public static UrlRequest buildRequest(UrlRequest.Builder builder, String url,
-                                          Map<String, String> playerHeaders) {
+    public static void setFetchHeaders(String url, Map<String, String> headers) {
         if (SPOOF_CLIENT) {
-            try {
-                Uri uri = Uri.parse(url);
-                String path = uri.getPath();
-                if (path != null && path.contains("player") && !path.contains("heartbeat")) {
-                    String videoId = Objects.requireNonNull(uri.getQueryParameter("id"));
-                    currentVideoStream = StreamingDataRequester.fetch(videoId, playerHeaders);
-                }
-            } catch (Exception ex) {
-                Logger.printException(() -> "buildRequest failure", ex);
+            Uri uri = Uri.parse(url);
+            String path = uri.getPath();
+            if (path != null && path.contains("browse")) {
+                fetchHeaders = headers;
             }
         }
-
-        return builder.build();
     }
+
+    /**
+     * Injection point.
+     */
+    public static void fetchStreamingData(@NonNull String videoId, boolean unused) {
+        if (SPOOF_CLIENT) {
+            if (videoId.equals(lastFetchedVideoId)) return;
+
+            if (streamingDataCache.containsKey(videoId)) return;
+
+	        Future<ByteBuffer> streamingData = StreamingDataRequester.fetch(videoId, fetchHeaders);
+    	    streamingDataCache.put(videoId, streamingData);
+	        lastFetchedVideoId = videoId;
+        	Logger.printDebug(() -> "Prefetch: " + videoId);
+	    }
+	}
 
     /**
      * Injection point.
@@ -119,7 +105,7 @@ public class SpoofClientPatch {
             try {
                 Utils.verifyOffMainThread();
 
-                var future = currentVideoStream;
+                var future = streamingDataCache.get(videoId);
                 if (future != null) {
                     final long maxSecondsToWait = 20;
                     var stream = future.get(maxSecondsToWait, TimeUnit.SECONDS);
