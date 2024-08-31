@@ -8,6 +8,8 @@ import androidx.annotation.Nullable;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import app.revanced.integrations.shared.Logger;
+
 /**
  * ReturnYouTubeDislike API estimated like/dislike/view counts.
  *
@@ -25,7 +27,6 @@ public final class RYDVoteData {
 
     private final long fetchedLikeCount;
     private volatile long likeCount; // Read/write from different threads.
-
     /**
      * Like count can be hidden by video creator, but RYD still tracks the number
      * of like/dislikes it received thru it's browser extension and and API.
@@ -35,19 +36,12 @@ public final class RYDVoteData {
      */
     @Nullable
     private final Long fetchedRawLikeCount;
-    @Nullable
-    private volatile Long rawLikeCount;
-
     private volatile float likePercentage;
 
     private final long fetchedDislikeCount;
     private volatile long dislikeCount; // Read/write from different threads.
-
     @Nullable
     private final Long fetchedRawDislikeCount;
-    @Nullable
-    private volatile Long rawDislikeCount;
-
     private volatile float dislikePercentage;
 
     @Nullable
@@ -136,56 +130,34 @@ public final class RYDVoteData {
 
         // If a video has no public likes but RYD has raw like data,
         // then use the raw data instead.
-        Long localRawLikeCount = fetchedRawLikeCount;
-        Long localRawDislikeCount = fetchedRawDislikeCount;
-        final boolean hasRawData = localRawLikeCount != null && localRawDislikeCount != null;
         final boolean videoHasNoPublicLikes = fetchedLikeCount == 0;
+        final boolean hasRawData = fetchedRawLikeCount != null && fetchedRawDislikeCount != null;
 
-        if (videoHasNoPublicLikes && hasRawData && localRawDislikeCount > 0) {
-            // YT creator has hidden the likes count.
-            // For this situation RYD returns 0 likes and does not estimate the total likes,
-            // but we can do the estimate using the same data used to estimate the dislikes,
-            // by using the same scale factor that was applied to the raw dislikes.
-            final float estimatedRawScaleFactor = (float) fetchedDislikeCount / localRawDislikeCount;
-            likeCount = (long) (estimatedRawScaleFactor * localRawLikeCount) + likesToAdd;
+        if (videoHasNoPublicLikes && hasRawData && fetchedRawDislikeCount > 0) {
+            // YT creator has hidden the likes count, and this is an older video that
+            // RYD does not provide estimated like counts.
+            //
+            // But we can calculate the public likes the same way RYD does for newer videos with hidden likes,
+            // by using the same raw to estimated scale factor applied to dislikes.
+            // This calculation exactly matches the public likes RYD provides for newer hidden videos.
+            final float estimatedRawScaleFactor = (float) fetchedDislikeCount / fetchedRawDislikeCount;
+            likeCount = (long) (estimatedRawScaleFactor * fetchedRawLikeCount) + likesToAdd;
+            Logger.printDebug(() -> "Using locally calculated estimated likes since RYD did not return an estimate");
         } else {
             likeCount = fetchedLikeCount + likesToAdd;
         }
         // RYD now always returns an estimated dislike count, even if the likes are hidden.
         dislikeCount = fetchedDislikeCount + dislikesToAdd;
 
-        if (hasRawData) {
-            localRawLikeCount += likesToAdd;
-            localRawDislikeCount += dislikesToAdd;
-            rawLikeCount = localRawLikeCount;
-            rawDislikeCount = localRawDislikeCount;
-        } else {
-            rawLikeCount = null;
-            rawDislikeCount = null;
-        }
-
         // Update percentages.
 
-        if (videoHasNoPublicLikes && hasRawData) {
-            // Video creator has hidden the like count,
-            // but can use the raw like/dislikes to calculate a percentage.
-            final float totalRawCount = localRawLikeCount + localRawDislikeCount;
-            if (totalRawCount == 0) {
-                likePercentage = 0;
-                dislikePercentage = 0;
-            } else {
-                likePercentage = localRawLikeCount / totalRawCount;
-                dislikePercentage = localRawDislikeCount / totalRawCount;
-            }
+        final float totalCount = likeCount + dislikeCount;
+        if (totalCount == 0) {
+            likePercentage = 0;
+            dislikePercentage = 0;
         } else {
-            final float totalCount = likeCount + dislikeCount;
-            if (totalCount == 0) {
-                likePercentage = 0;
-                dislikePercentage = 0;
-            } else {
-                likePercentage = likeCount / totalCount;
-                dislikePercentage = dislikeCount / totalCount;
-            }
+            likePercentage = likeCount / totalCount;
+            dislikePercentage = dislikeCount / totalCount;
         }
     }
 
@@ -196,9 +168,7 @@ public final class RYDVoteData {
                 + "videoId=" + videoId
                 + ", viewCount=" + viewCount
                 + ", likeCount=" + likeCount
-                + ", rawLikeCount=" + rawLikeCount
                 + ", dislikeCount=" + dislikeCount
-                + ", rawDislikeCount=" + rawDislikeCount
                 + ", likePercentage=" + likePercentage
                 + ", dislikePercentage=" + dislikePercentage
                 + '}';
