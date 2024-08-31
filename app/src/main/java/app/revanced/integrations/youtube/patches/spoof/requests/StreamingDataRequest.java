@@ -195,8 +195,6 @@ public class StreamingDataRequest {
 
     @Nullable
     public ByteBuffer getStream() {
-        Utils.verifyOffMainThread();
-
         try {
             return future.get(MAX_MILLISECONDS_TO_WAIT_FOR_FETCH, TimeUnit.MILLISECONDS);
         } catch (TimeoutException ex) {

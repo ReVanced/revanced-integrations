@@ -15,9 +15,10 @@ public class DeviceHardwareSupport {
         boolean vp9found = false;
         boolean av1found = false;
         MediaCodecList codecList = new MediaCodecList(MediaCodecList.ALL_CODECS);
+        final boolean deviceIsAndroidTenOrLater = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q;
 
         for (MediaCodecInfo codecInfo : codecList.getCodecInfos()) {
-            final boolean isHardwareAccelerated = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
+            final boolean isHardwareAccelerated = deviceIsAndroidTenOrLater
                     ? codecInfo.isHardwareAccelerated()
                     : !codecInfo.getName().startsWith("OMX.google"); // Software decoder.
             if (isHardwareAccelerated && !codecInfo.isEncoder()) {
@@ -35,11 +36,11 @@ public class DeviceHardwareSupport {
         DEVICE_HAS_HARDWARE_DECODING_AV1 = av1found;
 
         Logger.printDebug(() -> DEVICE_HAS_HARDWARE_DECODING_AV1
-                ? "Device supports AV1 hardware decoding.\n"
-                : "Device does not support AV1 hardware decoding.\n"
+                ? "Device supports AV1 hardware decoding\n"
+                : "Device does not support AV1 hardware decoding\n"
                 + (DEVICE_HAS_HARDWARE_DECODING_VP9
-                ? "Device supports VP9 hardware decoding."
-                : "Device does not support VP9 hardware decoding."));
+                ? "Device supports VP9 hardware decoding"
+                : "Device does not support VP9 hardware decoding"));
     }
 
     public static boolean allowVP9() {

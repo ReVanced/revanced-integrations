@@ -9,6 +9,7 @@ import java.nio.ByteBuffer;
 import java.util.Map;
 
 import app.revanced.integrations.shared.Logger;
+import app.revanced.integrations.shared.Utils;
 import app.revanced.integrations.youtube.patches.VideoInformation;
 import app.revanced.integrations.youtube.patches.spoof.requests.StreamingDataRequest;
 import app.revanced.integrations.youtube.settings.Settings;
@@ -102,6 +103,8 @@ public class SpoofClientPatch {
     public static ByteBuffer getStreamingData(String videoId) {
         if (SPOOF_CLIENT) {
             try {
+                Utils.verifyOffMainThread();
+
                 StreamingDataRequest request = StreamingDataRequest.getRequestForVideoId(videoId);
                 if (request != null) {
                     var stream = request.getStream();
