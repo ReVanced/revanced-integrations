@@ -10,6 +10,9 @@ import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
 import android.graphics.drawable.shapes.RectShape;
 import android.icu.text.CompactDecimalFormat;
+import android.icu.text.DecimalFormat;
+import android.icu.text.DecimalFormatSymbols;
+import android.icu.text.NumberFormat;
 import android.os.Build;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -25,17 +28,11 @@ import androidx.annotation.GuardedBy;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
+import java.util.concurrent.*;
 
 import app.revanced.integrations.shared.Logger;
 import app.revanced.integrations.shared.Utils;
@@ -353,13 +350,18 @@ public class ReturnYouTubeDislike {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             synchronized (ReturnYouTubeDislike.class) { // number formatter is not thread safe, must synchronize
                 if (dislikeCountFormatter == null) {
-                    // Note: Java number formatters will use the locale specific number characters.
-                    // such as Arabic which formats "1.234" into "۱,۲۳٤"
-                    // But YouTube disregards locale specific number characters
-                    // and instead shows english number characters everywhere.
                     Locale locale = Objects.requireNonNull(Utils.getContext()).getResources().getConfiguration().locale;
-                    Logger.printDebug(() -> "Locale: " + locale);
                     dislikeCountFormatter = CompactDecimalFormat.getInstance(locale, CompactDecimalFormat.CompactStyle.SHORT);
+
+                    // YouTube disregards locale specific number characters
+                    // and instead shows english number characters everywhere.
+                    // To use the same behavior, override the digit characters to use English
+                    // so languages such as Arabic will show "1.234" instead of the native "۱,۲۳٤"
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                        DecimalFormatSymbols symbols = DecimalFormatSymbols.getInstance(locale);
+                        symbols.setDigitStrings(DecimalFormatSymbols.getInstance(Locale.ENGLISH).getDigitStrings());
+                        dislikeCountFormatter.setDecimalFormatSymbols(symbols);
+                    }
                 }
                 return dislikeCountFormatter.format(dislikeCount);
             }
@@ -373,8 +375,15 @@ public class ReturnYouTubeDislike {
         synchronized (ReturnYouTubeDislike.class) { // number formatter is not thread safe, must synchronize
             if (dislikePercentageFormatter == null) {
                 Locale locale = Objects.requireNonNull(Utils.getContext()).getResources().getConfiguration().locale;
-                Logger.printDebug(() -> "Locale: " + locale);
                 dislikePercentageFormatter = NumberFormat.getPercentInstance(locale);
+
+                // Want to set the digit strings, and the simplest way is to cast to the implementation NumberFormat returns.
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P
+                        && dislikePercentageFormatter instanceof DecimalFormat) {
+                    DecimalFormatSymbols symbols = DecimalFormatSymbols.getInstance(locale);
+                    symbols.setDigitStrings(DecimalFormatSymbols.getInstance(Locale.ENGLISH).getDigitStrings());
+                    ((DecimalFormat) dislikePercentageFormatter).setDecimalFormatSymbols(symbols);
+                }
             }
             if (dislikePercentage >= 0.01) { // at least 1%
                 dislikePercentageFormatter.setMaximumFractionDigits(0); // show only whole percentage points
