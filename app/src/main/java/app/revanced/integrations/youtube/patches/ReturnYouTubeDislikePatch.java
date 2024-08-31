@@ -242,7 +242,10 @@ public class ReturnYouTubeDislikePatch {
                 return original; // No need to check for Shorts in the context.
             }
 
-            if (conversionContextString.contains("|shorts_like_button.eml")) {
+            // Check the original string first, since it's almost always shorter than the context.
+            if (!Utils.containsNumber(original)
+                    && conversionContextString.contains("|shorts_like_button.eml")) {
+                Logger.printDebug(() -> "Replacing hidden likes count");
                 return getShortsSpan(original, false);
             }
 
@@ -259,10 +262,6 @@ public class ReturnYouTubeDislikePatch {
         // Litho Shorts player.
         if (!Settings.RYD_SHORTS.get() || (isDislikesSpan && Settings.HIDE_SHORTS_DISLIKE_BUTTON.get())
                 || (!isDislikesSpan && Settings.HIDE_SHORTS_LIKE_BUTTON.get())) {
-            // Must clear the current video here, otherwise if the user opens a regular video
-            // then opens a litho short (while keeping the regular video on screen), then closes the short,
-            // the original video may show the incorrect dislike value.
-            clearData();
             return original;
         }
 
@@ -614,6 +613,7 @@ public class ReturnYouTubeDislikePatch {
                 Logger.printDebug(() -> "Waiting for prefetch to complete: " + videoId);
                 fetch.getFetchData(20000); // Any arbitrarily large max wait time.
             }
+
             // Set the fields after the fetch completes, so any concurrent calls will also wait.
             lastPlayerResponseWasShort = videoIdIsShort;
             lastPrefetchedVideoId = videoId;

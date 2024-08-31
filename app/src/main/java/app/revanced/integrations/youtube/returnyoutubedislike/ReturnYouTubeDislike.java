@@ -220,12 +220,12 @@ public class ReturnYouTubeDislike {
 
         // Note: Some locales use right to left layout (Arabic, Hebrew, etc).
         // If making changes to this code, change device settings to a RTL language and verify layout is correct.
-        String oldLikesString = oldSpannable.toString();
+        CharSequence oldLikes = oldSpannable;
 
         // YouTube creators can hide the like count on a video,
         // and the like count appears as a device language specific string that says 'Like'.
         // Check if the string contains any numbers.
-        if (!stringContainsNumber(oldLikesString)) {
+        if (!Utils.containsNumber(oldLikes)) {
             // Likes are hidden by video creator
             //
             // RYD does not directly provide like data, but can use an estimated likes
@@ -234,8 +234,8 @@ public class ReturnYouTubeDislike {
             // example video: https://www.youtube.com/watch?v=UnrU5vxCHxw
             // RYD data: https://returnyoutubedislikeapi.com/votes?videoId=UnrU5vxCHxw
             //
-            Logger.printDebug(() -> "Replacing hidden likes count with estimated likes");
-            oldLikesString = formatDislikeCount(voteData.getLikeCount());
+            Logger.printDebug(() -> "Using estimated likes");
+            oldLikes = formatDislikeCount(voteData.getLikeCount());
         }
 
         SpannableStringBuilder builder = new SpannableStringBuilder();
@@ -261,7 +261,7 @@ public class ReturnYouTubeDislike {
         }
 
         // likes
-        builder.append(newSpanUsingStylingOfAnotherSpan(oldSpannable, oldLikesString));
+        builder.append(newSpanUsingStylingOfAnotherSpan(oldSpannable, oldLikes));
 
         // middle separator
         String middleSeparatorString = compactLayout
@@ -299,20 +299,6 @@ public class ReturnYouTubeDislike {
         return text.indexOf(MIDDLE_SEPARATOR_CHARACTER) >= 0;
     }
 
-    /**
-     * Correctly handles any unicode numbers (such as Arabic numbers).
-     *
-     * @return if the string contains at least 1 number.
-     */
-    private static boolean stringContainsNumber(@NonNull String text) {
-        for (int index = 0, length = text.length(); index < length; index++) {
-            if (Character.isDigit(text.codePointAt(index))) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     private static boolean spansHaveEqualTextAndColor(@NonNull Spanned one, @NonNull Spanned two) {
         // Cannot use equals on the span, because many of the inner styling spans do not implement equals.
         // Instead, compare the underlying text and the text color to handle when dark mode is changed.
@@ -346,11 +332,16 @@ public class ReturnYouTubeDislike {
     }
 
     private static SpannableString newSpanUsingStylingOfAnotherSpan(@NonNull Spanned sourceStyle, @NonNull CharSequence newSpanText) {
+        if (sourceStyle == newSpanText && sourceStyle instanceof SpannableString) {
+            return (SpannableString) sourceStyle; // Nothing to do.
+        }
+
         SpannableString destination = new SpannableString(newSpanText);
         Object[] spans = sourceStyle.getSpans(0, sourceStyle.length(), Object.class);
         for (Object span : spans) {
             destination.setSpan(span, 0, destination.length(), sourceStyle.getSpanFlags(span));
         }
+
         return destination;
     }
 
@@ -532,7 +523,7 @@ public class ReturnYouTubeDislike {
                                                          boolean isSegmentedButton,
                                                          boolean isRollingNumber,
                                                          boolean spanIsForShort,
-                                                         boolean spanIsForShortsLikes) {
+                                                         boolean spanIsForLikes) {
         try {
             RYDVoteData votingData = getFetchData(MAX_MILLISECONDS_TO_BLOCK_UI_WAITING_FOR_FETCH);
             if (votingData == null) {
@@ -559,32 +550,17 @@ public class ReturnYouTubeDislike {
                     return original;
                 }
 
-                if (spanIsForShortsLikes) {
+                if (spanIsForLikes) {
                     // Scrolling Shorts does not cause the Spans to be reloaded,
                     // so there is no need to cache the likes for this situations.
+                    Logger.printDebug(() -> "Creating likes span for: " + votingData.videoId);
                     return newSpannableWithLikes(original, votingData);
                 }
 
-                if (originalDislikeSpan != null && replacementLikeDislikeSpan != null) {
-                    if (spansHaveEqualTextAndColor(original, replacementLikeDislikeSpan)) {
-                        Logger.printDebug(() -> "Ignoring previously created dislikes span of data: " + videoId);
-                        return original;
-                    }
-                    if (spansHaveEqualTextAndColor(original, originalDislikeSpan)) {
-                        Logger.printDebug(() -> "Replacing span with previously created dislike span of data: " + videoId);
-                        return replacementLikeDislikeSpan;
-                    }
-                }
-
-                // Edit: This block of code may no longer be needed.
-                if (isSegmentedButton && isPreviouslyCreatedSegmentedSpan(original.toString())) {
-                    // need to recreate using original, as original has prior outdated dislike values
-                    if (originalDislikeSpan == null) {
-                        // Should never happen.
-                        Logger.printDebug(() -> "Cannot add dislikes - original span is null. videoId: " + videoId);
-                        return original;
-                    }
-                    original = originalDislikeSpan;
+                if (originalDislikeSpan != null && replacementLikeDislikeSpan != null
+                        && spansHaveEqualTextAndColor(original, originalDislikeSpan)) {
+                    Logger.printDebug(() -> "Replacing span with previously created dislike span of data: " + videoId);
+                    return replacementLikeDislikeSpan;
                 }
 
                 // No replacement span exist, create it now.
@@ -599,9 +575,10 @@ public class ReturnYouTubeDislike {
 
                 return replacementLikeDislikeSpan;
             }
-        } catch (Exception e) {
-            Logger.printException(() -> "waitForFetchAndUpdateReplacementSpan failure", e); // should never happen
+        } catch (Exception ex) {
+            Logger.printException(() -> "waitForFetchAndUpdateReplacementSpan failure", ex);
         }
+
         return original;
     }
 
