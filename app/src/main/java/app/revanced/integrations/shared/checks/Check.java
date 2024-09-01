@@ -29,6 +29,7 @@ abstract class Check {
                             (dialog, which) -> {
                                 final var intent = new Intent(Intent.ACTION_VIEW, GOOD_SOURCE);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
                                 context.startActivity(intent);
                             }
                     ).setNegativeButton(
@@ -82,9 +83,8 @@ abstract class Check {
                 .setMessage(finalMessage).create();
 
         var dismissButton = dialog.getButton(DialogInterface.BUTTON_NEGATIVE);
-        // TODO: setEnabled called on null? If this line is commented out getting:
-        //  Unable to add window -- token null is not valid; is your activity running?
-        dismissButton.setEnabled(false);
+        // TODO: setEnabled is called on null for some reason.
+        // dismissButton.setEnabled(false);
 
         dialog.show();
 

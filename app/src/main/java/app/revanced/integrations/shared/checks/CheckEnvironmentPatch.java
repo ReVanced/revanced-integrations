@@ -250,12 +250,15 @@ public final class CheckEnvironmentPatch {
             return;
         }
 
+        Logger.printDebug(() -> "Failed first checks");
 
         if (isManagerInstalledCheck.run() || hasExpectedInstallerCheck.run()) {
             Logger.printDebug(() -> "Passed second checks");
             Check.disableForever();
             return;
         }
+
+        Logger.printDebug(() -> "Failed second checks");
 
         if (hasPatchTimePublicIPCheck.run()) {
             Logger.printDebug(() -> "Passed third checks");
