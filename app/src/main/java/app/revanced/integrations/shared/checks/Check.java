@@ -32,7 +32,6 @@ abstract class Check {
                 dialog.dismiss();
             });
 
-
     private final String failedReasonStringKey;
 
     /**

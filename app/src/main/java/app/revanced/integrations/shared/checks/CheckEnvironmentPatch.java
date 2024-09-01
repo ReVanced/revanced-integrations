@@ -224,7 +224,7 @@ public final class CheckEnvironmentPatch {
     };
 
 
-    public static void runChecks() {
+    public static void check() {
         Logger.printDebug(() -> "Running environment checks");
 
         // If the warning was already issued twice, or if the check was successful in the past,
