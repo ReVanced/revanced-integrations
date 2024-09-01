@@ -1,3 +1,17 @@
+# [1.14.0-dev.4](https://github.com/ReVanced/revanced-integrations/compare/v1.14.0-dev.3...v1.14.0-dev.4) (2024-09-01)
+
+
+### Bug Fixes
+
+* **YouTube - GmsCore support:** Show an error toast if GmsCore is included with root mounted installation ([#686](https://github.com/ReVanced/revanced-integrations/issues/686)) ([a4848be](https://github.com/ReVanced/revanced-integrations/commit/a4848be653fae3e03972254fe48a7b76e561e5a6))
+
+# [1.14.0-dev.3](https://github.com/ReVanced/revanced-integrations/compare/v1.14.0-dev.2...v1.14.0-dev.3) (2024-09-01)
+
+
+### Bug Fixes
+
+* **YouTube - ReturnYouTubeDislike:** Show estimated like count for videos with hidden likes ([#684](https://github.com/ReVanced/revanced-integrations/issues/684)) ([27d2b60](https://github.com/ReVanced/revanced-integrations/commit/27d2b60444ff5bcc84a1889e2cacf1750532b6ad))
+
 # [1.14.0-dev.2](https://github.com/ReVanced/revanced-integrations/compare/v1.14.0-dev.1...v1.14.0-dev.2) (2024-08-30)
 
 
