@@ -1,4 +1,4 @@
-package app.revanced.integrations.all.checks;
+package app.revanced.integrations.shared.checks;
 
 import android.annotation.SuppressLint;
 import android.content.pm.PackageManager;
@@ -15,8 +15,8 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
 
-import static app.revanced.integrations.all.checks.PatchInfo.Build.*;
-import static app.revanced.integrations.all.checks.PatchInfo.*;
+import static app.revanced.integrations.shared.checks.PatchInfo.Build.*;
+import static app.revanced.integrations.shared.checks.PatchInfo.*;
 
 /**
  * This class is used to check if the app was patched by the user
@@ -52,7 +52,13 @@ public final class CheckEnvironmentPatch {
             final var installerPackageName =
                     context.getPackageManager().getInstallerPackageName(context.getPackageName());
 
-            return GOOD_INSTALLER_PACKAGE_NAMES.contains(installerPackageName);
+            final var passed = GOOD_INSTALLER_PACKAGE_NAMES.contains(installerPackageName);
+
+            if (passed) {
+                Logger.printDebug(() -> "Installed by expected installer: " + installerPackageName);
+            }
+
+            return passed;
         }
     };
 
@@ -75,8 +81,12 @@ public final class CheckEnvironmentPatch {
                 //noinspection deprecation
                 Utils.getContext().getPackageManager().getPackageInfo(MANAGER_PACKAGE_NAME, 0);
 
+                Logger.printDebug(() -> "Manager is installed");
+
                 return true;
             } catch (PackageManager.NameNotFoundException e) {
+                Logger.printDebug(() -> "Could not find manager package: " + e.getMessage());
+
                 return false;
             }
         }
@@ -96,7 +106,7 @@ public final class CheckEnvironmentPatch {
         @Override
         protected boolean run() {
             //noinspection deprecation
-            return equalsHash(Build.BOARD, PATCH_BOARD) &&
+            final var passed = equalsHash(Build.BOARD, PATCH_BOARD) &&
                     equalsHash(Build.BOOTLOADER, PATCH_BOOTLOADER) &&
                     equalsHash(Build.BRAND, PATCH_BRAND) &&
                     equalsHash(Build.CPU_ABI, PATCH_CPU_ABI) &&
@@ -119,6 +129,12 @@ public final class CheckEnvironmentPatch {
                     equalsHash(Build.TAGS, PATCH_TAGS) &&
                     equalsHash(Build.TYPE, PATCH_TYPE) &&
                     equalsHash(Build.USER, PATCH_USER);
+
+            if (passed) {
+                Logger.printDebug(() -> "Build properties match current device");
+            }
+
+            return passed;
         }
     };
 
@@ -135,7 +151,15 @@ public final class CheckEnvironmentPatch {
     ) {
         @Override
         protected boolean run() {
-            return System.currentTimeMillis() - PATCH_TIME < 1000 * 60 * 30; // 1000 ms * 60 s * 30 min
+            final var duration = System.currentTimeMillis() - PATCH_TIME;
+
+            final var passed = duration < 1000 * 60 * 30; // 1000 ms * 60 s * 30 min
+
+            if (passed) {
+                Logger.printDebug(() -> "Installed in " + duration / 1000 + " seconds after patch");
+            }
+
+            return passed;
         }
     };
 
@@ -162,18 +186,22 @@ public final class CheckEnvironmentPatch {
                 }
             };
 
-            var service = getIpServices.get(new Random().nextInt(getIpServices.size() - 1));
-
-
             String publicIP = null;
 
             try {
+                var service = getIpServices.get(new Random().nextInt(getIpServices.size() - 1));
+
+                Logger.printDebug(() -> "Using " + service + " to get public IP");
+
                 HttpURLConnection urlConnection = (HttpURLConnection) new URL(service).openConnection();
 
                 try {
                     BufferedReader in = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
 
                     publicIP = in.readLine();
+
+                    String finalPublicIP = publicIP;
+                    Logger.printDebug(() -> "Got public IP " + finalPublicIP);
 
                     in.close();
                 } finally {
@@ -185,16 +213,26 @@ public final class CheckEnvironmentPatch {
                 Logger.printDebug(() -> "Failed to get public IP address: " + e.getMessage());
             }
 
-            //noinspection DataFlowIssue because the field is patched to a non-null value
-            return equalsHash(publicIP, PUBLIC_IP_DURING_PATCH);
+            final var passed = equalsHash(publicIP, PUBLIC_IP_DURING_PATCH);
+
+            if (passed) {
+                Logger.printDebug(() -> "Public IP check passed: " + passed);
+            }
+
+            return passed;
         }
     };
 
 
     public static void runChecks() {
+        Logger.printDebug(() -> "Running environment checks");
+
         // If the warning was already issued twice, or if the check was successful in the past,
         // do not run the checks again.
-        if (!Check.shouldRun()) return;
+        if (!Check.shouldRun()) {
+            Logger.printDebug(() -> "Environment checks should not run anymore");
+            return;
+        }
 
         // TODO: There should be a better way to run the checks. Running all in parallel is not ideal,
         //  because you may run checks that could be exempted by others
@@ -203,19 +241,25 @@ public final class CheckEnvironmentPatch {
         //  but currently, the warning is only issued, when all checks fail.
 
         if (isNearPatchTimeCheck.run() || isPatchTimeBuildCheck.run()) {
+            Logger.printDebug(() -> "Passed first checks");
             Check.disableForever();
             return;
         }
 
+
         if (isManagerInstalledCheck.run() || hasExpectedInstallerCheck.run()) {
+            Logger.printDebug(() -> "Passed second checks");
             Check.disableForever();
             return;
         }
 
         if (hasPatchTimePublicIPCheck.run()) {
+            Logger.printDebug(() -> "Passed third checks");
             Check.disableForever();
             return;
         }
+
+        Logger.printDebug(() -> "Failed all checks");
 
         Check.issueWarning(
                 isNearPatchTimeCheck,
@@ -227,11 +271,19 @@ public final class CheckEnvironmentPatch {
     }
 
     private static boolean equalsHash(String value, String hash) {
+        if (value == null) {
+            Logger.printDebug(() -> "Value is null");
+
+            return false;
+        }
+
         try {
             final var sha1 = MessageDigest.getInstance("SHA-1").digest(value.getBytes());
             return Base64.encodeToString(sha1, Base64.DEFAULT).equals(hash);
         } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
+            Logger.printException(() -> "Failed to value");
+
+            return false;
         }
     }
 }
