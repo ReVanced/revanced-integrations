@@ -2,6 +2,7 @@ package app.revanced.integrations.shared.checks;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -11,26 +12,34 @@ import app.revanced.integrations.shared.Logger;
 import app.revanced.integrations.shared.Utils;
 import app.revanced.integrations.youtube.settings.Settings;
 
+import java.util.function.Function;
+
 import static android.text.Html.FROM_HTML_MODE_COMPACT;
 import static app.revanced.integrations.shared.StringRef.str;
 
 abstract class Check {
     private static final Uri GOOD_SOURCE = Uri.parse("https://revanced.app");
-    private static final AlertDialog.Builder CHECK_FAILED_DIALOG_BUILDER = new AlertDialog.Builder(Utils.getContext())
-            .setCancelable(false)
-            .setIcon(android.R.drawable.ic_dialog_alert)
-            .setTitle(str("revanced_check_environment_failed_title"))
-            .setPositiveButton(str("revanced_check_environment_dialog_open_official_source_button"), (dialog, which) -> {
-                final var intent = new Intent(Intent.ACTION_VIEW, GOOD_SOURCE);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                Utils.getContext().startActivity(intent);
-            })
-            .setNegativeButton(str("revanced_check_environment_dialog_ignore_button"), (dialog, which) -> {
-                final int current = Settings.CHECK_ENVIRONMENT_WARNING_ISSUED_COUNT.get();
-                Settings.CHECK_ENVIRONMENT_WARNING_ISSUED_COUNT.save(current + 1);
+    private static final Function<Context, AlertDialog.Builder> CHECK_FAILED_DIALOG_BUILDER =
+            (context) -> new AlertDialog.Builder(context)
+                    .setCancelable(false)
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .setTitle(str("revanced_check_environment_failed_title"))
+                    .setPositiveButton(
+                            str("revanced_check_environment_dialog_open_official_source_button"),
+                            (dialog, which) -> {
+                                final var intent = new Intent(Intent.ACTION_VIEW, GOOD_SOURCE);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                context.startActivity(intent);
+                            }
+                    ).setNegativeButton(
+                            str("revanced_check_environment_dialog_ignore_button"),
+                            (dialog, which) -> {
+                                final int current = Settings.CHECK_ENVIRONMENT_WARNING_ISSUED_COUNT.get();
+                                Settings.CHECK_ENVIRONMENT_WARNING_ISSUED_COUNT.save(current + 1);
 
-                dialog.dismiss();
-            });
+                                dialog.dismiss();
+                            }
+                    );
 
     private final String failedReasonStringKey;
 
@@ -54,7 +63,7 @@ abstract class Check {
     }
 
     @SuppressLint("NewApi")
-    static void issueWarning(Check... failedChecks) {
+    static void issueWarning(Context context, Check... failedChecks) {
         final var reasons = new StringBuilder();
 
         reasons.append("<ul>");
@@ -69,7 +78,8 @@ abstract class Check {
                 String.format(str("revanced_check_environment_failed_message"), reasons),
                 FROM_HTML_MODE_COMPACT
         );
-        AlertDialog dialog = CHECK_FAILED_DIALOG_BUILDER.setMessage(finalMessage).create();
+        AlertDialog dialog = CHECK_FAILED_DIALOG_BUILDER.apply(context)
+                .setMessage(finalMessage).create();
 
         var dismissButton = dialog.getButton(DialogInterface.BUTTON_NEGATIVE);
         // TODO: setEnabled called on null? If this line is commented out getting:
@@ -78,7 +88,9 @@ abstract class Check {
 
         dialog.show();
 
-        Utils.runOnMainThread(getCountdownRunnable(dismissButton));
+        // Use a delay to allow the activity to finish initializing.
+        // Otherwise, if device is in dark mode the dialog is shown with wrong color scheme.
+        Utils.runOnMainThreadDelayed(getCountdownRunnable(dismissButton), 100);
     }
 
     private static Runnable getCountdownRunnable(Button dismissButton) {

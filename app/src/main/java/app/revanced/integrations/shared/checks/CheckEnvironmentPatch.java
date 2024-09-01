@@ -1,6 +1,7 @@
 package app.revanced.integrations.shared.checks;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.util.Base64;
@@ -13,7 +14,10 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Random;
+import java.util.Set;
 
 import static app.revanced.integrations.shared.checks.PatchInfo.Build.*;
 import static app.revanced.integrations.shared.checks.PatchInfo.*;
@@ -224,7 +228,7 @@ public final class CheckEnvironmentPatch {
     };
 
 
-    public static void check() {
+    public static void check(Activity context) {
         Logger.printDebug(() -> "Running environment checks");
 
         // If the warning was already issued twice, or if the check was successful in the past,
@@ -262,6 +266,7 @@ public final class CheckEnvironmentPatch {
         Logger.printDebug(() -> "Failed all checks");
 
         Check.issueWarning(
+                context,
                 isNearPatchTimeCheck,
                 isPatchTimeBuildCheck,
                 isManagerInstalledCheck,
