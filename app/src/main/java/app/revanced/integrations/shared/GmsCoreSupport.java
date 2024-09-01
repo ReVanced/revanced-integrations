@@ -81,7 +81,7 @@ public class GmsCoreSupport {
                 Logger.printInfo(() -> "App is mounted with root, but GmsCore patch was included");
                 // Cannot use localize text here, since the app will load
                 // resources from the unpatched app and all patch strings are missing.
-                Utils.showToastLong("'GmsCore support' patch cannot be used with root mount installation");
+                Utils.showToastLong("The 'GmsCore support' patch breaks mount installations");
 
                 // Do not exit. If the app exits before launch completes (and without
                 // opening another activity), then on some devices such as Pixel phone Android 10
