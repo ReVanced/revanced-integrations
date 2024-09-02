@@ -217,7 +217,15 @@ public final class CheckEnvironmentPatch {
                 Logger.printDebug(() -> "Failed to get public IP address: " + e.getMessage());
             }
 
-            final var passed = equalsHash(publicIP, PUBLIC_IP_DURING_PATCH);
+            if (publicIP == null) {
+                return false;
+            }
+
+            final var passed = equalsHash(
+                    // Use last three digits to prevent brute forcing the hashed IP.
+                    publicIP.substring(publicIP.length()-3),
+                    PUBLIC_IP_DURING_PATCH
+            );
 
             if (passed) {
                 Logger.printDebug(() -> "Public IP check passed: " + passed);
