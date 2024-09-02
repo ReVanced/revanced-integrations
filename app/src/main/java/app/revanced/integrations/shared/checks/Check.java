@@ -7,7 +7,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.text.Html;
+import android.text.method.LinkMovementMethod;
 import android.widget.Button;
+import android.widget.TextView;
 import app.revanced.integrations.shared.Logger;
 import app.revanced.integrations.shared.Utils;
 import app.revanced.integrations.youtube.settings.Settings;
@@ -88,6 +90,9 @@ abstract class Check {
 
         dialog.show();
 
+        ((TextView)dialog.findViewById(android.R.id.message)).setMovementMethod(LinkMovementMethod.getInstance());
+
+        // TODO: This does not work for some reason.
         // Use a delay to allow the activity to finish initializing.
         // Otherwise, if device is in dark mode the dialog is shown with wrong color scheme.
         Utils.runOnMainThreadDelayed(getCountdownRunnable(dismissButton), 100);

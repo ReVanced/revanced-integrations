@@ -103,8 +103,6 @@ public final class AnnouncementsPatch {
                 // Do not show the announcement, if the last announcement id is the same as the current one.
                 if (Settings.ANNOUNCEMENT_LAST_ID.get() == id) return;
 
-
-
                 int finalId = id;
                 final var finalTitle = title;
                 final var finalMessage = Html.fromHtml(message, FROM_HTML_MODE_COMPACT);

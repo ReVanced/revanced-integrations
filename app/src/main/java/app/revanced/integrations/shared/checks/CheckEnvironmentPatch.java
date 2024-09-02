@@ -56,13 +56,9 @@ public final class CheckEnvironmentPatch {
             final var installerPackageName =
                     context.getPackageManager().getInstallerPackageName(context.getPackageName());
 
-            final var passed = GOOD_INSTALLER_PACKAGE_NAMES.contains(installerPackageName);
+            Logger.printDebug(() -> "Installed by " + installerPackageName);
 
-            if (passed) {
-                Logger.printDebug(() -> "Installed by expected installer: " + installerPackageName);
-            }
-
-            return passed;
+            return GOOD_INSTALLER_PACKAGE_NAMES.contains(installerPackageName);
         }
     };
 
@@ -136,6 +132,8 @@ public final class CheckEnvironmentPatch {
 
             if (passed) {
                 Logger.printDebug(() -> "Build properties match current device");
+            } else {
+                Logger.printDebug(() -> "Build properties do not match current device");
             }
 
             return passed;
@@ -157,13 +155,9 @@ public final class CheckEnvironmentPatch {
         protected boolean run() {
             final var duration = System.currentTimeMillis() - PATCH_TIME;
 
-            final var passed = duration < 1000 * 60 * 30; // 1000 ms * 60 s * 30 min
+            Logger.printDebug(() -> "Installed in " + duration / 1000 + " seconds after patch");
 
-            if (passed) {
-                Logger.printDebug(() -> "Installed in " + duration / 1000 + " seconds after patch");
-            }
-
-            return passed;
+            return duration < 1000 * 60 * 30; // 1000 ms * 60 s * 30 min;
         }
     };
 
@@ -179,6 +173,8 @@ public final class CheckEnvironmentPatch {
     ) {
         @Override
         protected boolean run() {
+            if (!Utils.isNetworkConnected()) return false;
+
             // Using multiple services to increase reliability, distribute the load and minimize tracking.
             final var getIpServices = new ArrayList<String>() {
                 {
@@ -198,9 +194,12 @@ public final class CheckEnvironmentPatch {
                 Logger.printDebug(() -> "Using " + service + " to get public IP");
 
                 HttpURLConnection urlConnection = (HttpURLConnection) new URL(service).openConnection();
+                urlConnection.setConnectTimeout(1000);
+                urlConnection.setReadTimeout(1000);
 
                 try {
-                    BufferedReader in = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+                    final var stream = Utils.submitOnBackgroundThread(urlConnection::getInputStream).get();
+                    BufferedReader in = new BufferedReader(new InputStreamReader(stream));
 
                     publicIP = in.readLine();
 
@@ -214,7 +213,7 @@ public final class CheckEnvironmentPatch {
             } catch (Exception e) {
                 // If the app does not have the INTERNET permission or the service is down,
                 // the public IP can not be retrieved.
-                Logger.printDebug(() -> "Failed to get public IP address: " + e.getMessage());
+                Logger.printDebug(() -> "Failed to get public IP address", e);
             }
 
             if (publicIP == null) {
@@ -222,13 +221,15 @@ public final class CheckEnvironmentPatch {
             }
 
             final var passed = equalsHash(
-                    // Use last three digits to prevent brute forcing the hashed IP.
-                    publicIP.substring(publicIP.length()-3),
+                    // Use last five characters to prevent brute forcing the hashed IP.
+                    publicIP.substring(publicIP.length() - 5),
                     PUBLIC_IP_DURING_PATCH
             );
 
             if (passed) {
-                Logger.printDebug(() -> "Public IP check passed: " + passed);
+                Logger.printDebug(() -> "Public IP matches patch time public IP");
+            } else {
+                Logger.printDebug(() -> "Public IP does not match patch time public IP");
             }
 
             return passed;
@@ -242,7 +243,7 @@ public final class CheckEnvironmentPatch {
         // If the warning was already issued twice, or if the check was successful in the past,
         // do not run the checks again.
         if (!Check.shouldRun()) {
-            Logger.printDebug(() -> "Environment checks should not run anymore");
+            Logger.printDebug(() -> "Environment checks are disabled");
             return;
         }
 
@@ -260,6 +261,7 @@ public final class CheckEnvironmentPatch {
 
         Logger.printDebug(() -> "Failed first checks");
 
+        // TODO: One of the checks probably is sufficient.
         if (isManagerInstalledCheck.run() || hasExpectedInstallerCheck.run()) {
             Logger.printDebug(() -> "Passed second checks");
             Check.disableForever();
