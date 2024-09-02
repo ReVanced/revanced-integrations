@@ -1,12 +1,13 @@
 package app.revanced.integrations.shared.checks;
 
+import static app.revanced.integrations.shared.checks.PatchInfo.Build.*;
+import static app.revanced.integrations.shared.checks.PatchInfo.*;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.util.Base64;
-import app.revanced.integrations.shared.Logger;
-import app.revanced.integrations.shared.Utils;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -19,8 +20,8 @@ import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
 
-import static app.revanced.integrations.shared.checks.PatchInfo.Build.*;
-import static app.revanced.integrations.shared.checks.PatchInfo.*;
+import app.revanced.integrations.shared.Logger;
+import app.revanced.integrations.shared.Utils;
 
 /**
  * This class is used to check if the app was patched by the user
@@ -28,7 +29,14 @@ import static app.revanced.integrations.shared.checks.PatchInfo.*;
  * <br>
  * Various indicators help to detect if the app was patched by the user.
  */
+@SuppressWarnings("unused")
 public final class CheckEnvironmentPatch {
+    /**
+     * For debugging and development only.
+     * Forces all checks to be performed, and the check failed dialog to be shown.
+     */
+    private static final boolean DEBUG_ALWAYS_SHOW_CHECK_FAILED_DIALOG = false;
+
     /**
      * Check if the app is installed by the manager or the app store.
      * <br>
@@ -52,7 +60,6 @@ public final class CheckEnvironmentPatch {
         protected boolean run() {
             final var context = Utils.getContext();
 
-            //noinspection deprecation
             final var installerPackageName =
                     context.getPackageManager().getInstallerPackageName(context.getPackageName());
 
@@ -78,7 +85,6 @@ public final class CheckEnvironmentPatch {
         @Override
         protected boolean run() {
             try {
-                //noinspection deprecation
                 Utils.getContext().getPackageManager().getPackageInfo(MANAGER_PACKAGE_NAME, 0);
 
                 Logger.printDebug(() -> "Manager is installed");
@@ -99,8 +105,8 @@ public final class CheckEnvironmentPatch {
      * <br>
      * If the build properties are different, the app was likely downloaded pre-patched or patched on another device.
      */
-    private static final Check isPatchTimeBuildCheck = new Check(
-            "revanced_check_environment_not_patch_time_build"
+    private static final Check isPatchingDeviceSameCheck = new Check(
+            "revanced_check_environment_not_same_patching_device"
     ) {
         @SuppressLint({"NewApi", "HardwareIds"})
         @Override
@@ -141,9 +147,9 @@ public final class CheckEnvironmentPatch {
     };
 
     /**
-     * Check if the app was installed within the last 30 minutes after being patched.
+     * Check if the app was installed within the last 15 minutes after being patched.
      * <br>
-     * If the app was installed within the last 30 minutes, it is likely, the app was patched by the user.
+     * If the app was installed within the last 15 minutes, it is likely, the app was patched by the user.
      * <br>
      * If the app was installed at a later time, it is likely, the app was downloaded pre-patched, the user
      * waited too long to install the app or the patch time is too long ago.
@@ -155,9 +161,10 @@ public final class CheckEnvironmentPatch {
         protected boolean run() {
             final var duration = System.currentTimeMillis() - PATCH_TIME;
 
-            Logger.printDebug(() -> "Installed in " + duration / 1000 + " seconds after patch");
+            Logger.printDebug(() -> "Installed: " + (duration / 1000) + " seconds after patching");
 
-            return duration < 1000 * 60 * 30; // 1000 ms * 60 s * 30 min;
+            // Dialog text says 10 minutes, but use 15 in case they're off.
+            return duration < 15 * 60 * 1000; // 15 minutes.
         }
     };
 
@@ -169,10 +176,11 @@ public final class CheckEnvironmentPatch {
      * If the IP address is different, the app was likely downloaded pre-patched or the patch time is too long ago.
      */
     private static final Check hasPatchTimePublicIPCheck = new Check(
-            "revanced_check_environment_not_patch_time_public_ip"
+            "revanced_check_environment_not_same_patch_time_network_address"
     ) {
         @Override
         protected boolean run() {
+            Utils.verifyOffMainThread();
             if (!Utils.isNetworkConnected()) return false;
 
             // Using multiple services to increase reliability, distribute the load and minimize tracking.
@@ -186,38 +194,29 @@ public final class CheckEnvironmentPatch {
                 }
             };
 
-            String publicIP = null;
-
+            String publicIP;
+            HttpURLConnection urlConnection = null;
             try {
                 var service = getIpServices.get(new Random().nextInt(getIpServices.size() - 1));
-
                 Logger.printDebug(() -> "Using " + service + " to get public IP");
 
-                HttpURLConnection urlConnection = (HttpURLConnection) new URL(service).openConnection();
-                urlConnection.setConnectTimeout(1000);
-                urlConnection.setReadTimeout(1000);
+                urlConnection = (HttpURLConnection) new URL(service).openConnection();
+                urlConnection.setFixedLengthStreamingMode(0);
+                urlConnection.setConnectTimeout(10000);
+                urlConnection.setReadTimeout(10000);
 
-                try {
-                    final var stream = Utils.submitOnBackgroundThread(urlConnection::getInputStream).get();
-                    BufferedReader in = new BufferedReader(new InputStreamReader(stream));
-
+                try (BufferedReader in = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()))) {
                     publicIP = in.readLine();
-
-                    String finalPublicIP = publicIP;
-                    Logger.printDebug(() -> "Got public IP " + finalPublicIP);
-
-                    in.close();
-                } finally {
-                    urlConnection.disconnect();
                 }
-            } catch (Exception e) {
+            } catch (Exception ex) {
                 // If the app does not have the INTERNET permission or the service is down,
                 // the public IP can not be retrieved.
-                Logger.printDebug(() -> "Failed to get public IP address", e);
-            }
-
-            if (publicIP == null) {
+                Logger.printDebug(() -> "Failed to get public IP address", ex);
                 return false;
+            } finally {
+                if (urlConnection != null) {
+                    urlConnection.disconnect();
+                }
             }
 
             final var passed = equalsHash(
@@ -226,66 +225,74 @@ public final class CheckEnvironmentPatch {
                     PUBLIC_IP_DURING_PATCH
             );
 
-            if (passed) {
-                Logger.printDebug(() -> "Public IP matches patch time public IP");
-            } else {
-                Logger.printDebug(() -> "Public IP does not match patch time public IP");
-            }
+            Logger.printDebug(() -> passed
+                    ? "Public IP matches patch time public IP"
+                    : "Public IP does not match patch time public IP");
 
             return passed;
         }
     };
 
-
+    /**
+     * Injection point.
+     */
     public static void check(Activity context) {
-        Logger.printDebug(() -> "Running environment checks");
-
         // If the warning was already issued twice, or if the check was successful in the past,
         // do not run the checks again.
-        if (!Check.shouldRun()) {
+        if (!Check.shouldRun() && !DEBUG_ALWAYS_SHOW_CHECK_FAILED_DIALOG) {
             Logger.printDebug(() -> "Environment checks are disabled");
             return;
         }
 
-        // TODO: There should be a better way to run the checks. Running all in parallel is not ideal,
-        //  because you may run checks that could be exempted by others
-        //  such as isPatchTimePublicIPCheck when isNearPatchTimeCheck was already successful.
-        //  Also, a warning should be issued for failed checks that result in the entire environment check failing,
-        //  but currently, the warning is only issued, when all checks fail.
+        Utils.runOnBackgroundThread(() -> {
+            try {
+                Logger.printDebug(() -> "Running environment checks");
 
-        if (isNearPatchTimeCheck.run() || isPatchTimeBuildCheck.run()) {
-            Logger.printDebug(() -> "Passed first checks");
-            Check.disableForever();
-            return;
-        }
+                if (isNearPatchTimeCheck.run() || isPatchingDeviceSameCheck.run()) {
+                    Logger.printDebug(() -> "Passed build time check");
+                    if (!DEBUG_ALWAYS_SHOW_CHECK_FAILED_DIALOG) {
+                        Check.disableForever();
+                        return;
+                    }
+                }
 
-        Logger.printDebug(() -> "Failed first checks");
+                Logger.printDebug(() -> "Failed build time check");
 
-        // TODO: One of the checks probably is sufficient.
-        if (isManagerInstalledCheck.run() || hasExpectedInstallerCheck.run()) {
-            Logger.printDebug(() -> "Passed second checks");
-            Check.disableForever();
-            return;
-        }
+                // TODO: One of the checks probably is sufficient.
+                if (isManagerInstalledCheck.run() || hasExpectedInstallerCheck.run()) {
+                    Logger.printDebug(() -> "Passed installation source check");
+                    if (!DEBUG_ALWAYS_SHOW_CHECK_FAILED_DIALOG) {
+                        Check.disableForever();
+                        return;
+                    }
+                }
 
-        Logger.printDebug(() -> "Failed second checks");
+                Logger.printDebug(() -> "Failed second checks");
 
-        if (hasPatchTimePublicIPCheck.run()) {
-            Logger.printDebug(() -> "Passed third checks");
-            Check.disableForever();
-            return;
-        }
+                if (hasPatchTimePublicIPCheck.run()) {
+                    Logger.printDebug(() -> "Passed network address check");
+                    if (!DEBUG_ALWAYS_SHOW_CHECK_FAILED_DIALOG) {
+                        Check.disableForever();
+                        return;
+                    }
+                }
 
-        Logger.printDebug(() -> "Failed all checks");
+                Logger.printDebug(() -> "Failed all checks");
 
-        Check.issueWarning(
-                context,
-                isNearPatchTimeCheck,
-                isPatchTimeBuildCheck,
-                isManagerInstalledCheck,
-                hasExpectedInstallerCheck,
-                hasPatchTimePublicIPCheck
-        );
+                Utils.runOnMainThread(() -> {
+                    Check.issueWarning(
+                            context,
+                            isNearPatchTimeCheck,
+                            isPatchingDeviceSameCheck,
+                            isManagerInstalledCheck,
+                            hasExpectedInstallerCheck,
+                            hasPatchTimePublicIPCheck
+                    );
+                });
+            } catch (Exception ex) {
+                Logger.printException(() -> "check failure", ex);
+            }
+        });
     }
 
     private static boolean equalsHash(String value, String hash) {

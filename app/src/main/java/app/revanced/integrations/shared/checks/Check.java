@@ -14,35 +14,25 @@ import app.revanced.integrations.shared.Logger;
 import app.revanced.integrations.shared.Utils;
 import app.revanced.integrations.youtube.settings.Settings;
 
-import java.util.function.Function;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static android.text.Html.FROM_HTML_MODE_COMPACT;
 import static app.revanced.integrations.shared.StringRef.str;
 
 abstract class Check {
+    private static final String REVANCED_LINKS_HTML_TEXT =
+            "<>ul>" +
+                "<li><a href=https://revanced.app>Website</a>" +
+                "<li><a href=https://revanced.app/discord>Discord</a>" +
+                "<li><a href=https://www.reddit.com/r/revancedapp>Reddit</a>" +
+                "<li><a href=https://twitter.com/revancedapp>Twitter</a>" +
+                "<li><a href=https://t.me/app_revanced>Telegram</a>" +
+                "<li><a href=https://www.youtube.com/@ReVanced>YouTube</a>" +
+            "</ul>";
+
+    private static final int MINIMUM_SECONDS_TO_SHOW_WARNING = 7;
+
     private static final Uri GOOD_SOURCE = Uri.parse("https://revanced.app");
-    private static final Function<Context, AlertDialog.Builder> CHECK_FAILED_DIALOG_BUILDER =
-            (context) -> new AlertDialog.Builder(context)
-                    .setCancelable(false)
-                    .setIcon(android.R.drawable.ic_dialog_alert)
-                    .setTitle(str("revanced_check_environment_failed_title"))
-                    .setPositiveButton(
-                            str("revanced_check_environment_dialog_open_official_source_button"),
-                            (dialog, which) -> {
-                                final var intent = new Intent(Intent.ACTION_VIEW, GOOD_SOURCE);
-                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
-                                context.startActivity(intent);
-                            }
-                    ).setNegativeButton(
-                            str("revanced_check_environment_dialog_ignore_button"),
-                            (dialog, which) -> {
-                                final int current = Settings.CHECK_ENVIRONMENT_WARNING_ISSUED_COUNT.get();
-                                Settings.CHECK_ENVIRONMENT_WARNING_ISSUED_COUNT.save(current + 1);
-
-                                dialog.dismiss();
-                            }
-                    );
 
     private final String failedReasonStringKey;
 
@@ -67,55 +57,73 @@ abstract class Check {
 
     @SuppressLint("NewApi")
     static void issueWarning(Context context, Check... failedChecks) {
+        Utils.verifyOnMainThread();
+
         final var reasons = new StringBuilder();
 
         reasons.append("<ul>");
-
         for (var check : failedChecks) {
             reasons.append("<li>").append(str(check.failedReasonStringKey));
         }
-
         reasons.append("</ul>");
 
-        final var finalMessage = Html.fromHtml(
-                String.format(str("revanced_check_environment_failed_message"), reasons),
+        var message = Html.fromHtml(
+                str("revanced_check_environment_failed_message", reasons.toString(), REVANCED_LINKS_HTML_TEXT),
                 FROM_HTML_MODE_COMPACT
         );
-        AlertDialog dialog = CHECK_FAILED_DIALOG_BUILDER.apply(context)
-                .setMessage(finalMessage).create();
+
+        AlertDialog dialog =  new AlertDialog.Builder(context)
+                .setCancelable(false)
+                .setIconAttribute(android.R.attr.alertDialogIcon)
+                .setTitle(str("revanced_check_environment_failed_title"))
+                .setMessage(message)
+                .setPositiveButton(
+                        str("revanced_check_environment_dialog_open_official_source_button"),
+                        (dialog1, which) -> {
+                            final var intent = new Intent(Intent.ACTION_VIEW, GOOD_SOURCE);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+                            context.startActivity(intent);
+                        }
+                ).setNegativeButton(
+                        str("revanced_check_environment_dialog_ignore_button"),
+                        (dialog1, which) -> {
+                            final int current = Settings.CHECK_ENVIRONMENT_WARNING_ISSUED_COUNT.get();
+                            Settings.CHECK_ENVIRONMENT_WARNING_ISSUED_COUNT.save(current + 1);
+
+                            dialog1.dismiss();
+                        }
+                ).create();
+
+        dialog.show(); // Must show before getting the dismiss button or setting movement method.
 
         var dismissButton = dialog.getButton(DialogInterface.BUTTON_NEGATIVE);
-        // TODO: setEnabled is called on null for some reason.
-        // dismissButton.setEnabled(false);
-
-        dialog.show();
+        dismissButton.setEnabled(false);
 
         ((TextView)dialog.findViewById(android.R.id.message)).setMovementMethod(LinkMovementMethod.getInstance());
 
-        // TODO: This does not work for some reason.
-        // Use a delay to allow the activity to finish initializing.
-        // Otherwise, if device is in dark mode the dialog is shown with wrong color scheme.
-        Utils.runOnMainThreadDelayed(getCountdownRunnable(dismissButton), 100);
+        // Use a longer delay than any of the other patches that can show a dialog on startup
+        // (Announcements, Check watch history), but there is still a chance a slow network
+        // can cause the dialogs to be out of order.
+        Utils.runOnMainThreadDelayed(getCountdownRunnable(dismissButton), 1000);
     }
 
     private static Runnable getCountdownRunnable(Button dismissButton) {
-        // Using a reference to an array to be able to modify the value in the Runnable.
-        final int[] secondsRemaining = {5};
+        // Don't need atomic, but do need a mutable reference to modify from inside the runnable.
+        AtomicReference<Integer> secondsRemainingRef = new AtomicReference<>(MINIMUM_SECONDS_TO_SHOW_WARNING);
 
         return new Runnable() {
             @Override
             public void run() {
                 // Reduce the remaining time by 1 second, but only show the countdown when 3 seconds are left
                 // to not draw the user's attention to the dismiss button too early.
-                if (secondsRemaining[0] > 0) {
-                    if (secondsRemaining[0] <= 3) {
-                        dismissButton.setText(String.format(
-                                str("revanced_check_environment_dialog_ignore_button_countdown"),
-                                secondsRemaining[0])
-                        );
+                final int secondsRemaining = secondsRemainingRef.get();
+                if (secondsRemaining > 0) {
+                    if (secondsRemaining <= 3) {
+                        dismissButton.setText(str("revanced_check_environment_dialog_ignore_button_countdown", secondsRemaining));
                     }
 
-                    secondsRemaining[0]--;
+                    secondsRemainingRef.set(secondsRemaining - 1);
 
                     Utils.runOnMainThreadDelayed(this, 1000);
                 } else {
