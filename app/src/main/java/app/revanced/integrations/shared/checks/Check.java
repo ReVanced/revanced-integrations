@@ -10,9 +10,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.text.Html;
-import android.text.method.LinkMovementMethod;
+import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
@@ -24,7 +23,8 @@ import app.revanced.integrations.shared.Utils;
 import app.revanced.integrations.youtube.settings.Settings;
 
 abstract class Check {
-    private static final int MINIMUM_SECONDS_TO_SHOW_WARNING = 7;
+    private static final int SECONDS_TO_HIDE_IGNORE_BUTTON = 10;
+    private static final int SECONDS_TO_HIDE_WEBSITE_BUTTON = 5;
 
     private static final Uri GOOD_SOURCE = Uri.parse("https://revanced.app");
 
@@ -94,21 +94,22 @@ abstract class Check {
 
             dialog.show(); // Must show before getting the dismiss button or setting movement method.
 
-            var dismissButton = dialog.getButton(DialogInterface.BUTTON_NEGATIVE);
-            dismissButton.setEnabled(false);
+            var openWebsiteButton = dialog.getButton(DialogInterface.BUTTON_POSITIVE);
+            openWebsiteButton.setVisibility(View.GONE);
 
-            ((TextView) dialog.findViewById(android.R.id.message)).setMovementMethod(LinkMovementMethod.getInstance());
+            var dismissButton = dialog.getButton(DialogInterface.BUTTON_NEGATIVE);
+            dismissButton.setVisibility(View.GONE);
 
             // Use a longer delay than any of the other patches that can show a dialog on startup
             // (Announcements, Check watch history), but there is still a chance a slow network
             // can cause the dialogs to be out of order.
-            Utils.runOnMainThreadDelayed(getCountdownRunnable(dismissButton), 1000);
+            Utils.runOnMainThreadDelayed(getCountdownRunnable(dismissButton, openWebsiteButton), 1000);
         });
     }
 
-    private static Runnable getCountdownRunnable(Button dismissButton) {
+    private static Runnable getCountdownRunnable(Button dismissButton, Button openWebsiteButton) {
         // Don't need atomic, but do need a mutable reference to modify from inside the runnable.
-        AtomicReference<Integer> secondsRemainingRef = new AtomicReference<>(MINIMUM_SECONDS_TO_SHOW_WARNING);
+        AtomicReference<Integer> secondsRemainingRef = new AtomicReference<>(SECONDS_TO_HIDE_IGNORE_BUTTON);
 
         return new Runnable() {
             @Override
@@ -117,16 +118,15 @@ abstract class Check {
                 // to not draw the user's attention to the dismiss button too early.
                 final int secondsRemaining = secondsRemainingRef.get();
                 if (secondsRemaining > 0) {
-                    if (secondsRemaining <= 3) {
-                        dismissButton.setText(str("revanced_check_environment_dialog_ignore_button_countdown", secondsRemaining));
+                    if (secondsRemaining - SECONDS_TO_HIDE_WEBSITE_BUTTON < 0) {
+                        openWebsiteButton.setVisibility(View.VISIBLE);
                     }
 
                     secondsRemainingRef.set(secondsRemaining - 1);
 
                     Utils.runOnMainThreadDelayed(this, 1000);
                 } else {
-                    dismissButton.setText(str("revanced_check_environment_dialog_ignore_button"));
-                    dismissButton.setEnabled(true);
+                    dismissButton.setVisibility(View.VISIBLE);
                 }
             }
         };

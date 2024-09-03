@@ -139,7 +139,7 @@ public final class CheckEnvironmentPatch {
             Logger.printDebug(() -> "Installed: " + (durationSincePatching / 1000) + " seconds after patching");
 
             // Also verify patched time is not in the future.
-            return durationSincePatching > 0 && durationSincePatching < 15 * 60 * 1000; // 15 minutes.
+            return durationSincePatching > 0 && durationSincePatching < 30 * 60 * 1000; // 15 minutes.
         }
     };
 
@@ -163,6 +163,8 @@ public final class CheckEnvironmentPatch {
                 if (checkResult != null) {
                     if (checkResult) {
                         if (!DEBUG_ALWAYS_SHOW_CHECK_FAILED_DIALOG) {
+                            // Patched on the same device using Manager,
+                            // and no further checks are needed.
                             Check.disableForever();
                             return;
                         }
@@ -181,19 +183,17 @@ public final class CheckEnvironmentPatch {
                     failedChecks.add(isNearPatchTimeCheck);
                 }
 
-                if (failedChecks.isEmpty()) {
-                    if (!DEBUG_ALWAYS_SHOW_CHECK_FAILED_DIALOG) {
-                        Check.disableForever();
-                        return;
-                    }
-                }
-
                 if (DEBUG_ALWAYS_SHOW_CHECK_FAILED_DIALOG) {
                     // Show all failures for debugging layout.
                     failedChecks = Arrays.asList(
                             isPatchingDeviceSameCheck,
                             hasExpectedInstallerCheck,
                             isNearPatchTimeCheck);
+                }
+
+                if (failedChecks.isEmpty()) {
+                    Check.disableForever();
+                    return;
                 }
 
                 Check.issueWarning(
