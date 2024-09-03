@@ -1,5 +1,8 @@
 package app.revanced.integrations.shared.checks;
 
+import static android.text.Html.FROM_HTML_MODE_COMPACT;
+import static app.revanced.integrations.shared.StringRef.str;
+
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -10,14 +13,15 @@ import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.widget.Button;
 import android.widget.TextView;
+
+import androidx.annotation.Nullable;
+
+import java.util.Collection;
+import java.util.concurrent.atomic.AtomicReference;
+
 import app.revanced.integrations.shared.Logger;
 import app.revanced.integrations.shared.Utils;
 import app.revanced.integrations.youtube.settings.Settings;
-
-import java.util.concurrent.atomic.AtomicReference;
-
-import static android.text.Html.FROM_HTML_MODE_COMPACT;
-import static app.revanced.integrations.shared.StringRef.str;
 
 abstract class Check {
     private static final String REVANCED_LINKS_HTML_TEXT =
@@ -43,7 +47,11 @@ abstract class Check {
         this.failedReasonStringKey = failedReasonStringKey;
     }
 
-    protected abstract boolean run();
+    /**
+     * @return If the check conclusively passed or failed. A null value indicates it neither passed nor failed.
+     */
+    @Nullable
+    protected abstract Boolean run();
 
     static boolean shouldRun() {
         return Settings.CHECK_ENVIRONMENT_WARNING_ISSUED_COUNT.get() < 2;
@@ -56,9 +64,7 @@ abstract class Check {
     }
 
     @SuppressLint("NewApi")
-    static void issueWarning(Context context, Check... failedChecks) {
-        Utils.verifyOnMainThread();
-
+    static void issueWarning(Context context, Collection<Check> failedChecks) {
         final var reasons = new StringBuilder();
 
         reasons.append("<ul>");
@@ -72,40 +78,42 @@ abstract class Check {
                 FROM_HTML_MODE_COMPACT
         );
 
-        AlertDialog dialog =  new AlertDialog.Builder(context)
-                .setCancelable(false)
-                .setIconAttribute(android.R.attr.alertDialogIcon)
-                .setTitle(str("revanced_check_environment_failed_title"))
-                .setMessage(message)
-                .setPositiveButton(
-                        str("revanced_check_environment_dialog_open_official_source_button"),
-                        (dialog1, which) -> {
-                            final var intent = new Intent(Intent.ACTION_VIEW, GOOD_SOURCE);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        Utils.runOnMainThread(() -> {
+            AlertDialog dialog = new AlertDialog.Builder(context)
+                    .setCancelable(false)
+                    .setIconAttribute(android.R.attr.alertDialogIcon)
+                    .setTitle(str("revanced_check_environment_failed_title"))
+                    .setMessage(message)
+                    .setPositiveButton(
+                            str("revanced_check_environment_dialog_open_official_source_button"),
+                            (dialog1, which) -> {
+                                final var intent = new Intent(Intent.ACTION_VIEW, GOOD_SOURCE);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
-                            context.startActivity(intent);
-                        }
-                ).setNegativeButton(
-                        str("revanced_check_environment_dialog_ignore_button"),
-                        (dialog1, which) -> {
-                            final int current = Settings.CHECK_ENVIRONMENT_WARNING_ISSUED_COUNT.get();
-                            Settings.CHECK_ENVIRONMENT_WARNING_ISSUED_COUNT.save(current + 1);
+                                context.startActivity(intent);
+                            }
+                    ).setNegativeButton(
+                            str("revanced_check_environment_dialog_ignore_button"),
+                            (dialog1, which) -> {
+                                final int current = Settings.CHECK_ENVIRONMENT_WARNING_ISSUED_COUNT.get();
+                                Settings.CHECK_ENVIRONMENT_WARNING_ISSUED_COUNT.save(current + 1);
 
-                            dialog1.dismiss();
-                        }
-                ).create();
+                                dialog1.dismiss();
+                            }
+                    ).create();
 
-        dialog.show(); // Must show before getting the dismiss button or setting movement method.
+            dialog.show(); // Must show before getting the dismiss button or setting movement method.
 
-        var dismissButton = dialog.getButton(DialogInterface.BUTTON_NEGATIVE);
-        dismissButton.setEnabled(false);
+            var dismissButton = dialog.getButton(DialogInterface.BUTTON_NEGATIVE);
+            dismissButton.setEnabled(false);
 
-        ((TextView)dialog.findViewById(android.R.id.message)).setMovementMethod(LinkMovementMethod.getInstance());
+            ((TextView) dialog.findViewById(android.R.id.message)).setMovementMethod(LinkMovementMethod.getInstance());
 
-        // Use a longer delay than any of the other patches that can show a dialog on startup
-        // (Announcements, Check watch history), but there is still a chance a slow network
-        // can cause the dialogs to be out of order.
-        Utils.runOnMainThreadDelayed(getCountdownRunnable(dismissButton), 1000);
+            // Use a longer delay than any of the other patches that can show a dialog on startup
+            // (Announcements, Check watch history), but there is still a chance a slow network
+            // can cause the dialogs to be out of order.
+            Utils.runOnMainThreadDelayed(getCountdownRunnable(dismissButton), 1000);
+        });
     }
 
     private static Runnable getCountdownRunnable(Button dismissButton) {

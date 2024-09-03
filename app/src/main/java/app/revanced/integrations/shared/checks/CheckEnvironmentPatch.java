@@ -5,7 +5,6 @@ import static app.revanced.integrations.shared.checks.PatchInfo.*;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.pm.PackageManager;
 import android.os.Build;
 import android.util.Base64;
 
@@ -34,11 +33,12 @@ public final class CheckEnvironmentPatch {
      * For debugging and development only.
      * Forces all checks to be performed, and the check failed dialog to be shown.
      */
-    private static final boolean DEBUG_ALWAYS_SHOW_CHECK_FAILED_DIALOG = false;
+    private static final boolean DEBUG_ALWAYS_SHOW_CHECK_FAILED_DIALOG = true;
 
     /**
-     * Check if the app is installed by the manager or the app store.
+     * Check if the app is installed by the manager, the app store, or thru adb/CLI.
      * <br>
+     * Does not conclusively
      * If the app is installed by the manager or the app store, it is likely, the app was patched using the manager,
      * or installed manually via ADB (in the case of ReVanced CLI for example).
      * <br>
@@ -48,23 +48,27 @@ public final class CheckEnvironmentPatch {
     private static final Check hasExpectedInstallerCheck = new Check(
             "revanced_check_environment_manager_not_expected_installer"
     ) {
-        final Set<String> GOOD_INSTALLER_PACKAGE_NAMES = new HashSet<>() {
-            {
-                add(MANAGER_PACKAGE_NAME);
-                add("com.android.vending");
-            }
-        };
+        final List<String> GOOD_INSTALLER_PACKAGE_NAMES = Arrays.asList(
+                MANAGER_PACKAGE_NAME,
+                "com.android.vending",
+                null // CLI install
+        );
 
         @Override
-        protected boolean run() {
+        protected Boolean run() {
             final var context = Utils.getContext();
 
             final var installerPackageName =
                     context.getPackageManager().getInstallerPackageName(context.getPackageName());
 
             Logger.printDebug(() -> "Installed by " + installerPackageName);
+            boolean passed = GOOD_INSTALLER_PACKAGE_NAMES.contains(installerPackageName);
 
-            return GOOD_INSTALLER_PACKAGE_NAMES.contains(installerPackageName);
+            Logger.printDebug(() -> passed
+                    ? "Apk was not installed from an unknown source"
+                    : "Apk was installed from an unknown source");
+
+            return passed;
         }
     };
 
@@ -80,7 +84,13 @@ public final class CheckEnvironmentPatch {
     ) {
         @SuppressLint({"NewApi", "HardwareIds"})
         @Override
-        protected boolean run() {
+        protected Boolean run() {
+            if (PATCH_BOARD.isEmpty()) {
+                // Did not patch with Manager, and cannot conclusively say where this was from.
+                Logger.printDebug(() -> "APK does not contain a hardware signature and cannot compare to current device");
+                return null;
+            }
+
             //noinspection deprecation
             final var passed = equalsHash(Build.BOARD, PATCH_BOARD) &&
                     equalsHash(Build.BOOTLOADER, PATCH_BOOTLOADER) &&
@@ -107,8 +117,8 @@ public final class CheckEnvironmentPatch {
                     equalsHash(Build.USER, PATCH_USER);
 
             Logger.printDebug(() -> passed
-                    ? "Device properties match current device"
-                    : "Device properties do not match current device");
+                    ? "Device hardware signature matches current device"
+                    : "Device hardware signature does not match current device");
 
             return passed;
         }
@@ -126,7 +136,7 @@ public final class CheckEnvironmentPatch {
             "revanced_check_environment_not_near_patch_time"
     ) {
         @Override
-        protected boolean run() {
+        protected Boolean run() {
             final var durationSincePatching = System.currentTimeMillis() - PATCH_TIME;
 
             Logger.printDebug(() -> "Installed: " + (durationSincePatching / 1000) + " seconds after patching");
@@ -147,7 +157,7 @@ public final class CheckEnvironmentPatch {
             "revanced_check_environment_not_same_patch_time_network_address"
     ) {
         @Override
-        protected boolean run() {
+        protected Boolean run() {
             Utils.verifyOffMainThread();
             if (!Utils.isNetworkConnected()) return false;
 
@@ -225,46 +235,48 @@ public final class CheckEnvironmentPatch {
         Utils.runOnBackgroundThread(() -> {
             try {
                 Logger.printDebug(() -> "Running environment checks");
+                List<Check> failedChecks = new ArrayList<>();
 
-                if (isNearPatchTimeCheck.run() || isPatchingDeviceSameCheck.run()) {
-                    Logger.printDebug(() -> "Passed build time check");
+                Boolean checkResult = isPatchingDeviceSameCheck.run();
+                if (checkResult != null) {
+                    if (checkResult) {
+                        if (!DEBUG_ALWAYS_SHOW_CHECK_FAILED_DIALOG) {
+                            Check.disableForever();
+                            return;
+                        }
+                    } else {
+                        failedChecks.add(isPatchingDeviceSameCheck);
+                    }
+                }
+
+                checkResult = hasExpectedInstallerCheck.run();
+                if (checkResult != null && !checkResult) {
+                    failedChecks.add(hasExpectedInstallerCheck);
+                }
+
+                checkResult = isNearPatchTimeCheck.run();
+                if (checkResult != null && !checkResult) {
+                    failedChecks.add(isNearPatchTimeCheck);
+                } else {
+
+                    // Check ip only if within the same time.
+                    checkResult = hasPatchTimePublicIPCheck.run();
+                    if (checkResult != null && !checkResult) {
+                        failedChecks.add(hasPatchTimePublicIPCheck);
+                    }
+                }
+
+                if (failedChecks.isEmpty()) {
                     if (!DEBUG_ALWAYS_SHOW_CHECK_FAILED_DIALOG) {
                         Check.disableForever();
                         return;
                     }
                 }
 
-                Logger.printDebug(() -> "Failed build time check");
-
-                if (hasExpectedInstallerCheck.run()) {
-                    Logger.printDebug(() -> "Passed installation source check");
-                    if (!DEBUG_ALWAYS_SHOW_CHECK_FAILED_DIALOG) {
-                        Check.disableForever();
-                        return;
-                    }
-                }
-
-                Logger.printDebug(() -> "Failed second checks");
-
-                if (hasPatchTimePublicIPCheck.run()) {
-                    Logger.printDebug(() -> "Passed network address check");
-                    if (!DEBUG_ALWAYS_SHOW_CHECK_FAILED_DIALOG) {
-                        Check.disableForever();
-                        return;
-                    }
-                }
-
-                Logger.printDebug(() -> "Failed all checks");
-
-                Utils.runOnMainThread(() -> {
-                    Check.issueWarning(
-                            context,
-                            isNearPatchTimeCheck,
-                            isPatchingDeviceSameCheck,
-                            hasExpectedInstallerCheck,
-                            hasPatchTimePublicIPCheck
-                    );
-                });
+                Check.issueWarning(
+                        context,
+                        failedChecks
+                );
             } catch (Exception ex) {
                 Logger.printException(() -> "check failure", ex);
             }
@@ -281,8 +293,8 @@ public final class CheckEnvironmentPatch {
         try {
             final var sha1 = MessageDigest.getInstance("SHA-1").digest(value.getBytes());
             return Base64.encodeToString(sha1, Base64.DEFAULT).equals(hash);
-        } catch (NoSuchAlgorithmException e) {
-            Logger.printException(() -> "Failed to value");
+        } catch (NoSuchAlgorithmException ex) {
+            Logger.printException(() -> "equalsHash failure", ex); // Will never happen.
 
             return false;
         }
