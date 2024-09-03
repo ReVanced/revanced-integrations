@@ -24,16 +24,6 @@ import app.revanced.integrations.shared.Utils;
 import app.revanced.integrations.youtube.settings.Settings;
 
 abstract class Check {
-    private static final String REVANCED_LINKS_HTML_TEXT =
-            "<>ul>" +
-                "<li><a href=https://revanced.app>Website</a>" +
-                "<li><a href=https://revanced.app/discord>Discord</a>" +
-                "<li><a href=https://www.reddit.com/r/revancedapp>Reddit</a>" +
-                "<li><a href=https://twitter.com/revancedapp>Twitter</a>" +
-                "<li><a href=https://t.me/app_revanced>Telegram</a>" +
-                "<li><a href=https://www.youtube.com/@ReVanced>YouTube</a>" +
-            "</ul>";
-
     private static final int MINIMUM_SECONDS_TO_SHOW_WARNING = 7;
 
     private static final Uri GOOD_SOURCE = Uri.parse("https://revanced.app");
@@ -74,7 +64,7 @@ abstract class Check {
         reasons.append("</ul>");
 
         var message = Html.fromHtml(
-                str("revanced_check_environment_failed_message", reasons.toString(), REVANCED_LINKS_HTML_TEXT),
+                str("revanced_check_environment_failed_message", reasons.toString()),
                 FROM_HTML_MODE_COMPACT
         );
 
