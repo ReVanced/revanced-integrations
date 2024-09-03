@@ -73,7 +73,7 @@ public final class CheckEnvironmentPatch {
      * <br>
      * If the build properties are different, the app was likely downloaded pre-patched or patched on another device.
      */
-    private static final Check isPatchingDeviceSameCheck = new Check(
+    private static final Check wasPatchedOnSameDeviceCheck = new Check(
             "revanced_check_environment_not_same_patching_device"
     ) {
         @SuppressLint({"NewApi", "HardwareIds"})
@@ -119,9 +119,9 @@ public final class CheckEnvironmentPatch {
     };
 
     /**
-     * Check if the app was installed within the last 15 minutes after being patched.
+     * Check if the app was installed within the last 30 minutes after being patched.
      * <br>
-     * If the app was installed within the last 15 minutes, it is likely, the app was patched by the user.
+     * If the app was installed within the last 30 minutes, it is likely, the app was patched by the user.
      * <br>
      * If the app was installed at a later time, it is likely, the app was downloaded pre-patched, the user
      * waited too long to install the app or the patch time is too long ago.
@@ -136,7 +136,7 @@ public final class CheckEnvironmentPatch {
             Logger.printDebug(() -> "Installed: " + (durationSincePatching / 1000) + " seconds after patching");
 
             // Also verify patched time is not in the future.
-            return durationSincePatching > 0 && durationSincePatching < 30 * 60 * 1000; // 15 minutes.
+            return durationSincePatching > 0 && durationSincePatching < 30 * 60 * 1000; // 30 minutes.
         }
     };
 
@@ -156,7 +156,8 @@ public final class CheckEnvironmentPatch {
                 Logger.printDebug(() -> "Running environment checks");
                 List<Check> failedChecks = new ArrayList<>();
 
-                Boolean checkResult = isPatchingDeviceSameCheck.run();
+                boolean deviceSignatureFailed = false;
+                Boolean checkResult = wasPatchedOnSameDeviceCheck.run();
                 if (checkResult != null) {
                     if (checkResult) {
                         if (!DEBUG_ALWAYS_SHOW_CHECK_FAILED_DIALOG) {
@@ -166,7 +167,8 @@ public final class CheckEnvironmentPatch {
                             return;
                         }
                     } else {
-                        failedChecks.add(isPatchingDeviceSameCheck);
+                        deviceSignatureFailed = true;
+                        failedChecks.add(wasPatchedOnSameDeviceCheck);
                     }
                 }
 
@@ -175,15 +177,18 @@ public final class CheckEnvironmentPatch {
                     failedChecks.add(hasExpectedInstallerCheck);
                 }
 
+                // If patched on a different device then a warning will be shown.
+                // But if the patch time was also a while ago then don't bother mentioning it because
+                // that issue might be distracting to the the major issue of someone else patching this app.
                 checkResult = isNearPatchTimeCheck.run();
-                if (checkResult != null && !checkResult) {
+                if (checkResult != null && !checkResult && !deviceSignatureFailed) {
                     failedChecks.add(isNearPatchTimeCheck);
                 }
 
                 if (DEBUG_ALWAYS_SHOW_CHECK_FAILED_DIALOG) {
                     // Show all failures for debugging layout.
                     failedChecks = Arrays.asList(
-                            isPatchingDeviceSameCheck,
+                            wasPatchedOnSameDeviceCheck,
                             hasExpectedInstallerCheck,
                             isNearPatchTimeCheck);
                 }

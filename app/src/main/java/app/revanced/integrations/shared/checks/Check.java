@@ -4,8 +4,8 @@ import static android.text.Html.FROM_HTML_MODE_COMPACT;
 import static app.revanced.integrations.shared.StringRef.str;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -22,6 +22,8 @@ import app.revanced.integrations.shared.Utils;
 import app.revanced.integrations.youtube.settings.Settings;
 
 abstract class Check {
+    private static final int NUMBER_OF_TIMES_TO_SHOW_WARNING_BEFORE_DISABLING = 2;
+
     private static final int SECONDS_BEFORE_SHOWING_IGNORE_BUTTON = 15;
     private static final int SECONDS_BEFORE_SHOWING_WEBSITE_BUTTON = 10;
 
@@ -45,25 +47,31 @@ abstract class Check {
     /**
      * For debugging and development only.
      * Forces all checks to be performed and the check failed dialog to be shown.
-     * Can be enabled by importing settings text with {@link Settings#CHECK_ENVIRONMENT_WARNING_ISSUED_COUNT}
+     * Can be enabled by importing settings text with {@link Settings#CHECK_ENVIRONMENT_WARNINGS_ISSUED}
      * set to -1.
      */
     static boolean debugAlwaysShowWarning() {
-        return Settings.CHECK_ENVIRONMENT_WARNING_ISSUED_COUNT.get() < 0;
+        final boolean alwaysShowWarning = Settings.CHECK_ENVIRONMENT_WARNINGS_ISSUED.get() < 0;
+        if (alwaysShowWarning) {
+            Logger.printDebug(() -> "Debug forcing environment check warning to show");
+        }
+
+        return alwaysShowWarning;
     }
 
     static boolean shouldRun() {
-        return Settings.CHECK_ENVIRONMENT_WARNING_ISSUED_COUNT.get() < 2;
+        return Settings.CHECK_ENVIRONMENT_WARNINGS_ISSUED.get()
+                < NUMBER_OF_TIMES_TO_SHOW_WARNING_BEFORE_DISABLING;
     }
 
     static void disableForever() {
         Logger.printDebug(() -> "Environment checks disabled forever");
 
-        Settings.CHECK_ENVIRONMENT_WARNING_ISSUED_COUNT.save(Integer.MAX_VALUE);
+        Settings.CHECK_ENVIRONMENT_WARNINGS_ISSUED.save(NUMBER_OF_TIMES_TO_SHOW_WARNING_BEFORE_DISABLING);
     }
 
     @SuppressLint("NewApi")
-    static void issueWarning(Context context, Collection<Check> failedChecks) {
+    static void issueWarning(Activity activity, Collection<Check> failedChecks) {
         final var reasons = new StringBuilder();
 
         reasons.append("<ul>");
@@ -78,7 +86,7 @@ abstract class Check {
         );
 
         Utils.runOnMainThread(() -> {
-            AlertDialog dialog = new AlertDialog.Builder(context)
+            AlertDialog dialog = new AlertDialog.Builder(activity)
                     .setCancelable(false)
                     .setIconAttribute(android.R.attr.alertDialogIcon)
                     .setTitle(str("revanced_check_environment_failed_title"))
@@ -89,13 +97,19 @@ abstract class Check {
                                 final var intent = new Intent(Intent.ACTION_VIEW, GOOD_SOURCE);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
-                                context.startActivity(intent);
+                                activity.startActivity(intent);
+
+                                // Shutdown to prevent the user from navigating back to this app
+                                // (which is now no longer showing a warning dialog).
+                                activity.finishAffinity();
+                                System.exit(0);
                             }
                     ).setNegativeButton(
                             " ",
                             (dialog1, which) -> {
-                                final int current = Settings.CHECK_ENVIRONMENT_WARNING_ISSUED_COUNT.get();
-                                Settings.CHECK_ENVIRONMENT_WARNING_ISSUED_COUNT.save(current + 1);
+                                // Cleanup data if the user incorrectly imported a huge negative number.
+                                final int current = Math.max(0, Settings.CHECK_ENVIRONMENT_WARNINGS_ISSUED.get());
+                                Settings.CHECK_ENVIRONMENT_WARNINGS_ISSUED.save(current + 1);
 
                                 dialog1.dismiss();
                             }
