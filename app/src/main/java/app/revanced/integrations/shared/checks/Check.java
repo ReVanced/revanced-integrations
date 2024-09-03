@@ -10,7 +10,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.text.Html;
-import android.view.View;
 import android.widget.Button;
 
 import androidx.annotation.Nullable;
@@ -23,8 +22,8 @@ import app.revanced.integrations.shared.Utils;
 import app.revanced.integrations.youtube.settings.Settings;
 
 abstract class Check {
-    private static final int SECONDS_TO_HIDE_IGNORE_BUTTON = 14;
-    private static final int SECONDS_TO_HIDE_WEBSITE_BUTTON = 7;
+    private static final int SECONDS_BEFORE_SHOWING_IGNORE_BUTTON = 15;
+    private static final int SECONDS_BEFORE_SHOWING_WEBSITE_BUTTON = 10;
 
     private static final Uri GOOD_SOURCE = Uri.parse("https://revanced.app");
 
@@ -109,7 +108,7 @@ abstract class Check {
 
     private static Runnable getCountdownRunnable(Button dismissButton, Button openWebsiteButton) {
         // Don't need atomic, but do need a mutable reference to modify from inside the runnable.
-        AtomicReference<Integer> secondsRemainingRef = new AtomicReference<>(SECONDS_TO_HIDE_IGNORE_BUTTON);
+        AtomicReference<Integer> secondsRemainingRef = new AtomicReference<>(SECONDS_BEFORE_SHOWING_IGNORE_BUTTON);
 
         return new Runnable() {
             @Override
@@ -118,7 +117,7 @@ abstract class Check {
                 // to not draw the user's attention to the dismiss button too early.
                 final int secondsRemaining = secondsRemainingRef.get();
                 if (secondsRemaining > 0) {
-                    if (secondsRemaining - SECONDS_TO_HIDE_WEBSITE_BUTTON == 0) {
+                    if (secondsRemaining - SECONDS_BEFORE_SHOWING_WEBSITE_BUTTON == 0) {
                         openWebsiteButton.setText(str("revanced_check_environment_dialog_open_official_source_button"));
                         openWebsiteButton.setEnabled(true);
                     }
