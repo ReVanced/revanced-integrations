@@ -125,7 +125,7 @@ public final class CheckEnvironmentPatch {
                     equalsHash(Build.TYPE, PATCH_TYPE) &&
                     equalsHash(Build.USER, PATCH_USER);
 
-            Logger.printDebug(() -> passed
+            Logger.printInfo(() -> passed
                     ? "Device hardware signature matches current device"
                     : "Device hardware signature does not match current device");
 
@@ -151,7 +151,7 @@ public final class CheckEnvironmentPatch {
         protected Boolean run() {
             final var durationSincePatching = System.currentTimeMillis() - PATCH_TIME;
 
-            Logger.printDebug(() -> "Installed: " + (durationSincePatching / 1000) + " seconds after patching");
+            Logger.printInfo(() -> "Installed: " + (durationSincePatching / 1000) + " seconds after patching");
 
             // Also verify patched time is not in the future.
             return durationSincePatching > 0 && durationSincePatching < 30 * 60 * 1000; // 30 minutes.
@@ -171,7 +171,7 @@ public final class CheckEnvironmentPatch {
 
         Utils.runOnBackgroundThread(() -> {
             try {
-                Logger.printDebug(() -> "Running environment checks");
+                Logger.printInfo(() -> "Running environment checks");
                 List<Check> failedChecks = new ArrayList<>();
 
                 CheckWasPatchedOnSameDeviceCheck hardwareCheck = new CheckWasPatchedOnSameDeviceCheck();

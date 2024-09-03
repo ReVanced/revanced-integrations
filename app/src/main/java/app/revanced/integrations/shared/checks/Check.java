@@ -53,7 +53,7 @@ abstract class Check {
     static boolean debugAlwaysShowWarning() {
         final boolean alwaysShowWarning = Settings.CHECK_ENVIRONMENT_WARNINGS_ISSUED.get() < 0;
         if (alwaysShowWarning) {
-            Logger.printDebug(() -> "Debug forcing environment check warning to show");
+            Logger.printInfo(() -> "Debug forcing environment check warning to show");
         }
 
         return alwaysShowWarning;
@@ -65,7 +65,7 @@ abstract class Check {
     }
 
     static void disableForever() {
-        Logger.printDebug(() -> "Environment checks disabled forever");
+        Logger.printInfo(() -> "Environment checks disabled forever");
 
         Settings.CHECK_ENVIRONMENT_WARNINGS_ISSUED.save(Integer.MAX_VALUE);
     }
