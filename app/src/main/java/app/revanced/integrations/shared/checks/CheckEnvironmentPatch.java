@@ -30,7 +30,7 @@ public final class CheckEnvironmentPatch {
      * For debugging and development only.
      * Forces all checks to be performed, and the check failed dialog to be shown.
      */
-    private static final boolean DEBUG_ALWAYS_SHOW_CHECK_FAILED_DIALOG = true;
+    private static final boolean DEBUG_ALWAYS_SHOW_CHECK_FAILED_DIALOG = false;
 
     /**
      * Check if the app is installed by the manager, the app store, or thru adb/CLI.
@@ -47,8 +47,8 @@ public final class CheckEnvironmentPatch {
     ) {
         final List<String> GOOD_INSTALLER_PACKAGE_NAMES = Arrays.asList(
                 MANAGER_PACKAGE_NAME,
-                "com.android.vending",
-                null // CLI install
+                "com.android.vending", // Root mounted install.
+                null // CLI install.
         );
 
         @Override
