@@ -12,13 +12,12 @@ import android.util.Base64;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.InetAddress;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 
 import app.revanced.integrations.shared.Logger;
 import app.revanced.integrations.shared.Utils;
@@ -136,11 +135,9 @@ public final class CheckEnvironmentPatch {
                     equalsHash(Build.TYPE, PATCH_TYPE) &&
                     equalsHash(Build.USER, PATCH_USER);
 
-            if (passed) {
-                Logger.printDebug(() -> "Build properties match current device");
-            } else {
-                Logger.printDebug(() -> "Build properties do not match current device");
-            }
+            Logger.printDebug(() -> passed
+                    ? "Device properties match current device"
+                    : "Device properties do not match current device");
 
             return passed;
         }
@@ -159,9 +156,9 @@ public final class CheckEnvironmentPatch {
     ) {
         @Override
         protected boolean run() {
-            final var duration = System.currentTimeMillis() - PATCH_TIME;
+            final var durationSincePatching = System.currentTimeMillis() - PATCH_TIME;
 
-            Logger.printDebug(() -> "Installed: " + (duration / 1000) + " seconds after patching");
+            Logger.printDebug(() -> "Installed: " + (durationSincePatching / 1000) + " seconds after patching");
 
             // Also verify patched time is not in the future.
             return durationSincePatching > 0 && durationSincePatching < 15 * 60 * 1000; // 15 minutes.
@@ -184,52 +181,62 @@ public final class CheckEnvironmentPatch {
             if (!Utils.isNetworkConnected()) return false;
 
             // Using multiple services to increase reliability, distribute the load and minimize tracking.
-            final var getIpServices = new ArrayList<String>() {
-                {
-                    add("https://wtfismyip.com/text");
-                    add("https://whatsmyfuckingip.com/text");
-                    add("https://api.ipify.org?format=text");
-                    add("https://icanhazip.com");
-                    add("https://ifconfig.me/ip");
-                }
+            String[] getIpServices = {
+                    "https://wtfismyip.com/text",
+                    "https://whatsmyfuckingip.com/text",
+                    "https://api.ipify.org?format=text",
+                    "https://icanhazip.com",
+                    "https://ifconfig.me/ip"
             };
 
-            String publicIP;
-            HttpURLConnection urlConnection = null;
-            try {
-                var service = getIpServices.get(new Random().nextInt(getIpServices.size() - 1));
-                Logger.printDebug(() -> "Using " + service + " to get public IP");
+            // Use a random service, and fallback on others if one fails.
+            Collections.shuffle(Arrays.asList(getIpServices));
 
-                urlConnection = (HttpURLConnection) new URL(service).openConnection();
-                urlConnection.setFixedLengthStreamingMode(0);
-                urlConnection.setConnectTimeout(10000);
-                urlConnection.setReadTimeout(10000);
+            for (String service : getIpServices) {
+                String publicIP = null;
+                HttpURLConnection urlConnection = null;
+                try {
+                    Logger.printDebug(() -> "Getting public ip using: " + service);
 
-                try (BufferedReader in = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()))) {
-                    publicIP = in.readLine();
+                    urlConnection = (HttpURLConnection) new URL(service).openConnection();
+                    urlConnection.setFixedLengthStreamingMode(0);
+                    urlConnection.setConnectTimeout(10000);
+                    urlConnection.setReadTimeout(10000);
+
+                    try (BufferedReader in = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()))) {
+                        publicIP = in.readLine();
+                        //noinspection ResultOfMethodCallIgnored
+                        InetAddress.getByName(publicIP); // Validate IP address.
+                    }
+                } catch (UnknownHostException ex) {
+                    String finalPublicIp = publicIP;
+                    Logger.printDebug(() -> "IP Service returned junk data:" + finalPublicIp, ex);
+                    continue;
+                } catch (Exception ex) {
+                    // If the app does not have the INTERNET permission or the service is down,
+                    // the public IP can not be retrieved.
+                    Logger.printDebug(() -> "Failed to get public IP address", ex);
+                    continue;
+                } finally {
+                    if (urlConnection != null) {
+                        urlConnection.disconnect();
+                    }
                 }
-            } catch (Exception ex) {
-                // If the app does not have the INTERNET permission or the service is down,
-                // the public IP can not be retrieved.
-                Logger.printDebug(() -> "Failed to get public IP address", ex);
-                return false;
-            } finally {
-                if (urlConnection != null) {
-                    urlConnection.disconnect();
-                }
+
+                final var passed = equalsHash(
+                        // Use last five characters to prevent brute forcing the hashed IP.
+                        publicIP.substring(publicIP.length() - 5),
+                        PUBLIC_IP_DURING_PATCH
+                );
+
+                Logger.printDebug(() -> passed
+                        ? "Public IP matches patch time public IP"
+                        : "Public IP does not match patch time public IP");
+
+                return passed;
             }
 
-            final var passed = equalsHash(
-                    // Use last five characters to prevent brute forcing the hashed IP.
-                    publicIP.substring(publicIP.length() - 5),
-                    PUBLIC_IP_DURING_PATCH
-            );
-
-            Logger.printDebug(() -> passed
-                    ? "Public IP matches patch time public IP"
-                    : "Public IP does not match patch time public IP");
-
-            return passed;
+            return false;
         }
     };
 
