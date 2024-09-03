@@ -8,49 +8,39 @@ import app.revanced.integrations.shared.Logger;
 import app.revanced.integrations.youtube.settings.Settings;
 
 public class DeviceHardwareSupport {
-    private static final boolean DEVICE_HAS_HARDWARE_DECODING_VP9 = deviceHasVP9HardwareDecoding();
-    private static final boolean DEVICE_HAS_HARDWARE_DECODING_AV1 = deviceHasAV1HardwareDecoding();
+    private static final boolean DEVICE_HAS_HARDWARE_DECODING_VP9;
+    private static final boolean DEVICE_HAS_HARDWARE_DECODING_AV1;
 
-    private static boolean deviceHasVP9HardwareDecoding() {
+    static {
+        boolean vp9found = false;
+        boolean av1found = false;
         MediaCodecList codecList = new MediaCodecList(MediaCodecList.ALL_CODECS);
+        final boolean deviceIsAndroidTenOrLater = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q;
 
         for (MediaCodecInfo codecInfo : codecList.getCodecInfos()) {
-            final boolean isHardwareAccelerated = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
+            final boolean isHardwareAccelerated = deviceIsAndroidTenOrLater
                     ? codecInfo.isHardwareAccelerated()
                     : !codecInfo.getName().startsWith("OMX.google"); // Software decoder.
             if (isHardwareAccelerated && !codecInfo.isEncoder()) {
                 for (String type : codecInfo.getSupportedTypes()) {
                     if (type.equalsIgnoreCase("video/x-vnd.on2.vp9")) {
-                        Logger.printDebug(() -> "Device supports VP9 hardware decoding.");
-                        return true;
+                        vp9found = true;
+                    } else if (type.equalsIgnoreCase("video/av01")) {
+                        av1found = true;
                     }
                 }
             }
         }
 
-        Logger.printDebug(() -> "Device does not support VP9 hardware decoding.");
-        return false;
-    }
+        DEVICE_HAS_HARDWARE_DECODING_VP9 = vp9found;
+        DEVICE_HAS_HARDWARE_DECODING_AV1 = av1found;
 
-    private static boolean deviceHasAV1HardwareDecoding() {
-        // It appears all devices with hardware AV1 are also Android 10 or newer.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            MediaCodecList codecList = new MediaCodecList(MediaCodecList.ALL_CODECS);
-
-            for (MediaCodecInfo codecInfo : codecList.getCodecInfos()) {
-                if (codecInfo.isHardwareAccelerated() && !codecInfo.isEncoder()) {
-                    for (String type : codecInfo.getSupportedTypes()) {
-                        if (type.equalsIgnoreCase("video/av01")) {
-                            Logger.printDebug(() -> "Device supports AV1 hardware decoding.");
-                            return true;
-                        }
-                    }
-                }
-            }
-        }
-
-        Logger.printDebug(() -> "Device does not support AV1 hardware decoding.");
-        return false;
+        Logger.printDebug(() -> DEVICE_HAS_HARDWARE_DECODING_AV1
+                ? "Device supports AV1 hardware decoding\n"
+                : "Device does not support AV1 hardware decoding\n"
+                + (DEVICE_HAS_HARDWARE_DECODING_VP9
+                ? "Device supports VP9 hardware decoding"
+                : "Device does not support VP9 hardware decoding"));
     }
 
     public static boolean allowVP9() {
