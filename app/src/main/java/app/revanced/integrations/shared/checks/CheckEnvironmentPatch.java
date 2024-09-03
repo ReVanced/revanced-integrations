@@ -68,10 +68,10 @@ public final class CheckEnvironmentPatch {
             final var installerPackageName =
                     context.getPackageManager().getInstallerPackageName(context.getPackageName());
 
-            Logger.printDebug(() -> "Installed by: " + installerPackageName);
+            Logger.printInfo(() -> "Installed by: " + installerPackageName);
             final boolean passed = GOOD_INSTALLER_PACKAGE_NAMES.contains(installerPackageName);
 
-            Logger.printDebug(() -> passed
+            Logger.printInfo(() -> passed
                     ? "Apk was not installed from an unknown source"
                     : "Apk was installed from an unknown source");
 
@@ -96,7 +96,7 @@ public final class CheckEnvironmentPatch {
         protected Boolean run() {
             if (PATCH_BOARD.isEmpty()) {
                 // Did not patch with Manager, and cannot conclusively say where this was from.
-                Logger.printDebug(() -> "APK does not contain a hardware signature and cannot compare to current device");
+                Logger.printInfo(() -> "APK does not contain a hardware signature and cannot compare to current device");
                 return null;
             }
 
