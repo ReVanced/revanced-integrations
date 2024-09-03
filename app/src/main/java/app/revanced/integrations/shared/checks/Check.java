@@ -42,6 +42,16 @@ abstract class Check {
     @Nullable
     protected abstract Boolean run();
 
+    /**
+     * For debugging and development only.
+     * Forces all checks to be performed and the check failed dialog to be shown.
+     * Can be enabled by importing settings text with {@link Settings#CHECK_ENVIRONMENT_WARNING_ISSUED_COUNT}
+     * set to -1.
+     */
+    static boolean debugAlwaysShowWarning() {
+        return Settings.CHECK_ENVIRONMENT_WARNING_ISSUED_COUNT.get() < 0;
+    }
+
     static boolean shouldRun() {
         return Settings.CHECK_ENVIRONMENT_WARNING_ISSUED_COUNT.get() < 2;
     }

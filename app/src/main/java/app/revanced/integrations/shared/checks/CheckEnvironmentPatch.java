@@ -1,5 +1,6 @@
 package app.revanced.integrations.shared.checks;
 
+import static app.revanced.integrations.shared.checks.Check.debugAlwaysShowWarning;
 import static app.revanced.integrations.shared.checks.PatchInfo.Build.*;
 import static app.revanced.integrations.shared.checks.PatchInfo.MANAGER_PACKAGE_NAME;
 import static app.revanced.integrations.shared.checks.PatchInfo.PATCH_TIME;
@@ -26,11 +27,7 @@ import app.revanced.integrations.shared.Utils;
  */
 @SuppressWarnings("unused")
 public final class CheckEnvironmentPatch {
-    /**
-     * For debugging and development only.
-     * Forces all checks to be performed, and the check failed dialog to be shown.
-     */
-    private static final boolean DEBUG_ALWAYS_SHOW_CHECK_FAILED_DIALOG = false;
+    private static final boolean DEBUG_ALWAYS_SHOW_CHECK_FAILED_DIALOG = debugAlwaysShowWarning();
 
     /**
      * Check if the app is installed by the manager, the app store, or thru adb/CLI.
