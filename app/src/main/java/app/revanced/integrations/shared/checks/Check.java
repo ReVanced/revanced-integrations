@@ -23,8 +23,8 @@ import app.revanced.integrations.shared.Utils;
 import app.revanced.integrations.youtube.settings.Settings;
 
 abstract class Check {
-    private static final int SECONDS_TO_HIDE_IGNORE_BUTTON = 10;
-    private static final int SECONDS_TO_HIDE_WEBSITE_BUTTON = 5;
+    private static final int SECONDS_TO_HIDE_IGNORE_BUTTON = 14;
+    private static final int SECONDS_TO_HIDE_WEBSITE_BUTTON = 7;
 
     private static final Uri GOOD_SOURCE = Uri.parse("https://revanced.app");
 
@@ -48,7 +48,7 @@ abstract class Check {
     }
 
     static void disableForever() {
-        Logger.printDebug(() -> "Environment checks disabled forever.");
+        Logger.printDebug(() -> "Environment checks disabled forever");
 
         Settings.CHECK_ENVIRONMENT_WARNING_ISSUED_COUNT.save(Integer.MAX_VALUE);
     }
@@ -75,7 +75,7 @@ abstract class Check {
                     .setTitle(str("revanced_check_environment_failed_title"))
                     .setMessage(message)
                     .setPositiveButton(
-                            str("revanced_check_environment_dialog_open_official_source_button"),
+                            " ",
                             (dialog1, which) -> {
                                 final var intent = new Intent(Intent.ACTION_VIEW, GOOD_SOURCE);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -83,7 +83,7 @@ abstract class Check {
                                 context.startActivity(intent);
                             }
                     ).setNegativeButton(
-                            str("revanced_check_environment_dialog_ignore_button"),
+                            " ",
                             (dialog1, which) -> {
                                 final int current = Settings.CHECK_ENVIRONMENT_WARNING_ISSUED_COUNT.get();
                                 Settings.CHECK_ENVIRONMENT_WARNING_ISSUED_COUNT.save(current + 1);
@@ -95,10 +95,10 @@ abstract class Check {
             dialog.show(); // Must show before getting the dismiss button or setting movement method.
 
             var openWebsiteButton = dialog.getButton(DialogInterface.BUTTON_POSITIVE);
-            openWebsiteButton.setVisibility(View.GONE);
+            openWebsiteButton.setEnabled(false);
 
             var dismissButton = dialog.getButton(DialogInterface.BUTTON_NEGATIVE);
-            dismissButton.setVisibility(View.GONE);
+            dismissButton.setEnabled(false);
 
             // Use a longer delay than any of the other patches that can show a dialog on startup
             // (Announcements, Check watch history), but there is still a chance a slow network
@@ -118,15 +118,17 @@ abstract class Check {
                 // to not draw the user's attention to the dismiss button too early.
                 final int secondsRemaining = secondsRemainingRef.get();
                 if (secondsRemaining > 0) {
-                    if (secondsRemaining - SECONDS_TO_HIDE_WEBSITE_BUTTON < 0) {
-                        openWebsiteButton.setVisibility(View.VISIBLE);
+                    if (secondsRemaining - SECONDS_TO_HIDE_WEBSITE_BUTTON == 0) {
+                        openWebsiteButton.setText(str("revanced_check_environment_dialog_open_official_source_button"));
+                        openWebsiteButton.setEnabled(true);
                     }
 
                     secondsRemainingRef.set(secondsRemaining - 1);
 
                     Utils.runOnMainThreadDelayed(this, 1000);
                 } else {
-                    dismissButton.setVisibility(View.VISIBLE);
+                    dismissButton.setText(str("revanced_check_environment_dialog_ignore_button"));
+                    dismissButton.setEnabled(true);
                 }
             }
         };
