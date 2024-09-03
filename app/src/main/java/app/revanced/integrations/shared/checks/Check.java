@@ -22,7 +22,7 @@ import app.revanced.integrations.shared.Utils;
 import app.revanced.integrations.youtube.settings.Settings;
 
 abstract class Check {
-    private static final int NUMBER_OF_TIMES_TO_SHOW_WARNING_BEFORE_DISABLING = 2;
+    private static final int NUMBER_OF_TIMES_TO_IGNORE_WARNING_BEFORE_DISABLING = 2;
 
     private static final int SECONDS_BEFORE_SHOWING_IGNORE_BUTTON = 15;
     private static final int SECONDS_BEFORE_SHOWING_WEBSITE_BUTTON = 10;
@@ -61,13 +61,13 @@ abstract class Check {
 
     static boolean shouldRun() {
         return Settings.CHECK_ENVIRONMENT_WARNINGS_ISSUED.get()
-                < NUMBER_OF_TIMES_TO_SHOW_WARNING_BEFORE_DISABLING;
+                < NUMBER_OF_TIMES_TO_IGNORE_WARNING_BEFORE_DISABLING;
     }
 
     static void disableForever() {
         Logger.printDebug(() -> "Environment checks disabled forever");
 
-        Settings.CHECK_ENVIRONMENT_WARNINGS_ISSUED.save(NUMBER_OF_TIMES_TO_SHOW_WARNING_BEFORE_DISABLING);
+        Settings.CHECK_ENVIRONMENT_WARNINGS_ISSUED.save(Integer.MAX_VALUE);
     }
 
     @SuppressLint("NewApi")

@@ -10,6 +10,8 @@ import android.app.Activity;
 import android.os.Build;
 import android.util.Base64;
 
+import androidx.annotation.NonNull;
+
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -39,15 +41,26 @@ public final class CheckEnvironmentPatch {
      * If the app is not installed by the manager or the app store, then the app was likely downloaded pre-patched
      * and installed by the browser or another unknown app.
      */
-    private static final Check hasExpectedInstallerCheck = new Check(
-            "revanced_check_environment_manager_not_expected_installer"
-    ) {
-        final List<String> GOOD_INSTALLER_PACKAGE_NAMES = Arrays.asList(
+    private static class CheckHasExpectedInstallerCheck extends Check {
+        /**
+         * CLI patching, or manual installation of a previously patched using adb.
+         * But excludes adb mounted root installation.
+         */
+        private static final String ADB_INSTALLATION_PACKAGE_NAME = null;
+
+        private static final List<String> GOOD_INSTALLER_PACKAGE_NAMES = Arrays.asList(
                 MANAGER_PACKAGE_NAME,
-                "com.android.vending", // Root mounted install.
-                null // CLI install.
+                "com.android.vending", // Root installation.
+                ADB_INSTALLATION_PACKAGE_NAME
         );
 
+        private boolean isNonRootAdbInstallation;
+
+        CheckHasExpectedInstallerCheck() {
+            super("revanced_check_environment_manager_not_expected_installer");
+        }
+
+        @NonNull
         @Override
         protected Boolean run() {
             final var context = Utils.getContext();
@@ -55,8 +68,8 @@ public final class CheckEnvironmentPatch {
             final var installerPackageName =
                     context.getPackageManager().getInstallerPackageName(context.getPackageName());
 
-            Logger.printDebug(() -> "Installed by " + installerPackageName);
-            boolean passed = GOOD_INSTALLER_PACKAGE_NAMES.contains(installerPackageName);
+            Logger.printDebug(() -> "Installed by: " + installerPackageName);
+            final boolean passed = GOOD_INSTALLER_PACKAGE_NAMES.contains(installerPackageName);
 
             Logger.printDebug(() -> passed
                     ? "Apk was not installed from an unknown source"
@@ -64,7 +77,7 @@ public final class CheckEnvironmentPatch {
 
             return passed;
         }
-    };
+    }
 
     /**
      * Check if the build properties are the same as during the patch.
@@ -73,9 +86,11 @@ public final class CheckEnvironmentPatch {
      * <br>
      * If the build properties are different, the app was likely downloaded pre-patched or patched on another device.
      */
-    private static final Check wasPatchedOnSameDeviceCheck = new Check(
-            "revanced_check_environment_not_same_patching_device"
-    ) {
+    private static class CheckWasPatchedOnSameDeviceCheck extends Check {
+        CheckWasPatchedOnSameDeviceCheck() {
+            super("revanced_check_environment_not_same_patching_device");
+        }
+
         @SuppressLint({"NewApi", "HardwareIds"})
         @Override
         protected Boolean run() {
@@ -116,7 +131,7 @@ public final class CheckEnvironmentPatch {
 
             return passed;
         }
-    };
+    }
 
     /**
      * Check if the app was installed within the last 30 minutes after being patched.
@@ -126,9 +141,12 @@ public final class CheckEnvironmentPatch {
      * If the app was installed at a later time, it is likely, the app was downloaded pre-patched, the user
      * waited too long to install the app or the patch time is too long ago.
      */
-    private static final Check isNearPatchTimeCheck = new Check(
-            "revanced_check_environment_not_near_patch_time"
-    ) {
+    private static class CheckIsNearPatchTimeCheck extends Check {
+        CheckIsNearPatchTimeCheck() {
+            super("revanced_check_environment_not_near_patch_time");
+        }
+
+        @NonNull
         @Override
         protected Boolean run() {
             final var durationSincePatching = System.currentTimeMillis() - PATCH_TIME;
@@ -138,7 +156,7 @@ public final class CheckEnvironmentPatch {
             // Also verify patched time is not in the future.
             return durationSincePatching > 0 && durationSincePatching < 30 * 60 * 1000; // 30 minutes.
         }
-    };
+    }
 
     /**
      * Injection point.
@@ -156,8 +174,9 @@ public final class CheckEnvironmentPatch {
                 Logger.printDebug(() -> "Running environment checks");
                 List<Check> failedChecks = new ArrayList<>();
 
+                CheckWasPatchedOnSameDeviceCheck hardwareCheck = new CheckWasPatchedOnSameDeviceCheck();
                 boolean deviceSignatureFailed = false;
-                Boolean checkResult = wasPatchedOnSameDeviceCheck.run();
+                Boolean checkResult = hardwareCheck.run();
                 if (checkResult != null) {
                     if (checkResult) {
                         if (!DEBUG_ALWAYS_SHOW_CHECK_FAILED_DIALOG) {
@@ -168,29 +187,37 @@ public final class CheckEnvironmentPatch {
                         }
                     } else {
                         deviceSignatureFailed = true;
-                        failedChecks.add(wasPatchedOnSameDeviceCheck);
+                        failedChecks.add(hardwareCheck);
                     }
                 }
 
-                checkResult = hasExpectedInstallerCheck.run();
-                if (checkResult != null && !checkResult) {
-                    failedChecks.add(hasExpectedInstallerCheck);
+                CheckHasExpectedInstallerCheck expectedInstallerCheck = new CheckHasExpectedInstallerCheck();
+                checkResult = expectedInstallerCheck.run();
+                if (!checkResult) {
+                    failedChecks.add(expectedInstallerCheck);
                 }
 
-                // If patched on a different device then a warning will be shown.
+                // Near device time check is ignored for adb installs to prevent false positives.
+                // This means all non root adb installs of CLI builds will not be checked,
+                // but this seems a highly unlikely way an end user would install a pre-patched app.
+                //
+                // The goal here is to identify pre-patched installations while
+                // never showing false positives for regular use cases.
+                CheckIsNearPatchTimeCheck nearTimeCheck = new CheckIsNearPatchTimeCheck();
+                checkResult = nearTimeCheck.run();
+                // If patched on a different device then a warning will already be shown.
                 // But if the patch time was also a while ago then don't bother mentioning it because
                 // that issue might be distracting to the the major issue of someone else patching this app.
-                checkResult = isNearPatchTimeCheck.run();
-                if (checkResult != null && !checkResult && !deviceSignatureFailed) {
-                    failedChecks.add(isNearPatchTimeCheck);
+                if (!checkResult && !deviceSignatureFailed && !expectedInstallerCheck.isNonRootAdbInstallation) {
+                    failedChecks.add(nearTimeCheck);
                 }
 
                 if (DEBUG_ALWAYS_SHOW_CHECK_FAILED_DIALOG) {
                     // Show all failures for debugging layout.
                     failedChecks = Arrays.asList(
-                            wasPatchedOnSameDeviceCheck,
-                            hasExpectedInstallerCheck,
-                            isNearPatchTimeCheck);
+                            hardwareCheck,
+                            expectedInstallerCheck,
+                            nearTimeCheck);
                 }
 
                 if (failedChecks.isEmpty()) {
