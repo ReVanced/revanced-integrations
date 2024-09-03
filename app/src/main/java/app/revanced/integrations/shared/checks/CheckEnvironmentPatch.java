@@ -163,8 +163,8 @@ public final class CheckEnvironmentPatch {
 
             Logger.printDebug(() -> "Installed: " + (duration / 1000) + " seconds after patching");
 
-            // Dialog text says 10 minutes, but use 15 in case they're off.
-            return duration < 15 * 60 * 1000; // 15 minutes.
+            // Also verify patched time is not in the future.
+            return durationSincePatching > 0 && durationSincePatching < 15 * 60 * 1000; // 15 minutes.
         }
     };
 
