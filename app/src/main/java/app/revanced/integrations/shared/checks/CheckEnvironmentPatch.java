@@ -1,22 +1,19 @@
 package app.revanced.integrations.shared.checks;
 
 import static app.revanced.integrations.shared.checks.PatchInfo.Build.*;
-import static app.revanced.integrations.shared.checks.PatchInfo.*;
+import static app.revanced.integrations.shared.checks.PatchInfo.MANAGER_PACKAGE_NAME;
+import static app.revanced.integrations.shared.checks.PatchInfo.PATCH_TIME;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.os.Build;
 import android.util.Base64;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.InetAddress;
-import java.net.URL;
-import java.net.UnknownHostException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import app.revanced.integrations.shared.Logger;
 import app.revanced.integrations.shared.Utils;
@@ -147,81 +144,6 @@ public final class CheckEnvironmentPatch {
     };
 
     /**
-     * Check if the IP address is the same as during the patch.
-     * <br>
-     * If the IP address is the same as during the patch, it is likely, the app was just patched by the user.
-     * <br>
-     * If the IP address is different, the app was likely downloaded pre-patched or the patch time is too long ago.
-     */
-    private static final Check hasPatchTimePublicIPCheck = new Check(
-            "revanced_check_environment_not_same_patch_time_network_address"
-    ) {
-        @Override
-        protected Boolean run() {
-            Utils.verifyOffMainThread();
-            if (!Utils.isNetworkConnected()) return false;
-
-            // Using multiple services to increase reliability, distribute the load and minimize tracking.
-            String[] getIpServices = {
-                    "https://wtfismyip.com/text",
-                    "https://whatsmyfuckingip.com/text",
-                    "https://api.ipify.org?format=text",
-                    "https://icanhazip.com",
-                    "https://ifconfig.me/ip"
-            };
-
-            // Use a random service, and fallback on others if one fails.
-            Collections.shuffle(Arrays.asList(getIpServices));
-
-            for (String service : getIpServices) {
-                String publicIP = null;
-                HttpURLConnection urlConnection = null;
-                try {
-                    Logger.printDebug(() -> "Getting public ip using: " + service);
-
-                    urlConnection = (HttpURLConnection) new URL(service).openConnection();
-                    urlConnection.setFixedLengthStreamingMode(0);
-                    urlConnection.setConnectTimeout(10000);
-                    urlConnection.setReadTimeout(10000);
-
-                    try (BufferedReader in = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()))) {
-                        publicIP = in.readLine();
-                        //noinspection ResultOfMethodCallIgnored
-                        InetAddress.getByName(publicIP); // Validate IP address.
-                    }
-                } catch (UnknownHostException ex) {
-                    String finalPublicIp = publicIP;
-                    Logger.printDebug(() -> "IP Service returned junk data:" + finalPublicIp, ex);
-                    continue;
-                } catch (Exception ex) {
-                    // If the app does not have the INTERNET permission or the service is down,
-                    // the public IP can not be retrieved.
-                    Logger.printDebug(() -> "Failed to get public IP address", ex);
-                    continue;
-                } finally {
-                    if (urlConnection != null) {
-                        urlConnection.disconnect();
-                    }
-                }
-
-                final var passed = equalsHash(
-                        // Use last five characters to prevent brute forcing the hashed IP.
-                        publicIP.substring(publicIP.length() - 5),
-                        PUBLIC_IP_DURING_PATCH
-                );
-
-                Logger.printDebug(() -> passed
-                        ? "Public IP matches patch time public IP"
-                        : "Public IP does not match patch time public IP");
-
-                return passed;
-            }
-
-            return false;
-        }
-    };
-
-    /**
      * Injection point.
      */
     public static void check(Activity context) {
@@ -257,13 +179,6 @@ public final class CheckEnvironmentPatch {
                 checkResult = isNearPatchTimeCheck.run();
                 if (checkResult != null && !checkResult) {
                     failedChecks.add(isNearPatchTimeCheck);
-                } else {
-
-                    // Check ip only if within the same time.
-                    checkResult = hasPatchTimePublicIPCheck.run();
-                    if (checkResult != null && !checkResult) {
-                        failedChecks.add(hasPatchTimePublicIPCheck);
-                    }
                 }
 
                 if (failedChecks.isEmpty()) {
@@ -271,6 +186,14 @@ public final class CheckEnvironmentPatch {
                         Check.disableForever();
                         return;
                     }
+                }
+
+                if (DEBUG_ALWAYS_SHOW_CHECK_FAILED_DIALOG) {
+                    // Show all failures for debugging layout.
+                    failedChecks = Arrays.asList(
+                            isPatchingDeviceSameCheck,
+                            hasExpectedInstallerCheck,
+                            isNearPatchTimeCheck);
                 }
 
                 Check.issueWarning(
