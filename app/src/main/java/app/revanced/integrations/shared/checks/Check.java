@@ -126,7 +126,7 @@ abstract class Check {
             // Use a longer delay than any of the other patches that can show a dialog on startup
             // (Announcements, Check watch history), but there is still a chance a slow network
             // can cause the dialogs to be out of order.
-            Utils.runOnMainThreadDelayed(getCountdownRunnable(dismissButton, openWebsiteButton), 1000);
+            Utils.runOnMainThreadDelayed(getCountdownRunnable(dismissButton, openWebsiteButton), 2000);
         });
     }
 
