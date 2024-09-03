@@ -69,35 +69,6 @@ public final class CheckEnvironmentPatch {
     };
 
     /**
-     * Check if a manager is installed on this device.
-     * <br>
-     * If the manager is installed, it is likely, the app was patched using the manager.
-     * <br>
-     * If the manager is not installed, the app was likely downloaded pre-patched,
-     * the user patched the app on another device,
-     * or the user has uninstalled the manager after patching the app.
-     */
-    // This check may need the app to have permission to query the manager app, in case the app is targeting A11+.
-    private static final Check isManagerInstalledCheck = new Check(
-            "revanced_check_environment_manager_not_installed"
-    ) {
-        @Override
-        protected boolean run() {
-            try {
-                Utils.getContext().getPackageManager().getPackageInfo(MANAGER_PACKAGE_NAME, 0);
-
-                Logger.printDebug(() -> "Manager is installed");
-
-                return true;
-            } catch (PackageManager.NameNotFoundException e) {
-                Logger.printDebug(() -> "Could not find manager package: " + e.getMessage());
-
-                return false;
-            }
-        }
-    };
-
-    /**
      * Check if the build properties are the same as during the patch.
      * <br>
      * If the build properties are the same as during the patch, it is likely, the app was patched on the same device.
@@ -265,8 +236,7 @@ public final class CheckEnvironmentPatch {
 
                 Logger.printDebug(() -> "Failed build time check");
 
-                // TODO: One of the checks probably is sufficient.
-                if (isManagerInstalledCheck.run() || hasExpectedInstallerCheck.run()) {
+                if (hasExpectedInstallerCheck.run()) {
                     Logger.printDebug(() -> "Passed installation source check");
                     if (!DEBUG_ALWAYS_SHOW_CHECK_FAILED_DIALOG) {
                         Check.disableForever();
@@ -291,7 +261,6 @@ public final class CheckEnvironmentPatch {
                             context,
                             isNearPatchTimeCheck,
                             isPatchingDeviceSameCheck,
-                            isManagerInstalledCheck,
                             hasExpectedInstallerCheck,
                             hasPatchTimePublicIPCheck
                     );
