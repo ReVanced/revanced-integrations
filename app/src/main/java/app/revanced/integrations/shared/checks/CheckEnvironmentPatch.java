@@ -331,16 +331,20 @@ public final class CheckEnvironmentPatch {
         });
     }
 
-    private static boolean equalsHash(String value, String hash) {
-        if (value == null) {
-            Logger.printDebug(() -> "Value is null");
+    private static boolean equalsHash(String deviceString, String patchStringHash) {
+        if (deviceString == null) {
+            Logger.printDebug(() -> "Device string is null");
 
             return false;
         }
 
         try {
-            final var sha1 = MessageDigest.getInstance("SHA-1").digest(value.getBytes());
-            return Base64.encodeToString(sha1, Base64.DEFAULT).equals(hash);
+            final var sha1 = MessageDigest.getInstance("SHA-1").digest(deviceString.getBytes());
+            final boolean equals = Base64.encodeToString(sha1, Base64.DEFAULT).equals(patchStringHash);
+            if (!equals) {
+                Logger.printInfo(() -> "Device string does not match patch hash: " + deviceString);
+            }
+            return equals;
         } catch (NoSuchAlgorithmException ex) {
             Logger.printException(() -> "equalsHash failure", ex); // Will never happen.
 
