@@ -3,7 +3,6 @@ package app.revanced.integrations.shared.checks;
 // Fields are set by the patch. Do not modify.
 // Fields are not final, because the compiler is inlining them.
 final class PatchInfo {
-    static final String MANAGER_PACKAGE_NAME = "app.revanced.manager.flutter";
     static long PATCH_TIME = 0L;
 
     final static class Build {

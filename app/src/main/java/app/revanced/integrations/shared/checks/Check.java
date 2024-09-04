@@ -29,20 +29,13 @@ abstract class Check {
 
     private static final Uri GOOD_SOURCE = Uri.parse("https://revanced.app");
 
-    private final String failedReasonStringKey;
-
-    /**
-     * @param failedReasonStringKey The string key of the reason why the check failed to be shown to the user.
-     */
-    Check(String failedReasonStringKey) {
-        this.failedReasonStringKey = failedReasonStringKey;
-    }
-
     /**
      * @return If the check conclusively passed or failed. A null value indicates it neither passed nor failed.
      */
     @Nullable
-    protected abstract Boolean run();
+    protected abstract Boolean check();
+
+    protected abstract String failureReason();
 
     /**
      * For debugging and development only.
@@ -76,7 +69,7 @@ abstract class Check {
 
         reasons.append("<ul>");
         for (var check : failedChecks) {
-            reasons.append("<li>").append(str(check.failedReasonStringKey));
+            reasons.append("<li>").append(check.failureReason());
         }
         reasons.append("</ul>");
 
@@ -121,29 +114,27 @@ abstract class Check {
                 var dismissButton = dialog.getButton(DialogInterface.BUTTON_NEGATIVE);
                 dismissButton.setEnabled(false);
 
-                Utils.runOnMainThread(getCountdownRunnable(dismissButton, openWebsiteButton));
+                getCountdownRunnable(dismissButton, openWebsiteButton).run();
             });
 
         }, 1000); // Use a delay, so this dialog is shown on top of any other startup dialogs.
     }
 
     private static Runnable getCountdownRunnable(Button dismissButton, Button openWebsiteButton) {
-        // Don't need atomic, but do need a mutable reference to modify from inside the runnable.
-        AtomicReference<Integer> secondsRemainingRef = new AtomicReference<>(SECONDS_BEFORE_SHOWING_IGNORE_BUTTON);
-
         return new Runnable() {
+            private int secondsRemaining = SECONDS_BEFORE_SHOWING_IGNORE_BUTTON;
+
             @Override
             public void run() {
-                // Reduce the remaining time by 1 second, but only show the countdown when 3 seconds are left
-                // to not draw the user's attention to the dismiss button too early.
-                final int secondsRemaining = secondsRemainingRef.get();
+                Utils.verifyOnMainThread();
+
                 if (secondsRemaining > 0) {
                     if (secondsRemaining - SECONDS_BEFORE_SHOWING_WEBSITE_BUTTON == 0) {
                         openWebsiteButton.setText(str("revanced_check_environment_dialog_open_official_source_button"));
                         openWebsiteButton.setEnabled(true);
                     }
 
-                    secondsRemainingRef.set(secondsRemaining - 1);
+                    secondsRemaining--;
 
                     Utils.runOnMainThreadDelayed(this, 1000);
                 } else {
