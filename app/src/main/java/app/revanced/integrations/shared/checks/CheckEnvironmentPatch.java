@@ -342,7 +342,7 @@ public final class CheckEnvironmentPatch {
             final var sha1 = MessageDigest.getInstance("SHA-1").digest(deviceString.getBytes());
             final boolean equals = Base64.encodeToString(sha1, Base64.DEFAULT).equals(patchStringHash);
             if (!equals) {
-                Logger.printInfo(() -> "Device string does not match patch hash: " + deviceString);
+                Logger.printInfo(() -> "Device string: " + deviceString + " does not match patch hash: " + patchStringHash);
             }
             return equals;
         } catch (NoSuchAlgorithmException ex) {
