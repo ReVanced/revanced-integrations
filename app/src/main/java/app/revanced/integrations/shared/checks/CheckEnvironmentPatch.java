@@ -7,6 +7,9 @@ import static app.revanced.integrations.shared.checks.PatchInfo.PATCH_TIME;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.util.Base64;
 
@@ -35,26 +38,32 @@ public final class CheckEnvironmentPatch {
          * CLI patching, manual installation of a previously patched using adb,
          * or root installation if stock app is first installed using adb.
          */
-        ADB(null),
+        ADB((String) null),
         ROOT_MOUNT_ON_APP_STORE("com.android.vending"),
-        MANAGER("app.revanced.manager.flutter");
+        MANAGER("app.revanced.manager.flutter",
+                "app.revanced.manager",
+                "app.revanced.manager.debug");
 
         @Nullable
         static InstallationType installTypeFromPackageName(@Nullable String packageName) {
             for (InstallationType type : values()) {
-                if (Objects.equals(type.packageName, packageName)) {
-                    return type;
+                for (String installPackageName : type.packageNames) {
+                    if (Objects.equals(installPackageName, packageName)) {
+                        return type;
+                    }
                 }
             }
 
             return null;
         }
 
-        @Nullable
-        final String packageName;
+        /**
+         * Array elements can be null.
+         */
+        final String[] packageNames;
 
-        InstallationType(@Nullable String packageName) {
-            this.packageName = packageName;
+        InstallationType(String... packageNames) {
+            this.packageNames = packageNames;
         }
     }
 
@@ -70,7 +79,7 @@ public final class CheckEnvironmentPatch {
      */
     private static class CheckExpectedInstaller extends Check {
         @Nullable
-        InstallationType installFound;
+        InstallationType installerFound;
 
         @NonNull
         @Override
@@ -82,8 +91,8 @@ public final class CheckEnvironmentPatch {
 
             Logger.printInfo(() -> "Installed by: " + installerPackageName);
 
-            installFound = InstallationType.installTypeFromPackageName(installerPackageName);
-            final boolean passed = (installFound != null);
+            installerFound = InstallationType.installTypeFromPackageName(installerPackageName);
+            final boolean passed = (installerFound != null);
 
             Logger.printInfo(() -> passed
                     ? "Apk was not installed from an unknown source"
@@ -95,6 +104,11 @@ public final class CheckEnvironmentPatch {
         @Override
         protected String failureReason() {
             return str("revanced_check_environment_manager_not_expected_installer");
+        }
+
+        @Override
+        public int uiSortingValue() {
+            return -100; // Show first.
         }
     }
 
@@ -151,6 +165,11 @@ public final class CheckEnvironmentPatch {
         protected String failureReason() {
             return str("revanced_check_environment_not_same_patching_device");
         }
+
+        @Override
+        public int uiSortingValue() {
+            return 0; // Show in the middle.
+        }
     }
 
     /**
@@ -162,12 +181,41 @@ public final class CheckEnvironmentPatch {
      * waited too long to install the app or the patch time is too long ago.
      */
     private static class CheckIsNearPatchTime extends Check {
+        /**
+         * How soon after patching the app must be first launched.
+         */
         static final int THRESHOLD_FOR_PATCHING_RECENTLY = 30 * 60 * 1000;  // 30 minutes.
-        final long DURATION_SINCE_PATCHING = System.currentTimeMillis() - PATCH_TIME;
+
+        /**
+         * How soon after installation the patch checks.
+         * If the install is older than this, this entire check always passes
+         * to prevent showing any errors if the user clears the app data after installation.
+         */
+        static final int THRESHOLD_FOR_RECENT_INSTALLATION = 12 * 60 * 60 * 1000;  // 12 hours.
+
+        static final long DURATION_SINCE_PATCHING = System.currentTimeMillis() - PATCH_TIME;
 
         @NonNull
         @Override
         protected Boolean check() {
+            // Verify the app install is recent, to prevent showing errors
+            // if the user later clears the app data.
+            try {
+                Context context = Utils.getContext();
+                PackageManager packageManager = context.getPackageManager();
+                PackageInfo packageInfo = packageManager.getPackageInfo(context.getPackageName(), 0);
+
+                final long durationSinceInstallation = System.currentTimeMillis() - packageInfo.lastUpdateTime;
+                if (durationSinceInstallation > THRESHOLD_FOR_RECENT_INSTALLATION) {
+                    Logger.printInfo(() -> "Passing install time check, since installation/update was: "
+                            + (durationSinceInstallation / (60 * 60 * 1000)) + " hours ago");
+                    return true;
+                }
+            } catch (PackageManager.NameNotFoundException ex) {
+                Logger.printException(() -> "Package name not found exception", ex); // Will never happen.
+                return false;
+            }
+
             Logger.printInfo(() -> "Installed: " + (DURATION_SINCE_PATCHING / 1000) + " seconds after patching");
 
             // Also verify patched time is not in the future.
@@ -191,6 +239,11 @@ public final class CheckEnvironmentPatch {
             }
 
             return str("revanced_check_environment_not_near_patch_time");
+        }
+
+        @Override
+        public int uiSortingValue() {
+            return 100; // Show last.
         }
     }
 
@@ -218,42 +271,49 @@ public final class CheckEnvironmentPatch {
                         // and no further checks are needed.
                         Check.disableForever();
                         return;
-                    } else {
-                        failedChecks.add(sameHardware);
                     }
-                }
 
-                CheckExpectedInstaller installerCheck = new CheckExpectedInstaller();
-                if (!installerCheck.check() || installerCheck.installFound == InstallationType.MANAGER) {
-                    // If the installer package is Manager but the code reached here,
-                    // that means it must not be the right Manager otherwise the hardware hash
-                    // signatures would be present and this further check would not have run.
-                    failedChecks.clear();
-                    failedChecks.add(installerCheck);
-
-                    // If the installer check failed, then this
-                    // install also must have been patched on a different device.
                     failedChecks.add(sameHardware);
                 }
 
-                // Show this failure only if other checks also failed.
-                // Otherwise clearing the app data and relaunching could show this error again.
-                //
-                // Near device time check is ignored for adb installs to prevent false positives.
-                // This means all adb installs of CLI builds will always pass,
-                // but it seems highly unlikely an end user would install a pre-patched app using adb.
                 CheckIsNearPatchTime nearPatchTime = new CheckIsNearPatchTime();
-                if (!nearPatchTime.check() && !failedChecks.isEmpty()
-                        && installerCheck.installFound != InstallationType.ADB) {
+                if (nearPatchTime.check() && !DEBUG_ALWAYS_SHOW_CHECK_FAILED_DIALOG) {
+                    if (failedChecks.isEmpty()) {
+                        // Recently patched and installed. No further checks are needed.
+                        // Stopping here also prevents showing warnings if patching and installing with Termux.
+                        Check.disableForever();
+                        return;
+                    }
+                } else {
                     failedChecks.add(nearPatchTime);
+                }
+
+                CheckExpectedInstaller installerCheck = new CheckExpectedInstaller();
+                // If the installer package is Manager but this code is reached,
+                // that means it must not be the right Manager otherwise the hardware hash
+                // signatures would be present and this check would not have run.
+                final boolean isManagerInstall = installerCheck.installerFound == InstallationType.MANAGER;
+                if (!installerCheck.check() || isManagerInstall) {
+                    failedChecks.add(installerCheck);
+
+                    if (isManagerInstall) {
+                        // If using Manager and reached here, then this must
+                        // have been patched on a different device.
+                        failedChecks.add(sameHardware);
+                    }
                 }
 
                 if (DEBUG_ALWAYS_SHOW_CHECK_FAILED_DIALOG) {
                     // Show all failures for debugging layout.
                     failedChecks = Arrays.asList(
-                            installerCheck,
                             sameHardware,
-                            nearPatchTime);
+                            nearPatchTime,
+                            installerCheck
+                    );
+                }
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    Collections.sort(failedChecks, Comparator.comparingInt(Check::uiSortingValue));
                 }
 
                 if (failedChecks.isEmpty()) {

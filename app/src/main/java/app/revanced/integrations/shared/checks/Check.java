@@ -15,7 +15,6 @@ import android.widget.Button;
 import androidx.annotation.Nullable;
 
 import java.util.Collection;
-import java.util.concurrent.atomic.AtomicReference;
 
 import app.revanced.integrations.shared.Logger;
 import app.revanced.integrations.shared.Utils;
@@ -36,6 +35,12 @@ abstract class Check {
     protected abstract Boolean check();
 
     protected abstract String failureReason();
+
+    /**
+     * Indicates how important a check is in display in the UI.
+     * A lower value indicates to show first before other checks.
+     */
+    public abstract int uiSortingValue();
 
     /**
      * For debugging and development only.
