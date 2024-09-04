@@ -85,49 +85,46 @@ abstract class Check {
                 FROM_HTML_MODE_COMPACT
         );
 
-        Utils.runOnMainThread(() -> {
-            AlertDialog dialog = new AlertDialog.Builder(activity)
+        Utils.runOnMainThreadDelayed(() -> {
+            AlertDialog alert = new AlertDialog.Builder(activity)
                     .setCancelable(false)
                     .setIconAttribute(android.R.attr.alertDialogIcon)
                     .setTitle(str("revanced_check_environment_failed_title"))
                     .setMessage(message)
                     .setPositiveButton(
                             " ",
-                            (dialog1, which) -> {
+                            (dialog, which) -> {
                                 final var intent = new Intent(Intent.ACTION_VIEW, GOOD_SOURCE);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
                                 activity.startActivity(intent);
 
-                                // Shutdown to prevent the user from navigating back to this app
-                                // (which is now no longer showing a warning dialog).
+                                // Shutdown to prevent the user from navigating back to this app,
+                                // which is no longer showing a warning dialog.
                                 activity.finishAffinity();
                                 System.exit(0);
                             }
                     ).setNegativeButton(
                             " ",
-                            (dialog1, which) -> {
+                            (dialog, which) -> {
                                 // Cleanup data if the user incorrectly imported a huge negative number.
                                 final int current = Math.max(0, Settings.CHECK_ENVIRONMENT_WARNINGS_ISSUED.get());
                                 Settings.CHECK_ENVIRONMENT_WARNINGS_ISSUED.save(current + 1);
 
-                                dialog1.dismiss();
+                                dialog.dismiss();
                             }
                     ).create();
 
-            dialog.show(); // Must show before getting the dismiss button or setting movement method.
+            Utils.showDialog(activity, alert, false, (AlertDialog dialog) -> {
+                var openWebsiteButton = dialog.getButton(DialogInterface.BUTTON_POSITIVE);
+                openWebsiteButton.setEnabled(false);
 
-            var openWebsiteButton = dialog.getButton(DialogInterface.BUTTON_POSITIVE);
-            openWebsiteButton.setEnabled(false);
+                var dismissButton = dialog.getButton(DialogInterface.BUTTON_NEGATIVE);
+                dismissButton.setEnabled(false);
 
-            var dismissButton = dialog.getButton(DialogInterface.BUTTON_NEGATIVE);
-            dismissButton.setEnabled(false);
+                Utils.runOnMainThread(getCountdownRunnable(dismissButton, openWebsiteButton));
+            });
 
-            // Use a longer delay than any of the other patches that can show a dialog on startup
-            // (Announcements, Check watch history), but there is still a chance a slow network
-            // can cause the dialogs to be out of order.
-            Utils.runOnMainThreadDelayed(getCountdownRunnable(dismissButton, openWebsiteButton), 2000);
-        });
+        }, 1000); // Use a delay, so this dialog is shown on top of any other startup dialogs.
     }
 
     private static Runnable getCountdownRunnable(Button dismissButton, Button openWebsiteButton) {

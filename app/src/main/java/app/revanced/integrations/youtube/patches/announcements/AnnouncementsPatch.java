@@ -1,6 +1,7 @@
 package app.revanced.integrations.youtube.patches.announcements;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.os.Build;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
@@ -110,7 +111,7 @@ public final class AnnouncementsPatch {
 
                 Utils.runOnMainThread(() -> {
                     // Show the announcement.
-                    var alertDialog = new android.app.AlertDialog.Builder(context)
+                    var alert = new AlertDialog.Builder(context)
                             .setTitle(finalTitle)
                             .setMessage(finalMessage)
                             .setIcon(finalLevel.icon)
@@ -121,11 +122,13 @@ public final class AnnouncementsPatch {
                                 dialog.dismiss();
                             })
                             .setCancelable(false)
-                            .show();
+                            .create();
 
-                    // Make links clickable.
-                    ((TextView)alertDialog.findViewById(android.R.id.message))
-                            .setMovementMethod(LinkMovementMethod.getInstance());
+                    Utils.showDialog(context, alert, false, (AlertDialog dialog) -> {
+                        // Make links clickable.
+                        ((TextView) dialog.findViewById(android.R.id.message))
+                                .setMovementMethod(LinkMovementMethod.getInstance());
+                    });
                 });
             } catch (Exception e) {
                 final var message = "Failed to get announcement";
