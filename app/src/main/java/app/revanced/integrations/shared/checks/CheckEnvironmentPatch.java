@@ -67,7 +67,7 @@ public final class CheckEnvironmentPatch {
     }
 
     /**
-     * Check if the app is installed by the manager, the app store, or thru adb/CLI.
+     * Check if the app is installed by the manager, the app store, or through adb/CLI.
      * <br>
      * Does not conclusively
      * If the app is installed by the manager or the app store, it is likely, the app was patched using the manager,
@@ -85,6 +85,7 @@ public final class CheckEnvironmentPatch {
         protected Boolean check() {
             final var context = Utils.getContext();
 
+            //noinspection deprecation
             final var installerPackageName =
                     context.getPackageManager().getInstallerPackageName(context.getPackageName());
 
@@ -201,6 +202,7 @@ public final class CheckEnvironmentPatch {
             try {
                 Context context = Utils.getContext();
                 PackageManager packageManager = context.getPackageManager();
+                //noinspection deprecation
                 PackageInfo packageInfo = packageManager.getPackageInfo(context.getPackageName(), 0);
 
                 final long durationSinceInstallation = System.currentTimeMillis() - packageInfo.lastUpdateTime;
