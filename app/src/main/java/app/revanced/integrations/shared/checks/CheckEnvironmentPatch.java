@@ -333,7 +333,7 @@ public final class CheckEnvironmentPatch {
 
     private static boolean equalsHash(String buildString, String buildFieldName, String patchTimeHash) {
         try {
-            final var sha1 = MessageDigest.getInstance("SHA-1").digest(buildString.getBytes(StandardCharsets.US_ASCII));
+            final var sha1 = MessageDigest.getInstance("SHA-1").digest(buildString.getBytes(StandardCharsets.UTF_8));
 
             // Must be careful to use same base64 encoding Kotlin uses.
             String runtimeHash = new String(Base64.encode(sha1, Base64.NO_WRAP), StandardCharsets.ISO_8859_1);
