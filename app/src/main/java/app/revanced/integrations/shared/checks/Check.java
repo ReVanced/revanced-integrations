@@ -75,7 +75,8 @@ abstract class Check {
 
         reasons.append("<ul>");
         for (var check : failedChecks) {
-            reasons.append("<li>").append(check.failureReason());
+            // Add a non breaking space to fix bullet points spacing issue.
+            reasons.append("<li>&nbsp;").append(check.failureReason());
         }
         reasons.append("</ul>");
 
