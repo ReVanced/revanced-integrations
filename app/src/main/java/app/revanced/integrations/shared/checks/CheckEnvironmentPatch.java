@@ -1,10 +1,5 @@
 package app.revanced.integrations.shared.checks;
 
-import static app.revanced.integrations.shared.StringRef.str;
-import static app.revanced.integrations.shared.checks.Check.debugAlwaysShowWarning;
-import static app.revanced.integrations.shared.checks.PatchInfo.Build.*;
-import static app.revanced.integrations.shared.checks.PatchInfo.PATCH_TIME;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
@@ -12,17 +7,20 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.util.Base64;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import app.revanced.integrations.shared.Logger;
+import app.revanced.integrations.shared.Utils;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
 
-import app.revanced.integrations.shared.Logger;
-import app.revanced.integrations.shared.Utils;
+import static app.revanced.integrations.shared.StringRef.str;
+import static app.revanced.integrations.shared.checks.Check.debugAlwaysShowWarning;
+import static app.revanced.integrations.shared.checks.PatchInfo.Build.*;
+import static app.revanced.integrations.shared.checks.PatchInfo.PATCH_TIME;
 
 /**
  * This class is used to check if the app was patched by the user
@@ -131,28 +129,28 @@ public final class CheckEnvironmentPatch {
             }
 
             //noinspection deprecation
-            final var passed = equalsHash(Build.BOARD, "BOARD", PATCH_BOARD) &
-                    equalsHash(Build.BOOTLOADER, "BOOTLOADER", PATCH_BOOTLOADER) &
-                    equalsHash(Build.BRAND, "BRAND", PATCH_BRAND) &
-                    equalsHash(Build.CPU_ABI, "CPU_ABI", PATCH_CPU_ABI) &
-                    equalsHash(Build.CPU_ABI2, "CPU_ABI2", PATCH_CPU_ABI2) &
-                    equalsHash(Build.DEVICE, "DEVICE", PATCH_DEVICE) &
-                    equalsHash(Build.DISPLAY, "DISPLAY", PATCH_DISPLAY) &
-                    equalsHash(Build.FINGERPRINT, "FINGERPRINT", PATCH_FINGERPRINT) &
-                    equalsHash(Build.HARDWARE, "HARDWARE", PATCH_HARDWARE) &
-                    equalsHash(Build.HOST, "HOST", PATCH_HOST) &
-                    equalsHash(Build.ID, "ID", PATCH_ID) &
-                    equalsHash(Build.MANUFACTURER, "MANUFACTURER", PATCH_MANUFACTURER) &
-                    equalsHash(Build.MODEL, "MODEL", PATCH_MODEL) &
-                    equalsHash(Build.ODM_SKU, "ODM_SKU", PATCH_ODM_SKU) &
-                    equalsHash(Build.PRODUCT, "PRODUCT", PATCH_PRODUCT) &
-                    equalsHash(Build.RADIO, "RADIO", PATCH_RADIO) &
-                    equalsHash(Build.SKU, "SKU", PATCH_SKU) &
-                    equalsHash(Build.SOC_MANUFACTURER, "SOC_MANUFACTURER", PATCH_SOC_MANUFACTURER) &
-                    equalsHash(Build.SOC_MODEL, "SOC_MODEL", PATCH_SOC_MODEL) &
-                    equalsHash(Build.TAGS, "TAGS", PATCH_TAGS) &
-                    equalsHash(Build.TYPE, "TYPE", PATCH_TYPE) &
-                    equalsHash(Build.USER, "USER", PATCH_USER);
+            final var passed = buildFieldEqualsHash("BOARD", Build.BOARD, PATCH_BOARD) &
+                    buildFieldEqualsHash("BOOTLOADER", Build.BOOTLOADER, PATCH_BOOTLOADER) &
+                    buildFieldEqualsHash("BRAND", Build.BRAND, PATCH_BRAND) &
+                    buildFieldEqualsHash("CPU_ABI", Build.CPU_ABI, PATCH_CPU_ABI) &
+                    buildFieldEqualsHash("CPU_ABI2", Build.CPU_ABI2, PATCH_CPU_ABI2) &
+                    buildFieldEqualsHash("DEVICE", Build.DEVICE, PATCH_DEVICE) &
+                    buildFieldEqualsHash("DISPLAY", Build.DISPLAY, PATCH_DISPLAY) &
+                    buildFieldEqualsHash("FINGERPRINT", Build.FINGERPRINT, PATCH_FINGERPRINT) &
+                    buildFieldEqualsHash("HARDWARE", Build.HARDWARE, PATCH_HARDWARE) &
+                    buildFieldEqualsHash("HOST", Build.HOST, PATCH_HOST) &
+                    buildFieldEqualsHash("ID", Build.ID, PATCH_ID) &
+                    buildFieldEqualsHash("MANUFACTURER", Build.MANUFACTURER, PATCH_MANUFACTURER) &
+                    buildFieldEqualsHash("MODEL", Build.MODEL, PATCH_MODEL) &
+                    buildFieldEqualsHash("ODM_SKU", Build.ODM_SKU, PATCH_ODM_SKU) &
+                    buildFieldEqualsHash("PRODUCT", Build.PRODUCT, PATCH_PRODUCT) &
+                    buildFieldEqualsHash("RADIO", Build.RADIO, PATCH_RADIO) &
+                    buildFieldEqualsHash("SKU", Build.SKU, PATCH_SKU) &
+                    buildFieldEqualsHash("SOC_MANUFACTURER", Build.SOC_MANUFACTURER, PATCH_SOC_MANUFACTURER) &
+                    buildFieldEqualsHash("SOC_MODEL", Build.SOC_MODEL, PATCH_SOC_MODEL) &
+                    buildFieldEqualsHash("TAGS", Build.TAGS, PATCH_TAGS) &
+                    buildFieldEqualsHash("TYPE", Build.TYPE, PATCH_TYPE) &
+                    buildFieldEqualsHash("USER", Build.USER, PATCH_USER);
 
             Logger.printInfo(() -> passed
                     ? "Device hardware signature matches current device"
@@ -331,21 +329,22 @@ public final class CheckEnvironmentPatch {
         });
     }
 
-    private static boolean equalsHash(String buildString, String buildFieldName, String patchTimeHash) {
+    private static boolean buildFieldEqualsHash(String buildFieldName, String buildFieldValue, String hash) {
         try {
-            final var sha1 = MessageDigest.getInstance("SHA-1").digest(buildString.getBytes(StandardCharsets.UTF_8));
+            final var sha1 = MessageDigest.getInstance("SHA-1")
+                    .digest(buildFieldValue.getBytes(StandardCharsets.UTF_8));
 
             // Must be careful to use same base64 encoding Kotlin uses.
             String runtimeHash = new String(Base64.encode(sha1, Base64.NO_WRAP), StandardCharsets.ISO_8859_1);
-            final boolean equals = runtimeHash.equals(patchTimeHash);
+            final boolean equals = runtimeHash.equals(hash);
             if (!equals) {
-                Logger.printInfo(() -> "Hashes do not match. " + buildFieldName +": '" + buildString
-                        + "' runtimeHash: '" + runtimeHash + "' patchTimeHash: '" + patchTimeHash + "'");
+                Logger.printInfo(() -> "Hashes do not match. " + buildFieldName + ": '" + buildFieldValue
+                        + "' runtimeHash: '" + runtimeHash + "' patchTimeHash: '" + hash + "'");
             }
 
             return equals;
         } catch (NoSuchAlgorithmException ex) {
-            Logger.printException(() -> "equalsHash failure", ex); // Will never happen.
+            Logger.printException(() -> "buildFieldEqualsHash failure", ex); // Will never happen.
 
             return false;
         }
