@@ -2,6 +2,7 @@ package app.revanced.integrations.shared.checks;
 
 import static android.text.Html.FROM_HTML_MODE_COMPACT;
 import static app.revanced.integrations.shared.StringRef.str;
+import static app.revanced.integrations.shared.Utils.DialogFragmentOnStartAction;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -37,7 +38,7 @@ abstract class Check {
     protected abstract String failureReason();
 
     /**
-     * Indicates how important a check is in display in the UI.
+     * Specifies a sorting order for displaying the checks that failed.
      * A lower value indicates to show first before other checks.
      */
     public abstract int uiSortingValue();
@@ -112,16 +113,26 @@ abstract class Check {
                             }
                     ).create();
 
-            Utils.showDialog(activity, alert, false, (AlertDialog dialog) -> {
-                var openWebsiteButton = dialog.getButton(DialogInterface.BUTTON_POSITIVE);
-                openWebsiteButton.setEnabled(false);
+            Utils.showDialog(activity, alert, false, new DialogFragmentOnStartAction() {
+                boolean hasRun;
+                @Override
+                public void onStart(AlertDialog dialog) {
+                    // Only run this once, otherwise if the user changes to a different app
+                    // then changes back, this handler will run again and disable the buttons.
+                    if (hasRun) {
+                        return;
+                    }
+                    hasRun = true;
 
-                var dismissButton = dialog.getButton(DialogInterface.BUTTON_NEGATIVE);
-                dismissButton.setEnabled(false);
+                    var openWebsiteButton = dialog.getButton(DialogInterface.BUTTON_POSITIVE);
+                    openWebsiteButton.setEnabled(false);
 
-                getCountdownRunnable(dismissButton, openWebsiteButton).run();
+                    var dismissButton = dialog.getButton(DialogInterface.BUTTON_NEGATIVE);
+                    dismissButton.setEnabled(false);
+
+                    getCountdownRunnable(dismissButton, openWebsiteButton).run();
+                }
             });
-
         }, 1000); // Use a delay, so this dialog is shown on top of any other startup dialogs.
     }
 

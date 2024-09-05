@@ -1,7 +1,5 @@
 package app.revanced.integrations.shared;
 
-import static app.revanced.integrations.shared.Utils.DialogFragmentWrapper.DialogFragmentOnStartAction;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -392,12 +390,9 @@ public class Utils {
      */
     @SuppressWarnings("deprecation")
     public static class DialogFragmentWrapper extends DialogFragment {
-        @FunctionalInterface
-        public interface DialogFragmentOnStartAction {
-            void run(AlertDialog dialog);
-        }
 
         private Dialog dialog;
+        @Nullable
         private DialogFragmentOnStartAction onStartAction;
 
         @Override
@@ -417,12 +412,20 @@ public class Utils {
                 super.onStart();
 
                 if (onStartAction != null) {
-                    onStartAction.run((AlertDialog) getDialog());
+                    onStartAction.onStart((AlertDialog) getDialog());
                 }
             } catch (Exception ex) {
                 Logger.printException(() -> "onStart failure: " + dialog.getClass().getSimpleName(), ex);
             }
         }
+    }
+
+    /**
+     * Interface for {@link #showDialog(Activity, AlertDialog, boolean, DialogFragmentOnStartAction)}.
+     */
+    @FunctionalInterface
+    public interface DialogFragmentOnStartAction {
+        void onStart(AlertDialog dialog);
     }
 
     public static void showDialog(Activity activity, AlertDialog dialog) {
@@ -433,10 +436,13 @@ public class Utils {
      * Utility method to allow showing an AlertDialog on top of other alert dialogs.
      * Calling this will always display the dialog on top of all other dialogs
      * previously called using this method.
-     *
+     * <br>
+     * Be aware the on start action can be called multiple times for some situations,
+     * such as the user switching apps without dismissing the dialog then switching back to this app.
+     *<br>
      * This method is only useful during app startup and multiple patches may show their own dialog,
      * and the most important dialog can be called last (using a delay) so it's always on top.
-     *
+     *<br>
      * For all other situations it's better to not use this method and
      * call {@link AlertDialog#show()} on the dialog.
      */

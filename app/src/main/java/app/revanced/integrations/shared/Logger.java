@@ -15,6 +15,7 @@ public class Logger {
     /**
      * Log messages using lambdas.
      */
+    @FunctionalInterface
     public interface LogMessage {
         @NonNull
         String buildMessageString();
