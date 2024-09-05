@@ -85,7 +85,6 @@ public final class CheckEnvironmentPatch {
         protected Boolean check() {
             final var context = Utils.getContext();
 
-            //noinspection deprecation
             final var installerPackageName =
                     context.getPackageManager().getInstallerPackageName(context.getPackageName());
 
@@ -202,7 +201,6 @@ public final class CheckEnvironmentPatch {
             try {
                 Context context = Utils.getContext();
                 PackageManager packageManager = context.getPackageManager();
-                //noinspection deprecation
                 PackageInfo packageInfo = packageManager.getPackageInfo(context.getPackageName(), 0);
 
                 final long durationSinceInstallation = System.currentTimeMillis() - packageInfo.lastUpdateTime;
@@ -312,9 +310,8 @@ public final class CheckEnvironmentPatch {
                     );
                 }
 
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    Collections.sort(failedChecks, Comparator.comparingInt(Check::uiSortingValue));
-                }
+                //noinspection ComparatorCombinators
+                Collections.sort(failedChecks, (o1, o2) -> o1.uiSortingValue() - o2.uiSortingValue());
 
                 if (failedChecks.isEmpty()) {
                     Check.disableForever();
@@ -331,7 +328,7 @@ public final class CheckEnvironmentPatch {
         });
     }
 
-    private static boolean buildFieldEqualsHash(String buildFieldName, String buildFieldValue, String hash) {
+    private static boolean buildFieldEqualsHash(String buildFieldName, String buildFieldValue, @Nullable String hash) {
         try {
             final var sha1 = MessageDigest.getInstance("SHA-1")
                     .digest(buildFieldValue.getBytes(StandardCharsets.UTF_8));
