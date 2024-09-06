@@ -1,3 +1,10 @@
+# [1.14.0-dev.7](https://github.com/ReVanced/revanced-integrations/compare/v1.14.0-dev.6...v1.14.0-dev.7) (2024-09-06)
+
+
+### Bug Fixes
+
+* **YouTube - Check environment patch:** Allow adb installs even if patched more than 30 minutes ago ([5adf8bd](https://github.com/ReVanced/revanced-integrations/commit/5adf8bdd67c67502f5bc2912247e1eb1cec8a33d))
+
 # [1.14.0-dev.6](https://github.com/ReVanced/revanced-integrations/compare/v1.14.0-dev.5...v1.14.0-dev.6) (2024-09-06)
 
 
