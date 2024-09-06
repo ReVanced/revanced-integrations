@@ -1,3 +1,10 @@
+# [1.14.0-dev.6](https://github.com/ReVanced/revanced-integrations/compare/v1.14.0-dev.5...v1.14.0-dev.6) (2024-09-06)
+
+
+### Bug Fixes
+
+* **YouTube - Check environment patch:** Use app install/update time instead of current time ([#687](https://github.com/ReVanced/revanced-integrations/issues/687)) ([b0d82b0](https://github.com/ReVanced/revanced-integrations/commit/b0d82b016eeacca324b906037d1857b81f577b53))
+
 # [1.14.0-dev.5](https://github.com/ReVanced/revanced-integrations/compare/v1.14.0-dev.4...v1.14.0-dev.5) (2024-09-06)
 
 
