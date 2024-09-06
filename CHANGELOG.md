@@ -1,3 +1,10 @@
+# [1.14.0-dev.5](https://github.com/ReVanced/revanced-integrations/compare/v1.14.0-dev.4...v1.14.0-dev.5) (2024-09-06)
+
+
+### Features
+
+* Add `Check environment` patch ([#683](https://github.com/ReVanced/revanced-integrations/issues/683)) ([e856455](https://github.com/ReVanced/revanced-integrations/commit/e85645528336162e16acf89f7b9f029762972c72))
+
 # [1.14.0-dev.4](https://github.com/ReVanced/revanced-integrations/compare/v1.14.0-dev.3...v1.14.0-dev.4) (2024-09-01)
 
 
