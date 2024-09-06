@@ -1,3 +1,10 @@
+# [1.14.0-dev.8](https://github.com/ReVanced/revanced-integrations/compare/v1.14.0-dev.7...v1.14.0-dev.8) (2024-09-06)
+
+
+### Bug Fixes
+
+* **YouTube - Check environment patch:** Show if patched apk is too old, if the install source is not Manager or ADB ([18048f3](https://github.com/ReVanced/revanced-integrations/commit/18048f33243c4a877cf8b055d89fc04c4b963e0c))
+
 # [1.14.0-dev.7](https://github.com/ReVanced/revanced-integrations/compare/v1.14.0-dev.6...v1.14.0-dev.7) (2024-09-06)
 
 
