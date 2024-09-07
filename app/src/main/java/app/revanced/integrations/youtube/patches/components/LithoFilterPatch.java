@@ -456,6 +456,8 @@ public final class LithoFilterPatch {
 
     private static final byte[] EMPTY_BYTE_ARRAY = new byte[0];
 
+    private static volatile boolean isFiltered;
+
     /**
      * Because litho filtering is multi-threaded and the buffer is passed in from a different injection point,
      * the buffer is saved to a ThreadLocal so each calling thread does not interfere with other threads.
@@ -518,11 +520,13 @@ public final class LithoFilterPatch {
      * Injection point.  Called off the main thread, and commonly called by multiple threads at the same time.
      */
     @SuppressWarnings("unused")
-    public static boolean filter(@Nullable String lithoIdentifier, @NonNull StringBuilder pathBuilder) {
+    public static void filter(@Nullable String lithoIdentifier, @NonNull StringBuilder pathBuilder) {
+        // Always clear filter state.
+        isFiltered = false;
         try {
             // It is assumed that protobufBuffer is empty as well in this case.
             if (pathBuilder.length() == 0)
-                return false;
+                return;
 
             ByteBuffer protobufBuffer = bufferThreadLocal.get();
             final byte[] bufferArray;
@@ -543,13 +547,18 @@ public final class LithoFilterPatch {
             Logger.printDebug(() -> "Searching " + parameter);
 
             if (parameter.identifier != null) {
-                if (identifierSearchTree.matches(parameter.identifier, parameter)) return true;
+                isFiltered = identifierSearchTree.matches(parameter.identifier, parameter);
+                return;
             }
-            if (pathSearchTree.matches(parameter.path, parameter)) return true;
+            isFiltered = pathSearchTree.matches(parameter.path, parameter);
+            return;
         } catch (Exception ex) {
             Logger.printException(() -> "Litho filter failure", ex);
         }
+    }
 
-        return false;
+    @SuppressWarnings("unused")
+    public static boolean filterState() {
+        return isFiltered;
     }
 }
