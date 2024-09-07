@@ -2,9 +2,6 @@ package app.revanced.integrations.youtube.patches.spoof.requests;
 
 import static app.revanced.integrations.youtube.patches.spoof.requests.PlayerRoutes.GET_STREAMING_DATA;
 
-import android.os.Build;
-
-import androidx.annotation.GuardedBy;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -29,39 +26,26 @@ import app.revanced.integrations.youtube.patches.spoof.ClientType;
 
 public class StreamingDataRequest {
 
-    /**
-     * How long to keep fetches until they are expired.
-     */
-    private static final long CACHE_RETENTION_TIME_MILLISECONDS = 60 * 60 * 1000; // 1 hour
-
     private static final long MAX_MILLISECONDS_TO_WAIT_FOR_FETCH = 20 * 1000; // 20 seconds
 
-    @GuardedBy("itself")
-    private static final Map<String, StreamingDataRequest> cache = new HashMap<>();
+    private static final Map<String, StreamingDataRequest> cache = Collections.synchronizedMap(
+            new LinkedHashMap<>(100) {
+                private static final int CACHE_LIMIT = 50;
 
-    public static void fetchRequest(@Nullable String videoId, Map<String, String> fetchHeaders) {
-        Objects.requireNonNull(videoId);
-        synchronized (cache) {
-            // Remove any expired entries.
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                final long now = System.currentTimeMillis();
-                cache.values().removeIf(request -> {
-                    final boolean expired = request.isExpired(now);
-                    if (expired) Logger.printDebug(() -> "Removing expired stream: " + request.videoId);
-                    return expired;
-                });
-            }
+                @Override
+                protected boolean removeEldestEntry(Entry eldest) {
+                    return size() > CACHE_LIMIT; // Evict the oldest entry if over the cache limit.
+                }
+            });
 
-            // Always fetch, even if there is a existing request for the same video.
-            cache.put(videoId, new StreamingDataRequest(videoId, fetchHeaders));
-        }
+    public static void fetchRequest(String videoId, Map<String, String> fetchHeaders) {
+        // Always fetch, even if there is a existing request for the same video.
+        cache.put(videoId, new StreamingDataRequest(videoId, fetchHeaders));
     }
 
     @Nullable
-    public static StreamingDataRequest getRequestForVideoId(@Nullable String videoId) {
-        synchronized (cache) {
-            return cache.get(videoId);
-        }
+    public static StreamingDataRequest getRequestForVideoId(String videoId) {
+        return cache.get(videoId);
     }
 
     private static void handleConnectionError(String toastMessage, @Nullable Exception ex, boolean showToast) {
@@ -113,7 +97,7 @@ public class StreamingDataRequest {
         return null;
     }
 
-    private static ByteBuffer fetch(@NonNull String videoId, Map<String, String> playerHeaders) {
+    private static ByteBuffer fetch(String videoId, Map<String, String> playerHeaders) {
         // Retry with different client if empty response body is received.
         ClientType[] clientTypesToUse = {
                 ClientType.IOS,
@@ -160,36 +144,13 @@ public class StreamingDataRequest {
         return null;
     }
 
-
-    /**
-     * Time this instance and the fetch future was created.
-     */
-    private final long timeFetched;
     private final String videoId;
     private final Future<ByteBuffer> future;
 
     private StreamingDataRequest(String videoId, Map<String, String> playerHeaders) {
         Objects.requireNonNull(playerHeaders);
-        this.timeFetched = System.currentTimeMillis();
         this.videoId = videoId;
         this.future = Utils.submitOnBackgroundThread(() -> fetch(videoId, playerHeaders));
-    }
-
-    public boolean isExpired(long now) {
-        final long timeSinceCreation = now - timeFetched;
-        if (timeSinceCreation > CACHE_RETENTION_TIME_MILLISECONDS) {
-            return true;
-        }
-
-        // Only expired if the fetch failed (API null response).
-        return (fetchCompleted() && getStream() == null);
-    }
-
-    /**
-     * @return if the RYD fetch call has completed.
-     */
-    public boolean fetchCompleted() {
-        return future.isDone();
     }
 
     @Nullable
@@ -206,5 +167,11 @@ public class StreamingDataRequest {
         }
 
         return null;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return "StreamingDataRequest{" + "videoId='" + videoId + '\'' + '}';
     }
 }
