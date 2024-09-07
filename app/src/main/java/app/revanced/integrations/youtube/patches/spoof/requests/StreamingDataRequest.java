@@ -32,14 +32,14 @@ public class StreamingDataRequest {
     /**
      * How long to keep fetches until they are expired.
      */
-    private static final long CACHE_RETENTION_TIME_MILLISECONDS = 5 * 60 * 1000; // 5 Minutes
+    private static final long CACHE_RETENTION_TIME_MILLISECONDS = 60 * 60 * 1000; // 1 hour
 
     private static final long MAX_MILLISECONDS_TO_WAIT_FOR_FETCH = 20 * 1000; // 20 seconds
 
     @GuardedBy("itself")
     private static final Map<String, StreamingDataRequest> cache = new HashMap<>();
 
-    public static void fetchRequestIfNeeded(@Nullable String videoId, Map<String, String> fetchHeaders) {
+    public static void fetchRequest(@Nullable String videoId, Map<String, String> fetchHeaders) {
         Objects.requireNonNull(videoId);
         synchronized (cache) {
             // Remove any expired entries.
@@ -52,9 +52,8 @@ public class StreamingDataRequest {
                 });
             }
 
-            if (!cache.containsKey(videoId)) {
-                cache.put(videoId, new StreamingDataRequest(videoId, fetchHeaders));
-            }
+            // Always fetch, even if there is a existing request for the same video.
+            cache.put(videoId, new StreamingDataRequest(videoId, fetchHeaders));
         }
     }
 

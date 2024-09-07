@@ -91,7 +91,7 @@ public class SpoofClientPatch {
                 String path = uri.getPath();
                 if (path != null && path.contains("player") && !path.contains("heartbeat")) {
                     String videoId = Objects.requireNonNull(uri.getQueryParameter("id"));
-                    StreamingDataRequest.fetchRequestIfNeeded(videoId, playerHeaders);
+                    StreamingDataRequest.fetchRequest(videoId, playerHeaders);
                 }
             } catch (Exception ex) {
                 Logger.printException(() -> "buildRequest failure", ex);
