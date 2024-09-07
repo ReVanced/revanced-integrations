@@ -9,13 +9,9 @@ import org.chromium.net.UrlRequest;
 import java.nio.ByteBuffer;
 import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 import app.revanced.integrations.shared.Logger;
-import app.revanced.integrations.youtube.patches.spoof.requests.StreamingDataRequester;
+import app.revanced.integrations.youtube.patches.spoof.requests.StreamingDataRequest;
 import app.revanced.integrations.youtube.settings.Settings;
 
 @SuppressWarnings("unused")
@@ -27,8 +23,6 @@ public class SpoofClientPatch {
      */
     private static final String UNREACHABLE_HOST_URI_STRING = "https://127.0.0.0";
     private static final Uri UNREACHABLE_HOST_URI = Uri.parse(UNREACHABLE_HOST_URI_STRING);
-
-    private static volatile Future<ByteBuffer> currentVideoStream;
 
     /**
      * Injection point.
@@ -97,7 +91,7 @@ public class SpoofClientPatch {
                 String path = uri.getPath();
                 if (path != null && path.contains("player") && !path.contains("heartbeat")) {
                     String videoId = Objects.requireNonNull(uri.getQueryParameter("id"));
-                    currentVideoStream = StreamingDataRequester.fetch(videoId, playerHeaders);
+                    StreamingDataRequest.fetchRequestIfNeeded(videoId, playerHeaders);
                 }
             } catch (Exception ex) {
                 Logger.printException(() -> "buildRequest failure", ex);
@@ -117,27 +111,21 @@ public class SpoofClientPatch {
         if (SPOOF_CLIENT) {
             try {
                 // This hook is always called off the main thread,
-                // but can be later called for the same video id on the main thread.
-                // This is not a concern, since the main thread call will always be
-                // finished and never block.
+                // but this can later be called for the same video id from the main thread.
+                // This is not a concern, since the fetch will always be finished
+                // and never block the main thread.
 
-                var future = currentVideoStream;
-                if (future != null) {
-                    final long maxSecondsToWait = 20;
-                    var stream = future.get(maxSecondsToWait, TimeUnit.SECONDS);
+                StreamingDataRequest request = StreamingDataRequest.getRequestForVideoId(videoId);
+                if (request != null) {
+                    var stream = request.getStream();
                     if (stream != null) {
                         Logger.printDebug(() -> "Overriding video stream: " + videoId);
                         return stream;
                     }
-
-                    Logger.printDebug(() -> "Not overriding streaming data (video stream is null): "  + videoId);
                 }
-            } catch (TimeoutException ex) {
-                Logger.printInfo(() -> "getStreamingData timed out: " + videoId, ex);
-            } catch (InterruptedException ex) {
-                Logger.printException(() -> "getStreamingData interrupted", ex);
-                Thread.currentThread().interrupt(); // Restore interrupt status flag.
-            } catch (ExecutionException ex) {
+
+                Logger.printDebug(() -> "Not overriding streaming data (video stream is null): "  + videoId);
+            } catch (Exception ex) {
                 Logger.printException(() -> "getStreamingData failure", ex);
             }
         }
