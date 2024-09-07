@@ -15,7 +15,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import app.revanced.integrations.shared.Logger;
-import app.revanced.integrations.shared.Utils;
 import app.revanced.integrations.youtube.patches.spoof.requests.StreamingDataRequester;
 import app.revanced.integrations.youtube.settings.Settings;
 
@@ -117,23 +116,24 @@ public class SpoofClientPatch {
     public static ByteBuffer getStreamingData(String videoId) {
         if (SPOOF_CLIENT) {
             try {
-                // FIXME: Sometimes this is called on the main thread (such as when a Shorts advertisement loads)
-                // But this method should be called off the main thread since it blocks on a network request.
-                // Utils.verifyOffMainThread(); // TODO: figure out what to change to enable this.
+                // This hook is always called off the main thread,
+                // but can be later called for the same video id on the main thread.
+                // This is not a concern, since the main thread call will always be
+                // finished and never block.
 
                 var future = currentVideoStream;
                 if (future != null) {
                     final long maxSecondsToWait = 20;
                     var stream = future.get(maxSecondsToWait, TimeUnit.SECONDS);
                     if (stream != null) {
-                        Logger.printDebug(() -> "Overriding video stream");
+                        Logger.printDebug(() -> "Overriding video stream: " + videoId);
                         return stream;
                     }
 
-                    Logger.printDebug(() -> "Not overriding streaming data (video stream is null)");
+                    Logger.printDebug(() -> "Not overriding streaming data (video stream is null): "  + videoId);
                 }
             } catch (TimeoutException ex) {
-                Logger.printInfo(() -> "getStreamingData timed out", ex);
+                Logger.printInfo(() -> "getStreamingData timed out: " + videoId, ex);
             } catch (InterruptedException ex) {
                 Logger.printException(() -> "getStreamingData interrupted", ex);
                 Thread.currentThread().interrupt(); // Restore interrupt status flag.
