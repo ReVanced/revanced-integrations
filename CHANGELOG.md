@@ -1,3 +1,31 @@
+# [1.14.0-dev.8](https://github.com/ReVanced/revanced-integrations/compare/v1.14.0-dev.7...v1.14.0-dev.8) (2024-09-06)
+
+
+### Bug Fixes
+
+* **YouTube - Check environment patch:** Show if patched apk is too old, if the install source is not Manager or ADB ([18048f3](https://github.com/ReVanced/revanced-integrations/commit/18048f33243c4a877cf8b055d89fc04c4b963e0c))
+
+# [1.14.0-dev.7](https://github.com/ReVanced/revanced-integrations/compare/v1.14.0-dev.6...v1.14.0-dev.7) (2024-09-06)
+
+
+### Bug Fixes
+
+* **YouTube - Check environment patch:** Allow adb installs even if patched more than 30 minutes ago ([5adf8bd](https://github.com/ReVanced/revanced-integrations/commit/5adf8bdd67c67502f5bc2912247e1eb1cec8a33d))
+
+# [1.14.0-dev.6](https://github.com/ReVanced/revanced-integrations/compare/v1.14.0-dev.5...v1.14.0-dev.6) (2024-09-06)
+
+
+### Bug Fixes
+
+* **YouTube - Check environment patch:** Use app install/update time instead of current time ([#687](https://github.com/ReVanced/revanced-integrations/issues/687)) ([b0d82b0](https://github.com/ReVanced/revanced-integrations/commit/b0d82b016eeacca324b906037d1857b81f577b53))
+
+# [1.14.0-dev.5](https://github.com/ReVanced/revanced-integrations/compare/v1.14.0-dev.4...v1.14.0-dev.5) (2024-09-06)
+
+
+### Features
+
+* Add `Check environment` patch ([#683](https://github.com/ReVanced/revanced-integrations/issues/683)) ([e856455](https://github.com/ReVanced/revanced-integrations/commit/e85645528336162e16acf89f7b9f029762972c72))
+
 # [1.14.0-dev.4](https://github.com/ReVanced/revanced-integrations/compare/v1.14.0-dev.3...v1.14.0-dev.4) (2024-09-01)
 
 
