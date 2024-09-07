@@ -117,7 +117,9 @@ public class SpoofClientPatch {
     public static ByteBuffer getStreamingData(String videoId) {
         if (SPOOF_CLIENT) {
             try {
-                Utils.verifyOffMainThread();
+                // FIXME: Sometimes this is called on the main thread (such as when a Shorts advertisement loads)
+                // But this method should be called off the main thread since it blocks on a network request.
+                // Utils.verifyOffMainThread(); // TODO: figure out what to change to enable this.
 
                 var future = currentVideoStream;
                 if (future != null) {
