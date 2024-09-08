@@ -12,6 +12,7 @@ import androidx.annotation.Nullable;
 
 import app.revanced.integrations.shared.Logger;
 import app.revanced.integrations.shared.Utils;
+import app.revanced.integrations.shared.settings.Setting;
 import app.revanced.integrations.youtube.settings.Settings;
 
 @SuppressWarnings("unused")
@@ -60,8 +61,16 @@ public final class MiniplayerPatch {
 
     private static final MiniplayerType CURRENT_TYPE = Settings.MINIPLAYER_TYPE.get();
 
+    private static final boolean DOUBLE_TAP_ACTION_ENABLED =
+            (CURRENT_TYPE == MODERN_1 || CURRENT_TYPE == MODERN_2 || CURRENT_TYPE == MODERN_3)
+                    && Settings.MINIPLAYER_DOUBLE_TAP_ACTION.get();
+
+    private static final boolean DRAG_AND_DROP_ENABLED =
+            CURRENT_TYPE == MODERN_1 && Settings.MINIPLAYER_DRAG_AND_DROP.get();
+
     private static final boolean HIDE_EXPAND_CLOSE_ENABLED =
-            (CURRENT_TYPE == MODERN_1 || CURRENT_TYPE == MODERN_3) && Settings.MINIPLAYER_HIDE_EXPAND_CLOSE.get();
+            (CURRENT_TYPE == MODERN_1 || CURRENT_TYPE == MODERN_3)
+                    && !DRAG_AND_DROP_ENABLED && Settings.MINIPLAYER_HIDE_EXPAND_CLOSE.get();
 
     private static final boolean HIDE_SUBTEXT_ENABLED =
             (CURRENT_TYPE == MODERN_1 || CURRENT_TYPE == MODERN_3) && Settings.MINIPLAYER_HIDE_SUBTEXT.get();
@@ -70,6 +79,15 @@ public final class MiniplayerPatch {
             CURRENT_TYPE == MODERN_1 && Settings.MINIPLAYER_HIDE_REWIND_FORWARD.get();
 
     private static final int OPACITY_LEVEL;
+
+    public static final class MiniplayerHideExpandCloseAvailability implements Setting.Availability {
+        Setting.Availability modernOneOrThree = Settings.MINIPLAYER_TYPE.availability(MODERN_1, MODERN_3);
+
+        @Override
+        public boolean isAvailable() {
+            return modernOneOrThree.isAvailable() && !Settings.MINIPLAYER_DRAG_AND_DROP.get();
+        }
+    }
 
     static {
         int opacity = Settings.MINIPLAYER_OPACITY.get();
@@ -119,6 +137,20 @@ public final class MiniplayerPatch {
         if (CURRENT_TYPE == MODERN_1) {
             view.setImageAlpha(OPACITY_LEVEL);
         }
+    }
+
+    /**
+     * Injection point.
+     */
+    public static boolean enableMiniplayerDoubleTapAction(boolean original) {
+        return DOUBLE_TAP_ACTION_ENABLED;
+    }
+
+    /**
+     * Injection point.
+     */
+    public static boolean enableMiniplayerDragAndDrop(boolean original) {
+        return DRAG_AND_DROP_ENABLED;
     }
 
     /**
