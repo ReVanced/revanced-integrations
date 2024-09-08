@@ -239,19 +239,19 @@ public final class NavigationBar {
     }
 
     public enum NavigationButton {
-        HOME("PIVOT_HOME"),
-        SHORTS("TAB_SHORTS"),
+        HOME("PIVOT_HOME", "TAB_HOME_CAIRO"),
+        SHORTS("TAB_SHORTS", "TAB_SHORTS_CAIRO"),
         /**
          * Create new video tab.
          * This tab will never be in a selected state, even if the create video UI is on screen.
          */
-        CREATE("CREATION_TAB_LARGE"),
-        SUBSCRIPTIONS("PIVOT_SUBSCRIPTIONS"),
+        CREATE("CREATION_TAB_LARGE", "CREATION_TAB_LARGE_CAIRO"),
+        SUBSCRIPTIONS("PIVOT_SUBSCRIPTIONS", "TAB_SUBSCRIPTIONS_CAIRO"),
         /**
          * Notifications tab.  Only present when
          * {@link Settings#SWITCH_CREATE_WITH_NOTIFICATIONS_BUTTON} is active.
          */
-        NOTIFICATIONS("TAB_ACTIVITY"),
+        NOTIFICATIONS("TAB_ACTIVITY", "TAB_ACTIVITY_CAIRO"),
         /**
          * Library tab, including if the user is in incognito mode or when logged out.
          */
@@ -261,12 +261,13 @@ public final class NavigationBar {
                 "YOU_LIBRARY_DUMMY_PLACEHOLDER_NAME",
                 // User is logged out.
                 "ACCOUNT_CIRCLE",
+                "ACCOUNT_CIRCLE_CAIRO",
                 // User is logged in with incognito mode enabled.
                 "INCOGNITO_CIRCLE",
+                "INCOGNITO_CAIRO",
                 // Old library tab (pre 'You' layout), only present when version spoofing.
                 "VIDEO_LIBRARY_WHITE",
                 // 'You' library tab that is sometimes momentarily loaded.
-                // When this is loaded, {@link #LIBRARY_YOU} is also present.
                 // This might be a temporary tab while the user profile photo is loading,
                 // but its exact purpose is not entirely clear.
                 "PIVOT_LIBRARY"
