@@ -3,6 +3,7 @@ package app.revanced.integrations.youtube.patches;
 import static app.revanced.integrations.shared.StringRef.str;
 import static app.revanced.integrations.youtube.patches.MiniplayerPatch.MiniplayerType.*;
 
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -50,6 +51,36 @@ public final class MiniplayerPatch {
         public boolean isModern() {
             return modernPlayerType != null;
         }
+    }
+
+    private static final int MINIPLAYER_SIZE;
+
+    static {
+        // YT appears to use the device screen dip width, plus an unknown fixed horizontal padding size.
+        DisplayMetrics displayMetrics = Utils.getContext().getResources().getDisplayMetrics();
+        final int deviceDipWidth = (int) (displayMetrics.widthPixels / displayMetrics.density);
+
+        // YT seems to use a minimum height to calculate
+        // the minimum miniplayer width based on the video.
+        // 170 seems to be the smallest that can be used and using less makes no difference.
+        final int WIDTH_DIP_MIN = 170; // Seems to be the smallest that works.
+        final int HORIZONTAL_PADDING_DIP = 15; // Estimated padding.
+        // Round down to the nearest 5 pixels, to keep any error toasts easier to read.
+        final int WIDTH_DIP_MAX = 5 * ((deviceDipWidth - HORIZONTAL_PADDING_DIP) / 5);
+        Logger.printDebug(() -> "Screen dip width: " + deviceDipWidth + " maxWidth: " + WIDTH_DIP_MAX);
+
+        int dipWidth = Settings.MINIPLAYER_WIDTH_DIP.get();
+
+        if (dipWidth < WIDTH_DIP_MIN || dipWidth > WIDTH_DIP_MAX) {
+            Utils.showToastLong(str("revanced_miniplayer_width_dip_invalid_toast",
+                    WIDTH_DIP_MIN, WIDTH_DIP_MAX));
+
+            // Instead of resetting, clamp the size at the bounds.
+            dipWidth = Math.max(WIDTH_DIP_MIN, Math.min(dipWidth, WIDTH_DIP_MAX));
+            Settings.MINIPLAYER_WIDTH_DIP.save(dipWidth);
+        }
+
+        MINIPLAYER_SIZE = dipWidth;
     }
 
     /**
@@ -151,6 +182,17 @@ public final class MiniplayerPatch {
      */
     public static boolean enableMiniplayerDragAndDrop(boolean original) {
         return DRAG_AND_DROP_ENABLED;
+    }
+
+    /**
+     * Injection point.
+     */
+    public static int setMiniplayerSize(int original) {
+        if (CURRENT_TYPE == MODERN_1 || CURRENT_TYPE == MODERN_2 || CURRENT_TYPE == MODERN_3) {
+            return MINIPLAYER_SIZE;
+        }
+
+        return original;
     }
 
     /**
