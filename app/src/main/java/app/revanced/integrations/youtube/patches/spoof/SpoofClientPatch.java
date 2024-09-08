@@ -134,7 +134,7 @@ public class SpoofClientPatch {
      * Return true to force enable audio background play.
      */
     public static boolean overrideBackgroundAudioPlayback() {
-        return SPOOF_IOS && BackgroundPlaybackPatch.playbackIsNotShort();
+        return SPOOF_IOS && BackgroundPlaybackPatch.allowBackgroundPlayback(false);
     }
 
     /**
