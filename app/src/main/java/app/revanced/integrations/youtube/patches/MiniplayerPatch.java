@@ -6,7 +6,6 @@ import static app.revanced.integrations.youtube.patches.MiniplayerPatch.Miniplay
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -140,27 +139,37 @@ public final class MiniplayerPatch {
      * Injection point.
      */
     public static void hideMiniplayerSubTexts(View view) {
-        // Different subviews are passed in, but only TextView and layouts are of interest here.
-        final boolean hideView = HIDE_SUBTEXT_ENABLED && (view instanceof TextView || view instanceof LinearLayout);
-        Utils.hideViewByRemovingFromParentUnderCondition(hideView, view);
+        try {
+            // Different subviews are passed in, but only TextView is of interest here.
+            if (HIDE_SUBTEXT_ENABLED && view instanceof TextView) {
+                Logger.printDebug(() -> "Hiding subtext view");
+                Utils.hideViewByRemovingFromParentUnderCondition(true, view);
+            }
+        } catch (Exception ex) {
+            Logger.printException(() -> "hideMiniplayerSubTexts failure", ex);
+        }
     }
 
     /**
      * Injection point.
      */
     public static void playerOverlayGroupCreated(View group) {
-        // Modern 2 has an half broken subtitle that is always present.
-        // Always hide it to make the miniplayer mostly usable.
-        if (CURRENT_TYPE == MODERN_2 && MODERN_OVERLAY_SUBTITLE_TEXT != 0) {
-            if (group instanceof ViewGroup) {
-                View subtitleText = Utils.getChildView((ViewGroup) group, true,
-                        view -> view.getId() == MODERN_OVERLAY_SUBTITLE_TEXT);
+        try {
+            // Modern 2 has an half broken subtitle that is always present.
+            // Always hide it to make the miniplayer mostly usable.
+            if (CURRENT_TYPE == MODERN_2 && MODERN_OVERLAY_SUBTITLE_TEXT != 0) {
+                if (group instanceof ViewGroup) {
+                    View subtitleText = Utils.getChildView((ViewGroup) group, true,
+                            view -> view.getId() == MODERN_OVERLAY_SUBTITLE_TEXT);
 
-                if (subtitleText != null) {
-                    subtitleText.setVisibility(View.GONE);
-                    Logger.printDebug(() -> "Modern overlay subtitle view set to hidden");
+                    if (subtitleText != null) {
+                        subtitleText.setVisibility(View.GONE);
+                        Logger.printDebug(() -> "Modern overlay subtitle view set to hidden");
+                    }
                 }
             }
+        } catch (Exception ex) {
+            Logger.printException(() -> "playerOverlayGroupCreated failure", ex);
         }
     }
 }
