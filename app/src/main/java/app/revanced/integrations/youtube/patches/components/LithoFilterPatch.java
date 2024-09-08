@@ -456,13 +456,12 @@ public final class LithoFilterPatch {
 
     private static final byte[] EMPTY_BYTE_ARRAY = new byte[0];
 
-    private static volatile boolean isFiltered;
-
     /**
      * Because litho filtering is multi-threaded and the buffer is passed in from a different injection point,
      * the buffer is saved to a ThreadLocal so each calling thread does not interfere with other threads.
      */
     private static final ThreadLocal<ByteBuffer> bufferThreadLocal = new ThreadLocal<>();
+    private static final ThreadLocal<Boolean> filteredState = new ThreadLocal<>();
 
     static {
         for (Filter filter : filters) {
@@ -516,17 +515,29 @@ public final class LithoFilterPatch {
         }
     }
 
+    private static void setFilteredState(boolean filtered) {
+        filteredState.set(filtered);
+    }
+
+    /**
+     * Injection point.
+     */
+    @SuppressWarnings("unused")
+    public static boolean filterState() {
+        Boolean state = filteredState.get();
+        return state != null && state;
+    }
+
     /**
      * Injection point.  Called off the main thread, and commonly called by multiple threads at the same time.
      */
     @SuppressWarnings("unused")
     public static void filter(@Nullable String lithoIdentifier, @NonNull StringBuilder pathBuilder) {
-        // Always clear filter state.
-        isFiltered = false;
         try {
-            // It is assumed that protobufBuffer is empty as well in this case.
-            if (pathBuilder.length() == 0)
+            if (pathBuilder.length() == 0) {
+                setFilteredState(false);
                 return;
+            }
 
             ByteBuffer protobufBuffer = bufferThreadLocal.get();
             final byte[] bufferArray;
@@ -546,19 +557,19 @@ public final class LithoFilterPatch {
                     pathBuilder.toString(), bufferArray);
             Logger.printDebug(() -> "Searching " + parameter);
 
-            if (parameter.identifier != null) {
-                isFiltered = identifierSearchTree.matches(parameter.identifier, parameter);
+            if (parameter.identifier != null && identifierSearchTree.matches(parameter.identifier, parameter)) {
+                setFilteredState(true);
                 return;
             }
-            isFiltered = pathSearchTree.matches(parameter.path, parameter);
-            return;
+
+            if (pathSearchTree.matches(parameter.path, parameter)) {
+                setFilteredState(true);
+                return;
+            }
         } catch (Exception ex) {
             Logger.printException(() -> "Litho filter failure", ex);
         }
-    }
 
-    @SuppressWarnings("unused")
-    public static boolean filterState() {
-        return isFiltered;
+        setFilteredState(false);
     }
 }
