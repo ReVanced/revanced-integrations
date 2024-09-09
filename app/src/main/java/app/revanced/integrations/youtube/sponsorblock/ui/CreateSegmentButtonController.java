@@ -24,8 +24,8 @@ public class CreateSegmentButtonController {
     public static void initialize(View youtubeControlsLayout) {
         try {
             Logger.printDebug(() -> "initializing new segment button");
-            ImageView imageView = Objects.requireNonNull(youtubeControlsLayout.findViewById(
-                    getResourceIdentifier("revanced_sb_create_segment_button", "id")));
+            ImageView imageView = Objects.requireNonNull(Utils.getChildViewByResourceName(
+                    youtubeControlsLayout, "revanced_sb_create_segment_button"));
             imageView.setVisibility(View.GONE);
             imageView.setOnClickListener(v -> {
                 SponsorBlockViewController.toggleNewSegmentLayoutVisibility();
@@ -35,10 +35,6 @@ public class CreateSegmentButtonController {
         } catch (Exception ex) {
             Logger.printException(() -> "initialize failure", ex);
         }
-    }
-
-    public static void changeVisibilityImmediate(boolean visible) {
-        changeVisibility(visible, true);
     }
 
     /**
@@ -55,7 +51,7 @@ public class CreateSegmentButtonController {
         changeVisibility(visible, false);
     }
 
-    public static void changeVisibility(boolean visible, boolean immediate) {
+    private static void changeVisibility(boolean visible, boolean immediate) {
         try {
             if (isShowing == visible) return;
             isShowing = visible;

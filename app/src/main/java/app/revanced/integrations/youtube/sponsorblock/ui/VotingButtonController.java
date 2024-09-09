@@ -26,8 +26,8 @@ public class VotingButtonController {
     public static void initialize(View youtubeControlsLayout) {
         try {
             Logger.printDebug(() -> "initializing voting button");
-            ImageView imageView = Objects.requireNonNull(youtubeControlsLayout.findViewById(
-                    getResourceIdentifier("revanced_sb_voting_button", "id")));
+            ImageView imageView = Objects.requireNonNull(Utils.getChildViewByResourceName(
+                    youtubeControlsLayout, "revanced_sb_voting_button"));
             imageView.setVisibility(View.GONE);
             imageView.setOnClickListener(v -> {
                 SponsorBlockUtils.onVotingClicked(v.getContext());
@@ -37,10 +37,6 @@ public class VotingButtonController {
         } catch (Exception ex) {
             Logger.printException(() -> "Unable to set RelativeLayout", ex);
         }
-    }
-
-    public static void changeVisibilityImmediate(boolean visible) {
-        changeVisibility(visible, true);
     }
 
     /**
@@ -57,7 +53,7 @@ public class VotingButtonController {
         changeVisibility(visible, false);
     }
 
-    public static void changeVisibility(boolean visible, boolean immediate) {
+    private static void changeVisibility(boolean visible, boolean immediate) {
         try {
             if (isShowing == visible) return;
             isShowing = visible;

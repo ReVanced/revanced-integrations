@@ -269,6 +269,20 @@ public class Utils {
     }
 
     /**
+     * Includes sub children.
+     *
+     * @noinspection unchecked
+     */
+    public static <R extends View> R getChildViewByResourceName(@NonNull View view, @NonNull String str) {
+        var child = view.findViewById(Utils.getResourceIdentifier(str, "id"));
+        if (child != null) {
+            return (R) child;
+        }
+
+        throw new IllegalArgumentException("View with resource name '" + str + "' not found");
+    }
+
+    /**
      * @param searchRecursively If children ViewGroups should also be
      *                          recursively searched using depth first search.
      * @return The first child view that matches the filter.
