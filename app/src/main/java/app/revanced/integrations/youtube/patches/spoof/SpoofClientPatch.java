@@ -1,25 +1,22 @@
 package app.revanced.integrations.youtube.patches.spoof;
 
-import static app.revanced.integrations.youtube.patches.spoof.SpoofClientPatch.DeviceHardwareSupport.allowAV1;
-import static app.revanced.integrations.youtube.patches.spoof.SpoofClientPatch.DeviceHardwareSupport.allowVP9;
-
-import android.media.MediaCodecInfo;
-import android.media.MediaCodecList;
 import android.net.Uri;
-import android.os.Build;
 
-import org.chromium.net.ExperimentalUrlRequest;
+import androidx.annotation.Nullable;
+
+import org.chromium.net.UrlRequest;
+
+import java.nio.ByteBuffer;
+import java.util.Map;
+import java.util.Objects;
 
 import app.revanced.integrations.shared.Logger;
-import app.revanced.integrations.shared.settings.Setting;
-import app.revanced.integrations.youtube.patches.BackgroundPlaybackPatch;
+import app.revanced.integrations.youtube.patches.spoof.requests.StreamingDataRequest;
 import app.revanced.integrations.youtube.settings.Settings;
 
 @SuppressWarnings("unused")
 public class SpoofClientPatch {
-    private static final boolean SPOOF_CLIENT_ENABLED = Settings.SPOOF_CLIENT.get();
-    private static final ClientType SPOOF_CLIENT_TYPE = Settings.SPOOF_CLIENT_TYPE.get();
-    private static final boolean SPOOF_IOS = SPOOF_CLIENT_ENABLED && SPOOF_CLIENT_TYPE == ClientType.IOS;
+    private static final boolean SPOOF_CLIENT = Settings.SPOOF_CLIENT.get();
 
     /**
      * Any unreachable ip address.  Used to intentionally fail requests.
@@ -35,7 +32,7 @@ public class SpoofClientPatch {
      * @return An unreachable URI if the request is a /get_watch request, otherwise the original URI.
      */
     public static Uri blockGetWatchRequest(Uri playerRequestUri) {
-        if (SPOOF_CLIENT_ENABLED) {
+        if (SPOOF_CLIENT) {
             try {
                 String path = playerRequestUri.getPath();
 
@@ -58,7 +55,7 @@ public class SpoofClientPatch {
      * Blocks /initplayback requests.
      */
     public static String blockInitPlaybackRequest(String originalUrlString) {
-        if (SPOOF_CLIENT_ENABLED) {
+        if (SPOOF_CLIENT) {
             try {
                 var originalUri = Uri.parse(originalUrlString);
                 String path = originalUri.getPath();
@@ -79,201 +76,85 @@ public class SpoofClientPatch {
     /**
      * Injection point.
      */
-    public static int getClientTypeId(int originalClientTypeId) {
-        return SPOOF_CLIENT_ENABLED ? SPOOF_CLIENT_TYPE.id : originalClientTypeId;
+    public static boolean isSpoofingEnabled() {
+        return SPOOF_CLIENT;
     }
 
     /**
      * Injection point.
      */
-    public static String getClientVersion(String originalClientVersion) {
-        return SPOOF_CLIENT_ENABLED ? SPOOF_CLIENT_TYPE.appVersion : originalClientVersion;
-    }
-
-    /**
-     * Injection point.
-     */
-    public static String getClientModel(String originalClientModel) {
-        return SPOOF_CLIENT_ENABLED ? SPOOF_CLIENT_TYPE.model : originalClientModel;
-    }
-
-    /**
-     * Injection point.
-     * Fix video qualities missing, if spoofing to iOS by using the correct client OS version.
-     */
-    public static String getOsVersion(String originalOsVersion) {
-        return SPOOF_CLIENT_ENABLED ? SPOOF_CLIENT_TYPE.osVersion : originalOsVersion;
-    }
-
-    /**
-     * Injection point.
-     */
-    public static boolean enablePlayerGesture(boolean original) {
-        return SPOOF_CLIENT_ENABLED || original;
-    }
-
-    /**
-     * Injection point.
-     */
-    public static boolean isClientSpoofingEnabled() {
-        return SPOOF_CLIENT_ENABLED;
-    }
-
-    /**
-     * Injection point.
-     * When spoofing the client to iOS, the playback speed menu is missing from the player response.
-     * Return true to force create the playback speed menu.
-     */
-    public static boolean forceCreatePlaybackSpeedMenu(boolean original) {
-        return SPOOF_IOS || original;
-    }
-
-    /**
-     * Injection point.
-     * When spoofing the client to iOS, background audio only playback of livestreams fails.
-     * Return true to force enable audio background play.
-     */
-    public static boolean overrideBackgroundAudioPlayback() {
-        return SPOOF_IOS && BackgroundPlaybackPatch.allowBackgroundPlayback(false);
-    }
-
-    /**
-     * Injection point.
-     * Fix video qualities missing, if spoofing to iOS by using the correct iOS user-agent.
-     */
-    public static ExperimentalUrlRequest overrideUserAgent(ExperimentalUrlRequest.Builder builder, String url) {
-        if (SPOOF_CLIENT_ENABLED) {
-            String path = Uri.parse(url).getPath();
-            if (path != null && path.contains("player")) {
-                return builder.addHeader("User-Agent", SPOOF_CLIENT_TYPE.userAgent).build();
+    public static UrlRequest buildRequest(UrlRequest.Builder builder, String url,
+                                          Map<String, String> playerHeaders) {
+        if (SPOOF_CLIENT) {
+            try {
+                Uri uri = Uri.parse(url);
+                String path = uri.getPath();
+                if (path != null && path.contains("player") && !path.contains("heartbeat")) {
+                    String videoId = Objects.requireNonNull(uri.getQueryParameter("id"));
+                    StreamingDataRequest.fetchRequest(videoId, playerHeaders);
+                }
+            } catch (Exception ex) {
+                Logger.printException(() -> "buildRequest failure", ex);
             }
         }
 
         return builder.build();
     }
 
-    // Must check for device features in a separate class and cannot place this code inside
-    // the Patch or ClientType enum due to cyclic Setting references.
-    static class DeviceHardwareSupport {
-        private static final boolean DEVICE_HAS_HARDWARE_DECODING_VP9 = deviceHasVP9HardwareDecoding();
-        private static final boolean DEVICE_HAS_HARDWARE_DECODING_AV1 = deviceHasAV1HardwareDecoding();
+    /**
+     * Injection point.
+     * Fix playback by replace the streaming data.
+     * Called after {@link #buildRequest(UrlRequest.Builder, String, Map)}.
+     */
+    @Nullable
+    public static ByteBuffer getStreamingData(String videoId) {
+        if (SPOOF_CLIENT) {
+            try {
+                // This hook is always called off the main thread,
+                // but this can later be called for the same video id from the main thread.
+                // This is not a concern, since the fetch will always be finished
+                // and never block the main thread.
 
-        private static boolean deviceHasVP9HardwareDecoding() {
-            MediaCodecList codecList = new MediaCodecList(MediaCodecList.ALL_CODECS);
-
-            for (MediaCodecInfo codecInfo : codecList.getCodecInfos()) {
-                final boolean isHardwareAccelerated = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
-                        ? codecInfo.isHardwareAccelerated()
-                        : !codecInfo.getName().startsWith("OMX.google"); // Software decoder.
-                if (isHardwareAccelerated && !codecInfo.isEncoder()) {
-                    for (String type : codecInfo.getSupportedTypes()) {
-                        if (type.equalsIgnoreCase("video/x-vnd.on2.vp9")) {
-                            Logger.printDebug(() -> "Device supports VP9 hardware decoding.");
-                            return true;
-                        }
+                StreamingDataRequest request = StreamingDataRequest.getRequestForVideoId(videoId);
+                if (request != null) {
+                    var stream = request.getStream();
+                    if (stream != null) {
+                        Logger.printDebug(() -> "Overriding video stream: " + videoId);
+                        return stream;
                     }
                 }
-            }
 
-            Logger.printDebug(() -> "Device does not support VP9 hardware decoding.");
-            return false;
+                Logger.printDebug(() -> "Not overriding streaming data (video stream is null): "  + videoId);
+            } catch (Exception ex) {
+                Logger.printException(() -> "getStreamingData failure", ex);
+            }
         }
 
-        private static boolean deviceHasAV1HardwareDecoding() {
-            // It appears all devices with hardware AV1 are also Android 10 or newer.
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                MediaCodecList codecList = new MediaCodecList(MediaCodecList.ALL_CODECS);
+        return null;
+    }
 
-                for (MediaCodecInfo codecInfo : codecList.getCodecInfos()) {
-                    if (codecInfo.isHardwareAccelerated() && !codecInfo.isEncoder()) {
-                        for (String type : codecInfo.getSupportedTypes()) {
-                            if (type.equalsIgnoreCase("video/av01")) {
-                                Logger.printDebug(() -> "Device supports AV1 hardware decoding.");
-                                return true;
-                            }
-                        }
+    /**
+     * Injection point.
+     * Called after {@link #getStreamingData(String)}.
+     */
+    @Nullable
+    public static byte[] removeVideoPlaybackPostBody(Uri uri, int method, byte[] postData) {
+        if (SPOOF_CLIENT) {
+            try {
+                final int methodPost = 2;
+                if (method == methodPost) {
+                    String path = uri.getPath();
+                    String clientName = "c";
+                    final boolean iosClient = ClientType.IOS.name().equals(uri.getQueryParameter(clientName));
+                    if (iosClient && path != null && path.contains("videoplayback")) {
+                        return null;
                     }
                 }
+            }  catch (Exception ex) {
+                Logger.printException(() -> "removeVideoPlaybackPostBody failure", ex);
             }
-
-            Logger.printDebug(() -> "Device does not support AV1 hardware decoding.");
-            return false;
         }
 
-        static boolean allowVP9() {
-            return DEVICE_HAS_HARDWARE_DECODING_VP9 && !Settings.SPOOF_CLIENT_IOS_FORCE_AVC.get();
-        }
-
-        static boolean allowAV1() {
-            return allowVP9() && DEVICE_HAS_HARDWARE_DECODING_AV1;
-        }
-    }
-
-    public enum ClientType {
-        // https://dumps.tadiphone.dev/dumps/oculus/eureka
-        IOS(5,
-                // iPhone 15 supports AV1 hardware decoding.
-                // Only use if this Android device also has hardware decoding.
-                allowAV1()
-                        ? "iPhone16,2"  // 15 Pro Max
-                        : "iPhone11,4", // XS Max
-                // iOS 14+ forces VP9.
-                allowVP9()
-                        ? "17.5.1.21F90"
-                        : "13.7.17H35",
-                allowVP9()
-                        ? "com.google.ios.youtube/19.10.7 (iPhone; U; CPU iOS 17_5_1 like Mac OS X)"
-                        : "com.google.ios.youtube/19.10.7 (iPhone; U; CPU iOS 13_7 like Mac OS X)",
-                // Version number should be a valid iOS release.
-                // https://www.ipa4fun.com/history/185230
-                "19.10.7"
-        ),
-        ANDROID_VR(28,
-                "Quest 3",
-                "12",
-                "com.google.android.apps.youtube.vr.oculus/1.56.21 (Linux; U; Android 12; GB) gzip",
-                "1.56.21"
-        );
-
-        /**
-         * YouTube
-         * <a href="https://github.com/zerodytrash/YouTube-Internal-Clients?tab=readme-ov-file#clients">client type</a>
-         */
-        final int id;
-
-        /**
-         * Device model, equivalent to {@link Build#MODEL} (System property: ro.product.model)
-         */
-        final String model;
-
-        /**
-         * Device OS version.
-         */
-        final String osVersion;
-
-        /**
-         * Player user-agent.
-         */
-        final String userAgent;
-
-        /**
-         * App version.
-         */
-        final String appVersion;
-
-        ClientType(int id, String model, String osVersion, String userAgent, String appVersion) {
-            this.id = id;
-            this.model = model;
-            this.osVersion = osVersion;
-            this.userAgent = userAgent;
-            this.appVersion = appVersion;
-        }
-    }
-
-    public static final class ForceiOSAVCAvailability implements Setting.Availability {
-        @Override
-        public boolean isAvailable() {
-            return Settings.SPOOF_CLIENT.get() && Settings.SPOOF_CLIENT_TYPE.get() == ClientType.IOS;
-        }
+        return postData;
     }
 }
