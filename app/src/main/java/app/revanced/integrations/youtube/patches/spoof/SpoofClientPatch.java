@@ -11,12 +11,22 @@ import java.util.Map;
 import java.util.Objects;
 
 import app.revanced.integrations.shared.Logger;
+import app.revanced.integrations.shared.Utils;
+import app.revanced.integrations.shared.settings.BaseSettings;
+import app.revanced.integrations.shared.settings.Setting;
 import app.revanced.integrations.youtube.patches.spoof.requests.StreamingDataRequest;
 import app.revanced.integrations.youtube.settings.Settings;
 
 @SuppressWarnings("unused")
 public class SpoofClientPatch {
-    private static final boolean SPOOF_CLIENT = Settings.SPOOF_CLIENT.get();
+    public static final class ForceiOSAVCAvailability implements Setting.Availability {
+        @Override
+        public boolean isAvailable() {
+            return Settings.SPOOF_STREAMING_DATA.get() && Settings.SPOOF_STREAMING_DATA_TYPE.get() == ClientType.IOS;
+        }
+    }
+
+    private static final boolean SPOOF_STREAMING_DATA = Settings.SPOOF_STREAMING_DATA.get();
 
     /**
      * Any unreachable ip address.  Used to intentionally fail requests.
@@ -32,7 +42,7 @@ public class SpoofClientPatch {
      * @return An unreachable URI if the request is a /get_watch request, otherwise the original URI.
      */
     public static Uri blockGetWatchRequest(Uri playerRequestUri) {
-        if (SPOOF_CLIENT) {
+        if (SPOOF_STREAMING_DATA) {
             try {
                 String path = playerRequestUri.getPath();
 
@@ -55,7 +65,7 @@ public class SpoofClientPatch {
      * Blocks /initplayback requests.
      */
     public static String blockInitPlaybackRequest(String originalUrlString) {
-        if (SPOOF_CLIENT) {
+        if (SPOOF_STREAMING_DATA) {
             try {
                 var originalUri = Uri.parse(originalUrlString);
                 String path = originalUri.getPath();
@@ -77,7 +87,7 @@ public class SpoofClientPatch {
      * Injection point.
      */
     public static boolean isSpoofingEnabled() {
-        return SPOOF_CLIENT;
+        return SPOOF_STREAMING_DATA;
     }
 
     /**
@@ -85,7 +95,7 @@ public class SpoofClientPatch {
      */
     public static UrlRequest buildRequest(UrlRequest.Builder builder, String url,
                                           Map<String, String> playerHeaders) {
-        if (SPOOF_CLIENT) {
+        if (SPOOF_STREAMING_DATA) {
             try {
                 Uri uri = Uri.parse(url);
                 String path = uri.getPath();
@@ -108,15 +118,19 @@ public class SpoofClientPatch {
      */
     @Nullable
     public static ByteBuffer getStreamingData(String videoId) {
-        if (SPOOF_CLIENT) {
+        if (SPOOF_STREAMING_DATA) {
             try {
-                // This hook is always called off the main thread,
-                // but this can later be called for the same video id from the main thread.
-                // This is not a concern, since the fetch will always be finished
-                // and never block the main thread.
-
                 StreamingDataRequest request = StreamingDataRequest.getRequestForVideoId(videoId);
                 if (request != null) {
+                    // This hook is always called off the main thread,
+                    // but this can later be called for the same video id from the main thread.
+                    // This is not a concern, since the fetch will always be finished
+                    // and never block the main thread.
+                    // But if debugging, then still verify this is the situation.
+                    if (BaseSettings.DEBUG.get() && !request.fetchCompleted() && Utils.isCurrentlyOnMainThread()) {
+                        Logger.printException(() -> "Error: Blocking main thread");
+                    }
+
                     var stream = request.getStream();
                     if (stream != null) {
                         Logger.printDebug(() -> "Overriding video stream: " + videoId);
@@ -139,7 +153,7 @@ public class SpoofClientPatch {
      */
     @Nullable
     public static byte[] removeVideoPlaybackPostBody(Uri uri, int method, byte[] postData) {
-        if (SPOOF_CLIENT) {
+        if (SPOOF_STREAMING_DATA) {
             try {
                 final int methodPost = 2;
                 if (method == methodPost) {

@@ -44,7 +44,7 @@ public class DeviceHardwareSupport {
     }
 
     public static boolean allowVP9() {
-        return DEVICE_HAS_HARDWARE_DECODING_VP9 && !Settings.SPOOF_CLIENT_FORCE_AVC.get();
+        return DEVICE_HAS_HARDWARE_DECODING_VP9 && !Settings.SPOOF_STREAMING_DATA_IOS_FORCE_AVC.get();
     }
 
     public static boolean allowAV1() {

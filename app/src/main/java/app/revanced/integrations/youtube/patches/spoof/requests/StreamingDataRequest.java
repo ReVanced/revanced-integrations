@@ -23,8 +23,27 @@ import app.revanced.integrations.shared.Logger;
 import app.revanced.integrations.shared.Utils;
 import app.revanced.integrations.shared.settings.BaseSettings;
 import app.revanced.integrations.youtube.patches.spoof.ClientType;
+import app.revanced.integrations.youtube.settings.Settings;
 
 public class StreamingDataRequest {
+
+    private static final ClientType[] CLIENT_ORDER_TO_USE;
+
+    static {
+        ClientType[] allClientTypes = ClientType.values();
+        final int numberOfClients = allClientTypes.length;
+        CLIENT_ORDER_TO_USE = new ClientType[numberOfClients];
+
+        ClientType preferredClient = Settings.SPOOF_STREAMING_DATA_TYPE.get();
+        CLIENT_ORDER_TO_USE[0] = preferredClient;
+
+        int i = 1;
+        for (ClientType c : allClientTypes) {
+            if (c != preferredClient) {
+                CLIENT_ORDER_TO_USE[i++] = c;
+            }
+        }
+    }
 
     private static final long MAX_MILLISECONDS_TO_WAIT_FOR_FETCH = 20 * 1000; // 20 seconds
 
@@ -98,23 +117,13 @@ public class StreamingDataRequest {
     }
 
     private static ByteBuffer fetch(String videoId, Map<String, String> playerHeaders) {
-        // Retry with different client if empty response body is received.
-        ClientType[] clientTypesToUse = {
-                ClientType.IOS,
-                ClientType.ANDROID_VR
-        };
-
         final boolean debugEnabled = BaseSettings.DEBUG.get();
-        if (debugEnabled) {
-            // To  ensure the different clients are used while debugging,
-            // use a random client order.
-            Collections.shuffle(Arrays.asList(clientTypesToUse));
-        }
 
+        // Retry with different client if empty response body is received.
         int i = 0;
-        for (ClientType clientType : clientTypesToUse) {
+        for (ClientType clientType : CLIENT_ORDER_TO_USE) {
             // Show an error if the last client type fails, or if the debug is enabled then show for all attempts.
-            final boolean showErrorToast = (++i == clientTypesToUse.length) || debugEnabled;
+            final boolean showErrorToast = (++i == CLIENT_ORDER_TO_USE.length) || debugEnabled;
 
             HttpURLConnection connection = send(clientType, videoId, playerHeaders, showErrorToast);
             if (connection != null) {
@@ -151,6 +160,10 @@ public class StreamingDataRequest {
         Objects.requireNonNull(playerHeaders);
         this.videoId = videoId;
         this.future = Utils.submitOnBackgroundThread(() -> fetch(videoId, playerHeaders));
+    }
+
+    public boolean fetchCompleted() {
+        return future.isDone();
     }
 
     @Nullable
