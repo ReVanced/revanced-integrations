@@ -1,29 +1,18 @@
 package app.revanced.integrations.youtube.settings.preference;
 
-import static android.text.Html.FROM_HTML_MODE_COMPACT;
 import static app.revanced.integrations.shared.StringRef.str;
 import static app.revanced.integrations.youtube.patches.spoof.DeviceHardwareSupport.DEVICE_HAS_HARDWARE_DECODING_VP9;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Build;
 import android.preference.SwitchPreference;
 import android.text.Html;
 import android.util.AttributeSet;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.ViewParent;
-import android.widget.Checkable;
-import android.widget.Switch;
 
 import androidx.annotation.RequiresApi;
 
 import app.revanced.integrations.shared.Logger;
-import app.revanced.integrations.shared.Utils;
-import app.revanced.integrations.shared.settings.Setting;
-import app.revanced.integrations.shared.settings.preference.AbstractPreferenceFragment;
 import app.revanced.integrations.youtube.patches.spoof.ClientType;
-import app.revanced.integrations.youtube.patches.spoof.DeviceHardwareSupport;
 import app.revanced.integrations.youtube.settings.Settings;
 
 @SuppressWarnings({"unused", "deprecation"})
@@ -49,18 +38,6 @@ public class ForceAVCSpoofingPreference extends SwitchPreference {
         super(context);
     }
 
-    @Override
-    @SuppressLint("UseSwitchCompatOrMaterialCode")
-    protected void onBindView(View uiView) {
-        View switchView = Utils.getChildView((ViewGroup) uiView, true,
-                view -> view instanceof Checkable);
-        if (switchView != null) {
-            Utils.hideViewByRemovingFromParentUnderCondition(true, switchView);
-        }
-
-        super.onBindView(uiView);
-    }
-
     private void updateUI() {
         try {
             if (DEVICE_HAS_HARDWARE_DECODING_VP9) {
@@ -72,8 +49,8 @@ public class ForceAVCSpoofingPreference extends SwitchPreference {
             String key = getKey();
             setKey(null);
 
-            // Always enabled, since this now only shows text descriptions.
-            super.setEnabled(true);
+            // This setting cannot be changed by the user.
+            super.setEnabled(false);
 
             final boolean isIOS = Settings.SPOOF_STREAMING_DATA_TYPE.get() == ClientType.IOS;
             Settings.SPOOF_STREAMING_DATA_IOS_FORCE_AVC.save(isIOS);
@@ -87,9 +64,11 @@ public class ForceAVCSpoofingPreference extends SwitchPreference {
 
     @Override
     public void setEnabled(boolean enabled) {
-        super.setEnabled(enabled);
+        if (isEnabled() != enabled) {
+            super.setEnabled(enabled);
 
-        updateUI();
+            updateUI();
+        }
     }
 
     @Override
