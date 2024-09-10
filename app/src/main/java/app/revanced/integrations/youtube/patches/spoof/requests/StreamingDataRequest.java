@@ -45,10 +45,25 @@ public class StreamingDataRequest {
         }
     }
 
-    private static final long MAX_MILLISECONDS_TO_WAIT_FOR_FETCH = 20 * 1000; // 20 seconds
+    /**
+     * TCP connection and HTTP read timeout.
+     */
+    private static final int HTTP_TIMEOUT_MILLISECONDS = 10 * 1000;
+
+    /**
+     * Any arbitrarily large value, but must be at least twice {@link #HTTP_TIMEOUT_MILLISECONDS}
+     */
+    private static final int MAX_MILLISECONDS_TO_WAIT_FOR_FETCH = 20 * 1000;
 
     private static final Map<String, StreamingDataRequest> cache = Collections.synchronizedMap(
             new LinkedHashMap<>(100) {
+                /**
+                 * Cache limit must be greater than the maximum number of videos open at once,
+                 * which theoretically is more than 4 (3 Shorts + one regular minimized video).
+                 * But instead use a much larger value, to handle if a video viewed a while ago
+                 * is somehow still referenced.  Each stream is a small array of Strings
+                 * so memory usage is not a concern.
+                 */
                 private static final int CACHE_LIMIT = 50;
 
                 @Override
@@ -86,6 +101,8 @@ public class StreamingDataRequest {
 
         try {
             HttpURLConnection connection = PlayerRoutes.getPlayerResponseConnectionFromRoute(GET_STREAMING_DATA, clientType);
+            connection.setConnectTimeout(HTTP_TIMEOUT_MILLISECONDS);
+            connection.setReadTimeout(HTTP_TIMEOUT_MILLISECONDS);
 
             String authHeader = playerHeaders.get("Authorization");
             String visitorId = playerHeaders.get("X-Goog-Visitor-Id");
