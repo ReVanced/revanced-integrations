@@ -4,25 +4,14 @@ import static app.revanced.integrations.shared.StringRef.str;
 import static app.revanced.integrations.youtube.patches.spoof.DeviceHardwareSupport.DEVICE_HAS_HARDWARE_DECODING_VP9;
 
 import android.content.Context;
-import android.os.Build;
 import android.preference.SwitchPreference;
-import android.text.Html;
 import android.util.AttributeSet;
 
-import androidx.annotation.RequiresApi;
-
-import app.revanced.integrations.youtube.patches.spoof.ClientType;
-import app.revanced.integrations.youtube.settings.Settings;
-
 @SuppressWarnings({"unused", "deprecation"})
-@RequiresApi(api = Build.VERSION_CODES.O)
 public class ForceAVCSpoofingPreference extends SwitchPreference {
     {
         if (!DEVICE_HAS_HARDWARE_DECODING_VP9) {
-            setSummaryOn(Html.fromHtml(
-                    str("revanced_spoof_streaming_data_ios_force_avc_no_hardware_vp9_summary_on")));
-            setSummaryOff(Html.fromHtml(
-                    str("revanced_spoof_streaming_data_ios_force_avc_no_hardware_vp9_summary_off")));
+            setSummaryOn(str("revanced_spoof_streaming_data_ios_force_avc_no_hardware_vp9_summary_on"));
         }
     }
 
@@ -51,7 +40,7 @@ public class ForceAVCSpoofingPreference extends SwitchPreference {
 
         // This setting cannot be changed by the user.
         super.setEnabled(false);
-        super.setChecked(Settings.SPOOF_STREAMING_DATA_TYPE.get() == ClientType.IOS);
+        super.setChecked(true);
 
         setKey(key);
     }
