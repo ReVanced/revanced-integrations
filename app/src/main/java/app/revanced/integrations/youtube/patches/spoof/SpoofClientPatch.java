@@ -158,8 +158,8 @@ public class SpoofClientPatch {
                 final int methodPost = 2;
                 if (method == methodPost) {
                     String path = uri.getPath();
-                    String clientName = "c";
-                    final boolean iosClient = ClientType.IOS.name().equals(uri.getQueryParameter(clientName));
+                    String clientNameQueryKey = "c";
+                    final boolean iosClient = "IOS".equals(uri.getQueryParameter(clientNameQueryKey));
                     if (iosClient && path != null && path.contains("videoplayback")) {
                         return null;
                     }
