@@ -87,7 +87,6 @@ public final class LithoFilterPatch {
      * the buffer is saved to a ThreadLocal so each calling thread does not interfere with other threads.
      */
     private static final ThreadLocal<ByteBuffer> bufferThreadLocal = new ThreadLocal<>();
-    private static final ThreadLocal<Boolean> filteredState = new ThreadLocal<>();
 
     static {
         for (Filter filter : filters) {
@@ -141,28 +140,14 @@ public final class LithoFilterPatch {
         }
     }
 
-    private static void setFilteredState(boolean filtered) {
-        filteredState.set(filtered);
-    }
-
-    /**
-     * Injection point.
-     */
-    @SuppressWarnings("unused")
-    public static boolean filterState() {
-        Boolean state = filteredState.get();
-        return state != null && state;
-    }
-
     /**
      * Injection point.  Called off the main thread, and commonly called by multiple threads at the same time.
      */
     @SuppressWarnings("unused")
-    public static void filter(@Nullable String lithoIdentifier, @NonNull StringBuilder pathBuilder) {
+    public static boolean filter(@Nullable String lithoIdentifier, @NonNull StringBuilder pathBuilder) {
         try {
             if (pathBuilder.length() == 0) {
-                setFilteredState(false);
-                return;
+                return false;
             }
 
             ByteBuffer protobufBuffer = bufferThreadLocal.get();
@@ -184,19 +169,17 @@ public final class LithoFilterPatch {
             Logger.printDebug(() -> "Searching " + parameter);
 
             if (parameter.identifier != null && identifierSearchTree.matches(parameter.identifier, parameter)) {
-                setFilteredState(true);
-                return;
+                return true;
             }
 
             if (pathSearchTree.matches(parameter.path, parameter)) {
-                setFilteredState(true);
-                return;
+                return true;
             }
         } catch (Exception ex) {
             Logger.printException(() -> "Litho filter failure", ex);
         }
 
-        setFilteredState(false);
+        return false;
     }
 }
 
