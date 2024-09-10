@@ -25,6 +25,15 @@ import app.revanced.integrations.shared.settings.BaseSettings;
 import app.revanced.integrations.youtube.patches.spoof.ClientType;
 import app.revanced.integrations.youtube.settings.Settings;
 
+/**
+ * Video streaming data.  Fetching is tied to the behavior YT uses,
+ * where this class fetches the streams only when YT fetches.
+ *
+ * Effectively the cache expiration of these fetches is the same as the stock app,
+ * since the stock app would not use expired streams and therefor
+ * the integrations replace stream hook is called only if YT
+ * would have used it's own client streams.
+ */
 public class StreamingDataRequest {
 
     private static final ClientType[] CLIENT_ORDER_TO_USE;
@@ -150,7 +159,7 @@ public class StreamingDataRequest {
                     if (connection.getContentLength() != 0) {
                         try (InputStream inputStream = new BufferedInputStream(connection.getInputStream())) {
                             try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-                                byte[] buffer = new byte[8192];
+                                byte[] buffer = new byte[2048];
                                 int bytesRead;
                                 while ((bytesRead = inputStream.read(buffer)) >= 0) {
                                     baos.write(buffer, 0, bytesRead);
