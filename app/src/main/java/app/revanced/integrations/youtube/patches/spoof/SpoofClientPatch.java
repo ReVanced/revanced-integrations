@@ -96,6 +96,7 @@ public class SpoofClientPatch {
             try {
                 Uri uri = Uri.parse(url);
                 String path = uri.getPath();
+                // 'heartbeat' has no video id and appears to be only after playback has started.
                 if (path != null && path.contains("player") && !path.contains("heartbeat")) {
                     String videoId = Objects.requireNonNull(uri.getQueryParameter("id"));
                     StreamingDataRequest.fetchRequest(videoId, requestHeaders);
