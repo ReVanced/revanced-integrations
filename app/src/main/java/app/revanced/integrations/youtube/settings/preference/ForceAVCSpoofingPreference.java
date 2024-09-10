@@ -11,7 +11,6 @@ import android.util.AttributeSet;
 
 import androidx.annotation.RequiresApi;
 
-import app.revanced.integrations.shared.Logger;
 import app.revanced.integrations.youtube.patches.spoof.ClientType;
 import app.revanced.integrations.youtube.settings.Settings;
 
@@ -20,8 +19,10 @@ import app.revanced.integrations.youtube.settings.Settings;
 public class ForceAVCSpoofingPreference extends SwitchPreference {
     {
         if (!DEVICE_HAS_HARDWARE_DECODING_VP9) {
-            setSummaryOn((Html.fromHtml(str("revanced_spoof_streaming_data_ios_force_avc_no_hardware_vp9_summary_on"))));
-            setSummaryOff((Html.fromHtml(str("revanced_spoof_streaming_data_ios_force_avc_no_hardware_vp9_summary_off"))));
+            setSummaryOn(Html.fromHtml(
+                    str("revanced_spoof_streaming_data_ios_force_avc_no_hardware_vp9_summary_on")));
+            setSummaryOff(Html.fromHtml(
+                    str("revanced_spoof_streaming_data_ios_force_avc_no_hardware_vp9_summary_off")));
         }
     }
 
@@ -39,44 +40,33 @@ public class ForceAVCSpoofingPreference extends SwitchPreference {
     }
 
     private void updateUI() {
-        try {
-            if (DEVICE_HAS_HARDWARE_DECODING_VP9) {
-                return;
-            }
-
-            // Temporarily remove the preference key to allow changing this preference without
-            // causing the settings UI listeners from showing reboot dialogs dialogs by the changes made here.
-            String key = getKey();
-            setKey(null);
-
-            // This setting cannot be changed by the user.
-            super.setEnabled(false);
-
-            final boolean isIOS = Settings.SPOOF_STREAMING_DATA_TYPE.get() == ClientType.IOS;
-            Settings.SPOOF_STREAMING_DATA_IOS_FORCE_AVC.save(isIOS);
-            super.setChecked(isIOS);
-
-            setKey(key);
-        } catch (Exception ex) {
-            Logger.printException(() -> "updateUI failure", ex);
+        if (DEVICE_HAS_HARDWARE_DECODING_VP9) {
+            return;
         }
+
+        // Temporarily remove the preference key to allow changing this preference without
+        // causing the settings UI listeners from showing reboot dialogs by the changes made here.
+        String key = getKey();
+        setKey(null);
+
+        // This setting cannot be changed by the user.
+        super.setEnabled(false);
+        super.setChecked(Settings.SPOOF_STREAMING_DATA_TYPE.get() == ClientType.IOS);
+
+        setKey(key);
     }
 
     @Override
     public void setEnabled(boolean enabled) {
-        if (isEnabled() != enabled) {
-            super.setEnabled(enabled);
+        super.setEnabled(enabled);
 
-            updateUI();
-        }
+        updateUI();
     }
 
     @Override
     public void setChecked(boolean checked) {
-        if (isChecked() != checked) {
-            super.setChecked(checked);
+        super.setChecked(checked);
 
-            updateUI();
-        }
+        updateUI();
     }
 }
