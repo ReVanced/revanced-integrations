@@ -8,8 +8,8 @@ import app.revanced.integrations.shared.Logger;
 import app.revanced.integrations.youtube.settings.Settings;
 
 public class DeviceHardwareSupport {
-    private static final boolean DEVICE_HAS_HARDWARE_DECODING_VP9;
-    private static final boolean DEVICE_HAS_HARDWARE_DECODING_AV1;
+    public static final boolean DEVICE_HAS_HARDWARE_DECODING_VP9;
+    public static final boolean DEVICE_HAS_HARDWARE_DECODING_AV1;
 
     static {
         boolean vp9found = false;
