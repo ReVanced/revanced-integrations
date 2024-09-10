@@ -4,8 +4,6 @@ import android.net.Uri;
 
 import androidx.annotation.Nullable;
 
-import org.chromium.net.UrlRequest;
-
 import java.nio.ByteBuffer;
 import java.util.Map;
 import java.util.Objects;
@@ -93,28 +91,25 @@ public class SpoofClientPatch {
     /**
      * Injection point.
      */
-    public static UrlRequest buildRequest(UrlRequest.Builder builder, String url,
-                                          Map<String, String> playerHeaders) {
+    public static void fetchStreams(String url, Map<String, String> requestHeaders) {
         if (SPOOF_STREAMING_DATA) {
             try {
                 Uri uri = Uri.parse(url);
                 String path = uri.getPath();
                 if (path != null && path.contains("player") && !path.contains("heartbeat")) {
                     String videoId = Objects.requireNonNull(uri.getQueryParameter("id"));
-                    StreamingDataRequest.fetchRequest(videoId, playerHeaders);
+                    StreamingDataRequest.fetchRequest(videoId, requestHeaders);
                 }
             } catch (Exception ex) {
                 Logger.printException(() -> "buildRequest failure", ex);
             }
         }
-
-        return builder.build();
     }
 
     /**
      * Injection point.
      * Fix playback by replace the streaming data.
-     * Called after {@link #buildRequest(UrlRequest.Builder, String, Map)}.
+     * Called after {@link #fetchStreams(String, Map)}.
      */
     @Nullable
     public static ByteBuffer getStreamingData(String videoId) {
