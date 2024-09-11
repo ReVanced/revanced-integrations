@@ -1,3 +1,10 @@
+# [1.14.0-dev.10](https://github.com/ReVanced/revanced-integrations/compare/v1.14.0-dev.9...v1.14.0-dev.10) (2024-09-11)
+
+
+### Bug Fixes
+
+* **YouTube - Return YouTube Dislike:** Show correct value when swiping back to prior Short and disliking ([2eb5e3a](https://github.com/ReVanced/revanced-integrations/commit/2eb5e3afebe374a86e9da521d6441402130f0fd0))
+
 # [1.14.0-dev.9](https://github.com/ReVanced/revanced-integrations/compare/v1.14.0-dev.8...v1.14.0-dev.9) (2024-09-09)
 
 
