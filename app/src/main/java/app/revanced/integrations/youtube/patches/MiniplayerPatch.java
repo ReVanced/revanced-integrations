@@ -16,7 +16,7 @@ import app.revanced.integrations.shared.Utils;
 import app.revanced.integrations.shared.settings.Setting;
 import app.revanced.integrations.youtube.settings.Settings;
 
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "SpellCheckingInspection"})
 public final class MiniplayerPatch {
 
     /**
@@ -29,7 +29,12 @@ public final class MiniplayerPatch {
         TABLET(true, null),
         MODERN_1(null, 1),
         MODERN_2(null, 2),
-        MODERN_3(null, 3);
+        MODERN_3(null, 3),
+        /**
+         * Half broken miniplayer, that might be work in progress or left over abandoned code.
+         * Can force this type by editing the import/export settings.
+         */
+        MODERN_4(null, 4);
 
         /**
          * Legacy tablet hook value.
@@ -109,6 +114,8 @@ public final class MiniplayerPatch {
     private static final boolean HIDE_REWIND_FORWARD_ENABLED =
             CURRENT_TYPE == MODERN_1 && Settings.MINIPLAYER_HIDE_REWIND_FORWARD.get();
 
+    private static final boolean DROP_SHADOW = Settings.MINIPLAYER_DROP_SHADOW.get();
+
     private static final int OPACITY_LEVEL;
 
     public static final class MiniplayerHideExpandCloseAvailability implements Setting.Availability {
@@ -173,7 +180,21 @@ public final class MiniplayerPatch {
     /**
      * Injection point.
      */
+    public static boolean getModernFeatureFlagsActiveOverride(boolean original) {
+        Logger.printDebug(() -> "getModernFeatureFlagsActiveOverride original: " + original);
+
+        // This must be on to allow other feature flags to be used,
+        // but if always set to 'true' this breaks the miniplayer when some features are not on.
+        // TODO: Figure out when to enable this.
+        return true;
+    }
+
+    /**
+     * Injection point.
+     */
     public static boolean enableMiniplayerDoubleTapAction(boolean original) {
+        Logger.printDebug(() -> "enableMiniplayerDoubleTapAction original: " + original);
+
         return DOUBLE_TAP_ACTION_ENABLED;
     }
 
@@ -181,16 +202,47 @@ public final class MiniplayerPatch {
      * Injection point.
      */
     public static boolean enableMiniplayerDragAndDrop(boolean original) {
+        Logger.printDebug(() -> "enableMiniplayerDragAndDrop original: " + original);
+
         return DRAG_AND_DROP_ENABLED;
     }
 
     /**
      * Injection point.
      */
-    public static int setMiniplayerSize(int original) {
+    public static int setMiniplayerDefaultSize(int original) {
         if (CURRENT_TYPE == MODERN_1 || CURRENT_TYPE == MODERN_2 || CURRENT_TYPE == MODERN_3) {
             return MINIPLAYER_SIZE;
         }
+
+        return original;
+    }
+
+    /**
+     * Injection point.
+     */
+    public static float setMovementBoundFactor(float original) {
+        // Not clear if this is useful to customize or not.
+        // So for now just log this and keep whatever is the original value.
+        Logger.printDebug(() -> "setMovementBoundFactor original: " + original);
+
+        return original;
+    }
+
+    /**
+     * Injection point.
+     */
+    public static boolean setDropShadow(boolean original) {
+        Logger.printDebug(() -> "setViewElevation original: " + original);
+
+        return DROP_SHADOW;
+    }
+
+    /**
+     * Injection point.
+     */
+    public static boolean setUseBackgroundViewOutlineProvider(boolean original) {
+        Logger.printDebug(() -> "setUseBackgroundViewOutlineProvider original: " + original);
 
         return original;
     }
