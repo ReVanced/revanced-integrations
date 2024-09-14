@@ -88,6 +88,11 @@ public final class MiniplayerPatch {
         MINIPLAYER_SIZE = dipWidth;
     }
 
+    private static final boolean IS_19_20_OR_GREATER = Utils.getAppVersionName().compareTo("19.20.00") >= 0;
+    private static final boolean IS_19_21_OR_GREATER = Utils.getAppVersionName().compareTo("19.21.00") >= 0;
+    private static final boolean IS_19_26_OR_GREATER = Utils.getAppVersionName().compareTo("19.26.00") >= 0;
+    private static final boolean IS_19_29_OR_GREATER = Utils.getAppVersionName().compareTo("19.29.00") >= 0;
+
     /**
      * Modern subtitle overlay for {@link MiniplayerType#MODERN_2}.
      * Resource is not present in older targets, and this field will be zero.
@@ -97,16 +102,21 @@ public final class MiniplayerPatch {
 
     private static final MiniplayerType CURRENT_TYPE = Settings.MINIPLAYER_TYPE.get();
 
+    /**
+     * Cannot turn off double tap with modern 2 or 3 with later targets,
+     * as forcing it off breakings tapping the miniplayer.
+     */
     private static final boolean DOUBLE_TAP_ACTION_ENABLED =
-            (CURRENT_TYPE == MODERN_1 || CURRENT_TYPE == MODERN_2 || CURRENT_TYPE == MODERN_3)
-                    && Settings.MINIPLAYER_DOUBLE_TAP_ACTION.get();
+            // 19.29+ is very broken if double tap is not enabled.
+            IS_19_29_OR_GREATER ||
+                    (CURRENT_TYPE.isModern() & Settings.MINIPLAYER_DOUBLE_TAP_ACTION.get());
 
     private static final boolean DRAG_AND_DROP_ENABLED =
-            CURRENT_TYPE == MODERN_1 && Settings.MINIPLAYER_DRAG_AND_DROP.get();
+            CURRENT_TYPE.isModern() && Settings.MINIPLAYER_DRAG_AND_DROP.get();
 
     private static final boolean HIDE_EXPAND_CLOSE_ENABLED =
-            (CURRENT_TYPE == MODERN_1 || CURRENT_TYPE == MODERN_3)
-                    && !DRAG_AND_DROP_ENABLED && Settings.MINIPLAYER_HIDE_EXPAND_CLOSE.get();
+            Settings.MINIPLAYER_HIDE_EXPAND_CLOSE.get()
+                    && Settings.MINIPLAYER_HIDE_EXPAND_CLOSE.isAvailable();
 
     private static final boolean HIDE_SUBTEXT_ENABLED =
             (CURRENT_TYPE == MODERN_1 || CURRENT_TYPE == MODERN_3) && Settings.MINIPLAYER_HIDE_SUBTEXT.get();
@@ -114,16 +124,23 @@ public final class MiniplayerPatch {
     private static final boolean HIDE_REWIND_FORWARD_ENABLED =
             CURRENT_TYPE == MODERN_1 && Settings.MINIPLAYER_HIDE_REWIND_FORWARD.get();
 
-    private static final boolean DROP_SHADOW = Settings.MINIPLAYER_DROP_SHADOW.get();
+    /**
+     * Remove a broken and always present subtitle text that is only
+     * present with {@link MiniplayerType#MODERN_2}. Bug was fixed in 19.21.
+     */
+    private static final boolean HIDE_BROKEN_MODERN_2_SUBTITLE =
+            CURRENT_TYPE == MODERN_2 && !IS_19_21_OR_GREATER;
 
     private static final int OPACITY_LEVEL;
 
     public static final class MiniplayerHideExpandCloseAvailability implements Setting.Availability {
-        Setting.Availability modernOneOrThree = Settings.MINIPLAYER_TYPE.availability(MODERN_1, MODERN_3);
-
         @Override
         public boolean isAvailable() {
-            return modernOneOrThree.isAvailable() && !Settings.MINIPLAYER_DRAG_AND_DROP.get();
+            MiniplayerType type = Settings.MINIPLAYER_TYPE.get();
+            return (!IS_19_20_OR_GREATER && (type == MODERN_1 || type == MODERN_3))
+                    || (!IS_19_26_OR_GREATER && type == MODERN_1
+                        && !Settings.MINIPLAYER_DOUBLE_TAP_ACTION.get() && !Settings.MINIPLAYER_DRAG_AND_DROP.get())
+                    || (IS_19_29_OR_GREATER && type == MODERN_3);
         }
     }
 
@@ -183,9 +200,7 @@ public final class MiniplayerPatch {
     public static boolean getModernFeatureFlagsActiveOverride(boolean original) {
         Logger.printDebug(() -> "getModernFeatureFlagsActiveOverride original: " + original);
 
-        // This must be on to allow other feature flags to be used,
-        // but if always set to 'true' this breaks the miniplayer when some features are not on.
-        // TODO: Figure out when to enable this.
+        // This should always be true if either double tap or drag and drop are enabled.
         return true;
     }
 
@@ -235,7 +250,7 @@ public final class MiniplayerPatch {
     public static boolean setDropShadow(boolean original) {
         Logger.printDebug(() -> "setViewElevation original: " + original);
 
-        return DROP_SHADOW;
+        return original;
     }
 
     /**
@@ -281,9 +296,7 @@ public final class MiniplayerPatch {
      */
     public static void playerOverlayGroupCreated(View group) {
         try {
-            // Modern 2 has an half broken subtitle that is always present.
-            // Always hide it to make the miniplayer mostly usable.
-            if (CURRENT_TYPE == MODERN_2 && MODERN_OVERLAY_SUBTITLE_TEXT != 0) {
+            if (HIDE_BROKEN_MODERN_2_SUBTITLE && MODERN_OVERLAY_SUBTITLE_TEXT != 0) {
                 if (group instanceof ViewGroup) {
                     View subtitleText = Utils.getChildView((ViewGroup) group, true,
                             view -> view.getId() == MODERN_OVERLAY_SUBTITLE_TEXT);
