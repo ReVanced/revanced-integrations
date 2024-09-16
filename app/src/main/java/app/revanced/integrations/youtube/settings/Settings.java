@@ -191,7 +191,7 @@ public class Settings extends BaseSettings {
     public static final BooleanSetting HIDE_VIDEO_QUALITY_MENU_FOOTER = new BooleanSetting("revanced_hide_video_quality_menu_footer", FALSE);
 
     // General layout
-    public static final StringSetting START_PAGE = new StringSetting("revanced_start_page", "");
+    public static final StringSetting START_PAGE = new StringSetting("revanced_start_page", "", true);
     public static final BooleanSetting SPOOF_APP_VERSION = new BooleanSetting("revanced_spoof_app_version", FALSE, true, "revanced_spoof_app_version_user_dialog_message");
     public static final StringSetting SPOOF_APP_VERSION_TARGET = new StringSetting("revanced_spoof_app_version_target", "17.33.42", true, parent(SPOOF_APP_VERSION));
     public static final BooleanSetting TABLET_LAYOUT = new BooleanSetting("revanced_tablet_layout", FALSE, true, "revanced_tablet_layout_user_dialog_message");
