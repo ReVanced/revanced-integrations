@@ -4,7 +4,9 @@ import app.revanced.integrations.youtube.settings.Settings;
 
 @SuppressWarnings("unused")
 public final class SlideToSeekPatch {
+    private static final Boolean SLIDE_TO_SEEK_DISABLED = !Settings.SLIDE_TO_SEEK.get();
+
     public static boolean isSlideToSeekDisabled() {
-        return !Settings.SLIDE_TO_SEEK.get();
+        return SLIDE_TO_SEEK_DISABLED;
     }
 }
