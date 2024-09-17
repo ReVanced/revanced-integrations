@@ -1,3 +1,22 @@
+# [1.14.0-dev.10](https://github.com/ReVanced/revanced-integrations/compare/v1.14.0-dev.9...v1.14.0-dev.10) (2024-09-11)
+
+
+### Bug Fixes
+
+* **YouTube - Return YouTube Dislike:** Show correct value when swiping back to prior Short and disliking ([2eb5e3a](https://github.com/ReVanced/revanced-integrations/commit/2eb5e3afebe374a86e9da521d6441402130f0fd0))
+
+# [1.14.0-dev.9](https://github.com/ReVanced/revanced-integrations/compare/v1.14.0-dev.8...v1.14.0-dev.9) (2024-09-09)
+
+
+### Bug Fixes
+
+* **YouTube - SponsorBlock:** Add summary text to 'view my segments' button ([0f5dfb4](https://github.com/ReVanced/revanced-integrations/commit/0f5dfb4e76337da7e086a08b59aed7881de56a31))
+
+
+### Features
+
+* **YouTube:** Add donation link to settings about screen ([#688](https://github.com/ReVanced/revanced-integrations/issues/688)) ([b816c45](https://github.com/ReVanced/revanced-integrations/commit/b816c45838769c6b3df7147d091696cb3ee9789e))
+
 # [1.14.0-dev.8](https://github.com/ReVanced/revanced-integrations/compare/v1.14.0-dev.7...v1.14.0-dev.8) (2024-09-06)
 
 
