@@ -11,7 +11,7 @@ import android.util.AttributeSet;
 public class ForceAVCSpoofingPreference extends SwitchPreference {
     {
         if (!DEVICE_HAS_HARDWARE_DECODING_VP9) {
-            setSummaryOn(str("revanced_spoof_streaming_data_ios_force_avc_no_hardware_vp9_summary_on"));
+            setSummaryOn(str("revanced_spoof_video_streams_ios_force_avc_no_hardware_vp9_summary_on"));
         }
     }
 

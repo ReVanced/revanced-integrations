@@ -40,10 +40,9 @@ public class StreamingDataRequest {
 
     static {
         ClientType[] allClientTypes = ClientType.values();
-        final int numberOfClients = allClientTypes.length;
-        CLIENT_ORDER_TO_USE = new ClientType[numberOfClients];
+        ClientType preferredClient = Settings.SPOOF_VIDEO_STREAMS_CLIENT_TYPE.get();
 
-        ClientType preferredClient = Settings.SPOOF_STREAMING_DATA_TYPE.get();
+        CLIENT_ORDER_TO_USE = new ClientType[allClientTypes.length];
         CLIENT_ORDER_TO_USE[0] = preferredClient;
 
         int i = 1;

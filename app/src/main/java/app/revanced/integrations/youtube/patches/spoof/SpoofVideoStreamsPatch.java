@@ -16,15 +16,15 @@ import app.revanced.integrations.youtube.patches.spoof.requests.StreamingDataReq
 import app.revanced.integrations.youtube.settings.Settings;
 
 @SuppressWarnings("unused")
-public class SpoofClientPatch {
+public class SpoofVideoStreamsPatch {
     public static final class ForceiOSAVCAvailability implements Setting.Availability {
         @Override
         public boolean isAvailable() {
-            return Settings.SPOOF_STREAMING_DATA.get() && Settings.SPOOF_STREAMING_DATA_TYPE.get() == ClientType.IOS;
+            return Settings.SPOOF_VIDEO_STREAMS.get() && Settings.SPOOF_VIDEO_STREAMS_CLIENT_TYPE.get() == ClientType.IOS;
         }
     }
 
-    private static final boolean SPOOF_STREAMING_DATA = Settings.SPOOF_STREAMING_DATA.get();
+    private static final boolean SPOOF_STREAMING_DATA = Settings.SPOOF_VIDEO_STREAMS.get();
 
     /**
      * Any unreachable ip address.  Used to intentionally fail requests.
