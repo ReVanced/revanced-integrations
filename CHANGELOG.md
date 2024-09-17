@@ -1,3 +1,10 @@
+# [1.14.0-dev.11](https://github.com/ReVanced/revanced-integrations/compare/v1.14.0-dev.10...v1.14.0-dev.11) (2024-09-17)
+
+
+### Features
+
+* **YouTube - Hide Shorts components:** Hide 'Use this sound' button ([#691](https://github.com/ReVanced/revanced-integrations/issues/691)) ([6f3d2ff](https://github.com/ReVanced/revanced-integrations/commit/6f3d2ffb0d65ec819038050dfabe1432f87ce360))
+
 # [1.14.0-dev.10](https://github.com/ReVanced/revanced-integrations/compare/v1.14.0-dev.9...v1.14.0-dev.10) (2024-09-11)
 
 
