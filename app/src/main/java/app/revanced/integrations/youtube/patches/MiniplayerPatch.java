@@ -65,8 +65,7 @@ public final class MiniplayerPatch {
         DisplayMetrics displayMetrics = Utils.getContext().getResources().getDisplayMetrics();
         final int deviceDipWidth = (int) (displayMetrics.widthPixels / displayMetrics.density);
 
-        // YT seems to use a minimum height to calculate
-        // the minimum miniplayer width based on the video.
+        // YT seems to use a minimum height to calculate the minimum miniplayer width based on the video.
         // 170 seems to be the smallest that can be used and using less makes no difference.
         final int WIDTH_DIP_MIN = 170; // Seems to be the smallest that works.
         final int HORIZONTAL_PADDING_DIP = 15; // Estimated padding.
@@ -109,7 +108,7 @@ public final class MiniplayerPatch {
     private static final boolean DOUBLE_TAP_ACTION_ENABLED =
             // 19.29+ is very broken if double tap is not enabled.
             IS_19_29_OR_GREATER ||
-                    (CURRENT_TYPE.isModern() & Settings.MINIPLAYER_DOUBLE_TAP_ACTION.get());
+                    (CURRENT_TYPE.isModern() && Settings.MINIPLAYER_DOUBLE_TAP_ACTION.get());
 
     private static final boolean DRAG_AND_DROP_ENABLED =
             CURRENT_TYPE.isModern() && Settings.MINIPLAYER_DRAG_AND_DROP.get();
