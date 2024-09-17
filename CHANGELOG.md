@@ -1,3 +1,10 @@
+# [1.14.0-dev.12](https://github.com/ReVanced/revanced-integrations/compare/v1.14.0-dev.11...v1.14.0-dev.12) (2024-09-17)
+
+
+### Bug Fixes
+
+* **YouTube:** Fix issues related to playback by replace streaming data ([#680](https://github.com/ReVanced/revanced-integrations/issues/680)) ([0468235](https://github.com/ReVanced/revanced-integrations/commit/04682353af9831d312a82264a8944268c7901db7))
+
 # [1.14.0-dev.11](https://github.com/ReVanced/revanced-integrations/compare/v1.14.0-dev.10...v1.14.0-dev.11) (2024-09-17)
 
 
