@@ -16,6 +16,7 @@ import app.revanced.integrations.youtube.shared.PlayerType;
 
 @SuppressWarnings("unused")
 public final class ShortsFilter extends Filter {
+    public static final Boolean HIDE_SHORTS_NAVIGATION_BAR = Settings.HIDE_SHORTS_NAVIGATION_BAR.get();
     public static PivotBar pivotBar; // Set by patch.
 
     private final static String REEL_CHANNEL_BAR_PATH = "reel_channel_bar.eml";
@@ -351,14 +352,14 @@ public final class ShortsFilter extends Filter {
     // endregion
 
     public static void hideNavigationBar() {
-        if (!Settings.HIDE_SHORTS_NAVIGATION_BAR.get()) return;
+        if (!HIDE_SHORTS_NAVIGATION_BAR) return;
         if (pivotBar == null) return;
 
         pivotBar.setVisibility(View.GONE);
     }
 
     public static View hideNavigationBar(final View navigationBarView) {
-        if (Settings.HIDE_SHORTS_NAVIGATION_BAR.get())
+        if (HIDE_SHORTS_NAVIGATION_BAR)
             return null; // Hides the navigation bar.
 
         return navigationBarView;
