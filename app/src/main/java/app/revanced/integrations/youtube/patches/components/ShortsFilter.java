@@ -9,6 +9,8 @@ import androidx.annotation.Nullable;
 
 import com.google.android.libraries.youtube.rendering.ui.pivotbar.PivotBar;
 
+import java.lang.ref.WeakReference;
+
 import app.revanced.integrations.shared.Utils;
 import app.revanced.integrations.youtube.settings.Settings;
 import app.revanced.integrations.youtube.shared.NavigationBar;
@@ -17,13 +19,13 @@ import app.revanced.integrations.youtube.shared.PlayerType;
 @SuppressWarnings("unused")
 public final class ShortsFilter extends Filter {
     public static final Boolean HIDE_SHORTS_NAVIGATION_BAR = Settings.HIDE_SHORTS_NAVIGATION_BAR.get();
-    public static PivotBar pivotBar; // Set by patch.
-
     private final static String REEL_CHANNEL_BAR_PATH = "reel_channel_bar.eml";
     /**
      * For paid promotion label and subscribe button that appears in the channel bar.
      */
     private final static String REEL_METAPANEL_PATH = "reel_metapanel.eml";
+
+    private static WeakReference<PivotBar> pivotBarRef = new WeakReference<>(null);
 
     private final StringFilterGroup shortsCompactFeedVideoPath;
     private final ByteArrayFilterGroup shortsCompactFeedVideoBuffer;
@@ -351,8 +353,13 @@ public final class ShortsFilter extends Filter {
 
     // endregion
 
+    public static void setNavigationBar(PivotBar view) {
+        pivotBarRef = new WeakReference<>(view);
+    }
+
     public static void hideNavigationBar() {
         if (!HIDE_SHORTS_NAVIGATION_BAR) return;
+        var pivotBar = pivotBarRef.get();
         if (pivotBar == null) return;
 
         pivotBar.setVisibility(View.GONE);
