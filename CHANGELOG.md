@@ -1,3 +1,10 @@
+## [1.14.1](https://github.com/ReVanced/revanced-integrations/compare/v1.14.0...v1.14.1) (2024-09-18)
+
+
+### Bug Fixes
+
+* **YouTube - Check environment:** Only use fields available since Android 8 ([#693](https://github.com/ReVanced/revanced-integrations/issues/693)) ([c0829c3](https://github.com/ReVanced/revanced-integrations/commit/c0829c3915b20f1ece5deac137d423c75f43074f))
+
 ## [1.14.1-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v1.14.0...v1.14.1-dev.1) (2024-09-18)
 
 
