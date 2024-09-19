@@ -328,6 +328,14 @@ public final class ShortsFilter extends Filter {
         }
     }
 
+    public static int getSoundButtonSize(int original) {
+        if (Settings.HIDE_SHORTS_SOUND_BUTTON.get()) {
+            return 0;
+        }
+
+        return original;
+    }
+
     // region Hide the buttons in older versions of YouTube. New versions use Litho.
 
     public static void hideLikeButton(final View likeButtonView) {
