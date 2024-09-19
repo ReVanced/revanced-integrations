@@ -82,7 +82,9 @@ public final class LayoutComponentsFilter extends Filter {
                 "post_base_wrapper",
                 "image_post_root.eml",
                 "text_post_root.eml",
-                "images_post_root.eml"
+                "images_post_root.eml",
+                "images_post_slim.eml",
+                "text_post_root_slim.eml"
         );
 
         final var communityGuidelines = new StringFilterGroup(
