@@ -10,6 +10,8 @@ import androidx.annotation.Nullable;
 import com.google.android.libraries.youtube.rendering.ui.pivotbar.PivotBar;
 
 import java.lang.ref.WeakReference;
+import java.util.Arrays;
+import java.util.List;
 
 import app.revanced.integrations.shared.Logger;
 import app.revanced.integrations.shared.Utils;
@@ -28,9 +30,9 @@ public final class ShortsFilter extends Filter {
     private final static String REEL_METAPANEL_PATH = "reel_metapanel.eml";
 
     /**
-     * Tag that appears when opening the Shorts player.
+     * Tags that appears when opening the Shorts player.
      */
-    private static final String REEL_WATCH_FRAGMENT_INIT_PLAYBACK = "r_fs";
+    private static final List<String> REEL_WATCH_FRAGMENT_INIT_PLAYBACK = Arrays.asList("r_fs", "r_ts");
 
     /**
      * Vertical padding between the bottom of the screen and the seekbar, when the Shorts navigation bar is hidden.
@@ -374,7 +376,7 @@ public final class ShortsFilter extends Filter {
 
     public static void hideNavigationBar(String tag) {
         if (HIDE_SHORTS_NAVIGATION_BAR) {
-            if (REEL_WATCH_FRAGMENT_INIT_PLAYBACK.equals(tag)) {
+            if (REEL_WATCH_FRAGMENT_INIT_PLAYBACK.contains(tag)) {
                 var pivotBar = pivotBarRef.get();
                 if (pivotBar == null) return;
 
