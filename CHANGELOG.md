@@ -1,3 +1,49 @@
+## [1.14.1](https://github.com/ReVanced/revanced-integrations/compare/v1.14.0...v1.14.1) (2024-09-18)
+
+
+### Bug Fixes
+
+* **YouTube - Check environment:** Only use fields available since Android 8 ([#693](https://github.com/ReVanced/revanced-integrations/issues/693)) ([c0829c3](https://github.com/ReVanced/revanced-integrations/commit/c0829c3915b20f1ece5deac137d423c75f43074f))
+
+## [1.14.1-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v1.14.0...v1.14.1-dev.1) (2024-09-18)
+
+
+### Bug Fixes
+
+* **YouTube - Check environment:** Only use fields available since Android 8 ([#693](https://github.com/ReVanced/revanced-integrations/issues/693)) ([c0829c3](https://github.com/ReVanced/revanced-integrations/commit/c0829c3915b20f1ece5deac137d423c75f43074f))
+
+# [1.14.0](https://github.com/ReVanced/revanced-integrations/compare/v1.13.0...v1.14.0) (2024-09-18)
+
+
+### Bug Fixes
+
+* **YouTube - Check environment patch:** Allow adb installs even if patched more than 30 minutes ago ([5adf8bd](https://github.com/ReVanced/revanced-integrations/commit/5adf8bdd67c67502f5bc2912247e1eb1cec8a33d))
+* **YouTube - Check environment patch:** Show if patched apk is too old, if the install source is not Manager or ADB ([18048f3](https://github.com/ReVanced/revanced-integrations/commit/18048f33243c4a877cf8b055d89fc04c4b963e0c))
+* **YouTube - Check environment patch:** Use app install/update time instead of current time ([#687](https://github.com/ReVanced/revanced-integrations/issues/687)) ([b0d82b0](https://github.com/ReVanced/revanced-integrations/commit/b0d82b016eeacca324b906037d1857b81f577b53))
+* **YouTube - GmsCore support:** Show an error toast if GmsCore is included with root mounted installation ([#686](https://github.com/ReVanced/revanced-integrations/issues/686)) ([a4848be](https://github.com/ReVanced/revanced-integrations/commit/a4848be653fae3e03972254fe48a7b76e561e5a6))
+* **YouTube - Hide layout components:** Hide new kind of community post ([#678](https://github.com/ReVanced/revanced-integrations/issues/678)) ([6be257a](https://github.com/ReVanced/revanced-integrations/commit/6be257a7a66aaa67c187d71530d6773c06a41993))
+* **YouTube - Return YouTube Dislike:** Show correct value when swiping back to prior Short and disliking ([2eb5e3a](https://github.com/ReVanced/revanced-integrations/commit/2eb5e3afebe374a86e9da521d6441402130f0fd0))
+* **YouTube - ReturnYouTubeDislike:** Show estimated like count for videos with hidden likes ([#684](https://github.com/ReVanced/revanced-integrations/issues/684)) ([27d2b60](https://github.com/ReVanced/revanced-integrations/commit/27d2b60444ff5bcc84a1889e2cacf1750532b6ad))
+* **YouTube - SponsorBlock:** Add summary text to 'view my segments' button ([0f5dfb4](https://github.com/ReVanced/revanced-integrations/commit/0f5dfb4e76337da7e086a08b59aed7881de56a31))
+* **YouTube - SponsorBlock:** Handle if the user enters an invalid number into any SB settings ([01f084d](https://github.com/ReVanced/revanced-integrations/commit/01f084d87af6a2b1bc0581b1adbb6dfdfff75d82))
+* **YouTube:** Fix issues related to playback by replace streaming data ([#680](https://github.com/ReVanced/revanced-integrations/issues/680)) ([0468235](https://github.com/ReVanced/revanced-integrations/commit/04682353af9831d312a82264a8944268c7901db7))
+
+
+### Features
+
+* Add `Check environment` patch ([#683](https://github.com/ReVanced/revanced-integrations/issues/683)) ([e856455](https://github.com/ReVanced/revanced-integrations/commit/e85645528336162e16acf89f7b9f029762972c72))
+* **YouTube - Hide Shorts components:** Hide 'Use this sound' button ([#691](https://github.com/ReVanced/revanced-integrations/issues/691)) ([6f3d2ff](https://github.com/ReVanced/revanced-integrations/commit/6f3d2ffb0d65ec819038050dfabe1432f87ce360))
+* **YouTube - Keyword filter:** Add syntax to match whole keywords and not substrings ([#681](https://github.com/ReVanced/revanced-integrations/issues/681)) ([5314dd9](https://github.com/ReVanced/revanced-integrations/commit/5314dd90d16dc8565331c4cddce114956d85a173))
+* **YouTube - Spoof client:** Allow forcing AVC codec with iOS ([#679](https://github.com/ReVanced/revanced-integrations/issues/679)) ([2c471f3](https://github.com/ReVanced/revanced-integrations/commit/2c471f39c229af940b7c0890a228bdf01bdc8c39))
+* **YouTube:** Add donation link to settings about screen ([#688](https://github.com/ReVanced/revanced-integrations/issues/688)) ([b816c45](https://github.com/ReVanced/revanced-integrations/commit/b816c45838769c6b3df7147d091696cb3ee9789e))
+
+# [1.14.0-dev.12](https://github.com/ReVanced/revanced-integrations/compare/v1.14.0-dev.11...v1.14.0-dev.12) (2024-09-17)
+
+
+### Bug Fixes
+
+* **YouTube:** Fix issues related to playback by replace streaming data ([#680](https://github.com/ReVanced/revanced-integrations/issues/680)) ([0468235](https://github.com/ReVanced/revanced-integrations/commit/04682353af9831d312a82264a8944268c7901db7))
+
 # [1.14.0-dev.11](https://github.com/ReVanced/revanced-integrations/compare/v1.14.0-dev.10...v1.14.0-dev.11) (2024-09-17)
 
 
