@@ -4,6 +4,7 @@ import static app.revanced.integrations.shared.Utils.hideViewUnderCondition;
 import static app.revanced.integrations.youtube.shared.NavigationBar.NavigationButton;
 
 import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.annotation.Nullable;
 
@@ -29,6 +30,13 @@ public final class ShortsFilter extends Filter {
      * Tag that appears when opening the Shorts player.
      */
     private static final String REEL_WATCH_FRAGMENT_INIT_PLAYBACK = "r_fs";
+
+    /**
+     * When the navbar is hidden, the amount of height to use where the bottom container went.
+     * If set to zero, then the Shorts seekbar will at the very bottom of the screen
+     * and the seekbar handle is half cut off.
+     */
+    private static final int REEL_WATCH_HIDDEN_NAVBAR_BOTTOM_CONTAINER_HEIGHT = 50;
 
     private static WeakReference<PivotBar> pivotBarRef = new WeakReference<>(null);
 
@@ -359,7 +367,7 @@ public final class ShortsFilter extends Filter {
 
     public static void hideNavigationBar(String tag) {
         if (HIDE_SHORTS_NAVIGATION_BAR) {
-            if (tag.equals(REEL_WATCH_FRAGMENT_INIT_PLAYBACK)) {
+            if (REEL_WATCH_FRAGMENT_INIT_PLAYBACK.equals(tag)) {
                 var pivotBar = pivotBarRef.get();
                 if (pivotBar == null) return;
 
@@ -371,12 +379,11 @@ public final class ShortsFilter extends Filter {
         }
     }
 
-    public static View hideNavigationBar(final View navigationBarView) {
+    public static void setBottomBarContainerSize(View bottomBarContainer) {
         if (HIDE_SHORTS_NAVIGATION_BAR) {
-            Logger.printDebug(() -> "Hiding navbar by returning null");
-            return null; // Hides the navigation bar.
+            ViewGroup.LayoutParams params = bottomBarContainer.getLayoutParams();
+            params.height = REEL_WATCH_HIDDEN_NAVBAR_BOTTOM_CONTAINER_HEIGHT;
+            bottomBarContainer.setLayoutParams(params);
         }
-
-        return navigationBarView;
     }
 }
