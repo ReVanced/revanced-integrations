@@ -21,14 +21,21 @@ import app.revanced.integrations.youtube.shared.PlayerType;
 public final class ShortsFilter extends Filter {
     public static final Boolean HIDE_SHORTS_NAVIGATION_BAR = Settings.HIDE_SHORTS_NAVIGATION_BAR.get();
     private final static String REEL_CHANNEL_BAR_PATH = "reel_channel_bar.eml";
+
     /**
      * For paid promotion label and subscribe button that appears in the channel bar.
      */
     private final static String REEL_METAPANEL_PATH = "reel_metapanel.eml";
+
     /**
      * Tag that appears when opening the Shorts player.
      */
     private static final String REEL_WATCH_FRAGMENT_INIT_PLAYBACK = "r_fs";
+
+    /**
+     * Vertical padding between the bottom of the screen and the seekbar, when the Shorts navigation bar is hidden.
+     */
+    public static final int HIDDEN_NAVIGATION_BAR_VERTICAL_HEIGHT = 70;
 
     private static WeakReference<PivotBar> pivotBarRef = new WeakReference<>(null);
 
@@ -371,11 +378,11 @@ public final class ShortsFilter extends Filter {
         }
     }
 
-    public static View hideNavigationBar(View bottomBarContainer) {
+    public static int getNavigationBarHeight(int original) {
         if (HIDE_SHORTS_NAVIGATION_BAR) {
-            return null;
+            return HIDDEN_NAVIGATION_BAR_VERTICAL_HEIGHT;
         }
 
-        return bottomBarContainer;
+        return original;
     }
 }
