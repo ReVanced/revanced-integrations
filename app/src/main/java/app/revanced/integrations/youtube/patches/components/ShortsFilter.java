@@ -11,6 +11,7 @@ import com.google.android.libraries.youtube.rendering.ui.pivotbar.PivotBar;
 
 import java.lang.ref.WeakReference;
 
+import app.revanced.integrations.shared.Logger;
 import app.revanced.integrations.shared.Utils;
 import app.revanced.integrations.youtube.settings.Settings;
 import app.revanced.integrations.youtube.shared.NavigationBar;
@@ -24,6 +25,10 @@ public final class ShortsFilter extends Filter {
      * For paid promotion label and subscribe button that appears in the channel bar.
      */
     private final static String REEL_METAPANEL_PATH = "reel_metapanel.eml";
+    /**
+     * Tag that appears when opening the Shorts player.
+     */
+    private static final String REEL_WATCH_FRAGMENT_INIT_PLAYBACK = "r_fs";
 
     private static WeakReference<PivotBar> pivotBarRef = new WeakReference<>(null);
 
@@ -220,9 +225,7 @@ public final class ShortsFilter extends Filter {
             if (matchedGroup == subscribeButton || matchedGroup == joinButton || matchedGroup == paidPromotionButton) {
                 // Selectively filter to avoid false positive filtering of other subscribe/join buttons.
                 if (path.startsWith(REEL_CHANNEL_BAR_PATH) || path.startsWith(REEL_METAPANEL_PATH)) {
-                    return super.isFiltered(
-                            identifier, path, protobufBufferArray, matchedGroup, contentType, contentIndex
-                    );
+                    return super.isFiltered(identifier, path, protobufBufferArray, matchedGroup, contentType, contentIndex);
                 }
                 return false;
             }
@@ -237,9 +240,7 @@ public final class ShortsFilter extends Filter {
             // Video action buttons (like, dislike, comment, share, remix) have the same path.
             if (matchedGroup == actionBar) {
                 if (videoActionButtonGroupList.check(protobufBufferArray).isFiltered()) {
-                    return super.isFiltered(
-                            identifier, path, protobufBufferArray, matchedGroup, contentType, contentIndex
-                    );
+                    return super.isFiltered(identifier, path, protobufBufferArray, matchedGroup, contentType, contentIndex);
                 }
                 return false;
             }
@@ -247,9 +248,7 @@ public final class ShortsFilter extends Filter {
             if (matchedGroup == suggestedAction) {
                 // Suggested actions can be at the start or in the middle of a path.
                 if (suggestedActionsGroupList.check(protobufBufferArray).isFiltered()) {
-                    return super.isFiltered(
-                            identifier, path, protobufBufferArray, matchedGroup, contentType, contentIndex
-                    );
+                    return super.isFiltered(identifier, path, protobufBufferArray, matchedGroup, contentType, contentIndex);
                 }
                 return false;
             }
@@ -354,20 +353,29 @@ public final class ShortsFilter extends Filter {
     // endregion
 
     public static void setNavigationBar(PivotBar view) {
+        Logger.printDebug(() -> "Setting navigation bar");
         pivotBarRef = new WeakReference<>(view);
     }
 
-    public static void hideNavigationBar() {
-        if (!HIDE_SHORTS_NAVIGATION_BAR) return;
-        var pivotBar = pivotBarRef.get();
-        if (pivotBar == null) return;
+    public static void hideNavigationBar(String tag) {
+        if (HIDE_SHORTS_NAVIGATION_BAR) {
+            if (tag.equals(REEL_WATCH_FRAGMENT_INIT_PLAYBACK)) {
+                var pivotBar = pivotBarRef.get();
+                if (pivotBar == null) return;
 
-        pivotBar.setVisibility(View.GONE);
+                Logger.printDebug(() -> "Hiding navbar by setting to GONE");
+                pivotBar.setVisibility(View.GONE);
+            } else {
+                Logger.printDebug(() -> "Ignoring tag: " + tag);
+            }
+        }
     }
 
     public static View hideNavigationBar(final View navigationBarView) {
-        if (HIDE_SHORTS_NAVIGATION_BAR)
+        if (HIDE_SHORTS_NAVIGATION_BAR) {
+            Logger.printDebug(() -> "Hiding navbar by returning null");
             return null; // Hides the navigation bar.
+        }
 
         return navigationBarView;
     }
