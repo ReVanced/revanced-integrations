@@ -199,8 +199,11 @@ public final class MiniplayerPatch {
     public static boolean getModernFeatureFlagsActiveOverride(boolean original) {
         Logger.printDebug(() -> "getModernFeatureFlagsActiveOverride original: " + original);
 
-        // This should always be true if either double tap or drag and drop are enabled.
-        return true;
+        if (CURRENT_TYPE == ORIGINAL) {
+            return original;
+        }
+
+        return CURRENT_TYPE.isModern();
     }
 
     /**
@@ -208,6 +211,10 @@ public final class MiniplayerPatch {
      */
     public static boolean enableMiniplayerDoubleTapAction(boolean original) {
         Logger.printDebug(() -> "enableMiniplayerDoubleTapAction original: " + original);
+
+        if (CURRENT_TYPE == ORIGINAL) {
+            return original;
+        }
 
         return DOUBLE_TAP_ACTION_ENABLED;
     }
@@ -217,6 +224,10 @@ public final class MiniplayerPatch {
      */
     public static boolean enableMiniplayerDragAndDrop(boolean original) {
         Logger.printDebug(() -> "enableMiniplayerDragAndDrop original: " + original);
+
+        if (CURRENT_TYPE == ORIGINAL) {
+            return original;
+        }
 
         return DRAG_AND_DROP_ENABLED;
     }
