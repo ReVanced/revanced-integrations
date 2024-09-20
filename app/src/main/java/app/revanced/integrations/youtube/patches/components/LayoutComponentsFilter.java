@@ -79,6 +79,7 @@ public final class LayoutComponentsFilter extends Filter {
 
         final var communityPosts = new StringFilterGroup(
                 Settings.HIDE_COMMUNITY_POSTS,
+                "post_base_wrapper",
                 "text_post_root.eml",
                 "images_post_root.eml",
                 "images_post_slim.eml",
