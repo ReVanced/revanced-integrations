@@ -1,3 +1,11 @@
+## [1.14.2-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v1.14.1...v1.14.2-dev.1) (2024-09-21)
+
+
+### Bug Fixes
+
+* **YouTube - Spoof video streams:** Change default client type to Android VR ([a2e8bbb](https://github.com/ReVanced/revanced-integrations/commit/a2e8bbb422eb55b955b954b095fcdb9813cb3a8c))
+* **YouTube - Spoof video streams:** Change default client type to Android VR ([#697](https://github.com/ReVanced/revanced-integrations/issues/697)) ([d06706d](https://github.com/ReVanced/revanced-integrations/commit/d06706d717310d4b0926a10253611f674f95e3f6))
+
 ## [1.14.1](https://github.com/ReVanced/revanced-integrations/compare/v1.14.0...v1.14.1) (2024-09-18)
 
 
