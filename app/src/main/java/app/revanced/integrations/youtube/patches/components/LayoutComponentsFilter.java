@@ -143,17 +143,12 @@ public final class LayoutComponentsFilter extends Filter {
         );
 
         // The player audio track button does the exact same function as the audio track flyout menu option.
-        // But if the copy url button is shown, these button clashes and the the audio button does not work.
-        // Previously this was a setting to show/hide the player button.
-        // But it was decided it's simpler to always hide this button because:
-        // - it doesn't work with copy video url feature
-        // - the button is rare
-        // - always hiding makes the ReVanced settings simpler and easier to understand
-        // - nobody is going to notice the redundant button is always hidden
-        final var audioTrackButton = new StringFilterGroup(
-                null,
-                "multi_feed_icon_button"
-        );
+        // Previously this was allowed to be hidden, but due to user confusion and now that Android VR spoofing
+        // always hides the audio track flyout menu, this is now the only way to change the audio track.
+        // final var audioTrackButton = new StringFilterGroup(
+        //        null,
+        //        "multi_feed_icon_button"
+        //);
 
         final var artistCard = new StringFilterGroup(
                 Settings.HIDE_ARTIST_CARDS,
@@ -277,7 +272,6 @@ public final class LayoutComponentsFilter extends Filter {
                 emergencyBox,
                 subscribersCommunityGuidelines,
                 channelGuidelines,
-                audioTrackButton,
                 artistCard,
                 timedReactions,
                 imageShelf,
