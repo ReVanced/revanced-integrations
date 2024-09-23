@@ -40,14 +40,14 @@ public class ExternalDownloadButton extends PlayerControlButton {
      * injection point
      */
     public static void changeVisibilityImmediate(boolean visible) {
-        if (instance != null) instance.setVisibility(visible, true);
+        if (instance != null) instance.setVisibilityImmediate(visible);
     }
 
     /**
      * injection point
      */
-    public static void changeVisibility(boolean visible) {
-        if (instance != null) instance.setVisibility(visible, false);
+    public static void changeVisibility(boolean visible, boolean animated) {
+        if (instance != null) instance.setVisibility(visible, animated);
     }
 
     private static void onDownloadClick(View view) {

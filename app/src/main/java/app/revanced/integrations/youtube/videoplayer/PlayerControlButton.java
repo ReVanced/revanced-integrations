@@ -2,7 +2,6 @@ package app.revanced.integrations.youtube.videoplayer;
 
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.view.animation.Animation;
 import android.widget.ImageView;
 
@@ -15,8 +14,6 @@ import java.util.Objects;
 import app.revanced.integrations.shared.Logger;
 import app.revanced.integrations.shared.Utils;
 import app.revanced.integrations.shared.settings.BooleanSetting;
-import app.revanced.integrations.youtube.sponsorblock.ui.CreateSegmentButtonController;
-import app.revanced.integrations.youtube.sponsorblock.ui.VotingButtonController;
 
 public abstract class PlayerControlButton {
     private static final Animation fadeIn;
@@ -73,7 +70,24 @@ public abstract class PlayerControlButton {
         buttonRef = new WeakReference<>(imageView);
     }
 
-    public void setVisibility(boolean visible, boolean immediate) {
+    public void setVisibilityImmediate(boolean visible) {
+        if (visible) {
+            // Fix button flickering, by pushing this call to the back of
+            // the main thread and letting other layout code run first.
+            Utils.runOnMainThread(() -> private_setVisibility(true, false));
+        } else {
+            private_setVisibility(false, false);
+        }
+    }
+
+    public void setVisibility(boolean visible, boolean animated) {
+        // Ignore this call, otherwise with full screen thumbnails the buttons are visible while seeking.
+        if (visible && !animated) return;
+
+        private_setVisibility(visible, animated);
+    }
+
+    private void private_setVisibility(boolean visible, boolean animated) {
         try {
             if (isVisible == visible) return;
             isVisible = visible;
@@ -85,13 +99,13 @@ public abstract class PlayerControlButton {
 
             if (visible && setting.get()) {
                 iView.clearAnimation();
-                if (!immediate) {
+                if (animated) {
                     iView.startAnimation(PlayerControlButton.getButtonFadeIn());
                 }
                 iView.setVisibility(View.VISIBLE);
             } else if (iView.getVisibility() == View.VISIBLE) {
                 iView.clearAnimation();
-                if (!immediate) {
+                if (animated) {
                     iView.startAnimation(PlayerControlButton.getButtonFadeOut());
                 }
                 iView.setVisibility(View.GONE);

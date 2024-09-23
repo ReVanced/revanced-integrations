@@ -14,6 +14,7 @@ import app.revanced.integrations.shared.Logger;
 import app.revanced.integrations.shared.Utils;
 import app.revanced.integrations.youtube.videoplayer.PlayerControlButton;
 
+// Edit: This should be a subclass of PlayerControlButton
 public class CreateSegmentButtonController {
     private static WeakReference<ImageView> buttonReference = new WeakReference<>(null);
     private static boolean isShowing;
@@ -27,9 +28,7 @@ public class CreateSegmentButtonController {
             ImageView imageView = Objects.requireNonNull(youtubeControlsLayout.findViewById(
                     getResourceIdentifier("revanced_sb_create_segment_button", "id")));
             imageView.setVisibility(View.GONE);
-            imageView.setOnClickListener(v -> {
-                SponsorBlockViewController.toggleNewSegmentLayoutVisibility();
-            });
+            imageView.setOnClickListener(v -> SponsorBlockViewController.toggleNewSegmentLayoutVisibility());
 
             buttonReference = new WeakReference<>(imageView);
         } catch (Exception ex) {
@@ -41,17 +40,26 @@ public class CreateSegmentButtonController {
      * injection point
      */
     public static void changeVisibilityImmediate(boolean visible) {
-        changeVisibility(visible, true);
+        if (visible) {
+            // Fix button flickering, by pushing this call to the back of
+            // the main thread and letting other layout code run first.
+            Utils.runOnMainThread(() -> setVisibility(true, false));
+        } else {
+            setVisibility(false, false);
+        }
     }
 
     /**
      * injection point
      */
-    public static void changeVisibility(boolean visible) {
-        changeVisibility(visible, false);
+    public static void changeVisibility(boolean visible, boolean animated) {
+        // Ignore this call, otherwise with full screen thumbnails the buttons are visible while seeking.
+        if (visible && !animated) return;
+
+        setVisibility(visible, animated);
     }
 
-    private static void changeVisibility(boolean visible, boolean immediate) {
+    private static void setVisibility(boolean visible, boolean animated) {
         try {
             if (isShowing == visible) return;
             isShowing = visible;
@@ -64,7 +72,7 @@ public class CreateSegmentButtonController {
                 if (!shouldBeShown()) {
                     return;
                 }
-                if (!immediate) {
+                if (animated) {
                     iView.startAnimation(PlayerControlButton.getButtonFadeIn());
                 }
                 iView.setVisibility(View.VISIBLE);
@@ -73,7 +81,7 @@ public class CreateSegmentButtonController {
 
             if (iView.getVisibility() == View.VISIBLE) {
                 iView.clearAnimation();
-                if (!immediate) {
+                if (animated) {
                     iView.startAnimation(PlayerControlButton.getButtonFadeOut());
                 }
                 iView.setVisibility(View.GONE);
