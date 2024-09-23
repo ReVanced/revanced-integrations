@@ -14,7 +14,7 @@ import app.revanced.integrations.youtube.sponsorblock.SegmentPlaybackController;
 import app.revanced.integrations.youtube.sponsorblock.SponsorBlockUtils;
 import app.revanced.integrations.shared.Logger;
 import app.revanced.integrations.shared.Utils;
-import app.revanced.integrations.youtube.videoplayer.BottomControlButton;
+import app.revanced.integrations.youtube.videoplayer.PlayerControlButton;
 
 public class VotingButtonController {
     private static WeakReference<ImageView> buttonReference = new WeakReference<>(null);
@@ -42,8 +42,8 @@ public class VotingButtonController {
     /**
      * injection point
      */
-    public static void changeVisibilityNegatedImmediate(boolean visible) {
-        changeVisibility(!visible, true);
+    public static void changeVisibilityImmediate(boolean visible) {
+        changeVisibility(visible, true);
     }
 
     /**
@@ -67,7 +67,7 @@ public class VotingButtonController {
                     return;
                 }
                 if (!immediate) {
-                    iView.startAnimation(BottomControlButton.getButtonFadeIn());
+                    iView.startAnimation(PlayerControlButton.getButtonFadeIn());
                 }
                 iView.setVisibility(View.VISIBLE);
                 return;
@@ -76,7 +76,7 @@ public class VotingButtonController {
             if (iView.getVisibility() == View.VISIBLE) {
                 iView.clearAnimation();
                 if (!immediate) {
-                    iView.startAnimation(BottomControlButton.getButtonFadeOut());
+                    iView.startAnimation(PlayerControlButton.getButtonFadeOut());
                 }
                 iView.setVisibility(View.GONE);
             }

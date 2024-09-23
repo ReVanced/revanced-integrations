@@ -2,6 +2,7 @@ package app.revanced.integrations.youtube.videoplayer;
 
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.animation.Animation;
 import android.widget.ImageView;
 
@@ -14,8 +15,10 @@ import java.util.Objects;
 import app.revanced.integrations.shared.Logger;
 import app.revanced.integrations.shared.Utils;
 import app.revanced.integrations.shared.settings.BooleanSetting;
+import app.revanced.integrations.youtube.sponsorblock.ui.CreateSegmentButtonController;
+import app.revanced.integrations.youtube.sponsorblock.ui.VotingButtonController;
 
-public abstract class BottomControlButton {
+public abstract class PlayerControlButton {
     private static final Animation fadeIn;
     private static final Animation fadeOut;
     private static final Animation fadeOutImmediate;
@@ -51,7 +54,7 @@ public abstract class BottomControlButton {
         return fadeOutImmediate;
     }
 
-    public BottomControlButton(@NonNull ViewGroup bottomControlsViewGroup, @NonNull String imageViewButtonId,
+    public PlayerControlButton(@NonNull ViewGroup bottomControlsViewGroup, @NonNull String imageViewButtonId,
                                @NonNull BooleanSetting booleanSetting, @NonNull View.OnClickListener onClickListener,
                                @Nullable View.OnLongClickListener longClickListener) {
         Logger.printDebug(() -> "Initializing button: " + imageViewButtonId);
@@ -83,13 +86,13 @@ public abstract class BottomControlButton {
             if (visible && setting.get()) {
                 iView.clearAnimation();
                 if (!immediate) {
-                    iView.startAnimation(BottomControlButton.getButtonFadeIn());
+                    iView.startAnimation(PlayerControlButton.getButtonFadeIn());
                 }
                 iView.setVisibility(View.VISIBLE);
             } else if (iView.getVisibility() == View.VISIBLE) {
                 iView.clearAnimation();
                 if (!immediate) {
-                    iView.startAnimation(BottomControlButton.getButtonFadeOut());
+                    iView.startAnimation(PlayerControlButton.getButtonFadeOut());
                 }
                 iView.setVisibility(View.GONE);
             }

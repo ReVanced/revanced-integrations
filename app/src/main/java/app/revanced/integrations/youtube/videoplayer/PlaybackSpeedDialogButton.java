@@ -10,7 +10,7 @@ import app.revanced.integrations.youtube.settings.Settings;
 import app.revanced.integrations.shared.Logger;
 
 @SuppressWarnings("unused")
-public class PlaybackSpeedDialogButton extends BottomControlButton {
+public class PlaybackSpeedDialogButton extends PlayerControlButton {
     @Nullable
     private static PlaybackSpeedDialogButton instance;
 
@@ -38,8 +38,8 @@ public class PlaybackSpeedDialogButton extends BottomControlButton {
     /**
      * injection point
      */
-    public static void changeVisibilityNegatedImmediate(boolean visible) {
-        if (instance != null) instance.setVisibility(!visible, true);
+    public static void changeVisibilityImmediate(boolean visible) {
+        if (instance != null) instance.setVisibility(visible, true);
     }
 
     /**

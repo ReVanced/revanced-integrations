@@ -10,7 +10,7 @@ import app.revanced.integrations.youtube.settings.Settings;
 import app.revanced.integrations.shared.Logger;
 
 @SuppressWarnings("unused")
-public class CopyVideoUrlTimestampButton extends BottomControlButton {
+public class CopyVideoUrlTimestampButton extends PlayerControlButton {
     @Nullable
     private static CopyVideoUrlTimestampButton instance;
 
@@ -41,8 +41,8 @@ public class CopyVideoUrlTimestampButton extends BottomControlButton {
     /**
      * injection point
      */
-    public static void changeVisibilityNegatedImmediate(boolean visible) {
-        if (instance != null) instance.setVisibility(!visible, true);
+    public static void changeVisibilityImmediate(boolean visible) {
+        if (instance != null) instance.setVisibility(visible, true);
     }
 
     /**
