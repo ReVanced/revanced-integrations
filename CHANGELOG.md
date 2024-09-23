@@ -1,3 +1,10 @@
+## [1.14.3-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v1.14.2...v1.14.3-dev.1) (2024-09-23)
+
+
+### Bug Fixes
+
+* **YouTube:** Show video chapter titles without clipping when overlay buttons are enabled ([#699](https://github.com/ReVanced/revanced-integrations/issues/699)) ([325cc17](https://github.com/ReVanced/revanced-integrations/commit/325cc179001bb79366f4ed6a5f84f717fbff66b6))
+
 ## [1.14.2](https://github.com/ReVanced/revanced-integrations/compare/v1.14.1...v1.14.2) (2024-09-23)
 
 
