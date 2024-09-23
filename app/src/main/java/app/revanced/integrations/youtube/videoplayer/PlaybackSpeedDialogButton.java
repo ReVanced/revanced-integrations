@@ -9,6 +9,7 @@ import app.revanced.integrations.youtube.patches.playback.speed.CustomPlaybackSp
 import app.revanced.integrations.youtube.settings.Settings;
 import app.revanced.integrations.shared.Logger;
 
+@SuppressWarnings("unused")
 public class PlaybackSpeedDialogButton extends BottomControlButton {
     @Nullable
     private static PlaybackSpeedDialogButton instance;
@@ -35,9 +36,16 @@ public class PlaybackSpeedDialogButton extends BottomControlButton {
     }
 
     /**
-     * Injection point.
+     * injection point
      */
-    public static void changeVisibility(boolean showing) {
-        if (instance != null) instance.setVisibility(showing);
+    public static void changeVisibilityNegatedImmediate(boolean visible) {
+        if (instance != null) instance.setVisibility(!visible, true);
+    }
+
+    /**
+     * injection point
+     */
+    public static void changeVisibility(boolean visible) {
+        if (instance != null) instance.setVisibility(visible, false);
     }
 }

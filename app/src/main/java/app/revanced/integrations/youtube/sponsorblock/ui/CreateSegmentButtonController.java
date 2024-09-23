@@ -37,10 +37,6 @@ public class CreateSegmentButtonController {
         }
     }
 
-    public static void changeVisibilityImmediate(boolean visible) {
-        changeVisibility(visible, true);
-    }
-
     /**
      * injection point
      */
@@ -55,7 +51,7 @@ public class CreateSegmentButtonController {
         changeVisibility(visible, false);
     }
 
-    public static void changeVisibility(boolean visible, boolean immediate) {
+    private static void changeVisibility(boolean visible, boolean immediate) {
         try {
             if (isShowing == visible) return;
             isShowing = visible;

@@ -18,9 +18,10 @@ import app.revanced.integrations.shared.settings.BooleanSetting;
 public abstract class BottomControlButton {
     private static final Animation fadeIn;
     private static final Animation fadeOut;
+    private static final Animation fadeOutImmediate;
 
     private final WeakReference<ImageView> buttonRef;
-    private final BooleanSetting setting;
+    protected final BooleanSetting setting;
     protected boolean isVisible;
 
     static {
@@ -30,6 +31,9 @@ public abstract class BottomControlButton {
 
         fadeOut = Utils.getResourceAnimation("fade_out");
         fadeOut.setDuration(Utils.getResourceInteger("fade_duration_scheduled"));
+
+        fadeOutImmediate = Utils.getResourceAnimation("abc_fade_out");
+        fadeOutImmediate.setDuration(Utils.getResourceInteger("fade_duration_fast"));
     }
 
     @NonNull
@@ -42,42 +46,55 @@ public abstract class BottomControlButton {
         return fadeOut;
     }
 
+    @NonNull
+    public static Animation getButtonFadeOutImmediately() {
+        return fadeOutImmediate;
+    }
+
     public BottomControlButton(@NonNull ViewGroup bottomControlsViewGroup, @NonNull String imageViewButtonId,
                                @NonNull BooleanSetting booleanSetting, @NonNull View.OnClickListener onClickListener,
                                @Nullable View.OnLongClickListener longClickListener) {
         Logger.printDebug(() -> "Initializing button: " + imageViewButtonId);
 
-        setting = booleanSetting;
-
-        // Create the button.
         ImageView imageView = Objects.requireNonNull(bottomControlsViewGroup.findViewById(
                 Utils.getResourceIdentifier(imageViewButtonId, "id")
         ));
+        imageView.setVisibility(View.GONE);
+
         imageView.setOnClickListener(onClickListener);
         if (longClickListener != null) {
             imageView.setOnLongClickListener(longClickListener);
         }
-        imageView.setVisibility(View.GONE);
 
+        setting = booleanSetting;
         buttonRef = new WeakReference<>(imageView);
     }
 
-    public void setVisibility(boolean visible) {
-        if (isVisible == visible) return;
-        isVisible = visible;
+    public void setVisibility(boolean visible, boolean immediate) {
+        try {
+            if (isVisible == visible) return;
+            isVisible = visible;
 
-        ImageView imageView = buttonRef.get();
-        if (imageView == null) {
-            return;
-        }
+            ImageView iView = buttonRef.get();
+            if (iView == null) {
+                return;
+            }
 
-        imageView.clearAnimation();
-        if (visible && setting.get()) {
-            imageView.startAnimation(fadeIn);
-            imageView.setVisibility(View.VISIBLE);
-        } else if (imageView.getVisibility() == View.VISIBLE) {
-            imageView.startAnimation(fadeOut);
-            imageView.setVisibility(View.GONE);
+            if (visible && setting.get()) {
+                iView.clearAnimation();
+                if (!immediate) {
+                    iView.startAnimation(BottomControlButton.getButtonFadeIn());
+                }
+                iView.setVisibility(View.VISIBLE);
+            } else if (iView.getVisibility() == View.VISIBLE) {
+                iView.clearAnimation();
+                if (!immediate) {
+                    iView.startAnimation(BottomControlButton.getButtonFadeOut());
+                }
+                iView.setVisibility(View.GONE);
+            }
+        } catch (Exception ex) {
+            Logger.printException(() -> "setVisibility failure", ex);
         }
     }
 }

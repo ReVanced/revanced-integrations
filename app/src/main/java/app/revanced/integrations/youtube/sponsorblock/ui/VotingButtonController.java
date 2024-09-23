@@ -35,12 +35,8 @@ public class VotingButtonController {
 
             buttonReference = new WeakReference<>(imageView);
         } catch (Exception ex) {
-            Logger.printException(() -> "Unable to set RelativeLayout", ex);
+            Logger.printException(() -> "initialize failure", ex);
         }
-    }
-
-    public static void changeVisibilityImmediate(boolean visible) {
-        changeVisibility(visible, true);
     }
 
     /**
@@ -57,7 +53,7 @@ public class VotingButtonController {
         changeVisibility(visible, false);
     }
 
-    public static void changeVisibility(boolean visible, boolean immediate) {
+    private static void changeVisibility(boolean visible, boolean immediate) {
         try {
             if (isShowing == visible) return;
             isShowing = visible;

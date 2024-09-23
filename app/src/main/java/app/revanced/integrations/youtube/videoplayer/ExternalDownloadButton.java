@@ -37,10 +37,17 @@ public class ExternalDownloadButton extends BottomControlButton {
     }
 
     /**
-     * Injection point.
+     * injection point
      */
-    public static void changeVisibility(boolean showing) {
-        if (instance != null) instance.setVisibility(showing);
+    public static void changeVisibilityNegatedImmediate(boolean visible) {
+        if (instance != null) instance.setVisibility(!visible, true);
+    }
+
+    /**
+     * injection point
+     */
+    public static void changeVisibility(boolean visible) {
+        if (instance != null) instance.setVisibility(visible, false);
     }
 
     private static void onDownloadClick(View view) {
