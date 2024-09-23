@@ -1,3 +1,34 @@
+## [1.14.3-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v1.14.2...v1.14.3-dev.1) (2024-09-23)
+
+
+### Bug Fixes
+
+* **YouTube:** Show video chapter titles without clipping when overlay buttons are enabled ([#699](https://github.com/ReVanced/revanced-integrations/issues/699)) ([325cc17](https://github.com/ReVanced/revanced-integrations/commit/325cc179001bb79366f4ed6a5f84f717fbff66b6))
+
+## [1.14.2](https://github.com/ReVanced/revanced-integrations/compare/v1.14.1...v1.14.2) (2024-09-23)
+
+
+### Bug Fixes
+
+* **YouTube - Hide layout components:** Hide new kind of community posts ([#695](https://github.com/ReVanced/revanced-integrations/issues/695)) ([b384926](https://github.com/ReVanced/revanced-integrations/commit/b3849267a7e1a90bfdb129f0e3abd9f6ecf7234e))
+* **YouTube - Spoof video streams:** Change default client type to Android VR ([a2e8bbb](https://github.com/ReVanced/revanced-integrations/commit/a2e8bbb422eb55b955b954b095fcdb9813cb3a8c))
+* **YouTube - Spoof video streams:** Change default client type to Android VR ([#697](https://github.com/ReVanced/revanced-integrations/issues/697)) ([d06706d](https://github.com/ReVanced/revanced-integrations/commit/d06706d717310d4b0926a10253611f674f95e3f6))
+
+## [1.14.2-dev.2](https://github.com/ReVanced/revanced-integrations/compare/v1.14.2-dev.1...v1.14.2-dev.2) (2024-09-22)
+
+
+### Bug Fixes
+
+* **YouTube - Hide layout components:** Hide new kind of community posts ([#695](https://github.com/ReVanced/revanced-integrations/issues/695)) ([b384926](https://github.com/ReVanced/revanced-integrations/commit/b3849267a7e1a90bfdb129f0e3abd9f6ecf7234e))
+
+## [1.14.2-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v1.14.1...v1.14.2-dev.1) (2024-09-21)
+
+
+### Bug Fixes
+
+* **YouTube - Spoof video streams:** Change default client type to Android VR ([a2e8bbb](https://github.com/ReVanced/revanced-integrations/commit/a2e8bbb422eb55b955b954b095fcdb9813cb3a8c))
+* **YouTube - Spoof video streams:** Change default client type to Android VR ([#697](https://github.com/ReVanced/revanced-integrations/issues/697)) ([d06706d](https://github.com/ReVanced/revanced-integrations/commit/d06706d717310d4b0926a10253611f674f95e3f6))
+
 ## [1.14.1](https://github.com/ReVanced/revanced-integrations/compare/v1.14.0...v1.14.1) (2024-09-18)
 
 
