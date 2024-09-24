@@ -37,7 +37,7 @@ public final class ShortsFilter extends Filter {
     /**
      * Vertical padding between the bottom of the screen and the seekbar, when the Shorts navigation bar is hidden.
      */
-    public static final int HIDDEN_NAVIGATION_BAR_VERTICAL_HEIGHT = 70;
+    public static final int HIDDEN_NAVIGATION_BAR_VERTICAL_HEIGHT = 100;
 
     private static WeakReference<PivotBar> pivotBarRef = new WeakReference<>(null);
 
