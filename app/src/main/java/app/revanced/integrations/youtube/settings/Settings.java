@@ -1,6 +1,13 @@
 package app.revanced.integrations.youtube.settings;
 
-import app.revanced.integrations.shared.Logger;
+import static java.lang.Boolean.FALSE;
+import static java.lang.Boolean.TRUE;
+import static app.revanced.integrations.shared.settings.Setting.*;
+import static app.revanced.integrations.youtube.patches.MiniplayerPatch.MiniplayerType;
+import static app.revanced.integrations.youtube.patches.MiniplayerPatch.MiniplayerType.MODERN_1;
+import static app.revanced.integrations.youtube.patches.MiniplayerPatch.MiniplayerType.MODERN_3;
+import static app.revanced.integrations.youtube.sponsorblock.objects.CategoryBehaviour.*;
+
 import app.revanced.integrations.shared.settings.*;
 import app.revanced.integrations.shared.settings.preference.SharedPrefCategory;
 import app.revanced.integrations.youtube.patches.AlternativeThumbnailsPatch.DeArrowAvailability;
@@ -8,21 +15,8 @@ import app.revanced.integrations.youtube.patches.AlternativeThumbnailsPatch.Stil
 import app.revanced.integrations.youtube.patches.AlternativeThumbnailsPatch.ThumbnailOption;
 import app.revanced.integrations.youtube.patches.AlternativeThumbnailsPatch.ThumbnailStillTime;
 import app.revanced.integrations.youtube.patches.spoof.ClientType;
-import app.revanced.integrations.youtube.patches.spoof.SpoofAppVersionPatch;
 import app.revanced.integrations.youtube.patches.spoof.SpoofVideoStreamsPatch;
 import app.revanced.integrations.youtube.sponsorblock.SponsorBlockSettings;
-
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-
-import static app.revanced.integrations.shared.settings.Setting.*;
-import static app.revanced.integrations.youtube.patches.MiniplayerPatch.MiniplayerType;
-import static app.revanced.integrations.youtube.patches.MiniplayerPatch.MiniplayerType.MODERN_1;
-import static app.revanced.integrations.youtube.patches.MiniplayerPatch.MiniplayerType.MODERN_3;
-import static app.revanced.integrations.youtube.sponsorblock.objects.CategoryBehaviour.*;
-import static java.lang.Boolean.FALSE;
-import static java.lang.Boolean.TRUE;
 
 @SuppressWarnings("deprecation")
 public class Settings extends BaseSettings {
@@ -256,8 +250,6 @@ public class Settings extends BaseSettings {
     public static final BooleanSetting SPOOF_VIDEO_STREAMS_IOS_FORCE_AVC = new BooleanSetting("revanced_spoof_video_streams_ios_force_avc", FALSE, true,
             "revanced_spoof_video_streams_ios_force_avc_user_dialog_message", new SpoofVideoStreamsPatch.ForceiOSAVCAvailability());
     public static final EnumSetting<ClientType> SPOOF_VIDEO_STREAMS_CLIENT_TYPE = new EnumSetting<>("revanced_spoof_video_streams_client", ClientType.ANDROID_VR, true, parent(SPOOF_VIDEO_STREAMS));
-    @Deprecated
-    public static final StringSetting DEPRECATED_ANNOUNCEMENT_LAST_HASH = new StringSetting("revanced_announcement_last_hash", "");
     public static final IntegerSetting ANNOUNCEMENT_LAST_ID = new IntegerSetting("revanced_announcement_last_id", -1);
     public static final BooleanSetting CHECK_WATCH_HISTORY_DOMAIN_NAME = new BooleanSetting("revanced_check_watch_history_domain_name", TRUE, false, false);
     public static final BooleanSetting REMOVE_TRACKING_QUERY_PARAMETER = new BooleanSetting("revanced_remove_tracking_query_parameter", TRUE);
@@ -303,8 +295,7 @@ public class Settings extends BaseSettings {
      * Do not use directly, instead use {@link SponsorBlockSettings}
      */
     public static final StringSetting SB_PRIVATE_USER_ID = new StringSetting("sb_private_user_id_Do_Not_Share", "");
-    @Deprecated
-    public static final StringSetting DEPRECATED_SB_UUID_OLD_MIGRATION_SETTING = new StringSetting("uuid", ""); // Delete sometime in 2024
+    private static final StringSetting DEPRECATED_SB_UUID_OLD_MIGRATION_SETTING = new StringSetting("uuid", ""); // Delete sometime in 2025
     public static final IntegerSetting SB_CREATE_NEW_SEGMENT_STEP = new IntegerSetting("sb_create_new_segment_step", 150, parent(SB_ENABLED));
     public static final BooleanSetting SB_VOTING_BUTTON = new BooleanSetting("sb_voting_button", FALSE, parent(SB_ENABLED));
     public static final BooleanSetting SB_CREATE_NEW_SEGMENT = new BooleanSetting("sb_create_new_segment", FALSE, parent(SB_ENABLED));
@@ -347,69 +338,15 @@ public class Settings extends BaseSettings {
     static {
         // region Migration
 
-        // Migrate settings from old Preference categories into replacement "revanced_prefs" category.
-        // This region must run before all other migration code.
-
-        // The YT and RYD migration portion of this can be removed anytime,
-        // but the SB migration should remain until late 2024 or early 2025
-        // because it migrates the SB private user id which cannot be recovered if lost.
-
-        // Categories were previously saved without a 'sb_' key prefix, so they need an additional adjustment.
-        Set<Setting<?>> sbCategories = new HashSet<>(Arrays.asList(
-                SB_CATEGORY_SPONSOR,
-                SB_CATEGORY_SPONSOR_COLOR,
-                SB_CATEGORY_SELF_PROMO,
-                SB_CATEGORY_SELF_PROMO_COLOR,
-                SB_CATEGORY_INTERACTION,
-                SB_CATEGORY_INTERACTION_COLOR,
-                SB_CATEGORY_HIGHLIGHT,
-                SB_CATEGORY_HIGHLIGHT_COLOR,
-                SB_CATEGORY_INTRO,
-                SB_CATEGORY_INTRO_COLOR,
-                SB_CATEGORY_OUTRO,
-                SB_CATEGORY_OUTRO_COLOR,
-                SB_CATEGORY_PREVIEW,
-                SB_CATEGORY_PREVIEW_COLOR,
-                SB_CATEGORY_FILLER,
-                SB_CATEGORY_FILLER_COLOR,
-                SB_CATEGORY_MUSIC_OFFTOPIC,
-                SB_CATEGORY_MUSIC_OFFTOPIC_COLOR,
-                SB_CATEGORY_UNSUBMITTED,
-                SB_CATEGORY_UNSUBMITTED_COLOR));
-
-        SharedPrefCategory ytPrefs = new SharedPrefCategory("youtube");
-        SharedPrefCategory rydPrefs = new SharedPrefCategory("ryd");
-        SharedPrefCategory sbPrefs = new SharedPrefCategory("sponsor-block");
-        for (Setting<?> setting : Setting.allLoadedSettings()) {
-            String key = setting.key;
-            if (setting.key.startsWith("sb_")) {
-                if (sbCategories.contains(setting)) {
-                    key = key.substring(3); // Remove the "sb_" prefix, as old categories are saved without it.
-                }
-                migrateFromOldPreferences(sbPrefs, setting, key);
-            } else if (setting.key.startsWith("ryd_")) {
-                migrateFromOldPreferences(rydPrefs, setting, key);
-            } else {
-                migrateFromOldPreferences(ytPrefs, setting, key);
-            }
-        }
-
-
-        // Do _not_ delete this SB private user id migration property until sometime in 2024.
+        // Do _not_ delete this SB private user id migration property until sometime in early 2025.
         // This is the only setting that cannot be reconfigured if lost,
         // and more time should be given for users who rarely upgrade.
+        SharedPrefCategory sbPrefs = new SharedPrefCategory("sponsor-block");
+        String key = DEPRECATED_SB_UUID_OLD_MIGRATION_SETTING.key
+                .substring(3); // Remove the "sb_" prefix, as old categories are saved without it.
+        migrateFromOldPreferences(sbPrefs, DEPRECATED_SB_UUID_OLD_MIGRATION_SETTING, key);
+
         migrateOldSettingToNew(DEPRECATED_SB_UUID_OLD_MIGRATION_SETTING, SB_PRIVATE_USER_ID);
-
-
-        // Old spoof versions that no longer work reliably.
-        if (SpoofAppVersionPatch.isSpoofingToLessThan("17.33.00")) {
-            Logger.printInfo(() -> "Resetting spoof app version target");
-            Settings.SPOOF_APP_VERSION_TARGET.resetToDefault();
-        }
-
-
-        // Remove any previously saved announcement consumer (a random generated string).
-        Setting.preferences.removeKey("revanced_announcement_consumer");
 
         // endregion
     }
