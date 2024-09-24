@@ -197,7 +197,7 @@ public final class MiniplayerPatch {
      * Injection point.
      */
     public static boolean getModernFeatureFlagsActiveOverride(boolean original) {
-        Logger.printDebug(() -> "getModernFeatureFlagsActiveOverride original: " + original);
+        if (original) Logger.printDebug(() -> "getModernFeatureFlagsActiveOverride original: " + original);
 
         if (CURRENT_TYPE == ORIGINAL) {
             return original;
@@ -210,7 +210,7 @@ public final class MiniplayerPatch {
      * Injection point.
      */
     public static boolean enableMiniplayerDoubleTapAction(boolean original) {
-        Logger.printDebug(() -> "enableMiniplayerDoubleTapAction original: " + original);
+        if (original) Logger.printDebug(() -> "enableMiniplayerDoubleTapAction original: " + true);
 
         if (CURRENT_TYPE == ORIGINAL) {
             return original;
@@ -223,7 +223,7 @@ public final class MiniplayerPatch {
      * Injection point.
      */
     public static boolean enableMiniplayerDragAndDrop(boolean original) {
-        Logger.printDebug(() -> "enableMiniplayerDragAndDrop original: " + original);
+        if (original) Logger.printDebug(() -> "enableMiniplayerDragAndDrop original: " + true);
 
         if (CURRENT_TYPE == ORIGINAL) {
             return original;
@@ -249,7 +249,7 @@ public final class MiniplayerPatch {
     public static float setMovementBoundFactor(float original) {
         // Not clear if this is useful to customize or not.
         // So for now just log this and keep whatever is the original value.
-        Logger.printDebug(() -> "setMovementBoundFactor original: " + original);
+        if (original != 1.0) Logger.printDebug(() -> "setMovementBoundFactor original: " + original);
 
         return original;
     }
@@ -258,7 +258,7 @@ public final class MiniplayerPatch {
      * Injection point.
      */
     public static boolean setDropShadow(boolean original) {
-        Logger.printDebug(() -> "setViewElevation original: " + original);
+        if (original) Logger.printDebug(() -> "setViewElevation original: " + true);
 
         return original;
     }
@@ -267,7 +267,7 @@ public final class MiniplayerPatch {
      * Injection point.
      */
     public static boolean setUseBackgroundViewOutlineProvider(boolean original) {
-        Logger.printDebug(() -> "setUseBackgroundViewOutlineProvider original: " + original);
+        if (original) Logger.printDebug(() -> "setUseBackgroundViewOutlineProvider original: " + true);
 
         return original;
     }
