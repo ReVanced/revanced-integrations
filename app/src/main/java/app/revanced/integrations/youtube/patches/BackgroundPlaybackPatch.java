@@ -1,5 +1,6 @@
 package app.revanced.integrations.youtube.patches;
 
+import app.revanced.integrations.youtube.settings.Settings;
 import app.revanced.integrations.youtube.shared.PlayerType;
 
 @SuppressWarnings("unused")
@@ -8,7 +9,7 @@ public class BackgroundPlaybackPatch {
     /**
      * Injection point.
      */
-    public static boolean playbackIsNotShort() {
+    public static boolean isBackgroundPlaybackAllowed() {
         // Steps to verify most edge cases:
         // 1. Open a regular video
         // 2. Minimize app (PIP should appear)
@@ -20,16 +21,11 @@ public class BackgroundPlaybackPatch {
         // 7. Close the Short
         // 8. Resume playing the regular video
         // 9. Minimize the app (PIP should appear)
-
-        if (!VideoInformation.lastVideoIdIsShort()) {
-            return true; // Definitely is not a Short.
+        if (VideoInformation.lastVideoIdIsShort()) {
+            return !Settings.DISABLE_BACKGROUND_SHORTS.get();
         }
 
-        // Might be a Short, or might be a prior regular video on screen again after a Short was closed.
-        // This incorrectly prevents PIP if player is in WATCH_WHILE_MINIMIZED after closing a Short,
-        // But there's no way around this unless an additional hook is added to definitively detect
-        // the Shorts player is on screen. This use case is unusual anyways so it's not a huge concern.
-        return !PlayerType.getCurrent().isNoneHiddenOrMinimized();
+        return true;
     }
 
     /**

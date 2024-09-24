@@ -209,6 +209,7 @@ public class Settings extends BaseSettings {
     public static final BooleanSetting SWITCH_CREATE_WITH_NOTIFICATIONS_BUTTON = new BooleanSetting("revanced_switch_create_with_notifications_button", TRUE, true);
 
     // Shorts
+    public static final BooleanSetting DISABLE_BACKGROUND_SHORTS = new BooleanSetting("revanced_disable_background_shorts", FALSE);
     public static final BooleanSetting DISABLE_RESUMING_SHORTS_PLAYER = new BooleanSetting("revanced_disable_resuming_shorts_player", FALSE);
     public static final BooleanSetting HIDE_SHORTS_HOME = new BooleanSetting("revanced_hide_shorts_home", FALSE);
     public static final BooleanSetting HIDE_SHORTS_SUBSCRIPTIONS = new BooleanSetting("revanced_hide_shorts_subscriptions", FALSE);
