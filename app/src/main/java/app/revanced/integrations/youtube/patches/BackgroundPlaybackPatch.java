@@ -22,7 +22,7 @@ public class BackgroundPlaybackPatch {
         // 8. Resume playing the regular video
         // 9. Minimize the app (PIP should appear)
         if (VideoInformation.lastVideoIdIsShort()) {
-            return !Settings.DISABLE_BACKGROUND_SHORTS.get();
+            return Settings.ALLOW_SHORTS_BACKGROUND_PLAYBACK.get();
         }
 
         return true;
