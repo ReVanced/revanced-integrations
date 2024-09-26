@@ -1,3 +1,10 @@
+## [1.14.3-dev.2](https://github.com/ReVanced/revanced-integrations/compare/v1.14.3-dev.1...v1.14.3-dev.2) (2024-09-26)
+
+
+### Bug Fixes
+
+* **YouTube - Check watch history domain name resolution:** Do not show warning if network connection is flaky ([#702](https://github.com/ReVanced/revanced-integrations/issues/702)) ([80482df](https://github.com/ReVanced/revanced-integrations/commit/80482df3fae05cd5bd9e3b430022f07cf118565c))
+
 ## [1.14.3-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v1.14.2...v1.14.3-dev.1) (2024-09-23)
 
 
