@@ -10,7 +10,7 @@ public class BackgroundPlaybackPatch {
      * Injection point.
      */
     public static boolean isBackgroundPlaybackAllowed() {
-        // Steps to verify most edge cases:
+        // Steps to verify most edge cases (with Shorts background playback set to off):
         // 1. Open a regular video
         // 2. Minimize app (PIP should appear)
         // 3. Reopen app
@@ -30,11 +30,13 @@ public class BackgroundPlaybackPatch {
         // This incorrectly prevents PIP if player is in WATCH_WHILE_MINIMIZED after closing a Shorts,
         // But there's no way around this unless an additional hook is added to definitively detect
         // the Shorts player is on screen. This use case is unusual anyways so it's not a huge concern.
-        if (!PlayerType.getCurrent().isNoneHiddenOrMinimized()) {
-            return true;
-        }
+        return !PlayerType.getCurrent().isNoneHiddenOrMinimized();
+    }
 
-        // Only Shorts video should reach here.
+    /**
+     * Injection point.
+     */
+    public static boolean isBackgroundShortsPlaybackAllowed() {
         return Settings.ALLOW_SHORTS_BACKGROUND_PLAYBACK.get();
     }
 
