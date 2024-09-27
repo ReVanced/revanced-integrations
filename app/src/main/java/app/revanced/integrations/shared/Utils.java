@@ -1,10 +1,7 @@
 package app.revanced.integrations.shared;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.app.DialogFragment;
+import android.app.*;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -722,6 +719,26 @@ public class Utils {
             }
 
             pref.setOrder(order);
+        }
+    }
+
+    /**
+     * If {@link Fragment} uses [Android library] rather than [AndroidX library],
+     * the Dialog theme corresponding to [Android library] should be used.
+     * <p>
+     * If not, the following issues will occur:
+     * <a href="https://github.com/ReVanced/revanced-patches/issues/3061">ReVanced/revanced-patches#3061</a>
+     * <p>
+     * To prevent these issues, apply the Dialog theme corresponding to [Android library].
+     *
+     * @param builder Alertdialog builder to apply theme to.
+     *                When used in a method containing an override, it must be called before 'super'.
+     */
+    public static void setEditTextDialogTheme(AlertDialog.Builder builder) {
+        final int editTextDialogStyle = getResourceIdentifier(
+                "revanced_edit_text_dialog_style", "style");
+        if (editTextDialogStyle != 0) {
+            builder.getContext().setTheme(editTextDialogStyle);
         }
     }
 }
