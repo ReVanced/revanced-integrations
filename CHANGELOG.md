@@ -1,3 +1,10 @@
+# [1.15.0-dev.2](https://github.com/ReVanced/revanced-integrations/compare/v1.15.0-dev.1...v1.15.0-dev.2) (2024-09-29)
+
+
+### Features
+
+* **YouTube - Hide Shorts components:** Add `Hide save music`, `Hide stickers` ([#703](https://github.com/ReVanced/revanced-integrations/issues/703)) ([a87456e](https://github.com/ReVanced/revanced-integrations/commit/a87456e49995e2ed5f4788e71db8f2387bc241f9))
+
 # [1.15.0-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v1.14.3-dev.2...v1.15.0-dev.1) (2024-09-29)
 
 
