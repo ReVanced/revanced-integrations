@@ -1,3 +1,10 @@
+# [1.15.0-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v1.14.3-dev.2...v1.15.0-dev.1) (2024-09-29)
+
+
+### Features
+
+* **YouTube - Disable precise seeking gesture:** Hide "pull up" label that shows up when swiping ([#696](https://github.com/ReVanced/revanced-integrations/issues/696)) ([0b9afd0](https://github.com/ReVanced/revanced-integrations/commit/0b9afd022dbf622478bb931124ac41a969610c64))
+
 ## [1.14.3-dev.2](https://github.com/ReVanced/revanced-integrations/compare/v1.14.3-dev.1...v1.14.3-dev.2) (2024-09-26)
 
 
