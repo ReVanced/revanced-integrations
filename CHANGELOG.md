@@ -1,3 +1,31 @@
+# [1.15.0-dev.2](https://github.com/ReVanced/revanced-integrations/compare/v1.15.0-dev.1...v1.15.0-dev.2) (2024-09-29)
+
+
+### Features
+
+* **YouTube - Hide Shorts components:** Add `Hide save music`, `Hide stickers` ([#703](https://github.com/ReVanced/revanced-integrations/issues/703)) ([a87456e](https://github.com/ReVanced/revanced-integrations/commit/a87456e49995e2ed5f4788e71db8f2387bc241f9))
+
+# [1.15.0-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v1.14.3-dev.2...v1.15.0-dev.1) (2024-09-29)
+
+
+### Features
+
+* **YouTube - Disable precise seeking gesture:** Hide "pull up" label that shows up when swiping ([#696](https://github.com/ReVanced/revanced-integrations/issues/696)) ([0b9afd0](https://github.com/ReVanced/revanced-integrations/commit/0b9afd022dbf622478bb931124ac41a969610c64))
+
+## [1.14.3-dev.2](https://github.com/ReVanced/revanced-integrations/compare/v1.14.3-dev.1...v1.14.3-dev.2) (2024-09-26)
+
+
+### Bug Fixes
+
+* **YouTube - Check watch history domain name resolution:** Do not show warning if network connection is flaky ([#702](https://github.com/ReVanced/revanced-integrations/issues/702)) ([80482df](https://github.com/ReVanced/revanced-integrations/commit/80482df3fae05cd5bd9e3b430022f07cf118565c))
+
+## [1.14.3-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v1.14.2...v1.14.3-dev.1) (2024-09-23)
+
+
+### Bug Fixes
+
+* **YouTube:** Show video chapter titles without clipping when overlay buttons are enabled ([#699](https://github.com/ReVanced/revanced-integrations/issues/699)) ([325cc17](https://github.com/ReVanced/revanced-integrations/commit/325cc179001bb79366f4ed6a5f84f717fbff66b6))
+
 ## [1.14.2](https://github.com/ReVanced/revanced-integrations/compare/v1.14.1...v1.14.2) (2024-09-23)
 
 
