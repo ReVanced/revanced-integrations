@@ -1,3 +1,10 @@
+# [1.16.0-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v1.15.1-dev.1...v1.16.0-dev.1) (2024-10-02)
+
+
+### Features
+
+* **YouTube - Hide Shorts components:** Add option to hide like fountain ([#708](https://github.com/ReVanced/revanced-integrations/issues/708)) ([16c3ef7](https://github.com/ReVanced/revanced-integrations/commit/16c3ef7ee5a32ec22db6da876dcf19fc02bc9aac))
+
 ## [1.15.1-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v1.15.0...v1.15.1-dev.1) (2024-10-01)
 
 # [1.15.0](https://github.com/ReVanced/revanced-integrations/compare/v1.14.2...v1.15.0) (2024-09-30)
