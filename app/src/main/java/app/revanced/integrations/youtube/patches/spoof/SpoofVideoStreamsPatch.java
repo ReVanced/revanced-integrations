@@ -69,6 +69,12 @@ public class SpoofVideoStreamsPatch {
                 String path = originalUri.getPath();
 
                 if (path != null && path.contains("initplayback")) {
+                    // This previously returned an unreachable URL and it seemed to work for nearly all situations,
+                    // but an unreachable url would cause playback failure if the app changes to/from mobile
+                    // or if the app is left open for a long period of time.
+                    //
+                    // Presumably the failure is caused by a side effect that does not occur right away,
+                    // but this is only speculation and the exact reason why this fix works is is not clear.
                     Logger.printDebug(() -> "Blocking 'initplayback' by clearing query");
 
                     return originalUri.buildUpon().clearQuery().build().toString();
