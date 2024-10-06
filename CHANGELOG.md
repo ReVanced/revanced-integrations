@@ -1,3 +1,10 @@
+# [1.16.0-dev.4](https://github.com/ReVanced/revanced-integrations/compare/v1.16.0-dev.3...v1.16.0-dev.4) (2024-10-06)
+
+
+### Bug Fixes
+
+* **YouTube - Hide layout components:** Adjust settings text ([#713](https://github.com/ReVanced/revanced-integrations/issues/713)) ([119c416](https://github.com/ReVanced/revanced-integrations/commit/119c416bc5c24f2455bfe70adccd51234b165d25))
+
 # [1.16.0-dev.3](https://github.com/ReVanced/revanced-integrations/compare/v1.16.0-dev.2...v1.16.0-dev.3) (2024-10-06)
 
 
