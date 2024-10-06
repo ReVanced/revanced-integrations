@@ -730,9 +730,6 @@ public class Utils {
      * <a href="https://github.com/ReVanced/revanced-patches/issues/3061">ReVanced/revanced-patches#3061</a>
      * <p>
      * To prevent these issues, apply the Dialog theme corresponding to [Android library].
-     *
-     * @param builder Alertdialog builder to apply theme to.
-     *                When used in a method containing an override, it must be called before 'super'.
      */
     public static void setEditTextDialogTheme(AlertDialog.Builder builder) {
         final int editTextDialogStyle = getResourceIdentifier(
