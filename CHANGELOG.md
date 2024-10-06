@@ -1,3 +1,10 @@
+# [1.16.0-dev.2](https://github.com/ReVanced/revanced-integrations/compare/v1.16.0-dev.1...v1.16.0-dev.2) (2024-10-03)
+
+
+### Bug Fixes
+
+* **YouTube - Spoof video streams:** Handle app left open for a long time ([#709](https://github.com/ReVanced/revanced-integrations/issues/709)) ([ea4b073](https://github.com/ReVanced/revanced-integrations/commit/ea4b073f5c21b0fea4e3922488e8bbf69cfcb421))
+
 # [1.16.0-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v1.15.1-dev.1...v1.16.0-dev.1) (2024-10-02)
 
 
