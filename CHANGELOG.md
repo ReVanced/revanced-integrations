@@ -1,3 +1,10 @@
+# [1.16.0-dev.3](https://github.com/ReVanced/revanced-integrations/compare/v1.16.0-dev.2...v1.16.0-dev.3) (2024-10-06)
+
+
+### Features
+
+* **YouTube - Hide layout components:** Add option to hide Yoodles (YouTube Doodles) ([#712](https://github.com/ReVanced/revanced-integrations/issues/712)) ([4b5f3de](https://github.com/ReVanced/revanced-integrations/commit/4b5f3deef9c3a8c700e23a0f4d9ce999013ec9d4))
+
 # [1.16.0-dev.2](https://github.com/ReVanced/revanced-integrations/compare/v1.16.0-dev.1...v1.16.0-dev.2) (2024-10-03)
 
 
