@@ -33,7 +33,7 @@ public final class ShortsFilter extends Filter {
     private final StringFilterGroup shelfHeader;
 
     private final StringFilterGroup suggestedAction;
-    private final ByteArrayFilterGroupList suggestedActionsGroupList =  new ByteArrayFilterGroupList();
+    private final ByteArrayFilterGroupList suggestedActionsGroupList = new ByteArrayFilterGroupList();
 
     private final StringFilterGroup actionBar;
     private final ByteArrayFilterGroupList videoActionButtonGroupList = new ByteArrayFilterGroupList();
@@ -112,6 +112,16 @@ public final class ShortsFilter extends Filter {
                 "shorts_info_panel_overview"
         );
 
+        StringFilterGroup stickers = new StringFilterGroup(
+                Settings.HIDE_SHORTS_STICKERS,
+                "stickers_layer.eml"
+        );
+
+        StringFilterGroup likeFountain = new StringFilterGroup(
+                Settings.HIDE_SHORTS_LIKE_FOUNTAIN,
+                "like_fountain.eml"
+        );
+
         joinButton = new StringFilterGroup(
                 Settings.HIDE_SHORTS_JOIN_BUTTON,
                 "sponsor_button"
@@ -140,7 +150,7 @@ public final class ShortsFilter extends Filter {
         addPathCallbacks(
                 shortsCompactFeedVideoPath, suggestedAction, actionBar, joinButton, subscribeButton,
                 paidPromotionButton, pausedOverlayButtons, channelBar, fullVideoLinkLabel, videoTitle,
-                reelSoundMetadata, soundButton, infoPanel
+                reelSoundMetadata, soundButton, infoPanel, stickers, likeFountain
         );
 
         //
@@ -193,7 +203,13 @@ public final class ShortsFilter extends Filter {
                 ),
                 new ByteArrayFilterGroup(
                         Settings.HIDE_SHORTS_SAVE_SOUND_BUTTON,
-                        "yt_outline_list_add_"
+                        "yt_outline_bookmark_",
+                        // 'Save sound' button. It seems this has been removed and only 'Save music' is used.
+                        // Still hide this in case it's still present.
+                        "yt_outline_list_add_",
+                        // 'Use this sound' button. It seems this has been removed and only 'Save music' is used.
+                        // Still hide this in case it's still present.
+                        "yt_outline_camera_"
                 ),
                 new ByteArrayFilterGroup(
                         Settings.HIDE_SHORTS_SEARCH_SUGGESTIONS,
@@ -202,10 +218,6 @@ public final class ShortsFilter extends Filter {
                 new ByteArrayFilterGroup(
                         Settings.HIDE_SHORTS_SUPER_THANKS_BUTTON,
                         "yt_outline_dollar_sign_heart_"
-                ),
-                new ByteArrayFilterGroup(
-                        Settings.HIDE_SHORTS_USE_THIS_SOUND_BUTTON,
-                        "yt_outline_camera_"
                 )
         );
     }

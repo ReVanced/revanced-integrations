@@ -1,3 +1,68 @@
+# [1.16.0-dev.4](https://github.com/ReVanced/revanced-integrations/compare/v1.16.0-dev.3...v1.16.0-dev.4) (2024-10-06)
+
+
+### Bug Fixes
+
+* **YouTube - Hide layout components:** Adjust settings text ([#713](https://github.com/ReVanced/revanced-integrations/issues/713)) ([119c416](https://github.com/ReVanced/revanced-integrations/commit/119c416bc5c24f2455bfe70adccd51234b165d25))
+
+# [1.16.0-dev.3](https://github.com/ReVanced/revanced-integrations/compare/v1.16.0-dev.2...v1.16.0-dev.3) (2024-10-06)
+
+
+### Features
+
+* **YouTube - Hide layout components:** Add option to hide Yoodles (YouTube Doodles) ([#712](https://github.com/ReVanced/revanced-integrations/issues/712)) ([4b5f3de](https://github.com/ReVanced/revanced-integrations/commit/4b5f3deef9c3a8c700e23a0f4d9ce999013ec9d4))
+
+# [1.16.0-dev.2](https://github.com/ReVanced/revanced-integrations/compare/v1.16.0-dev.1...v1.16.0-dev.2) (2024-10-03)
+
+
+### Bug Fixes
+
+* **YouTube - Spoof video streams:** Handle app left open for a long time ([#709](https://github.com/ReVanced/revanced-integrations/issues/709)) ([ea4b073](https://github.com/ReVanced/revanced-integrations/commit/ea4b073f5c21b0fea4e3922488e8bbf69cfcb421))
+
+# [1.16.0-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v1.15.1-dev.1...v1.16.0-dev.1) (2024-10-02)
+
+
+### Features
+
+* **YouTube - Hide Shorts components:** Add option to hide like fountain ([#708](https://github.com/ReVanced/revanced-integrations/issues/708)) ([16c3ef7](https://github.com/ReVanced/revanced-integrations/commit/16c3ef7ee5a32ec22db6da876dcf19fc02bc9aac))
+
+## [1.15.1-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v1.15.0...v1.15.1-dev.1) (2024-10-01)
+
+# [1.15.0](https://github.com/ReVanced/revanced-integrations/compare/v1.14.2...v1.15.0) (2024-09-30)
+
+
+### Bug Fixes
+
+* **YouTube - Check watch history domain name resolution:** Do not show warning if network connection is flaky ([#702](https://github.com/ReVanced/revanced-integrations/issues/702)) ([80482df](https://github.com/ReVanced/revanced-integrations/commit/80482df3fae05cd5bd9e3b430022f07cf118565c))
+* **YouTube:** Show video chapter titles without clipping when overlay buttons are enabled ([#699](https://github.com/ReVanced/revanced-integrations/issues/699)) ([325cc17](https://github.com/ReVanced/revanced-integrations/commit/325cc179001bb79366f4ed6a5f84f717fbff66b6))
+
+
+### Features
+
+* **YouTube - Disable precise seeking gesture:** Hide "pull up" label that shows up when swiping ([#696](https://github.com/ReVanced/revanced-integrations/issues/696)) ([0b9afd0](https://github.com/ReVanced/revanced-integrations/commit/0b9afd022dbf622478bb931124ac41a969610c64))
+* **YouTube - Hide Shorts components:** Add `Hide save music`, `Hide stickers` ([#703](https://github.com/ReVanced/revanced-integrations/issues/703)) ([a87456e](https://github.com/ReVanced/revanced-integrations/commit/a87456e49995e2ed5f4788e71db8f2387bc241f9))
+
+# [1.15.0-dev.2](https://github.com/ReVanced/revanced-integrations/compare/v1.15.0-dev.1...v1.15.0-dev.2) (2024-09-29)
+
+
+### Features
+
+* **YouTube - Hide Shorts components:** Add `Hide save music`, `Hide stickers` ([#703](https://github.com/ReVanced/revanced-integrations/issues/703)) ([a87456e](https://github.com/ReVanced/revanced-integrations/commit/a87456e49995e2ed5f4788e71db8f2387bc241f9))
+
+# [1.15.0-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v1.14.3-dev.2...v1.15.0-dev.1) (2024-09-29)
+
+
+### Features
+
+* **YouTube - Disable precise seeking gesture:** Hide "pull up" label that shows up when swiping ([#696](https://github.com/ReVanced/revanced-integrations/issues/696)) ([0b9afd0](https://github.com/ReVanced/revanced-integrations/commit/0b9afd022dbf622478bb931124ac41a969610c64))
+
+## [1.14.3-dev.2](https://github.com/ReVanced/revanced-integrations/compare/v1.14.3-dev.1...v1.14.3-dev.2) (2024-09-26)
+
+
+### Bug Fixes
+
+* **YouTube - Check watch history domain name resolution:** Do not show warning if network connection is flaky ([#702](https://github.com/ReVanced/revanced-integrations/issues/702)) ([80482df](https://github.com/ReVanced/revanced-integrations/commit/80482df3fae05cd5bd9e3b430022f07cf118565c))
+
 ## [1.14.3-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v1.14.2...v1.14.3-dev.1) (2024-09-23)
 
 

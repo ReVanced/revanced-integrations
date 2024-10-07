@@ -25,7 +25,7 @@ jobs:
           pr_body: |
             This pull request will ${{ env.MESSAGE }}.
             
-            ## Dependencies before merge
+            ## Before merging this PR
 
-            - [ ] https://github.com/revanced/revanced-patches
+            - [ ] Remember about https://github.com/revanced/revanced-patches
           pr_draft: true
