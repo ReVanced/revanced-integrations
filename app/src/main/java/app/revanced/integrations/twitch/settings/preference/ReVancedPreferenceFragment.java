@@ -10,6 +10,7 @@ import app.revanced.integrations.twitch.settings.Settings;
 public class ReVancedPreferenceFragment extends AbstractPreferenceFragment {
 
     @Override
+    @SuppressWarnings("unused")
     protected void initialize() {
         super.initialize();
 

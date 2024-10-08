@@ -66,7 +66,7 @@ public class ReturnYouTubeDislike {
      * Maximum amount of time to block the UI from updates while waiting for network call to complete.
      *
      * Must be less than 5 seconds, as per:
-     * https://developer.android.com/topic/performance/vitals/anr
+     * <a href="https://developer.android.com/topic/performance/vitals/anr">...</a>
      */
     private static final long MAX_MILLISECONDS_TO_BLOCK_UI_WAITING_FOR_FETCH = 4000;
 

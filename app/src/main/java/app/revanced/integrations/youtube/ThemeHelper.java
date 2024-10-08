@@ -38,6 +38,7 @@ public class ThemeHelper {
 
     /**
      * Injection point.
+     * @noinspection SameReturnValue
      */
     @SuppressWarnings("SameReturnValue")
     private static String darkThemeResourceName() {
@@ -58,6 +59,7 @@ public class ThemeHelper {
 
     /**
      * Injection point.
+     * @noinspection SameReturnValue
      */
     @SuppressWarnings("SameReturnValue")
     private static String lightThemeResourceName() {
