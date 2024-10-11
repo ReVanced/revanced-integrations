@@ -11,7 +11,6 @@ public final class ChangeLinkSharingDomainPatch {
     }
 
     public static String formatLink(long tweetId, String username) {
-        String tweetIdStr = Long.toString(tweetId);
-        return String.format(LINK_FORMAT, DOMAIN_NAME, username, tweetIdStr);
+        return String.format(LINK_FORMAT, DOMAIN_NAME, username, tweetId);
     }
 }
