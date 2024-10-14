@@ -1,3 +1,10 @@
+# [1.16.0-dev.5](https://github.com/ReVanced/revanced-integrations/compare/v1.16.0-dev.4...v1.16.0-dev.5) (2024-10-14)
+
+
+### Features
+
+* **YouTube - Hide Shorts components:** Add options to hide `Use template`, `Upcoming`, `Green screen` buttons ([#714](https://github.com/ReVanced/revanced-integrations/issues/714)) ([faad754](https://github.com/ReVanced/revanced-integrations/commit/faad7548df2091c24d41dad98a589745ce8a6b73))
+
 # [1.16.0-dev.4](https://github.com/ReVanced/revanced-integrations/compare/v1.16.0-dev.3...v1.16.0-dev.4) (2024-10-06)
 
 
