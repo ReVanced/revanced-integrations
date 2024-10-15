@@ -124,7 +124,7 @@ public final class MiniplayerPatch {
             CURRENT_TYPE == MODERN_1 && Settings.MINIPLAYER_HIDE_REWIND_FORWARD.get();
 
     private static final boolean MINIPLAYER_ROUNDED_CORNERS_ENABLED =
-            CURRENT_TYPE.isModern() && Settings.MINIPLAYER_ROUNDED_CORNERS.get();
+            Settings.MINIPLAYER_ROUNDED_CORNERS.get();
 
     /**
      * Remove a broken and always present subtitle text that is only
@@ -235,11 +235,25 @@ public final class MiniplayerPatch {
         return DRAG_AND_DROP_ENABLED;
     }
 
+
+    /**
+     * Injection point.
+     */
+    public static boolean setRoundedCorners(boolean original) {
+        if (original) Logger.printDebug(() -> "setRoundedCorners original: " + true);
+
+        if (CURRENT_TYPE.isModern()) {
+            return MINIPLAYER_ROUNDED_CORNERS_ENABLED;
+        }
+
+        return original;
+    }
+
     /**
      * Injection point.
      */
     public static int setMiniplayerDefaultSize(int original) {
-        if (CURRENT_TYPE == MODERN_1 || CURRENT_TYPE == MODERN_2 || CURRENT_TYPE == MODERN_3) {
+        if (CURRENT_TYPE.isModern()) {
             return MINIPLAYER_SIZE;
         }
 
@@ -264,15 +278,6 @@ public final class MiniplayerPatch {
         if (original) Logger.printDebug(() -> "setViewElevation original: " + true);
 
         return original;
-    }
-
-    /**
-     * Injection point.
-     */
-    public static boolean setRoundedCorners(boolean original) {
-        if (original) Logger.printDebug(() -> "setRoundedCorners original: " + true);
-
-        return MINIPLAYER_ROUNDED_CORNERS_ENABLED;
     }
 
     /**
