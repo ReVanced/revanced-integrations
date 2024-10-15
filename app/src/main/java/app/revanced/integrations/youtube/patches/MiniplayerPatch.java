@@ -123,6 +123,9 @@ public final class MiniplayerPatch {
     private static final boolean HIDE_REWIND_FORWARD_ENABLED =
             CURRENT_TYPE == MODERN_1 && Settings.MINIPLAYER_HIDE_REWIND_FORWARD.get();
 
+    private static final boolean MINIPLAYER_ROUNDED_CORNERS_ENABLED =
+            CURRENT_TYPE.isModern() && Settings.MINIPLAYER_ROUNDED_CORNERS.get();
+
     /**
      * Remove a broken and always present subtitle text that is only
      * present with {@link MiniplayerType#MODERN_2}. Bug was fixed in 19.21.
@@ -247,8 +250,8 @@ public final class MiniplayerPatch {
      * Injection point.
      */
     public static float setMovementBoundFactor(float original) {
-        // Not clear if this is useful to customize or not.
-        // So for now just log this and keep whatever is the original value.
+        // Not clear if customizing this is useful or not.
+        // So for now just log this and use the original value.
         if (original != 1.0) Logger.printDebug(() -> "setMovementBoundFactor original: " + original);
 
         return original;
@@ -266,10 +269,10 @@ public final class MiniplayerPatch {
     /**
      * Injection point.
      */
-    public static boolean setUseBackgroundViewOutlineProvider(boolean original) {
-        if (original) Logger.printDebug(() -> "setUseBackgroundViewOutlineProvider original: " + true);
+    public static boolean setRoundedCorners(boolean original) {
+        if (original) Logger.printDebug(() -> "setRoundedCorners original: " + true);
 
-        return original;
+        return MINIPLAYER_ROUNDED_CORNERS_ENABLED;
     }
 
     /**
