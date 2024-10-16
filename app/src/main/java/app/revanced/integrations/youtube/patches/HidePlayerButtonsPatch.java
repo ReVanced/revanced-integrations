@@ -38,6 +38,13 @@ public final class HidePlayerButtonsPatch {
             } else {
                 Logger.printDebug(() -> "Hiding previous/next button");
                 Utils.hideViewBy0dpUnderCondition(true, nextPreviousButton);
+
+                // Button is no longer visible, but the click listener needs to be cleared otherwise
+                // the button can still be pressed even though it's 0dp.
+                //
+                // The listener is added after this hook in the same target method.
+                // To keep thing simple, the listener can be cleared on a deferred main thread call.
+                Utils.runOnMainThread(() -> nextPreviousButton.setOnClickListener(null));
             }
         } catch (Exception ex) {
             Logger.printException(() -> "hideButton failure", ex);
