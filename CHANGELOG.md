@@ -1,3 +1,10 @@
+# [1.16.0-dev.6](https://github.com/ReVanced/revanced-integrations/compare/v1.16.0-dev.5...v1.16.0-dev.6) (2024-10-17)
+
+
+### Bug Fixes
+
+* **YouTube - Spoof video streams:** Fix playback for Android VR by removing invalid body as well ([#716](https://github.com/ReVanced/revanced-integrations/issues/716)) ([8ad3f78](https://github.com/ReVanced/revanced-integrations/commit/8ad3f78865836fbe38a832ef6395c6eb8d0edbf2))
+
 # [1.16.0-dev.5](https://github.com/ReVanced/revanced-integrations/compare/v1.16.0-dev.4...v1.16.0-dev.5) (2024-10-14)
 
 
