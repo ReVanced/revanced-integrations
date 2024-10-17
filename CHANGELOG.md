@@ -1,3 +1,10 @@
+# [1.16.0-dev.7](https://github.com/ReVanced/revanced-integrations/compare/v1.16.0-dev.6...v1.16.0-dev.7) (2024-10-17)
+
+
+### Features
+
+* **Twitter:** Add `Change link sharing domain` patch ([#715](https://github.com/ReVanced/revanced-integrations/issues/715)) ([c673951](https://github.com/ReVanced/revanced-integrations/commit/c6739517f179bf8e811e869640a24f433d729f42))
+
 # [1.16.0-dev.6](https://github.com/ReVanced/revanced-integrations/compare/v1.16.0-dev.5...v1.16.0-dev.6) (2024-10-17)
 
 
