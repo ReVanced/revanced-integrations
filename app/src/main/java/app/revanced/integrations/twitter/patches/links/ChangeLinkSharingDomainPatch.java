@@ -1,8 +1,8 @@
 package app.revanced.integrations.twitter.patches.links;
 
 public final class ChangeLinkSharingDomainPatch {
-    static final String DOMAIN_NAME = "https://fxtwitter.com";
-    static final String LINK_FORMAT = "%s/%s/status/%s";
+    private static final String DOMAIN_NAME = "https://fxtwitter.com";
+    private static final String LINK_FORMAT = "%s/%s/status/%s";
 
     public static String formatResourceLink(Object... formatArgs) {
         String username = (String) formatArgs[0];
