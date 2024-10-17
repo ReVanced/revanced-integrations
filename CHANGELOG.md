@@ -1,3 +1,10 @@
+# [1.16.0-dev.8](https://github.com/ReVanced/revanced-integrations/compare/v1.16.0-dev.7...v1.16.0-dev.8) (2024-10-17)
+
+
+### Features
+
+* **Sync for Reddit:** Add `Fix video downloads` patch ([#710](https://github.com/ReVanced/revanced-integrations/issues/710)) ([888de49](https://github.com/ReVanced/revanced-integrations/commit/888de49edd39913116028ac1d173f2b6e0feab09))
+
 # [1.16.0-dev.7](https://github.com/ReVanced/revanced-integrations/compare/v1.16.0-dev.6...v1.16.0-dev.7) (2024-10-17)
 
 
