@@ -23,8 +23,6 @@ import app.revanced.integrations.youtube.patches.AlternativeThumbnailsPatch.Thum
 import app.revanced.integrations.youtube.patches.spoof.ClientType;
 import app.revanced.integrations.youtube.patches.spoof.SpoofAppVersionPatch;
 import app.revanced.integrations.youtube.patches.spoof.SpoofVideoStreamsPatch;
-import app.revanced.integrations.youtube.patches.theme.SeekbarColorPatch.SeekbarCustomColorAvailability;
-import app.revanced.integrations.youtube.patches.theme.SeekbarColorPatch.SeekbarCustomColorValueAvailability;
 import app.revanced.integrations.youtube.sponsorblock.SponsorBlockSettings;
 
 @SuppressWarnings("deprecation")
@@ -256,9 +254,8 @@ public class Settings extends BaseSettings {
     public static final BooleanSetting RESTORE_OLD_SEEKBAR_THUMBNAILS = new BooleanSetting("revanced_restore_old_seekbar_thumbnails", TRUE);
     public static final BooleanSetting HIDE_SEEKBAR = new BooleanSetting("revanced_hide_seekbar", FALSE, true);
     public static final BooleanSetting HIDE_SEEKBAR_THUMBNAIL = new BooleanSetting("revanced_hide_seekbar_thumbnail", FALSE);
-    public static final BooleanSetting SEEKBAR_CAIRO = new BooleanSetting("revanced_seekbar_cairo", FALSE, true);
-    public static final BooleanSetting SEEKBAR_CUSTOM_COLOR = new BooleanSetting("revanced_seekbar_custom_color", FALSE, true, new SeekbarCustomColorAvailability());
-    public static final StringSetting SEEKBAR_CUSTOM_COLOR_VALUE = new StringSetting("revanced_seekbar_custom_color_value", "#FF0000", true, new SeekbarCustomColorValueAvailability());
+    public static final BooleanSetting SEEKBAR_CUSTOM_COLOR = new BooleanSetting("revanced_seekbar_custom_color", FALSE, true);
+    public static final StringSetting SEEKBAR_CUSTOM_COLOR_VALUE = new StringSetting("revanced_seekbar_custom_color_value", "#FF0000", true);
 
     // Misc
     public static final BooleanSetting AUTO_CAPTIONS = new BooleanSetting("revanced_auto_captions", FALSE);

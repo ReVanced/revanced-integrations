@@ -6,32 +6,12 @@ import android.graphics.Color;
 
 import app.revanced.integrations.shared.Logger;
 import app.revanced.integrations.shared.Utils;
-import app.revanced.integrations.shared.settings.Setting;
 import app.revanced.integrations.youtube.settings.Settings;
 
 @SuppressWarnings("unused")
 public final class SeekbarColorPatch {
 
-    private static final boolean APP_SUPPORTS_CAIRO_SEEKBAR =
-            Utils.getAppVersionName().compareTo("19.23.00") >= 0;
-
-    private static final boolean SEEKBAR_CAIRO_ENABLED =
-            APP_SUPPORTS_CAIRO_SEEKBAR && Settings.SEEKBAR_CAIRO.get();
-
-    private static final boolean SEEKBAR_CUSTOM_COLOR_ENABLED =
-            !SEEKBAR_CAIRO_ENABLED && Settings.SEEKBAR_CUSTOM_COLOR.get();
-
-    public static final class SeekbarCustomColorAvailability implements Setting.Availability {
-        public boolean isAvailable() {
-            return !APP_SUPPORTS_CAIRO_SEEKBAR || !Settings.SEEKBAR_CAIRO.get();
-        }
-    }
-
-    public static final class SeekbarCustomColorValueAvailability implements Setting.Availability {
-        public boolean isAvailable() {
-            return Settings.SEEKBAR_CUSTOM_COLOR.isAvailable() && Settings.SEEKBAR_CUSTOM_COLOR.get();
-        }
-    }
+    private static final boolean SEEKBAR_CUSTOM_COLOR_ENABLED = Settings.SEEKBAR_CUSTOM_COLOR.get();
 
     /**
      * Default color of the seekbar.
@@ -60,7 +40,7 @@ public final class SeekbarColorPatch {
         Color.colorToHSV(ORIGINAL_SEEKBAR_COLOR, hsv);
         ORIGINAL_SEEKBAR_COLOR_BRIGHTNESS = hsv[2];
 
-        if (!SEEKBAR_CAIRO_ENABLED && SEEKBAR_CUSTOM_COLOR_ENABLED) {
+        if (SEEKBAR_CUSTOM_COLOR_ENABLED) {
             loadCustomSeekbarColor();
         }
     }
@@ -81,8 +61,12 @@ public final class SeekbarColorPatch {
     }
 
     public static boolean cairoSeekbarEnabled(boolean original) {
-        if (original) Logger.printDebug(() -> "cairoSeekbarEnabled original: " + true);
-        return SEEKBAR_CAIRO_ENABLED;
+        if (original) {
+            Logger.printDebug(() -> "cairoSeekbarEnabled original: " + true);
+            if (SEEKBAR_CUSTOM_COLOR_ENABLED) return false;
+        }
+
+        return original;
     }
 
     /**
