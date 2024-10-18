@@ -60,9 +60,9 @@ public final class SeekbarColorPatch {
         return seekbarColor;
     }
 
-    public static boolean cairoSeekbarEnabled(boolean original) {
+    public static boolean playerSeekbarGraidentEnabled(boolean original) {
         if (original) {
-            Logger.printDebug(() -> "cairoSeekbarEnabled original: " + true);
+            Logger.printDebug(() -> "playerSeekbarGraidentEnabled original: " + true);
             if (SEEKBAR_CUSTOM_COLOR_ENABLED) return false;
         }
 
