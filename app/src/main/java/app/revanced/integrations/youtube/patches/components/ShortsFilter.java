@@ -230,6 +230,10 @@ public final class ShortsFilter extends Filter {
                 new ByteArrayFilterGroup(
                         Settings.HIDE_SHORTS_GREEN_SCREEN_BUTTON,
                         "greenscreen_temp"
+                ),
+                new ByteArrayFilterGroup(
+                        Settings.HIDE_SHORTS_HASHTAG_BUTTON,
+                        "yt_outline_hashtag_"
                 )
         );
     }
