@@ -238,6 +238,16 @@ public final class ShortsFilter extends Filter {
         );
     }
 
+    private boolean isEverySuggestedActionFilterEnabled() {
+        for (ByteArrayFilterGroup group : suggestedActionsGroupList) {
+            if (!group.isEnabled()) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     @Override
     boolean isFiltered(@Nullable String identifier, String path, byte[] protobufBufferArray,
                        StringFilterGroup matchedGroup, FilterContentType contentType, int contentIndex) {
@@ -270,7 +280,13 @@ public final class ShortsFilter extends Filter {
             }
 
             if (matchedGroup == suggestedAction) {
-                // Suggested actions can be at the start or in the middle of a path.
+                // Skip searching the buffer if all suggested actions are set to hidden.
+                // This has a secondary effect of hiding all new un-identified actions
+                // under the assumption that the user wants all actions hidden.
+                if (isEverySuggestedActionFilterEnabled()) {
+                    return super.isFiltered(path, identifier, protobufBufferArray, matchedGroup, contentType, contentIndex);
+                }
+
                 if (suggestedActionsGroupList.check(protobufBufferArray).isFiltered()) {
                     return super.isFiltered(
                             identifier, path, protobufBufferArray, matchedGroup, contentType, contentIndex
