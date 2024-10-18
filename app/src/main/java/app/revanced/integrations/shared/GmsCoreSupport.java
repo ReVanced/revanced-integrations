@@ -151,7 +151,11 @@ public class GmsCoreSupport {
         }
     }
 
-    // Modified by a patch. Do not touch.
+    /**
+     * Modified by a patch. Do not touch.
+     *
+     * @noinspection SameReturnValue
+     */
     private static String getGmsCoreVendorGroupId() {
         return "app.revanced";
     }

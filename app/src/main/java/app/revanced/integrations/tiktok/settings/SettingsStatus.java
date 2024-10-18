@@ -1,5 +1,6 @@
 package app.revanced.integrations.tiktok.settings;
 
+@SuppressWarnings("unused")
 public class SettingsStatus {
     public static boolean feedFilterEnabled = false;
     public static boolean downloadEnabled = false;
@@ -17,6 +18,7 @@ public class SettingsStatus {
         simSpoofEnabled = true;
     }
 
+    /** @noinspection EmptyMethod*/
     public static void load() {
 
     }

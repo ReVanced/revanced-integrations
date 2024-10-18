@@ -7,6 +7,7 @@ import app.revanced.integrations.youtube.patches.playback.speed.CustomPlaybackSp
 /**
  * Abuse LithoFilter for {@link CustomPlaybackSpeedPatch}.
  */
+@SuppressWarnings("unused")
 public final class PlaybackSpeedMenuFilterPatch extends Filter {
     // Must be volatile or synchronized, as litho filtering runs off main thread and this field is then access from the main thread.
     public static volatile boolean isPlaybackSpeedMenuVisible;

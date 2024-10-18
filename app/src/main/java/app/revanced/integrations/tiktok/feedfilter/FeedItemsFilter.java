@@ -6,6 +6,7 @@ import com.ss.android.ugc.aweme.feed.model.FeedItemList;
 import java.util.Iterator;
 import java.util.List;
 
+@SuppressWarnings("unused")
 public final class FeedItemsFilter {
     private static final List<IFilter> FILTERS = List.of(
             new AdsFilter(),
@@ -16,6 +17,9 @@ public final class FeedItemsFilter {
             new LikeCountFilter()
     );
 
+    /**
+     * Injection point.
+     */
     public static void filter(FeedItemList feedItemList) {
         Iterator<Aweme> feedItemListIterator = feedItemList.items.iterator();
         while (feedItemListIterator.hasNext()) {

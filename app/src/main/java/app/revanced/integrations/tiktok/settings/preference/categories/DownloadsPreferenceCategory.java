@@ -7,7 +7,7 @@ import app.revanced.integrations.tiktok.settings.SettingsStatus;
 import app.revanced.integrations.tiktok.settings.preference.DownloadPathPreference;
 import app.revanced.integrations.tiktok.settings.preference.TogglePreference;
 
-@SuppressWarnings("deprecation")
+@SuppressWarnings({"deprecation", "unused"})
 public class DownloadsPreferenceCategory extends ConditionalPreferenceCategory {
     public DownloadsPreferenceCategory(Context context, PreferenceScreen screen) {
         super(context, screen);
