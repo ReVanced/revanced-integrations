@@ -1,3 +1,45 @@
+# [1.16.0-dev.10](https://github.com/ReVanced/revanced-integrations/compare/v1.16.0-dev.9...v1.16.0-dev.10) (2024-10-19)
+
+
+### Features
+
+* **YouTube:** Support versions `19.25` and `19.34` ([#689](https://github.com/ReVanced/revanced-integrations/issues/689)) ([61569ba](https://github.com/ReVanced/revanced-integrations/commit/61569ba111af82aaff60d11863bc57221a295fe8))
+
+# [1.16.0-dev.9](https://github.com/ReVanced/revanced-integrations/compare/v1.16.0-dev.8...v1.16.0-dev.9) (2024-10-19)
+
+
+### Bug Fixes
+
+* **YouTube - Hide layout components:** Hide new type of Playable ([1a58a40](https://github.com/ReVanced/revanced-integrations/commit/1a58a406db76e4deaea070d077a31714f270e479))
+
+# [1.16.0-dev.8](https://github.com/ReVanced/revanced-integrations/compare/v1.16.0-dev.7...v1.16.0-dev.8) (2024-10-17)
+
+
+### Features
+
+* **Sync for Reddit:** Add `Fix video downloads` patch ([#710](https://github.com/ReVanced/revanced-integrations/issues/710)) ([888de49](https://github.com/ReVanced/revanced-integrations/commit/888de49edd39913116028ac1d173f2b6e0feab09))
+
+# [1.16.0-dev.7](https://github.com/ReVanced/revanced-integrations/compare/v1.16.0-dev.6...v1.16.0-dev.7) (2024-10-17)
+
+
+### Features
+
+* **Twitter:** Add `Change link sharing domain` patch ([#715](https://github.com/ReVanced/revanced-integrations/issues/715)) ([c673951](https://github.com/ReVanced/revanced-integrations/commit/c6739517f179bf8e811e869640a24f433d729f42))
+
+# [1.16.0-dev.6](https://github.com/ReVanced/revanced-integrations/compare/v1.16.0-dev.5...v1.16.0-dev.6) (2024-10-17)
+
+
+### Bug Fixes
+
+* **YouTube - Spoof video streams:** Fix playback for Android VR by removing invalid body as well ([#716](https://github.com/ReVanced/revanced-integrations/issues/716)) ([8ad3f78](https://github.com/ReVanced/revanced-integrations/commit/8ad3f78865836fbe38a832ef6395c6eb8d0edbf2))
+
+# [1.16.0-dev.5](https://github.com/ReVanced/revanced-integrations/compare/v1.16.0-dev.4...v1.16.0-dev.5) (2024-10-14)
+
+
+### Features
+
+* **YouTube - Hide Shorts components:** Add options to hide `Use template`, `Upcoming`, `Green screen` buttons ([#714](https://github.com/ReVanced/revanced-integrations/issues/714)) ([faad754](https://github.com/ReVanced/revanced-integrations/commit/faad7548df2091c24d41dad98a589745ce8a6b73))
+
 # [1.16.0-dev.4](https://github.com/ReVanced/revanced-integrations/compare/v1.16.0-dev.3...v1.16.0-dev.4) (2024-10-06)
 
 

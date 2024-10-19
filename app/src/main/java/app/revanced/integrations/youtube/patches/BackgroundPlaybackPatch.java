@@ -9,7 +9,9 @@ public class BackgroundPlaybackPatch {
     /**
      * Injection point.
      */
-    public static boolean isBackgroundPlaybackAllowed() {
+    public static boolean allowBackgroundPlayback(boolean original) {
+        if (original) return true;
+
         // Steps to verify most edge cases (with Shorts background playback set to off):
         // 1. Open a regular video
         // 2. Minimize app (PIP should appear)
@@ -21,7 +23,7 @@ public class BackgroundPlaybackPatch {
         // 7. Close the Short
         // 8. Resume playing the regular video
         // 9. Minimize the app (PIP should appear)
-         if (!VideoInformation.lastVideoIdIsShort()) {
+        if (!VideoInformation.lastVideoIdIsShort()) {
             return true; // Definitely is not a Short.
         }
 
