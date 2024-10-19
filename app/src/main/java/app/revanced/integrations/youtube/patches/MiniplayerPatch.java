@@ -2,7 +2,7 @@ package app.revanced.integrations.youtube.patches;
 
 import static app.revanced.integrations.shared.StringRef.str;
 import static app.revanced.integrations.youtube.patches.MiniplayerPatch.MiniplayerType.*;
-import static app.revanced.integrations.youtube.shared.VersionCheck.*;
+import static app.revanced.integrations.youtube.shared.VersionCheckPatch.*;
 
 import android.util.DisplayMetrics;
 import android.view.View;
