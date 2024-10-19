@@ -60,9 +60,9 @@ public final class SeekbarColorPatch {
         return seekbarColor;
     }
 
-    public static boolean playerSeekbarGraidentEnabled(boolean original) {
+    public static boolean playerSeekbarGradientEnabled(boolean original) {
         if (original) {
-            Logger.printDebug(() -> "playerSeekbarGraidentEnabled original: " + true);
+            Logger.printDebug(() -> "playerSeekbarGradientEnabled original: " + true);
             if (SEEKBAR_CUSTOM_COLOR_ENABLED) return false;
         }
 
