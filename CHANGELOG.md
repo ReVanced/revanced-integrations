@@ -1,3 +1,10 @@
+# [1.16.0-dev.9](https://github.com/ReVanced/revanced-integrations/compare/v1.16.0-dev.8...v1.16.0-dev.9) (2024-10-19)
+
+
+### Bug Fixes
+
+* **YouTube - Hide layout components:** Hide new type of Playable ([1a58a40](https://github.com/ReVanced/revanced-integrations/commit/1a58a406db76e4deaea070d077a31714f270e479))
+
 # [1.16.0-dev.8](https://github.com/ReVanced/revanced-integrations/compare/v1.16.0-dev.7...v1.16.0-dev.8) (2024-10-17)
 
 
