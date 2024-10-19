@@ -1,4 +1,4 @@
-package app.revanced.integrations.youtube.shared;
+package app.revanced.integrations.youtube.patches;
 
 import app.revanced.integrations.shared.Utils;
 
