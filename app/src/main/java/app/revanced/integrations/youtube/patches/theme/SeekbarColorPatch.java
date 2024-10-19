@@ -90,11 +90,14 @@ public final class SeekbarColorPatch {
      * If {@link Settings#HIDE_SEEKBAR_THUMBNAIL} is enabled, this returns a fully transparent color.
      */
     public static int getLithoColor(int colorValue) {
-        if (SEEKBAR_CUSTOM_COLOR_ENABLED && colorValue == ORIGINAL_SEEKBAR_COLOR) {
+        if (colorValue == ORIGINAL_SEEKBAR_COLOR) {
             if (Settings.HIDE_SEEKBAR_THUMBNAIL.get()) {
                 return 0x00000000;
             }
-            return getSeekbarColorValue(ORIGINAL_SEEKBAR_COLOR);
+
+            if (SEEKBAR_CUSTOM_COLOR_ENABLED) {
+                return getSeekbarColorValue(ORIGINAL_SEEKBAR_COLOR);
+            }
         }
         return colorValue;
     }
