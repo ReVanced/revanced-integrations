@@ -104,15 +104,17 @@ public final class SeekbarColorPatch {
      */
     public static void setLinearGradient(int[] colors, float[] positions) {
         if (SEEKBAR_CUSTOM_COLOR_ENABLED) {
-            Logger.printDebug(() -> "colors: " + Arrays.toString(colors) + " positions: " + Arrays.toString(positions));
-
-            // All usage of linear gradients is hooked, so must identify the values used for the seekbar.
+            // Most litho usage of linear gradients is hooked here,
+            // so must only change if the values are those for the seekbar.
             if (Arrays.equals(ORIGINAL_SEEKBAR_GRADIENT_COLORS, colors)
                     && Arrays.equals(ORIGINAL_SEEKBAR_GRADIENT_POSITIONS, positions)) {
                 Arrays.fill(colors, Settings.HIDE_SEEKBAR_THUMBNAIL.get()
                         ? 0x00000000
                         : seekbarColor);
+                return;
             }
+
+            Logger.printDebug(() -> "colors: " + Arrays.toString(colors) + " positions: " + Arrays.toString(positions));
         }
     }
 
