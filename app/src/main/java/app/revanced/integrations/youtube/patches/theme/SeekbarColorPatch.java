@@ -4,6 +4,8 @@ import static app.revanced.integrations.shared.StringRef.str;
 
 import android.graphics.Color;
 
+import java.util.Arrays;
+
 import app.revanced.integrations.shared.Logger;
 import app.revanced.integrations.shared.Utils;
 import app.revanced.integrations.youtube.settings.Settings;
@@ -17,6 +19,16 @@ public final class SeekbarColorPatch {
      * Default color of the seekbar.
      */
     private static final int ORIGINAL_SEEKBAR_COLOR = 0xFFFF0000;
+
+    /**
+     * Default colors of the gradient seekbar.
+     */
+    private static final int[] ORIGINAL_SEEKBAR_GRADIENT_COLORS = { 0xFFFF0033, 0xFFFF2791 };
+
+    /**
+     * Default positions of the gradient seekbar.
+     */
+    private static final float[] ORIGINAL_SEEKBAR_GRADIENT_POSITIONS = { 0.8f, 1.0f };
 
     /**
      * Default YouTube seekbar color brightness.
@@ -85,6 +97,23 @@ public final class SeekbarColorPatch {
             return getSeekbarColorValue(ORIGINAL_SEEKBAR_COLOR);
         }
         return colorValue;
+    }
+
+    /**
+     * Injection point.
+     */
+    public static void setLinearGradient(int[] colors, float[] positions) {
+        if (SEEKBAR_CUSTOM_COLOR_ENABLED) {
+            Logger.printDebug(() -> "colors: " + Arrays.toString(colors) + " positions: " + Arrays.toString(positions));
+
+            // All usage of linear gradients is hooked, so must identify the values used for the seekbar.
+            if (Arrays.equals(ORIGINAL_SEEKBAR_GRADIENT_COLORS, colors)
+                    && Arrays.equals(ORIGINAL_SEEKBAR_GRADIENT_POSITIONS, positions)) {
+                Arrays.fill(colors, Settings.HIDE_SEEKBAR_THUMBNAIL.get()
+                        ? 0x00000000
+                        : seekbarColor);
+            }
+        }
     }
 
     /**
