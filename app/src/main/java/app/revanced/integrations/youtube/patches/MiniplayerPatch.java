@@ -2,6 +2,7 @@ package app.revanced.integrations.youtube.patches;
 
 import static app.revanced.integrations.shared.StringRef.str;
 import static app.revanced.integrations.youtube.patches.MiniplayerPatch.MiniplayerType.*;
+import static app.revanced.integrations.youtube.shared.VersionCheck.*;
 
 import android.util.DisplayMetrics;
 import android.view.View;
@@ -86,11 +87,6 @@ public final class MiniplayerPatch {
 
         MINIPLAYER_SIZE = dipWidth;
     }
-
-    private static final boolean IS_19_20_OR_GREATER = Utils.getAppVersionName().compareTo("19.20.00") >= 0;
-    private static final boolean IS_19_21_OR_GREATER = Utils.getAppVersionName().compareTo("19.21.00") >= 0;
-    private static final boolean IS_19_26_OR_GREATER = Utils.getAppVersionName().compareTo("19.26.00") >= 0;
-    private static final boolean IS_19_29_OR_GREATER = Utils.getAppVersionName().compareTo("19.29.00") >= 0;
 
     /**
      * Modern subtitle overlay for {@link MiniplayerType#MODERN_2}.
