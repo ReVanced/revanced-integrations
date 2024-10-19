@@ -1,3 +1,10 @@
+# [1.16.0-dev.11](https://github.com/ReVanced/revanced-integrations/compare/v1.16.0-dev.10...v1.16.0-dev.11) (2024-10-19)
+
+
+### Features
+
+* **YouTube - Hide Shorts components:** Hide `Hashtag` button ([#717](https://github.com/ReVanced/revanced-integrations/issues/717)) ([1c9a966](https://github.com/ReVanced/revanced-integrations/commit/1c9a966354243dd1a106e1fc767227c1b025125e))
+
 # [1.16.0-dev.10](https://github.com/ReVanced/revanced-integrations/compare/v1.16.0-dev.9...v1.16.0-dev.10) (2024-10-19)
 
 
