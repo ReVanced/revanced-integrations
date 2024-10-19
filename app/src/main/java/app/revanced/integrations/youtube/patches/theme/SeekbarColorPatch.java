@@ -95,9 +95,7 @@ public final class SeekbarColorPatch {
                 return 0x00000000;
             }
 
-            if (SEEKBAR_CUSTOM_COLOR_ENABLED) {
-                return getSeekbarColorValue(ORIGINAL_SEEKBAR_COLOR);
-            }
+            return getSeekbarColorValue(ORIGINAL_SEEKBAR_COLOR);
         }
         return colorValue;
     }
