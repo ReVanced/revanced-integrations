@@ -114,7 +114,8 @@ public final class SeekbarColorPatch {
                 return;
             }
 
-            Logger.printDebug(() -> "colors: " + Arrays.toString(colors) + " positions: " + Arrays.toString(positions));
+            Logger.printDebug(() -> "Ignoring gradient colors: " + Arrays.toString(colors)
+                    + " positions: " + Arrays.toString(positions));
         }
     }
 
