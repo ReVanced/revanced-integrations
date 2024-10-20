@@ -9,7 +9,7 @@ public class BackgroundPlaybackPatch {
     /**
      * Injection point.
      */
-    public static boolean allowBackgroundPlayback(boolean original) {
+    public static boolean isBackgroundPlaybackAllowed(boolean original) {
         if (original) return true;
 
         // Steps to verify most edge cases (with Shorts background playback set to off):
