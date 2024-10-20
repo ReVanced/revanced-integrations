@@ -1,3 +1,82 @@
+# [1.16.0-dev.11](https://github.com/ReVanced/revanced-integrations/compare/v1.16.0-dev.10...v1.16.0-dev.11) (2024-10-19)
+
+
+### Features
+
+* **YouTube - Hide Shorts components:** Hide `Hashtag` button ([#717](https://github.com/ReVanced/revanced-integrations/issues/717)) ([1c9a966](https://github.com/ReVanced/revanced-integrations/commit/1c9a966354243dd1a106e1fc767227c1b025125e))
+
+# [1.16.0-dev.10](https://github.com/ReVanced/revanced-integrations/compare/v1.16.0-dev.9...v1.16.0-dev.10) (2024-10-19)
+
+
+### Features
+
+* **YouTube:** Support versions `19.25` and `19.34` ([#689](https://github.com/ReVanced/revanced-integrations/issues/689)) ([61569ba](https://github.com/ReVanced/revanced-integrations/commit/61569ba111af82aaff60d11863bc57221a295fe8))
+
+# [1.16.0-dev.9](https://github.com/ReVanced/revanced-integrations/compare/v1.16.0-dev.8...v1.16.0-dev.9) (2024-10-19)
+
+
+### Bug Fixes
+
+* **YouTube - Hide layout components:** Hide new type of Playable ([1a58a40](https://github.com/ReVanced/revanced-integrations/commit/1a58a406db76e4deaea070d077a31714f270e479))
+
+# [1.16.0-dev.8](https://github.com/ReVanced/revanced-integrations/compare/v1.16.0-dev.7...v1.16.0-dev.8) (2024-10-17)
+
+
+### Features
+
+* **Sync for Reddit:** Add `Fix video downloads` patch ([#710](https://github.com/ReVanced/revanced-integrations/issues/710)) ([888de49](https://github.com/ReVanced/revanced-integrations/commit/888de49edd39913116028ac1d173f2b6e0feab09))
+
+# [1.16.0-dev.7](https://github.com/ReVanced/revanced-integrations/compare/v1.16.0-dev.6...v1.16.0-dev.7) (2024-10-17)
+
+
+### Features
+
+* **Twitter:** Add `Change link sharing domain` patch ([#715](https://github.com/ReVanced/revanced-integrations/issues/715)) ([c673951](https://github.com/ReVanced/revanced-integrations/commit/c6739517f179bf8e811e869640a24f433d729f42))
+
+# [1.16.0-dev.6](https://github.com/ReVanced/revanced-integrations/compare/v1.16.0-dev.5...v1.16.0-dev.6) (2024-10-17)
+
+
+### Bug Fixes
+
+* **YouTube - Spoof video streams:** Fix playback for Android VR by removing invalid body as well ([#716](https://github.com/ReVanced/revanced-integrations/issues/716)) ([8ad3f78](https://github.com/ReVanced/revanced-integrations/commit/8ad3f78865836fbe38a832ef6395c6eb8d0edbf2))
+
+# [1.16.0-dev.5](https://github.com/ReVanced/revanced-integrations/compare/v1.16.0-dev.4...v1.16.0-dev.5) (2024-10-14)
+
+
+### Features
+
+* **YouTube - Hide Shorts components:** Add options to hide `Use template`, `Upcoming`, `Green screen` buttons ([#714](https://github.com/ReVanced/revanced-integrations/issues/714)) ([faad754](https://github.com/ReVanced/revanced-integrations/commit/faad7548df2091c24d41dad98a589745ce8a6b73))
+
+# [1.16.0-dev.4](https://github.com/ReVanced/revanced-integrations/compare/v1.16.0-dev.3...v1.16.0-dev.4) (2024-10-06)
+
+
+### Bug Fixes
+
+* **YouTube - Hide layout components:** Adjust settings text ([#713](https://github.com/ReVanced/revanced-integrations/issues/713)) ([119c416](https://github.com/ReVanced/revanced-integrations/commit/119c416bc5c24f2455bfe70adccd51234b165d25))
+
+# [1.16.0-dev.3](https://github.com/ReVanced/revanced-integrations/compare/v1.16.0-dev.2...v1.16.0-dev.3) (2024-10-06)
+
+
+### Features
+
+* **YouTube - Hide layout components:** Add option to hide Yoodles (YouTube Doodles) ([#712](https://github.com/ReVanced/revanced-integrations/issues/712)) ([4b5f3de](https://github.com/ReVanced/revanced-integrations/commit/4b5f3deef9c3a8c700e23a0f4d9ce999013ec9d4))
+
+# [1.16.0-dev.2](https://github.com/ReVanced/revanced-integrations/compare/v1.16.0-dev.1...v1.16.0-dev.2) (2024-10-03)
+
+
+### Bug Fixes
+
+* **YouTube - Spoof video streams:** Handle app left open for a long time ([#709](https://github.com/ReVanced/revanced-integrations/issues/709)) ([ea4b073](https://github.com/ReVanced/revanced-integrations/commit/ea4b073f5c21b0fea4e3922488e8bbf69cfcb421))
+
+# [1.16.0-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v1.15.1-dev.1...v1.16.0-dev.1) (2024-10-02)
+
+
+### Features
+
+* **YouTube - Hide Shorts components:** Add option to hide like fountain ([#708](https://github.com/ReVanced/revanced-integrations/issues/708)) ([16c3ef7](https://github.com/ReVanced/revanced-integrations/commit/16c3ef7ee5a32ec22db6da876dcf19fc02bc9aac))
+
+## [1.15.1-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v1.15.0...v1.15.1-dev.1) (2024-10-01)
+
 # [1.15.0](https://github.com/ReVanced/revanced-integrations/compare/v1.14.2...v1.15.0) (2024-09-30)
 
 
