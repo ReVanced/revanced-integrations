@@ -15,9 +15,6 @@ import app.revanced.integrations.youtube.settings.Settings;
 public class ChangeShortsRepeatPatch {
 
     public enum ShortsLoopBehavior {
-        /**
-         * Handled as the default and not to change whatever YT uses.
-         */
         UNKNOWN,
         /**
          * Repeat the same Short forever!
@@ -72,12 +69,19 @@ public class ChangeShortsRepeatPatch {
     public static void setYTShortsRepeatEnum(Enum<?> ytEnum) {
         try {
             for (Enum<?> ytBehavior : Objects.requireNonNull(ytEnum.getClass().getEnumConstants())) {
+
+                boolean foundBehavior = false;
                 for (ShortsLoopBehavior rvBehavior : ShortsLoopBehavior.values()) {
                     if (ytBehavior.name().endsWith(rvBehavior.name())) {
                         rvBehavior.ytEnumValue = ytBehavior;
 
                         Logger.printDebug(() -> rvBehavior + " set to YT enum: " + ytBehavior.name());
+                        foundBehavior = true;
                     }
+                }
+
+                if (!foundBehavior) {
+                    Logger.printException(() -> "Unknown Shorts loop behavior: " + ytBehavior.name());
                 }
             }
         } catch (Exception ex) {
@@ -89,7 +93,7 @@ public class ChangeShortsRepeatPatch {
      * Injection point.
      */
     @RequiresApi(api = Build.VERSION_CODES.N)
-    public static Enum<?> changeShortsRepeatState(Enum<?> originalState) {
+    public static Enum<?> changeShortsRepeatBehavior(Enum<?> original) {
         try {
             // 19.34+ is required to set background play behavior.
             final boolean inPiPModeAndCanChangeBehavior =
@@ -99,34 +103,27 @@ public class ChangeShortsRepeatPatch {
                     ? Settings.CHANGE_SHORTS_BACKGROUND_REPEAT_STATE.get()
                     : Settings.CHANGE_SHORTS_REPEAT_STATE.get();
 
-            String originalStateName = originalState.name();
-
             if (behavior == ShortsLoopBehavior.UNKNOWN) {
                 Logger.printDebug(() -> "Behavior setting is default. "
-                        + "Using original: " + originalStateName);
-                return originalState;
+                        + "Using original: " + original.name());
+                return original;
+            }
+
+            if (behavior.ytEnumValue == original) {
+                Logger.printDebug(() -> "Behavior setting is same as original. "
+                        + "Using original: " + original.name());
+                return original;
             }
 
             if (behavior.ytEnumValue != null) {
-                if (behavior.ytEnumValue == originalState) {
-                    Logger.printDebug(() -> "Behavior setting is same as original. "
-                            + "Using original: " + originalStateName);
-                    return originalState;
-                }
-
-                Logger.printDebug(() -> "Changing Shorts repeat behavior from: " + originalStateName
-                        + " to: " + behavior.name());
+                Logger.printDebug(() -> "Changing Shorts repeat behavior from: "
+                        + original.name() + " to: " + behavior.name());
                 return behavior.ytEnumValue;
             }
-
-            // Somehow during setting the YT enum it failed.
-            // Either the hook was not called or an unknown enum was encountered.
-            Logger.printException(() -> "Cannot change Short repeat behavior as " +
-                    "no enum is assigned to: " + originalStateName);
         } catch (Exception ex) {
             Logger.printException(() -> "changeShortsRepeatState failure", ex);
         }
 
-        return originalState;
+        return original;
     }
 }
