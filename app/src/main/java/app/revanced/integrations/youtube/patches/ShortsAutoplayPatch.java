@@ -12,9 +12,9 @@ import app.revanced.integrations.shared.Logger;
 import app.revanced.integrations.youtube.settings.Settings;
 
 @SuppressWarnings("unused")
-public class ChangeShortsRepeatPatch {
+public class ShortsAutoplayPatch {
 
-    public enum ShortsLoopBehavior {
+    private enum ShortsLoopBehavior {
         UNKNOWN,
         /**
          * Repeat the same Short forever!
@@ -95,23 +95,28 @@ public class ChangeShortsRepeatPatch {
     @RequiresApi(api = Build.VERSION_CODES.N)
     public static Enum<?> changeShortsRepeatBehavior(Enum<?> original) {
         try {
-            // 19.34+ is required to set background play behavior.
-            final boolean inPiPModeAndCanChangeBehavior =
-                    VersionCheckPatch.IS_19_34_OR_GREATER && isAppInBackgroundPiPMode();
+            final boolean autoplay;
 
-            ShortsLoopBehavior behavior = inPiPModeAndCanChangeBehavior
-                    ? Settings.CHANGE_SHORTS_BACKGROUND_REPEAT_STATE.get()
-                    : Settings.CHANGE_SHORTS_REPEAT_STATE.get();
+            if (isAppInBackgroundPiPMode()) {
+                if (!VersionCheckPatch.IS_19_34_OR_GREATER) {
+                    // 19.34+ is required to set background play behavior.
+                    Logger.printDebug(() -> "PiP Shorts not supported, using original repeat behavior");
 
-            if (behavior == ShortsLoopBehavior.UNKNOWN) {
-                Logger.printDebug(() -> "Behavior setting is default. "
-                        + "Using original: " + original.name());
-                return original;
+                    return original;
+                }
+
+                autoplay = Settings.SHORTS_AUTOPLAY_BACKGROUND.get();
+            } else {
+                autoplay = Settings.SHORTS_AUTOPLAY.get();
             }
+
+            final ShortsLoopBehavior behavior = autoplay
+                    ? ShortsLoopBehavior.SINGLE_PLAY
+                    : ShortsLoopBehavior.REPEAT;
 
             if (behavior.ytEnumValue != null) {
                 Logger.printDebug(() -> behavior.ytEnumValue == original
-                        ? "Changing Shorts repeat behavior from: " + original.name() + " to: " + behavior.name()
+                        ? "Changing Shorts repeat behavior from: " + original.name() + " to: " + behavior.ytEnumValue
                         : "Behavior setting is same as original. Using original: " + original.name()
                 );
 
