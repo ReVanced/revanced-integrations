@@ -109,15 +109,12 @@ public class ChangeShortsRepeatPatch {
                 return original;
             }
 
-            if (behavior.ytEnumValue == original) {
-                Logger.printDebug(() -> "Behavior setting is same as original. "
-                        + "Using original: " + original.name());
-                return original;
-            }
-
             if (behavior.ytEnumValue != null) {
-                Logger.printDebug(() -> "Changing Shorts repeat behavior from: "
-                        + original.name() + " to: " + behavior.name());
+                Logger.printDebug(() -> behavior.ytEnumValue == original
+                        ? "Changing Shorts repeat behavior from: " + original.name() + " to: " + behavior.name()
+                        : "Behavior setting is same as original. Using original: " + original.name()
+                );
+
                 return behavior.ytEnumValue;
             }
         } catch (Exception ex) {
