@@ -8,6 +8,8 @@ import static app.revanced.integrations.youtube.patches.MiniplayerPatch.Miniplay
 import static app.revanced.integrations.youtube.patches.MiniplayerPatch.MiniplayerType;
 import static app.revanced.integrations.youtube.patches.MiniplayerPatch.MiniplayerType.*;
 import static app.revanced.integrations.youtube.sponsorblock.objects.CategoryBehaviour.*;
+import static app.revanced.integrations.youtube.patches.ChangeShortsRepeatPatch.ShortsLoopBehavior;
+import static app.revanced.integrations.youtube.patches.ChangeShortsRepeatPatch.ShortsLoopBehavior.*;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -247,6 +249,8 @@ public class Settings extends BaseSettings {
     public static final BooleanSetting HIDE_SHORTS_SOUND_METADATA_LABEL = new BooleanSetting("revanced_hide_shorts_sound_metadata_label", FALSE);
     public static final BooleanSetting HIDE_SHORTS_FULL_VIDEO_LINK_LABEL = new BooleanSetting("revanced_hide_shorts_full_video_link_label", FALSE);
     public static final BooleanSetting HIDE_SHORTS_NAVIGATION_BAR = new BooleanSetting("revanced_hide_shorts_navigation_bar", FALSE, true);
+    public static final EnumSetting<ShortsLoopBehavior> CHANGE_SHORTS_REPEAT_STATE = new EnumSetting<>("revanced_shorts_repeat_behavior", SINGLE_PLAY);
+    public static final EnumSetting<ShortsLoopBehavior> CHANGE_SHORTS_BACKGROUND_REPEAT_STATE = new EnumSetting<>("revanced_shorts_background_repeat_behavior", SINGLE_PLAY);
 
     // Seekbar
     public static final BooleanSetting DISABLE_PRECISE_SEEKING_GESTURE = new BooleanSetting("revanced_disable_precise_seeking_gesture", TRUE);
