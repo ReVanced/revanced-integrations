@@ -91,7 +91,11 @@ public class ChangeShortsRepeatPatch {
     @RequiresApi(api = Build.VERSION_CODES.N)
     public static Enum<?> changeShortsRepeatState(Enum<?> originalState) {
         try {
-            ShortsLoopBehavior behavior = isAppInBackgroundPiPMode()
+            // 19.34 and earlier cannot change Shorts repeat behavior for background pip.
+            final boolean inPiPModeAndCanChangeBehavior =
+                    VersionCheckPatch.IS_19_35_OR_GREATER && isAppInBackgroundPiPMode();
+
+            ShortsLoopBehavior behavior = inPiPModeAndCanChangeBehavior
                     ? Settings.CHANGE_SHORTS_BACKGROUND_REPEAT_STATE.get()
                     : Settings.CHANGE_SHORTS_REPEAT_STATE.get();
 
