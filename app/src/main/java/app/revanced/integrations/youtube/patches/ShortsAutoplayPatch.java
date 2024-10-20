@@ -47,20 +47,7 @@ public class ShortsAutoplayPatch {
      */
     @RequiresApi(api = Build.VERSION_CODES.N)
     private static boolean isAppInBackgroundPiPMode() {
-        Activity mainActivity = mainActivityRef.get();
-
-        if (mainActivity == null) {
-            // Should never happen, since the context is the main activity.
-            Logger.printException(() -> "Activity is null, cannot determine repeat behavior");
-            return false;
-        }
-
-        final boolean isPiP =  mainActivity.isInPictureInPictureMode();
-        if (isPiP) {
-            Logger.printDebug(() -> "Short is in background PiP mode");
-        }
-
-        return isPiP;
+        return mainActivityRef.get().isInPictureInPictureMode();
     }
 
     /**
