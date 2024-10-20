@@ -22,11 +22,11 @@ public class ChangeShortsRepeatPatch {
         /**
          * Repeat the same Short forever!
          */
-        SINGLE_PLAY,
+        REPEAT,
         /**
          * Play once, then advanced to the next Short.
          */
-        REPEAT,
+        SINGLE_PLAY,
         /**
          * Pause playback after 1 play.
          */
@@ -46,7 +46,7 @@ public class ChangeShortsRepeatPatch {
     }
 
     /**
-     * @return If the app currently is in background PiP mode.
+     * @return If the app is currently in background PiP mode.
      */
     @RequiresApi(api = Build.VERSION_CODES.N)
     private static boolean isAppInBackgroundPiPMode() {
