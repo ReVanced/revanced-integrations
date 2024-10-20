@@ -1,3 +1,11 @@
+## [1.16.1-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v1.16.0...v1.16.1-dev.1) (2024-10-20)
+
+
+### Bug Fixes
+
+* **YouTube - Hide layout components:** Hide new kind of community post ([#711](https://github.com/ReVanced/revanced-integrations/issues/711)) ([9ffdfc3](https://github.com/ReVanced/revanced-integrations/commit/9ffdfc37630288eb1383446e38c5bf0d9317bc12))
+* **YouTube - Hide seekbar:** Hide 19.34+ gradient seekbar ([e3975cf](https://github.com/ReVanced/revanced-integrations/commit/e3975cfc3ac703eb972f68528a99c92457276815))
+
 # [1.16.0](https://github.com/ReVanced/revanced-integrations/compare/v1.15.0...v1.16.0) (2024-10-20)
 
 
