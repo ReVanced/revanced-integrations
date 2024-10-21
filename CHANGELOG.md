@@ -1,3 +1,10 @@
+# [1.17.0-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v1.16.1-dev.1...v1.17.0-dev.1) (2024-10-21)
+
+
+### Features
+
+* **YouTube:** Add `Shorts autoplay` patch ([#719](https://github.com/ReVanced/revanced-integrations/issues/719)) ([14fb894](https://github.com/ReVanced/revanced-integrations/commit/14fb894f398dc4ea4fd494dff1eeee19c7fd6e95))
+
 ## [1.16.1-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v1.16.0...v1.16.1-dev.1) (2024-10-20)
 
 
