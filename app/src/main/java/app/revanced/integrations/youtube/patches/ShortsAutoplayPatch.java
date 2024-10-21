@@ -29,6 +29,19 @@ public class ShortsAutoplayPatch {
          */
         END_SCREEN;
 
+        static void setYTEnumValue(Enum<?> ytBehavior) {
+            for (ShortsLoopBehavior rvBehavior : values()) {
+                if (ytBehavior.name().endsWith(rvBehavior.name())) {
+                    rvBehavior.ytEnumValue = ytBehavior;
+
+                    Logger.printDebug(() -> rvBehavior + " set to YT enum: " + ytBehavior.name());
+                    return;
+                }
+            }
+
+            Logger.printException(() -> "Unknown Shorts loop behavior: " + ytBehavior.name());
+        }
+
         /**
          * YouTube enum value of the obfuscated enum type.
          */
@@ -47,7 +60,8 @@ public class ShortsAutoplayPatch {
      */
     @RequiresApi(api = Build.VERSION_CODES.N)
     private static boolean isAppInBackgroundPiPMode() {
-        return mainActivityRef.get().isInPictureInPictureMode();
+        Activity activity = mainActivityRef.get();
+        return activity != null && activity.isInPictureInPictureMode();
     }
 
     /**
@@ -56,20 +70,7 @@ public class ShortsAutoplayPatch {
     public static void setYTShortsRepeatEnum(Enum<?> ytEnum) {
         try {
             for (Enum<?> ytBehavior : Objects.requireNonNull(ytEnum.getClass().getEnumConstants())) {
-
-                boolean foundBehavior = false;
-                for (ShortsLoopBehavior rvBehavior : ShortsLoopBehavior.values()) {
-                    if (ytBehavior.name().endsWith(rvBehavior.name())) {
-                        rvBehavior.ytEnumValue = ytBehavior;
-
-                        Logger.printDebug(() -> rvBehavior + " set to YT enum: " + ytBehavior.name());
-                        foundBehavior = true;
-                    }
-                }
-
-                if (!foundBehavior) {
-                    Logger.printException(() -> "Unknown Shorts loop behavior: " + ytBehavior.name());
-                }
+                ShortsLoopBehavior.setYTEnumValue(ytBehavior);
             }
         } catch (Exception ex) {
             Logger.printException(() -> "setYTShortsRepeatEnum failure", ex);
