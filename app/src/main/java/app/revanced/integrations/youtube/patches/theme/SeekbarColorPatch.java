@@ -73,10 +73,7 @@ public final class SeekbarColorPatch {
     }
 
     public static boolean playerSeekbarGradientEnabled(boolean original) {
-        if (original) {
-            Logger.printDebug(() -> "playerSeekbarGradientEnabled original: " + true);
-            if (SEEKBAR_CUSTOM_COLOR_ENABLED) return false;
-        }
+        if (SEEKBAR_CUSTOM_COLOR_ENABLED) return false;
 
         return original;
     }
@@ -104,12 +101,14 @@ public final class SeekbarColorPatch {
      * Injection point.
      */
     public static void setLinearGradient(int[] colors, float[] positions) {
-        if (SEEKBAR_CUSTOM_COLOR_ENABLED) {
+        final boolean hideSeekbar = Settings.HIDE_SEEKBAR_THUMBNAIL.get();
+
+        if (SEEKBAR_CUSTOM_COLOR_ENABLED || hideSeekbar) {
             // Most litho usage of linear gradients is hooked here,
             // so must only change if the values are those for the seekbar.
             if (Arrays.equals(ORIGINAL_SEEKBAR_GRADIENT_COLORS, colors)
                     && Arrays.equals(ORIGINAL_SEEKBAR_GRADIENT_POSITIONS, positions)) {
-                Arrays.fill(colors, Settings.HIDE_SEEKBAR_THUMBNAIL.get()
+                Arrays.fill(colors, hideSeekbar
                         ? 0x00000000
                         : seekbarColor);
                 return;
