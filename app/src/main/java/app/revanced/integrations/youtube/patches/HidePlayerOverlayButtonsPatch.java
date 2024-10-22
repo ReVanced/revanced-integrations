@@ -1,6 +1,7 @@
 package app.revanced.integrations.youtube.patches;
 
 import android.view.View;
+import android.widget.ImageView;
 
 import app.revanced.integrations.shared.Logger;
 import app.revanced.integrations.shared.Utils;
@@ -51,4 +52,12 @@ public final class HidePlayerOverlayButtonsPatch {
     public static int getCastButtonOverrideV2(int original) {
         return Settings.HIDE_CAST_BUTTON.get() ? View.GONE : original;
     }
+
+    /**
+     * Injection point.
+     */
+    public static void hideCaptionsButton(ImageView imageView) {
+        imageView.setVisibility(Settings.HIDE_CAPTIONS_BUTTON.get() ? ImageView.GONE : ImageView.VISIBLE);
+    }
+
 }
