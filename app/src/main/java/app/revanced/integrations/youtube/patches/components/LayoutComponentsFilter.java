@@ -383,6 +383,12 @@ public final class LayoutComponentsFilter extends Filter {
         return !Settings.HIDE_VIDEO_CHANNEL_WATERMARK.get();
     }
 
+    /**
+     * Injection point.
+     */
+    public static void hideAlbumCard(View view) {
+        Utils.hideViewBy0dpUnderCondition(Settings.HIDE_ALBUM_CARDS, view);
+    }
 
     private static final boolean HIDE_DOODLES_ENABLED = Settings.HIDE_DOODLES.get();
 
