@@ -39,7 +39,7 @@ public class BackgroundPlaybackPatch {
      * Injection point.
      */
     public static boolean isBackgroundShortsPlaybackAllowed(boolean original) {
-        return Settings.ALLOW_SHORTS_BACKGROUND_PLAYBACK.get();
+        return !Settings.DISABLE_SHORTS_BACKGROUND_PLAYBACK.get();
     }
 
     /**
