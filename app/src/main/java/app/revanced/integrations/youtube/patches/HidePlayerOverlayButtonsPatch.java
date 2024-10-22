@@ -7,7 +7,7 @@ import app.revanced.integrations.shared.Utils;
 import app.revanced.integrations.youtube.settings.Settings;
 
 @SuppressWarnings("unused")
-public final class HidePlayerButtonsPatch {
+public final class HidePlayerOverlayButtonsPatch {
 
     private static final boolean HIDE_PLAYER_BUTTONS_ENABLED = Settings.HIDE_PLAYER_BUTTONS.get();
 
@@ -43,5 +43,12 @@ public final class HidePlayerButtonsPatch {
 
         Logger.printDebug(() -> "Hiding previous/next button");
         Utils.hideViewByRemovingFromParentUnderCondition(true, nextPreviousButton);
+    }
+
+    /**
+     * Injection point.
+     */
+    public static int getCastButtonOverrideV2(int original) {
+        return Settings.HIDE_CAST_BUTTON.get() ? View.GONE : original;
     }
 }
