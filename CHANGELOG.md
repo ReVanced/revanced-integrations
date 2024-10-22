@@ -1,3 +1,15 @@
+# [1.17.0-dev.2](https://github.com/ReVanced/revanced-integrations/compare/v1.17.0-dev.1...v1.17.0-dev.2) (2024-10-22)
+
+
+### Bug Fixes
+
+* **YouTube:** Merge multiple layout patches into `Hide Layout Components` ([#721](https://github.com/ReVanced/revanced-integrations/issues/721)) ([c76d8b1](https://github.com/ReVanced/revanced-integrations/commit/c76d8b166ebbd39b2e3d717ebae3a60949d7423c))
+
+
+### Features
+
+* **YouTube:** Merge multiple player overlay patches into `Hide player overlay buttons` ([#722](https://github.com/ReVanced/revanced-integrations/issues/722)) ([55089ba](https://github.com/ReVanced/revanced-integrations/commit/55089baf1fec965e554234d806b03445b8f27bc5))
+
 # [1.17.0-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v1.16.1-dev.1...v1.17.0-dev.1) (2024-10-21)
 
 
