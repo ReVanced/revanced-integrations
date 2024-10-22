@@ -10,6 +10,29 @@ import app.revanced.integrations.youtube.settings.Settings;
 @SuppressWarnings("unused")
 public final class HidePlayerOverlayButtonsPatch {
 
+    private static final boolean HIDE_AUTOPLAY_BUTTON_ENABLED = Settings.HIDE_AUTOPLAY_BUTTON.get();
+
+    /**
+     * Injection point.
+     */
+    public static boolean hideAutoPlayButton() {
+        return HIDE_AUTOPLAY_BUTTON_ENABLED;
+    }
+
+    /**
+     * Injection point.
+     */
+    public static int getCastButtonOverrideV2(int original) {
+        return Settings.HIDE_CAST_BUTTON.get() ? View.GONE : original;
+    }
+
+    /**
+     * Injection point.
+     */
+    public static void hideCaptionsButton(ImageView imageView) {
+        imageView.setVisibility(Settings.HIDE_CAPTIONS_BUTTON.get() ? ImageView.GONE : ImageView.VISIBLE);
+    }
+
     private static final boolean HIDE_PLAYER_BUTTONS_ENABLED = Settings.HIDE_PLAYER_BUTTONS.get();
 
     private static final int PLAYER_CONTROL_PREVIOUS_BUTTON_TOUCH_AREA_ID =
@@ -45,19 +68,4 @@ public final class HidePlayerOverlayButtonsPatch {
         Logger.printDebug(() -> "Hiding previous/next button");
         Utils.hideViewByRemovingFromParentUnderCondition(true, nextPreviousButton);
     }
-
-    /**
-     * Injection point.
-     */
-    public static int getCastButtonOverrideV2(int original) {
-        return Settings.HIDE_CAST_BUTTON.get() ? View.GONE : original;
-    }
-
-    /**
-     * Injection point.
-     */
-    public static void hideCaptionsButton(ImageView imageView) {
-        imageView.setVisibility(Settings.HIDE_CAPTIONS_BUTTON.get() ? ImageView.GONE : ImageView.VISIBLE);
-    }
-
 }
