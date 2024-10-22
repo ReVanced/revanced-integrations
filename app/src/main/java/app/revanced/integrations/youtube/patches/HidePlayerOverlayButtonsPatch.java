@@ -33,7 +33,8 @@ public final class HidePlayerOverlayButtonsPatch {
         imageView.setVisibility(Settings.HIDE_CAPTIONS_BUTTON.get() ? ImageView.GONE : ImageView.VISIBLE);
     }
 
-    private static final boolean HIDE_PLAYER_BUTTONS_ENABLED = Settings.HIDE_PLAYER_BUTTONS.get();
+    private static final boolean HIDE_PLAYER_PREVIOUS_NEXT_BUTTONS_ENABLED
+            = Settings.HIDE_PLAYER_PREVIOUS_NEXT_BUTTONS.get();
 
     private static final int PLAYER_CONTROL_PREVIOUS_BUTTON_TOUCH_AREA_ID =
             Utils.getResourceIdentifier("player_control_previous_button_touch_area", "id");
@@ -45,7 +46,7 @@ public final class HidePlayerOverlayButtonsPatch {
      * Injection point.
      */
     public static void hidePreviousNextButtons(View parentView) {
-        if (!HIDE_PLAYER_BUTTONS_ENABLED) {
+        if (!HIDE_PLAYER_PREVIOUS_NEXT_BUTTONS_ENABLED) {
             return;
         }
 
