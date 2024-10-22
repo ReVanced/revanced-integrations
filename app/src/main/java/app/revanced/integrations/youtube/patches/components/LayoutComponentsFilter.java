@@ -390,6 +390,13 @@ public final class LayoutComponentsFilter extends Filter {
         Utils.hideViewBy0dpUnderCondition(Settings.HIDE_ALBUM_CARDS, view);
     }
 
+    /**
+     * Injection point.
+     */
+    public static void hideCrowdfundingBox(View view) {
+        Utils.hideViewBy0dpUnderCondition(Settings.HIDE_CROWDFUNDING_BOX, view);
+    }
+
     private static final boolean HIDE_DOODLES_ENABLED = Settings.HIDE_DOODLES.get();
 
     /**
