@@ -1,3 +1,10 @@
+# [1.17.0-dev.3](https://github.com/ReVanced/revanced-integrations/compare/v1.17.0-dev.2...v1.17.0-dev.3) (2024-10-23)
+
+
+### Features
+
+* **YouTube - Hide layout components:** Hide player shopping shelf ([#723](https://github.com/ReVanced/revanced-integrations/issues/723)) ([fbaf288](https://github.com/ReVanced/revanced-integrations/commit/fbaf2883cc2d978f3fb3c71751e0dd7a39561814))
+
 # [1.17.0-dev.2](https://github.com/ReVanced/revanced-integrations/compare/v1.17.0-dev.1...v1.17.0-dev.2) (2024-10-22)
 
 
