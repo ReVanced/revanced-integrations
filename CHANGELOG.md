@@ -1,3 +1,10 @@
+# [1.17.0-dev.4](https://github.com/ReVanced/revanced-integrations/compare/v1.17.0-dev.3...v1.17.0-dev.4) (2024-10-23)
+
+
+### Features
+
+* **YouTube:** Hide player shopping shelf in playlists ([#724](https://github.com/ReVanced/revanced-integrations/issues/724)) ([d108f59](https://github.com/ReVanced/revanced-integrations/commit/d108f59554a1ec74d8446c3e0fc933c59cfda404))
+
 # [1.17.0-dev.3](https://github.com/ReVanced/revanced-integrations/compare/v1.17.0-dev.2...v1.17.0-dev.3) (2024-10-23)
 
 
