@@ -1,3 +1,10 @@
+# [1.17.0-dev.6](https://github.com/ReVanced/revanced-integrations/compare/v1.17.0-dev.5...v1.17.0-dev.6) (2024-10-24)
+
+
+### Bug Fixes
+
+* **YouTube - Hide ads:** Hide new type of ad ([b94d2da](https://github.com/ReVanced/revanced-integrations/commit/b94d2da0b2ef54e8b5e29eefb45c6a58a852cdb2))
+
 # [1.17.0-dev.5](https://github.com/ReVanced/revanced-integrations/compare/v1.17.0-dev.4...v1.17.0-dev.5) (2024-10-24)
 
 
