@@ -1,3 +1,11 @@
+# [1.17.0-dev.5](https://github.com/ReVanced/revanced-integrations/compare/v1.17.0-dev.4...v1.17.0-dev.5) (2024-10-24)
+
+
+### Bug Fixes
+
+* **YouTube - Hide Shorts components:** Hide new type of Short ([c1bde72](https://github.com/ReVanced/revanced-integrations/commit/c1bde725259f2f056f465dc9c752bb4f1ebe3363))
+* **YouTube - Playback speed:** Remember playback speed with new speed menu ([#725](https://github.com/ReVanced/revanced-integrations/issues/725)) ([fd9ffa5](https://github.com/ReVanced/revanced-integrations/commit/fd9ffa53b7d21771331e3cb64774c0eb82296566))
+
 # [1.17.0-dev.4](https://github.com/ReVanced/revanced-integrations/compare/v1.17.0-dev.3...v1.17.0-dev.4) (2024-10-23)
 
 
