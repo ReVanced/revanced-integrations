@@ -1,10 +1,7 @@
 package app.revanced.integrations.youtube.settings.preference;
 
-import android.os.Build;
 import android.preference.ListPreference;
 import android.preference.Preference;
-
-import androidx.annotation.RequiresApi;
 
 import app.revanced.integrations.shared.Logger;
 import app.revanced.integrations.shared.settings.preference.AbstractPreferenceFragment;
@@ -18,7 +15,6 @@ import app.revanced.integrations.youtube.settings.Settings;
  */
 public class ReVancedPreferenceFragment extends AbstractPreferenceFragment {
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void initialize() {
         super.initialize();

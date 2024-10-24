@@ -89,6 +89,7 @@ public class CustomPlaybackSpeedPatch {
     /**
      * Initialize a settings preference list with the available playback speeds.
      */
+    @SuppressWarnings("deprecation")
     public static void initializeListPreference(ListPreference preference) {
         if (preferenceListEntries == null) {
             preferenceListEntries = new String[customPlaybackSpeeds.length];

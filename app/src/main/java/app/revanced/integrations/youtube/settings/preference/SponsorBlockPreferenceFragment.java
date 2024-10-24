@@ -155,6 +155,8 @@ public class SponsorBlockPreferenceFragment extends PreferenceFragment {
             addAboutCategory(context, preferenceScreen);
 
             updateUI();
+
+            Utils.setPreferenceTitlesToMultiLineIfNeeded(preferenceScreen);
         } catch (Exception ex) {
             Logger.printException(() -> "onCreate failure", ex);
         }
@@ -468,6 +470,8 @@ public class SponsorBlockPreferenceFragment extends PreferenceFragment {
                     Utils.runOnMainThread(() -> { // get back on main thread to modify UI elements
                         addUserStats(loadingPlaceholderPreference, stats);
                         addLocalUserStats();
+
+                        Utils.setPreferenceTitlesToMultiLineIfNeeded(statsCategory);
                     });
                 });
             } else {
