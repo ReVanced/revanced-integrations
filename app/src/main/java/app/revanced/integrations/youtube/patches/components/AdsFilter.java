@@ -24,6 +24,9 @@ public final class AdsFilter extends Filter {
 
     private final StringTrieSearch exceptions = new StringTrieSearch();
 
+    private final StringFilterGroup playerShoppingShelf;
+    private final ByteArrayFilterGroup playerShoppingShelfBuffer;
+
     private final StringFilterGroup channelProfile;
     private final ByteArrayFilterGroup visitStoreButton;
 
@@ -79,6 +82,7 @@ public final class AdsFilter extends Filter {
                 "text_image_button_layout",
                 "primetime_promo",
                 "product_details",
+                "composite_concurrent_carousel_layout",
                 "carousel_headered_layout",
                 "full_width_portrait_image_layout",
                 "brand_video_shelf"
@@ -108,6 +112,16 @@ public final class AdsFilter extends Filter {
         channelProfile = new StringFilterGroup(
                 null,
                 "channel_profile.eml"
+        );
+
+        playerShoppingShelf = new StringFilterGroup(
+                null,
+                "horizontal_shelf.eml"
+        );
+
+        playerShoppingShelfBuffer = new ByteArrayFilterGroup(
+                Settings.HIDE_PLAYER_STORE_SHELF,
+                "shopping_item_card_list.eml"
         );
 
         visitStoreButton = new ByteArrayFilterGroup(
@@ -140,6 +154,7 @@ public final class AdsFilter extends Filter {
                 channelProfile,
                 webLinkPanel,
                 shoppingLinks,
+                playerShoppingShelf,
                 movieAds
         );
     }
@@ -147,6 +162,13 @@ public final class AdsFilter extends Filter {
     @Override
     boolean isFiltered(@Nullable String identifier, String path, byte[] protobufBufferArray,
                        StringFilterGroup matchedGroup, FilterContentType contentType, int contentIndex) {
+        if (matchedGroup == playerShoppingShelf) {
+            if (contentIndex == 0 && playerShoppingShelfBuffer.check(protobufBufferArray).isFiltered()) {
+                return super.isFiltered(identifier, path, protobufBufferArray, matchedGroup, contentType, contentIndex);
+            }
+            return false;
+        }
+
         if (exceptions.matches(path))
             return false;
 

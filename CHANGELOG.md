@@ -1,3 +1,59 @@
+# [1.17.0-dev.6](https://github.com/ReVanced/revanced-integrations/compare/v1.17.0-dev.5...v1.17.0-dev.6) (2024-10-24)
+
+
+### Bug Fixes
+
+* **YouTube - Hide ads:** Hide new type of ad ([b94d2da](https://github.com/ReVanced/revanced-integrations/commit/b94d2da0b2ef54e8b5e29eefb45c6a58a852cdb2))
+
+# [1.17.0-dev.5](https://github.com/ReVanced/revanced-integrations/compare/v1.17.0-dev.4...v1.17.0-dev.5) (2024-10-24)
+
+
+### Bug Fixes
+
+* **YouTube - Hide Shorts components:** Hide new type of Short ([c1bde72](https://github.com/ReVanced/revanced-integrations/commit/c1bde725259f2f056f465dc9c752bb4f1ebe3363))
+* **YouTube - Playback speed:** Remember playback speed with new speed menu ([#725](https://github.com/ReVanced/revanced-integrations/issues/725)) ([fd9ffa5](https://github.com/ReVanced/revanced-integrations/commit/fd9ffa53b7d21771331e3cb64774c0eb82296566))
+
+# [1.17.0-dev.4](https://github.com/ReVanced/revanced-integrations/compare/v1.17.0-dev.3...v1.17.0-dev.4) (2024-10-23)
+
+
+### Features
+
+* **YouTube:** Hide player shopping shelf in playlists ([#724](https://github.com/ReVanced/revanced-integrations/issues/724)) ([d108f59](https://github.com/ReVanced/revanced-integrations/commit/d108f59554a1ec74d8446c3e0fc933c59cfda404))
+
+# [1.17.0-dev.3](https://github.com/ReVanced/revanced-integrations/compare/v1.17.0-dev.2...v1.17.0-dev.3) (2024-10-23)
+
+
+### Features
+
+* **YouTube - Hide layout components:** Hide player shopping shelf ([#723](https://github.com/ReVanced/revanced-integrations/issues/723)) ([fbaf288](https://github.com/ReVanced/revanced-integrations/commit/fbaf2883cc2d978f3fb3c71751e0dd7a39561814))
+
+# [1.17.0-dev.2](https://github.com/ReVanced/revanced-integrations/compare/v1.17.0-dev.1...v1.17.0-dev.2) (2024-10-22)
+
+
+### Bug Fixes
+
+* **YouTube:** Merge multiple layout patches into `Hide Layout Components` ([#721](https://github.com/ReVanced/revanced-integrations/issues/721)) ([c76d8b1](https://github.com/ReVanced/revanced-integrations/commit/c76d8b166ebbd39b2e3d717ebae3a60949d7423c))
+
+
+### Features
+
+* **YouTube:** Merge multiple player overlay patches into `Hide player overlay buttons` ([#722](https://github.com/ReVanced/revanced-integrations/issues/722)) ([55089ba](https://github.com/ReVanced/revanced-integrations/commit/55089baf1fec965e554234d806b03445b8f27bc5))
+
+# [1.17.0-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v1.16.1-dev.1...v1.17.0-dev.1) (2024-10-21)
+
+
+### Features
+
+* **YouTube:** Add `Shorts autoplay` patch ([#719](https://github.com/ReVanced/revanced-integrations/issues/719)) ([14fb894](https://github.com/ReVanced/revanced-integrations/commit/14fb894f398dc4ea4fd494dff1eeee19c7fd6e95))
+
+## [1.16.1-dev.1](https://github.com/ReVanced/revanced-integrations/compare/v1.16.0...v1.16.1-dev.1) (2024-10-20)
+
+
+### Bug Fixes
+
+* **YouTube - Hide layout components:** Hide new kind of community post ([#711](https://github.com/ReVanced/revanced-integrations/issues/711)) ([9ffdfc3](https://github.com/ReVanced/revanced-integrations/commit/9ffdfc37630288eb1383446e38c5bf0d9317bc12))
+* **YouTube - Hide seekbar:** Hide 19.34+ gradient seekbar ([e3975cf](https://github.com/ReVanced/revanced-integrations/commit/e3975cfc3ac703eb972f68528a99c92457276815))
+
 # [1.16.0](https://github.com/ReVanced/revanced-integrations/compare/v1.15.0...v1.16.0) (2024-10-20)
 
 
