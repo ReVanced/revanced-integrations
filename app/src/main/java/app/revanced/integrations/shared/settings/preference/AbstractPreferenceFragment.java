@@ -17,7 +17,7 @@ import app.revanced.integrations.shared.settings.Setting;
 
 import static app.revanced.integrations.shared.StringRef.str;
 
-@SuppressWarnings({"unused", "deprecation"})
+@SuppressWarnings("deprecation")
 public abstract class AbstractPreferenceFragment extends PreferenceFragment {
     /**
      * Indicates that if a preference changes,

@@ -13,7 +13,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.preference.Preference;
-import android.preference.PreferenceCategory;
 import android.preference.PreferenceGroup;
 import android.preference.PreferenceScreen;
 import android.view.View;
@@ -746,8 +745,8 @@ public class Utils {
             Preference pref = group.getPreference(i);
             pref.setSingleLineTitle(false);
 
-            if (pref instanceof PreferenceCategory) {
-                setPreferenceTitlesToMultiLineIfNeeded((PreferenceCategory) pref);
+            if (pref instanceof PreferenceGroup) {
+                setPreferenceTitlesToMultiLineIfNeeded((PreferenceGroup) pref);
             }
         }
     }
