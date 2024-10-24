@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.preference.Preference;
+import android.preference.PreferenceCategory;
 import android.preference.PreferenceGroup;
 import android.preference.PreferenceScreen;
 import android.view.View;
@@ -719,6 +720,35 @@ public class Utils {
             }
 
             pref.setOrder(order);
+        }
+    }
+
+    /**
+     * Set all preferences to multiline titles if the device is not using an English variant.
+     * The English strings are heavily scrutinized and all titles fit on screen
+     * except 2 or 3 preference strings and those do not affect readability.
+     *
+     * Allowing multiline for those 2 or 3 English preferences looks weird and out of place,
+     * and visually it looks better to clip the text and keep all titles 1 line.
+     */
+    @SuppressWarnings("deprecation")
+    public static void setPreferenceTitlesToMultiLineIfNeeded(PreferenceGroup group) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            return;
+        }
+
+        String deviceLanguage = Utils.getContext().getResources().getConfiguration().locale.getLanguage();
+        if (deviceLanguage.equals("en")) {
+            return;
+        }
+
+        for (int i = 0, prefCount = group.getPreferenceCount(); i < prefCount; i++) {
+            Preference pref = group.getPreference(i);
+            pref.setSingleLineTitle(false);
+
+            if (pref instanceof PreferenceCategory) {
+                setPreferenceTitlesToMultiLineIfNeeded((PreferenceCategory) pref);
+            }
         }
     }
 
