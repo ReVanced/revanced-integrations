@@ -5,7 +5,7 @@ import app.revanced.integrations.youtube.settings.Settings;
 @SuppressWarnings("unused")
 public class FullscreenSeekbarThumbnailsPatch {
 
-    private static final Boolean SEEKBAR_FULLSCREEN_HIGH_QUALITY_ENABLED = Settings.SEEKBAR_FULLSCREEN_HIGH_QUALITY.get();
+    private static final boolean SEEKBAR_FULLSCREEN_HIGH_QUALITY_ENABLED = Settings.SEEKBAR_FULLSCREEN_HIGH_QUALITY.get();
 
     /**
      * Injection point.
