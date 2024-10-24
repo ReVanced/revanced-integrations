@@ -196,8 +196,6 @@ public final class MiniplayerPatch {
      * Injection point.
      */
     public static boolean getModernFeatureFlagsActiveOverride(boolean original) {
-        if (original) Logger.printDebug(() -> "getModernFeatureFlagsActiveOverride original: " + original);
-
         if (CURRENT_TYPE == ORIGINAL) {
             return original;
         }
@@ -209,8 +207,6 @@ public final class MiniplayerPatch {
      * Injection point.
      */
     public static boolean enableMiniplayerDoubleTapAction(boolean original) {
-        if (original) Logger.printDebug(() -> "enableMiniplayerDoubleTapAction original: " + true);
-
         if (CURRENT_TYPE == ORIGINAL) {
             return original;
         }
@@ -222,8 +218,6 @@ public final class MiniplayerPatch {
      * Injection point.
      */
     public static boolean enableMiniplayerDragAndDrop(boolean original) {
-        if (original) Logger.printDebug(() -> "enableMiniplayerDragAndDrop original: " + true);
-
         if (CURRENT_TYPE == ORIGINAL) {
             return original;
         }
@@ -236,8 +230,6 @@ public final class MiniplayerPatch {
      * Injection point.
      */
     public static boolean setRoundedCorners(boolean original) {
-        if (original) Logger.printDebug(() -> "setRoundedCorners original: " + true);
-
         if (CURRENT_TYPE.isModern()) {
             return MINIPLAYER_ROUNDED_CORNERS_ENABLED;
         }
@@ -271,8 +263,6 @@ public final class MiniplayerPatch {
      * Injection point.
      */
     public static boolean setDropShadow(boolean original) {
-        if (original) Logger.printDebug(() -> "setViewElevation original: " + true);
-
         return original;
     }
 
